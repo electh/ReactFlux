@@ -1,0 +1,40 @@
+/*文章内容图片样式*/
+.article-body img {
+    max-width: 100%; /* 图片最大宽度为容器的100% */
+    height: auto; /* 自动调整高度，保持原始比例 */
+    border-radius: 4px;
+}
+
+/*文章内容文本样式*/
+.article-content  {
+    color: var(--color-text-1); /* 设置链接文字颜色 */
+}
+
+/*文章内容链接样式*/
+.article-content a {
+    text-decoration: none; /* 去掉下划线 */
+    color: var(--color-text-1); /* 设置链接文字颜色 */
+    /* 如果需要添加其它样式，比如鼠标悬停效果，可以使用如下方式 */
+}
+
+.article-content a:hover {
+    background-color: var(--color-fill-2);
+    padding: 3px;
+    border-radius: 3px;
+    margin-left: -3px;
+    margin-top: -3px;
+    /* 其它悬停时的样式 */
+}
+/*文章列表卡片自定义样式*/
+.card-custom-hover-style {
+    transition-property: all;
+}
+
+.card-custom-hover-style:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 10px rgb(var(--gray-3));
+}
+
+.card-custom-selected-style {
+    background-color: var(--color-fill-2);
+}
