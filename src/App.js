@@ -1,7 +1,14 @@
 import axios from "axios";
+import _ from "lodash";
 import "./App.css";
 import { useEffect, useState } from "react";
-import { Divider, Menu, Message, Skeleton } from "@arco-design/web-react";
+import {
+  Divider,
+  Menu,
+  Message,
+  Skeleton,
+  Typography,
+} from "@arco-design/web-react";
 import { IconBook, IconFolder } from "@arco-design/web-react/icon";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 const MenuItem = Menu.Item;
@@ -21,7 +28,7 @@ export default function App() {
     );
   }, [path]);
   useEffect(() => {
-    getCategoriesAndFeeds().then((data) => setLoading(false));
+    getCategoriesAndFeeds().then(() => setLoading(false));
   }, []);
 
   async function getCategorieFeeds(c_id) {
@@ -42,6 +49,25 @@ export default function App() {
     }
   }
 
+  async function getFeedCounters(feedId) {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `/v1/feeds/counters`,
+        baseURL: "https://rss.electh.top",
+        headers: {
+          "X-Auth-Token": "BavpWWSYgc1CbJiA5d7nJ-07FqRVl6P4jfoR5C4y_Tk=",
+        },
+      });
+      console.log(response);
+      return response.data.unreads[feedId] || 0; // Return unread count or 0 if not found
+    } catch (error) {
+      console.error(error);
+      Message.error(error.message);
+      return 0; // Return 0 if there's an error
+    }
+  }
+
   async function getCategoriesAndFeeds() {
     try {
       const response = await axios({
@@ -56,10 +82,24 @@ export default function App() {
       const updatedData = await Promise.all(
         response.data.map(async (c) => {
           const feeds = await getCategorieFeeds(c.id);
-          return { ...c, feeds };
+          const feedsWithCounters = await Promise.all(
+            feeds.map(async (feed) => {
+              const unreadCount = await getFeedCounters(feed.id);
+              return { ...feed, unreadCount };
+            }),
+          );
+          return { ...c, feeds: feedsWithCounters };
         }),
       );
-      setCategoriesAndFeeds(updatedData);
+      // 使用 lodash 的 sortBy 函数对根据 title 属性对外层的数组进行排序
+      const sortedData = _.sortBy(updatedData, "title");
+
+      // 使用 forEach 对每个外层元素的 feeds 属性进行排序
+      sortedData.forEach((item) => {
+        // 使用 lodash 的 sortBy 函数按照 title 属性对 feeds 进行排序
+        item.feeds = _.sortBy(item.feeds, "title");
+      });
+      setCategoriesAndFeeds(sortedData);
     } catch (error) {
       console.error(error);
       Message.error(error.message);
@@ -91,11 +131,7 @@ export default function App() {
             ALL ARTICLES
           </Menu.Item>
           <Divider style={{ margin: "4px" }} />
-          <Skeleton
-            loading={loading}
-            animation={true}
-            text={{ rows: 6 }}
-          ></Skeleton>
+          <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
           {categoriesAndFeeds.map((item) => (
             <SubMenu
               key={`/${item.id}`}
@@ -112,7 +148,18 @@ export default function App() {
                     key={`/${item.id}/${feed.id}`}
                     onClick={() => navigate(`/${item.id}/${feed.id}`)}
                   >
-                    {feed.title.toUpperCase()}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      {feed.title.toUpperCase()}{" "}
+                      <Typography.Text disabled>
+                        {feed.unreadCount === 0 ? "" : feed.unreadCount}
+                      </Typography.Text>
+                    </div>
                   </MenuItem>
                 ))}
             </SubMenu>
