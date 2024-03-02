@@ -21,14 +21,9 @@ import {
   IconEyeInvisible,
 } from "@arco-design/web-react/icon";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
+import { updateEntry, clickEntryList } from "../apis";
 
-export default function Content({
-  info,
-  getEntries,
-  updateEntry,
-  markAllAsRead,
-  clickEntryList,
-}) {
+export default function Content({ info, getEntries, markAllAsRead }) {
   const [entries, setEntries] = useState([]);
   const [allEntries, setAllEntries] = useState([]);
   const [activeContent, setActiveContent] = useState(null);
