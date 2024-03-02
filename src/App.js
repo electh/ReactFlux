@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {
   Button,
   Divider,
+  Layout,
   Menu,
   Message,
   Skeleton,
@@ -20,27 +21,29 @@ import {
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
+const Sider = Layout.Sider;
 
 export default function App() {
   const navigate = useNavigate();
   const [categoriesAndFeeds, setCategoriesAndFeeds] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   let path = useLocation().pathname;
-  useEffect(() => {
-    console.log(path);
-    console.log(
-      path.substring(1).indexOf("/") === -1
-        ? path
-        : path.substring(0, path.substring(1).indexOf("/") + 1),
-    );
-  }, [path]);
+  // useEffect(() => {
+  //   console.log(path);
+  //   console.log(
+  //     path.substring(1).indexOf("/") === -1
+  //       ? path
+  //       : path.substring(0, path.substring(1).indexOf("/") + 1),
+  //   );
+  // }, [path]);
   useEffect(() => {
     getCategoriesAndFeeds().then(() => setLoading(false));
+    initTheme();
   }, []);
 
-  async function getCategorieFeeds(c_id) {
+  async function getCategoryFeeds(c_id) {
     try {
       const response = await axios({
         method: "get",
@@ -90,7 +93,7 @@ export default function App() {
       console.log(response);
       const updatedData = await Promise.all(
         response.data.map(async (c) => {
-          const feeds = await getCategorieFeeds(c.id);
+          const feeds = await getCategoryFeeds(c.id);
           const feedsWithCounters = await Promise.all(
             feeds.map(async (feed) => {
               const unreadCount = await getFeedCounters(feed.id);
@@ -116,13 +119,27 @@ export default function App() {
   }
 
   function handelToggle() {
-    if (darkMode === false) {
+    if (theme === "light") {
       document.body.setAttribute("arco-theme", "dark");
-      setDarkMode(true);
+      setTheme("dark");
+      localStorage.setItem("theme", "dark");
     } else {
       document.body.removeAttribute("arco-theme");
-      setDarkMode(false);
+      setTheme("light");
+      localStorage.setItem("theme", "light");
     }
+  }
+
+  function initTheme() {
+    if (theme === "dark") {
+      document.body.setAttribute("arco-theme", "dark");
+    } else {
+      document.body.removeAttribute("arco-theme");
+    }
+  }
+
+  function handelCollapse(collapse) {
+    setCollapsed(collapse);
   }
 
   return (
@@ -150,19 +167,24 @@ export default function App() {
         <div className="button-group" style={{ marginRight: "20px" }}>
           <Tooltip
             content={
-              darkMode === true ? "点击切换为亮色模式" : "点击切换为暗黑模式"
+              theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
             }
           >
             <Button
               shape="circle"
-              icon={darkMode === true ? <IconSunFill /> : <IconMoonFill />}
+              icon={theme === "dark" ? <IconSunFill /> : <IconMoonFill />}
               onClick={() => handelToggle()}
             ></Button>
           </Tooltip>
         </div>
       </div>
-      <div
+      <Sider
         className="sidebar"
+        trigger={null}
+        breakpoint="lg"
+        onCollapse={(collapse) => handelCollapse(collapse)}
+        collapsed={collapsed}
+        collapsible
         style={{
           height: "calc(100% - 61px)",
           borderRight: "1px solid var(--color-border-2)",
@@ -174,6 +196,7 @@ export default function App() {
         <Menu
           style={{ width: 200, height: "100%" }}
           onCollapseChange={() => setCollapsed(!collapsed)}
+          collapse={collapsed}
           autoOpen
           hasCollapseButton
           defaultOpenKeys={[
@@ -222,7 +245,7 @@ export default function App() {
             </SubMenu>
           ))}
         </Menu>
-      </div>
+      </Sider>
       <div
         className="article-list"
         style={{
