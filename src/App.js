@@ -3,13 +3,20 @@ import _ from "lodash";
 import "./App.css";
 import { useEffect, useState } from "react";
 import {
+  Button,
   Divider,
   Menu,
   Message,
   Skeleton,
+  Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import { IconBook, IconFolder } from "@arco-design/web-react/icon";
+import {
+  IconBook,
+  IconFolder,
+  IconMoonFill,
+  IconSunFill,
+} from "@arco-design/web-react/icon";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -17,7 +24,9 @@ const SubMenu = Menu.SubMenu;
 export default function App() {
   const navigate = useNavigate();
   const [categoriesAndFeeds, setCategoriesAndFeeds] = useState([]);
+  const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   let path = useLocation().pathname;
   useEffect(() => {
     console.log(path);
@@ -106,17 +115,65 @@ export default function App() {
     }
   }
 
+  function handelToggle() {
+    if (darkMode === false) {
+      document.body.setAttribute("arco-theme", "dark");
+      setDarkMode(true);
+    } else {
+      document.body.removeAttribute("arco-theme");
+      setDarkMode(false);
+    }
+  }
+
   return (
     <div className="app" style={{ display: "flex" }}>
       <div
+        className="header"
+        style={{
+          borderBottom: "1px solid var(--color-border-2)",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          position: "fixed",
+          width: "100%",
+          height: "60px",
+          zIndex: "999",
+          backgroundColor: "var(--color-bg-1)",
+        }}
+      >
+        <div className="brand" style={{ marginLeft: "20px" }}>
+          <Typography.Title heading={5} style={{ margin: "0" }}>
+            ReactFlux
+          </Typography.Title>
+        </div>
+        <div className="button-group" style={{ marginRight: "20px" }}>
+          <Tooltip
+            content={
+              darkMode === true ? "点击切换为亮色模式" : "点击切换为暗黑模式"
+            }
+          >
+            <Button
+              shape="circle"
+              icon={darkMode === true ? <IconSunFill /> : <IconMoonFill />}
+              onClick={() => handelToggle()}
+            ></Button>
+          </Tooltip>
+        </div>
+      </div>
+      <div
         className="sidebar"
         style={{
-          height: "100vh",
+          height: "calc(100% - 61px)",
           borderRight: "1px solid var(--color-border-2)",
+          position: "fixed",
+          top: "61px",
+          zIndex: "999",
         }}
       >
         <Menu
           style={{ width: 200, height: "100%" }}
+          onCollapseChange={() => setCollapsed(!collapsed)}
           autoOpen
           hasCollapseButton
           defaultOpenKeys={[
@@ -170,9 +227,12 @@ export default function App() {
         className="article-list"
         style={{
           backgroundColor: "var(--color-bg-1)",
-          height: "100vh",
-          flex: "1",
+          paddingTop: "61px",
+          paddingLeft: collapsed ? "48px" : "200px",
+          height: "calc(100vh - 61px)",
           display: "flex",
+          transition: "all 0.1s linear",
+          width: "100%",
         }}
       >
         <Outlet />

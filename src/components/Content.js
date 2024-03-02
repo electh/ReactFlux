@@ -40,6 +40,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     entryListRef.current.scrollTo(0, 0);
     entryDetailRef.current.scrollTo(0, 0);
   }, [info]);
+
   function getArticleList() {
     async function getAlist() {
       setLoading(true);
@@ -147,11 +148,12 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   return (
     <>
       <div
+        className="entry-list"
         ref={entryListRef}
         style={{
           overflowY: "auto",
           borderRight: "1px solid var(--color-border-2)",
-          padding: "62px 10px 0 10px",
+          padding: "10px 10px 0 10px",
           width: "302px",
           backgroundColor: "var(--color-fill-1)",
         }}
@@ -160,7 +162,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           style={{
             position: "absolute",
             backgroundColor: "var(--color-bg-2)",
-            top: "0",
+            bottom: "0",
             display: "flex",
             flexDirection: "row",
             padding: "8px 10px",
@@ -168,7 +170,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             zIndex: "100",
             justifyContent: "space-between",
             marginLeft: "-10px",
-            borderBottom: "1px solid var(--color-border-2)",
+            borderTop: "1px solid var(--color-border-2)",
           }}
         >
           <Radio.Group
@@ -235,6 +237,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                   : false,
               })}
               hoverable
+              data-entry-id={entry.id}
               style={{ width: 300, cursor: "pointer" }}
               onClick={() => {
                 handelClickEntryList(entry);
@@ -328,7 +331,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
               )
             }
             style={{
-              position: "absolute",
+              position: "fixed",
               bottom: "20px",
               right: "20px",
               boxShadow: "0 2px 12px 0 rgba(0,0,0,.1)",
@@ -341,10 +344,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           ref={entryDetailRef}
           className="article-content"
           style={{
-            padding: "40px 100px",
+            padding: "5%",
             flex: "1",
             overflowY: "auto",
-            minWidth: "700px",
             backgroundColor: "var(--color-fill-1)",
           }}
         >
@@ -381,6 +383,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             alignItems: "center",
             justifyContent: "center",
             flex: "1",
+            padding: "5%",
           }}
         >
           <IconEmpty style={{ fontSize: "64px" }} />
