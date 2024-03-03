@@ -28,6 +28,15 @@
     box-shadow: 0 4px 10px rgb(var(--gray-3)); /*可能要修改*/
 }
 
+.card-custom-hover-style img {
+    transition: opacity 0.15s ease-in-out; /* 添加过渡效果 */
+}
+
+.card-custom-hover-style img:hover {
+    opacity: 0.95; /* 设置透明度为0.95 */
+}
+
+
 .card-custom-selected-style {
     background-color: var(--color-fill-2);
     border: 1px solid var(--color-border-2);
