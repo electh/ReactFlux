@@ -1,18 +1,14 @@
-import axios from "axios";
 import { Message } from "@arco-design/web-react";
 import Content from "./components/Content";
 import { getCurrentUser } from "./apis";
+import { thunder } from "./apis/axios";
 
 export default function All() {
   async function getFeedEntries() {
     try {
-      const response = await axios({
+      const response = await thunder.request({
         method: "get",
         url: `/v1/entries?order=published_at&direction=desc`,
-        baseURL: "https://rss.electh.top",
-        headers: {
-          "X-Auth-Token": "BavpWWSYgc1CbJiA5d7nJ-07FqRVl6P4jfoR5C4y_Tk=",
-        },
       });
       console.log(response);
       return response;
@@ -25,13 +21,9 @@ export default function All() {
   async function markAllAsRead() {
     const currentUser = await getCurrentUser();
     try {
-      const response = await axios({
+      const response = await thunder.request({
         method: "put",
         url: `/v1/users/${currentUser.id}/mark-all-as-read`,
-        baseURL: "https://rss.electh.top",
-        headers: {
-          "X-Auth-Token": "BavpWWSYgc1CbJiA5d7nJ-07FqRVl6P4jfoR5C4y_Tk=",
-        },
       });
       console.log(response);
       return response;

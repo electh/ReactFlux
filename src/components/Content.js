@@ -163,6 +163,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             padding: "10px 10px 0 10px",
             width: "302px",
             backgroundColor: "var(--color-fill-1)",
+            flex: "1",
           }}
         >
           <Input.Search

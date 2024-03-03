@@ -1,14 +1,16 @@
-import axios from "axios";
 import _ from "lodash";
 import "./App.css";
 import { useEffect, useState } from "react";
 import {
+  Avatar,
   Button,
   Divider,
+  Dropdown,
   Layout,
   Menu,
   Message,
   Skeleton,
+  Space,
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
@@ -17,9 +19,12 @@ import {
   IconFolder,
   IconList,
   IconMoonFill,
+  IconPoweroff,
   IconSunFill,
+  IconUser,
 } from "@arco-design/web-react/icon";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { thunder } from "./apis/axios";
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
 const Sider = Layout.Sider;
@@ -46,13 +51,9 @@ export default function App() {
 
   async function getCategoryFeeds(c_id) {
     try {
-      const response = await axios({
+      const response = await thunder.request({
         method: "get",
         url: `/v1/categories/${c_id}/feeds`,
-        baseURL: "https://rss.electh.top",
-        headers: {
-          "X-Auth-Token": "BavpWWSYgc1CbJiA5d7nJ-07FqRVl6P4jfoR5C4y_Tk=",
-        },
       });
       console.log(response);
       return response.data;
@@ -64,13 +65,9 @@ export default function App() {
 
   async function getFeedCounters(feedId) {
     try {
-      const response = await axios({
+      const response = await thunder.request({
         method: "get",
         url: `/v1/feeds/counters`,
-        baseURL: "https://rss.electh.top",
-        headers: {
-          "X-Auth-Token": "BavpWWSYgc1CbJiA5d7nJ-07FqRVl6P4jfoR5C4y_Tk=",
-        },
       });
       console.log(response);
       return response.data.unreads[feedId] || 0; // Return unread count or 0 if not found
@@ -83,13 +80,9 @@ export default function App() {
 
   async function getCategoriesAndFeeds() {
     try {
-      const response = await axios({
+      const response = await thunder.request({
         method: "get",
         url: "/v1/categories",
-        baseURL: "https://rss.electh.top",
-        headers: {
-          "X-Auth-Token": "BavpWWSYgc1CbJiA5d7nJ-07FqRVl6P4jfoR5C4y_Tk=",
-        },
       });
       console.log(response);
       const updatedData = await Promise.all(
@@ -143,6 +136,15 @@ export default function App() {
     setCollapsed(collapse);
   }
 
+  function handelLogout() {
+    localStorage.removeItem("server");
+    localStorage.removeItem("token");
+    localStorage.removeItem("theme");
+    document.body.removeAttribute("arco-theme");
+    navigate("/login");
+    Message.success("logout");
+  }
+
   return (
     <div className="app" style={{ display: "flex" }}>
       <div
@@ -176,17 +178,44 @@ export default function App() {
           </Typography.Title>
         </div>
         <div className="button-group" style={{ marginRight: "20px" }}>
-          <Tooltip
-            content={
-              theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-            }
-          >
-            <Button
-              shape="circle"
-              icon={theme === "dark" ? <IconSunFill /> : <IconMoonFill />}
-              onClick={() => handelToggle()}
-            ></Button>
-          </Tooltip>
+          <Space size={20}>
+            <Tooltip
+              content={
+                theme === "dark"
+                  ? "Switch to light mode"
+                  : "Switch to dark mode"
+              }
+            >
+              <Button
+                shape="circle"
+                icon={theme === "dark" ? <IconSunFill /> : <IconMoonFill />}
+                onClick={() => handelToggle()}
+              ></Button>
+            </Tooltip>
+
+            <Dropdown
+              droplist={
+                <Menu>
+                  <Menu.Item key="1" onClick={handelLogout}>
+                    <IconPoweroff
+                      style={{
+                        marginRight: 8,
+                        fontSize: 16,
+                        transform: "translateY(1px)",
+                      }}
+                    />
+                    Logout
+                  </Menu.Item>
+                </Menu>
+              }
+              trigger="click"
+              position="br"
+            >
+              <Avatar size={32} style={{ cursor: "pointer" }}>
+                <IconUser />
+              </Avatar>
+            </Dropdown>
+          </Space>
         </div>
       </div>
       <Sider
