@@ -1,5 +1,7 @@
 # ReactFlux
 Simple Reader for miniFlux
-![](./src/imgs/Screenshot 2024-03-03 at 19.46.38.png)
-![](./src/imgs/Screenshot 2024-03-03 at 19.42.29.png)
-![](./src/imgs/Screenshot 2024-03-03 at 19.46.18.png)
+
+[hosted instance](https://reactflux.pages.dev/login)
+![login](https://github.com/electh/ReactFlux/raw/main/src/imgs/Screenshot%202024-03-03%20at%2019.46.38.png)
+![light](https://github.com/electh/ReactFlux/raw/main/src/imgs/Screenshot%202024-03-03%20at%2019.42.29.png)
+![dark](https://github.com/electh/ReactFlux/raw/main/src/imgs/Screenshot%202024-03-03%20at%2019.46.18.png)
