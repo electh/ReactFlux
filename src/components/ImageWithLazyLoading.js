@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Skeleton, Spin } from "@arco-design/web-react";
+import { Skeleton } from "@arco-design/web-react";
 import "./ImageWithLazyLoading.css";
 const ImageWithLazyLoading = ({ src, alt, width, height, status }) => {
   const [loaded, setLoaded] = useState(false);

@@ -16,7 +16,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [loginForm] = useForm();
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
