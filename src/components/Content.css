@@ -34,7 +34,7 @@
 }
 
 @media screen and (max-width: 700px) {
-    .entry-list {
-       display: none;
+    .entry-col {
+       display: none !important;
     }
 }

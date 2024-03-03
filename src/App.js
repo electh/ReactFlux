@@ -15,6 +15,7 @@ import {
 import {
   IconBook,
   IconFolder,
+  IconList,
   IconMoonFill,
   IconSunFill,
 } from "@arco-design/web-react/icon";
@@ -159,7 +160,17 @@ export default function App() {
           backgroundColor: "var(--color-bg-1)",
         }}
       >
-        <div className="brand" style={{ marginLeft: "20px" }}>
+        <div
+          className="brand"
+          style={{ marginLeft: "20px", display: "flex", alignItems: "center" }}
+        >
+          <IconBook
+            style={{
+              fontSize: 32,
+              color: "rgb(var(--primary-6))",
+              marginRight: "5px",
+            }}
+          />
           <Typography.Title heading={5} style={{ margin: "0" }}>
             ReactFlux
           </Typography.Title>
@@ -207,7 +218,7 @@ export default function App() {
           defaultSelectedKeys={[path]}
         >
           <Menu.Item key={`/`} onClick={() => navigate("/")}>
-            <IconBook />
+            <IconList />
             ALL ARTICLES
           </Menu.Item>
           <Divider style={{ margin: "4px" }} />

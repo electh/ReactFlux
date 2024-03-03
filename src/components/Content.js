@@ -148,28 +148,138 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   return (
     <>
       <div
-        className="entry-list"
-        ref={entryListRef}
         style={{
-          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
           borderRight: "1px solid var(--color-border-2)",
-          padding: "10px 10px 0 10px",
-          width: "302px",
-          backgroundColor: "var(--color-fill-1)",
         }}
+        className="entry-col"
       >
         <div
+          className="entry-list"
+          ref={entryListRef}
           style={{
-            position: "absolute",
+            overflowY: "auto",
+            padding: "10px 10px 0 10px",
+            width: "302px",
+            backgroundColor: "var(--color-fill-1)",
+          }}
+        >
+          <Input.Search
+            allowClear
+            placeholder="filter"
+            onChange={(value) => {
+              setFilterString(value);
+              setEntries(
+                filterStatus === "all"
+                  ? allEntries.filter((entry) => entry.title.includes(value))
+                  : allEntries.filter(
+                      (entry) =>
+                        entry.title.includes(value) &
+                        (entry.status === filterStatus),
+                    ),
+              );
+              console.log(value);
+            }}
+            style={{
+              marginBottom: "10px",
+              width: "300px",
+            }}
+          />
+          {entries.map((entry) => (
+            <div style={{ marginBottom: "10px" }} key={entry.id}>
+              <Card
+                className={classNames("card-custom-hover-style", {
+                  "card-custom-selected-style": activeContent
+                    ? entry.id === activeContent.id
+                    : false,
+                })}
+                hoverable
+                data-entry-id={entry.id}
+                style={{ width: 300, cursor: "pointer" }}
+                onClick={() => {
+                  handelClickEntryList(entry);
+                }}
+                cover={
+                  <Skeleton
+                    loading={loading}
+                    text={{ rows: 0 }}
+                    image={{
+                      style: {
+                        width: 300,
+                        height: 160,
+                      },
+                    }}
+                    animation={true}
+                  >
+                    <div
+                      style={{
+                        display: entry.src ? "block" : "none",
+                        height: 160,
+                        overflow: "hidden",
+                        borderBottom: "1px solid var(--color-border-1)",
+                      }}
+                    >
+                      <ImageWithLazyLoading
+                        width={300}
+                        height={160}
+                        alt={entry.id}
+                        src={entry.src}
+                        status={entry.status}
+                      />
+                    </div>
+                  </Skeleton>
+                }
+              >
+                <Card.Meta
+                  description={
+                    <Skeleton
+                      loading={loading}
+                      animation={true}
+                      text={{ rows: 3 }}
+                    >
+                      <div>
+                        <Typography.Text
+                          style={
+                            entry.status === "unread"
+                              ? { fontWeight: "500" }
+                              : {
+                                  color: "var(--color-text-3)",
+                                  fontWeight: "500",
+                                }
+                          }
+                        >
+                          {entry.title}
+                        </Typography.Text>
+                        <Typography.Text
+                          style={{
+                            color: "var(--color-text-3)",
+                            fontSize: "13px",
+                          }}
+                        >
+                          <br />
+                          {entry.feed.title}
+                        </Typography.Text>
+                      </div>
+                    </Skeleton>
+                  }
+                />
+              </Card>
+            </div>
+          ))}
+        </div>
+        <div
+          className="entry-panel"
+          style={{
+            //position: "absolute",
             backgroundColor: "var(--color-bg-2)",
             bottom: "0",
             display: "flex",
             flexDirection: "row",
             padding: "8px 10px",
-            width: "302px",
+            //width: "302px",
             zIndex: "100",
             justifyContent: "space-between",
-            marginLeft: "-10px",
             borderTop: "1px solid var(--color-border-2)",
           }}
         >
@@ -207,108 +317,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             <Button icon={<IconCheck />} shape="circle"></Button>
           </Popconfirm>
         </div>
-        <Input.Search
-          allowClear
-          placeholder="filter"
-          onChange={(value) => {
-            setFilterString(value);
-            setEntries(
-              filterStatus === "all"
-                ? allEntries.filter((entry) => entry.title.includes(value))
-                : allEntries.filter(
-                    (entry) =>
-                      entry.title.includes(value) &
-                      (entry.status === filterStatus),
-                  ),
-            );
-            console.log(value);
-          }}
-          style={{
-            marginBottom: "10px",
-            width: "300px",
-          }}
-        />
-        {entries.map((entry) => (
-          <div style={{ marginBottom: "10px" }} key={entry.id}>
-            <Card
-              className={classNames("card-custom-hover-style", {
-                "card-custom-selected-style": activeContent
-                  ? entry.id === activeContent.id
-                  : false,
-              })}
-              hoverable
-              data-entry-id={entry.id}
-              style={{ width: 300, cursor: "pointer" }}
-              onClick={() => {
-                handelClickEntryList(entry);
-              }}
-              cover={
-                <Skeleton
-                  loading={loading}
-                  text={{ rows: 0 }}
-                  image={{
-                    style: {
-                      width: 300,
-                      height: 160,
-                    },
-                  }}
-                  animation={true}
-                >
-                  <div
-                    style={{
-                      display: entry.src ? "block" : "none",
-                      height: 160,
-                      overflow: "hidden",
-                      borderBottom: "1px solid var(--color-border-1)",
-                    }}
-                  >
-                    <ImageWithLazyLoading
-                      width={300}
-                      height={160}
-                      alt={entry.id}
-                      src={entry.src}
-                      status={entry.status}
-                    />
-                  </div>
-                </Skeleton>
-              }
-            >
-              <Card.Meta
-                description={
-                  <Skeleton
-                    loading={loading}
-                    animation={true}
-                    text={{ rows: 3 }}
-                  >
-                    <div>
-                      <Typography.Text
-                        style={
-                          entry.status === "unread"
-                            ? { fontWeight: "500" }
-                            : {
-                                color: "var(--color-text-3)",
-                                fontWeight: "500",
-                              }
-                        }
-                      >
-                        {entry.title}
-                      </Typography.Text>
-                      <Typography.Text
-                        style={{
-                          color: "var(--color-text-3)",
-                          fontSize: "13px",
-                        }}
-                      >
-                        <br />
-                        {entry.feed.title}
-                      </Typography.Text>
-                    </div>
-                  </Skeleton>
-                }
-              />
-            </Card>
-          </div>
-        ))}
       </div>
       {activeContent && (
         <Tooltip
