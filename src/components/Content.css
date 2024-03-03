@@ -25,7 +25,7 @@
 
 .card-custom-hover-style:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 10px rgb(var(--gray-3)); /*可能要修改颜色*/
+    box-shadow: 0 4px 10px rgb(var(--gray-3)); /*可能要修改*/
 }
 
 .card-custom-selected-style {
