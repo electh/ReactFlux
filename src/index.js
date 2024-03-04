@@ -25,7 +25,7 @@ const router = createBrowserRouter([
         element: <All />,
       },
       {
-        path: "/:c_id/:f_id",
+        path: "/feed/:f_id",
         element: <Feed />,
       },
     ],

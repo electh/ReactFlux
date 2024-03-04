@@ -45,3 +45,31 @@ export async function clickEntryList(entry) {
     Message.error(error.message);
   }
 }
+
+export async function getUnreadInfo() {
+  try {
+    const response = await thunder.request({
+      method: "get",
+      url: `/v1/feeds/counters`,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+    Message.error(error.message);
+  }
+}
+
+export async function getFeeds() {
+  try {
+    const response = await thunder.request({
+      method: "get",
+      url: `/v1/feeds`,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+    Message.error(error.message);
+  }
+}

@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { useStore } from "../App";
 import { useEffect, useRef, useState } from "react";
 import {
   Button,
@@ -30,6 +31,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterString, setFilterString] = useState("");
   const [loading, setLoading] = useState(true);
+  const updateFeedUnreadCount = useStore(
+    (state) => state.updateFeedUnreadCount,
+  );
+  const clearFeedUnreadCount = useStore((state) => state.clearFeedUnreadCount);
+  const clearAllUnreadCount = useStore((state) => state.clearAllUnreadCount);
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
@@ -76,6 +82,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           ...activeContent,
           status: newStatus,
         });
+        updateFeedUnreadCount(activeContent.feed.id, newStatus);
         setEntries(
           entries.map((e) =>
             e.id === activeContent.id
@@ -105,6 +112,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     async function readAll() {
       const response = await markAllAsRead();
       response && Message.success("Success");
+      info.from === "feed"
+        ? clearFeedUnreadCount(info.id)
+        : clearAllUnreadCount();
       setAllEntries(allEntries.map((e) => ({ ...e, status: "read" })));
       setEntries(entries.map((e) => ({ ...e, status: "read" })));
     }
@@ -119,6 +129,8 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           ...entry,
           status: "read",
         });
+        entry.status === "unread" &&
+          updateFeedUnreadCount(entry.feed.id, "read");
         setEntries(
           entries.map((e) =>
             e.id === entry.id

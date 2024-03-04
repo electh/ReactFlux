@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { create } from "zustand";
 import "./App.css";
 import { useEffect, useState } from "react";
 import {
@@ -16,7 +17,7 @@ import {
 } from "@arco-design/web-react";
 import {
   IconBook,
-  IconFolder,
+  IconFile,
   IconList,
   IconMoonFill,
   IconPoweroff,
@@ -24,93 +25,86 @@ import {
   IconUser,
 } from "@arco-design/web-react/icon";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { thunder } from "./apis/axios";
+import { getFeeds, getUnreadInfo } from "./apis";
+
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
 const Sider = Layout.Sider;
 
+const useStore = create((set) => ({
+  feeds: [],
+  loading: true,
+  initFeeds: async () => {
+    set({ loading: true });
+    const feedResponse = await getFeeds();
+    const unreadResponse = await getUnreadInfo();
+    if (feedResponse && unreadResponse) {
+      console.log(unreadResponse);
+      const unreadInfo = unreadResponse.data.unreads;
+      console.log(unreadInfo);
+      const feedsWithUnread = feedResponse.data.map((feed) => ({
+        ...feed,
+        unread: unreadInfo[feed.id] ? unreadInfo[feed.id] : 0,
+      }));
+      set({ feeds: _.orderBy(feedsWithUnread, ["title"], ["asc"]) });
+      set({ loading: false });
+    }
+  },
+  updateFeedUnreadCount: (feed_id, newStatus) => {
+    set((state) => {
+      const updatedFeeds = state.feeds.map((feed) =>
+        feed.id === feed_id
+          ? {
+              ...feed,
+              unread: newStatus === "read" ? feed.unread - 1 : feed.unread + 1,
+            }
+          : feed,
+      );
+      return { feeds: updatedFeeds };
+    });
+  },
+  clearFeedUnreadCount: (feed_id) =>
+    set((state) => {
+      const updatedFeeds = state.feeds.map((feed) =>
+        feed.id === feed_id
+          ? {
+              ...feed,
+              unread: 0,
+            }
+          : feed,
+      );
+      return { feeds: updatedFeeds };
+    }),
+  clearAllUnreadCount: () =>
+    set((state) => {
+      const updatedFeeds = state.feeds.map((feed) => ({
+        ...feed,
+        unread: 0,
+      }));
+      return { feeds: updatedFeeds };
+    }),
+}));
+
 export default function App() {
   const navigate = useNavigate();
-  const [categoriesAndFeeds, setCategoriesAndFeeds] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const feeds = useStore((state) => state.feeds);
+  const loading = useStore((state) => state.loading);
+  const initFeeds = useStore((state) => state.initFeeds);
   let path = useLocation().pathname;
-  // useEffect(() => {
-  //   console.log(path);
-  //   console.log(
-  //     path.substring(1).indexOf("/") === -1
-  //       ? path
-  //       : path.substring(0, path.substring(1).indexOf("/") + 1),
-  //   );
-  // }, [path]);
   useEffect(() => {
-    getCategoriesAndFeeds().then(() => setLoading(false));
+    console.log(path);
+    console.log(
+      path.substring(1).indexOf("/") === -1
+        ? path
+        : path.substring(0, path.substring(1).indexOf("/") + 1),
+    );
+  }, [path]);
+  useEffect(() => {
+    initFeeds();
     initTheme();
   }, []);
-
-  async function getCategoryFeeds(c_id) {
-    try {
-      const response = await thunder.request({
-        method: "get",
-        url: `/v1/categories/${c_id}/feeds`,
-      });
-      console.log(response);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      Message.error(error.message);
-    }
-  }
-
-  async function getFeedCounters(feedId) {
-    try {
-      const response = await thunder.request({
-        method: "get",
-        url: `/v1/feeds/counters`,
-      });
-      console.log(response);
-      return response.data.unreads[feedId] || 0; // Return unread count or 0 if not found
-    } catch (error) {
-      console.error(error);
-      Message.error(error.message);
-      return 0; // Return 0 if there's an error
-    }
-  }
-
-  async function getCategoriesAndFeeds() {
-    try {
-      const response = await thunder.request({
-        method: "get",
-        url: "/v1/categories",
-      });
-      console.log(response);
-      const updatedData = await Promise.all(
-        response.data.map(async (c) => {
-          const feeds = await getCategoryFeeds(c.id);
-          const feedsWithCounters = await Promise.all(
-            feeds.map(async (feed) => {
-              const unreadCount = await getFeedCounters(feed.id);
-              return { ...feed, unreadCount };
-            }),
-          );
-          return { ...c, feeds: feedsWithCounters };
-        }),
-      );
-      // 使用 lodash 的 sortBy 函数对根据 title 属性对外层的数组进行排序
-      const sortedData = _.sortBy(updatedData, "title");
-
-      // 使用 forEach 对每个外层元素的 feeds 属性进行排序
-      sortedData.forEach((item) => {
-        // 使用 lodash 的 sortBy 函数按照 title 属性对 feeds 进行排序
-        item.feeds = _.sortBy(item.feeds, "title");
-      });
-      setCategoriesAndFeeds(sortedData);
-    } catch (error) {
-      console.error(error);
-      Message.error(error.message);
-    }
-  }
 
   function handelToggle() {
     if (theme === "light") {
@@ -251,39 +245,36 @@ export default function App() {
             ALL ARTICLES
           </Menu.Item>
           <Divider style={{ margin: "4px" }} />
-          <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
-          {categoriesAndFeeds.map((item) => (
-            <SubMenu
-              key={`/${item.id}`}
-              title={
-                <>
-                  <IconFolder />
-                  {item.title.toUpperCase()}
-                </>
-              }
-            >
-              {item.feeds &&
-                item.feeds.map((feed) => (
-                  <MenuItem
-                    key={`/${item.id}/${feed.id}`}
-                    onClick={() => navigate(`/${item.id}/${feed.id}`)}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      {feed.title.toUpperCase()}{" "}
-                      <Typography.Text disabled>
-                        {feed.unreadCount === 0 ? "" : feed.unreadCount}
-                      </Typography.Text>
-                    </div>
-                  </MenuItem>
-                ))}
-            </SubMenu>
-          ))}
+          <SubMenu
+            key={`/feed`}
+            title={
+              <>
+                <IconFile />
+                FEEDS
+              </>
+            }
+          >
+            <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
+            {feeds.map((feed) => (
+              <MenuItem
+                key={`/feed/${feed.id}`}
+                onClick={() => navigate(`/feed/${feed.id}`)}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  {feed.title.toUpperCase()}{" "}
+                  <Typography.Text disabled>
+                    {feed.unread === 0 ? "" : feed.unread}
+                  </Typography.Text>
+                </div>
+              </MenuItem>
+            ))}
+          </SubMenu>
         </Menu>
       </Sider>
       <div
@@ -303,3 +294,5 @@ export default function App() {
     </div>
   );
 }
+
+export { useStore };

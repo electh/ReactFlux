@@ -23,7 +23,7 @@ export default function All() {
     try {
       const response = await thunder.request({
         method: "put",
-        url: `/v1/users/${currentUser.id}/mark-all-as-read`,
+        url: `/v1/users/${currentUser.data.id}/mark-all-as-read`,
       });
       console.log(response);
       return response;
