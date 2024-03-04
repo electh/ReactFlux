@@ -258,7 +258,7 @@ export default function App() {
             <IconList />
             ARTICLES
           </Menu.Item>
-          <Divider style={{ margin: "4px" }} />
+          {collapsed ? null : <Divider style={{ margin: "4px" }} />}
           <SubMenu
             key={`/group`}
             title={
@@ -291,7 +291,7 @@ export default function App() {
                 ))
               : null}
           </SubMenu>
-          <Divider style={{ margin: "4px" }} />
+          {collapsed ? null : <Divider style={{ margin: "4px" }} />}
           <SubMenu
             key={`/feed`}
             title={
