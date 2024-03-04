@@ -9,6 +9,7 @@ import All from "./All";
 import Login from "./Login";
 import RouterProtect from "./components/RouterProtect";
 import ErrorPage from "./ErrorPage";
+import Group from "./Group";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <All />,
+      },
+      {
+        path: "/group/:c_id",
+        element: <Group />,
       },
       {
         path: "/feed/:f_id",

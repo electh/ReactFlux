@@ -22,6 +22,7 @@ export default function Login() {
     if (localStorage.getItem("server") && localStorage.getItem("token")) {
       navigate("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function healthCheck() {

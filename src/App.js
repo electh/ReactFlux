@@ -18,6 +18,7 @@ import {
 import {
   IconBook,
   IconFile,
+  IconFolder,
   IconList,
   IconMoonFill,
   IconPoweroff,
@@ -25,7 +26,7 @@ import {
   IconUser,
 } from "@arco-design/web-react/icon";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { getFeeds, getUnreadInfo } from "./apis";
+import { getFeeds, getGroups, getUnreadInfo } from "./apis";
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -33,20 +34,37 @@ const Sider = Layout.Sider;
 
 const useStore = create((set) => ({
   feeds: [],
+  groups: [],
   loading: true,
-  initFeeds: async () => {
+
+  initData: async () => {
     set({ loading: true });
     const feedResponse = await getFeeds();
+    const groupResponse = await getGroups();
     const unreadResponse = await getUnreadInfo();
-    if (feedResponse && unreadResponse) {
-      console.log(unreadResponse);
+
+    if (feedResponse && unreadResponse && groupResponse) {
       const unreadInfo = unreadResponse.data.unreads;
-      console.log(unreadInfo);
       const feedsWithUnread = feedResponse.data.map((feed) => ({
         ...feed,
         unread: unreadInfo[feed.id] ? unreadInfo[feed.id] : 0,
       }));
+      const groupsWithUnread = groupResponse.data.map((group) => {
+        const unreadCount = feedsWithUnread.reduce((total, feed) => {
+          if (feed.category.id === group.id) {
+            return total + feed.unread;
+          } else {
+            return total;
+          }
+        }, 0);
+
+        return {
+          ...group,
+          unread: unreadCount,
+        };
+      });
       set({ feeds: _.orderBy(feedsWithUnread, ["title"], ["asc"]) });
+      set({ groups: _.orderBy(groupsWithUnread, ["title"], ["asc"]) });
       set({ loading: false });
     }
   },
@@ -63,26 +81,20 @@ const useStore = create((set) => ({
       return { feeds: updatedFeeds };
     });
   },
-  clearFeedUnreadCount: (feed_id) =>
+  updateGroupUnreadCount: (group_id, newStatus) => {
     set((state) => {
-      const updatedFeeds = state.feeds.map((feed) =>
-        feed.id === feed_id
+      const updatedGroups = state.groups.map((group) =>
+        group.id === group_id
           ? {
-              ...feed,
-              unread: 0,
+              ...group,
+              unread:
+                newStatus === "read" ? group.unread - 1 : group.unread + 1,
             }
-          : feed,
+          : group,
       );
-      return { feeds: updatedFeeds };
-    }),
-  clearAllUnreadCount: () =>
-    set((state) => {
-      const updatedFeeds = state.feeds.map((feed) => ({
-        ...feed,
-        unread: 0,
-      }));
-      return { feeds: updatedFeeds };
-    }),
+      return { groups: updatedGroups };
+    });
+  },
 }));
 
 export default function App() {
@@ -90,8 +102,9 @@ export default function App() {
   const [collapsed, setCollapsed] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const feeds = useStore((state) => state.feeds);
+  const groups = useStore((state) => state.groups);
   const loading = useStore((state) => state.loading);
-  const initFeeds = useStore((state) => state.initFeeds);
+  const initData = useStore((state) => state.initData);
   let path = useLocation().pathname;
   useEffect(() => {
     console.log(path);
@@ -102,8 +115,9 @@ export default function App() {
     );
   }, [path]);
   useEffect(() => {
-    initFeeds();
+    initData();
     initTheme();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handelToggle() {
@@ -242,8 +256,41 @@ export default function App() {
         >
           <Menu.Item key={`/`} onClick={() => navigate("/")}>
             <IconList />
-            ALL ARTICLES
+            ARTICLES
           </Menu.Item>
+          <Divider style={{ margin: "4px" }} />
+          <SubMenu
+            key={`/group`}
+            title={
+              <>
+                <IconFolder />
+                GROUPS
+              </>
+            }
+          >
+            <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
+            {!loading
+              ? groups.map((group) => (
+                  <MenuItem
+                    key={`/group/${group.id}`}
+                    onClick={() => navigate(`/group/${group.id}`)}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      {group.title.toUpperCase()}{" "}
+                      <Typography.Text disabled>
+                        {group.unread === 0 ? "" : group.unread}
+                      </Typography.Text>
+                    </div>
+                  </MenuItem>
+                ))
+              : null}
+          </SubMenu>
           <Divider style={{ margin: "4px" }} />
           <SubMenu
             key={`/feed`}
@@ -255,25 +302,27 @@ export default function App() {
             }
           >
             <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
-            {feeds.map((feed) => (
-              <MenuItem
-                key={`/feed/${feed.id}`}
-                onClick={() => navigate(`/feed/${feed.id}`)}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  {feed.title.toUpperCase()}{" "}
-                  <Typography.Text disabled>
-                    {feed.unread === 0 ? "" : feed.unread}
-                  </Typography.Text>
-                </div>
-              </MenuItem>
-            ))}
+            {!loading
+              ? feeds.map((feed) => (
+                  <MenuItem
+                    key={`/feed/${feed.id}`}
+                    onClick={() => navigate(`/feed/${feed.id}`)}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      {feed.title.toUpperCase()}{" "}
+                      <Typography.Text disabled>
+                        {feed.unread === 0 ? "" : feed.unread}
+                      </Typography.Text>
+                    </div>
+                  </MenuItem>
+                ))
+              : null}
           </SubMenu>
         </Menu>
       </Sider>

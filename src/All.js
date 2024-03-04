@@ -4,7 +4,7 @@ import { getCurrentUser } from "./apis";
 import { thunder } from "./apis/axios";
 
 export default function All() {
-  async function getFeedEntries() {
+  async function getEntries() {
     try {
       const response = await thunder.request({
         method: "get",
@@ -37,7 +37,7 @@ export default function All() {
     <>
       <Content
         info={{ from: "all", id: "" }}
-        getEntries={getFeedEntries}
+        getEntries={getEntries}
         markAllAsRead={markAllAsRead}
       />
     </>

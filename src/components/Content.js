@@ -34,8 +34,10 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const updateFeedUnreadCount = useStore(
     (state) => state.updateFeedUnreadCount,
   );
-  const clearFeedUnreadCount = useStore((state) => state.clearFeedUnreadCount);
-  const clearAllUnreadCount = useStore((state) => state.clearAllUnreadCount);
+  const updateGroupUnreadCount = useStore(
+    (state) => state.updateGroupUnreadCount,
+  );
+  const initData = useStore((state) => state.initData);
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
@@ -45,32 +47,37 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     setActiveContent(null);
     entryListRef.current.scrollTo(0, 0);
     entryDetailRef.current.scrollTo(0, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [info]);
 
-  function getArticleList() {
-    async function getAlist() {
+  async function getArticleList() {
+    try {
       setLoading(true);
       const response = await getEntries();
-      if (response) {
-        const aList = response.data.entries;
-        aList.map((entry) => {
+      if (response && response.data.entries) {
+        const aList = response.data.entries.map((entry) => {
           const parser = new DOMParser();
           const doc = parser.parseFromString(entry.content, "text/html");
           const firstImg = doc.querySelector("img");
           if (firstImg) {
             entry.src = firstImg.getAttribute("src");
-            setAllEntries(aList);
-            filterStatus === "all"
-              ? setEntries(aList)
-              : setEntries(
-                  aList.filter((entry) => entry.status === filterStatus),
-                );
           }
+          return entry;
         });
+
+        setAllEntries(aList);
+
+        const filteredEntries =
+          filterStatus === "all"
+            ? aList
+            : aList.filter((entry) => entry.status === filterStatus);
+        setEntries(filteredEntries);
       }
+    } catch (error) {
+      console.error("Error fetching article list:", error);
+    } finally {
       setLoading(false);
     }
-    getAlist();
   }
 
   function handelUpdateEntry() {
@@ -83,6 +90,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           status: newStatus,
         });
         updateFeedUnreadCount(activeContent.feed.id, newStatus);
+        updateGroupUnreadCount(activeContent.feed.category.id, newStatus);
         setEntries(
           entries.map((e) =>
             e.id === activeContent.id
@@ -112,9 +120,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     async function readAll() {
       const response = await markAllAsRead();
       response && Message.success("Success");
-      info.from === "feed"
-        ? clearFeedUnreadCount(info.id)
-        : clearAllUnreadCount();
+      await initData();
       setAllEntries(allEntries.map((e) => ({ ...e, status: "read" })));
       setEntries(entries.map((e) => ({ ...e, status: "read" })));
     }
@@ -129,8 +135,10 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           ...entry,
           status: "read",
         });
-        entry.status === "unread" &&
+        if (entry.status === "unread") {
           updateFeedUnreadCount(entry.feed.id, "read");
+          updateGroupUnreadCount(entry.feed.category.id, "read");
+        }
         setEntries(
           entries.map((e) =>
             e.id === entry.id
@@ -379,7 +387,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             {dayjs(activeContent.created_at).format("hh:mm")}
           </Typography.Text>
           <Typography.Title heading={3} style={{ margin: 0 }}>
-            <a href={activeContent.url} target="_blank">
+            <a
+              href={activeContent.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {activeContent.title}
             </a>
           </Typography.Title>

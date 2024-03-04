@@ -32,8 +32,8 @@
     transition: opacity 0.15s ease-in-out; /* 添加过渡效果 */
 }
 
-.card-custom-hover-style img:hover {
-    opacity: 0.95; /* 设置透明度为0.95 */
+.card-custom-hover-style:hover img {
+    opacity: 0.90; /* 设置透明度为0.90 */
 }
 
 

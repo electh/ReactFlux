@@ -73,3 +73,17 @@ export async function getFeeds() {
     Message.error(error.message);
   }
 }
+
+export async function getGroups() {
+  try {
+    const response = await thunder.request({
+      method: "get",
+      url: `/v1/categories`,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error(error);
+    Message.error(error.message);
+  }
+}

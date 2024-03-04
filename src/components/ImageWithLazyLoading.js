@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Skeleton } from "@arco-design/web-react";
 import "./ImageWithLazyLoading.css";
+
 const ImageWithLazyLoading = ({ src, alt, width, height, status }) => {
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef(null);
@@ -21,9 +22,11 @@ const ImageWithLazyLoading = ({ src, alt, width, height, status }) => {
 
     observer.observe(imgRef.current);
 
+    // 在清理函数中使用局部变量保存 imgRef.current 的值
+    const currentImgRef = imgRef.current;
     return () => {
-      if (imgRef.current) {
-        observer.unobserve(imgRef.current);
+      if (currentImgRef) {
+        observer.unobserve(currentImgRef);
       }
     };
   }, [src]);
@@ -42,7 +45,6 @@ const ImageWithLazyLoading = ({ src, alt, width, height, status }) => {
             transform: "translate(-50%, -50%)",
           }}
         >
-          {/* 在这里添加加载动画，可以是一个旋转的加载指示器、进度条等 */}
           <Skeleton
             text={{ rows: 0 }}
             image={{
@@ -58,7 +60,6 @@ const ImageWithLazyLoading = ({ src, alt, width, height, status }) => {
       )}
       <img
         className={status !== "unread" ? "read" : ""}
-        ref={imgRef}
         src={loaded ? src : ""}
         alt={alt}
         style={{
