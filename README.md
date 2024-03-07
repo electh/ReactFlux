@@ -16,6 +16,8 @@ Reactflux 是 [miniflux](https://github.com/miniflux/miniflux) 的第三方 Web 
 
 ### 部署
 
+#### Cloudflare Pages
+
 Reactflux 使用 React 编写，build 之后只是一堆静态网页文件，可以直接使用部署在 Cloudflare Pages 上的演示站。
 
 或者你可以自行部署在 Cloudflare Pages 上，`框架预设`选择`Create React App`即可。
