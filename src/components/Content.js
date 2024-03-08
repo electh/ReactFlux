@@ -196,8 +196,8 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                   ? allEntries.filter((entry) => entry.title.includes(value))
                   : allEntries.filter(
                       (entry) =>
-                        entry.title.includes(value) &
-                        (entry.status === filterStatus),
+                        entry.title.includes(value) &&
+                        entry.status === filterStatus,
                     ),
               );
               console.log(value);
@@ -379,30 +379,45 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             backgroundColor: "var(--color-fill-1)",
           }}
         >
-          <Typography.Text style={{ color: "var(--color-text-3)" }}>
-            {dayjs(activeContent.created_at)
-              .format("MMMM D, YYYY")
-              .toUpperCase()}
-            {" AT "}
-            {dayjs(activeContent.created_at).format("hh:mm")}
-          </Typography.Text>
-          <Typography.Title heading={3} style={{ margin: 0 }}>
-            <a
-              href={activeContent.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {activeContent.title}
-            </a>
-          </Typography.Title>
-          <Typography.Text style={{ color: "var(--color-text-3)" }}>
-            {activeContent.feed.title}{" "}
-          </Typography.Text>
-          <Divider />
+          <div
+            className="article-title"
+            style={{
+              maxWidth: "600px",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <Typography.Text style={{ color: "var(--color-text-3)" }}>
+              {dayjs(activeContent.created_at)
+                .format("MMMM D, YYYY")
+                .toUpperCase()}
+              {" AT "}
+              {dayjs(activeContent.created_at).format("hh:mm")}
+            </Typography.Text>
+            <Typography.Title heading={3} style={{ margin: 0 }}>
+              <a
+                href={activeContent.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {activeContent.title}
+              </a>
+            </Typography.Title>
+            <Typography.Text style={{ color: "var(--color-text-3)" }}>
+              {activeContent.feed.title}{" "}
+            </Typography.Text>
+            <Divider />
+          </div>
           <div
             dangerouslySetInnerHTML={{ __html: activeContent.content }}
             className="article-body"
-            style={{ fontSize: "1.2em" }}
+            style={{
+              fontSize: "1.2em",
+              overflowWrap: "break-word",
+              maxWidth: "600px",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
           ></div>
         </div>
       ) : (
