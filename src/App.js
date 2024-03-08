@@ -334,7 +334,7 @@ export default function App() {
                       <Typography.Ellipsis
                         expandable={false}
                         showTooltip={true}
-                        style={{ width: "80%" }}
+                        style={{ width: group.unread !== 0 ? "80%" : "100%" }}
                       >
                         {group.title.toUpperCase()}{" "}
                       </Typography.Ellipsis>
@@ -382,7 +382,7 @@ export default function App() {
                       <Typography.Ellipsis
                         expandable={false}
                         showTooltip={true}
-                        style={{ width: "80%" }}
+                        style={{ width: feed.unread !== 0 ? "80%" : "100%" }}
                       >
                         {feed.title.toUpperCase()}{" "}
                       </Typography.Ellipsis>
