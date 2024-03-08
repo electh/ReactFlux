@@ -26,6 +26,10 @@ Reactflux 使用 React 编写，build 之后只是一堆静态网页文件，可
 
 [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/electh/ReactFlux)
 
+#### Zeabur
+
+[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/OKXO3W)
+
 ### 配置
 
 你需要一个可用的 miniflux 实例来使用本项目，Server Address 请填写实例地址，API Token 请填写实例 token，可在“Settings > API Keys > Create a new API key”生成一个。
