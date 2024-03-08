@@ -376,6 +376,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             padding: "5%",
             flex: "1",
             overflowY: "auto",
+            overflowX: "hidden",
             backgroundColor: "var(--color-fill-1)",
           }}
         >

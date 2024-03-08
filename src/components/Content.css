@@ -15,8 +15,35 @@
     text-decoration: none; /* 去掉下划线 */
     color: var(--color-text-1); /* 设置链接文字颜色 */
     font-weight: 500;
-    /* 如果需要添加其它样式，比如鼠标悬停效果，可以使用如下方式 */
 }
+
+/*code相关样式-表格*/
+.article-content td {
+    color: var(--color-text-3);
+    font-size: 0.8rem;
+}
+/*code相关样式*/
+.article-content code {
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
+    font-size: 0.8rem;
+    background-color: var(--color-neutral-3);
+    color: var(--color-text-2);
+    padding: 2px;
+    border-radius: 2px;
+}
+/*code相关样式*/
+.article-content figure {
+    margin: 0;
+}
+/*code相关样式*/
+.article-content pre {
+    background-color: var(--color-neutral-3);
+    padding: 10px;
+    border-radius: 4px;
+    overflow: auto;
+}
+
+
 
 /*文章列表卡片自定义样式*/
 .card-custom-hover-style {
@@ -41,6 +68,7 @@
     background-color: var(--color-fill-2);
     border: 1px solid var(--color-border-2);
 }
+
 
 @media screen and (max-width: 700px) {
     .entry-col {
