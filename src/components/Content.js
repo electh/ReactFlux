@@ -26,6 +26,8 @@ import {
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 import { updateEntry, clickEntryList } from "../apis";
 
+const cards = [1, 2, 3];
+
 export default function Content({ info, getEntries, markAllAsRead }) {
   const [entries, setEntries] = useState([]);
   const [allEntries, setAllEntries] = useState([]);
@@ -214,6 +216,36 @@ export default function Content({ info, getEntries, markAllAsRead }) {
               width: "300px",
             }}
           />
+          {loading &&
+            cards.map((card) => (
+              <Card
+                style={{ width: 300, marginBottom: "10px" }}
+                key={card}
+                cover={
+                  <Skeleton
+                    loading={loading}
+                    animation={true}
+                    text={{ rows: 0 }}
+                    image={{
+                      style: {
+                        width: 300,
+                        height: 160,
+                      },
+                    }}
+                  />
+                }
+              >
+                <Card.Meta
+                  description={
+                    <Skeleton
+                      loading={loading}
+                      animation={true}
+                      text={{ rows: 3, width: 150 }}
+                    />
+                  }
+                />
+              </Card>
+            ))}
           {entries.map((entry) => (
             <div style={{ marginBottom: "10px" }} key={entry.id}>
               <Card
@@ -229,67 +261,49 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                   handelClickEntryList(entry);
                 }}
                 cover={
-                  <Skeleton
-                    loading={loading}
-                    text={{ rows: 0 }}
-                    image={{
-                      style: {
-                        width: 300,
-                        height: 160,
-                      },
+                  <div
+                    style={{
+                      display: entry.src ? "block" : "none",
+                      height: 160,
+                      overflow: "hidden",
+                      borderBottom: "1px solid var(--color-border-1)",
                     }}
-                    animation={true}
                   >
-                    <div
-                      style={{
-                        display: entry.src ? "block" : "none",
-                        height: 160,
-                        overflow: "hidden",
-                        borderBottom: "1px solid var(--color-border-1)",
-                      }}
-                    >
-                      <ImageWithLazyLoading
-                        width={300}
-                        height={160}
-                        alt={entry.id}
-                        src={entry.src}
-                        status={entry.status}
-                      />
-                    </div>
-                  </Skeleton>
+                    <ImageWithLazyLoading
+                      width={300}
+                      height={160}
+                      alt={entry.id}
+                      src={entry.src}
+                      status={entry.status}
+                    />
+                  </div>
                 }
               >
                 <Card.Meta
                   description={
-                    <Skeleton
-                      loading={loading}
-                      animation={true}
-                      text={{ rows: 3 }}
-                    >
-                      <div>
-                        <Typography.Text
-                          style={
-                            entry.status === "unread"
-                              ? { fontWeight: "500" }
-                              : {
-                                  color: "var(--color-text-3)",
-                                  fontWeight: "500",
-                                }
-                          }
-                        >
-                          {entry.title}
-                        </Typography.Text>
-                        <Typography.Text
-                          style={{
-                            color: "var(--color-text-3)",
-                            fontSize: "13px",
-                          }}
-                        >
-                          <br />
-                          {entry.feed.title}
-                        </Typography.Text>
-                      </div>
-                    </Skeleton>
+                    <div>
+                      <Typography.Text
+                        style={
+                          entry.status === "unread"
+                            ? { fontWeight: "500" }
+                            : {
+                                color: "var(--color-text-3)",
+                                fontWeight: "500",
+                              }
+                        }
+                      >
+                        {entry.title}
+                      </Typography.Text>
+                      <Typography.Text
+                        style={{
+                          color: "var(--color-text-3)",
+                          fontSize: "13px",
+                        }}
+                      >
+                        <br />
+                        {entry.feed.title}
+                      </Typography.Text>
+                    </div>
                   }
                 />
               </Card>
@@ -386,7 +400,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             ref={entryDetailRef}
             className="article-content"
             style={{
-              padding: "5%",
+              padding: "40px 16px",
               flex: "1",
               overflowY: "auto",
               overflowX: "hidden",
@@ -447,7 +461,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
               alignItems: "center",
               justifyContent: "center",
               flex: "1",
-              padding: "5%",
+              padding: "40px 16px",
             }}
           >
             <IconEmpty style={{ fontSize: "64px" }} />
