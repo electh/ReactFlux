@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { CSSTransition } from "react-transition-group";
 import { useStore } from "../App";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -14,6 +15,7 @@ import {
   Tooltip,
 } from "@arco-design/web-react";
 import "./Content.css";
+import "./Transition.css";
 import dayjs from "dayjs";
 import {
   IconCheck,
@@ -28,6 +30,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const [entries, setEntries] = useState([]);
   const [allEntries, setAllEntries] = useState([]);
   const [activeContent, setActiveContent] = useState(null);
+  const [animation, setAnimation] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterString, setFilterString] = useState("");
   const [loading, setLoading] = useState(true);
@@ -41,6 +44,8 @@ export default function Content({ info, getEntries, markAllAsRead }) {
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
+  const bodyRef = useRef(null);
+  const titleRef = useRef(null);
 
   useEffect(() => {
     getArticleList();
@@ -129,8 +134,10 @@ export default function Content({ info, getEntries, markAllAsRead }) {
 
   function handelClickEntryList(entry) {
     async function clickCard() {
+      setAnimation(null);
       const response = await clickEntryList(entry);
       if (response) {
+        setAnimation(true);
         setActiveContent({
           ...entry,
           status: "read",
@@ -368,82 +375,91 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           />
         </Tooltip>
       )}
-      {activeContent ? (
-        <div
-          ref={entryDetailRef}
-          className="article-content"
-          style={{
-            padding: "5%",
-            flex: "1",
-            overflowY: "auto",
-            overflowX: "hidden",
-            backgroundColor: "var(--color-fill-1)",
-          }}
-        >
+      <CSSTransition
+        in={animation}
+        timeout={200}
+        nodeRef={entryDetailRef}
+        classNames="fade"
+      >
+        {activeContent ? (
           <div
-            className="article-title"
+            ref={entryDetailRef}
+            className="article-content"
             style={{
-              maxWidth: "600px",
-              marginLeft: "auto",
-              marginRight: "auto",
+              padding: "5%",
+              flex: "1",
+              overflowY: "auto",
+              overflowX: "hidden",
             }}
           >
-            <Typography.Text style={{ color: "var(--color-text-3)" }}>
-              {dayjs(activeContent.created_at)
-                .format("MMMM D, YYYY")
-                .toUpperCase()}
-              {" AT "}
-              {dayjs(activeContent.created_at).format("hh:mm")}
-            </Typography.Text>
-            <Typography.Title heading={3} style={{ margin: 0 }}>
-              <a
-                href={activeContent.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {activeContent.title}
-              </a>
-            </Typography.Title>
-            <Typography.Text style={{ color: "var(--color-text-3)" }}>
-              {activeContent.feed.title}{" "}
-            </Typography.Text>
-            <Divider />
+            <div
+              ref={titleRef}
+              className="article-title"
+              style={{
+                maxWidth: "600px",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              <Typography.Text style={{ color: "var(--color-text-3)" }}>
+                {dayjs(activeContent.created_at)
+                  .format("MMMM D, YYYY")
+                  .toUpperCase()}
+                {" AT "}
+                {dayjs(activeContent.created_at).format("hh:mm")}
+              </Typography.Text>
+              <Typography.Title heading={3} style={{ margin: 0 }}>
+                <a
+                  href={activeContent.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {activeContent.title}
+                </a>
+              </Typography.Title>
+              <Typography.Text style={{ color: "var(--color-text-3)" }}>
+                {activeContent.feed.title}{" "}
+              </Typography.Text>
+              <Divider />
+            </div>
+
+            <div
+              ref={bodyRef}
+              dangerouslySetInnerHTML={{ __html: activeContent.content }}
+              className="article-body"
+              style={{
+                fontSize: "1.2em",
+                overflowWrap: "break-word",
+                maxWidth: "600px",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            ></div>
           </div>
+        ) : (
           <div
-            dangerouslySetInnerHTML={{ __html: activeContent.content }}
-            className="article-body"
+            ref={entryDetailRef}
             style={{
-              fontSize: "1.2em",
-              overflowWrap: "break-word",
-              maxWidth: "600px",
-              marginLeft: "auto",
-              marginRight: "auto",
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: "var(--color-fill-1)",
+              color: "var(--color-text-3)",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: "1",
+              padding: "5%",
             }}
-          ></div>
-        </div>
-      ) : (
-        <div
-          ref={entryDetailRef}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            backgroundColor: "var(--color-fill-1)",
-            color: "var(--color-text-3)",
-            alignItems: "center",
-            justifyContent: "center",
-            flex: "1",
-            padding: "5%",
-          }}
-        >
-          <IconEmpty style={{ fontSize: "64px" }} />
-          <Typography.Title
-            heading={6}
-            style={{ color: "var(--color-text-3)", marginTop: "10px" }}
           >
-            {"Reactflux".toUpperCase()}
-          </Typography.Title>
-        </div>
-      )}
+            <IconEmpty style={{ fontSize: "64px" }} />
+            <Typography.Title
+              heading={6}
+              style={{ color: "var(--color-text-3)", marginTop: "10px" }}
+            >
+              {"Reactflux".toUpperCase()}
+            </Typography.Title>
+          </div>
+        )}
+      </CSSTransition>
     </>
   );
 }

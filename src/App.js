@@ -185,7 +185,10 @@ export default function App() {
   }
 
   return (
-    <div className="app" style={{ display: "flex" }}>
+    <div
+      className="app"
+      style={{ display: "flex", backgroundColor: "var(--color-bg-1)" }}
+    >
       <div
         className="header"
         style={{
@@ -408,7 +411,7 @@ export default function App() {
       <div
         className="article-list"
         style={{
-          backgroundColor: "var(--color-bg-1)",
+          backgroundColor: "var(--color-fill-1)",
           paddingTop: "61px",
           paddingLeft: collapsed ? "48px" : "200px",
           height: "calc(100vh - 61px)",
