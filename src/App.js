@@ -420,7 +420,7 @@ export default function App() {
           height: "calc(100vh - 49px)",
           display: "flex",
           transition: "all 0.1s linear",
-          width: "100%",
+          width: collapsed ? "calc(100% - 49px)" : "calc(100% - 200px)",
         }}
       >
         <Outlet />
