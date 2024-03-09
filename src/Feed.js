@@ -6,12 +6,11 @@ import { thunder } from "./apis/axios";
 export default function Feed() {
   const { f_id } = useParams();
 
-  async function getFeedEntries() {
+  async function getFeedEntries(offset = 0) {
+    const base_url = `/v1/feeds/${f_id}/entries?order=published_at&direction=desc`;
+    const url = offset ? `${base_url}&offset=${offset}` : base_url;
     try {
-      const response = await thunder.request({
-        method: "get",
-        url: `/v1/feeds/${f_id}/entries?order=published_at&direction=desc`,
-      });
+      const response = await thunder.request({ method: "get", url });
       console.log(response);
       return response;
     } catch (error) {

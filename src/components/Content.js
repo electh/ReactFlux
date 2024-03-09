@@ -29,6 +29,8 @@ import { updateEntry, clickEntryList } from "../apis";
 const cards = [1, 2, 3];
 
 export default function Content({ info, getEntries, markAllAsRead }) {
+  const [offset, setOffset] = useState(0);
+  const [loadMoreVisible, setLoadMoreVisible] = useState(false);
   const [entries, setEntries] = useState([]);
   const [allEntries, setAllEntries] = useState([]);
   const [activeContent, setActiveContent] = useState(null);
@@ -57,31 +59,54 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [info]);
 
+  function getFirstImage(entry) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(entry.content, "text/html");
+    const firstImg = doc.querySelector("img");
+    if (firstImg) {
+      entry.imgSrc = firstImg.getAttribute("src");
+    }
+    return entry;
+  }
+
+  function filterArticles(articles, status) {
+    return status === "all" ? articles : articles.filter((article) => article.status === status);
+  }
+
   async function getArticleList() {
     try {
       setLoading(true);
       const response = await getEntries();
       if (response && response.data.entries) {
-        const aList = response.data.entries.map((entry) => {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(entry.content, "text/html");
-          const firstImg = doc.querySelector("img");
-          if (firstImg) {
-            entry.src = firstImg.getAttribute("src");
-          }
-          return entry;
-        });
+        const fetchedArticles = response.data.entries.map(getFirstImage);
+        setAllEntries(fetchedArticles);
 
-        setAllEntries(aList);
-
-        const filteredEntries =
-          filterStatus === "all"
-            ? aList
-            : aList.filter((entry) => entry.status === filterStatus);
-        setEntries(filteredEntries);
+        const filteredArticles = filterArticles(fetchedArticles, filterStatus);
+        setEntries(filteredArticles);
+        setLoadMoreVisible(fetchedArticles.length < response.data.total);
       }
     } catch (error) {
-      console.error("Error fetching article list:", error);
+      console.error("Error fetching articles:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleLoadMore() {
+    try {
+      setLoading(true);
+      const response = await getEntries(offset + 100);
+      setOffset(offset + 100);
+      if (response && response.data.entries) {
+        const updatedArticles = [...entries, ...response.data.entries].map(getFirstImage);
+        setAllEntries(updatedArticles);
+
+        const filteredArticles = filterArticles(updatedArticles, filterStatus);
+        setEntries(filteredArticles);
+        setLoadMoreVisible(updatedArticles.length < response.data.total);
+      }
+    } catch (error) {
+      console.error("Error fetching more articles:", error);
     } finally {
       setLoading(false);
     }
@@ -263,7 +288,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                 cover={
                   <div
                     style={{
-                      display: entry.src ? "block" : "none",
+                      display: entry.imgSrc ? "block" : "none",
                       height: 160,
                       overflow: "hidden",
                       borderBottom: "1px solid var(--color-border-1)",
@@ -273,7 +298,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                       width={300}
                       height={160}
                       alt={entry.id}
-                      src={entry.src}
+                      src={entry.imgSrc}
                       status={entry.status}
                     />
                   </div>
@@ -309,6 +334,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
               </Card>
             </div>
           ))}
+          {loadMoreVisible && (
+            <Button onClick={handleLoadMore} style={{ margin: "10px auto", display: "block" }}>
+              LOAD MORE
+            </Button>
+          )}
         </div>
         <div
           className="entry-panel"
