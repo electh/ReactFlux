@@ -56,6 +56,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     setActiveContent(null);
     entryListRef.current.scrollTo(0, 0);
     entryDetailRef.current.scrollTo(0, 0);
+    setOffset(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [info]);
 
