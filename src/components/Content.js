@@ -13,6 +13,7 @@ import {
   Popconfirm,
   Message,
   Tooltip,
+  Select,
 } from "@arco-design/web-react";
 import "./Content.css";
 import "./Transition.css";
@@ -37,6 +38,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const [activeContent, setActiveContent] = useState(null);
   const [animation, setAnimation] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
+  const [filterType, setFilterType] = useState("0");
   const [filterString, setFilterString] = useState("");
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -115,6 +117,33 @@ export default function Content({ info, getEntries, markAllAsRead }) {
       console.error("Error fetching more articles:", error);
     } finally {
       setLoadingMore(false);
+    }
+  }
+
+  function handelFilterEntry(filter_type, filter_status, filter_string) {
+    setFilterType(filter_type);
+    setFilterStatus(filter_status);
+    setFilterString(filter_string);
+    if (filter_type === "0") {
+      setEntries(
+        filter_status === "all"
+          ? allEntries.filter((entry) => entry.title.includes(filter_string))
+          : allEntries.filter(
+              (entry) =>
+                entry.title.includes(filter_string) &&
+                entry.status === filter_status,
+            ),
+      );
+    } else {
+      setEntries(
+        filter_status === "all"
+          ? allEntries.filter((entry) => entry.content.includes(filter_string))
+          : allEntries.filter(
+              (entry) =>
+                entry.content.includes(filter_string) &&
+                entry.status === filter_status,
+            ),
+      );
     }
   }
 
@@ -235,17 +264,22 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             <Input.Search
               allowClear
               placeholder="filter"
+              value={filterString}
+              addBefore={
+                <Select
+                  placeholder="Please select"
+                  onChange={(value) => {
+                    handelFilterEntry(value, filterStatus, filterString);
+                  }}
+                  style={{ width: 100 }}
+                  value={filterType}
+                >
+                  <Select.Option value="0">Title</Select.Option>
+                  <Select.Option value="1">Content</Select.Option>
+                </Select>
+              }
               onChange={(value) => {
-                setFilterString(value);
-                setEntries(
-                  filterStatus === "all"
-                    ? allEntries.filter((entry) => entry.title.includes(value))
-                    : allEntries.filter(
-                        (entry) =>
-                          entry.title.includes(value) &&
-                          entry.status === filterStatus,
-                      ),
-                );
+                handelFilterEntry(filterType, filterStatus, value);
                 console.log(value);
               }}
               style={{
@@ -380,22 +414,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           <Radio.Group
             type="button"
             name="lang"
-            defaultValue={filterStatus}
+            value={filterStatus}
             onChange={(value) => {
-              setFilterStatus(value);
-              value === "all"
-                ? setEntries(
-                    allEntries.filter((entry) =>
-                      entry.title.includes(filterString),
-                    ),
-                  )
-                : setEntries(
-                    allEntries.filter(
-                      (entry) =>
-                        (entry.status === value) &
-                        entry.title.includes(filterString),
-                    ),
-                  );
+              handelFilterEntry(filterType, value, filterString);
             }}
           >
             <Radio value="all">ALL</Radio>
