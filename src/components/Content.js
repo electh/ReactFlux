@@ -469,7 +469,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                 marginRight: "auto",
               }}
             >
-              <Typography.Text style={{ color: "var(--color-text-3)" }}>
+              <Typography.Text
+                style={{ color: "var(--color-text-3)", fontSize: "10px" }}
+              >
                 {dayjs(activeContent.created_at)
                   .format("MMMM D, YYYY")
                   .toUpperCase()}
@@ -485,7 +487,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                   {activeContent.title}
                 </a>
               </Typography.Title>
-              <Typography.Text style={{ color: "var(--color-text-3)" }}>
+              <Typography.Text
+                style={{ color: "var(--color-text-3)", fontSize: "10px" }}
+              >
                 {activeContent.feed.title.toUpperCase()}
               </Typography.Text>
               <Divider />
