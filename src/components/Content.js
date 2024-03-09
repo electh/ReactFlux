@@ -317,11 +317,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                               }
                         }
                       >
-                        <img
-                          src={`https://icons.duckduckgo.com/ip3/${new URL(entry.feed.site_url).hostname}.ico`}
-                          alt="Icon"
-                          style={{ marginRight: "8px", width: "16px", height: "16px" }}
-                        />
                         {entry.title}
                       </Typography.Text>
                       <Typography.Text
@@ -331,6 +326,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                         }}
                       >
                         <br />
+                        <img
+                          src={`https://icons.duckduckgo.com/ip3/${new URL(entry.feed.site_url).hostname}.ico`}
+                          alt="Icon"
+                          style={{ marginRight: "8px", width: "16px", height: "16px" }}
+                        />
                         {entry.feed.title}
                       </Typography.Text>
                     </div>
@@ -463,15 +463,15 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <img
-                    src={`https://icons.duckduckgo.com/ip3/${new URL(activeContent.feed.site_url).hostname}.ico`}
-                    alt="Icon"
-                    style={{ marginRight: "8px", width: "16px", height: "16px" }}
-                  />
                   {activeContent.title}
                 </a>
               </Typography.Title>
               <Typography.Text style={{ color: "var(--color-text-3)" }}>
+                <img
+                  src={`https://icons.duckduckgo.com/ip3/${new URL(activeContent.feed.site_url).hostname}.ico`}
+                  alt="Icon"
+                  style={{ marginRight: "8px", width: "16px", height: "16px" }}
+                />
                 {activeContent.feed.title}{" "}
               </Typography.Text>
               <Divider />
