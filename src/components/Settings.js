@@ -11,6 +11,7 @@ import {
   Form,
   Modal,
   Select,
+  Switch,
 } from "@arco-design/web-react";
 import {
   IconDelete,
@@ -125,6 +126,7 @@ export default function Settings() {
               feedForm.setFieldsValue({
                 title: record.feed.title,
                 group: record.feed.category.id,
+                crawler: record.feed.crawler,
               });
             }}
           >
@@ -169,9 +171,9 @@ export default function Settings() {
     setShowAddInput(false);
   }
 
-  async function handelEditFeed(feed_id, newTitle, group_id) {
+  async function handelEditFeed(feed_id, newTitle, group_id, is_full_text) {
     setFeedModalLoading(true);
-    const response = await editFeed(feed_id, newTitle, group_id);
+    const response = await editFeed(feed_id, newTitle, group_id, is_full_text);
     if (response) {
       setFeeds(
         feeds.map((feed) => (feed.id === feed_id ? response.data : feed)),
@@ -244,6 +246,7 @@ export default function Settings() {
               visible={feedModalVisible}
               unmountOnExit
               onOk={feedForm.submit}
+              style={{ width: "400px" }}
               confirmLoading={feedModalLoading}
               onCancel={() => {
                 setFeedModalVisible(false);
@@ -252,15 +255,21 @@ export default function Settings() {
             >
               <Form
                 form={feedForm}
+                layout="vertical"
                 onChange={(value, values) => console.log(value, values)}
                 onSubmit={(values) =>
-                  handelEditFeed(selectedFeed.id, values.title, values.group)
+                  handelEditFeed(
+                    selectedFeed.id,
+                    values.title,
+                    values.group,
+                    values.crawler,
+                  )
                 }
                 labelCol={{
-                  style: { flexBasis: 90 },
+                  span: 7,
                 }}
                 wrapperCol={{
-                  style: { flexBasis: "calc(100% - 90px)" },
+                  span: 17,
                 }}
               >
                 <Form.Item
@@ -283,6 +292,16 @@ export default function Settings() {
                       </Select.Option>
                     ))}
                   </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Fetch original content"
+                  field="crawler"
+                  tooltip={<div>Only affects newly retrieved articles</div>}
+                  style={{ marginBottom: 0 }}
+                  triggerPropName="checked"
+                  rules={[{ type: "boolean" }]}
+                >
+                  <Switch />
                 </Form.Item>
               </Form>
             </Modal>
@@ -366,6 +385,7 @@ export default function Settings() {
               title="Edit Group"
               visible={groupModalVisible}
               unmountOnExit
+              style={{ width: "400px" }}
               onOk={groupForm.submit}
               confirmLoading={groupModalLoading}
               onCancel={() => {
@@ -375,6 +395,7 @@ export default function Settings() {
             >
               <Form
                 form={groupForm}
+                layout="vertical"
                 onChange={(value, values) => console.log(value, values)}
                 onSubmit={(values) =>
                   handelEditGroup(selectedGroup.id, values.title)

@@ -139,7 +139,7 @@ export async function editGroup(id, newTitle) {
   }
 }
 
-export async function editFeed(feed_id, newTitle, group_id) {
+export async function editFeed(feed_id, newTitle, group_id, is_full_text) {
   try {
     const response = await thunder.request({
       method: "put",
@@ -147,7 +147,7 @@ export async function editFeed(feed_id, newTitle, group_id) {
       headers: {
         "Content-Type": "application/json",
       },
-      data: { title: newTitle, category_id: group_id },
+      data: { title: newTitle, category_id: group_id, crawler: is_full_text },
     });
     console.log(response);
     return response;
@@ -171,7 +171,7 @@ export async function deleteFeed(feed_id) {
   }
 }
 
-export async function addFeed(feed_url, group_id) {
+export async function addFeed(feed_url, group_id, is_full_text) {
   try {
     const response = await thunder.request({
       method: "post",
@@ -179,7 +179,11 @@ export async function addFeed(feed_url, group_id) {
       headers: {
         "Content-Type": "application/json",
       },
-      data: { feed_url: feed_url, category_id: group_id },
+      data: {
+        feed_url: feed_url,
+        category_id: group_id,
+        crawler: is_full_text,
+      },
     });
     console.log(response);
     return response;

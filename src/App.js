@@ -15,6 +15,7 @@ import {
   Select,
   Skeleton,
   Space,
+  Switch,
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
@@ -162,9 +163,9 @@ export default function App() {
     setCollapsed(collapse);
   }
 
-  async function handelAddFeed(feed_url, group_id) {
+  async function handelAddFeed(feed_url, group_id, is_full_text) {
     setFeedModalLoading(true);
-    const response = await addFeed(feed_url, group_id);
+    const response = await addFeed(feed_url, group_id, is_full_text);
     if (response) {
       initData();
       Message.success("Success");
@@ -444,6 +445,7 @@ export default function App() {
           title="Add Feed"
           visible={feedModalVisible}
           unmountOnExit
+          style={{ width: "400px" }}
           onOk={feedForm.submit}
           confirmLoading={feedModalLoading}
           onCancel={() => {
@@ -453,13 +455,16 @@ export default function App() {
         >
           <Form
             form={feedForm}
+            layout="vertical"
             onChange={(value, values) => console.log(value, values)}
-            onSubmit={(values) => handelAddFeed(values.url, values.group)}
+            onSubmit={(values) =>
+              handelAddFeed(values.url, values.group, values.crawler)
+            }
             labelCol={{
-              style: { flexBasis: 90 },
+              span: 7,
             }}
             wrapperCol={{
-              style: { flexBasis: "calc(100% - 90px)" },
+              span: 17,
             }}
           >
             <Form.Item
@@ -482,6 +487,16 @@ export default function App() {
                   </Select.Option>
                 ))}
               </Select>
+            </Form.Item>
+            <Form.Item
+              label="Fetch original content"
+              initialValue={false}
+              field="crawler"
+              style={{ marginBottom: 0 }}
+              triggerPropName="checked"
+              rules={[{ type: "boolean" }]}
+            >
+              <Switch />
             </Form.Item>
           </Form>
         </Modal>
