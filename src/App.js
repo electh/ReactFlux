@@ -20,9 +20,9 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import {
+  IconApps,
   IconBook,
   IconFile,
-  IconFolder,
   IconList,
   IconMoonFill,
   IconPlus,
@@ -315,7 +315,7 @@ export default function App() {
             key={`/group`}
             title={
               <>
-                <IconFolder />
+                <IconApps />
                 GROUPS
               </>
             }
@@ -339,7 +339,7 @@ export default function App() {
                         showTooltip={true}
                         style={{ width: group.unread !== 0 ? "80%" : "100%" }}
                       >
-                        {group.title.toUpperCase()}{" "}
+                        {group.title.toUpperCase()}
                       </Typography.Ellipsis>
                       <Typography.Ellipsis
                         expandable={false}
@@ -385,13 +385,10 @@ export default function App() {
                       <Typography.Ellipsis
                         expandable={false}
                         showTooltip={true}
-                        style={{ width: feed.unread !== 0 ? "80%" : "100%" }}
+                        style={{
+                          width: feed.unread !== 0 ? "80%" : "100%",
+                        }}
                       >
-                        <img
-                          src={`https://icons.duckduckgo.com/ip3/${new URL(feed.site_url).hostname}.ico`}
-                          alt="Icon"
-                          style={{ marginRight: "8px", width: "16px", height: "16px" }}
-                        />
                         {feed.title.toUpperCase()}{" "}
                       </Typography.Ellipsis>
                       <Typography.Ellipsis

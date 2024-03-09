@@ -70,7 +70,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   }
 
   function filterArticles(articles, status) {
-    return status === "all" ? articles : articles.filter((article) => article.status === status);
+    return status === "all"
+      ? articles
+      : articles.filter((article) => article.status === status);
   }
 
   async function getArticleList() {
@@ -98,7 +100,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
       const response = await getEntries(offset + 100);
       setOffset(offset + 100);
       if (response && response.data.entries) {
-        const updatedArticles = [...entries, ...response.data.entries].map(getFirstImage);
+        const updatedArticles = [...entries, ...response.data.entries].map(
+          getFirstImage,
+        );
         setAllEntries(updatedArticles);
 
         const filteredArticles = filterArticles(updatedArticles, filterStatus);
@@ -326,12 +330,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                         }}
                       >
                         <br />
-                        <img
-                          src={`https://icons.duckduckgo.com/ip3/${new URL(entry.feed.site_url).hostname}.ico`}
-                          alt="Icon"
-                          style={{ marginRight: "8px", width: "16px", height: "16px" }}
-                        />
-                        {entry.feed.title}
+                        {entry.feed.title.toUpperCase()}
                       </Typography.Text>
                     </div>
                   }
@@ -340,7 +339,10 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             </div>
           ))}
           {loadMoreVisible && (
-            <Button onClick={handleLoadMore} style={{ margin: "10px auto", display: "block" }}>
+            <Button
+              onClick={handleLoadMore}
+              style={{ margin: "10px auto", display: "block" }}
+            >
               LOAD MORE
             </Button>
           )}
@@ -467,16 +469,10 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                 </a>
               </Typography.Title>
               <Typography.Text style={{ color: "var(--color-text-3)" }}>
-                <img
-                  src={`https://icons.duckduckgo.com/ip3/${new URL(activeContent.feed.site_url).hostname}.ico`}
-                  alt="Icon"
-                  style={{ marginRight: "8px", width: "16px", height: "16px" }}
-                />
-                {activeContent.feed.title}{" "}
+                {activeContent.feed.title.toUpperCase()}
               </Typography.Text>
               <Divider />
             </div>
-
             <div
               ref={bodyRef}
               dangerouslySetInnerHTML={{ __html: activeContent.content }}
