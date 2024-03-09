@@ -317,6 +317,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                               }
                         }
                       >
+                        <img
+                          src={`https://icons.duckduckgo.com/ip3/${new URL(entry.feed.site_url).hostname}.ico`}
+                          alt="Icon"
+                          style={{ marginRight: "8px", width: "16px", height: "16px" }}
+                        />
                         {entry.title}
                       </Typography.Text>
                       <Typography.Text
@@ -458,6 +463,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
+                  <img
+                    src={`https://icons.duckduckgo.com/ip3/${new URL(activeContent.feed.site_url).hostname}.ico`}
+                    alt="Icon"
+                    style={{ marginRight: "8px", width: "16px", height: "16px" }}
+                  />
                   {activeContent.title}
                 </a>
               </Typography.Title>
