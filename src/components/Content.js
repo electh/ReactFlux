@@ -2,6 +2,7 @@ import classNames from "classnames";
 import {CSSTransition} from "react-transition-group";
 import {useStore} from "../App";
 import {useEffect, useRef, useState} from "react";
+import {Link} from "react-router-dom";
 import {
     Button,
     Card,
@@ -564,7 +565,12 @@ export default function Content({info, getEntries, markAllAsRead}) {
                             <Typography.Text
                                 style={{color: "var(--color-text-3)", fontSize: "10px"}}
                             >
-                                {activeContent.feed.title.toUpperCase()}
+                                <Link
+                                    to={`/feed/${activeContent.feed.id}`}
+                                    style={{color: 'inherit', textDecoration: 'none'}}
+                                >
+                                    {activeContent.feed.title.toUpperCase()}
+                                </Link>
                             </Typography.Text>
                             <Divider/>
                         </div>

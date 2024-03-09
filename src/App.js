@@ -120,6 +120,8 @@ const useStore = create((set) => ({
 
 export default function App() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const [selectedKeys, setSelectedKeys] = useState([]);
     const [collapsed, setCollapsed] = useState(false);
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
     const [visible, setVisible] = useState(false);
@@ -130,7 +132,11 @@ export default function App() {
     const [feedModalVisible, setFeedModalVisible] = useState(false);
     const [feedModalLoading, setFeedModalLoading] = useState(false);
     const [feedForm] = Form.useForm();
-    let path = useLocation().pathname;
+    const path = location.pathname;
+
+    useEffect(() => {
+        setSelectedKeys([location.pathname]);
+    }, [location]);
 
     useEffect(() => {
         console.log(path);
@@ -304,6 +310,7 @@ export default function App() {
                 }}
             >
                 <Menu
+                    selectedKeys={selectedKeys}
                     style={{width: 200, height: "100%"}}
                     onCollapseChange={() => setCollapsed(!collapsed)}
                     collapse={collapsed}
