@@ -309,7 +309,7 @@ export default function App() {
         >
           <Menu.Item key={`/`} onClick={() => navigate("/")}>
             <IconList />
-            ARTICLES
+            <span style={{ fontWeight: 500 }}>ARTICLES</span>
           </Menu.Item>
           {/*{collapsed ? null : <Divider style={{ margin: "4px" }} />}*/}
           <SubMenu
@@ -317,7 +317,7 @@ export default function App() {
             title={
               <>
                 <IconApps />
-                GROUPS
+                <span style={{ fontWeight: 500 }}>GROUPS</span>
               </>
             }
           >
@@ -365,12 +365,12 @@ export default function App() {
             title={
               <>
                 <IconFile />
-                FEEDS
+                <span style={{ fontWeight: 500 }}>FEEDS</span>
               </>
             }
           >
             <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
-            {!loading
+            {!loading && feeds.length > 0
               ? feeds.map((feed) => (
                   <MenuItem
                     key={`/feed/${feed.id}`}
