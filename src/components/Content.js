@@ -18,6 +18,7 @@ import "./Content.css";
 import "./Transition.css";
 import dayjs from "dayjs";
 import {
+  IconArrowDown,
   IconCheck,
   IconEmpty,
   IconEye,
@@ -38,6 +39,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterString, setFilterString] = useState("");
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const updateFeedUnreadCount = useStore(
     (state) => state.updateFeedUnreadCount,
   );
@@ -97,7 +99,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
 
   async function handleLoadMore() {
     try {
-      setLoading(true);
+      setLoadingMore(true);
       const response = await getEntries(offset + 100);
       setOffset(offset + 100);
       if (response && response.data.entries) {
@@ -113,7 +115,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     } catch (error) {
       console.error("Error fetching more articles:", error);
     } finally {
-      setLoading(false);
+      setLoadingMore(false);
     }
   }
 
@@ -342,9 +344,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           {loadMoreVisible && (
             <Button
               onClick={handleLoadMore}
+              loading={loadingMore}
+              long={true}
               style={{ margin: "10px auto", display: "block" }}
             >
-              LOAD MORE
+              {!loadingMore && <IconArrowDown />}Load more
             </Button>
           )}
         </div>
