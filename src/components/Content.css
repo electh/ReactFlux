@@ -26,9 +26,9 @@
 
 /*文章内容链接样式*/
 .article-body a {
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    color: rgb(var(--primary-6)); /* 设置链接文字颜色 */
+    text-decoration: none;
+    color: rgb(var(--primary-6));
+    border-bottom: 1px dotted rgb(var(--primary-6)); /* 设置链接文字颜色 */
 }
 
 /*code相关样式-表格*/
