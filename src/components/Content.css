@@ -29,7 +29,6 @@
     text-decoration: underline;
     text-decoration-style: dotted;
     color: rgb(var(--primary-6)); /* 设置链接文字颜色 */
-    font-weight: 500;
 }
 
 /*code相关样式-表格*/
