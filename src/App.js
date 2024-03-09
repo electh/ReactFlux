@@ -199,7 +199,7 @@ export default function App() {
           alignItems: "center",
           position: "fixed",
           width: "100%",
-          height: "60px",
+          height: "48px",
           zIndex: "999",
           backgroundColor: "var(--color-bg-1)",
         }}
@@ -216,14 +216,15 @@ export default function App() {
             }}
           />
           <Typography.Title heading={5} style={{ margin: "0" }}>
-            ReactFlux
+            Reactflux
           </Typography.Title>
         </div>
         <div className="button-group" style={{ marginRight: "20px" }}>
-          <Space size={20}>
+          <Space size={16}>
             <Tooltip content="Add feed">
               <Button
                 shape="circle"
+                size="small"
                 type="primary"
                 icon={<IconPlus />}
                 onClick={() => setFeedModalVisible(true)}
@@ -238,6 +239,7 @@ export default function App() {
             >
               <Button
                 shape="circle"
+                size="small"
                 icon={theme === "dark" ? <IconSunFill /> : <IconMoonFill />}
                 onClick={() => handelToggle()}
               ></Button>
@@ -271,7 +273,7 @@ export default function App() {
               trigger="click"
               position="br"
             >
-              <Avatar size={32} style={{ cursor: "pointer" }}>
+              <Avatar size={28} style={{ cursor: "pointer" }}>
                 <IconUser />
               </Avatar>
             </Dropdown>
@@ -286,10 +288,10 @@ export default function App() {
         collapsed={collapsed}
         collapsible
         style={{
-          height: "calc(100% - 61px)",
+          height: "calc(100% - 49px)",
           borderRight: "1px solid var(--color-border-2)",
           position: "fixed",
-          top: "61px",
+          top: "49px",
           zIndex: "999",
         }}
       >
@@ -414,9 +416,9 @@ export default function App() {
         className="article-list"
         style={{
           backgroundColor: "var(--color-fill-1)",
-          paddingTop: "61px",
+          paddingTop: "49px",
           paddingLeft: collapsed ? "48px" : "200px",
-          height: "calc(100vh - 61px)",
+          height: "calc(100vh - 49px)",
           display: "flex",
           transition: "all 0.1s linear",
           width: "100%",

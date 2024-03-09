@@ -50,8 +50,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
-  const bodyRef = useRef(null);
-  const titleRef = useRef(null);
+  const cardsRef = useRef(null);
 
   useEffect(() => {
     getArticleList();
@@ -216,142 +215,153 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         }}
         className="entry-col"
       >
-        <div
-          className="entry-list"
-          ref={entryListRef}
-          style={{
-            overflowY: "auto",
-            padding: "10px 10px 0 10px",
-            width: "302px",
-            backgroundColor: "var(--color-fill-1)",
-            flex: "1",
-          }}
+        <CSSTransition
+          in={!loading}
+          timeout={200}
+          nodeRef={cardsRef}
+          classNames="fade"
         >
-          <Input.Search
-            allowClear
-            placeholder="filter"
-            onChange={(value) => {
-              setFilterString(value);
-              setEntries(
-                filterStatus === "all"
-                  ? allEntries.filter((entry) => entry.title.includes(value))
-                  : allEntries.filter(
-                      (entry) =>
-                        entry.title.includes(value) &&
-                        entry.status === filterStatus,
-                    ),
-              );
-              console.log(value);
-            }}
+          <div
+            className="entry-list"
+            ref={entryListRef}
             style={{
-              marginBottom: "10px",
-              width: "300px",
+              overflowY: "auto",
+              padding: "10px 10px 0 10px",
+              width: "302px",
+              backgroundColor: "var(--color-fill-1)",
+              flex: "1",
             }}
-          />
-          {loading &&
-            cards.map((card) => (
-              <Card
-                style={{ width: 300, marginBottom: "10px" }}
-                key={card}
-                cover={
-                  <Skeleton
-                    loading={loading}
-                    animation={true}
-                    text={{ rows: 0 }}
-                    image={{
-                      style: {
-                        width: 300,
-                        height: 160,
-                      },
-                    }}
-                  />
-                }
-              >
-                <Card.Meta
-                  description={
+          >
+            <Input.Search
+              allowClear
+              placeholder="filter"
+              onChange={(value) => {
+                setFilterString(value);
+                setEntries(
+                  filterStatus === "all"
+                    ? allEntries.filter((entry) => entry.title.includes(value))
+                    : allEntries.filter(
+                        (entry) =>
+                          entry.title.includes(value) &&
+                          entry.status === filterStatus,
+                      ),
+                );
+                console.log(value);
+              }}
+              style={{
+                marginBottom: "10px",
+                width: "300px",
+              }}
+            />
+
+            {loading &&
+              cards.map((card) => (
+                <Card
+                  style={{ width: 300, marginBottom: "10px" }}
+                  key={card}
+                  cover={
                     <Skeleton
                       loading={loading}
                       animation={true}
-                      text={{ rows: 3, width: 150 }}
+                      text={{ rows: 0 }}
+                      image={{
+                        style: {
+                          width: 300,
+                          height: 160,
+                        },
+                      }}
                     />
                   }
-                />
-              </Card>
-            ))}
-          {entries.map((entry) => (
-            <div style={{ marginBottom: "10px" }} key={entry.id}>
-              <Card
-                className={classNames("card-custom-hover-style", {
-                  "card-custom-selected-style": activeContent
-                    ? entry.id === activeContent.id
-                    : false,
-                })}
-                hoverable
-                data-entry-id={entry.id}
-                style={{ width: 300, cursor: "pointer" }}
-                onClick={() => {
-                  handelClickEntryList(entry);
-                }}
-                cover={
-                  <div
-                    style={{
-                      display: entry.imgSrc ? "block" : "none",
-                      height: 160,
-                      overflow: "hidden",
-                      borderBottom: "1px solid var(--color-border-1)",
+                >
+                  <Card.Meta
+                    description={
+                      <Skeleton
+                        loading={loading}
+                        animation={true}
+                        text={{ rows: 3, width: 150 }}
+                      />
+                    }
+                  />
+                </Card>
+              ))}
+            <div ref={cardsRef}>
+              {entries.map((entry) => (
+                <div style={{ marginBottom: "10px" }} key={entry.id}>
+                  <Card
+                    className={classNames("card-custom-hover-style", {
+                      "card-custom-selected-style": activeContent
+                        ? entry.id === activeContent.id
+                        : false,
+                    })}
+                    hoverable
+                    data-entry-id={entry.id}
+                    style={{ width: 300, cursor: "pointer" }}
+                    onClick={() => {
+                      handelClickEntryList(entry);
                     }}
-                  >
-                    <ImageWithLazyLoading
-                      width={300}
-                      height={160}
-                      alt={entry.id}
-                      src={entry.imgSrc}
-                      status={entry.status}
-                    />
-                  </div>
-                }
-              >
-                <Card.Meta
-                  description={
-                    <div>
-                      <Typography.Text
-                        style={
-                          entry.status === "unread"
-                            ? { fontWeight: "500" }
-                            : {
-                                color: "var(--color-text-3)",
-                                fontWeight: "500",
-                              }
-                        }
-                      >
-                        {entry.title}
-                      </Typography.Text>
-                      <Typography.Text
+                    cover={
+                      <div
                         style={{
-                          color: "var(--color-text-3)",
-                          fontSize: "13px",
+                          display: entry.imgSrc ? "block" : "none",
+                          height: 160,
+                          overflow: "hidden",
+                          borderBottom: "1px solid var(--color-border-1)",
                         }}
                       >
-                        <br />
-                        {entry.feed.title.toUpperCase()}
-                      </Typography.Text>
-                    </div>
-                  }
-                />
-              </Card>
+                        <ImageWithLazyLoading
+                          width={300}
+                          height={160}
+                          alt={entry.id}
+                          src={entry.imgSrc}
+                          status={entry.status}
+                        />
+                      </div>
+                    }
+                  >
+                    <Card.Meta
+                      description={
+                        <div>
+                          <Typography.Text
+                            style={
+                              entry.status === "unread"
+                                ? { fontWeight: "500" }
+                                : {
+                                    color: "var(--color-text-3)",
+                                    fontWeight: "500",
+                                  }
+                            }
+                          >
+                            {entry.title}
+                          </Typography.Text>
+                          <Typography.Text
+                            style={{
+                              color: "var(--color-text-3)",
+                              fontSize: "13px",
+                            }}
+                          >
+                            <br />
+                            {entry.feed.title.toUpperCase()}
+                          </Typography.Text>
+                        </div>
+                      }
+                    />
+                  </Card>
+                </div>
+              ))}
             </div>
-          ))}
-          {loadMoreVisible && (
-            <Button
-              onClick={handleLoadMore}
-              loading={loadingMore}
-              long={true}
-              style={{ margin: "10px auto", display: "block" }}
-            >
-              {!loadingMore && <IconArrowDown />}Load more
-            </Button>
-          )}
-        </div>
+
+            {loadMoreVisible && (
+              <Button
+                onClick={handleLoadMore}
+                loading={loadingMore}
+                long={true}
+                style={{ margin: "10px auto", display: "block" }}
+              >
+                {!loadingMore && <IconArrowDown />}Load more
+              </Button>
+            )}
+          </div>
+        </CSSTransition>
         <div
           className="entry-panel"
           style={{
@@ -449,7 +459,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             }}
           >
             <div
-              ref={titleRef}
               className="article-title"
               style={{
                 maxWidth: "600px",
@@ -479,7 +488,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
               <Divider />
             </div>
             <div
-              ref={bodyRef}
               dangerouslySetInnerHTML={{ __html: activeContent.content }}
               className="article-body"
               style={{
