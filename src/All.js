@@ -4,12 +4,12 @@ import { getCurrentUser } from "./apis";
 import { thunder } from "./apis/axios";
 
 export default function All() {
-  async function getEntries() {
+  async function getEntries(offset = 0) {
+    const base_url = `/v1/entries?order=published_at&direction=desc`;
+    const url = offset ? `${base_url}&offset=${offset}` : base_url;
+
     try {
-      const response = await thunder.request({
-        method: "get",
-        url: `/v1/entries?order=published_at&direction=desc`,
-      });
+      const response = await thunder.request({ method: "get", url });
       console.log(response);
       return response;
     } catch (error) {

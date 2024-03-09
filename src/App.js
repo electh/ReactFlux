@@ -387,6 +387,11 @@ export default function App() {
                         showTooltip={true}
                         style={{ width: feed.unread !== 0 ? "80%" : "100%" }}
                       >
+                        <img
+                          src={`https://icons.duckduckgo.com/ip3/${new URL(feed.site_url).hostname}.ico`}
+                          alt="Icon"
+                          style={{ marginRight: "8px", width: "16px", height: "16px" }}
+                        />
                         {feed.title.toUpperCase()}{" "}
                       </Typography.Ellipsis>
                       <Typography.Ellipsis
