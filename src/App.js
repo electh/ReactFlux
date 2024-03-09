@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import {
   Avatar,
   Button,
-  Divider,
   Dropdown,
   Form,
   Input,
@@ -312,7 +311,7 @@ export default function App() {
             <IconList />
             ARTICLES
           </Menu.Item>
-          {collapsed ? null : <Divider style={{ margin: "4px" }} />}
+          {/*{collapsed ? null : <Divider style={{ margin: "4px" }} />}*/}
           <SubMenu
             key={`/group`}
             title={
@@ -360,7 +359,7 @@ export default function App() {
                 ))
               : null}
           </SubMenu>
-          {collapsed ? null : <Divider style={{ margin: "4px" }} />}
+          {/*{collapsed ? null : <Divider style={{ margin: "4px" }} />}*/}
           <SubMenu
             key={`/feed`}
             title={

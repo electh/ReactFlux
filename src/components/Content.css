@@ -5,15 +5,30 @@
     border-radius: 4px;
 }
 
+/*video相关样式*/
+.article-body video {
+    max-width: 100%;
+    border-radius: 4px;
+}
+
+
 /*文章内容文本样式*/
 .article-content  {
     color: var(--color-text-2);
 }
 
-/*文章内容链接样式*/
-.article-content a {
-    text-decoration: none; /* 去掉下划线 */
+/*文章标题链接样式*/
+.article-title a {
+    text-decoration: none;
     color: var(--color-text-1); /* 设置链接文字颜色 */
+    font-weight: 500;
+}
+
+/*文章内容链接样式*/
+.article-body a {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    color: rgb(var(--primary-6)); /* 设置链接文字颜色 */
     font-weight: 500;
 }
 

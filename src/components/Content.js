@@ -452,7 +452,10 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             ref={entryDetailRef}
             className="article-content"
             style={{
-              padding: "40px 16px",
+              paddingTop: "40px",
+              paddingBottom: "40px",
+              paddingLeft: "5%",
+              paddingRight: "5%",
               flex: "1",
               overflowY: "auto",
               overflowX: "hidden",
