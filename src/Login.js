@@ -25,7 +25,7 @@ export default function Login() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function healthCheck() {
+  const healthCheck = async () => {
     setLoading(true);
     try {
       const response = await axios({
@@ -37,8 +37,8 @@ export default function Login() {
       });
       if (response.status === 200) {
         Message.success("Success");
-        await localStorage.setItem("server", loginForm.getFieldsValue().server);
-        await localStorage.setItem("token", loginForm.getFieldsValue().token);
+        localStorage.setItem("server", loginForm.getFieldsValue().server);
+        localStorage.setItem("token", loginForm.getFieldsValue().token);
         navigate("/");
       }
     } catch (error) {
@@ -46,11 +46,11 @@ export default function Login() {
       Message.error(error.message);
     }
     setLoading(false);
-  }
+  };
 
-  function handelLogin() {
+  const handelLogin = () => {
     healthCheck();
-  }
+  };
 
   return (
     <div style={{ backgroundColor: "var(--color-bg-1)", height: "100%" }}>

@@ -178,7 +178,7 @@ export default function App() {
     setFeedModalLoading(true);
     const response = await addFeed(feed_url, group_id, is_full_text);
     if (response) {
-      initData();
+      await initData();
       Message.success("Success");
       setFeedModalVisible(false);
     }
@@ -269,7 +269,7 @@ export default function App() {
                     />
                     Settings
                   </Menu.Item>
-                  <Menu.Item key="1" onClick={handelLogout}>
+                  <Menu.Item key="1" onClick={() => handelLogout()}>
                     <IconPoweroff
                       style={{
                         marginRight: 8,
