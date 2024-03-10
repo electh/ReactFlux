@@ -4,7 +4,7 @@ import { getCurrentUser } from "./apis";
 import { thunder } from "./apis/axios";
 
 export default function All() {
-  const getEntries = async (offset = 0, status) => {
+  const getEntries = async (offset = 0, status = null) => {
     const base_url = `/v1/entries?order=published_at&direction=desc&offset=${offset}`;
     const url = status ? `${base_url}&status=${status}` : base_url;
 
