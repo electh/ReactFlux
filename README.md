@@ -38,3 +38,26 @@ Reactflux 使用 React 编写，build 之后只是一堆静态网页文件，可
 ### 配置
 
 你需要一个可用的 Miniflux 实例来使用本项目，Server Address 请填写实例地址，API Token 请填写实例 token，可在“Settings > API Keys > Create a new API key”生成一个。
+
+### 贡献者
+
+> 感谢所有让这个项目变得更好的贡献者们！
+
+<table>
+<tr>
+    <td>
+        <a href="https://github.com/electh">
+            <img src="https://avatars.githubusercontent.com/u/83588235?v=4" width="90;" alt="electh" style="border-radius: 4px"/>
+            <br />
+            <sub><b>electh</b></sub>
+        </a>
+    </td>
+    <td>
+        <a href="https://github.com/NekoAria">
+            <img src="https://avatars.githubusercontent.com/u/23137034?v=4" width="90;" alt="NekoAria" style="border-radius: 4px"/>
+            <br />
+            <sub><b>NekoAria</b></sub>
+        </a>
+    </td>
+</tr>
+</table>
