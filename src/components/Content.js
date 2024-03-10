@@ -203,77 +203,47 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     }
   };
 
-  const handleUpdateEntry = () => {
+  const toggleEntryStatus = () => {
     const newStatus = activeContent.status === "read" ? "unread" : "read";
-    const switchArticleStatus = async () => {
+    const updateStatus = async () => {
       const response = await updateEntryStatus(activeContent);
       if (response) {
-        setActiveContent({
-          ...activeContent,
-          status: newStatus,
-        });
+        setActiveContent({ ...activeContent, status: newStatus });
         updateFeedUnread(activeContent.feed.id, newStatus);
         updateGroupUnread(activeContent.feed.category.id, newStatus);
         setUnreadTotal(
           newStatus === "read" ? unreadTotal - 1 : unreadTotal + 1,
         );
-        setEntries(
-          entries.map((e) =>
-            e.id === activeContent.id
-              ? {
-                  ...e,
-                  status: newStatus,
-                }
-              : { ...e },
-          ),
-        );
-        setAllEntries(
-          allEntries.map((e) =>
-            e.id === activeContent.id
-              ? {
-                  ...e,
-                  status: newStatus,
-                }
-              : { ...e },
-          ),
-        );
+        const updateEntriesStatus = (entries) =>
+          entries.map((entry) =>
+            entry.id === activeContent.id
+              ? { ...entry, status: newStatus }
+              : entry,
+          );
+        setEntries(updateEntriesStatus(entries));
+        setAllEntries(updateEntriesStatus(allEntries));
       }
     };
-    switchArticleStatus();
+    updateStatus();
   };
 
-  const handleStarEntry = () => {
+  const toggleEntryStarred = () => {
     const { starred } = activeContent;
-    const switchArticleStarred = async () => {
+    const updateStarred = async () => {
       const response = await updateEntryStarred(activeContent);
       if (response) {
-        setActiveContent({
-          ...activeContent,
-          starred: !starred,
-        });
-        setEntries(
-          entries.map((e) =>
-            e.id === activeContent.id
-              ? {
-                  ...e,
-                  starred: !starred,
-                }
-              : { ...e },
-          ),
-        );
-        setAllEntries(
-          allEntries.map((e) =>
-            e.id === activeContent.id
-              ? {
-                  ...e,
-                  starred: !starred,
-                }
-              : { ...e },
-          ),
-        );
+        setActiveContent({ ...activeContent, starred: !starred });
+        const updateEntriesStarred = (entries) =>
+          entries.map((entry) =>
+            entry.id === activeContent.id
+              ? { ...entry, starred: !starred }
+              : entry,
+          );
+        setEntries(updateEntriesStarred(entries));
+        setAllEntries(updateEntriesStarred(allEntries));
       }
     };
-    switchArticleStarred();
+    updateStarred();
   };
 
   const handelMarkAllAsRead = () => {
@@ -331,8 +301,8 @@ export default function Content({ info, getEntries, markAllAsRead }) {
       27: () => handleEscapeKey(activeContent, setActiveContent, entryListRef),
       37: () => handleLeftKey(currentIndex, entries, handleClickEntryList),
       39: () => handleRightKey(currentIndex, entries, handleClickEntryList),
-      77: () => handleMKey(activeContent, handleUpdateEntry),
-      83: () => handleSKey(activeContent, handleStarEntry),
+      77: () => handleMKey(activeContent, toggleEntryStatus),
+      83: () => handleSKey(activeContent, toggleEntryStarred),
     };
 
     const handleKeyDown = (event) => {
@@ -694,7 +664,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                   borderBottom: "1px solid rgb(var(--primary-5))",
                   borderRadius: "50% 50% 0 0",
                 }}
-                onClick={() => handleUpdateEntry()}
+                onClick={() => toggleEntryStatus()}
                 icon={
                   activeContent.status === "unread" ? (
                     <IconMinusCircle />
@@ -715,7 +685,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                 style={{
                   borderRadius: "0 0 50% 50%",
                 }}
-                onClick={() => handleStarEntry()}
+                onClick={() => toggleEntryStarred()}
                 icon={
                   activeContent.starred ? (
                     <IconStarFill style={{ color: "#ffcd00" }} />
