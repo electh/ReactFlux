@@ -2,7 +2,7 @@
 export const handleEscapeKey = (
   activeContent,
   setActiveContent,
-  entryListRef
+  entryListRef,
 ) => {
   if (!activeContent) {
     return;

@@ -16,62 +16,66 @@ b,
 strong {
   font-weight: var(--font-weight-500);
 }
+
 .article-content li,
 p {
   margin-block-start: 1.6em;
   margin-block-end: 1.6em;
 }
 
-/*文章内容图片样式*/
+/* 文章内容图片样式 */
 .article-body img {
-  max-width: 100%; /* 图片最大宽度为容器的100% */
+  max-width: 100%; /* 图片最大宽度为容器的 100% */
   height: auto; /* 自动调整高度，保持原始比例 */
   border-radius: 4px;
 }
 
-/*video相关样式*/
+/*video 相关样式 */
 .article-body video {
   border-radius: 4px;
 }
 
-/*文章内容文本样式*/
+/* 文章内容文本样式 */
 .article-content {
   color: var(--color-text-2);
 }
 
-/*文章标题链接样式*/
+/* 文章标题链接样式 */
 .article-title a {
   text-decoration: none;
   color: var(--color-text-1); /* 设置链接文字颜色 */
   font-weight: 500;
 }
 
-/*文章内容链接样式*/
+/* 文章内容链接样式 */
 .article-body a {
   transition: color 0.1s linear;
   text-decoration: none;
   color: rgb(var(--primary-6));
   border-bottom: 1px dotted rgb(var(--primary-6)); /* 设置链接文字颜色 */
 }
+
 .article-body a:hover {
   text-decoration: none;
   color: rgb(var(--primary-5));
   border-bottom: 1px dotted rgb(var(--primary-5)); /* 设置链接文字颜色 */
 }
 
-/*文章内容引用样式*/
+/* 文章内容引用样式 */
 .article-body blockquote {
   border-left: 1px solid var(--color-border-3);
   color: var(--color-text-3);
   margin: 1em 0;
   padding: 0 20px;
 }
-/*code相关样式-表格*/
+
+/*code 相关样式 - 表格 */
 .article-content td {
   color: var(--color-text-3);
   font-size: 0.8rem;
 }
-/*code相关样式*/
+
+/*code 相关样式 */
 .article-content code {
   font-family: "JetBrains Mono", Consolas, Monaco, "Andale Mono", monospace;
   font-size: 0.8rem;
@@ -80,11 +84,13 @@ p {
   padding: 2px;
   border-radius: 2px;
 }
-/*code相关样式*/
+
+/*code 相关样式 */
 .article-content figure {
   margin: 16px 0;
 }
-/*code相关样式*/
+
+/*code 相关样式 */
 .article-content pre {
   background-color: var(--color-neutral-3);
   line-height: 1.2;
@@ -93,7 +99,7 @@ p {
   overflow: auto;
 }
 
-/*文章列表卡片自定义样式*/
+/* 文章列表卡片自定义样式 */
 .card-custom-hover-style {
   transition-property: all;
 }
@@ -108,7 +114,7 @@ p {
 }
 
 .card-custom-hover-style:hover img {
-  opacity: 0.9; /* 设置透明度为0.90 */
+  opacity: 0.9; /* 设置透明度为 0.90 */
 }
 
 .card-custom-selected-style {

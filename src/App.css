@@ -1,12 +1,12 @@
 @media screen and (max-width: 700px) {
-    .sidebar {
-        display: none !important;
-    }
+  .sidebar {
+    display: none !important;
+  }
 }
 
 @media screen and (max-width: 700px) {
-    .article-list {
-        padding-left: 0 !important;
-        width: 100% !important;
-    }
+  .article-list {
+    padding-left: 0 !important;
+    width: 100% !important;
+  }
 }
