@@ -586,6 +586,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
               }
               style={{
                 position: "fixed",
+                display: "none",
                 bottom: "60px",
                 right: "20px",
                 boxShadow: "0 2px 12px 0 rgba(0,0,0,.1)",
