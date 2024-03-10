@@ -339,6 +339,11 @@ export default function App() {
                 <span>STARRED</span>
               </Menu.Item>
             </Skeleton>
+            <Skeleton loading={loading} text={{ rows: 0 }}>
+              <Menu.Item key={"/history"} onClick={() => navigate("/history")}>
+                <span>HISTORY</span>
+              </Menu.Item>
+            </Skeleton>
           </SubMenu>
           {/*{collapsed ? null : <Divider style={{ margin: "4px" }} />}*/}
           <SubMenu

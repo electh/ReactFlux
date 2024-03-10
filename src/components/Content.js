@@ -554,20 +554,17 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             <Radio value="all">ALL</Radio>
             <Radio value="unread">UNREAD</Radio>
           </Radio.Group>
-          <Popconfirm
-            disabled={info.from === "starred"}
-            focusLock
-            title="Mark All As Read?"
-            okText="Confirm"
-            cancelText="Cancel"
-            onOk={() => handelMarkAllAsRead()}
-          >
-            <Button
-              icon={<IconCheck />}
-              shape="circle"
-              disabled={info.from === "starred"}
-            ></Button>
-          </Popconfirm>
+          {info.from !== "starred" && info.from !== "history" && (
+            <Popconfirm
+              focusLock
+              title="Mark All As Read?"
+              okText="Confirm"
+              cancelText="Cancel"
+              onOk={() => handelMarkAllAsRead()}
+            >
+              <Button icon={<IconCheck />} shape="circle"></Button>
+            </Popconfirm>
+          )}
         </div>
       </div>
       <CSSTransition
