@@ -31,43 +31,50 @@ import {
 } from "@arco-design/web-react/icon";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 import { clickEntryList, updateEntry, starEntry } from "../apis";
+import {
+  handleEscapeKey,
+  handleLeftKey,
+  handleRightKey,
+  handleMKey,
+  handleSKey,
+} from "../utils/keyHandlers";
 
 const cards = [1, 2, 3, 4];
 
 export default function Content({ info, getEntries, markAllAsRead }) {
-  /*接口返回文章总数原始值，不受接口返回数据长度限制*/
+  /* 接口返回文章总数原始值，不受接口返回数据长度限制 */
   const [total, setTotal] = useState(0);
-  /*接口返回未读文章数原始值，不受接口返回数据长度限制*/
+  /* 接口返回未读文章数原始值，不受接口返回数据长度限制 */
   const [unreadTotal, setUnreadTotal] = useState(0);
-  /*分页参数*/
+  /* 分页参数 */
   const [offset, setOffset] = useState(0);
-  /*all页签加载更多按钮可见性*/
+  /*all 页签加载更多按钮可见性 */
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
-  /*unread页签加载更多按钮可见性*/
+  /*unread 页签加载更多按钮可见性 */
   const [loadMoreUnreadVisible, setLoadMoreUnreadVisible] = useState(false);
-  /*页面显示的文章*/
+  /* 页面显示的文章 */
   const [entries, setEntries] = useState([]);
-  /*接口返回的文章*/
+  /* 接口返回的文章 */
   const [allEntries, setAllEntries] = useState([]);
-  /*选中的文章*/
+  /* 选中的文章 */
   const [activeContent, setActiveContent] = useState(null);
-  /*文章详情进入动画*/
+  /* 文章详情进入动画 */
   const [animation, setAnimation] = useState(null);
   /*all unread*/
   const [filterStatus, setFilterStatus] = useState("all");
   /*0-title 1-content*/
   const [filterType, setFilterType] = useState("0");
-  /*搜索文本*/
+  /* 搜索文本 */
   const [filterString, setFilterString] = useState("");
-  /*初始loading*/
+  /* 初始 loading*/
   const [loading, setLoading] = useState(true);
-  /*加载更多loading*/
+  /* 加载更多 loading*/
   const [loadingMore, setLoadingMore] = useState(false);
-  /*更新menu中feed未读数*/
+  /* 更新 menu 中 feed 未读数 */
   const updateFeedUnread = useStore((state) => state.updateFeedUnread);
-  /*更新menu中group未读数*/
+  /* 更新 menu 中 group 未读数 */
   const updateGroupUnread = useStore((state) => state.updateGroupUnread);
-  /*menu数据初始化函数*/
+  /*menu 数据初始化函数 */
   const initData = useStore((state) => state.initData);
 
   const entryListRef = useRef(null);
@@ -325,44 +332,22 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   };
 
   useEffect(() => {
+    const currentIndex = entries.findIndex(
+      (entry) => entry.id === activeContent?.id,
+    );
+
+    const keyMap = {
+      27: () => handleEscapeKey(activeContent, setActiveContent, entryListRef),
+      37: () => handleLeftKey(currentIndex, entries, handleClickEntryList),
+      39: () => handleRightKey(currentIndex, entries, handleClickEntryList),
+      77: () => handleMKey(activeContent, handleUpdateEntry),
+      83: () => handleSKey(activeContent, handleStarEntry),
+    };
+
     const handleKeyDown = (event) => {
-      const currentIndex = entries.findIndex(
-        (entry) => entry.id === activeContent?.id,
-      );
-
-      // ESC, go back to entry list
-      if (event.keyCode === 27 && activeContent) {
-        setActiveContent(null);
-        if (entryListRef.current) {
-          entryListRef.current.setAttribute("tabIndex", "-1");
-          entryListRef.current.focus();
-        }
-      }
-
-      // LEFT, go to previous entry
-      if (event.keyCode === 37 && currentIndex > 0) {
-        const prevEntry = entries[currentIndex - 1];
-        handleClickEntryList(prevEntry);
-        let card = document.querySelector(".card-custom-selected-style");
-        if (card) card.scrollIntoView(false);
-      }
-
-      // RIGHT, go to next entry
-      if (event.keyCode === 39 && currentIndex < entries.length - 1) {
-        const nextEntry = entries[currentIndex + 1];
-        handleClickEntryList(nextEntry);
-        let card = document.querySelector(".card-custom-selected-style");
-        if (card) card.scrollIntoView(true);
-      }
-
-      // M, mark as read or unread
-      if (event.keyCode === 77 && activeContent) {
-        handleUpdateEntry();
-      }
-
-      // S, star or unstar
-      if (event.keyCode === 83 && activeContent) {
-        handleStarEntry();
+      const handler = keyMap[event.keyCode];
+      if (handler) {
+        handler();
       }
     };
 
@@ -372,7 +357,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
       document.removeEventListener("keydown", handleKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeContent, entries, handleClickEntryList, handleUpdateEntry]);
+  }, [activeContent, entries]);
 
   return (
     <>
