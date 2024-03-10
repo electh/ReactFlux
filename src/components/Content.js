@@ -325,12 +325,16 @@ export default function Content({ info, getEntries, markAllAsRead }) {
       if (event.keyCode === 37 && currentIndex > 0) {
         const prevEntry = entries[currentIndex - 1];
         handleClickEntryList(prevEntry);
+        let card = document.querySelector(".card-custom-selected-style");
+        if (card) card.scrollIntoView(false);
       }
 
       // RIGHT, go to next entry
       if (event.keyCode === 39 && currentIndex < entries.length - 1) {
         const nextEntry = entries[currentIndex + 1];
         handleClickEntryList(nextEntry);
+        let card = document.querySelector(".card-custom-selected-style");
+        if (card) card.scrollIntoView(true);
       }
 
       // M, mark as read or unread
