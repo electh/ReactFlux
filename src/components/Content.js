@@ -20,6 +20,7 @@ import {
 import "./Content.css";
 import "./Transition.css";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import {
   IconArrowDown,
   IconCheck,
@@ -39,6 +40,7 @@ import {
   handleSKey,
 } from "../utils/keyHandlers";
 
+dayjs.extend(relativeTime);
 const cards = [1, 2, 3, 4];
 
 export default function Content({ info, getEntries, markAllAsRead }) {
@@ -487,6 +489,8 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                           >
                             <br />
                             {entry.feed.title.toUpperCase()}
+                            <br />
+                            {dayjs().to(dayjs(entry.created_at))}
                           </Typography.Text>
                           {entry.starred && (
                             <IconStarFill
