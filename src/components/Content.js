@@ -25,9 +25,10 @@ import {
     IconEmpty,
     IconEye,
     IconEyeInvisible,
+    IconStar,
 } from "@arco-design/web-react/icon";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
-import {updateEntry, clickEntryList} from "../apis";
+import {clickEntryList, updateEntry, starEntry} from "../apis";
 
 const cards = [1, 2, 3];
 
@@ -191,7 +192,7 @@ export default function Content({info, getEntries, markAllAsRead}) {
         }
     };
 
-    const handelUpdateEntry = () => {
+    const handleUpdateEntry = () => {
         const newStatus = activeContent.status === "read" ? "unread" : "read";
         const switchArticleStatus = async () => {
             const response = await updateEntry(activeContent);
@@ -227,6 +228,40 @@ export default function Content({info, getEntries, markAllAsRead}) {
         switchArticleStatus();
     };
 
+    const handleStarEntry = () => {
+        const {starred} = activeContent;
+        const switchArticleStarred = async () => {
+            const response = await starEntry(activeContent);
+            if (response) {
+                setActiveContent({
+                    ...activeContent,
+                    starred: !starred,
+                });
+                setEntries(
+                    entries.map((e) =>
+                        e.id === activeContent.id
+                            ? {
+                                ...e,
+                                starred: !starred,
+                            }
+                            : {...e},
+                    ),
+                );
+                setAllEntries(
+                    allEntries.map((e) =>
+                        e.id === activeContent.id
+                            ? {
+                                ...e,
+                                starred: !starred,
+                            }
+                            : {...e},
+                    ),
+                );
+            }
+        };
+        switchArticleStarred();
+    };
+
     const handelMarkAllAsRead = () => {
         const readAll = async () => {
             const response = await markAllAsRead();
@@ -238,7 +273,7 @@ export default function Content({info, getEntries, markAllAsRead}) {
         readAll();
     };
 
-    const handelClickEntryList = entry => {
+    const handleClickEntryList = entry => {
         const clickCard = async () => {
             setAnimation(null);
             const response = await clickEntryList(entry);
@@ -272,11 +307,58 @@ export default function Content({info, getEntries, markAllAsRead}) {
                             : {...e},
                     ),
                 );
+                entryDetailRef.current.setAttribute("tabIndex", "-1");
+                entryDetailRef.current.focus();
             }
             entryDetailRef.current.scrollTo(0, 0);
         };
         clickCard();
     };
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            const currentIndex = entries.findIndex(entry => entry.id === activeContent?.id);
+
+            // ESC, go back to entry list
+            if (event.keyCode === 27 && activeContent) {
+                setActiveContent(null);
+                if (entryListRef.current) {
+                    entryListRef.current.setAttribute("tabIndex", "-1");
+                    entryListRef.current.focus();
+                }
+            }
+
+            // LEFT, go to previous entry
+            if (event.keyCode === 37 && currentIndex > 0) {
+                const prevEntry = entries[currentIndex - 1];
+                handleClickEntryList(prevEntry);
+            }
+
+            // RIGHT, go to next entry
+            if (event.keyCode === 39 && currentIndex < entries.length - 1) {
+                const nextEntry = entries[currentIndex + 1];
+                handleClickEntryList(nextEntry);
+            }
+
+            // M, mark as read or unread
+            if (event.keyCode === 77 && activeContent) {
+                handleUpdateEntry();
+            }
+
+            // S, star or unstar
+            if (event.keyCode === 83 && activeContent) {
+                handleStarEntry();
+            }
+
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+
+    }, [activeContent, entries, handleClickEntryList, handleUpdateEntry]);
 
     return (
         <>
@@ -375,7 +457,7 @@ export default function Content({info, getEntries, markAllAsRead}) {
                                         data-entry-id={entry.id}
                                         style={{width: 300, cursor: "pointer"}}
                                         onClick={() => {
-                                            handelClickEntryList(entry);
+                                            handleClickEntryList(entry);
                                         }}
                                         cover={
                                             <div
@@ -488,34 +570,62 @@ export default function Content({info, getEntries, markAllAsRead}) {
                 </div>
             </div>
             {activeContent && (
-                <Tooltip
-                    position="left"
-                    content={
-                        activeContent.status === "unread"
-                            ? "Mark As Read?"
-                            : "Mark As Unread?"
-                    }
-                >
-                    <Button
-                        shape="circle"
-                        type="primary"
-                        onClick={() => handelUpdateEntry()}
-                        icon={
-                            activeContent.status === "unread" ? (
-                                <IconEye/>
-                            ) : (
-                                <IconEyeInvisible/>
-                            )
+                <div>
+                    <Tooltip
+                        position="left"
+                        content={
+                            activeContent.starred ? "Unstar?" : "Star?"
                         }
-                        style={{
-                            position: "fixed",
-                            bottom: "20px",
-                            right: "20px",
-                            boxShadow: "0 2px 12px 0 rgba(0,0,0,.1)",
-                        }}
-                    />
-                </Tooltip>
-            )}
+                    >
+                        <Button
+                            shape="circle"
+                            type="primary"
+                            onClick={() => handleStarEntry()}
+                            icon={
+                                activeContent.starred ? (
+                                    <IconStar style={{color: '#ffcd00'}}/>
+                                ) : (
+                                    <IconStar/>
+                                )
+                            }
+                            style={{
+                                position: "fixed",
+                                bottom: "60px",
+                                right: "20px",
+                                boxShadow: "0 2px 12px 0 rgba(0,0,0,.1)",
+                            }}
+                        />
+                    </Tooltip>
+                    <Tooltip
+                        position="left"
+                        content={
+                            activeContent.status === "unread"
+                                ? "Mark As Read?"
+                                : "Mark As Unread?"
+                        }
+                    >
+                        <Button
+                            shape="circle"
+                            type="primary"
+                            onClick={() => handleUpdateEntry()}
+                            icon={
+                                activeContent.status === "unread" ? (
+                                    <IconEye/>
+                                ) : (
+                                    <IconEyeInvisible/>
+                                )
+                            }
+                            style={{
+                                position: "fixed",
+                                bottom: "20px",
+                                right: "20px",
+                                boxShadow: "0 2px 12px 0 rgba(0,0,0,.1)",
+                            }}
+                        />
+                    </Tooltip>
+                </div>
+            )
+            }
             <CSSTransition
                 in={animation}
                 timeout={200}
@@ -611,5 +721,6 @@ export default function Content({info, getEntries, markAllAsRead}) {
                 )}
             </CSSTransition>
         </>
-    );
+    )
+        ;
 }
