@@ -175,7 +175,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                 entry.status === filter_status,
             );
       setEntries(filteredArticles);
-      setLoadMoreUnreadVisible(filteredArticles.length < unreadTotal);
     } else {
       const filteredArticles =
         filter_status === "all"
@@ -186,7 +185,12 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                 entry.status === filter_status,
             );
       setEntries(filteredArticles);
-      setLoadMoreUnreadVisible(filteredArticles.length < unreadTotal);
+    }
+    if (filter_status === "unread") {
+      const unreadArticles = allEntries.filter(
+        (entry) => entry.status === "unread",
+      );
+      setLoadMoreUnreadVisible(unreadArticles.length < unreadTotal);
     }
   };
 
@@ -201,6 +205,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         });
         updateFeedUnread(activeContent.feed.id, newStatus);
         updateGroupUnread(activeContent.feed.category.id, newStatus);
+        setUnreadTotal(
+          newStatus === "read" ? unreadTotal - 1 : unreadTotal + 1,
+        );
         setEntries(
           entries.map((e) =>
             e.id === activeContent.id
@@ -267,6 +274,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
       await initData();
       setAllEntries(allEntries.map((e) => ({ ...e, status: "read" })));
       setEntries(entries.map((e) => ({ ...e, status: "read" })));
+      setUnreadTotal(0);
     };
     readAll();
   };
@@ -304,6 +312,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                 }
               : { ...e },
           ),
+        );
+        setUnreadTotal(
+          entry.status === "unread" ? unreadTotal - 1 : unreadTotal,
         );
         entryDetailRef.current.setAttribute("tabIndex", "-1");
         entryDetailRef.current.focus();
