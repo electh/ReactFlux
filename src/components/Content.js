@@ -20,6 +20,7 @@ import {
 import "./Content.css";
 import "./Transition.css";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import {
   IconArrowDown,
   IconCheck,
@@ -30,44 +31,52 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
-import { clickEntryList, updateEntry, starEntry } from "../apis";
+import { updateEntryStatus, updateEntryStarred } from "../apis";
+import {
+  handleEscapeKey,
+  handleLeftKey,
+  handleRightKey,
+  handleMKey,
+  handleSKey,
+} from "../utils/keyHandlers";
 
+dayjs.extend(relativeTime);
 const cards = [1, 2, 3, 4];
 
 export default function Content({ info, getEntries, markAllAsRead }) {
-  /*接口返回文章总数原始值，不受接口返回数据长度限制*/
+  /* 接口返回文章总数原始值，不受接口返回数据长度限制 */
   const [total, setTotal] = useState(0);
-  /*接口返回未读文章数原始值，不受接口返回数据长度限制*/
+  /* 接口返回未读文章数原始值，不受接口返回数据长度限制 */
   const [unreadTotal, setUnreadTotal] = useState(0);
-  /*分页参数*/
+  /* 分页参数 */
   const [offset, setOffset] = useState(0);
-  /*all页签加载更多按钮可见性*/
+  /*all 页签加载更多按钮可见性 */
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
-  /*unread页签加载更多按钮可见性*/
+  /*unread 页签加载更多按钮可见性 */
   const [loadMoreUnreadVisible, setLoadMoreUnreadVisible] = useState(false);
-  /*页面显示的文章*/
+  /* 页面显示的文章 */
   const [entries, setEntries] = useState([]);
-  /*接口返回的文章*/
+  /* 接口返回的文章 */
   const [allEntries, setAllEntries] = useState([]);
-  /*选中的文章*/
+  /* 选中的文章 */
   const [activeContent, setActiveContent] = useState(null);
-  /*文章详情进入动画*/
+  /* 文章详情进入动画 */
   const [animation, setAnimation] = useState(null);
   /*all unread*/
   const [filterStatus, setFilterStatus] = useState("all");
   /*0-title 1-content*/
   const [filterType, setFilterType] = useState("0");
-  /*搜索文本*/
+  /* 搜索文本 */
   const [filterString, setFilterString] = useState("");
-  /*初始loading*/
+  /* 初始 loading*/
   const [loading, setLoading] = useState(true);
-  /*加载更多loading*/
+  /* 加载更多 loading*/
   const [loadingMore, setLoadingMore] = useState(false);
-  /*更新menu中feed未读数*/
+  /* 更新 menu 中 feed 未读数 */
   const updateFeedUnread = useStore((state) => state.updateFeedUnread);
-  /*更新menu中group未读数*/
+  /* 更新 menu 中 group 未读数 */
   const updateGroupUnread = useStore((state) => state.updateGroupUnread);
-  /*menu数据初始化函数*/
+  /*menu 数据初始化函数 */
   const initData = useStore((state) => state.initData);
 
   const entryListRef = useRef(null);
@@ -194,77 +203,47 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     }
   };
 
-  const handleUpdateEntry = () => {
+  const toggleEntryStatus = () => {
     const newStatus = activeContent.status === "read" ? "unread" : "read";
-    const switchArticleStatus = async () => {
-      const response = await updateEntry(activeContent);
+    const updateStatus = async () => {
+      const response = await updateEntryStatus(activeContent);
       if (response) {
-        setActiveContent({
-          ...activeContent,
-          status: newStatus,
-        });
+        setActiveContent({ ...activeContent, status: newStatus });
         updateFeedUnread(activeContent.feed.id, newStatus);
         updateGroupUnread(activeContent.feed.category.id, newStatus);
         setUnreadTotal(
           newStatus === "read" ? unreadTotal - 1 : unreadTotal + 1,
         );
-        setEntries(
-          entries.map((e) =>
-            e.id === activeContent.id
-              ? {
-                  ...e,
-                  status: newStatus,
-                }
-              : { ...e },
-          ),
-        );
-        setAllEntries(
-          allEntries.map((e) =>
-            e.id === activeContent.id
-              ? {
-                  ...e,
-                  status: newStatus,
-                }
-              : { ...e },
-          ),
-        );
+        const updateEntriesStatus = (entries) =>
+          entries.map((entry) =>
+            entry.id === activeContent.id
+              ? { ...entry, status: newStatus }
+              : entry,
+          );
+        setEntries(updateEntriesStatus(entries));
+        setAllEntries(updateEntriesStatus(allEntries));
       }
     };
-    switchArticleStatus();
+    updateStatus();
   };
 
-  const handleStarEntry = () => {
+  const toggleEntryStarred = () => {
     const { starred } = activeContent;
-    const switchArticleStarred = async () => {
-      const response = await starEntry(activeContent);
+    const updateStarred = async () => {
+      const response = await updateEntryStarred(activeContent);
       if (response) {
-        setActiveContent({
-          ...activeContent,
-          starred: !starred,
-        });
-        setEntries(
-          entries.map((e) =>
-            e.id === activeContent.id
-              ? {
-                  ...e,
-                  starred: !starred,
-                }
-              : { ...e },
-          ),
-        );
-        setAllEntries(
-          allEntries.map((e) =>
-            e.id === activeContent.id
-              ? {
-                  ...e,
-                  starred: !starred,
-                }
-              : { ...e },
-          ),
-        );
+        setActiveContent({ ...activeContent, starred: !starred });
+        const updateEntriesStarred = (entries) =>
+          entries.map((entry) =>
+            entry.id === activeContent.id
+              ? { ...entry, starred: !starred }
+              : entry,
+          );
+        setEntries(updateEntriesStarred(entries));
+        setAllEntries(updateEntriesStarred(allEntries));
       }
     };
-    switchArticleStarred();
+    updateStarred();
   };
 
   const handelMarkAllAsRead = () => {
@@ -279,90 +258,57 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     readAll();
   };
 
+  const updateLocalEntryStatus = (entries, entryId, status) => {
+    return entries.map((e) => (e.id === entryId ? { ...e, status } : e));
+  };
+
   const handleClickEntryList = (entry) => {
     const clickCard = async () => {
       setAnimation(null);
-      const response = await clickEntryList(entry);
-      if (response) {
-        setAnimation(true);
-        setActiveContent({
-          ...entry,
-          status: "read",
-        });
-        if (entry.status === "unread") {
-          updateFeedUnread(entry.feed.id, "read");
-          updateGroupUnread(entry.feed.category.id, "read");
+      if (entry.status === "unread") {
+        const response = await updateEntryStatus(entry, "read");
+        if (!response) {
+          return;
         }
-        setEntries(
-          entries.map((e) =>
-            e.id === entry.id
-              ? {
-                  ...e,
-                  status: "read",
-                }
-              : { ...e },
-          ),
-        );
-        setAllEntries(
-          allEntries.map((e) =>
-            e.id === entry.id
-              ? {
-                  ...e,
-                  status: "read",
-                }
-              : { ...e },
-          ),
-        );
-        setUnreadTotal(
-          entry.status === "unread" ? unreadTotal - 1 : unreadTotal,
-        );
-        entryDetailRef.current.setAttribute("tabIndex", "-1");
-        entryDetailRef.current.focus();
       }
+
+      setAnimation(true);
+      setActiveContent({ ...entry, status: "read" });
+      if (entry.status === "unread") {
+        updateFeedUnread(entry.feed.id, "read");
+        updateGroupUnread(entry.feed.category.id, "read");
+      }
+
+      setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
+      setAllEntries(updateLocalEntryStatus(allEntries, entry.id, "read"));
+
+      setUnreadTotal(entry.status === "unread" ? unreadTotal - 1 : unreadTotal);
+
+      entryDetailRef.current.setAttribute("tabIndex", "-1");
+      entryDetailRef.current.focus();
       entryDetailRef.current.scrollTo(0, 0);
     };
+
     clickCard();
   };
 
   useEffect(() => {
+    const currentIndex = entries.findIndex(
+      (entry) => entry.id === activeContent?.id,
+    );
+
+    const keyMap = {
+      27: () => handleEscapeKey(activeContent, setActiveContent, entryListRef),
+      37: () => handleLeftKey(currentIndex, entries, handleClickEntryList),
+      39: () => handleRightKey(currentIndex, entries, handleClickEntryList),
+      77: () => handleMKey(activeContent, toggleEntryStatus),
+      83: () => handleSKey(activeContent, toggleEntryStarred),
+    };
+
     const handleKeyDown = (event) => {
-      const currentIndex = entries.findIndex(
-        (entry) => entry.id === activeContent?.id,
-      );
-
-      // ESC, go back to entry list
-      if (event.keyCode === 27 && activeContent) {
-        setActiveContent(null);
-        if (entryListRef.current) {
-          entryListRef.current.setAttribute("tabIndex", "-1");
-          entryListRef.current.focus();
-        }
-      }
-
-      // LEFT, go to previous entry
-      if (event.keyCode === 37 && currentIndex > 0) {
-        const prevEntry = entries[currentIndex - 1];
-        handleClickEntryList(prevEntry);
-        let card = document.querySelector(".card-custom-selected-style");
-        if (card) card.scrollIntoView(false);
-      }
-
-      // RIGHT, go to next entry
-      if (event.keyCode === 39 && currentIndex < entries.length - 1) {
-        const nextEntry = entries[currentIndex + 1];
-        handleClickEntryList(nextEntry);
-        let card = document.querySelector(".card-custom-selected-style");
-        if (card) card.scrollIntoView(true);
-      }
-
-      // M, mark as read or unread
-      if (event.keyCode === 77 && activeContent) {
-        handleUpdateEntry();
-      }
-
-      // S, star or unstar
-      if (event.keyCode === 83 && activeContent) {
-        handleStarEntry();
+      const handler = keyMap[event.keyCode];
+      if (handler) {
+        handler();
       }
     };
 
@@ -372,7 +318,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
       document.removeEventListener("keydown", handleKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeContent, entries, handleClickEntryList, handleUpdateEntry]);
+  }, [activeContent, entries]);
 
   return (
     <>
@@ -515,6 +461,8 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                           >
                             <br />
                             {entry.feed.title.toUpperCase()}
+                            <br />
+                            {dayjs().to(dayjs(entry.created_at))}
                           </Typography.Text>
                           {entry.starred && (
                             <IconStarFill
@@ -582,20 +530,17 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             <Radio value="all">ALL</Radio>
             <Radio value="unread">UNREAD</Radio>
           </Radio.Group>
-          <Popconfirm
-            disabled={info.from === "starred"}
-            focusLock
-            title="Mark All As Read?"
-            okText="Confirm"
-            cancelText="Cancel"
-            onOk={() => handelMarkAllAsRead()}
-          >
-            <Button
-              icon={<IconCheck />}
-              shape="circle"
-              disabled={info.from === "starred"}
-            ></Button>
-          </Popconfirm>
+          {info.from !== "starred" && info.from !== "history" && (
+            <Popconfirm
+              focusLock
+              title="Mark All As Read?"
+              okText="Confirm"
+              cancelText="Cancel"
+              onOk={() => handelMarkAllAsRead()}
+            >
+              <Button icon={<IconCheck />} shape="circle"></Button>
+            </Popconfirm>
+          )}
         </div>
       </div>
       <CSSTransition
@@ -719,7 +664,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                   borderBottom: "1px solid rgb(var(--primary-5))",
                   borderRadius: "50% 50% 0 0",
                 }}
-                onClick={() => handleUpdateEntry()}
+                onClick={() => toggleEntryStatus()}
                 icon={
                   activeContent.status === "unread" ? (
                     <IconMinusCircle />
@@ -740,7 +685,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                 style={{
                   borderRadius: "0 0 50% 50%",
                 }}
-                onClick={() => handleStarEntry()}
+                onClick={() => toggleEntryStarred()}
                 icon={
                   activeContent.starred ? (
                     <IconStarFill style={{ color: "#ffcd00" }} />

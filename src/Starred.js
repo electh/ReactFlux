@@ -3,7 +3,7 @@ import Content from "./components/Content";
 import { thunder } from "./apis/axios";
 
 export default function Starred() {
-  const getEntries = async (offset = 0, status) => {
+  const getEntries = async (offset = 0, status = null) => {
     const base_url = `/v1/entries?order=published_at&direction=desc&starred=${true}&offset=${offset}`;
     const url = status ? `${base_url}&status=${status}` : base_url;
 

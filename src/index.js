@@ -10,6 +10,7 @@ import Login from "./Login";
 import RouterProtect from "./components/RouterProtect";
 import ErrorPage from "./ErrorPage";
 import Group from "./Group";
+import History from "./History";
 import Starred from "./Starred";
 
 const router = createBrowserRouter([
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "/starred",
         element: <Starred />,
+      },
+      {
+        path: "/history",
+        element: <History />,
       },
       {
         path: "/group/:c_id",

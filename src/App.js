@@ -178,7 +178,7 @@ export default function App() {
     setFeedModalLoading(true);
     const response = await addFeed(feed_url, group_id, is_full_text);
     if (response) {
-      initData();
+      await initData();
       Message.success("Success");
       setFeedModalVisible(false);
     }
@@ -269,7 +269,7 @@ export default function App() {
                     />
                     Settings
                   </Menu.Item>
-                  <Menu.Item key="1" onClick={handelLogout}>
+                  <Menu.Item key="1" onClick={() => handelLogout()}>
                     <IconPoweroff
                       style={{
                         marginRight: 8,
@@ -337,6 +337,11 @@ export default function App() {
             <Skeleton loading={loading} text={{ rows: 0 }}>
               <Menu.Item key={`/starred`} onClick={() => navigate("/starred")}>
                 <span>STARRED</span>
+              </Menu.Item>
+            </Skeleton>
+            <Skeleton loading={loading} text={{ rows: 0 }}>
+              <Menu.Item key={"/history"} onClick={() => navigate("/history")}>
+                <span>HISTORY</span>
               </Menu.Item>
             </Skeleton>
           </SubMenu>
