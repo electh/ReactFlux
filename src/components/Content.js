@@ -286,48 +286,35 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     readAll();
   };
 
+  const updateEntryStatus = (entries, entryId, status) => {
+    return entries.map((e) => (e.id === entryId ? { ...e, status } : e));
+  };
+
   const handleClickEntryList = (entry) => {
     const clickCard = async () => {
       setAnimation(null);
       const response = await clickEntryList(entry);
-      if (response) {
-        setAnimation(true);
-        setActiveContent({
-          ...entry,
-          status: "read",
-        });
-        if (entry.status === "unread") {
-          updateFeedUnread(entry.feed.id, "read");
-          updateGroupUnread(entry.feed.category.id, "read");
-        }
-        setEntries(
-          entries.map((e) =>
-            e.id === entry.id
-              ? {
-                  ...e,
-                  status: "read",
-                }
-              : { ...e },
-          ),
-        );
-        setAllEntries(
-          allEntries.map((e) =>
-            e.id === entry.id
-              ? {
-                  ...e,
-                  status: "read",
-                }
-              : { ...e },
-          ),
-        );
-        setUnreadTotal(
-          entry.status === "unread" ? unreadTotal - 1 : unreadTotal,
-        );
-        entryDetailRef.current.setAttribute("tabIndex", "-1");
-        entryDetailRef.current.focus();
+      if (!response) {
+        return;
       }
+
+      setAnimation(true);
+      setActiveContent({ ...entry, status: "read" });
+      if (entry.status === "unread") {
+        updateFeedUnread(entry.feed.id, "read");
+        updateGroupUnread(entry.feed.category.id, "read");
+      }
+
+      setEntries(updateEntryStatus(entries, entry.id, "read"));
+      setAllEntries(updateEntryStatus(allEntries, entry.id, "read"));
+
+      setUnreadTotal(entry.status === "unread" ? unreadTotal - 1 : unreadTotal);
+
+      entryDetailRef.current.setAttribute("tabIndex", "-1");
+      entryDetailRef.current.focus();
       entryDetailRef.current.scrollTo(0, 0);
     };
+
     clickCard();
   };
 
