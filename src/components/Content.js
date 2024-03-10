@@ -103,6 +103,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         setLoadMoreVisible(fetchedArticles.length < responseAll.data.total);
 
         setUnreadTotal(responseUnread.data.total);
+        console.log(
+          filteredArticles.length,
+          responseUnread.data.total,
+          filteredArticles.length < responseUnread.data.total,
+        );
         setLoadMoreUnreadVisible(
           filteredArticles.length < responseUnread.data.total,
         );
@@ -161,25 +166,27 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     setFilterStatus(filter_status);
     setFilterString(filter_string);
     if (filter_type === "0") {
-      setEntries(
+      const filteredArticles =
         filter_status === "all"
           ? allEntries.filter((entry) => entry.title.includes(filter_string))
           : allEntries.filter(
               (entry) =>
                 entry.title.includes(filter_string) &&
                 entry.status === filter_status,
-            ),
-      );
+            );
+      setEntries(filteredArticles);
+      setLoadMoreUnreadVisible(filteredArticles.length < unreadTotal);
     } else {
-      setEntries(
+      const filteredArticles =
         filter_status === "all"
           ? allEntries.filter((entry) => entry.content.includes(filter_string))
           : allEntries.filter(
               (entry) =>
                 entry.content.includes(filter_string) &&
                 entry.status === filter_status,
-            ),
-      );
+            );
+      setEntries(filteredArticles);
+      setLoadMoreUnreadVisible(filteredArticles.length < unreadTotal);
     }
   };
 
