@@ -31,7 +31,7 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
-import { clickEntryList, updateEntry, starEntry } from "../apis";
+import { updateEntryStatus, updateEntryStarred } from "../apis";
 import {
   handleEscapeKey,
   handleLeftKey,
@@ -206,7 +206,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const handleUpdateEntry = () => {
     const newStatus = activeContent.status === "read" ? "unread" : "read";
     const switchArticleStatus = async () => {
-      const response = await updateEntry(activeContent);
+      const response = await updateEntryStatus(activeContent);
       if (response) {
         setActiveContent({
           ...activeContent,
@@ -245,7 +245,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const handleStarEntry = () => {
     const { starred } = activeContent;
     const switchArticleStarred = async () => {
-      const response = await starEntry(activeContent);
+      const response = await updateEntryStarred(activeContent);
       if (response) {
         setActiveContent({
           ...activeContent,
@@ -288,16 +288,18 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     readAll();
   };
 
-  const updateEntryStatus = (entries, entryId, status) => {
+  const updateLocalEntryStatus = (entries, entryId, status) => {
     return entries.map((e) => (e.id === entryId ? { ...e, status } : e));
   };
 
   const handleClickEntryList = (entry) => {
     const clickCard = async () => {
       setAnimation(null);
-      const response = await clickEntryList(entry);
-      if (!response) {
-        return;
+      if (entry.status === "unread") {
+        const response = await updateEntryStatus(entry, "read");
+        if (!response) {
+          return;
+        }
       }
 
       setAnimation(true);
@@ -307,8 +309,8 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         updateGroupUnread(entry.feed.category.id, "read");
       }
 
-      setEntries(updateEntryStatus(entries, entry.id, "read"));
-      setAllEntries(updateEntryStatus(allEntries, entry.id, "read"));
+      setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
+      setAllEntries(updateLocalEntryStatus(allEntries, entry.id, "read"));
 
       setUnreadTotal(entry.status === "unread" ? unreadTotal - 1 : unreadTotal);
 

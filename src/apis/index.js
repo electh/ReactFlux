@@ -1,24 +1,28 @@
 import { thunder } from "./axios";
 import { Message } from "@arco-design/web-react";
 
-export async function updateEntry(entry) {
-  const newStatus = entry.status === "read" ? "unread" : "read";
+export async function updateEntryStatus(entry, status = "toggle") {
+  let newStatus;
+
+  if (status === "toggle") {
+    newStatus = entry.status === "read" ? "unread" : "read";
+  } else {
+    newStatus = status;
+  }
+
   try {
-    const response = await thunder.request({
+    return await thunder.request({
       method: "put",
       url: `/v1/entries`,
       data: { entry_ids: [entry.id], status: newStatus },
     });
-    console.log(response);
-    return response;
   } catch (error) {
     console.error(error);
     Message.error(error.message);
   }
 }
 
-export async function starEntry(entry) {
-  // PUT /v1/entries/1234/bookmark
+export async function updateEntryStarred(entry) {
   try {
     return await thunder.request({
       method: "put",
@@ -35,21 +39,6 @@ export async function getCurrentUser() {
     const response = await thunder.request({
       method: "get",
       url: `/v1/me`,
-    });
-    console.log(response);
-    return response;
-  } catch (error) {
-    console.error(error);
-    Message.error(error.message);
-  }
-}
-
-export async function clickEntryList(entry) {
-  try {
-    const response = await thunder.request({
-      method: "put",
-      url: `/v1/entries`,
-      data: { entry_ids: [entry.id], status: "read" },
     });
     console.log(response);
     return response;
