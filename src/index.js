@@ -10,6 +10,7 @@ import Login from "./Login";
 import RouterProtect from "./components/RouterProtect";
 import ErrorPage from "./ErrorPage";
 import Group from "./Group";
+import Starred from "./Starred";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <All />,
+      },
+      {
+        path: "/starred",
+        element: <Starred />,
       },
       {
         path: "/group/:c_id",

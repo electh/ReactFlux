@@ -13,8 +13,9 @@ import {
   Skeleton,
   Popconfirm,
   Message,
-  Tooltip,
   Select,
+  Space,
+  Tooltip,
 } from "@arco-design/web-react";
 import "./Content.css";
 import "./Transition.css";
@@ -23,9 +24,10 @@ import {
   IconArrowDown,
   IconCheck,
   IconEmpty,
-  IconEye,
-  IconEyeInvisible,
+  IconMinusCircle,
+  IconRecord,
   IconStar,
+  IconStarFill,
 } from "@arco-design/web-react/icon";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 import { clickEntryList, updateEntry, starEntry } from "../apis";
@@ -33,51 +35,44 @@ import { clickEntryList, updateEntry, starEntry } from "../apis";
 const cards = [1, 2, 3];
 
 export default function Content({ info, getEntries, markAllAsRead }) {
+  /*接口返回文章总数原始值，不受接口返回数据长度限制*/
   const [total, setTotal] = useState(0);
+  /*接口返回未读文章数原始值，不受接口返回数据长度限制*/
+  const [unreadTotal, setUnreadTotal] = useState(0);
+  /*分页参数*/
   const [offset, setOffset] = useState(0);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const totalUnread = useStore((state) => state.totalUnread);
-  const initDataCompleted = useStore((state) => state.initDataCompleted);
-  const feeds = useStore((state) => state.feeds);
-  const groups = useStore((state) => state.groups);
+  /*all页签加载更多按钮可见性*/
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
+  /*unread页签加载更多按钮可见性*/
   const [loadMoreUnreadVisible, setLoadMoreUnreadVisible] = useState(false);
+  /*页面显示的文章*/
   const [entries, setEntries] = useState([]);
+  /*接口返回的文章*/
   const [allEntries, setAllEntries] = useState([]);
+  /*选中的文章*/
   const [activeContent, setActiveContent] = useState(null);
+  /*文章详情进入动画*/
   const [animation, setAnimation] = useState(null);
+  /*all unread*/
   const [filterStatus, setFilterStatus] = useState("all");
+  /*0-title 1-content*/
   const [filterType, setFilterType] = useState("0");
+  /*搜索文本*/
   const [filterString, setFilterString] = useState("");
+  /*初始loading*/
   const [loading, setLoading] = useState(true);
+  /*加载更多loading*/
   const [loadingMore, setLoadingMore] = useState(false);
+  /*更新menu中feed未读数*/
   const updateFeedUnread = useStore((state) => state.updateFeedUnread);
+  /*更新menu中group未读数*/
   const updateGroupUnread = useStore((state) => state.updateGroupUnread);
+  /*menu数据初始化函数*/
   const initData = useStore((state) => state.initData);
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
   const cardsRef = useRef(null);
-
-  const updateUnreadCount = () => {
-    let count = 0;
-    if (info.from === "all") {
-      count = totalUnread;
-    } else if (info.from === "feed") {
-      const feed = feeds.find((feed) => feed.id.toString() === info.id);
-      count = feed ? feed.unread : 0;
-    } else if (info.from === "group") {
-      const group = groups.find((group) => group.id.toString() === info.id);
-      count = group ? group.unread : 0;
-    }
-    setUnreadCount(count);
-    return count;
-  };
-
-  const filterArticles = (articles, status) =>
-    status === "all"
-      ? articles
-      : articles.filter((article) => article.status === status);
 
   const getFirstImage = (entry) => {
     const parser = new DOMParser();
@@ -92,19 +87,25 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const getArticleList = async () => {
     try {
       setLoading(true);
-      const response = await getEntries();
-      if (response?.data?.entries) {
-        const fetchedArticles = response.data.entries.map(getFirstImage);
+      const responseAll = await getEntries();
+      const responseUnread = await getEntries(offset, "unread");
+      if (responseAll?.data?.entries && responseUnread?.data?.total >= 0) {
+        const fetchedArticles = responseAll.data.entries.map(getFirstImage);
         setAllEntries(fetchedArticles);
 
-        const filteredArticles = filterArticles(fetchedArticles, filterStatus);
+        const filteredArticles =
+          filterStatus === "all"
+            ? fetchedArticles
+            : fetchedArticles.filter((a) => a.status === "unread");
         setEntries(filteredArticles);
 
-        setTotal(response.data.total);
-        setLoadMoreVisible(fetchedArticles.length < response.data.total);
+        setTotal(responseAll.data.total);
+        setLoadMoreVisible(fetchedArticles.length < responseAll.data.total);
 
-        const count = updateUnreadCount();
-        setLoadMoreUnreadVisible(filteredArticles.length < count);
+        setUnreadTotal(responseUnread.data.total);
+        setLoadMoreUnreadVisible(
+          filteredArticles.length < responseUnread.data.total,
+        );
       }
     } catch (error) {
       console.error("Error fetching articles:", error);
@@ -121,14 +122,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     setOffset(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [info]);
-
-  useEffect(() => {
-    if (initDataCompleted) {
-      const count = updateUnreadCount();
-      setLoadMoreUnreadVisible(entries.length < count);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initDataCompleted]);
 
   const handleLoadMore = async () => {
     try {
@@ -147,13 +140,13 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         ];
         setAllEntries(updatedAllArticles);
 
-        const filteredArticles = filterArticles(
-          updatedAllArticles,
-          filterStatus,
-        );
+        const filteredArticles =
+          filterStatus === "all"
+            ? updatedAllArticles
+            : updatedAllArticles.filter((a) => a.status === "unread");
         setEntries(filteredArticles);
         setLoadMoreVisible(updatedAllArticles.length < total);
-        setLoadMoreUnreadVisible(filteredArticles.length < unreadCount);
+        setLoadMoreUnreadVisible(filteredArticles.length < unreadTotal);
       }
     } catch (error) {
       console.error("Error fetching more articles:", error);
@@ -163,6 +156,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   };
 
   const handelFilterEntry = (filter_type, filter_status, filter_string) => {
+    setEntries([]);
     setFilterType(filter_type);
     setFilterStatus(filter_status);
     setFilterString(filter_string);
@@ -500,6 +494,15 @@ export default function Content({ info, getEntries, markAllAsRead }) {
                             <br />
                             {entry.feed.title.toUpperCase()}
                           </Typography.Text>
+                          {entry.starred && (
+                            <IconStarFill
+                              style={{
+                                fontSize: "13px",
+                                marginLeft: "8px",
+                                color: "var(--color-text-3)",
+                              }}
+                            />
+                          )}
                         </div>
                       }
                     />
@@ -550,6 +553,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             name="lang"
             value={filterStatus}
             onChange={(value) => {
+              entryListRef.current.scrollTo(0, 0);
               handelFilterEntry(filterType, value, filterString);
             }}
           >
@@ -557,71 +561,21 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             <Radio value="unread">UNREAD</Radio>
           </Radio.Group>
           <Popconfirm
+            disabled={info.from === "starred"}
             focusLock
             title="Mark All As Read?"
             okText="Confirm"
             cancelText="Cancel"
             onOk={() => handelMarkAllAsRead()}
           >
-            <Button icon={<IconCheck />} shape="circle"></Button>
+            <Button
+              icon={<IconCheck />}
+              shape="circle"
+              disabled={info.from === "starred"}
+            ></Button>
           </Popconfirm>
         </div>
       </div>
-      {activeContent && (
-        <div>
-          <Tooltip
-            position="left"
-            content={activeContent.starred ? "Unstar?" : "Star?"}
-          >
-            <Button
-              shape="circle"
-              type="primary"
-              onClick={() => handleStarEntry()}
-              icon={
-                activeContent.starred ? (
-                  <IconStar style={{ color: "#ffcd00" }} />
-                ) : (
-                  <IconStar />
-                )
-              }
-              style={{
-                position: "fixed",
-                display: "none",
-                bottom: "60px",
-                right: "20px",
-                boxShadow: "0 2px 12px 0 rgba(0,0,0,.1)",
-              }}
-            />
-          </Tooltip>
-          <Tooltip
-            position="left"
-            content={
-              activeContent.status === "unread"
-                ? "Mark As Read?"
-                : "Mark As Unread?"
-            }
-          >
-            <Button
-              shape="circle"
-              type="primary"
-              onClick={() => handleUpdateEntry()}
-              icon={
-                activeContent.status === "unread" ? (
-                  <IconEye />
-                ) : (
-                  <IconEyeInvisible />
-                )
-              }
-              style={{
-                position: "fixed",
-                bottom: "20px",
-                right: "20px",
-                boxShadow: "0 2px 12px 0 rgba(0,0,0,.1)",
-              }}
-            />
-          </Tooltip>
-        </div>
-      )}
       <CSSTransition
         in={animation}
         timeout={200}
@@ -716,6 +670,67 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           </div>
         )}
       </CSSTransition>
+      {activeContent ? (
+        <div
+          style={{
+            position: "fixed",
+            borderRadius: "50%",
+            bottom: "20px",
+            right: "10px",
+            boxShadow: "0 4px 10px rgba(var(--primary-6), 0.4)",
+          }}
+        >
+          <Space size={0} direction="vertical">
+            <Tooltip
+              mini
+              position="left"
+              content={
+                activeContent.status === "unread"
+                  ? "Mark as Read"
+                  : "Mark as Unread"
+              }
+            >
+              <Button
+                type="primary"
+                size="mini"
+                style={{
+                  borderBottom: "1px solid rgb(var(--primary-5))",
+                  borderRadius: "50% 50% 0 0",
+                }}
+                onClick={() => handleUpdateEntry()}
+                icon={
+                  activeContent.status === "unread" ? (
+                    <IconMinusCircle />
+                  ) : (
+                    <IconRecord />
+                  )
+                }
+              />
+            </Tooltip>
+            <Tooltip
+              mini
+              position="left"
+              content={activeContent.starred === false ? "Star" : "Unstar"}
+            >
+              <Button
+                type="primary"
+                size="mini"
+                style={{
+                  borderRadius: "0 0 50% 50%",
+                }}
+                onClick={() => handleStarEntry()}
+                icon={
+                  activeContent.starred ? (
+                    <IconStarFill style={{ color: "#ffcd00" }} />
+                  ) : (
+                    <IconStar />
+                  )
+                }
+              />
+            </Tooltip>
+          </Space>
+        </div>
+      ) : null}
     </>
   );
 }
