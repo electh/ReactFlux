@@ -32,7 +32,7 @@ import {
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 import { clickEntryList, updateEntry, starEntry } from "../apis";
 
-const cards = [1, 2, 3];
+const cards = [1, 2, 3, 4];
 
 export default function Content({ info, getEntries, markAllAsRead }) {
   /*接口返回文章总数原始值，不受接口返回数据长度限制*/
