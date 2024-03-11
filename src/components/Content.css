@@ -104,6 +104,10 @@ p {
   transition-property: all;
 }
 
+.card-custom-hover-style .arco-card-body {
+  padding: 10px;
+}
+
 .card-custom-hover-style:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 10px rgb(var(--gray-3));

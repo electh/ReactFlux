@@ -111,7 +111,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         setTotal(responseAll.data.total);
         setLoadMoreVisible(fetchedArticles.length < responseAll.data.total);
 
-        setUnreadTotal(responseUnread.data.total);
+        setUnreadTotal(info.from === "history" ? 0 : responseUnread.data.total);
         console.log(
           filteredArticles.length,
           responseUnread.data.total,
@@ -264,7 +264,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
 
   const handleClickEntryList = (entry) => {
     const clickCard = async () => {
-      setAnimation(null);
       if (entry.status === "unread") {
         const response = await updateEntryStatus(entry, "read");
         if (!response) {
@@ -548,6 +547,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         timeout={200}
         nodeRef={entryDetailRef}
         classNames="fade"
+        onEntered={() => setAnimation(false)}
       >
         {activeContent ? (
           <div

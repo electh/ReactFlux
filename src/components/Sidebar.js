@@ -39,11 +39,10 @@ export default function Sidebar({ location }) {
         style={{ width: 200, height: "100%" }}
         onCollapseChange={() => setCollapsed(!collapsed)}
         collapse={collapsed}
-        autoOpen
         hasCollapseButton
         defaultOpenKeys={[
           path.substring(1).indexOf("/") === -1
-            ? path
+            ? "/"
             : path.substring(0, path.substring(1).indexOf("/") + 1),
         ]}
         defaultSelectedKeys={[path]}
@@ -57,7 +56,7 @@ export default function Sidebar({ location }) {
             </>
           }
         >
-          <Skeleton loading={loading} animation text={{ rows: 2 }}>
+          <Skeleton loading={loading} animation text={{ rows: 3 }}>
             <Menu.Item key={`/`} onClick={() => navigate("/")}>
               <span>ALL</span>
             </Menu.Item>
