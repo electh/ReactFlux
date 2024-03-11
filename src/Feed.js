@@ -1,7 +1,8 @@
-import { useParams } from "react-router-dom";
 import { Message } from "@arco-design/web-react";
-import Content from "./components/Content";
+import { useParams } from "react-router-dom";
+
 import { thunder } from "./apis/axios";
+import Content from "./components/Content";
 
 export default function Feed() {
   const { f_id } = useParams();

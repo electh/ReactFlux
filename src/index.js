@@ -1,19 +1,19 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { ConfigProvider } from "@arco-design/web-react";
 import "@arco-design/web-react/dist/css/arco.css";
-import "./index.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import App from "./App";
-import Feed from "./Feed";
+import enUS from "@arco-design/web-react/es/locale/en-US";
+import ReactDOM from "react-dom/client";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+
 import All from "./All";
-import Login from "./Login";
-import RouterProtect from "./components/RouterProtect";
+import App from "./App";
 import ErrorPage from "./ErrorPage";
+import Feed from "./Feed";
 import Group from "./Group";
 import History from "./History";
+import Login from "./Login";
 import Starred from "./Starred";
-import { ConfigProvider } from "@arco-design/web-react";
-import enUS from "@arco-design/web-react/es/locale/en-US";
+import RouterProtect from "./components/RouterProtect";
+import "./index.css";
 
 const router = createBrowserRouter([
   {

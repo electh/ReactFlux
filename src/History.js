@@ -1,6 +1,7 @@
 import { Message } from "@arco-design/web-react";
-import Content from "./components/Content";
+
 import { thunder } from "./apis/axios";
+import Content from "./components/Content";
 
 export default function History() {
   const getEntries = async (offset = 0) => {

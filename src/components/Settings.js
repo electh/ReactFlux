@@ -1,17 +1,17 @@
 import {
-  Tabs,
-  Table,
-  Space,
-  Popconfirm,
+  Form,
   Input,
   Message,
-  Typography,
-  Tag,
-  Skeleton,
-  Form,
   Modal,
+  Popconfirm,
   Select,
+  Skeleton,
+  Space,
   Switch,
+  Table,
+  Tabs,
+  Tag,
+  Typography,
 } from "@arco-design/web-react";
 import {
   IconBrush,
@@ -22,20 +22,21 @@ import {
   IconFolder,
   IconPlus,
 } from "@arco-design/web-react/icon";
+import _ from "lodash";
+import { useEffect, useState } from "react";
+
 import {
   addGroup,
-  deleteFeed,
   delGroup,
+  deleteFeed,
   editFeed,
   editGroup,
   getFeeds,
   getGroups,
 } from "../apis";
-import "./Settings.css";
-import { useEffect, useState } from "react";
-import _ from "lodash";
-import Shortcuts from "./Shortcuts";
 import Appearance from "./Appearance";
+import "./Settings.css";
+import Shortcuts from "./Shortcuts";
 
 export default function Settings() {
   const [feeds, setFeeds] = useState([]);
