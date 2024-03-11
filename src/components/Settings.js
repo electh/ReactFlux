@@ -14,6 +14,7 @@ import {
   Switch,
 } from "@arco-design/web-react";
 import {
+  IconCommand,
   IconDelete,
   IconEdit,
   IconFile,
@@ -32,6 +33,7 @@ import {
 import "./Settings.css";
 import { useEffect, useState } from "react";
 import _ from "lodash";
+import Shortcuts from "./Shortcuts";
 
 export default function Settings() {
   const [feeds, setFeeds] = useState([]);
@@ -434,6 +436,17 @@ export default function Settings() {
             </Form>
           </Modal>
         )}
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        key="3"
+        title={
+          <span>
+            <IconCommand style={{ marginRight: 6 }} />
+            Shortcuts
+          </span>
+        }
+      >
+        <Shortcuts />
       </Tabs.TabPane>
     </Tabs>
   );

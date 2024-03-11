@@ -66,7 +66,7 @@ export default function Header({ theme }) {
       </div>
       <div className="button-group" style={{ marginRight: "20px" }}>
         <Space size={16}>
-          <Tooltip content="Add feed">
+          <Tooltip content="Add feed" mini>
             <Button
               shape="circle"
               size="small"
@@ -75,18 +75,12 @@ export default function Header({ theme }) {
               onClick={() => setVisible("addFeed", true)}
             />
           </Tooltip>
-          <Tooltip
-            content={
-              theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-            }
-          >
-            <Button
-              shape="circle"
-              size="small"
-              icon={theme === "dark" ? <IconSunFill /> : <IconMoonFill />}
-              onClick={toggleTheme}
-            />
-          </Tooltip>
+          <Button
+            shape="circle"
+            size="small"
+            icon={theme === "dark" ? <IconSunFill /> : <IconMoonFill />}
+            onClick={toggleTheme}
+          />
           <Dropdown
             droplist={
               <Menu>
