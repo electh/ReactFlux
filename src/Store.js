@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { create } from "zustand";
 import { getFeeds, getGroups, getUnreadInfo } from "./apis";
+import { applyColor } from "./utils/Colors";
 
 export const useStore = create((set, get) => ({
   feeds: [],
@@ -92,6 +93,7 @@ export const useStore = create((set, get) => ({
     } else {
       document.body.removeAttribute("arco-theme");
     }
+    applyColor(localStorage.getItem("themeColor") || "Blue");
   },
 
   setVisible: (modalName, visible) => {

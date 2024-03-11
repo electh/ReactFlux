@@ -5,6 +5,7 @@ import Sidebar from "./components/Sidebar";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useStore } from "./Store";
+import { applyColor } from "./utils/Colors";
 
 export default function App() {
   const { initData, theme } = useStore();
@@ -16,6 +17,7 @@ export default function App() {
     } else {
       document.body.removeAttribute("arco-theme");
     }
+    applyColor(localStorage.getItem("themeColor") || "Blue");
   };
 
   useEffect(() => {

@@ -92,7 +92,7 @@ export default function Login() {
               form={loginForm}
               layout="vertical"
               autoComplete="off"
-              onChange={(value, values) => console.log(value, values)}
+              // onChange={(value, values) => console.log(value, values)}
               onSubmit={handelLogin}
             >
               <Form.Item

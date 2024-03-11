@@ -19,6 +19,7 @@ import {
 } from "@arco-design/web-react/icon";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../Store";
+import { applyColor } from "../utils/Colors";
 
 export default function Header({ theme }) {
   const navigate = useNavigate();
@@ -28,7 +29,9 @@ export default function Header({ theme }) {
     localStorage.removeItem("server");
     localStorage.removeItem("token");
     localStorage.removeItem("theme");
+    localStorage.removeItem("themeColor");
     document.body.removeAttribute("arco-theme");
+    applyColor("Blue");
     navigate("/login");
     Message.success("logout");
   };
