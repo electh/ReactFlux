@@ -7,8 +7,8 @@ export default function SettingsModal() {
 
   return (
     <Modal
-      title="Settings"
       visible={visible.settings}
+      simple
       alignCenter={false}
       footer={null}
       unmountOnExit

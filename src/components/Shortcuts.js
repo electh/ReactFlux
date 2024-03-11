@@ -40,5 +40,7 @@ const data = [
 ];
 
 export default function Shortcuts() {
-  return <Table columns={columns} data={data} pagination={false} />;
+  return (
+    <Table columns={columns} data={data} pagination={false} size={"small"} />
+  );
 }

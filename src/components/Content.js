@@ -533,8 +533,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
             <Popconfirm
               focusLock
               title="Mark All As Read?"
-              okText="Confirm"
-              cancelText="Cancel"
               onOk={() => handelMarkAllAsRead()}
             >
               <Button icon={<IconCheck />} shape="circle"></Button>

@@ -12,6 +12,8 @@ import ErrorPage from "./ErrorPage";
 import Group from "./Group";
 import History from "./History";
 import Starred from "./Starred";
+import { ConfigProvider } from "@arco-design/web-react";
+import enUS from "@arco-design/web-react/es/locale/en-US";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +51,10 @@ const router = createBrowserRouter([
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={router} />);
+root.render(
+  <ConfigProvider locale={enUS}>
+    <RouterProvider router={router} />
+  </ConfigProvider>,
+);
 
 export { router };

@@ -149,9 +149,7 @@ export default function Settings() {
             <IconEdit />
           </span>
           <Popconfirm
-            cancelText="Cancel"
             position="left"
-            okText="Ok"
             focusLocka
             title="Unfollow？"
             onOk={async () => {
@@ -224,9 +222,9 @@ export default function Settings() {
   return (
     <Tabs
       defaultActiveTab="1"
-      tabPosition="left"
+      tabPosition="top"
       onChange={refreshData}
-      style={{ marginLeft: "-20px", marginTop: "-14px" }}
+      style={{ marginTop: "-14px" }}
     >
       <Tabs.TabPane
         key="1"
@@ -246,7 +244,7 @@ export default function Settings() {
             }
             style={{
               width: 300,
-              marginBottom: "10px",
+              marginBottom: "16px",
             }}
           />
         </div>
