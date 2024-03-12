@@ -5,9 +5,10 @@
 Reactflux 是 [Miniflux](https://github.com/miniflux/miniflux) 的第三方 Web 前端，提供了更为友好的阅读体验。
 * 现代化的界面
 * 响应式设计
-* 支持黑暗模式
+* 支持黑暗模式和自定义主题色
 * 全文搜索
 * 订阅源及分组管理
+* 快捷键支持
 
 ### 截图
 
