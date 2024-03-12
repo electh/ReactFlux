@@ -2,6 +2,7 @@ import { Message } from "@arco-design/web-react";
 
 import { thunder } from "./apis/axios";
 import Content from "./components/Content";
+import { ContentProvider } from "./components/ContentContext";
 
 export default function History() {
   const getEntries = async (offset = 0) => {
@@ -15,5 +16,9 @@ export default function History() {
     }
   };
 
-  return <Content info={{ from: "history", id: "" }} getEntries={getEntries} />;
+  return (
+    <ContentProvider>
+      <Content info={{ from: "history", id: "" }} getEntries={getEntries} />
+    </ContentProvider>
+  );
 }
