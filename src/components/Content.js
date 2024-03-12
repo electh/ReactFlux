@@ -49,26 +49,21 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     return entries.map((e) => (e.id === entryId ? { ...e, status } : e));
   };
 
-  const handleClickEntryList = (entry) => {
-    const clickCard = async () => {
+  const handleEntryClick = (entry) => {
+    const processEntryClick = async () => {
       if (entry.status === "unread") {
         const response = await updateEntryStatus(entry, "read");
-        if (!response) {
-          return;
+        if (response) {
+          setAnimation(true);
+          updateFeedUnread(entry.feed.id, "read");
+          updateGroupUnread(entry.feed.category.id, "read");
+          setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
+          setAllEntries(updateLocalEntryStatus(allEntries, entry.id, "read"));
+          setUnreadTotal(unreadTotal - 1);
         }
       }
 
-      setAnimation(true);
       setActiveContent({ ...entry, status: "read" });
-      if (entry.status === "unread") {
-        updateFeedUnread(entry.feed.id, "read");
-        updateGroupUnread(entry.feed.category.id, "read");
-      }
-
-      setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
-      setAllEntries(updateLocalEntryStatus(allEntries, entry.id, "read"));
-
-      setUnreadTotal(entry.status === "unread" ? unreadTotal - 1 : unreadTotal);
 
       if (entryDetailRef.current) {
         entryDetailRef.current.setAttribute("tabIndex", "-1");
@@ -77,7 +72,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
       }
     };
 
-    clickCard();
+    processEntryClick();
   };
 
   const handleFilterEntry = (filter_type, filter_status, filter_string) => {
@@ -121,8 +116,8 @@ export default function Content({ info, getEntries, markAllAsRead }) {
 
     const keyMap = {
       27: () => handleEscapeKey(activeContent, setActiveContent, entryListRef),
-      37: () => handleLeftKey(currentIndex, entries, handleClickEntryList),
-      39: () => handleRightKey(currentIndex, entries, handleClickEntryList),
+      37: () => handleLeftKey(currentIndex, entries, handleEntryClick),
+      39: () => handleRightKey(currentIndex, entries, handleEntryClick),
       77: () => handleMKey(activeContent, toggleEntryStatus),
       83: () => handleSKey(activeContent, toggleEntryStarred),
     };
@@ -160,7 +155,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         >
           <ArticleListView
             cardsRef={cardsRef}
-            handleClickEntryList={handleClickEntryList}
+            handleClickEntryList={handleEntryClick}
             handleFilterEntry={handleFilterEntry}
             loading={loading}
             ref={entryListRef}

@@ -19,12 +19,9 @@ export const handleLeftKey = (currentIndex, entries, handleClickEntryList) => {
   if (currentIndex > 0) {
     const prevEntry = entries[currentIndex - 1];
     handleClickEntryList(prevEntry);
-    let card = document.querySelector(".card-custom-selected-style");
+    const card = document.querySelector(".card-custom-selected-style");
     if (card) {
-      card.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
+      card.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }
 };
@@ -34,12 +31,9 @@ export const handleRightKey = (currentIndex, entries, handleClickEntryList) => {
   if (currentIndex < entries.length - 1) {
     const nextEntry = entries[currentIndex + 1];
     handleClickEntryList(nextEntry);
-    let card = document.querySelector(".card-custom-selected-style");
+    const card = document.querySelector(".card-custom-selected-style");
     if (card) {
-      card.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      card.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 };
