@@ -21,11 +21,7 @@ export const handleLeftKey = (currentIndex, entries, handleClickEntryList) => {
     handleClickEntryList(prevEntry);
     const card = document.querySelector(".card-custom-selected-style");
     if (card) {
-      card.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-        inline: "nearest",
-      });
+      card.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }
 };
@@ -37,11 +33,7 @@ export const handleRightKey = (currentIndex, entries, handleClickEntryList) => {
     handleClickEntryList(nextEntry);
     const card = document.querySelector(".card-custom-selected-style");
     if (card) {
-      card.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
-      });
+      card.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 };
