@@ -33,7 +33,7 @@ export const handleRightKey = (currentIndex, entries, handleClickEntryList) => {
     handleClickEntryList(nextEntry);
     let card = document.querySelector(".card-custom-selected-style");
     if (card) {
-      card.scrollIntoView(true);
+      card.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }
 };
