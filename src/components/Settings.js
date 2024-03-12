@@ -247,7 +247,7 @@ export default function Settings() {
             }
             style={{
               width: 300,
-              marginBottom: "20px",
+              marginBottom: "24px",
             }}
           />
         </div>
