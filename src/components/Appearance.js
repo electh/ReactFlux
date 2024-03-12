@@ -1,6 +1,5 @@
-import "@arco-design/web-react/dist/css/arco.css";
 import { useStore } from "../Store";
-import { Radio, Divider, Tooltip } from "@arco-design/web-react";
+import { Radio, Divider, Tooltip, Typography } from "@arco-design/web-react";
 import { useState } from "react";
 import { IconMoonFill, IconSunFill } from "@arco-design/web-react/icon";
 import { applyColor, colors, getColorValue } from "../utils/Colors";
@@ -14,54 +13,71 @@ export default function Appearance() {
 
   return (
     <>
-      <div style={{ fontWeight: 500, fontSize: "14px", marginBottom: "16px" }}>
-        Color
-      </div>
-      <div style={{ display: "flex" }}>
-        {colors.map((c) => (
-          <Tooltip content={c.name} key={c.name}>
-            <div
-              style={{
-                width: "18px",
-                height: "18px",
-                borderRadius: "50%",
-                margin: "2px",
-                backgroundColor: getColorValue(c.name),
-                cursor: "pointer",
-                border: "3px solid var(--color-bg-3)",
-                outline:
-                  c.name === themeColor
-                    ? `1px solid ${getColorValue(c.name)}`
-                    : "none",
-              }}
-              onClick={() => {
-                setThemeColor(c.name);
-                localStorage.setItem("themeColor", c.name);
-                applyColor(c.name);
-              }}
-            ></div>
-          </Tooltip>
-        ))}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Accent color
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Choose your accent color
+          </Typography.Text>
+        </div>
+        <div style={{ display: "flex" }}>
+          {colors.map((c) => (
+            <Tooltip content={c.name} key={c.name}>
+              <div
+                style={{
+                  width: "18px",
+                  height: "18px",
+                  borderRadius: "50%",
+                  margin: "2px",
+                  backgroundColor: getColorValue(c.name),
+                  cursor: "pointer",
+                  border: "3px solid var(--color-bg-3)",
+                  outline:
+                    c.name === themeColor
+                      ? `1px solid ${getColorValue(c.name)}`
+                      : "none",
+                }}
+                onClick={() => {
+                  setThemeColor(c.name);
+                  localStorage.setItem("themeColor", c.name);
+                  applyColor(c.name);
+                }}
+              ></div>
+            </Tooltip>
+          ))}
+        </div>
       </div>
       <Divider />
-      <div style={{ fontWeight: 500, fontSize: "14px", marginBottom: "16px" }}>
-        Theme
+      <Typography.Title heading={6}>Theme</Typography.Title>
+      <Typography.Text type="secondary">
+        Customize your UI theme
+      </Typography.Text>
+      <div>
+        <Radio.Group
+          size="large"
+          type="button"
+          style={{ marginTop: "16px" }}
+          defaultValue={theme}
+          onChange={() => toggleTheme()}
+        >
+          <Radio value="light">
+            <IconSunFill style={{ marginRight: "6px" }} />
+            Light
+          </Radio>
+          <Radio value="dark">
+            <IconMoonFill style={{ marginRight: "6px" }} />
+            Dark
+          </Radio>
+        </Radio.Group>
       </div>
-      <Radio.Group
-        size="large"
-        type="button"
-        defaultValue={theme}
-        onChange={() => toggleTheme()}
-      >
-        <Radio value="light">
-          <IconSunFill style={{ marginRight: "6px" }} />
-          Light
-        </Radio>
-        <Radio value="dark">
-          <IconMoonFill style={{ marginRight: "6px" }} />
-          Dark
-        </Radio>
-      </Radio.Group>
     </>
   );
 }
