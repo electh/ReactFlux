@@ -115,6 +115,11 @@ export default function Login() {
                   disabled={loading}
                   prefix={<IconLock />}
                   placeholder="please input api token"
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      loginForm.submit();
+                    }
+                  }}
                 />
               </Form.Item>
             </Form>
