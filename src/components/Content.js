@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import { updateEntryStatus } from "../apis";
+import useEntryActions from "../hooks/useEntryActions";
 import {
   handleEscapeKey,
   handleLeftKey,
@@ -33,12 +34,12 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     setFilterType,
     setLoadMoreUnreadVisible,
     setUnreadTotal,
-    toggleEntryStarred,
-    toggleEntryStatus,
     unreadTotal,
     updateFeedUnread,
     updateGroupUnread,
   } = useContext(ContentContext);
+
+  const { toggleEntryStarred, toggleEntryStatus } = useEntryActions();
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);

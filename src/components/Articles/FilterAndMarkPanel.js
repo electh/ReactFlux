@@ -37,7 +37,7 @@ const FilterAndMarkPanel = forwardRef(
       return { responseAll, responseUnread };
     };
 
-    const processEntries = (responseAll, responseUnread) => {
+    const processEntries = (responseAll) => {
       const fetchedArticles = responseAll.data.entries.map(getFirstImage);
 
       const filteredArticles =
@@ -67,10 +67,8 @@ const FilterAndMarkPanel = forwardRef(
 
     const handleResponses = (responseAll, responseUnread) => {
       if (responseAll?.data?.entries && responseUnread?.data?.total >= 0) {
-        const { fetchedArticles, filteredArticles } = processEntries(
-          responseAll,
-          responseUnread,
-        );
+        const { fetchedArticles, filteredArticles } =
+          processEntries(responseAll);
         updateUI(
           fetchedArticles,
           filteredArticles,
