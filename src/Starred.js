@@ -1,6 +1,8 @@
 import { Message } from "@arco-design/web-react";
-import Content from "./components/Content";
+
 import { thunder } from "./apis/axios";
+import Content from "./components/Content";
+import { ContentProvider } from "./components/ContentContext";
 
 export default function Starred() {
   const getEntries = async (offset = 0, status = null) => {
@@ -17,5 +19,9 @@ export default function Starred() {
     }
   };
 
-  return <Content info={{ from: "starred", id: "" }} getEntries={getEntries} />;
+  return (
+    <ContentProvider>
+      <Content info={{ from: "starred", id: "" }} getEntries={getEntries} />
+    </ContentProvider>
+  );
 }

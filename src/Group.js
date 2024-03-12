@@ -1,7 +1,9 @@
-import { useParams } from "react-router-dom";
 import { Message } from "@arco-design/web-react";
-import Content from "./components/Content";
+import { useParams } from "react-router-dom";
+
 import { thunder } from "./apis/axios";
+import Content from "./components/Content";
+import { ContentProvider } from "./components/ContentContext";
 
 export default function Group() {
   const { c_id } = useParams();
@@ -35,10 +37,12 @@ export default function Group() {
   };
 
   return (
-    <Content
-      info={{ from: "group", id: c_id }}
-      getEntries={getGroupEntries}
-      markAllAsRead={markGroupAsRead}
-    />
+    <ContentProvider>
+      <Content
+        info={{ from: "group", id: c_id }}
+        getEntries={getGroupEntries}
+        markAllAsRead={markGroupAsRead}
+      />
+    </ContentProvider>
   );
 }
