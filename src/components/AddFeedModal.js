@@ -16,7 +16,7 @@ export default function AddFeedModal() {
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
 
-  const handelAddFeed = async (feed_url, group_id, is_full_text) => {
+  const handleAddFeed = async (feed_url, group_id, is_full_text) => {
     setFeedModalLoading(true);
     const response = await addFeed(feed_url, group_id, is_full_text);
     if (response) {
@@ -45,7 +45,7 @@ export default function AddFeedModal() {
         form={feedForm}
         layout="vertical"
         onSubmit={(values) =>
-          handelAddFeed(values.url, values.group, values.crawler)
+          handleAddFeed(values.url, values.group, values.crawler)
         }
         labelCol={{ span: 7 }}
         wrapperCol={{ span: 17 }}

@@ -175,7 +175,7 @@ export default function Settings() {
     },
   ];
 
-  const handelAddGroup = async () => {
+  const handleAddGroup = async () => {
     if (inputAddValue) {
       const response = await addGroup(inputAddValue);
       if (response) {
@@ -191,7 +191,7 @@ export default function Settings() {
     setShowAddInput(false);
   };
 
-  const handelEditFeed = async (feed_id, newTitle, group_id, is_full_text) => {
+  const handleEditFeed = async (feed_id, newTitle, group_id, is_full_text) => {
     setFeedModalLoading(true);
     const response = await editFeed(feed_id, newTitle, group_id, is_full_text);
     if (response) {
@@ -208,7 +208,7 @@ export default function Settings() {
     feedForm.resetFields();
   };
 
-  const handelEditGroup = async (group_id, newTitle) => {
+  const handleEditGroup = async (group_id, newTitle) => {
     setGroupModalLoading(true);
     const response = await editGroup(group_id, newTitle);
     if (response) {
@@ -277,7 +277,7 @@ export default function Settings() {
               layout="vertical"
               onChange={(value, values) => console.log(value, values)}
               onSubmit={(values) =>
-                handelEditFeed(
+                handleEditFeed(
                   selectedFeed.id,
                   values.title,
                   values.group,
@@ -377,8 +377,8 @@ export default function Settings() {
                 size="small"
                 value={inputAddValue}
                 style={{ width: 84 }}
-                onPressEnter={handelAddGroup}
-                onBlur={handelAddGroup}
+                onPressEnter={handleAddGroup}
+                onBlur={handleAddGroup}
                 onChange={setInputAddValue}
               />
             ) : (
@@ -418,7 +418,7 @@ export default function Settings() {
               layout="vertical"
               onChange={(value, values) => console.log(value, values)}
               onSubmit={(values) =>
-                handelEditGroup(selectedGroup.id, values.title)
+                handleEditGroup(selectedGroup.id, values.title)
               }
               labelCol={{
                 style: { flexBasis: 90 },

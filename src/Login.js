@@ -48,7 +48,7 @@ export default function Login() {
     setLoading(false);
   };
 
-  const handelLogin = () => {
+  const handleLogin = () => {
     healthCheck();
   };
 
@@ -93,7 +93,7 @@ export default function Login() {
               layout="vertical"
               autoComplete="off"
               // onChange={(value, values) => console.log(value, values)}
-              onSubmit={handelLogin}
+              onSubmit={handleLogin}
             >
               <Form.Item
                 label="Server address"
