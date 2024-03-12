@@ -1,11 +1,10 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-
 import "./App.css";
-import { useStore } from "./Store";
 import ArticleList from "./components/ArticleList";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useStore } from "./Store";
 import { applyColor } from "./utils/Colors";
 
 export default function App() {

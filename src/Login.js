@@ -1,15 +1,15 @@
+import { IconBook, IconHome, IconLock } from "@arco-design/web-react/icon";
 import {
+  Input,
+  Typography,
+  Form,
   Button,
   Card,
-  Divider,
-  Form,
-  Input,
-  Link,
   Message,
-  Typography,
+  Link,
+  Divider,
 } from "@arco-design/web-react";
 import useForm from "@arco-design/web-react/es/Form/useForm";
-import { IconBook, IconHome, IconLock } from "@arco-design/web-react/icon";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -48,7 +48,7 @@ export default function Login() {
     setLoading(false);
   };
 
-  const handleLogin = () => {
+  const handelLogin = () => {
     healthCheck();
   };
 
@@ -93,7 +93,7 @@ export default function Login() {
               layout="vertical"
               autoComplete="off"
               // onChange={(value, values) => console.log(value, values)}
-              onSubmit={handleLogin}
+              onSubmit={handelLogin}
             >
               <Form.Item
                 label="Server address"

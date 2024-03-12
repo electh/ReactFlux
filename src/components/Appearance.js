@@ -1,8 +1,7 @@
-import { Divider, Radio, Tooltip, Typography } from "@arco-design/web-react";
-import { IconMoonFill, IconSunFill } from "@arco-design/web-react/icon";
-import { useState } from "react";
-
 import { useStore } from "../Store";
+import { Radio, Divider, Tooltip, Typography } from "@arco-design/web-react";
+import { useState } from "react";
+import { IconMoonFill, IconSunFill } from "@arco-design/web-react/icon";
 import { applyColor, colors, getColorValue } from "../utils/Colors";
 
 export default function Appearance() {

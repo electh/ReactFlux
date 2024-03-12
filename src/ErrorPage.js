@@ -1,5 +1,5 @@
+import { useRouteError, useNavigate } from "react-router-dom";
 import { Button, Result } from "@arco-design/web-react";
-import { useNavigate, useRouteError } from "react-router-dom";
 
 export default function ErrorPage() {
   const navigate = useNavigate();

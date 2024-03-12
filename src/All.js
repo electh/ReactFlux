@@ -1,9 +1,7 @@
 import { Message } from "@arco-design/web-react";
-
+import Content from "./components/Content";
 import { getCurrentUser } from "./apis";
 import { thunder } from "./apis/axios";
-import Content from "./components/Content";
-import { ContentProvider } from "./components/ContentContext";
 
 export default function All() {
   const getEntries = async (offset = 0, status = null) => {
@@ -36,12 +34,10 @@ export default function All() {
   };
 
   return (
-    <ContentProvider>
-      <Content
-        info={{ from: "all", id: "" }}
-        getEntries={getEntries}
-        markAllAsRead={markAllAsRead}
-      />
-    </ContentProvider>
+    <Content
+      info={{ from: "all", id: "" }}
+      getEntries={getEntries}
+      markAllAsRead={markAllAsRead}
+    />
   );
 }

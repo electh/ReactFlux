@@ -1,17 +1,17 @@
 import {
-  Form,
+  Tabs,
+  Table,
+  Space,
+  Popconfirm,
   Input,
   Message,
-  Modal,
-  Popconfirm,
-  Select,
-  Skeleton,
-  Space,
-  Switch,
-  Table,
-  Tabs,
-  Tag,
   Typography,
+  Tag,
+  Skeleton,
+  Form,
+  Modal,
+  Select,
+  Switch,
 } from "@arco-design/web-react";
 import {
   IconCommand,
@@ -22,21 +22,20 @@ import {
   IconPlus,
   IconSkin,
 } from "@arco-design/web-react/icon";
-import _ from "lodash";
-import { useEffect, useState } from "react";
-
 import {
   addGroup,
-  delGroup,
   deleteFeed,
+  delGroup,
   editFeed,
   editGroup,
   getFeeds,
   getGroups,
 } from "../apis";
-import Appearance from "./Appearance";
 import "./Settings.css";
+import { useEffect, useState } from "react";
+import _ from "lodash";
 import Shortcuts from "./Shortcuts";
+import Appearance from "./Appearance";
 
 export default function Settings() {
   const [feeds, setFeeds] = useState([]);
@@ -175,7 +174,7 @@ export default function Settings() {
     },
   ];
 
-  const handleAddGroup = async () => {
+  const handelAddGroup = async () => {
     if (inputAddValue) {
       const response = await addGroup(inputAddValue);
       if (response) {
@@ -191,7 +190,7 @@ export default function Settings() {
     setShowAddInput(false);
   };
 
-  const handleEditFeed = async (feed_id, newTitle, group_id, is_full_text) => {
+  const handelEditFeed = async (feed_id, newTitle, group_id, is_full_text) => {
     setFeedModalLoading(true);
     const response = await editFeed(feed_id, newTitle, group_id, is_full_text);
     if (response) {
@@ -208,7 +207,7 @@ export default function Settings() {
     feedForm.resetFields();
   };
 
-  const handleEditGroup = async (group_id, newTitle) => {
+  const handelEditGroup = async (group_id, newTitle) => {
     setGroupModalLoading(true);
     const response = await editGroup(group_id, newTitle);
     if (response) {
@@ -277,7 +276,7 @@ export default function Settings() {
               layout="vertical"
               onChange={(value, values) => console.log(value, values)}
               onSubmit={(values) =>
-                handleEditFeed(
+                handelEditFeed(
                   selectedFeed.id,
                   values.title,
                   values.group,
@@ -377,8 +376,8 @@ export default function Settings() {
                 size="small"
                 value={inputAddValue}
                 style={{ width: 84 }}
-                onPressEnter={handleAddGroup}
-                onBlur={handleAddGroup}
+                onPressEnter={handelAddGroup}
+                onBlur={handelAddGroup}
                 onChange={setInputAddValue}
               />
             ) : (
@@ -418,7 +417,7 @@ export default function Settings() {
               layout="vertical"
               onChange={(value, values) => console.log(value, values)}
               onSubmit={(values) =>
-                handleEditGroup(selectedGroup.id, values.title)
+                handelEditGroup(selectedGroup.id, values.title)
               }
               labelCol={{
                 style: { flexBasis: 90 },
