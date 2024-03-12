@@ -1,6 +1,7 @@
-import Settings from "./Settings";
 import { Modal } from "@arco-design/web-react";
+
 import { useStore } from "../Store";
+import Settings from "./Settings";
 
 export default function SettingsModal() {
   const { visible, setVisible, initData } = useStore();
