@@ -1,9 +1,7 @@
-import { Message } from "@arco-design/web-react";
 import { useParams } from "react-router-dom";
-
-import { thunder } from "./apis/axios";
+import { Message } from "@arco-design/web-react";
 import Content from "./components/Content";
-import { ContentProvider } from "./components/ContentContext";
+import { thunder } from "./apis/axios";
 
 export default function Feed() {
   const { f_id } = useParams();
@@ -36,12 +34,10 @@ export default function Feed() {
   };
 
   return (
-    <ContentProvider>
-      <Content
-        info={{ from: "feed", id: f_id }}
-        getEntries={getFeedEntries}
-        markAllAsRead={markAllAsRead}
-      />
-    </ContentProvider>
+    <Content
+      info={{ from: "feed", id: f_id }}
+      getEntries={getFeedEntries}
+      markAllAsRead={markAllAsRead}
+    />
   );
 }

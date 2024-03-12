@@ -18,7 +18,6 @@ import {
   IconUser,
 } from "@arco-design/web-react/icon";
 import { useNavigate } from "react-router-dom";
-
 import { useStore } from "../Store";
 import { applyColor } from "../utils/Colors";
 
@@ -26,7 +25,7 @@ export default function Header({ theme }) {
   const navigate = useNavigate();
   const { toggleTheme, setVisible } = useStore();
 
-  const handleLogout = () => {
+  const handelLogout = () => {
     localStorage.removeItem("server");
     localStorage.removeItem("token");
     localStorage.removeItem("theme");
@@ -98,7 +97,7 @@ export default function Header({ theme }) {
                   />
                   Settings
                 </Menu.Item>
-                <Menu.Item key="1" onClick={handleLogout}>
+                <Menu.Item key="1" onClick={handelLogout}>
                   <IconPoweroff
                     style={{
                       marginRight: 8,

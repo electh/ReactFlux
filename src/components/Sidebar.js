@@ -1,8 +1,7 @@
-import { Layout, Menu, Skeleton, Typography } from "@arco-design/web-react";
 import { IconApps, IconFile, IconList } from "@arco-design/web-react/icon";
+import { Layout, Menu, Skeleton, Typography } from "@arco-design/web-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { useStore } from "../Store";
 
 const MenuItem = Menu.Item;

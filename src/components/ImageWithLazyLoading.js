@@ -1,6 +1,5 @@
+import React, { useState, useEffect, useRef } from "react";
 import { Skeleton } from "@arco-design/web-react";
-import { useEffect, useRef, useState } from "react";
-
 import "./ImageWithLazyLoading.css";
 
 const ImageWithLazyLoading = ({ src, alt, width, height, status }) => {
