@@ -14,13 +14,13 @@ import {
   Switch,
 } from "@arco-design/web-react";
 import {
-  IconBrush,
   IconCommand,
   IconDelete,
   IconEdit,
   IconFile,
   IconFolder,
   IconPlus,
+  IconSkin,
 } from "@arco-design/web-react/icon";
 import {
   addGroup,
@@ -224,9 +224,9 @@ export default function Settings() {
   return (
     <Tabs
       defaultActiveTab="1"
-      tabPosition="top"
+      tabPosition="left"
       onChange={refreshData}
-      style={{ marginTop: "-14px" }}
+      style={{ marginLeft: "-20px" }}
     >
       <Tabs.TabPane
         key="1"
@@ -246,7 +246,7 @@ export default function Settings() {
             }
             style={{
               width: 300,
-              marginBottom: "16px",
+              marginBottom: "20px",
             }}
           />
         </div>
@@ -441,23 +441,23 @@ export default function Settings() {
         key="3"
         title={
           <span>
+            <IconSkin style={{ marginRight: 6 }} />
+            Appearance
+          </span>
+        }
+      >
+        <Appearance />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        key="4"
+        title={
+          <span>
             <IconCommand style={{ marginRight: 6 }} />
             Shortcuts
           </span>
         }
       >
         <Shortcuts />
-      </Tabs.TabPane>
-      <Tabs.TabPane
-        key="4"
-        title={
-          <span>
-            <IconBrush style={{ marginRight: 6 }} />
-            Appearance
-          </span>
-        }
-      >
-        <Appearance />
       </Tabs.TabPane>
     </Tabs>
   );

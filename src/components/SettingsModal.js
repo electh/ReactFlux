@@ -8,8 +8,8 @@ export default function SettingsModal() {
   return (
     <Modal
       visible={visible.settings}
-      simple
       alignCenter={false}
+      title="Settings"
       footer={null}
       unmountOnExit
       style={{ width: "720px", top: "10%" }}
