@@ -50,14 +50,13 @@ const useFilterEntries = () => {
       );
       setLoadMoreUnreadVisible(unreadArticles.length < unreadTotal);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    allEntries,
     filterStatus,
     filterString,
     filterType,
     setEntries,
     setLoadMoreUnreadVisible,
-    unreadTotal,
   ]);
 
   const handleFilter = (filterType, filterStatus, filterString) => {
