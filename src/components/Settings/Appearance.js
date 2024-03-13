@@ -8,8 +8,8 @@ import {
 import { IconMoonFill, IconSunFill } from "@arco-design/web-react/icon";
 import { useState } from "react";
 
-import { useStore } from "../Store";
-import { applyColor, colors, getColorValue } from "../utils/Colors";
+import { useStore } from "../../Store";
+import { applyColor, colors, getColorValue } from "../../utils/Colors";
 
 export default function Appearance() {
   const theme = localStorage.getItem("theme") || "light";
