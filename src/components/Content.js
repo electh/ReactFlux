@@ -29,10 +29,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     setAllEntries,
     setAnimation,
     setEntries,
-    setFilterStatus,
-    setFilterString,
-    setFilterType,
-    setLoadMoreUnreadVisible,
     setUnreadTotal,
     unreadTotal,
     updateFeedUnread,
@@ -51,10 +47,10 @@ export default function Content({ info, getEntries, markAllAsRead }) {
 
   const handleEntryClick = (entry) => {
     const processEntryClick = async () => {
+      setAnimation(true);
       if (entry.status === "unread") {
         const response = await updateEntryStatus(entry, "read");
         if (response) {
-          setAnimation(true);
           updateFeedUnread(entry.feed.id, "read");
           updateGroupUnread(entry.feed.category.id, "read");
           setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
@@ -73,40 +69,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     };
 
     processEntryClick();
-  };
-
-  const handleFilterEntry = (filter_type, filter_status, filter_string) => {
-    setEntries([]);
-    setFilterType(filter_type);
-    setFilterStatus(filter_status);
-    setFilterString(filter_string);
-    if (filter_type === "0") {
-      const filteredArticles =
-        filter_status === "all"
-          ? allEntries.filter((entry) => entry.title.includes(filter_string))
-          : allEntries.filter(
-              (entry) =>
-                entry.title.includes(filter_string) &&
-                entry.status === filter_status,
-            );
-      setEntries(filteredArticles);
-    } else {
-      const filteredArticles =
-        filter_status === "all"
-          ? allEntries.filter((entry) => entry.content.includes(filter_string))
-          : allEntries.filter(
-              (entry) =>
-                entry.content.includes(filter_string) &&
-                entry.status === filter_status,
-            );
-      setEntries(filteredArticles);
-    }
-    if (filter_status === "unread") {
-      const unreadArticles = allEntries.filter(
-        (entry) => entry.status === "unread",
-      );
-      setLoadMoreUnreadVisible(unreadArticles.length < unreadTotal);
-    }
   };
 
   useEffect(() => {
@@ -155,8 +117,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         >
           <ArticleListView
             cardsRef={cardsRef}
-            handleClickEntryList={handleEntryClick}
-            handleFilterEntry={handleFilterEntry}
+            handleEntryClick={handleEntryClick}
             loading={loading}
             ref={entryListRef}
           />
@@ -164,7 +125,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         <FilterAndMarkPanel
           entryDetailRef={entryDetailRef}
           getEntries={getEntries}
-          handleFilterEntry={handleFilterEntry}
           info={info}
           markAllAsRead={markAllAsRead}
           ref={entryListRef}

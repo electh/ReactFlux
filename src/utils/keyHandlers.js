@@ -15,10 +15,10 @@ export const handleEscapeKey = (
 };
 
 // go to previous entry
-export const handleLeftKey = (currentIndex, entries, handleClickEntryList) => {
+export const handleLeftKey = (currentIndex, entries, handleEntryClick) => {
   if (currentIndex > 0) {
     const prevEntry = entries[currentIndex - 1];
-    handleClickEntryList(prevEntry);
+    handleEntryClick(prevEntry);
     const card = document.querySelector(".card-custom-selected-style");
     if (card) {
       card.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -27,10 +27,10 @@ export const handleLeftKey = (currentIndex, entries, handleClickEntryList) => {
 };
 
 // go to next entry
-export const handleRightKey = (currentIndex, entries, handleClickEntryList) => {
+export const handleRightKey = (currentIndex, entries, handleEntryClick) => {
   if (currentIndex < entries.length - 1) {
     const nextEntry = entries[currentIndex + 1];
-    handleClickEntryList(nextEntry);
+    handleEntryClick(nextEntry);
     const card = document.querySelector(".card-custom-selected-style");
     if (card) {
       card.scrollIntoView({ behavior: "smooth", block: "start" });
