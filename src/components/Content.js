@@ -117,8 +117,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         >
           <ArticleListView
             cardsRef={cardsRef}
-            handleEntryClick={handleEntryClick}
             loading={loading}
+            getEntries={getEntries}
+            handleEntryClick={handleEntryClick}
             ref={entryListRef}
           />
         </CSSTransition>

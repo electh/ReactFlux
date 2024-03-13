@@ -6,8 +6,6 @@ export default function useLoadMore() {
   const {
     allEntries,
     filterStatus,
-    getEntries,
-    getFirstImage,
     offset,
     setAllEntries,
     setEntries,
@@ -21,7 +19,17 @@ export default function useLoadMore() {
   /* 加载更多 loading*/
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const handleLoadMore = async () => {
+  const getFirstImage = (entry) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(entry.content, "text/html");
+    const firstImg = doc.querySelector("img");
+    if (firstImg) {
+      entry.imgSrc = firstImg.getAttribute("src");
+    }
+    return entry;
+  };
+
+  const handleLoadMore = async (getEntries) => {
     setLoadingMore(true);
 
     try {
@@ -54,5 +62,5 @@ export default function useLoadMore() {
     setLoadingMore(false);
   };
 
-  return { loadingMore, handleLoadMore };
+  return { getFirstImage, handleLoadMore, loadingMore };
 }

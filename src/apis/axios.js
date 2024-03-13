@@ -32,9 +32,9 @@ thunder.interceptors.response.use(
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
     console.error(error);
-    Message.error(error.response.data.error_message || error.message);
+    Message.error(error.response?.data?.error_message || error.message);
 
-    if (error?.response?.status === 401) {
+    if (error.response?.status === 401) {
       localStorage.removeItem("server");
       localStorage.removeItem("token");
       router.navigate("/login");
