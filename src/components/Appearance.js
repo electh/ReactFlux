@@ -5,11 +5,13 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import { IconMoonFill, IconSunFill } from "@arco-design/web-react/icon";
 import { useState } from "react";
 
 import { useStore } from "../Store";
+import dark from "../imgs/dark.png";
+import light from "../imgs/light.png";
 import { applyColor, colors, getColorValue } from "../utils/Colors";
+import "./Appearance.css";
 
 export default function Appearance() {
   const theme = localStorage.getItem("theme") || "light";
@@ -20,6 +22,46 @@ export default function Appearance() {
 
   return (
     <>
+      <Typography.Title heading={6} style={{ marginTop: 0 }}>
+        Theme
+      </Typography.Title>
+      <Typography.Text type="secondary">
+        Customize your UI theme
+      </Typography.Text>
+      <Radio.Group
+        name="card-radio-group"
+        style={{ marginTop: "16px" }}
+        defaultValue={theme}
+        onChange={() => toggleTheme()}
+      >
+        {["light", "dark"].map((item) => {
+          return (
+            <Radio key={item} value={item}>
+              {({ checked }) => {
+                return (
+                  <div
+                    className={`custom-radio-card ${checked ? "custom-radio-card-checked" : ""}`}
+                  >
+                    <img
+                      src={item === "light" ? light : dark}
+                      alt={item}
+                      style={{
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: "6px 6px 0 0",
+                        borderLeft: "1px solid var(--color-border-2)",
+                        borderTop: "1px solid var(--color-border-2)",
+                        borderRight: "1px solid var(--color-border-2)",
+                      }}
+                    />
+                  </div>
+                );
+              }}
+            </Radio>
+          );
+        })}
+      </Radio.Group>
+      <Divider />
       <div
         style={{
           display: "flex",
@@ -62,29 +104,7 @@ export default function Appearance() {
           ))}
         </div>
       </div>
-      <Divider />
-      <Typography.Title heading={6}>Theme</Typography.Title>
-      <Typography.Text type="secondary">
-        Customize your UI theme
-      </Typography.Text>
-      <div>
-        <Radio.Group
-          size="large"
-          type="button"
-          style={{ marginTop: "16px" }}
-          defaultValue={theme}
-          onChange={() => toggleTheme()}
-        >
-          <Radio value="light">
-            <IconSunFill style={{ marginRight: "6px" }} />
-            Light
-          </Radio>
-          <Radio value="dark">
-            <IconMoonFill style={{ marginRight: "6px" }} />
-            Dark
-          </Radio>
-        </Radio.Group>
-      </div>
+
       <Divider />
       <div
         style={{
@@ -95,7 +115,7 @@ export default function Appearance() {
       >
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Thumbnails
+            Compact article list
           </Typography.Title>
           <Typography.Text type="secondary">
             Use small thumbnail in article list

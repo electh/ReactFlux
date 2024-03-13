@@ -1,0 +1,27 @@
+.arco-radio {
+  padding-left: 0;
+}
+
+.custom-radio-card {
+  padding: 12px 12px 1px 12px;
+  border: 1px solid var(--color-border-2);
+  border-radius: 12px;
+  box-sizing: border-box;
+  height: 140px;
+  transition: all 0.1s linear;
+}
+
+input[name="card-radio-group"]:focus-visible + .custom-radio-card {
+  box-shadow: 0 0 0 2px var(--color-primary-light-3);
+}
+
+.custom-radio-card:hover,
+.custom-radio-card-checked,
+.custom-radio-card:hover .custom-radio-card-mask,
+.custom-radio-card-checked .custom-radio-card-mask {
+  border-color: rgb(var(--primary-6));
+}
+
+.custom-radio-card-checked {
+  background-color: var(--color-primary-light-1);
+}
