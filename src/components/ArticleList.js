@@ -16,7 +16,7 @@ export default function ArticleList() {
         paddingLeft: collapsed ? "48px" : "200px",
         height: "calc(100vh - 49px)",
         display: "flex",
-        transition: "all 0.1s linear",
+        transition: "padding-left 0.1s linear, width 0.1s linear",
         width: collapsed ? "calc(100% - 49px)" : "calc(100% - 200px)",
       }}
     >
