@@ -59,7 +59,29 @@ export default function Sidebar({ location }) {
         >
           <Skeleton loading={loading} animation text={{ rows: 3 }}>
             <Menu.Item key={`/`} onClick={() => navigate("/")}>
-              <span>ALL</span>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <span>ALL</span>
+                <Typography.Ellipsis
+                  expandable={false}
+                  showTooltip={true}
+                  style={{
+                    width: "50%",
+                    color: "var(--color-text-4)",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  {feeds.reduce((sum, feed) => sum + feed.unread, 0) === 0
+                    ? ""
+                    : feeds.reduce((sum, feed) => sum + feed.unread, 0)}
+                </Typography.Ellipsis>
+              </div>
             </Menu.Item>
           </Skeleton>
           <Skeleton loading={loading} text={{ rows: 0 }}>
