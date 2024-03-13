@@ -11,7 +11,7 @@ import LoadingCards from "./LoadingCards";
 import SearchInput from "./SearchInput";
 
 const ArticleListView = forwardRef(
-  ({ loading, handleFilterEntry, handleClickEntryList, cardsRef }, ref) => {
+  ({ loading, handleEntryClick, cardsRef }, ref) => {
     const { entries, filterStatus, loadMoreUnreadVisible, loadMoreVisible } =
       useContext(ContentContext);
 
@@ -38,13 +38,13 @@ const ArticleListView = forwardRef(
               <ArticleCardMini
                 key={entry.id}
                 entry={entry}
-                handleClickEntryList={handleClickEntryList}
+                handleEntryClick={handleEntryClick}
               />
             ) : (
               <ArticleCard
                 key={entry.id}
                 entry={entry}
-                handleClickEntryList={handleClickEntryList}
+                handleEntryClick={handleEntryClick}
               />
             ),
           )}

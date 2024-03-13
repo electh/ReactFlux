@@ -11,7 +11,7 @@ import "./ArticleCard.css";
 
 dayjs.extend(relativeTime);
 
-export default function ArticleCardMini({ entry, handleClickEntryList }) {
+export default function ArticleCardMini({ entry, handleEntryClick }) {
   const { activeContent } = useContext(ContentContext);
 
   return (
@@ -26,7 +26,7 @@ export default function ArticleCardMini({ entry, handleClickEntryList }) {
         data-entry-id={entry.id}
         style={{ width: 300, cursor: "pointer" }}
         onClick={() => {
-          handleClickEntryList(entry);
+          handleEntryClick(entry);
         }}
         cover={null}
       >

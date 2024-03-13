@@ -3,13 +3,11 @@ import { IconCheck } from "@arco-design/web-react/icon";
 import { forwardRef, useContext, useEffect } from "react";
 
 import { useStore } from "../../Store";
+import UseFilterEntries from "../../hooks/useFilterEntries";
 import { ContentContext } from "../ContentContext";
 
 const FilterAndMarkPanel = forwardRef(
-  (
-    { info, getEntries, markAllAsRead, handleFilterEntry, entryDetailRef },
-    ref,
-  ) => {
+  ({ info, getEntries, markAllAsRead, entryDetailRef }, ref) => {
     const {
       allEntries,
       entries,
@@ -27,6 +25,8 @@ const FilterAndMarkPanel = forwardRef(
       setTotal,
       setUnreadTotal,
     } = useContext(ContentContext);
+
+    const { handleFilter } = UseFilterEntries();
 
     /*menu 数据初始化函数 */
     const { initData } = useStore();
@@ -80,16 +80,14 @@ const FilterAndMarkPanel = forwardRef(
 
     const getArticleList = async () => {
       setLoading(true);
-
-      fetchEntries()
-        .then(({ responseAll, responseUnread }) => {
-          handleResponses(responseAll, responseUnread);
-        })
-        .catch((error) => {
-          console.error("Error fetching articles:", error);
-        });
-
-      setLoading(false);
+      try {
+        const { responseAll, responseUnread } = await fetchEntries();
+        handleResponses(responseAll, responseUnread);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     const getFirstImage = (entry) => {
@@ -151,7 +149,7 @@ const FilterAndMarkPanel = forwardRef(
             if (ref.current) {
               ref.current.scrollTo(0, 0);
             }
-            handleFilterEntry(filterType, value, filterString);
+            handleFilter(filterType, value, filterString);
           }}
         >
           <Radio value="all">ALL</Radio>

@@ -1,11 +1,13 @@
 import { Input, Select } from "@arco-design/web-react";
 import { useContext } from "react";
 
+import UseFilterEntries from "../../hooks/useFilterEntries";
 import { ContentContext } from "../ContentContext";
 
 export default function SearchInput() {
-  const { filterStatus, filterString, filterType, handleFilterEntry } =
-    useContext(ContentContext);
+  const { filterStatus, filterString, filterType } = useContext(ContentContext);
+
+  const { handleFilter } = UseFilterEntries();
 
   return (
     <Input.Search
@@ -16,7 +18,7 @@ export default function SearchInput() {
         <Select
           placeholder="Please select"
           onChange={(value) => {
-            handleFilterEntry(value, filterStatus, filterString);
+            handleFilter(value, filterStatus, filterString);
           }}
           style={{ width: 100 }}
           value={filterType}
@@ -26,7 +28,7 @@ export default function SearchInput() {
         </Select>
       }
       onChange={(value) => {
-        handleFilterEntry(filterType, filterStatus, value);
+        handleFilter(filterType, filterStatus, value);
       }}
       style={{
         marginBottom: "10px",
