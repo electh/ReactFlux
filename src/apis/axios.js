@@ -1,9 +1,10 @@
+import { Message } from "@arco-design/web-react";
 import axios from "axios";
 
 import { router } from "../index";
 
 const thunder = axios.create({
-  timeout: 10000,
+  timeout: 5000,
 });
 
 // 添加请求拦截器
@@ -30,11 +31,15 @@ thunder.interceptors.response.use(
   function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
+    console.error(error);
+    Message.error(error.response.data.error_message || error.message);
+
     if (error?.response?.status === 401) {
       localStorage.removeItem("server");
       localStorage.removeItem("token");
       router.navigate("/login");
     }
+
     return Promise.reject(error);
   },
 );

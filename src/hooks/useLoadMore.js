@@ -22,8 +22,9 @@ export default function useLoadMore() {
   const [loadingMore, setLoadingMore] = useState(false);
 
   const handleLoadMore = async () => {
+    setLoadingMore(true);
+
     try {
-      setLoadingMore(true);
       const response = await getEntries(offset + 100);
       if (response?.data?.entries) {
         setOffset(offset + 100);
@@ -48,9 +49,9 @@ export default function useLoadMore() {
       }
     } catch (error) {
       console.error("Error fetching more articles:", error);
-    } finally {
-      setLoadingMore(false);
     }
+
+    setLoadingMore(false);
   };
 
   return { loadingMore, handleLoadMore };

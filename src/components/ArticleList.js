@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import { useStore } from "../Store";
 import AddFeedModal from "./AddFeedModal";
-import SettingsModal from "./SettingsModal";
+import SettingsModal from "./Settings/SettingsModal";
 
 export default function ArticleList() {
   const { collapsed } = useStore();

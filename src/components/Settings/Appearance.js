@@ -7,10 +7,10 @@ import {
 } from "@arco-design/web-react";
 import { useState } from "react";
 
-import { useStore } from "../Store";
-import dark from "../imgs/dark.png";
-import light from "../imgs/light.png";
-import { applyColor, colors, getColorValue } from "../utils/Colors";
+import { useStore } from "../../Store";
+import dark from "../../imgs/dark.png";
+import light from "../../imgs/light.png";
+import { applyColor, colors, getColorValue } from "../../utils/Colors";
 import "./Appearance.css";
 
 export default function Appearance() {
