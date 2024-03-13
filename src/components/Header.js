@@ -31,6 +31,7 @@ export default function Header({ theme }) {
     localStorage.removeItem("token");
     localStorage.removeItem("theme");
     localStorage.removeItem("themeColor");
+    localStorage.removeItem("layout");
     document.body.removeAttribute("arco-theme");
     applyColor("Blue");
     navigate("/login");

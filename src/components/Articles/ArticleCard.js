@@ -7,6 +7,7 @@ import { useContext } from "react";
 
 import { ContentContext } from "../ContentContext";
 import ImageWithLazyLoading from "../ImageWithLazyLoading";
+import "./ArticleCard.css";
 
 dayjs.extend(relativeTime);
 

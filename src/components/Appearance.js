@@ -1,4 +1,10 @@
-import { Divider, Radio, Tooltip, Typography } from "@arco-design/web-react";
+import {
+  Divider,
+  Radio,
+  Switch,
+  Tooltip,
+  Typography,
+} from "@arco-design/web-react";
 import { IconMoonFill, IconSunFill } from "@arco-design/web-react/icon";
 import { useState } from "react";
 
@@ -7,7 +13,7 @@ import { applyColor, colors, getColorValue } from "../utils/Colors";
 
 export default function Appearance() {
   const theme = localStorage.getItem("theme") || "light";
-  const { toggleTheme } = useStore();
+  const { toggleTheme, toggleLayout, layout } = useStore();
   const [themeColor, setThemeColor] = useState(
     localStorage.getItem("themeColor") || "Blue",
   );
@@ -78,6 +84,29 @@ export default function Appearance() {
             Dark
           </Radio>
         </Radio.Group>
+      </div>
+      <Divider />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Thumbnails
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Use small thumbnail in article list
+          </Typography.Text>
+        </div>
+        <div>
+          <Switch
+            checked={layout === "small"}
+            onChange={() => toggleLayout()}
+          />
+        </div>
       </div>
     </>
   );

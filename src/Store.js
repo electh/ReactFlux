@@ -13,6 +13,7 @@ export const useStore = create((set, get) => ({
     addFeed: false,
   },
   theme: localStorage.getItem("theme") || "light",
+  layout: localStorage.getItem("layout") || "large",
   collapsed: false,
   initData: async () => {
     set({ loading: true });
@@ -95,6 +96,12 @@ export const useStore = create((set, get) => ({
       document.body.removeAttribute("arco-theme");
     }
     applyColor(localStorage.getItem("themeColor") || "Blue");
+  },
+
+  toggleLayout: () => {
+    const newLayout = get().layout === "large" ? "small" : "large";
+    set({ layout: newLayout });
+    localStorage.setItem("layout", newLayout);
   },
 
   setVisible: (modalName, visible) => {

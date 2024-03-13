@@ -3,7 +3,14 @@ import { useEffect, useRef, useState } from "react";
 
 import "./ImageWithLazyLoading.css";
 
-const ImageWithLazyLoading = ({ src, alt, width, height, status }) => {
+const ImageWithLazyLoading = ({
+  src,
+  alt,
+  width,
+  height,
+  status,
+  borderRadius,
+}) => {
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef(null);
 
@@ -50,9 +57,10 @@ const ImageWithLazyLoading = ({ src, alt, width, height, status }) => {
             text={{ rows: 0 }}
             image={{
               style: {
-                width: 300,
-                height: 160,
+                width: width,
+                height: height,
                 margin: "0",
+                borderRadius: borderRadius,
               },
             }}
             animation={true}
@@ -68,6 +76,7 @@ const ImageWithLazyLoading = ({ src, alt, width, height, status }) => {
           width: width,
           height: height,
           objectFit: "cover",
+          borderRadius: borderRadius,
         }}
       />
     </div>

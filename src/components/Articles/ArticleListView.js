@@ -2,9 +2,11 @@ import { Button } from "@arco-design/web-react";
 import { IconArrowDown } from "@arco-design/web-react/icon";
 import { forwardRef, useContext } from "react";
 
+import { useStore } from "../../Store";
 import useLoadMore from "../../hooks/useLoadMore";
 import { ContentContext } from "../ContentContext";
 import ArticleCard from "./ArticleCard";
+import ArticleCardMini from "./ArticleCardMini";
 import LoadingCards from "./LoadingCards";
 import SearchInput from "./SearchInput";
 
@@ -14,6 +16,7 @@ const ArticleListView = forwardRef(
       useContext(ContentContext);
 
     const { loadingMore, handleLoadMore } = useLoadMore();
+    const layout = useStore((state) => state.layout);
 
     return (
       <div
@@ -30,13 +33,21 @@ const ArticleListView = forwardRef(
         <SearchInput />
         <LoadingCards loading={loading} />
         <div ref={cardsRef}>
-          {entries.map((entry) => (
-            <ArticleCard
-              key={entry.id}
-              entry={entry}
-              handleClickEntryList={handleClickEntryList}
-            />
-          ))}
+          {entries.map((entry) =>
+            layout === "small" ? (
+              <ArticleCardMini
+                key={entry.id}
+                entry={entry}
+                handleClickEntryList={handleClickEntryList}
+              />
+            ) : (
+              <ArticleCard
+                key={entry.id}
+                entry={entry}
+                handleClickEntryList={handleClickEntryList}
+              />
+            ),
+          )}
         </div>
         {filterStatus === "all" && loadMoreVisible && (
           <Button
