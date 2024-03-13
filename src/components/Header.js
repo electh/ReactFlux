@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useStore } from "../Store";
 import { applyColor } from "../utils/Colors";
+import { delConfig } from "../utils/Config";
 
 export default function Header({ theme }) {
   const navigate = useNavigate();
@@ -29,9 +30,7 @@ export default function Header({ theme }) {
   const handleLogout = () => {
     localStorage.removeItem("server");
     localStorage.removeItem("token");
-    localStorage.removeItem("theme");
-    localStorage.removeItem("themeColor");
-    localStorage.removeItem("layout");
+    delConfig();
     document.body.removeAttribute("arco-theme");
     applyColor("Blue");
     navigate("/login");

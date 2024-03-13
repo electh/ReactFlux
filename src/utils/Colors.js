@@ -1,5 +1,7 @@
 import { generate, getRgbStr } from "@arco-design/color";
 
+import { getConfig } from "./Config";
+
 const colors = [
   {
     name: "Red",
@@ -31,7 +33,7 @@ const colors = [
 function getColorValue(colorName) {
   // 查找匹配颜色名称的对象
   const selectedColor = colors.find((color) => color.name === colorName);
-  const theme = localStorage.getItem("theme") || "light";
+  const theme = getConfig("theme") || "light";
   if (selectedColor) {
     return theme === "light"
       ? selectedColor.valueLight

@@ -7,6 +7,7 @@ import ArticleList from "./components/ArticleList";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import { applyColor } from "./utils/Colors";
+import { getConfig } from "./utils/Config";
 
 export default function App() {
   const { initData, theme } = useStore();
@@ -18,7 +19,7 @@ export default function App() {
     } else {
       document.body.removeAttribute("arco-theme");
     }
-    applyColor(localStorage.getItem("themeColor") || "Blue");
+    applyColor(getConfig("themeColor") || "Blue");
   };
 
   useEffect(() => {

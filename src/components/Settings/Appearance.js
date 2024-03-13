@@ -1,6 +1,8 @@
 import {
   Divider,
   Radio,
+  Slider,
+  Space,
   Switch,
   Tooltip,
   Typography,
@@ -11,13 +13,15 @@ import { useStore } from "../../Store";
 import dark from "../../imgs/dark.png";
 import light from "../../imgs/light.png";
 import { applyColor, colors, getColorValue } from "../../utils/Colors";
+import { getConfig, setConfig } from "../../utils/Config";
 import "./Appearance.css";
 
 export default function Appearance() {
-  const theme = localStorage.getItem("theme") || "light";
-  const { toggleTheme, toggleLayout, layout } = useStore();
+  const theme = useStore((state) => state.theme);
+  const { toggleTheme, toggleLayout, layout, fontSize, setFontSize } =
+    useStore();
   const [themeColor, setThemeColor] = useState(
-    localStorage.getItem("themeColor") || "Blue",
+    getConfig("themeColor") || "Blue",
   );
 
   return (
@@ -96,7 +100,7 @@ export default function Appearance() {
                 }}
                 onClick={() => {
                   setThemeColor(c.name);
-                  localStorage.setItem("themeColor", c.name);
+                  setConfig("themeColor", c.name);
                   applyColor(c.name);
                 }}
               ></div>
@@ -126,6 +130,39 @@ export default function Appearance() {
             checked={layout === "small"}
             onChange={() => toggleLayout()}
           />
+        </div>
+      </div>
+      <Divider />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Font size
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Adjust article text size
+          </Typography.Text>
+        </div>
+        <div>
+          <Space>
+            <Typography.Text>Small</Typography.Text>
+            <Slider
+              value={fontSize}
+              showTicks
+              min={0.75}
+              max={1.25}
+              step={0.05}
+              formatTooltip={(value) => `${value}rem`}
+              onChange={setFontSize}
+              style={{ width: 200 }}
+            />
+            <Typography.Text>Big</Typography.Text>
+          </Space>
         </div>
       </div>
     </>

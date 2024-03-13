@@ -4,10 +4,12 @@ import dayjs from "dayjs";
 import { forwardRef, useContext } from "react";
 import { Link } from "react-router-dom";
 
+import { useStore } from "../../Store";
 import { ContentContext } from "../ContentContext";
 
 const ArticleDetail = forwardRef((_, ref) => {
   const { activeContent } = useContext(ContentContext);
+  const fontSize = useStore((state) => state.fontSize);
 
   return activeContent ? (
     <div
@@ -59,7 +61,7 @@ const ArticleDetail = forwardRef((_, ref) => {
         dangerouslySetInnerHTML={{ __html: activeContent.content }}
         className="article-body"
         style={{
-          fontSize: "1.2em",
+          fontSize: `${fontSize}rem`,
           overflowWrap: "break-word",
           maxWidth: "600px",
           marginLeft: "auto",

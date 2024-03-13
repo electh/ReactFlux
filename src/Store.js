@@ -3,6 +3,7 @@ import { create } from "zustand";
 
 import { getFeeds, getGroups, getUnreadInfo } from "./apis";
 import { applyColor } from "./utils/Colors";
+import { getConfig, setConfig } from "./utils/Config";
 
 export const useStore = create((set, get) => ({
   feeds: [],
@@ -12,8 +13,9 @@ export const useStore = create((set, get) => ({
     settings: false,
     addFeed: false,
   },
-  theme: localStorage.getItem("theme") || "light",
-  layout: localStorage.getItem("layout") || "large",
+  theme: getConfig("theme") || "light",
+  layout: getConfig("layout") || "large",
+  fontSize: getConfig("fontSize") || 1.05,
   collapsed: false,
   initData: async () => {
     set({ loading: true });
@@ -89,19 +91,24 @@ export const useStore = create((set, get) => ({
   toggleTheme: () => {
     const newTheme = get().theme === "dark" ? "light" : "dark";
     set({ theme: newTheme });
-    localStorage.setItem("theme", newTheme);
+    setConfig("theme", newTheme);
     if (newTheme === "dark") {
       document.body.setAttribute("arco-theme", "dark");
     } else {
       document.body.removeAttribute("arco-theme");
     }
-    applyColor(localStorage.getItem("themeColor") || "Blue");
+    applyColor(getConfig("themeColor") || "Blue");
   },
 
   toggleLayout: () => {
     const newLayout = get().layout === "large" ? "small" : "large";
     set({ layout: newLayout });
-    localStorage.setItem("layout", newLayout);
+    setConfig("layout", newLayout);
+  },
+
+  setFontSize: (sizeStr) => {
+    set({ fontSize: sizeStr });
+    setConfig("fontSize", sizeStr);
   },
 
   setVisible: (modalName, visible) => {
