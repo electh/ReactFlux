@@ -21,8 +21,6 @@ export const ContentProvider = ({ children }) => {
   const [allEntries, setAllEntries] = useState([]);
   /* 选中的文章 */
   const [activeContent, setActiveContent] = useState(null);
-  /* 文章详情进入动画 */
-  const [animation, setAnimation] = useState(null);
   /*all unread*/
   const [filterStatus, setFilterStatus] = useState("all");
   /*0-title 1-content*/
@@ -40,7 +38,6 @@ export const ContentProvider = ({ children }) => {
     () => ({
       activeContent,
       allEntries,
-      animation,
       entries,
       filterStatus,
       filterString,
@@ -51,7 +48,6 @@ export const ContentProvider = ({ children }) => {
       offset,
       setActiveContent,
       setAllEntries,
-      setAnimation,
       setEntries,
       setFilterStatus,
       setFilterString,
@@ -70,7 +66,6 @@ export const ContentProvider = ({ children }) => {
     [
       activeContent,
       allEntries,
-      animation,
       entries,
       filterStatus,
       filterString,
@@ -81,7 +76,6 @@ export const ContentProvider = ({ children }) => {
       offset,
       setActiveContent,
       setAllEntries,
-      setAnimation,
       setEntries,
       setFilterStatus,
       setFilterString,

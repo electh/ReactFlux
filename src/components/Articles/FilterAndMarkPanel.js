@@ -31,7 +31,7 @@ const FilterAndMarkPanel = forwardRef(
     const { getFirstImage } = useLoadMore();
 
     /*menu 数据初始化函数 */
-    const { initData } = useStore();
+    const initData = useStore((state) => state.initData);
 
     const fetchEntries = async () => {
       const responseAll = await getEntries();

@@ -5,7 +5,7 @@ import AddFeedModal from "./AddFeedModal";
 import SettingsModal from "./Settings/SettingsModal";
 
 export default function ArticleList() {
-  const { collapsed } = useStore();
+  const collapsed = useStore((state) => state.collapsed);
 
   return (
     <div

@@ -12,7 +12,10 @@ import { useStore } from "../Store";
 import { addFeed } from "../apis";
 
 export default function AddFeedModal() {
-  const { visible, setVisible, groups, initData } = useStore();
+  const groups = useStore((state) => state.groups);
+  const initData = useStore((state) => state.initData);
+  const setVisible = useStore((state) => state.setVisible);
+  const visible = useStore((state) => state.visible);
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
 

@@ -18,8 +18,11 @@ import "./Appearance.css";
 
 export default function Appearance() {
   const theme = useStore((state) => state.theme);
-  const { toggleTheme, toggleLayout, layout, fontSize, setFontSize } =
-    useStore();
+  const toggleTheme = useStore((state) => state.toggleTheme);
+  const toggleLayout = useStore((state) => state.toggleLayout);
+  const layout = useStore((state) => state.layout);
+  const fontSize = useStore((state) => state.fontSize);
+  const setFontSize = useStore((state) => state.setFontSize);
   const [themeColor, setThemeColor] = useState(
     getConfig("themeColor") || "Blue",
   );
