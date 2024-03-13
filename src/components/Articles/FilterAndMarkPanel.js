@@ -79,15 +79,17 @@ const FilterAndMarkPanel = forwardRef(
     };
 
     const getArticleList = async () => {
-      try {
-        setLoading(true);
-        const { responseAll, responseUnread } = await fetchEntries();
-        handleResponses(responseAll, responseUnread);
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      } finally {
-        setLoading(false);
-      }
+      setLoading(true);
+
+      fetchEntries()
+        .then(({ responseAll, responseUnread }) => {
+          handleResponses(responseAll, responseUnread);
+        })
+        .catch((error) => {
+          console.error("Error fetching articles:", error);
+        });
+
+      setLoading(false);
     };
 
     const getFirstImage = (entry) => {
