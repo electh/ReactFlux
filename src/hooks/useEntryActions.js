@@ -1,3 +1,4 @@
+import Confetti from "canvas-confetti";
 import { useContext } from "react";
 
 import { updateEntryStarred, updateEntryStatus } from "../apis";
@@ -50,6 +51,13 @@ const useEntryActions = () => {
         ...entry,
         starred: newStarred,
       }));
+      newStarred === true &&
+        Confetti({
+          particleCount: 100,
+          angle: 120,
+          spread: 70,
+          origin: { x: 1, y: 1 },
+        });
     }
   };
 
