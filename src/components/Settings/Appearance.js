@@ -35,39 +35,41 @@ export default function Appearance() {
       <Typography.Text type="secondary">
         Customize your UI theme
       </Typography.Text>
-      <Radio.Group
-        name="card-radio-group"
-        style={{ marginTop: "16px" }}
-        defaultValue={theme}
-        onChange={() => toggleTheme()}
-      >
-        {["light", "dark"].map((item) => {
-          return (
-            <Radio key={item} value={item}>
-              {({ checked }) => {
-                return (
-                  <div
-                    className={`custom-radio-card ${checked ? "custom-radio-card-checked" : ""}`}
-                  >
-                    <img
-                      src={item === "light" ? light : dark}
-                      alt={item}
-                      style={{
-                        height: "100%",
-                        objectFit: "cover",
-                        borderRadius: "6px 6px 0 0",
-                        borderLeft: "1px solid var(--color-border-2)",
-                        borderTop: "1px solid var(--color-border-2)",
-                        borderRight: "1px solid var(--color-border-2)",
-                      }}
-                    />
-                  </div>
-                );
-              }}
-            </Radio>
-          );
-        })}
-      </Radio.Group>
+      <div>
+        <Radio.Group
+          name="card-radio-group"
+          style={{ marginTop: "16px" }}
+          defaultValue={theme}
+          onChange={() => toggleTheme()}
+        >
+          {["light", "dark"].map((item) => {
+            return (
+              <Radio key={item} value={item}>
+                {({ checked }) => {
+                  return (
+                    <div
+                      className={`custom-radio-card ${checked ? "custom-radio-card-checked" : ""}`}
+                    >
+                      <img
+                        src={item === "light" ? light : dark}
+                        alt={item}
+                        style={{
+                          height: "100%",
+                          objectFit: "cover",
+                          borderRadius: "6px 6px 0 0",
+                          borderLeft: "1px solid var(--color-border-2)",
+                          borderTop: "1px solid var(--color-border-2)",
+                          borderRight: "1px solid var(--color-border-2)",
+                        }}
+                      />
+                    </div>
+                  );
+                }}
+              </Radio>
+            );
+          })}
+        </Radio.Group>
+      </div>
       <Divider />
       <div
         style={{
@@ -153,7 +155,7 @@ export default function Appearance() {
         </div>
         <div>
           <Space>
-            <Typography.Text>Small</Typography.Text>
+            <Typography.Text style={{ fontSize: "0.75rem" }}>A</Typography.Text>
             <Slider
               value={fontSize}
               showTicks
@@ -164,7 +166,7 @@ export default function Appearance() {
               onChange={setFontSize}
               style={{ width: 200 }}
             />
-            <Typography.Text>Big</Typography.Text>
+            <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
           </Space>
         </div>
       </div>
