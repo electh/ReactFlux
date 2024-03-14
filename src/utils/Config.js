@@ -10,8 +10,6 @@ export const getConfig = (name) => {
     console.log(`Config for "${name}" not found`);
     return null;
   }
-
-  console.log(value);
   return value;
 };
 

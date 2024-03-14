@@ -9,17 +9,26 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import useForm from "@arco-design/web-react/es/Form/useForm";
-import { IconBook, IconHome, IconLock } from "@arco-design/web-react/icon";
+import {
+  IconBook,
+  IconHome,
+  IconLock,
+  IconUser,
+} from "@arco-design/web-react/icon";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { getAuth, setAuth } from "./utils/Auth";
+
 export default function Login() {
   const [loginForm] = useForm();
   const [loading, setLoading] = useState(false);
+  /* token or user */
+  const [method, setMethod] = useState(getAuth() || "token");
   const navigate = useNavigate();
   useEffect(() => {
-    if (localStorage.getItem("server") && localStorage.getItem("token")) {
+    if (getAuth()) {
       navigate("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,12 +42,15 @@ export default function Login() {
         method: "get",
         baseURL: loginForm.getFieldsValue().server,
         headers: { "X-Auth-Token": loginForm.getFieldsValue().token },
+        auth: {
+          username: loginForm.getFieldsValue().username,
+          password: loginForm.getFieldsValue().password,
+        },
         timeout: 5000,
       });
       if (response.status === 200) {
         Message.success("Success");
-        localStorage.setItem("server", loginForm.getFieldsValue().server);
-        localStorage.setItem("token", loginForm.getFieldsValue().token);
+        setAuth(method, loginForm.getFieldsValue());
         navigate("/");
       }
     } catch (error) {
@@ -74,7 +86,7 @@ export default function Login() {
             style={{
               fontSize: 48,
               color: "rgb(var(--primary-6))",
-              marginTop: "48px",
+              marginTop: "20px",
             }}
           />
           <Typography.Title heading={3}>
@@ -106,24 +118,56 @@ export default function Login() {
                   placeholder="please input server address"
                 />
               </Form.Item>
-              <Form.Item
-                label="API Token"
-                field="token"
-                rules={[{ required: true }]}
-              >
-                <Input
-                  disabled={loading}
-                  prefix={<IconLock />}
-                  placeholder="please input api token"
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      loginForm.submit();
-                    }
-                  }}
-                />
-              </Form.Item>
+              {method === "token" ? (
+                <Form.Item
+                  label="API Token"
+                  field="token"
+                  rules={[{ required: true }]}
+                >
+                  <Input
+                    disabled={loading}
+                    prefix={<IconLock />}
+                    placeholder="please input api token"
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        loginForm.submit();
+                      }
+                    }}
+                  />
+                </Form.Item>
+              ) : null}
+              {method === "user" ? (
+                <>
+                  <Form.Item
+                    label="Username"
+                    field="username"
+                    rules={[{ required: true }]}
+                  >
+                    <Input
+                      disabled={loading}
+                      prefix={<IconUser />}
+                      placeholder="please input username"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label="Password"
+                    field="password"
+                    rules={[{ required: true }]}
+                  >
+                    <Input
+                      disabled={loading}
+                      prefix={<IconLock />}
+                      placeholder="please input password"
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          loginForm.submit();
+                        }
+                      }}
+                    />
+                  </Form.Item>
+                </>
+              ) : null}
             </Form>
-            <Divider style={{ margin: 0 }} />
             <Button
               loading={loading}
               type="primary"
@@ -132,6 +176,15 @@ export default function Login() {
               style={{ marginTop: "20px" }}
             >
               Connect
+            </Button>
+            <Divider orientation="center">Or connect with</Divider>
+            <Button
+              type="secondary"
+              long={true}
+              onClick={() => setMethod(method === "token" ? "user" : "token")}
+              style={{ marginTop: "20px" }}
+            >
+              {method === "token" ? "Username and password" : "API Token"}
             </Button>
           </Card>
           <div style={{ display: "flex", marginTop: "40px" }}>

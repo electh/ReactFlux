@@ -2,6 +2,7 @@ import { Message } from "@arco-design/web-react";
 import axios from "axios";
 
 import { router } from "../index";
+import { getAuth } from "../utils/Auth";
 
 const thunder = axios.create({
   timeout: 5000,
@@ -11,8 +12,24 @@ const thunder = axios.create({
 thunder.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
-    config.baseURL = localStorage.getItem("server");
-    config.headers["X-Auth-Token"] = localStorage.getItem("token");
+    const auth = getAuth();
+    const secret = auth?.secret || {};
+    const { server, token, username, password } = secret;
+
+    config.baseURL = server;
+
+    if (token) {
+      config.headers["X-Auth-Token"] = token;
+    }
+
+    if (username || password) {
+      config.auth = {
+        ...config.auth,
+        ...(username && { username }),
+        ...(password && { password }),
+      };
+    }
+
     return config;
   },
   function (error) {
@@ -35,8 +52,7 @@ thunder.interceptors.response.use(
     Message.error(error.response?.data?.error_message || error.message);
 
     if (error.response?.status === 401) {
-      localStorage.removeItem("server");
-      localStorage.removeItem("token");
+      localStorage.removeItem("auth");
       router.navigate("/login");
     }
 

@@ -1,9 +1,10 @@
 import { Navigate } from "react-router-dom";
 
+import { getAuth } from "../utils/Auth";
+
 export default function RouterProtect({ children }) {
-  const server = localStorage.getItem("server");
-  const token = localStorage.getItem("token");
-  if (server && token) {
+  const auth = getAuth();
+  if (auth) {
     return <>{children}</>;
   } else {
     return <Navigate to={"/login"} />;
