@@ -38,6 +38,13 @@ export const handleRightKey = (currentIndex, entries, handleEntryClick) => {
   }
 };
 
+// open link externally
+export const handleBKey = (activeContent) => {
+  if (activeContent) {
+    window.open(activeContent.url, "_blank");
+  }
+};
+
 // mark as read or unread
 export const handleMKey = (activeContent, handleUpdateEntry) => {
   if (activeContent) {
