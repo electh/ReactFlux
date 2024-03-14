@@ -10,7 +10,8 @@ import { applyColor } from "./utils/Colors";
 import { getConfig } from "./utils/Config";
 
 export default function App() {
-  const { initData, theme } = useStore();
+  const initData = useStore((state) => state.initData);
+  const theme = useStore((state) => state.theme);
   const location = useLocation();
 
   const initTheme = () => {

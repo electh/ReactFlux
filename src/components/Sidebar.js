@@ -11,7 +11,11 @@ const { SubMenu } = Menu;
 
 export default function Sidebar({ location }) {
   const navigate = useNavigate();
-  const { collapsed, setCollapsed, feeds, groups, loading } = useStore();
+  const collapsed = useStore((state) => state.collapsed);
+  const feeds = useStore((state) => state.feeds);
+  const groups = useStore((state) => state.groups);
+  const loading = useStore((state) => state.loading);
+  const setCollapsed = useStore((state) => state.setCollapsed);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const path = location.pathname;
 

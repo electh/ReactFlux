@@ -11,7 +11,7 @@ import LoadingCards from "./LoadingCards";
 import SearchInput from "./SearchInput";
 
 const ArticleListView = forwardRef(
-  ({ loading, handleEntryClick, cardsRef }, ref) => {
+  ({ loading, getEntries, handleEntryClick, cardsRef }, ref) => {
     const { entries, filterStatus, loadMoreUnreadVisible, loadMoreVisible } =
       useContext(ContentContext);
 
@@ -51,7 +51,7 @@ const ArticleListView = forwardRef(
         </div>
         {filterStatus === "all" && loadMoreVisible && (
           <Button
-            onClick={handleLoadMore}
+            onClick={() => handleLoadMore(getEntries)}
             loading={loadingMore}
             long={true}
             style={{ margin: "10px auto", display: "block" }}
@@ -62,7 +62,7 @@ const ArticleListView = forwardRef(
 
         {filterStatus === "unread" && loadMoreUnreadVisible && (
           <Button
-            onClick={handleLoadMore}
+            onClick={() => handleLoadMore(getEntries)}
             loading={loadingMore}
             long={true}
             style={{ margin: "10px auto", display: "block" }}

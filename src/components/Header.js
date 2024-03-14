@@ -25,7 +25,8 @@ import { delConfig } from "../utils/Config";
 
 export default function Header({ theme }) {
   const navigate = useNavigate();
-  const { toggleTheme, setVisible } = useStore();
+  const setVisible = useStore((state) => state.setVisible);
+  const toggleTheme = useStore((state) => state.toggleTheme);
 
   const handleLogout = () => {
     localStorage.removeItem("server");

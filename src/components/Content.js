@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import { updateEntryStatus } from "../apis";
@@ -22,12 +22,10 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const {
     activeContent,
     allEntries,
-    animation,
     entries,
     loading,
     setActiveContent,
     setAllEntries,
-    setAnimation,
     setEntries,
     setUnreadTotal,
     unreadTotal,
@@ -37,9 +35,17 @@ export default function Content({ info, getEntries, markAllAsRead }) {
 
   const { toggleEntryStarred, toggleEntryStatus } = useEntryActions();
 
+  const [showArticleDetail, setShowArticleDetail] = useState(false);
+
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
   const cardsRef = useRef(null);
+
+  useEffect(() => {
+    if (activeContent) {
+      setShowArticleDetail(true);
+    }
+  }, [activeContent]);
 
   const updateLocalEntryStatus = (entries, entryId, status) => {
     return entries.map((e) => (e.id === entryId ? { ...e, status } : e));
@@ -47,7 +53,12 @@ export default function Content({ info, getEntries, markAllAsRead }) {
 
   const handleEntryClick = (entry) => {
     const processEntryClick = async () => {
-      setAnimation(true);
+      setShowArticleDetail(false);
+
+      setTimeout(() => {
+        setActiveContent({ ...entry, status: "read" });
+      }, 200);
+
       if (entry.status === "unread") {
         const response = await updateEntryStatus(entry, "read");
         if (response) {
@@ -58,8 +69,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           setUnreadTotal(unreadTotal - 1);
         }
       }
-
-      setActiveContent({ ...entry, status: "read" });
 
       if (entryDetailRef.current) {
         entryDetailRef.current.setAttribute("tabIndex", "-1");
@@ -77,7 +86,13 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     );
 
     const keyMap = {
-      27: () => handleEscapeKey(activeContent, setActiveContent, entryListRef),
+      27: () =>
+        handleEscapeKey(
+          activeContent,
+          setActiveContent,
+          setShowArticleDetail,
+          entryListRef,
+        ),
       37: () => handleLeftKey(currentIndex, entries, handleEntryClick),
       39: () => handleRightKey(currentIndex, entries, handleEntryClick),
       77: () => handleMKey(activeContent, toggleEntryStatus),
@@ -117,8 +132,9 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         >
           <ArticleListView
             cardsRef={cardsRef}
-            handleEntryClick={handleEntryClick}
             loading={loading}
+            getEntries={getEntries}
+            handleEntryClick={handleEntryClick}
             ref={entryListRef}
           />
         </CSSTransition>
@@ -131,11 +147,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         />
       </div>
       <CSSTransition
-        in={animation}
+        in={showArticleDetail}
         timeout={200}
         nodeRef={entryDetailRef}
         classNames="fade"
-        onEntered={() => setAnimation(false)}
+        unmountOnExit
       >
         <ArticleDetail ref={entryDetailRef} />
       </CSSTransition>

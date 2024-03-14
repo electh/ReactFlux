@@ -4,6 +4,7 @@ import { forwardRef, useContext, useEffect } from "react";
 
 import { useStore } from "../../Store";
 import UseFilterEntries from "../../hooks/useFilterEntries";
+import useLoadMore from "../../hooks/useLoadMore";
 import { ContentContext } from "../ContentContext";
 
 const FilterAndMarkPanel = forwardRef(
@@ -27,9 +28,10 @@ const FilterAndMarkPanel = forwardRef(
     } = useContext(ContentContext);
 
     const { handleFilter } = UseFilterEntries();
+    const { getFirstImage } = useLoadMore();
 
     /*menu 数据初始化函数 */
-    const { initData } = useStore();
+    const initData = useStore((state) => state.initData);
 
     const fetchEntries = async () => {
       const responseAll = await getEntries();
@@ -88,16 +90,6 @@ const FilterAndMarkPanel = forwardRef(
       } finally {
         setLoading(false);
       }
-    };
-
-    const getFirstImage = (entry) => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(entry.content, "text/html");
-      const firstImg = doc.querySelector("img");
-      if (firstImg) {
-        entry.imgSrc = firstImg.getAttribute("src");
-      }
-      return entry;
     };
 
     useEffect(() => {

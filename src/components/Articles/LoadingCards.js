@@ -3,15 +3,15 @@ import { Card, Skeleton } from "@arco-design/web-react";
 import { useStore } from "../../Store";
 
 export default function LoadingCards({ loading }) {
-  const cards = [1, 2, 3, 4];
   const layout = useStore((state) => state.layout);
+  const cardCount = layout === "large" ? 2 : 4;
 
   return loading
-    ? cards.map((card) =>
+    ? Array.from({ length: cardCount }, (_, index) =>
         layout === "large" ? (
           <Card
             style={{ width: 300, marginBottom: "10px" }}
-            key={card}
+            key={index}
             cover={
               <Skeleton
                 loading={loading}
@@ -39,7 +39,7 @@ export default function LoadingCards({ loading }) {
         ) : (
           <Card
             style={{ width: 300, marginBottom: "10px" }}
-            key={card}
+            key={index}
             cover={null}
           >
             <Card.Meta

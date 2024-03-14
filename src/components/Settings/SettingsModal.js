@@ -4,7 +4,9 @@ import { useStore } from "../../Store";
 import Settings from "./Settings";
 
 export default function SettingsModal() {
-  const { visible, setVisible, initData } = useStore();
+  const visible = useStore((state) => state.visible);
+  const setVisible = useStore((state) => state.setVisible);
+  const initData = useStore((state) => state.initData);
 
   return (
     <Modal
