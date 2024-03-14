@@ -2,14 +2,12 @@
 export const handleEscapeKey = (
   activeContent,
   setActiveContent,
-  setShowArticleDetail,
   entryListRef,
 ) => {
   if (!activeContent) {
     return;
   }
   setActiveContent(null);
-  setShowArticleDetail(false);
   if (entryListRef.current) {
     entryListRef.current.setAttribute("tabIndex", "-1");
     entryListRef.current.focus();

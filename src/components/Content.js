@@ -42,9 +42,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const cardsRef = useRef(null);
 
   useEffect(() => {
-    if (activeContent) {
-      setShowArticleDetail(true);
-    }
+    setShowArticleDetail(activeContent);
   }, [activeContent]);
 
   const updateLocalEntryStatus = (entries, entryId, status) => {
@@ -86,13 +84,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     );
 
     const keyMap = {
-      27: () =>
-        handleEscapeKey(
-          activeContent,
-          setActiveContent,
-          setShowArticleDetail,
-          entryListRef,
-        ),
+      27: () => handleEscapeKey(activeContent, setActiveContent, entryListRef),
       37: () => handleLeftKey(currentIndex, entries, handleEntryClick),
       39: () => handleRightKey(currentIndex, entries, handleEntryClick),
       77: () => handleMKey(activeContent, toggleEntryStatus),

@@ -5,7 +5,13 @@ import UseFilterEntries from "../../hooks/useFilterEntries";
 import { ContentContext } from "../ContentContext";
 
 export default function SearchInput() {
-  const { filterStatus, filterString, filterType } = useContext(ContentContext);
+  const {
+    activeContent,
+    filterStatus,
+    filterString,
+    filterType,
+    setActiveContent,
+  } = useContext(ContentContext);
 
   const { handleFilter } = UseFilterEntries();
 
@@ -28,6 +34,9 @@ export default function SearchInput() {
         </Select>
       }
       onChange={(value) => {
+        if (activeContent) {
+          setActiveContent(null);
+        }
         handleFilter(filterType, filterStatus, value);
       }}
       style={{
