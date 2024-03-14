@@ -154,7 +154,7 @@ export default function Login() {
                     field="password"
                     rules={[{ required: true }]}
                   >
-                    <Input
+                    <Input.Password
                       disabled={loading}
                       prefix={<IconLock />}
                       placeholder="please input password"
