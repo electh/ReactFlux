@@ -56,7 +56,7 @@ export default function Appearance() {
                         style={{
                           height: "100%",
                           objectFit: "cover",
-                          borderRadius: "6px 6px 0 0",
+                          borderRadius: "4px 4px 0 0",
                           borderLeft: "1px solid var(--color-border-2)",
                           borderTop: "1px solid var(--color-border-2)",
                           borderRight: "1px solid var(--color-border-2)",
