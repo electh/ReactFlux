@@ -32,24 +32,26 @@ const ArticleListView = forwardRef(
       >
         <SearchInput />
         <LoadingCards loading={loading} />
-        <div ref={cardsRef}>
-          {entries.map((entry) =>
-            layout === "small" ? (
-              <ArticleCardMini
-                key={entry.id}
-                entry={entry}
-                handleEntryClick={handleEntryClick}
-              />
-            ) : (
-              <ArticleCard
-                key={entry.id}
-                entry={entry}
-                handleEntryClick={handleEntryClick}
-              />
-            ),
-          )}
-        </div>
-        {filterStatus === "all" && loadMoreVisible && (
+        {loading ? null : (
+          <div ref={cardsRef}>
+            {entries.map((entry) =>
+              layout === "small" ? (
+                <ArticleCardMini
+                  key={entry.id}
+                  entry={entry}
+                  handleEntryClick={handleEntryClick}
+                />
+              ) : (
+                <ArticleCard
+                  key={entry.id}
+                  entry={entry}
+                  handleEntryClick={handleEntryClick}
+                />
+              ),
+            )}
+          </div>
+        )}
+        {!loading && filterStatus === "all" && loadMoreVisible && (
           <Button
             onClick={() => handleLoadMore(getEntries)}
             loading={loadingMore}
@@ -60,7 +62,7 @@ const ArticleListView = forwardRef(
           </Button>
         )}
 
-        {filterStatus === "unread" && loadMoreUnreadVisible && (
+        {!loading && filterStatus === "unread" && loadMoreUnreadVisible && (
           <Button
             onClick={() => handleLoadMore(getEntries)}
             loading={loadingMore}
