@@ -1,11 +1,14 @@
 import { useContext, useState } from "react";
 
 import { ContentContext } from "../components/ContentContext";
+import { filterEntries } from "../utils/filter";
 
 export default function useLoadMore() {
   const {
     allEntries,
     filterStatus,
+    filterString,
+    filterType,
     offset,
     setAllEntries,
     setEntries,
@@ -51,9 +54,21 @@ export default function useLoadMore() {
           filterStatus === "all"
             ? updatedAllArticles
             : updatedAllArticles.filter((a) => a.status === "unread");
-        setEntries(filteredArticles);
+
+        const filteredByString = filterString
+          ? filterEntries(
+              filteredArticles,
+              filterType,
+              filterStatus,
+              filterString,
+            )
+          : filteredArticles;
+
+        setEntries(filteredByString);
         setLoadMoreVisible(updatedAllArticles.length < total);
-        setLoadMoreUnreadVisible(filteredArticles.length < unreadTotal);
+        setLoadMoreUnreadVisible(
+          filteredArticles.length < unreadTotal && filterStatus === "unread",
+        );
       }
     } catch (error) {
       console.error("Error fetching more articles:", error);

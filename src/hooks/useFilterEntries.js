@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 
 import { ContentContext } from "../components/ContentContext";
+import { filterEntries } from "../utils/filter";
 
 const useFilterEntries = () => {
   const {
@@ -20,28 +21,12 @@ const useFilterEntries = () => {
 
   useEffect(() => {
     setEntries([]);
-    let filteredArticles;
-
-    if (filterType === "0") {
-      filteredArticles =
-        filterStatus === "all"
-          ? allEntries.filter((entry) => entry.title.includes(filterString))
-          : allEntries.filter(
-              (entry) =>
-                entry.title.includes(filterString) &&
-                entry.status === filterStatus,
-            );
-      setEntries(filteredArticles);
-    } else {
-      filteredArticles =
-        filterStatus === "all"
-          ? allEntries.filter((entry) => entry.content.includes(filterString))
-          : allEntries.filter(
-              (entry) =>
-                entry.content.includes(filterString) &&
-                entry.status === filterStatus,
-            );
-    }
+    const filteredArticles = filterEntries(
+      allEntries,
+      filterType,
+      filterStatus,
+      filterString,
+    );
     setEntries(filteredArticles);
 
     if (filterStatus === "unread") {
