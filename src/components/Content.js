@@ -4,6 +4,7 @@ import { CSSTransition } from "react-transition-group";
 import { updateEntryStatus } from "../apis";
 import useEntryActions from "../hooks/useEntryActions";
 import {
+  handleBKey,
   handleEscapeKey,
   handleLeftKey,
   handleMKey,
@@ -42,9 +43,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   const cardsRef = useRef(null);
 
   useEffect(() => {
-    if (activeContent) {
-      setShowArticleDetail(true);
-    }
+    setShowArticleDetail(activeContent);
   }, [activeContent]);
 
   const updateLocalEntryStatus = (entries, entryId, status) => {
@@ -84,17 +83,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     const currentIndex = entries.findIndex(
       (entry) => entry.id === activeContent?.id,
     );
-
     const keyMap = {
-      27: () =>
-        handleEscapeKey(
-          activeContent,
-          setActiveContent,
-          setShowArticleDetail,
-          entryListRef,
-        ),
+      27: () => handleEscapeKey(activeContent, setActiveContent, entryListRef),
       37: () => handleLeftKey(currentIndex, entries, handleEntryClick),
       39: () => handleRightKey(currentIndex, entries, handleEntryClick),
+      66: () => handleBKey(activeContent),
       77: () => handleMKey(activeContent, toggleEntryStatus),
       83: () => handleSKey(activeContent, toggleEntryStarred),
     };

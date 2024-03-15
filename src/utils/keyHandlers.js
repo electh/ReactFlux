@@ -2,14 +2,12 @@
 export const handleEscapeKey = (
   activeContent,
   setActiveContent,
-  setShowArticleDetail,
   entryListRef,
 ) => {
   if (!activeContent) {
     return;
   }
   setActiveContent(null);
-  setShowArticleDetail(false);
   if (entryListRef.current) {
     entryListRef.current.setAttribute("tabIndex", "-1");
     entryListRef.current.focus();
@@ -37,6 +35,13 @@ export const handleRightKey = (currentIndex, entries, handleEntryClick) => {
     if (card) {
       card.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+  }
+};
+
+// open link externally
+export const handleBKey = (activeContent) => {
+  if (activeContent) {
+    window.open(activeContent.url, "_blank");
   }
 };
 
