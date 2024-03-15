@@ -1,5 +1,7 @@
 import { Button, Space, Tooltip } from "@arco-design/web-react";
 import {
+  IconArrowLeft,
+  IconArrowRight,
   IconMinusCircle,
   IconRecord,
   IconStar,
@@ -8,11 +10,13 @@ import {
 import { useContext } from "react";
 
 import useEntryActions from "../../hooks/useEntryActions";
+import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { ContentContext } from "../ContentContext";
 
-export default function ActionButtons() {
+export default function ActionButtons({ handleEntryClick }) {
   const { activeContent } = useContext(ContentContext);
   const { toggleEntryStarred, toggleEntryStatus } = useEntryActions();
+  const { handleLeftKey, handleRightKey } = useKeyHandlers();
 
   return activeContent ? (
     <div
@@ -61,7 +65,7 @@ export default function ActionButtons() {
             type="primary"
             size="mini"
             style={{
-              borderRadius: "0 0 50% 50%",
+              borderRadius: "0",
             }}
             onClick={() => toggleEntryStarred()}
             icon={
@@ -71,6 +75,30 @@ export default function ActionButtons() {
                 <IconStar />
               )
             }
+          />
+        </Tooltip>
+        <Tooltip mini position="left" content="Previous Article">
+          <Button
+            type="primary"
+            size="mini"
+            style={{
+              borderTop: "1px solid rgb(var(--primary-5))",
+              borderRadius: "0",
+            }}
+            onClick={() => handleLeftKey(handleEntryClick)}
+            icon={<IconArrowLeft />}
+          />
+        </Tooltip>
+        <Tooltip mini position="left" content="Next Article">
+          <Button
+            type="primary"
+            size="mini"
+            style={{
+              borderTop: "1px solid rgb(var(--primary-5))",
+              borderRadius: "0 0 50% 50%",
+            }}
+            onClick={() => handleRightKey(handleEntryClick)}
+            icon={<IconArrowRight />}
           />
         </Tooltip>
       </Space>

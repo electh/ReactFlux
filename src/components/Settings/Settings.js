@@ -12,8 +12,8 @@ import { getFeeds, getGroups } from "../../apis";
 import Appearance from "./Appearance";
 import FeedList from "./FeedList";
 import GroupList from "./GroupList";
+import Hotkeys from "./Hotkeys";
 import "./Settings.css";
-import Shortcuts from "./Shortcuts";
 
 export default function Settings() {
   const [feeds, setFeeds] = useState([]);
@@ -105,11 +105,11 @@ export default function Settings() {
         title={
           <span>
             <IconCommand style={{ marginRight: 6 }} />
-            Shortcuts
+            Hotkeys
           </span>
         }
       >
-        <Shortcuts />
+        <Hotkeys />
       </Tabs.TabPane>
     </Tabs>
   );
