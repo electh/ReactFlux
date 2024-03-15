@@ -8,6 +8,7 @@ import {
 } from "@arco-design/web-react";
 import {
   IconBook,
+  IconDown,
   IconHistory,
   IconRight,
   IconStar,
@@ -22,7 +23,7 @@ import "./Sidebar.css";
 const MenuItem = Menu.Item;
 const { Sider } = Layout;
 
-const GroupTitle = ({ group }) => (
+const GroupTitle = ({ group, isOpen }) => (
   <div
     style={{
       display: "flex",
@@ -35,7 +36,7 @@ const GroupTitle = ({ group }) => (
       showTooltip={true}
       style={{ width: group.unread !== 0 ? "80%" : "100%" }}
     >
-      <IconRight />
+      {isOpen ? <IconDown /> : <IconRight />}
       {group.title.toUpperCase()}
     </Typography.Ellipsis>
     {group.unread !== 0 && (
@@ -63,8 +64,13 @@ export default function Sidebar({ location }) {
   const loading = useStore((state) => state.loading);
   const setCollapsed = useStore((state) => state.setCollapsed);
   const [selectedKeys, setSelectedKeys] = useState([]);
+  const [openKeys, setOpenKeys] = useState([]);
 
   const path = location.pathname;
+
+  const handleClickSubMenu = (key, currentOpenKeys) => {
+    setOpenKeys(currentOpenKeys);
+  };
 
   const feedsGroupedById = feeds.reduce((groupedFeeds, feed) => {
     const { id: groupId } = feed.category;
@@ -96,13 +102,13 @@ export default function Sidebar({ location }) {
       }}
     >
       <Menu
-        autoOpen
         selectedKeys={selectedKeys}
         style={{ width: "240px", height: "100%" }}
         onCollapseChange={() => setCollapsed(!collapsed)}
         collapse={collapsed}
         hasCollapseButton
         defaultSelectedKeys={[path]}
+        onClickSubMenu={handleClickSubMenu}
       >
         <div
           style={{
@@ -192,7 +198,12 @@ export default function Sidebar({ location }) {
               <Menu.SubMenu
                 style={{ cursor: "not-allowed" }}
                 key={`/${group.id}`}
-                title={<GroupTitle group={group} />}
+                title={
+                  <GroupTitle
+                    group={group}
+                    isOpen={openKeys.includes(`/${group.id}`)}
+                  />
+                }
               >
                 {feedsGroupedById[group.id]?.map((feed) => (
                   <MenuItem
