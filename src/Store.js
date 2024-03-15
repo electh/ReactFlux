@@ -8,6 +8,10 @@ import { getConfig, setConfig } from "./utils/Config";
 export const useStore = create((set, get) => ({
   feeds: [],
   groups: [],
+  unreadTotal: 0,
+  unreadToday: 0,
+  starredCount: 0,
+  readCount: 0,
   loading: true,
   visible: {
     settings: false,
@@ -17,6 +21,20 @@ export const useStore = create((set, get) => ({
   layout: getConfig("layout") || "large",
   fontSize: getConfig("fontSize") || 1.05,
   collapsed: false,
+
+  setUnreadTotal: (unreadTotal) => {
+    set({ unreadTotal: unreadTotal });
+  },
+  setUnreadToday: (unreadToday) => {
+    set({ unreadToday: unreadToday });
+  },
+  setStarredCount: (starredCount) => {
+    set({ starredCount: starredCount });
+  },
+  setReadCount: (readCount) => {
+    set({ readCount: readCount });
+  },
+
   initData: async () => {
     set({ loading: true });
     const feedResponse = await getFeeds();
@@ -25,6 +43,10 @@ export const useStore = create((set, get) => ({
 
     if (feedResponse && unreadResponse && groupResponse) {
       const unreadInfo = unreadResponse.data.unreads;
+      const unreadTotal = Object.values(unreadInfo).reduce(
+        (acc, cur) => acc + cur,
+        0,
+      );
       const feedsWithUnread = feedResponse.data.map((feed) => ({
         ...feed,
         unread: unreadInfo[feed.id] || 0,
@@ -50,6 +72,7 @@ export const useStore = create((set, get) => ({
 
       set({ feeds: _.orderBy(feedsWithUnread, ["title"], ["asc"]) });
       set({ groups: _.orderBy(groupsWithUnread, ["title"], ["asc"]) });
+      set({ unreadTotal });
       set({ loading: false });
     }
   },

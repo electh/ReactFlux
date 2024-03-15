@@ -1,10 +1,17 @@
 import Confetti from "canvas-confetti";
 import { useContext } from "react";
 
+import { useStore } from "../Store";
 import { updateEntryStarred, updateEntryStatus } from "../apis";
 import { ContentContext } from "../components/ContentContext";
+import { isIn24Hours } from "../utils/Date";
 
 const useEntryActions = () => {
+  const unreadToday = useStore((state) => state.unreadToday);
+  const setUnreadToday = useStore((state) => state.setUnreadToday);
+  const readCount = useStore((state) => state.readCount);
+  const setReadCount = useStore((state) => state.setReadCount);
+
   const {
     activeContent,
     allEntries,
@@ -36,6 +43,12 @@ const useEntryActions = () => {
       updateFeedUnread(activeContent.feed.id, newStatus);
       updateGroupUnread(activeContent.feed.category.id, newStatus);
       setUnreadTotal(newStatus === "read" ? unreadTotal - 1 : unreadTotal + 1);
+      setReadCount(newStatus === "read" ? readCount + 1 : readCount - 1);
+      if (isIn24Hours(activeContent.published_at)) {
+        setUnreadToday(
+          newStatus === "read" ? unreadToday - 1 : unreadToday + 1,
+        );
+      }
       updateUI({ status: newStatus }, (entry) => ({
         ...entry,
         status: newStatus,

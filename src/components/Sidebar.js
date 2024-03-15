@@ -8,6 +8,7 @@ import {
 } from "@arco-design/web-react";
 import {
   IconBook,
+  IconCalendar,
   IconDown,
   IconHistory,
   IconRight,
@@ -56,12 +57,47 @@ const GroupTitle = ({ group, isOpen }) => (
   </div>
 );
 
+const CustomMenuItem = ({ icon, label, key, onClick, count }) => {
+  return (
+    <MenuItem key={key} onClick={onClick}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <span>
+          {icon}
+          {label}
+        </span>
+        <Typography.Ellipsis
+          expandable={false}
+          showTooltip={true}
+          style={{
+            width: "50%",
+            color: "var(--color-text-4)",
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          {count === 0 ? "" : count}
+        </Typography.Ellipsis>
+      </div>
+    </MenuItem>
+  );
+};
+
 export default function Sidebar({ location }) {
   const navigate = useNavigate();
   const collapsed = useStore((state) => state.collapsed);
   const feeds = useStore((state) => state.feeds);
   const groups = useStore((state) => state.groups);
   const loading = useStore((state) => state.loading);
+  const unreadTotal = useStore((state) => state.unreadTotal);
+  const unreadToday = useStore((state) => state.unreadToday);
+  const starredCount = useStore((state) => state.starredCount);
+  const readCount = useStore((state) => state.readCount);
   const setCollapsed = useStore((state) => state.setCollapsed);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
@@ -143,46 +179,34 @@ export default function Sidebar({ location }) {
         <Skeleton loading={loading} animation={true} text={{ rows: 3 }} />
         {loading ? null : (
           <div>
-            <MenuItem key={`/`} onClick={() => navigate("/")}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <span>
-                  <IconUnorderedList />
-                  ALL
-                </span>
-                <Typography.Ellipsis
-                  expandable={false}
-                  showTooltip={true}
-                  style={{
-                    width: "50%",
-                    color: "var(--color-text-4)",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  {feeds.reduce((sum, feed) => sum + feed.unread, 0) === 0
-                    ? ""
-                    : feeds.reduce((sum, feed) => sum + feed.unread, 0)}
-                </Typography.Ellipsis>
-              </div>
-            </MenuItem>
-            <MenuItem key={`/starred`} onClick={() => navigate("/starred")}>
-              <span>
-                <IconStar />
-                STARRED
-              </span>
-            </MenuItem>
-            <MenuItem key={"/history"} onClick={() => navigate("/history")}>
-              <span>
-                <IconHistory />
-                HISTORY
-              </span>
-            </MenuItem>
+            <CustomMenuItem
+              icon={<IconUnorderedList />}
+              label="All"
+              key={`/`}
+              onClick={() => navigate(`/`)}
+              count={unreadTotal}
+            />
+            <CustomMenuItem
+              icon={<IconCalendar />}
+              label="Today"
+              key={`/today`}
+              onClick={() => navigate(`/today`)}
+              count={unreadToday}
+            />
+            <CustomMenuItem
+              icon={<IconStar />}
+              label="Starred"
+              key={`/starred`}
+              onClick={() => navigate(`/starred`)}
+              count={starredCount}
+            />
+            <CustomMenuItem
+              icon={<IconHistory />}
+              label="History"
+              key={`/history`}
+              onClick={() => navigate(`/history`)}
+              count={readCount}
+            />
           </div>
         )}
         <Typography.Title
