@@ -10,6 +10,7 @@ import {
 } from "@arco-design/web-react";
 import {
   IconBook,
+  IconMenu,
   IconMoonFill,
   IconPlus,
   IconPoweroff,
@@ -26,6 +27,8 @@ export default function Header({ theme }) {
   const navigate = useNavigate();
   const setVisible = useStore((state) => state.setVisible);
   const toggleTheme = useStore((state) => state.toggleTheme);
+  const collapsed = useStore((state) => state.collapsed);
+  const setCollapsed = useStore((state) => state.setCollapsed);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -45,7 +48,8 @@ export default function Header({ theme }) {
         justifyContent: "space-between",
         alignItems: "center",
         position: "fixed",
-        width: "100%",
+        width: "calc(100% - 200px)",
+        paddingLeft: "200px",
         height: "48px",
         zIndex: "999",
         backgroundColor: "var(--color-bg-1)",
@@ -53,8 +57,17 @@ export default function Header({ theme }) {
     >
       <div
         className="brand"
-        style={{ marginLeft: "20px", display: "flex", alignItems: "center" }}
+        style={{ marginLeft: "10px", display: "flex", alignItems: "center" }}
       >
+        <Button
+          shape="circle"
+          size="small"
+          className="trigger"
+          style={{ marginRight: "5px", display: "none" }}
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          {<IconMenu />}
+        </Button>
         <IconBook
           style={{
             fontSize: 32,
@@ -66,7 +79,7 @@ export default function Header({ theme }) {
           Reactflux
         </Typography.Title>
       </div>
-      <div className="button-group" style={{ marginRight: "20px" }}>
+      <div className="button-group" style={{ marginRight: "10px" }}>
         <Space size={16}>
           <Tooltip content="Add feed" mini>
             <Button

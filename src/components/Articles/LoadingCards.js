@@ -10,7 +10,7 @@ export default function LoadingCards({ loading }) {
     ? Array.from({ length: cardCount }, (_, index) =>
         layout === "large" ? (
           <Card
-            style={{ width: 300, marginBottom: "10px" }}
+            style={{ width: "100%", marginBottom: "10px" }}
             key={index}
             cover={
               <Skeleton
@@ -19,7 +19,7 @@ export default function LoadingCards({ loading }) {
                 text={{ rows: 0 }}
                 image={{
                   style: {
-                    width: 300,
+                    width: "100%",
                     height: 160,
                   },
                 }}
@@ -38,7 +38,7 @@ export default function LoadingCards({ loading }) {
           </Card>
         ) : (
           <Card
-            style={{ width: 300, marginBottom: "10px" }}
+            style={{ width: "100%", marginBottom: "10px" }}
             key={index}
             cover={null}
           >

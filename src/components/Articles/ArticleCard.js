@@ -24,7 +24,7 @@ export default function ArticleCard({ entry, handleEntryClick }) {
         })}
         hoverable
         data-entry-id={entry.id}
-        style={{ width: 300, cursor: "pointer" }}
+        style={{ width: "100%", cursor: "pointer" }}
         onClick={() => {
           handleEntryClick(entry);
         }}
@@ -38,8 +38,8 @@ export default function ArticleCard({ entry, handleEntryClick }) {
             }}
           >
             <ImageWithLazyLoading
-              width={300}
-              height={160}
+              width={"100%"}
+              height="160px"
               alt={entry.id}
               src={entry.imgSrc}
               status={entry.status}

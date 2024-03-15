@@ -16,6 +16,7 @@ export default function ActionButtons() {
 
   return activeContent ? (
     <div
+      className="action-buttons"
       style={{
         position: "fixed",
         borderRadius: "50%",

@@ -27,15 +27,16 @@ export default function Sidebar({ location }) {
     <Sider
       className="sidebar"
       trigger={null}
+      collapsedWidth={0}
       breakpoint="lg"
       onCollapse={setCollapsed}
       collapsed={collapsed}
       collapsible
       style={{
-        height: "calc(100% - 49px)",
+        height: "100%",
         borderRight: "1px solid var(--color-border-2)",
         position: "fixed",
-        top: "49px",
+        top: 0,
         zIndex: "999",
       }}
     >

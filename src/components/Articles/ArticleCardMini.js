@@ -24,7 +24,7 @@ export default function ArticleCardMini({ entry, handleEntryClick }) {
         })}
         hoverable
         data-entry-id={entry.id}
-        style={{ width: 300, cursor: "pointer" }}
+        style={{ width: "100%", cursor: "pointer" }}
         onClick={() => {
           handleEntryClick(entry);
         }}

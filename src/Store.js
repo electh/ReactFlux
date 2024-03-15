@@ -116,6 +116,6 @@ export const useStore = create((set, get) => ({
   },
 
   setCollapsed: (collapsed) => {
-    set({ collapsed });
+    set({ collapsed: collapsed });
   },
 }));
