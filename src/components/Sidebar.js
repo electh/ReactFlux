@@ -71,7 +71,8 @@ export default function Sidebar({ location }) {
             display: "flex",
             alignItems: "center",
             padding: "0 28px 0 10px",
-            height: "44px",
+            height: "48px",
+            marginTop: "-4px",
             visibility: collapsed ? "hidden" : "visible",
           }}
         >
