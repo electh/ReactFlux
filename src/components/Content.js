@@ -3,14 +3,7 @@ import { CSSTransition } from "react-transition-group";
 
 import { updateEntryStatus } from "../apis";
 import useEntryActions from "../hooks/useEntryActions";
-import {
-  handleBKey,
-  handleEscapeKey,
-  handleLeftKey,
-  handleMKey,
-  handleRightKey,
-  handleSKey,
-} from "../utils/keyHandlers";
+import useKeyHandlers from "../hooks/useKeyHandlers";
 import ActionButtons from "./Articles/ActionButtons";
 import ArticleDetail from "./Articles/ArticleDetail";
 import ArticleListView from "./Articles/ArticleListView";
@@ -35,6 +28,14 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   } = useContext(ContentContext);
 
   const { toggleEntryStarred, toggleEntryStatus } = useEntryActions();
+  const {
+    handleBKey,
+    handleEscapeKey,
+    handleLeftKey,
+    handleMKey,
+    handleRightKey,
+    handleSKey,
+  } = useKeyHandlers();
 
   const [showArticleDetail, setShowArticleDetail] = useState(false);
 
@@ -80,16 +81,13 @@ export default function Content({ info, getEntries, markAllAsRead }) {
   };
 
   useEffect(() => {
-    const currentIndex = entries.findIndex(
-      (entry) => entry.id === activeContent?.id,
-    );
     const keyMap = {
-      27: () => handleEscapeKey(activeContent, setActiveContent, entryListRef),
-      37: () => handleLeftKey(currentIndex, entries, handleEntryClick),
-      39: () => handleRightKey(currentIndex, entries, handleEntryClick),
-      66: () => handleBKey(activeContent),
-      77: () => handleMKey(activeContent, toggleEntryStatus),
-      83: () => handleSKey(activeContent, toggleEntryStarred),
+      27: () => handleEscapeKey(entryListRef),
+      37: () => handleLeftKey(handleEntryClick),
+      39: () => handleRightKey(handleEntryClick),
+      66: () => handleBKey(),
+      77: () => handleMKey(toggleEntryStatus),
+      83: () => handleSKey(toggleEntryStarred),
     };
 
     const handleKeyDown = (event) => {
@@ -148,7 +146,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
       >
         <ArticleDetail ref={entryDetailRef} />
       </CSSTransition>
-      <ActionButtons />
+      <ActionButtons handleEntryClick={handleEntryClick} />
     </>
   );
 }
