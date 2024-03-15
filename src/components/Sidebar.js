@@ -6,15 +6,21 @@ import {
   Skeleton,
   Typography,
 } from "@arco-design/web-react";
-import { IconApps, IconBook, IconList } from "@arco-design/web-react/icon";
+import {
+  IconBook,
+  IconHistory,
+  IconRight,
+  IconStar,
+  IconUnorderedList,
+} from "@arco-design/web-react/icon";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useStore } from "../Store";
+import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
 const { Sider } = Layout;
-const { SubMenu } = Menu;
 
 const GroupTitle = ({ group }) => (
   <div
@@ -29,6 +35,7 @@ const GroupTitle = ({ group }) => (
       showTooltip={true}
       style={{ width: group.unread !== 0 ? "80%" : "100%" }}
     >
+      <IconRight />
       {group.title.toUpperCase()}
     </Typography.Ellipsis>
     {group.unread !== 0 && (
@@ -46,43 +53,6 @@ const GroupTitle = ({ group }) => (
       </Typography.Ellipsis>
     )}
   </div>
-);
-
-const FeedItem = ({ feed, navigate }) => (
-  <MenuItem
-    key={`/feed/${feed.id}`}
-    onClick={() => navigate(`/feed/${feed.id}`)}
-  >
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <Typography.Ellipsis
-        expandable={false}
-        showTooltip={true}
-        style={{ width: feed.unread !== 0 ? "80%" : "100%" }}
-      >
-        {feed.title.toUpperCase()}{" "}
-      </Typography.Ellipsis>
-      {feed.unread !== 0 && (
-        <Typography.Ellipsis
-          expandable={false}
-          showTooltip={true}
-          style={{
-            width: "20%",
-            color: "var(--color-text-4)",
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-        >
-          {feed.unread}
-        </Typography.Ellipsis>
-      )}
-    </div>
-  </MenuItem>
 );
 
 export default function Sidebar({ location }) {
@@ -126,16 +96,12 @@ export default function Sidebar({ location }) {
       }}
     >
       <Menu
+        autoOpen
         selectedKeys={selectedKeys}
         style={{ width: "240px", height: "100%" }}
         onCollapseChange={() => setCollapsed(!collapsed)}
         collapse={collapsed}
         hasCollapseButton
-        defaultOpenKeys={[
-          path.substring(1).indexOf("/") === -1
-            ? "/"
-            : path.substring(0, path.substring(1).indexOf("/") + 1),
-        ]}
         defaultSelectedKeys={[path]}
       >
         <div
@@ -162,16 +128,15 @@ export default function Sidebar({ location }) {
           </Typography.Title>
         </div>
         <Divider style={{ marginTop: 0, marginBottom: "4px" }} />
-        <SubMenu
-          key={`/`}
-          title={
-            <span style={{ fontWeight: 500 }}>
-              <IconList />
-              ARTICLES
-            </span>
-          }
+        <Typography.Title
+          heading={6}
+          style={{ fontStyle: "italic", color: "var(--color-text-3)" }}
         >
-          <Skeleton loading={loading} animation text={{ rows: 3 }}>
+          Articles
+        </Typography.Title>
+        <Skeleton loading={loading} animation={true} text={{ rows: 3 }} />
+        {loading ? null : (
+          <div>
             <MenuItem key={`/`} onClick={() => navigate("/")}>
               <div
                 style={{
@@ -180,7 +145,10 @@ export default function Sidebar({ location }) {
                   alignItems: "center",
                 }}
               >
-                <span>ALL</span>
+                <span>
+                  <IconUnorderedList />
+                  ALL
+                </span>
                 <Typography.Ellipsis
                   expandable={false}
                   showTooltip={true}
@@ -198,42 +166,72 @@ export default function Sidebar({ location }) {
               </div>
             </MenuItem>
             <MenuItem key={`/starred`} onClick={() => navigate("/starred")}>
-              <span>STARRED</span>
+              <span>
+                <IconStar />
+                STARRED
+              </span>
             </MenuItem>
             <MenuItem key={"/history"} onClick={() => navigate("/history")}>
-              <span>HISTORY</span>
+              <span>
+                <IconHistory />
+                HISTORY
+              </span>
             </MenuItem>
-          </Skeleton>
-        </SubMenu>
-        {/*{collapsed ? null : <Divider style={{ margin: "4px" }} />}*/}
-        <SubMenu
-          key={`/group`}
-          title={
-            <span style={{ fontWeight: 500 }}>
-              <IconApps />
-              GROUPS
-            </span>
-          }
+          </div>
+        )}
+        <Typography.Title
+          heading={6}
+          style={{ fontStyle: "italic", color: "var(--color-text-3)" }}
         >
-          <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
-          {loading
-            ? null
-            : groups.map((group) => (
-                <SubMenu
-                  selectable={true}
-                  key={`/group/${group.id}`}
-                  title={<GroupTitle group={group} />}
-                >
-                  {feedsGroupedById[group.id]?.map((feed) => (
-                    <FeedItem
-                      key={`/feed/${feed.id}`}
-                      feed={feed}
-                      navigate={navigate}
-                    />
-                  ))}
-                </SubMenu>
-              ))}
-        </SubMenu>
+          Feeds
+        </Typography.Title>
+        <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
+        {loading
+          ? null
+          : groups.map((group) => (
+              <Menu.SubMenu
+                style={{ cursor: "not-allowed" }}
+                key={`/${group.id}`}
+                title={<GroupTitle group={group} />}
+              >
+                {feedsGroupedById[group.id]?.map((feed) => (
+                  <MenuItem
+                    key={`/${group.id}/${feed.id}`}
+                    onClick={() => navigate(`${group.id}/${feed.id}`)}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography.Ellipsis
+                        expandable={false}
+                        showTooltip={true}
+                        style={{ width: feed.unread !== 0 ? "80%" : "100%" }}
+                      >
+                        {feed.title.toUpperCase()}{" "}
+                      </Typography.Ellipsis>
+                      {feed.unread !== 0 && (
+                        <Typography.Ellipsis
+                          expandable={false}
+                          showTooltip={true}
+                          style={{
+                            width: "20%",
+                            color: "var(--color-text-4)",
+                            display: "flex",
+                            justifyContent: "flex-end",
+                          }}
+                        >
+                          {feed.unread}
+                        </Typography.Ellipsis>
+                      )}
+                    </div>
+                  </MenuItem>
+                ))}
+              </Menu.SubMenu>
+            ))}
       </Menu>
     </Sider>
   );
