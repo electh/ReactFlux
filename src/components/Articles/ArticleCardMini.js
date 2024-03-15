@@ -55,7 +55,7 @@ export default function ArticleCardMini({ entry, handleEntryClick }) {
                   <br />
                   {entry.feed.title.toUpperCase()}
                   <br />
-                  {dayjs().to(dayjs(entry.created_at))}
+                  {dayjs().to(dayjs(entry.published_at))}
                 </Typography.Text>
                 {entry.starred && (
                   <IconStarFill

@@ -44,9 +44,11 @@ const ArticleDetail = forwardRef((_, ref) => {
         <Typography.Text
           style={{ color: "var(--color-text-3)", fontSize: "10px" }}
         >
-          {dayjs(activeContent.created_at).format("MMMM D, YYYY").toUpperCase()}
+          {dayjs(activeContent.published_at)
+            .format("MMMM D, YYYY")
+            .toUpperCase()}
           {" AT "}
-          {dayjs(activeContent.created_at).format("hh:mm")}
+          {dayjs(activeContent.published_at).format("hh:mm")}
         </Typography.Text>
         <Typography.Title heading={3} style={{ margin: 0 }}>
           <a href={activeContent.url} target="_blank" rel="noopener noreferrer">
