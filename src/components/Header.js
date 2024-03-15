@@ -6,10 +6,8 @@ import {
   Message,
   Space,
   Tooltip,
-  Typography,
 } from "@arco-design/web-react";
 import {
-  IconBook,
   IconMenu,
   IconMoonFill,
   IconPlus,
@@ -69,19 +67,6 @@ export default function Header({ theme }) {
         >
           {<IconMenu />}
         </Button>
-        <Avatar
-          size={32}
-          style={{
-            marginRight: "10px",
-            marginLeft: "5px",
-            backgroundColor: "var(--color-text-1)",
-          }}
-        >
-          <IconBook style={{ color: "var(--color-bg-1)" }} />
-        </Avatar>
-        <Typography.Title heading={6} style={{ margin: "0" }}>
-          Reactflux
-        </Typography.Title>
       </div>
       <div className="button-group" style={{ marginRight: "10px" }}>
         <Space size={16}>

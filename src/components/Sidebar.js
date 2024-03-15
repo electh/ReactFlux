@@ -1,5 +1,17 @@
-import { Layout, Menu, Skeleton, Typography } from "@arco-design/web-react";
-import { IconApps, IconFile, IconList } from "@arco-design/web-react/icon";
+import {
+  Avatar,
+  Divider,
+  Layout,
+  Menu,
+  Skeleton,
+  Typography,
+} from "@arco-design/web-react";
+import {
+  IconApps,
+  IconBook,
+  IconFile,
+  IconList,
+} from "@arco-design/web-react/icon";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -43,7 +55,7 @@ export default function Sidebar({ location }) {
     >
       <Menu
         selectedKeys={selectedKeys}
-        style={{ width: 240, height: "100%" }}
+        style={{ width: "240px", height: "100%" }}
         onCollapseChange={() => setCollapsed(!collapsed)}
         collapse={collapsed}
         hasCollapseButton
@@ -54,6 +66,29 @@ export default function Sidebar({ location }) {
         ]}
         defaultSelectedKeys={[path]}
       >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "0 28px 0 10px",
+            height: "44px",
+            visibility: collapsed ? "hidden" : "visible",
+          }}
+        >
+          <Avatar
+            size={32}
+            style={{
+              marginRight: "10px",
+              backgroundColor: "var(--color-text-1)",
+            }}
+          >
+            <IconBook style={{ color: "var(--color-bg-1)" }} />
+          </Avatar>
+          <Typography.Title heading={6} style={{ margin: "0" }}>
+            Reactflux
+          </Typography.Title>
+        </div>
+        <Divider style={{ marginTop: 0, marginBottom: "4px" }} />
         <SubMenu
           key={`/`}
           title={

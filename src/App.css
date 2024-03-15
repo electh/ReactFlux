@@ -15,6 +15,10 @@
   display: none;
 }
 
+.arco-menu-collapse {
+  width: 0 !important;
+}
+
 @media screen and (max-width: 992px) {
   .header {
     padding-left: 0 !important;
@@ -28,6 +32,10 @@
   .arco-menu-collapse-button {
     display: flex !important;
     top: 12px;
+  }
+
+  .arco-layout-sider-light {
+    box-shadow: none !important;
   }
 
   .article-list {
