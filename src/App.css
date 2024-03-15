@@ -27,6 +27,7 @@
 
   .arco-menu-collapse-button {
     display: flex !important;
+    top: 12px;
   }
 
   .article-list {
@@ -67,5 +68,9 @@
   .action-buttons {
     bottom: 20% !important;
     z-index: 999;
+  }
+
+  .entry-panel {
+    padding: 8px 10px 20px 8px !important;
   }
 }

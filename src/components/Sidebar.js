@@ -27,6 +27,7 @@ export default function Sidebar({ location }) {
     <Sider
       className="sidebar"
       trigger={null}
+      width={240}
       collapsedWidth={0}
       breakpoint="lg"
       onCollapse={setCollapsed}
@@ -34,7 +35,7 @@ export default function Sidebar({ location }) {
       collapsible
       style={{
         height: "100%",
-        borderRight: "1px solid var(--color-border-2)",
+        borderRight: collapsed ? "none" : "1px solid var(--color-border-2)",
         position: "fixed",
         top: 0,
         zIndex: "999",
@@ -42,7 +43,7 @@ export default function Sidebar({ location }) {
     >
       <Menu
         selectedKeys={selectedKeys}
-        style={{ width: 200, height: "100%" }}
+        style={{ width: 240, height: "100%" }}
         onCollapseChange={() => setCollapsed(!collapsed)}
         collapse={collapsed}
         hasCollapseButton

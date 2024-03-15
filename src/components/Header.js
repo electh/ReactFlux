@@ -48,8 +48,9 @@ export default function Header({ theme }) {
         justifyContent: "space-between",
         alignItems: "center",
         position: "fixed",
-        width: "calc(100% - 200px)",
-        paddingLeft: "200px",
+        width: "calc(100% - 240px)",
+        right: 0,
+        transition: "width 0.1s linear",
         height: "48px",
         zIndex: "999",
         backgroundColor: "var(--color-bg-1)",
@@ -68,14 +69,17 @@ export default function Header({ theme }) {
         >
           {<IconMenu />}
         </Button>
-        <IconBook
+        <Avatar
+          size={32}
           style={{
-            fontSize: 32,
-            color: "rgb(var(--primary-6))",
-            marginRight: "5px",
+            marginRight: "10px",
+            marginLeft: "5px",
+            backgroundColor: "var(--color-text-1)",
           }}
-        />
-        <Typography.Title heading={5} style={{ margin: "0" }}>
+        >
+          <IconBook style={{ color: "var(--color-bg-1)" }} />
+        </Avatar>
+        <Typography.Title heading={6} style={{ margin: "0" }}>
           Reactflux
         </Typography.Title>
       </div>
