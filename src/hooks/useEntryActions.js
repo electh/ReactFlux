@@ -4,13 +4,15 @@ import { useContext } from "react";
 import { useStore } from "../Store";
 import { updateEntryStarred, updateEntryStatus } from "../apis";
 import { ContentContext } from "../components/ContentContext";
-import { isIn24Hours } from "../utils/Date";
+import { isInLast24Hours } from "../utils/Date";
 
 const useEntryActions = () => {
   const unreadToday = useStore((state) => state.unreadToday);
   const setUnreadToday = useStore((state) => state.setUnreadToday);
   const readCount = useStore((state) => state.readCount);
   const setReadCount = useStore((state) => state.setReadCount);
+  const starredCount = useStore((state) => state.starredCount);
+  const setStarredCount = useStore((state) => state.setStarredCount);
 
   const {
     activeContent,
@@ -42,11 +44,15 @@ const useEntryActions = () => {
     if (response) {
       updateFeedUnread(activeContent.feed.id, newStatus);
       updateGroupUnread(activeContent.feed.category.id, newStatus);
-      setUnreadTotal(newStatus === "read" ? unreadTotal - 1 : unreadTotal + 1);
-      setReadCount(newStatus === "read" ? readCount + 1 : readCount - 1);
-      if (isIn24Hours(activeContent.published_at)) {
+      setUnreadTotal(
+        newStatus === "read" ? Math.max(0, unreadTotal - 1) : unreadTotal + 1,
+      );
+      setReadCount(
+        newStatus === "read" ? readCount + 1 : Math.max(0, readCount - 1),
+      );
+      if (isInLast24Hours(activeContent.published_at)) {
         setUnreadToday(
-          newStatus === "read" ? unreadToday - 1 : unreadToday + 1,
+          newStatus === "read" ? Math.max(0, unreadToday - 1) : unreadToday + 1,
         );
       }
       updateUI({ status: newStatus }, (entry) => ({
@@ -71,6 +77,9 @@ const useEntryActions = () => {
           spread: 70,
           origin: { x: 1, y: 1 },
         });
+      setStarredCount(
+        newStarred ? starredCount + 1 : Math.max(0, starredCount - 1),
+      );
     }
   };
 

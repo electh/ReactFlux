@@ -1,9 +1,9 @@
 import dayjs from "dayjs";
 
-export const isIn24Hours = (dateStr) => {
+export const isInLast24Hours = (dateStr) => {
   const givenDate = dayjs(dateStr);
   const now = dayjs();
-  return givenDate.isBefore(now.add(24, "hour")) && givenDate.isAfter(now);
+  return givenDate.isAfter(now.subtract(24, "hour"));
 };
 
 export const get24HoursAgoUnixTimestamp = () => {
