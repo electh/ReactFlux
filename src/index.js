@@ -12,6 +12,7 @@ import Group from "./Group";
 import History from "./History";
 import Login from "./Login";
 import Starred from "./Starred";
+import Today from "./Today";
 import RouterProtect from "./components/RouterProtect";
 import "./index.css";
 
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <All />,
+      },
+      {
+        path: "/today",
+        element: <Today />,
       },
       {
         path: "/starred",

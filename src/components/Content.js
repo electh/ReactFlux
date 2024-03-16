@@ -1,9 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
+import { useStore } from "../Store";
 import { updateEntryStatus } from "../apis";
 import useEntryActions from "../hooks/useEntryActions";
 import useKeyHandlers from "../hooks/useKeyHandlers";
+import { isInLast24Hours } from "../utils/Date";
 import ActionButtons from "./Articles/ActionButtons";
 import ArticleDetail from "./Articles/ArticleDetail";
 import ArticleListView from "./Articles/ArticleListView";
@@ -13,6 +15,13 @@ import { ContentContext } from "./ContentContext";
 import "./Transition.css";
 
 export default function Content({ info, getEntries, markAllAsRead }) {
+  const unreadTotal = useStore((state) => state.unreadTotal);
+  const unreadToday = useStore((state) => state.unreadToday);
+  const readCount = useStore((state) => state.readCount);
+  const setUnreadTotal = useStore((state) => state.setUnreadTotal);
+  const setUnreadToday = useStore((state) => state.setUnreadToday);
+  const setReadCount = useStore((state) => state.setReadCount);
+
   const {
     activeContent,
     allEntries,
@@ -21,8 +30,6 @@ export default function Content({ info, getEntries, markAllAsRead }) {
     setActiveContent,
     setAllEntries,
     setEntries,
-    setUnreadTotal,
-    unreadTotal,
     updateFeedUnread,
     updateGroupUnread,
   } = useContext(ContentContext);
@@ -66,7 +73,11 @@ export default function Content({ info, getEntries, markAllAsRead }) {
           updateGroupUnread(entry.feed.category.id, "read");
           setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
           setAllEntries(updateLocalEntryStatus(allEntries, entry.id, "read"));
-          setUnreadTotal(unreadTotal - 1);
+          setUnreadTotal(Math.max(0, unreadTotal - 1));
+          setReadCount(readCount + 1);
+          if (isInLast24Hours(entry.published_at)) {
+            setUnreadToday(Math.max(0, unreadToday - 1));
+          }
         }
       }
 

@@ -2,12 +2,17 @@ import _ from "lodash";
 import { create } from "zustand";
 
 import { getFeeds, getGroups, getUnreadInfo } from "./apis";
+import { getHistoryEntries, getStarredEntries, getTodayEntries } from "./apis";
 import { applyColor } from "./utils/Colors";
 import { getConfig, setConfig } from "./utils/Config";
 
 export const useStore = create((set, get) => ({
   feeds: [],
   groups: [],
+  unreadTotal: 0,
+  unreadToday: 0,
+  starredCount: 0,
+  readCount: 0,
   loading: true,
   visible: {
     settings: false,
@@ -17,14 +22,51 @@ export const useStore = create((set, get) => ({
   layout: getConfig("layout") || "large",
   fontSize: getConfig("fontSize") || 1.05,
   collapsed: false,
+
+  setUnreadTotal: (unreadTotal) => {
+    set({ unreadTotal: unreadTotal });
+  },
+  setUnreadToday: (unreadToday) => {
+    set({ unreadToday: unreadToday });
+  },
+  setStarredCount: (starredCount) => {
+    set({ starredCount: starredCount });
+  },
+  setReadCount: (readCount) => {
+    set({ readCount: readCount });
+  },
+
   initData: async () => {
     set({ loading: true });
-    const feedResponse = await getFeeds();
-    const groupResponse = await getGroups();
-    const unreadResponse = await getUnreadInfo();
+    const [
+      feedResponse,
+      groupResponse,
+      unreadResponse,
+      historyResponse,
+      starredResponse,
+      todayResponse,
+    ] = await Promise.all([
+      getFeeds(),
+      getGroups(),
+      getUnreadInfo(),
+      getHistoryEntries(),
+      getStarredEntries(),
+      getTodayEntries(0, "unread"),
+    ]);
 
-    if (feedResponse && unreadResponse && groupResponse) {
+    if (
+      feedResponse &&
+      unreadResponse &&
+      groupResponse &&
+      historyResponse &&
+      starredResponse &&
+      todayResponse
+    ) {
       const unreadInfo = unreadResponse.data.unreads;
+      const unreadTotal = Object.values(unreadInfo).reduce(
+        (acc, cur) => acc + cur,
+        0,
+      );
       const feedsWithUnread = feedResponse.data.map((feed) => ({
         ...feed,
         unread: unreadInfo[feed.id] || 0,
@@ -48,8 +90,16 @@ export const useStore = create((set, get) => ({
         };
       });
 
+      const readCount = historyResponse.data.total;
+      const starredCount = starredResponse.data.total;
+      const unreadToday = todayResponse.data.total;
+
       set({ feeds: _.orderBy(feedsWithUnread, ["title"], ["asc"]) });
       set({ groups: _.orderBy(groupsWithUnread, ["title"], ["asc"]) });
+      set({ unreadTotal });
+      set({ readCount });
+      set({ starredCount });
+      set({ unreadToday });
       set({ loading: false });
     }
   },

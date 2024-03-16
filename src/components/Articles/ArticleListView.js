@@ -51,27 +51,18 @@ const ArticleListView = forwardRef(
             )}
           </div>
         )}
-        {!loading && filterStatus === "all" && loadMoreVisible && (
-          <Button
-            onClick={() => handleLoadMore(getEntries)}
-            loading={loadingMore}
-            long={true}
-            style={{ margin: "10px auto", display: "block" }}
-          >
-            {!loadingMore && <IconArrowDown />}Load more
-          </Button>
-        )}
-
-        {!loading && filterStatus === "unread" && loadMoreUnreadVisible && (
-          <Button
-            onClick={() => handleLoadMore(getEntries)}
-            loading={loadingMore}
-            long={true}
-            style={{ margin: "10px auto", display: "block" }}
-          >
-            {!loadingMore && <IconArrowDown />}Load more
-          </Button>
-        )}
+        {!loading &&
+          ((filterStatus === "all" && loadMoreVisible) ||
+            (filterStatus === "unread" && loadMoreUnreadVisible)) && (
+            <Button
+              onClick={() => handleLoadMore(getEntries)}
+              loading={loadingMore}
+              long={true}
+              style={{ margin: "10px auto", display: "block" }}
+            >
+              {!loadingMore && <IconArrowDown />}Load more
+            </Button>
+          )}
       </div>
     );
   },
