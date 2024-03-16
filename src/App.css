@@ -54,13 +54,9 @@
     width: calc(100% - 20px) !important;
   }
 
-  .hide-article-content-btn {
-    display: block !important;
-  }
-
   .article-content {
     display: block !important;
-    z-index: 200 !important;
+    z-index: 3 !important;
     position: absolute;
     box-sizing: border-box;
     top: 49px;
@@ -75,8 +71,12 @@
   }
 
   .action-buttons {
-    bottom: 20% !important;
-    z-index: 999;
+    display: none !important;
+  }
+
+  .action-buttons-mobile {
+    display: block !important;
+    z-index: 4;
   }
 
   .entry-panel {

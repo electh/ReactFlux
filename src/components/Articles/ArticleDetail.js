@@ -1,4 +1,4 @@
-import { Button, Divider, Typography } from "@arco-design/web-react";
+import { Divider, Typography } from "@arco-design/web-react";
 import { IconEmpty } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import { forwardRef, useContext } from "react";
@@ -9,7 +9,6 @@ import { ContentContext } from "../ContentContext";
 
 const ArticleDetail = forwardRef((_, ref) => {
   const { activeContent } = useContext(ContentContext);
-  const { setActiveContent } = useContext(ContentContext);
   const fontSize = useStore((state) => state.fontSize);
 
   return activeContent ? (
@@ -26,13 +25,6 @@ const ArticleDetail = forwardRef((_, ref) => {
         overflowX: "hidden",
       }}
     >
-      <Button
-        className="hide-article-content-btn"
-        style={{ display: "none" }}
-        onClick={() => setActiveContent(null)}
-      >
-        Close
-      </Button>
       <div
         className="article-title"
         style={{

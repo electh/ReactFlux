@@ -128,7 +128,7 @@ const FilterAndMarkPanel = forwardRef(
           flexDirection: "row",
           padding: "8px 10px",
           // width: "302px",
-          zIndex: "100",
+          zIndex: "2",
           justifyContent: "space-between",
           borderTop: "1px solid var(--color-border-2)",
         }}

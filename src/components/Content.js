@@ -7,6 +7,7 @@ import useEntryActions from "../hooks/useEntryActions";
 import useKeyHandlers from "../hooks/useKeyHandlers";
 import { isInLast24Hours } from "../utils/Date";
 import ActionButtons from "./Articles/ActionButtons";
+import ActionButtonsMobile from "./Articles/ActionButtonsMobile";
 import ArticleDetail from "./Articles/ArticleDetail";
 import ArticleListView from "./Articles/ArticleListView";
 import FilterAndMarkPanel from "./Articles/FilterAndMarkPanel";
@@ -158,6 +159,7 @@ export default function Content({ info, getEntries, markAllAsRead }) {
         <ArticleDetail ref={entryDetailRef} />
       </CSSTransition>
       <ActionButtons handleEntryClick={handleEntryClick} />
+      <ActionButtonsMobile handleEntryClick={handleEntryClick} />
     </>
   );
 }
