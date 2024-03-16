@@ -26,7 +26,7 @@ export default function ActionButtonsMobile({ handleEntryClick }) {
         display: "none",
         justifyContent: "center",
         position: "fixed",
-        bottom: "60px",
+        bottom: "40px",
         left: "50%",
         transform: "translateX(-50%)",
         borderRadius: "50%",
