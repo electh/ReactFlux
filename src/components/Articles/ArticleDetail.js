@@ -36,9 +36,7 @@ const ArticleDetail = forwardRef((_, ref) => {
         <Typography.Text
           style={{ color: "var(--color-text-3)", fontSize: "10px" }}
         >
-          {dayjs(activeContent.published_at)
-            .format("MMMM D, YYYY")
-            .toUpperCase()}
+          {dayjs(activeContent.published_at).format("MMMM D, YYYY")}
           {" AT "}
           {dayjs(activeContent.published_at).format("hh:mm")}
         </Typography.Text>
@@ -54,7 +52,7 @@ const ArticleDetail = forwardRef((_, ref) => {
             to={`/${activeContent.feed.category.id}/${activeContent.feed.id}`}
             style={{ color: "inherit", textDecoration: "none" }}
           >
-            {activeContent.feed.title.toUpperCase()}
+            {activeContent.feed.title}
           </Link>
         </Typography.Text>
         <Divider />
@@ -91,7 +89,7 @@ const ArticleDetail = forwardRef((_, ref) => {
         heading={6}
         style={{ color: "var(--color-text-3)", marginTop: "10px" }}
       >
-        {"Reactflux".toUpperCase()}
+        Reactflux
       </Typography.Title>
     </div>
   );

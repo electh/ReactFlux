@@ -21,7 +21,7 @@ export const useStore = create((set, get) => ({
   theme: getConfig("theme") || "light",
   layout: getConfig("layout") || "large",
   fontSize: getConfig("fontSize") || 1.05,
-  collapsed: false,
+  collapsed: window.innerWidth <= 992,
 
   setUnreadTotal: (unreadTotal) => {
     set({ unreadTotal: unreadTotal });

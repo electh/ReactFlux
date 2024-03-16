@@ -53,7 +53,7 @@ export default function ArticleCardMini({ entry, handleEntryClick }) {
                   }}
                 >
                   <br />
-                  {entry.feed.title.toUpperCase()}
+                  {entry.feed.title}
                   <br />
                   {dayjs().to(dayjs(entry.published_at))}
                 </Typography.Text>

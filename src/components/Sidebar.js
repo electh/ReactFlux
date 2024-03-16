@@ -38,7 +38,7 @@ const GroupTitle = ({ group, isOpen }) => (
       style={{ width: group.unread !== 0 ? "80%" : "100%" }}
     >
       {isOpen ? <IconDown /> : <IconRight />}
-      {group.title.toUpperCase()}
+      {group.title}
     </Typography.Ellipsis>
     {group.unread !== 0 && (
       <Typography.Ellipsis
@@ -246,7 +246,7 @@ export default function Sidebar({ location }) {
                         showTooltip={true}
                         style={{ width: feed.unread !== 0 ? "80%" : "100%" }}
                       >
-                        {feed.title.toUpperCase()}{" "}
+                        {feed.title}
                       </Typography.Ellipsis>
                       {feed.unread !== 0 && (
                         <Typography.Ellipsis
