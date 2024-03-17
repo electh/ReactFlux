@@ -1,6 +1,7 @@
 import { Divider, Typography } from "@arco-design/web-react";
 import { IconEmpty } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
+import { Parser as HtmlToReactParser } from "html-to-react";
 import { forwardRef, useContext } from "react";
 import { Link } from "react-router-dom";
 
@@ -10,6 +11,9 @@ import { ContentContext } from "../ContentContext";
 const ArticleDetail = forwardRef((_, ref) => {
   const { activeContent } = useContext(ContentContext);
   const fontSize = useStore((state) => state.fontSize);
+
+  const htmlToReactParser = new HtmlToReactParser();
+  const reactElement = htmlToReactParser.parse(activeContent?.content);
 
   return activeContent ? (
     <div
@@ -58,7 +62,6 @@ const ArticleDetail = forwardRef((_, ref) => {
         <Divider />
       </div>
       <div
-        dangerouslySetInnerHTML={{ __html: activeContent.content }}
         className="article-body"
         style={{
           fontSize: `${fontSize}rem`,
@@ -67,7 +70,9 @@ const ArticleDetail = forwardRef((_, ref) => {
           marginLeft: "auto",
           marginRight: "auto",
         }}
-      ></div>
+      >
+        {reactElement}
+      </div>
     </div>
   ) : (
     <div
