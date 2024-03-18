@@ -30,7 +30,7 @@ const colors = [
   },
 ];
 
-function getColorValue(colorName) {
+const getColorValue = (colorName) => {
   // 查找匹配颜色名称的对象
   const selectedColor = colors.find((color) => color.name === colorName);
   const theme = getConfig("theme") || "light";
@@ -38,18 +38,17 @@ function getColorValue(colorName) {
     return theme === "light"
       ? selectedColor.valueLight
       : selectedColor.valueDark;
-  } else {
-    return "#165DFF";
   }
-}
+  return "#165DFF";
+};
 
-function applyColor(colorName) {
+const applyColor = (colorName) => {
   const list = generate(getColorValue(colorName), {
     list: true,
   }).map((x) => getRgbStr(x));
   list.forEach((x, i) => {
-    document.body.style.setProperty("--primary-" + (i + 1), x);
+    document.body.style.setProperty(`--primary-${i + 1}`, x);
   });
-}
+};
 
 export { colors, getColorValue, applyColor };

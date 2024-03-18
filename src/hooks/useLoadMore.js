@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 
-import { ContentContext } from "../components/ContentContext";
+import ContentContext from "../components/Content/ContentContext";
 import { filterEntries } from "../utils/Filter";
 
-export default function useLoadMore() {
+const useLoadMore = () => {
   const {
     allEntries,
     filterStatus,
@@ -78,4 +78,6 @@ export default function useLoadMore() {
   };
 
   return { getFirstImage, handleLoadMore, loadingMore };
-}
+};
+
+export default useLoadMore;

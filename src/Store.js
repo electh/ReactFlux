@@ -1,12 +1,18 @@
 import _ from "lodash";
 import { create } from "zustand";
 
-import { getFeeds, getGroups, getUnreadInfo } from "./apis";
-import { getHistoryEntries, getStarredEntries, getTodayEntries } from "./apis";
+import {
+  getFeeds,
+  getGroups,
+  getHistoryEntries,
+  getStarredEntries,
+  getTodayEntries,
+  getUnreadInfo,
+} from "./apis";
 import { applyColor } from "./utils/Colors";
 import { getConfig, setConfig } from "./utils/Config";
 
-export const useStore = create((set, get) => ({
+const useStore = create((set, get) => ({
   feeds: [],
   groups: [],
   unreadTotal: 0,
@@ -76,12 +82,12 @@ export const useStore = create((set, get) => ({
         let unreadCount = 0;
         let feedCount = 0;
 
-        feedsWithUnread.forEach((feed) => {
+        for (const feed of feedsWithUnread) {
           if (feed.category.id === group.id) {
             unreadCount += feed.unread;
             feedCount += 1;
           }
-        });
+        }
 
         return {
           ...group,
@@ -169,3 +175,5 @@ export const useStore = create((set, get) => ({
     set({ collapsed: collapsed });
   },
 }));
+
+export default useStore;

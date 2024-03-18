@@ -11,7 +11,7 @@ export async function updateEntryStatus(entry, status = "toggle") {
 
   return await thunder.request({
     method: "put",
-    url: `/v1/entries`,
+    url: "/v1/entries",
     data: { entry_ids: [entry.id], status: newStatus },
   });
 }
@@ -24,19 +24,19 @@ export async function updateEntryStarred(entry) {
 }
 
 export async function getCurrentUser() {
-  return await thunder.request({ method: "get", url: `/v1/me` });
+  return await thunder.request({ method: "get", url: "/v1/me" });
 }
 
 export async function getUnreadInfo() {
-  return await thunder.request({ method: "get", url: `/v1/feeds/counters` });
+  return await thunder.request({ method: "get", url: "/v1/feeds/counters" });
 }
 
 export async function getFeeds() {
-  return await thunder.request({ method: "get", url: `/v1/feeds` });
+  return await thunder.request({ method: "get", url: "/v1/feeds" });
 }
 
 export async function getGroups() {
-  return await thunder.request({ method: "get", url: `/v1/categories` });
+  return await thunder.request({ method: "get", url: "/v1/categories" });
 }
 
 export async function delGroup(id) {
@@ -49,7 +49,7 @@ export async function delGroup(id) {
 export async function addGroup(title) {
   return await thunder.request({
     method: "post",
-    url: `/v1/categories`,
+    url: "/v1/categories",
     headers: { "Content-Type": "application/json" },
     data: { title: title },
   });
@@ -83,7 +83,7 @@ export async function deleteFeed(feed_id) {
 export async function addFeed(feed_url, group_id, is_full_text) {
   return await thunder.request({
     method: "post",
-    url: `/v1/feeds`,
+    url: "/v1/feeds",
     headers: { "Content-Type": "application/json" },
     data: { feed_url: feed_url, category_id: group_id, crawler: is_full_text },
   });

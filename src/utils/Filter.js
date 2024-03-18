@@ -11,13 +11,11 @@ export const filterEntries = (
           (entry) =>
             entry.title.includes(filterString) && entry.status === filterStatus,
         );
-  } else {
-    return filterStatus === "all"
-      ? entries.filter((entry) => entry.content.includes(filterString))
-      : entries.filter(
-          (entry) =>
-            entry.content.includes(filterString) &&
-            entry.status === filterStatus,
-        );
   }
+  return filterStatus === "all"
+    ? entries.filter((entry) => entry.content.includes(filterString))
+    : entries.filter(
+        (entry) =>
+          entry.content.includes(filterString) && entry.status === filterStatus,
+      );
 };
