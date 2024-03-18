@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { ContentContext } from "../components/ContentContext";
+import ContentContext from "../components/Content/ContentContext";
 
 const useKeyHandlers = () => {
   const { activeContent, setActiveContent, entries } =

@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 
-import { ContentContext } from "../components/ContentContext";
+import ContentContext from "../components/Content/ContentContext";
 import { filterEntries } from "../utils/Filter";
 
 const useFilterEntries = () => {

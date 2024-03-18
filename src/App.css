@@ -5,7 +5,7 @@
 /*}*/
 
 /*@media screen and (max-width: 700px) {*/
-/*  .article-list {*/
+/*  .main {*/
 /*    padding-left: 0 !important;*/
 /*    width: 100% !important;*/
 /*  }*/
@@ -38,7 +38,7 @@
     box-shadow: none !important;
   }
 
-  .article-list {
+  .main {
     width: 100% !important;
     padding-left: 0 !important;
   }

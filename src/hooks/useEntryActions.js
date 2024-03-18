@@ -1,9 +1,9 @@
 import Confetti from "canvas-confetti";
 import { useContext } from "react";
 
-import { useStore } from "../Store";
+import useStore from "../Store";
 import { updateEntryStarred, updateEntryStatus } from "../apis";
-import { ContentContext } from "../components/ContentContext";
+import ContentContext from "../components/Content/ContentContext";
 import { isInLast24Hours } from "../utils/Date";
 
 const useEntryActions = () => {
