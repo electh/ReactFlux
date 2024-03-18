@@ -154,7 +154,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
     setTotal(responseAll.data.total);
     setLoadMoreVisible(fetchedArticles.length < responseAll.data.total);
-    setUnreadTotal(info.from === "history" ? 0 : responseUnread.data.total);
+    if (info.from === "all") {
+      setUnreadTotal(responseUnread.data.total);
+    }
     setLoadMoreUnreadVisible(
       filteredArticles.length < responseUnread.data.total,
     );
