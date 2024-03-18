@@ -13,9 +13,9 @@ Reactflux 是 [Miniflux](https://github.com/miniflux/miniflux) 的第三方 Web 
 
 ### 截图
 
-![large](https://github.com/electh/ReactFlux/raw/main/images/large.png)
-![medium](https://github.com/electh/ReactFlux/raw/main/images/medium.png)
-![settings](https://github.com/electh/ReactFlux/raw/main/images/settings.png)
+![large](images/large.png)
+![medium](images/medium.png)
+![settings](images/settings.png)
 
 ### 演示
 
