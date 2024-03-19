@@ -43,7 +43,6 @@ export default function Content() {
         display: "flex",
         height: "calc(100% - 48px)",
         backgroundColor: "var(--color-bg-3)",
-        minWidth: "650px",
       }}
     >
       <EntryList entries={pushEntries} info={`${from}${id}`} />
