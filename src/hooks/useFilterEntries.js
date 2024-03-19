@@ -16,7 +16,7 @@ const useFilterEntries = () => {
     setFilterString,
     setFilterType,
     setLoadMoreUnreadVisible,
-    unreadTotal,
+    unreadCount,
   } = useContext(ContentContext);
 
   useEffect(() => {
@@ -33,10 +33,10 @@ const useFilterEntries = () => {
       const unreadArticles = allEntries.filter(
         (entry) => entry.status === "unread",
       );
-      setLoadMoreUnreadVisible(unreadArticles.length < unreadTotal);
+      setLoadMoreUnreadVisible(unreadArticles.length < unreadCount);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterStatus, filterString, filterType]);
+  }, [filterStatus, filterString, filterType, loadMoreUnreadVisible]);
 
   const handleFilter = (filterType, filterStatus, filterString) => {
     setFilterType(filterType);

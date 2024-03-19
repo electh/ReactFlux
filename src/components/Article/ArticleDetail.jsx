@@ -63,6 +63,7 @@ const ArticleDetail = forwardRef((_, ref) => {
       </div>
       <div
         className="article-body"
+        key={activeContent.id}
         style={{
           fontSize: `${fontSize}rem`,
           overflowWrap: "break-word",

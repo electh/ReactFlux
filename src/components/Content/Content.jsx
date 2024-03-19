@@ -39,6 +39,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setLoadMoreVisible,
     setOffset,
     setTotal,
+    setUnreadCount,
+    unreadCount,
     updateFeedUnread,
     updateGroupUnread,
   } = useContext(ContentContext);
@@ -84,6 +86,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
           setAllEntries(updateLocalEntryStatus(allEntries, entry.id, "read"));
           setUnreadTotal(Math.max(0, unreadTotal - 1));
+          setUnreadCount(Math.max(0, unreadCount - 1));
           setReadCount(readCount + 1);
           if (isInLast24Hours(entry.published_at)) {
             setUnreadToday(Math.max(0, unreadToday - 1));
@@ -124,7 +127,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       document.removeEventListener("keydown", handleKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activeContent, entries]);
 
   const fetchEntries = async () => {
     const responseAll = await getEntries();
@@ -154,9 +157,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
     setTotal(responseAll.data.total);
     setLoadMoreVisible(fetchedArticles.length < responseAll.data.total);
-    if (info.from === "all") {
-      setUnreadTotal(responseUnread.data.total);
-    }
+    setUnreadCount(responseUnread.data.total);
     setLoadMoreUnreadVisible(
       filteredArticles.length < responseUnread.data.total,
     );
@@ -192,7 +193,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
     setOffset(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [info]);
 
   return (
     <>

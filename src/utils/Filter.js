@@ -4,6 +4,7 @@ export const filterEntries = (
   filterStatus,
   filterString,
 ) => {
+  // 0: title 1: content
   if (filterType === "0") {
     return filterStatus === "all"
       ? entries.filter((entry) => entry.title.includes(filterString))

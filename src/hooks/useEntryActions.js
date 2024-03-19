@@ -7,6 +7,8 @@ import ContentContext from "../components/Content/ContentContext";
 import { isInLast24Hours } from "../utils/Date";
 
 const useEntryActions = () => {
+  const unreadTotal = useStore((state) => state.unreadTotal);
+  const setUnreadTotal = useStore((state) => state.setUnreadTotal);
   const unreadToday = useStore((state) => state.unreadToday);
   const setUnreadToday = useStore((state) => state.setUnreadToday);
   const readCount = useStore((state) => state.readCount);
@@ -21,8 +23,8 @@ const useEntryActions = () => {
     setActiveContent,
     setAllEntries,
     setEntries,
-    setUnreadTotal,
-    unreadTotal,
+    setUnreadCount,
+    unreadCount,
     updateFeedUnread,
     updateGroupUnread,
   } = useContext(ContentContext);
@@ -46,6 +48,9 @@ const useEntryActions = () => {
       updateGroupUnread(activeContent.feed.category.id, newStatus);
       setUnreadTotal(
         newStatus === "read" ? Math.max(0, unreadTotal - 1) : unreadTotal + 1,
+      );
+      setUnreadCount(
+        newStatus === "read" ? Math.max(0, unreadCount - 1) : unreadCount + 1,
       );
       setReadCount(
         newStatus === "read" ? readCount + 1 : Math.max(0, readCount - 1),
