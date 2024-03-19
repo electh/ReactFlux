@@ -20,3 +20,7 @@ html, body, #root {
 body {
   overscroll-behavior: none;
 }
+
+html {
+  touch-action: pan-y;
+}
