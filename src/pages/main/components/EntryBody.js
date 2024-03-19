@@ -1,6 +1,7 @@
 import ReactHtmlParser from "html-react-parser";
-import { Image } from "@arco-design/web-react";
 import { useConfigStore } from "../../../store/configStore";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 
 // 自定义解析规则，用于替换img标签
 const htmlParserOptions = {
@@ -8,19 +9,11 @@ const htmlParserOptions = {
     if (node.name === "img") {
       const { src, alt } = node.attribs;
       return (
-        <Image
-          src={src}
-          alt={alt}
-          previewProps={{
-            actionsLayout: [
-              "rotateRight",
-              "rotateLeft",
-              "zoomIn",
-              "zoomOut",
-              "originalSize",
-            ],
-          }}
-        />
+        <PhotoProvider maskOpacity={0.7} bannerVisible={false}>
+          <PhotoView src={src}>
+            <img src={src} alt={alt} />
+          </PhotoView>
+        </PhotoProvider>
       );
     }
   },
