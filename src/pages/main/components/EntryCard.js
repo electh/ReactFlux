@@ -11,6 +11,7 @@ const { Meta } = Card;
 const EntryCard = ({ entry }) => {
   const activeEntry = useStore((state) => state.activeEntry);
   const clickCard = useStore((state) => state.clickCard);
+  const isMobile = useStore((state) => state.isMobile);
 
   const handelClickCard = (entry) => {
     clickCard(entry);
@@ -33,7 +34,7 @@ const EntryCard = ({ entry }) => {
             <LazyLoadingImage
               alt={entry.title}
               src={entry.imgSrc}
-              width="280px"
+              width={isMobile ? "100%" : "280px"}
               height="140px"
               status={entry.status}
             />

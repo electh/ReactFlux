@@ -17,6 +17,23 @@ export default function App() {
   const isDarkMode = useStore((state) => state.isDarkMode);
   const setIsDarkMode = useStore((state) => state.setIsDarkMode);
   const color = useConfigStore((state) => state.color);
+  const setIsMobile = useStore((state) => state.setIsMobile);
+  const isMobile = useStore((state) => state.isMobile);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 700);
+    };
+
+    // 添加窗口大小变化监听器
+    window.addEventListener("resize", handleResize);
+
+    // 在组件卸载时清除监听器
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   window.matchMedia("(prefers-color-scheme: dark)").addListener((e) => {
     setIsDarkMode(e.matches);
@@ -40,12 +57,17 @@ export default function App() {
     <Layout className="layout-collapse-demo">
       <Sider
         breakpoint="lg"
+        className="sider-normal"
         onCollapse={setCollapsed}
         collapsed={collapsed}
         width={220}
         collapsible
         trigger={null}
-        style={{ zIndex: 999, borderRight: "1px solid var(--color-border-2)" }}
+        style={{
+          zIndex: 999,
+          borderRight: "1px solid var(--color-border-2)",
+          display: isMobile ? "none" : "block",
+        }}
       >
         <div
           className="logo"

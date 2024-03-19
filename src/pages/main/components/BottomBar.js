@@ -16,6 +16,7 @@ export default function BottomBar() {
   const setEntries = useStore((state) => state.setEntries);
   const showEntries = useStore((state) => state.showEntries);
   const setShowEntries = useStore((state) => state.setShowEntries);
+  const isMoble = useStore((state) => state.isMobile);
 
   const [params] = useSearchParams();
   const from = params.get("from") || "all";
@@ -68,12 +69,12 @@ export default function BottomBar() {
       className="bottom-bar"
       style={{
         display: "flex",
-        width: "280px",
+        width: isMoble ? "calc(100% - 50px)" : "280px",
         bottom: 0,
         zIndex: "2",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: 10,
+        padding: isMoble ? "7px 25px 34px 25px" : 10,
         backgroundColor: "var(--color-bg-4)",
         borderTop: "1px solid var(--color-border-2)",
       }}

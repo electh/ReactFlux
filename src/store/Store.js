@@ -20,7 +20,7 @@ const getFirstImage = (entry) => {
 };
 
 const useStore = create((set) => ({
-  collapsed: false,
+  collapsed: window.innerWidth <= 700,
   loading: false,
   entries: [],
   feeds: [],
@@ -29,6 +29,8 @@ const useStore = create((set) => ({
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   activeEntry: null,
+  isMobile: window.innerWidth <= 700,
+  setIsMobile: (value) => set({ isMobile: value }),
   filterString: "",
   unreadOnly: false,
   searchType: "title",

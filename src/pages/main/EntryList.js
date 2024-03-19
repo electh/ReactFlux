@@ -17,6 +17,7 @@ export default function EntryList({ entries, info }) {
   const entryListRef = useRef(null);
   const loading = useStore((state) => state.loading);
   const layout = useConfigStore((state) => state.layout);
+  const isMoble = useStore((state) => state.isMobile);
 
   useEffect(() => {
     setShowEntries(entries.slice(0, offset + 100));
@@ -44,7 +45,7 @@ export default function EntryList({ entries, info }) {
     <div
       className="entry-list-panel"
       style={{
-        width: "300px",
+        width: isMoble ? "100%" : "300px",
         height: "100%",
         display: "flex",
         flexDirection: "column",

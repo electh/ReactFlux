@@ -1,5 +1,6 @@
 import { Button, Space } from "@arco-design/web-react";
 import {
+  IconLeft,
   IconMenuFold,
   IconMenuUnfold,
   IconMinusCircle,
@@ -11,6 +12,7 @@ import {
 import { useStore } from "../store/Store";
 import { useState } from "react";
 import Settings from "../pages/settings/Settings";
+import SideDrawer from "./SideDrawer";
 
 export default function Toolbar() {
   const collapsed = useStore((state) => state.collapsed);
@@ -19,7 +21,9 @@ export default function Toolbar() {
   const toggleStar = useStore((state) => state.toggleStar);
   const toggleUnreadStatus = useStore((state) => state.toggleUnreadStatus);
   const [drawVisible, setDrawVisible] = useState(false);
-
+  const isMobile = useStore((state) => state.isMobile);
+  const [visible, setVisible] = useState(false);
+  const setActiveEntry = useStore((state) => state.setActiveEntry);
   const handelToggleStar = (entry) => {
     toggleStar(entry);
   };
@@ -36,9 +40,27 @@ export default function Toolbar() {
         alignItems: "center",
       }}
     >
-      <Button shape="circle" className="trigger" onClick={setCollapsed}>
-        {collapsed ? <IconMenuUnfold /> : <IconMenuFold />}
-      </Button>
+      <Space>
+        <Button
+          shape="circle"
+          className="trigger"
+          onClick={isMobile ? () => setVisible(!visible) : setCollapsed}
+        >
+          {collapsed ? <IconMenuUnfold /> : <IconMenuFold />}
+        </Button>
+        <Button
+          className="back-button"
+          shape="round"
+          icon={<IconLeft />}
+          onClick={() => setActiveEntry(null)}
+          style={{
+            visibility: isMobile && activeEntry ? "visible" : "hidden",
+            opacity: isMobile && activeEntry ? "1" : "0",
+            transition: "all 0.2s ease",
+          }}
+        />
+      </Space>
+      <SideDrawer visible={visible} setVisible={setVisible} />
       <div style={{ marginRight: 10 }}>
         <Space>
           <Button.Group>
