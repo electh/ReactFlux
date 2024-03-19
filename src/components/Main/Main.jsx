@@ -77,8 +77,8 @@ const Main = () => {
           labelCol={{ span: 7 }}
           wrapperCol={{ span: 17 }}
         >
-          <Form.Item label="Feed url" field="url" rules={[{ required: true }]}>
-            <Input placeholder="Please input feed url" />
+          <Form.Item label="Feed URL" field="url" rules={[{ required: true }]}>
+            <Input placeholder="Please input feed URL" />
           </Form.Item>
           <Form.Item
             label="Group"

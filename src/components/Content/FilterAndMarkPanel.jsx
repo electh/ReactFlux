@@ -15,7 +15,7 @@ const FilterAndMarkPanel = forwardRef(({ info, markAllAsRead }, ref) => {
     filterType,
     setAllEntries,
     setEntries,
-    setUnreadTotal,
+    setUnreadCount,
   } = useContext(ContentContext);
 
   const { handleFilter } = UseFilterEntries();
@@ -30,7 +30,7 @@ const FilterAndMarkPanel = forwardRef(({ info, markAllAsRead }, ref) => {
       await initData();
       setAllEntries(allEntries.map((e) => ({ ...e, status: "read" })));
       setEntries(entries.map((e) => ({ ...e, status: "read" })));
-      setUnreadTotal(0);
+      setUnreadCount(0);
     };
     readAll();
   };
