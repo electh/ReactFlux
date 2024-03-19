@@ -50,7 +50,7 @@ export default function EntryList({ entries, info }) {
         display: "flex",
         flexDirection: "column",
         backgroundColor: "var(--color-fill-1)",
-        borderRight: "1px solid var(--color-border-2)",
+        borderRight: isMoble ? "none" : "1px solid var(--color-border-2)",
       }}
     >
       <Spin

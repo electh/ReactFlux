@@ -1,3 +1,4 @@
 .side-drawer .arco-drawer-content {
   padding: 0;
+  background-color: var(--color-menu-light-bg) !important;
 }
