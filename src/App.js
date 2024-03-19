@@ -25,8 +25,10 @@ export default function App() {
   useEffect(() => {
     if (isDarkMode) {
       document.body.setAttribute("arco-theme", "dark");
+      document.body.style.colorScheme = "dark";
     } else {
       document.body.removeAttribute("arco-theme");
+      document.body.style.colorScheme = "light";
     }
   }, [isDarkMode]);
 
