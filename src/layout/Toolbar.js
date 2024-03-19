@@ -8,7 +8,9 @@ import {
   IconStar,
   IconStarFill,
 } from "@arco-design/web-react/icon";
-import { useStore } from "../Store";
+import { useStore } from "../store/Store";
+import { useState } from "react";
+import Settings from "../pages/settings/Settings";
 
 export default function Toolbar() {
   const collapsed = useStore((state) => state.collapsed);
@@ -16,6 +18,7 @@ export default function Toolbar() {
   const activeEntry = useStore((state) => state.activeEntry);
   const toggleStar = useStore((state) => state.toggleStar);
   const toggleUnreadStatus = useStore((state) => state.toggleUnreadStatus);
+  const [drawVisible, setDrawVisible] = useState(false);
 
   const handelToggleStar = (entry) => {
     toggleStar(entry);
@@ -64,7 +67,14 @@ export default function Toolbar() {
               disabled={!activeEntry}
             />
           </Button.Group>
-          <Button icon={<IconSettings />} shape="round" />
+          <Button
+            icon={<IconSettings />}
+            shape="round"
+            onClick={() => {
+              setDrawVisible(true);
+            }}
+          />
+          <Settings visible={drawVisible} setVisible={setDrawVisible} />
         </Space>
       </div>
     </div>

@@ -1,12 +1,12 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
-import { useStore } from "../../Store";
+import { useStore } from "../../../store/Store";
 import { IconCheck } from "@arco-design/web-react/icon";
 import {
   getCurrentUser,
   markCategoryEntriesAsRead,
   markFeedEntriesAsRead,
   markUserEntriesAsRead,
-} from "../../interface/api";
+} from "../../../interface/api";
 import { useSearchParams } from "react-router-dom";
 
 export default function BottomBar() {

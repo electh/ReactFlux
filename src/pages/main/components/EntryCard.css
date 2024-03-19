@@ -2,9 +2,9 @@
   transition-property: box-shadow;
 }
 
-/*.card-custom-hover-style .arco-card-body {*/
-/*  padding: 10px;*/
-/*}*/
+.card-custom-hover-style .arco-card-body {
+  padding: 10px !important;
+}
 
 .card-custom-hover-style:hover {
   box-shadow: 0 4px 10px rgb(var(--color-black));

@@ -1,4 +1,4 @@
-import { useStore } from "../Store";
+import { useStore } from "../../store/Store";
 import EntryContent from "./components/EntryContent";
 import { Empty } from "@arco-design/web-react";
 

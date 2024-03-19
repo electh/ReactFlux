@@ -2,7 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { Divider, Typography } from "@arco-design/web-react";
 import { dayjs } from "@arco-design/web-react/es/_util/dayjs";
 import "./EntryContent.css";
-import "../../utils/animation.css";
+import "../../../utils/animation.css";
+import { useConfigStore } from "../../../store/configStore";
+import EntryBody from "./EntryBody";
 
 export default function EntryContent({ activeEntry }) {
   const entryContentRef = useRef(null);
@@ -16,6 +18,8 @@ export default function EntryContent({ activeEntry }) {
 
   // 解构 activeEntry 对象，使代码更加清晰，减少重复
   const { published_at, url, title, feed, content } = activeEntry;
+
+  const titleSize = useConfigStore((state) => state.titleSize);
 
   return (
     <div
@@ -46,7 +50,7 @@ export default function EntryContent({ activeEntry }) {
           {dayjs(published_at).format("MMMM D, YYYY")} AT{" "}
           {dayjs(published_at).format("hh:mm")}
         </Typography.Text>
-        <Typography.Title heading={3} style={{ margin: 0 }}>
+        <Typography.Title heading={titleSize} style={{ margin: 0 }}>
           <a href={url} target="_blank" rel="noopener noreferrer">
             {title}
           </a>
@@ -58,17 +62,7 @@ export default function EntryContent({ activeEntry }) {
         </Typography.Text>
         <Divider />
       </div>
-      <div
-        dangerouslySetInnerHTML={{ __html: content }}
-        className="article-body"
-        style={{
-          fontSize: `1.05rem`,
-          overflowWrap: "break-word",
-          maxWidth: "600px",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      ></div>
+      <EntryBody htmlString={content} />
     </div>
   );
 }

@@ -4,7 +4,9 @@ import BottomBar from "./components/BottomBar";
 import { useEffect, useRef } from "react";
 import { Button, Spin } from "@arco-design/web-react";
 import { IconArrowDown } from "@arco-design/web-react/icon";
-import { useStore } from "../Store";
+import { useStore } from "../../store/Store";
+import { useConfigStore } from "../../store/configStore";
+import EntryCardCompact from "./components/EntryCardCompact";
 
 export default function EntryList({ entries, info }) {
   const offset = useStore((state) => state.offset);
@@ -14,6 +16,7 @@ export default function EntryList({ entries, info }) {
   const setActiveEntry = useStore((state) => state.setActiveEntry);
   const entryListRef = useRef(null);
   const loading = useStore((state) => state.loading);
+  const layout = useConfigStore((state) => state.layout);
 
   useEffect(() => {
     setShowEntries(entries.slice(0, offset + 100));
@@ -57,9 +60,13 @@ export default function EntryList({ entries, info }) {
       >
         <SearchBar />
         <div className="card-list" style={{ padding: "0 10px 0 10px" }}>
-          {showEntries.map((entry) => (
-            <EntryCard entry={entry} key={entry.id} />
-          ))}
+          {showEntries.map((entry) =>
+            layout === "compact" ? (
+              <EntryCardCompact entry={entry} key={entry.id} />
+            ) : (
+              <EntryCard entry={entry} key={entry.id} />
+            ),
+          )}
           {entries.length > showEntries.length && (
             <Button
               style={{ marginBottom: 10 }}

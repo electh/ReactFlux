@@ -5,7 +5,7 @@ import {
   getFeeds,
   toggleEntryBookmark,
   updateEntries,
-} from "./interface/api";
+} from "../interface/api";
 import Confetti from "canvas-confetti";
 import { Message } from "@arco-design/web-react";
 
@@ -103,6 +103,20 @@ const useStore = create((set) => ({
         }),
       }));
       Message.success(newStatus.toUpperCase());
+    }
+  },
+  clickCard: async (entry) => {
+    set((state) => ({
+      activeEntry: { ...entry, status: "read" },
+      entries: state.entries.map((a) => {
+        return a.id === entry.id ? { ...a, status: "read" } : a;
+      }),
+      showEntries: state.showEntries.map((a) => {
+        return a.id === entry.id ? { ...a, status: "read" } : a;
+      }),
+    }));
+    if (entry.status === "unread") {
+      await updateEntries(entry.id, "read");
     }
   },
 }));

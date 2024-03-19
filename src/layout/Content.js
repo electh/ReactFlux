@@ -1,6 +1,6 @@
-import EntryList from "../pages/EntryList";
-import EntryDetail from "../pages/EntryDetail";
-import { useStore } from "../Store";
+import EntryList from "../pages/main/EntryList";
+import EntryDetail from "../pages/main/EntryDetail";
+import { useStore } from "../store/Store";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -43,6 +43,7 @@ export default function Content() {
         display: "flex",
         height: "calc(100% - 48px)",
         backgroundColor: "var(--color-bg-3)",
+        minWidth: "650px",
       }}
     >
       <EntryList entries={pushEntries} info={`${from}${id}`} />

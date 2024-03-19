@@ -1,5 +1,5 @@
 import { Input, Select } from "@arco-design/web-react";
-import { useStore } from "../../Store";
+import { useStore } from "../../../store/Store";
 
 export default function SearchBar() {
   const filterString = useStore((state) => state.filterString);

@@ -6,7 +6,7 @@ import {
   IconUnorderedList,
 } from "@arco-design/web-react/icon";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useStore } from "../Store";
+import { useStore } from "../store/Store";
 import { useEffect } from "react";
 
 function MenuTitle({ title, unread }) {
@@ -65,12 +65,26 @@ export default function Sidebar(props) {
         {...props}
       >
         <Menu.Item key="all" onClick={() => nav("/")}>
-          <IconUnorderedList />
-          All Items
+          <div style={{ display: "flex" }}>
+            <span style={{ flex: 1 }}>
+              <IconUnorderedList />
+              <span>All Items</span>
+            </span>
+            <span style={{ color: "var(--color-text-4)" }}>
+              {entries.filter((a) => a.status === "unread").length}
+            </span>
+          </div>
         </Menu.Item>
         <Menu.Item key="starred" onClick={() => nav("/?from=starred")}>
-          <IconStar />
-          Starred
+          <div style={{ display: "flex" }}>
+            <span style={{ flex: 1 }}>
+              <IconStar />
+              <span>Starred</span>
+            </span>
+            <span style={{ color: "var(--color-text-4)" }}>
+              {entries.filter((a) => a.starred === true).length}
+            </span>
+          </div>
         </Menu.Item>
         <Menu.SubMenu
           key="category"

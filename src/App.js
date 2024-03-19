@@ -1,11 +1,13 @@
 import { Avatar, Layout } from "@arco-design/web-react";
-import { useStore } from "./Store";
+import { useStore } from "./store/Store";
 import Sidebar from "./layout/Sidebar";
 import "./App.css";
 import Toolbar from "./layout/Toolbar";
 import Content from "./layout/Content";
 import { useEffect } from "react";
 import { IconBook } from "@arco-design/web-react/icon";
+import { useConfigStore } from "./store/configStore";
+import { applyColor } from "./utils/colors";
 
 const Sider = Layout.Sider;
 const Header = Layout.Header;
@@ -14,6 +16,7 @@ export default function App() {
   const setCollapsed = useStore((state) => state.setCollapsed);
   const isDarkMode = useStore((state) => state.isDarkMode);
   const setIsDarkMode = useStore((state) => state.setIsDarkMode);
+  const color = useConfigStore((state) => state.color);
 
   window.matchMedia("(prefers-color-scheme: dark)").addListener((e) => {
     setIsDarkMode(e.matches);
@@ -26,6 +29,10 @@ export default function App() {
       document.body.removeAttribute("arco-theme");
     }
   }, [isDarkMode]);
+
+  useEffect(() => {
+    applyColor(color);
+  }, [color]);
 
   return (
     <Layout className="layout-collapse-demo">
