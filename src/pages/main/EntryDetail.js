@@ -12,7 +12,6 @@ export default function EntryDetail() {
         flex: 1,
         height: "100%",
         overflowY: "auto",
-        // backgroundColor: isMobile ? "var(--color-bg-2)" : "var(--color-fill-1)",
         backgroundColor: "var(--color-neutral-2)",
         transition: "transform 0.2s ease",
         zIndex: 2,
