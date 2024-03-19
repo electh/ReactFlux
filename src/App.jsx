@@ -15,8 +15,10 @@ const App = () => {
   const initTheme = () => {
     if (theme === "dark") {
       document.body.setAttribute("arco-theme", "dark");
+      document.body.style.colorScheme = "dark";
     } else {
       document.body.removeAttribute("arco-theme");
+      document.body.style.colorScheme = "light";
     }
     applyColor(getConfig("themeColor") || "Blue");
   };
