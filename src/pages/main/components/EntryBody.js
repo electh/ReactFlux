@@ -10,11 +10,7 @@ const htmlParserOptions = {
       const imgNode = node.children[0];
       const { src, alt } = imgNode.attribs;
       return (
-        <PhotoProvider
-          maskOpacity={0.7}
-          bannerVisible={false}
-          speed={() => 200}
-        >
+        <PhotoProvider maskOpacity={0.7} bannerVisible={false}>
           <PhotoView src={src}>
             <img src={src} alt={alt} />
           </PhotoView>
@@ -24,11 +20,7 @@ const htmlParserOptions = {
     if (node.name === "img") {
       const { src, alt } = node.attribs;
       return (
-        <PhotoProvider
-          maskOpacity={0.7}
-          bannerVisible={false}
-          speed={() => 200}
-        >
+        <PhotoProvider maskOpacity={0.7} bannerVisible={false}>
           <PhotoView src={src}>
             <img src={src} alt={alt} />
           </PhotoView>
