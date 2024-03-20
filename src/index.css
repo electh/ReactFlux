@@ -22,5 +22,5 @@ body {
 }
 
 html {
-  touch-action: pan-y;
+  touch-action: none;
 }
