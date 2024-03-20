@@ -7,7 +7,6 @@ import {
 } from "@arco-design/web-react/icon";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useStore } from "../store/Store";
-import { useEffect } from "react";
 
 function MenuTitle({ title, unread }) {
   return (
@@ -32,7 +31,6 @@ function MenuTitle({ title, unread }) {
 
 export default function Sidebar(props) {
   const nav = useNavigate();
-  const initData = useStore((state) => state.initData);
   const entries = useStore((state) => state.entries);
   const feeds = useStore((state) => state.feeds);
   const categories = useStore((state) => state.categories);
@@ -41,15 +39,6 @@ export default function Sidebar(props) {
   const [params] = useSearchParams();
   const from = params.get("from") || "all";
   const id = params.get("id") || "";
-
-  useEffect(() => {
-    async function fetchData() {
-      await initData();
-    }
-
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Skeleton
@@ -71,7 +60,9 @@ export default function Sidebar(props) {
               <span>All Items</span>
             </span>
             <span style={{ color: "var(--color-text-4)" }}>
-              {entries.filter((a) => a.status === "unread").length}
+              {entries.filter((a) => a.status === "unread").length === 0
+                ? ""
+                : entries.filter((a) => a.status === "unread").length}
             </span>
           </div>
         </Menu.Item>
@@ -82,7 +73,9 @@ export default function Sidebar(props) {
               <span>Starred</span>
             </span>
             <span style={{ color: "var(--color-text-4)" }}>
-              {entries.filter((a) => a.starred === true).length}
+              {entries.filter((a) => a.starred === true).length === 0
+                ? ""
+                : entries.filter((a) => a.starred === true).length}
             </span>
           </div>
         </Menu.Item>

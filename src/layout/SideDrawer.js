@@ -14,8 +14,8 @@ export default function SideDrawer({ visible, setVisible }) {
   return (
     <Drawer
       className="side-drawer"
-      width={220}
-      height={220}
+      width={300}
+      height={300}
       title={null}
       footer={null}
       visible={visible}
@@ -37,7 +37,7 @@ export default function SideDrawer({ visible, setVisible }) {
           <IconBook style={{ color: "var(--color-bg-1)" }} />
         </Avatar>
         <Typography.Title heading={6} style={{ margin: "0" }}>
-          ReactFlux
+          Reactflux
         </Typography.Title>
       </div>
       <Sidebar />

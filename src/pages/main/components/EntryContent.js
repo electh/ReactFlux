@@ -14,7 +14,7 @@ export default function EntryContent({ activeEntry }) {
     entryContentRef.current?.scrollIntoView({
       block: "start",
     });
-  }, [activeEntry]);
+  }, [activeEntry?.id]);
 
   // 解构 activeEntry 对象，使代码更加清晰，减少重复
   const { published_at, url, title, feed, content } = activeEntry;

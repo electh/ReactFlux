@@ -19,6 +19,16 @@ export default function App() {
   const color = useConfigStore((state) => state.color);
   const setIsMobile = useStore((state) => state.setIsMobile);
   const isMobile = useStore((state) => state.isMobile);
+  const initData = useStore((state) => state.initData);
+
+  useEffect(() => {
+    async function fetchData() {
+      await initData();
+    }
+
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {

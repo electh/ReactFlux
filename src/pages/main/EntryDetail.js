@@ -10,7 +10,7 @@ export default function EntryDetail() {
       className="entry-detail-container"
       style={{
         flex: 1,
-        height: "100%",
+        height: isMobile ? "calc(100% - 48px)" : "100%",
         overflowY: "auto",
         backgroundColor: "var(--color-neutral-2)",
         transition: "transform 0.2s ease",
@@ -25,7 +25,10 @@ export default function EntryDetail() {
       {activeEntry ? (
         <EntryContent activeEntry={activeEntry} />
       ) : (
-        <Empty style={{ top: "40%", position: "relative" }} />
+        <Empty
+          style={{ top: "40%", position: "relative" }}
+          description="No Article Selected"
+        />
       )}
     </div>
   );
