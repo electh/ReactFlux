@@ -35,19 +35,31 @@ export default function App() {
       setIsMobile(window.innerWidth <= 700);
     };
 
+    const handelDarkMode = (event) => {
+      setIsDarkMode(event.matches);
+    };
+
     // 添加窗口大小变化监听器
     window.addEventListener("resize", handleResize);
+
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (event) => {
+        handelDarkMode(event);
+      });
 
     // 在组件卸载时清除监听器
     return () => {
       window.removeEventListener("resize", handleResize);
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .removeEventListener("change", (event) => {
+          handelDarkMode(event);
+        });
     };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  window.matchMedia("(prefers-color-scheme: dark)").addListener((e) => {
-    setIsDarkMode(e.matches);
-  });
 
   useEffect(() => {
     if (isDarkMode) {
