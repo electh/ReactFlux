@@ -6,10 +6,29 @@ import "react-photo-view/dist/react-photo-view.css";
 // 自定义解析规则，用于替换img标签
 const htmlParserOptions = {
   replace: (node) => {
+    if (node.name === "a" && node.children && node.children[0].name === "img") {
+      const imgNode = node.children[0];
+      const { src, alt } = imgNode.attribs;
+      return (
+        <PhotoProvider
+          maskOpacity={0.7}
+          bannerVisible={false}
+          speed={() => 200}
+        >
+          <PhotoView src={src}>
+            <img src={src} alt={alt} />
+          </PhotoView>
+        </PhotoProvider>
+      );
+    }
     if (node.name === "img") {
       const { src, alt } = node.attribs;
       return (
-        <PhotoProvider maskOpacity={0.7} bannerVisible={false}>
+        <PhotoProvider
+          maskOpacity={0.7}
+          bannerVisible={false}
+          speed={() => 200}
+        >
           <PhotoView src={src}>
             <img src={src} alt={alt} />
           </PhotoView>
