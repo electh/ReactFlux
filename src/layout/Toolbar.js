@@ -1,20 +1,32 @@
-import { Button, Space } from "@arco-design/web-react";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  Menu,
+  Message,
+  Space,
+} from "@arco-design/web-react";
 import {
   IconLeft,
   IconMenuFold,
   IconMenuUnfold,
   IconMinusCircle,
+  IconPoweroff,
   IconRecord,
   IconSettings,
   IconStar,
   IconStarFill,
+  IconUser,
 } from "@arco-design/web-react/icon";
 import { useStore } from "../store/Store";
 import { useState } from "react";
 import Settings from "../pages/settings/Settings";
 import SideDrawer from "./SideDrawer";
+import { useNavigate } from "react-router-dom";
+import { applyColor } from "../utils/colors";
 
 export default function Toolbar() {
+  const navigate = useNavigate();
   const collapsed = useStore((state) => state.collapsed);
   const setCollapsed = useStore((state) => state.setCollapsed);
   const activeEntry = useStore((state) => state.activeEntry);
@@ -30,6 +42,14 @@ export default function Toolbar() {
 
   const handelToggleUnreadStatus = (entry) => {
     toggleUnreadStatus(entry);
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    document.body.removeAttribute("arco-theme");
+    applyColor("Blue");
+    navigate("/login");
+    Message.success("Logout");
   };
 
   return (
@@ -89,13 +109,46 @@ export default function Toolbar() {
               disabled={!activeEntry}
             />
           </Button.Group>
-          <Button
-            icon={<IconSettings />}
-            shape="round"
-            onClick={() => {
-              setDrawVisible(true);
-            }}
-          />
+          <Dropdown
+            droplist={
+              <Menu>
+                <Menu.Item
+                  key="0"
+                  onClick={() => {
+                    setDrawVisible(true);
+                  }}
+                >
+                  <IconSettings
+                    style={{
+                      marginRight: 8,
+                      fontSize: 16,
+                      transform: "translateY(1px)",
+                    }}
+                  />
+                  Settings
+                </Menu.Item>
+                <Menu.Item key="1" onClick={handleLogout}>
+                  <IconPoweroff
+                    style={{
+                      marginRight: 8,
+                      fontSize: 16,
+                      transform: "translateY(1px)",
+                    }}
+                  />
+                  Logout
+                </Menu.Item>
+              </Menu>
+            }
+            trigger="click"
+            position="br"
+          >
+            <Avatar
+              size={30}
+              style={{ cursor: "pointer", position: "relative", top: "-2px" }}
+            >
+              <IconUser />
+            </Avatar>
+          </Dropdown>
           <Settings visible={drawVisible} setVisible={setDrawVisible} />
         </Space>
       </div>
