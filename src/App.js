@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { IconBook } from "@arco-design/web-react/icon";
 import { useConfigStore } from "./store/configStore";
 import { applyColor } from "./utils/colors";
+import ActionBar from "./pages/main/components/ActionBar";
 
 const Sider = Layout.Sider;
 const Header = Layout.Header;
@@ -115,6 +116,7 @@ export default function App() {
           <Toolbar />
         </Header>
         <Content />
+        <ActionBar />
       </Layout>
     </Layout>
   );

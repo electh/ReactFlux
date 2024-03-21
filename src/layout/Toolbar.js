@@ -1,6 +1,5 @@
 import { Button, Dropdown, Menu, Message, Space } from "@arco-design/web-react";
 import {
-  IconLeft,
   IconMenuFold,
   IconMenuUnfold,
   IconMinusCircle,
@@ -28,7 +27,6 @@ export default function Toolbar() {
   const [drawVisible, setDrawVisible] = useState(false);
   const isMobile = useStore((state) => state.isMobile);
   const [visible, setVisible] = useState(false);
-  const nav = useNavigate();
 
   const handelToggleStar = (entry) => {
     toggleStar(entry);
@@ -62,84 +60,75 @@ export default function Toolbar() {
         >
           {collapsed ? <IconMenuUnfold /> : <IconMenuFold />}
         </Button>
-        <Button
-          className="back-button"
-          shape="round"
-          icon={<IconLeft />}
-          onClick={() => nav(-1)}
-          style={{
-            visibility: isMobile && activeEntry ? "visible" : "hidden",
-            opacity: isMobile && activeEntry ? "1" : "0",
-            transition: "all 0.2s ease",
-          }}
-        />
       </Space>
       <SideDrawer visible={visible} setVisible={setVisible} />
-      <div style={{ marginRight: 10 }}>
-        <Space>
-          <Button.Group>
-            <Button
-              shape="round"
-              onClick={() => handelToggleStar(activeEntry)}
-              icon={
-                activeEntry?.starred ? (
-                  <IconStarFill style={{ color: "#ffcd00" }} />
-                ) : (
-                  <IconStar />
-                )
-              }
-              disabled={!activeEntry}
-            />
-            <Button
-              shape="round"
-              onClick={() => handelToggleUnreadStatus(activeEntry)}
-              icon={
-                activeEntry?.status === "read" ? (
-                  <IconMinusCircle />
-                ) : (
-                  <IconRecord />
-                )
-              }
-              disabled={!activeEntry}
-            />
-          </Button.Group>
-          <Dropdown
-            droplist={
-              <Menu>
-                <Menu.Item
-                  key="0"
-                  onClick={() => {
-                    setDrawVisible(true);
-                  }}
-                >
-                  <IconSettings
-                    style={{
-                      marginRight: 8,
-                      fontSize: 16,
-                      transform: "translateY(1px)",
-                    }}
-                  />
-                  Settings
-                </Menu.Item>
-                <Menu.Item key="1" onClick={handleLogout}>
-                  <IconPoweroff
-                    style={{
-                      marginRight: 8,
-                      fontSize: 16,
-                      transform: "translateY(1px)",
-                    }}
-                  />
-                  Logout
-                </Menu.Item>
-              </Menu>
+      <div
+        style={{ display: "flex", alignItems: "center", marginRight: "10px" }}
+      >
+        <Button.Group
+          style={{ display: isMobile ? "none" : "block", marginRight: "8px" }}
+        >
+          <Button
+            shape="round"
+            onClick={() => handelToggleStar(activeEntry)}
+            icon={
+              activeEntry?.starred ? (
+                <IconStarFill style={{ color: "#ffcd00" }} />
+              ) : (
+                <IconStar />
+              )
             }
-            trigger="click"
-            position="br"
-          >
-            <Button shape="circle" icon={<IconUser />}></Button>
-          </Dropdown>
-          <Settings visible={drawVisible} setVisible={setDrawVisible} />
-        </Space>
+            disabled={!activeEntry}
+          />
+          <Button
+            shape="round"
+            onClick={() => handelToggleUnreadStatus(activeEntry)}
+            icon={
+              activeEntry?.status === "read" ? (
+                <IconMinusCircle />
+              ) : (
+                <IconRecord />
+              )
+            }
+            disabled={!activeEntry}
+          />
+        </Button.Group>
+        <Dropdown
+          droplist={
+            <Menu>
+              <Menu.Item
+                key="0"
+                onClick={() => {
+                  setDrawVisible(true);
+                }}
+              >
+                <IconSettings
+                  style={{
+                    marginRight: 8,
+                    fontSize: 16,
+                    transform: "translateY(1px)",
+                  }}
+                />
+                Settings
+              </Menu.Item>
+              <Menu.Item key="1" onClick={handleLogout}>
+                <IconPoweroff
+                  style={{
+                    marginRight: 8,
+                    fontSize: 16,
+                    transform: "translateY(1px)",
+                  }}
+                />
+                Logout
+              </Menu.Item>
+            </Menu>
+          }
+          trigger="click"
+          position="br"
+        >
+          <Button shape="circle" icon={<IconUser />}></Button>
+        </Dropdown>
+        <Settings visible={drawVisible} setVisible={setDrawVisible} />
       </div>
     </div>
   );
