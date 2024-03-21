@@ -30,7 +30,7 @@ export default function ActionBar() {
         position: "absolute",
         zIndex: "3",
         left: "50%",
-        bottom: "20px",
+        bottom: "30px",
         transform: "translateX(-50%)",
       }}
     >
