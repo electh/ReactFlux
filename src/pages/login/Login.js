@@ -25,7 +25,7 @@ const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (getAuth()) {
-      navigate("/?from=all");
+      navigate("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -47,7 +47,7 @@ const Login = () => {
       if (response.status === 200) {
         Message.success("Success");
         setAuth(method, loginForm.getFieldsValue());
-        navigate("/?from=all");
+        navigate("/");
       }
     } catch (error) {
       console.error(error);

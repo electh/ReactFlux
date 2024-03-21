@@ -14,7 +14,7 @@ const EntryCardCompact = ({ entry }) => {
   const clickCard = useStore((state) => state.clickCard);
   const nav = useNavigate();
   const [params] = useSearchParams();
-  const from = params.get("from");
+  const from = params.get("from") || "all";
   const id = params.get("id") || "";
 
   const formatURL = (from, id, entry) => {
