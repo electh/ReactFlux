@@ -27,6 +27,7 @@ const useStore = create((set, get) => ({
   theme: getConfig("theme") || "light",
   layout: getConfig("layout") || "large",
   fontSize: getConfig("fontSize") || 1.05,
+  showFeedIcon: getConfig("showFeedIcon") || true,
   collapsed: window.innerWidth <= 992,
   activeContent: null,
 
@@ -171,6 +172,11 @@ const useStore = create((set, get) => ({
   setFontSize: (sizeStr) => {
     set({ fontSize: sizeStr });
     setConfig("fontSize", sizeStr);
+  },
+
+  setShowFeedIcon: (showFeedIcon) => {
+    set({ showFeedIcon: showFeedIcon });
+    setConfig("showFeedIcon", showFeedIcon);
   },
 
   setVisible: (modalName, visible) => {

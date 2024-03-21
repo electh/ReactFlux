@@ -23,6 +23,8 @@ const Appearance = () => {
   const layout = useStore((state) => state.layout);
   const fontSize = useStore((state) => state.fontSize);
   const setFontSize = useStore((state) => state.setFontSize);
+  const showFeedIcon = useStore((state) => state.showFeedIcon);
+  const setShowFeedIcon = useStore((state) => state.setShowFeedIcon);
   const [themeColor, setThemeColor] = useState(
     getConfig("themeColor") || "Blue",
   );
@@ -142,6 +144,29 @@ const Appearance = () => {
           <Switch
             checked={layout === "small"}
             onChange={() => toggleLayout()}
+          />
+        </div>
+      </div>
+      <Divider />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Show feed icon
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Show feed icon in feed list and article list
+          </Typography.Text>
+        </div>
+        <div>
+          <Switch
+            checked={showFeedIcon}
+            onChange={() => setShowFeedIcon(!showFeedIcon)}
           />
         </div>
       </div>
