@@ -186,7 +186,7 @@ const Login = () => {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           width: "50%",
-          height: "100vh",
+          height: "100svh",
         }}
       ></div>
     </div>
