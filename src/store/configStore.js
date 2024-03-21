@@ -6,7 +6,7 @@ const useConfigStore = create((set) => ({
   titleSize: getConfig("titleSize") || 3,
   contentSize: getConfig("contentSize") || 1.05,
   layout: getConfig("layout") || "expensive",
-  align: getConfig("align") || "justify",
+  align: getConfig("align") || "left",
   setColor: (value) => {
     set({ color: value });
   },
