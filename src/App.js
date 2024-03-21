@@ -27,6 +27,25 @@ export default function App() {
     }
 
     fetchData();
+    document.body.addEventListener(
+      "touchmove",
+      function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      },
+      { passive: false },
+    );
+
+    return () => {
+      document.body.removeEventListener(
+        "touchmove",
+        function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        },
+        { passive: false },
+      );
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
