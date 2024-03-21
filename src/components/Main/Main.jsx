@@ -19,6 +19,8 @@ const Main = () => {
   const setVisible = useStore((state) => state.setVisible);
   const initData = useStore((state) => state.initData);
   const groups = useStore((state) => state.groups);
+  const activeContent = useStore((state) => state.activeContent);
+  const setActiveContent = useStore((state) => state.setActiveContent);
 
   const SettingsModal = () => (
     <Modal
@@ -28,6 +30,11 @@ const Main = () => {
       footer={null}
       unmountOnExit
       style={{ width: "720px", top: "10%" }}
+      onFocus={() => {
+        if (activeContent) {
+          setActiveContent(null);
+        }
+      }}
       onCancel={() => {
         setVisible("settings", false);
         initData();
@@ -61,6 +68,11 @@ const Main = () => {
         visible={visible.addFeed}
         unmountOnExit
         style={{ width: "400px" }}
+        onFocus={() => {
+          if (activeContent) {
+            setActiveContent(null);
+          }
+        }}
         onOk={feedForm.submit}
         confirmLoading={feedModalLoading}
         onCancel={() => {

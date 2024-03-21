@@ -3,16 +3,15 @@ import { IconStarFill } from "@arco-design/web-react/icon";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useContext } from "react";
 
-import ContentContext from "../Content/ContentContext";
+import useStore from "../../Store";
 import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 
 dayjs.extend(relativeTime);
 
 const ArticleCard = ({ entry, handleEntryClick }) => {
-  const { activeContent } = useContext(ContentContext);
+  const activeContent = useStore((state) => state.activeContent);
 
   return (
     <div style={{ marginBottom: "10px" }} key={entry.id}>

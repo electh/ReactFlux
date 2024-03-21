@@ -8,14 +8,13 @@ import {
   IconStar,
   IconStarFill,
 } from "@arco-design/web-react/icon";
-import { useContext } from "react";
 
+import useStore from "../../Store";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
-import ContentContext from "../Content/ContentContext";
 
 const ActionButtonsMobile = ({ handleEntryClick }) => {
-  const { activeContent } = useContext(ContentContext);
+  const activeContent = useStore((state) => state.activeContent);
   const { toggleEntryStarred, toggleEntryStatus } = useEntryActions();
   const { handleLeftKey, handleRightKey, handleEscapeKey } = useKeyHandlers();
 

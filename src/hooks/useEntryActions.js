@@ -15,12 +15,12 @@ const useEntryActions = () => {
   const setReadCount = useStore((state) => state.setReadCount);
   const starredCount = useStore((state) => state.starredCount);
   const setStarredCount = useStore((state) => state.setStarredCount);
+  const activeContent = useStore((state) => state.activeContent);
+  const setActiveContent = useStore((state) => state.setActiveContent);
 
   const {
-    activeContent,
     allEntries,
     entries,
-    setActiveContent,
     setAllEntries,
     setEntries,
     setUnreadCount,

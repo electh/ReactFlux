@@ -28,6 +28,7 @@ const useStore = create((set, get) => ({
   layout: getConfig("layout") || "large",
   fontSize: getConfig("fontSize") || 1.05,
   collapsed: window.innerWidth <= 992,
+  activeContent: null,
 
   setUnreadTotal: (unreadTotal) => {
     set({ unreadTotal: unreadTotal });
@@ -40,6 +41,9 @@ const useStore = create((set, get) => ({
   },
   setReadCount: (readCount) => {
     set({ readCount: readCount });
+  },
+  setActiveContent: (activeContent) => {
+    set({ activeContent: activeContent });
   },
 
   initData: async () => {

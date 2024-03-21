@@ -1,10 +1,12 @@
 import { useContext } from "react";
 
+import useStore from "../Store";
 import ContentContext from "../components/Content/ContentContext";
 
 const useKeyHandlers = () => {
-  const { activeContent, setActiveContent, entries } =
-    useContext(ContentContext);
+  const { entries } = useContext(ContentContext);
+  const activeContent = useStore((state) => state.activeContent);
+  const setActiveContent = useStore((state) => state.setActiveContent);
 
   // go back to entry list
   const handleEscapeKey = (entryListRef) => {

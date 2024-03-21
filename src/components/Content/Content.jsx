@@ -20,18 +20,18 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const unreadTotal = useStore((state) => state.unreadTotal);
   const unreadToday = useStore((state) => state.unreadToday);
   const readCount = useStore((state) => state.readCount);
+  const activeContent = useStore((state) => state.activeContent);
   const setUnreadTotal = useStore((state) => state.setUnreadTotal);
   const setUnreadToday = useStore((state) => state.setUnreadToday);
   const setReadCount = useStore((state) => state.setReadCount);
+  const setActiveContent = useStore((state) => state.setActiveContent);
 
   const {
-    activeContent,
     allEntries,
     entries,
     filterStatus,
     loading,
     offset,
-    setActiveContent,
     setAllEntries,
     setEntries,
     setLoading,
@@ -121,13 +121,17 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    if (showArticleDetail) {
+      document.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.removeEventListener("keydown", handleKeyDown);
+    }
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeContent, entries]);
+  }, [activeContent, entries, showArticleDetail]);
 
   const fetchEntries = async () => {
     const responseAll = await getEntries();

@@ -19,8 +19,6 @@ const ContentProvider = ({ children }) => {
   const [entries, setEntries] = useState([]);
   // 接口返回的文章
   const [allEntries, setAllEntries] = useState([]);
-  // 选中的文章
-  const [activeContent, setActiveContent] = useState(null);
   // all | unread
   const [filterStatus, setFilterStatus] = useState("all");
   // 0: title | 1: content
@@ -36,7 +34,6 @@ const ContentProvider = ({ children }) => {
 
   const value = useMemo(
     () => ({
-      activeContent,
       allEntries,
       entries,
       filterStatus,
@@ -46,7 +43,6 @@ const ContentProvider = ({ children }) => {
       loadMoreUnreadVisible,
       loadMoreVisible,
       offset,
-      setActiveContent,
       setAllEntries,
       setEntries,
       setFilterStatus,
@@ -64,7 +60,6 @@ const ContentProvider = ({ children }) => {
       updateGroupUnread,
     }),
     [
-      activeContent,
       allEntries,
       entries,
       filterStatus,
