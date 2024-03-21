@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  Menu,
-  Message,
-  Space,
-} from "@arco-design/web-react";
+import { Button, Dropdown, Menu, Message, Space } from "@arco-design/web-react";
 import {
   IconLeft,
   IconMenuFold,
@@ -142,12 +135,7 @@ export default function Toolbar() {
             trigger="click"
             position="br"
           >
-            <Avatar
-              size={30}
-              style={{ cursor: "pointer", position: "relative", top: "-2px" }}
-            >
-              <IconUser />
-            </Avatar>
+            <Button shape="circle" icon={<IconUser />}></Button>
           </Dropdown>
           <Settings visible={drawVisible} setVisible={setDrawVisible} />
         </Space>

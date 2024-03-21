@@ -6,7 +6,11 @@ import "react-photo-view/dist/react-photo-view.css";
 // 自定义解析规则，用于替换img标签
 const htmlParserOptions = {
   replace: (node) => {
-    if (node.name === "a" && node.children && node.children[0].name === "img") {
+    if (
+      node.name === "a" &&
+      node.children &&
+      node.children[0]?.name === "img"
+    ) {
       const imgNode = node.children[0];
       const { src, alt } = imgNode.attribs;
       return (
