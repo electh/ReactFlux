@@ -24,7 +24,7 @@ export default function EntryDetail() {
         height: isMobile ? "calc(100% - 48px)" : "100%",
         overflowY: "auto",
         backgroundColor: "var(--color-neutral-2)",
-        transition: "transform 0.2s ease",
+        // transition: "transform 0.2s ease",
         zIndex: 2,
         transform: !isMobile
           ? "translateX(0)"

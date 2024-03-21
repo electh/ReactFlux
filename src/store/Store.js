@@ -41,10 +41,7 @@ const useStore = create((set) => ({
   setCollapsed: () => set((state) => ({ collapsed: !state.collapsed })),
   setEntries: (value) => set({ entries: value }),
   setIsDarkMode: (value) => set({ isDarkMode: value }),
-  setActiveEntry: (entry) => {
-    console.log(entry);
-    set({ activeEntry: entry });
-  },
+  setActiveEntry: (entry) => set({ activeEntry: entry }),
   setFilterString: (value) => set({ filterString: value }),
   setUnreadOnly: () => set((state) => ({ unreadOnly: !state.unreadOnly })),
   setSearchType: () =>
