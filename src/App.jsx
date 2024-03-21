@@ -23,6 +23,7 @@ const App = () => {
     applyColor(getConfig("themeColor") || "Blue");
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     initData();
     initTheme();

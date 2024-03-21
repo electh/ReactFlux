@@ -27,6 +27,7 @@ const Login = () => {
   /* token or user */
   const [method, setMethod] = useState(getAuth() || "token");
   const navigate = useNavigate();
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (getAuth()) {
       navigate("/");

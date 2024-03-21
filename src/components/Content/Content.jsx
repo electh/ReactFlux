@@ -104,6 +104,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     processEntryClick();
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const keyMap = {
       27: () => handleEscapeKey(entryListRef),
@@ -186,6 +187,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     getArticleList();
     setActiveContent(null);

@@ -11,7 +11,3 @@ export const setAuth = (method, secret) => {
   const auth = { method: method, secret: secret };
   localStorage.setItem("auth", JSON.stringify(auth));
 };
-
-export const delAuth = () => {
-  localStorage.removeItem("auth");
-};
