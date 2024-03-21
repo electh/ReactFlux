@@ -52,7 +52,7 @@ const ArticleCardMini = ({ entry, handleEntryClick }) => {
                   <br />
                   {showFeedIcon && (
                     <img
-                      src={`https://icons.duckduckgo.com/ip3/${new URL(entry.feed.feed_url).hostname}.ico`}
+                      src={`https://icons.duckduckgo.com/ip3/${new URL(entry.feed.site_url).hostname}.ico`}
                       alt="Icon"
                       style={{
                         marginRight: "8px",

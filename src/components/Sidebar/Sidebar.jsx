@@ -250,7 +250,7 @@ const Sidebar = () => {
                     >
                       {showFeedIcon && (
                         <img
-                          src={`https://icons.duckduckgo.com/ip3/${new URL(feed.feed_url).hostname}.ico`}
+                          src={`https://icons.duckduckgo.com/ip3/${new URL(feed.site_url).hostname}.ico`}
                           alt="Icon"
                           style={{
                             marginRight: "8px",
