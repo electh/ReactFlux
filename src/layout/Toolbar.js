@@ -30,14 +30,14 @@ export default function Toolbar() {
   const [visible, setVisible] = useState(false);
   const nav = useNavigate();
   const [params] = useSearchParams();
-  const from = params.get("from");
+  const from = params.get("from") || "all";
   const id = params.get("id") || "";
 
   const formatURL = (from, id) => {
-    if (id === "") {
-      return `/?from=${from}`;
+    if (from === "all") {
+      return "/";
     } else {
-      return `/?from=${from}&id=${id}`;
+      return id === "" ? `/?from=${from}` : `/?from=${from}&id=${id}`;
     }
   };
   const handelToggleStar = (entry) => {

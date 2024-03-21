@@ -18,10 +18,12 @@ const EntryCardCompact = ({ entry }) => {
   const id = params.get("id") || "";
 
   const formatURL = (from, id, entry) => {
-    if (id === "") {
-      return `/?from=${from}&entry=${entry.id}`;
+    if (from === "all") {
+      return `/?entry=${entry.id}`;
     } else {
-      return `/?from=${from}&id=${id}&entry=${entry.id}`;
+      return id === ""
+        ? `/?from=${from}&entry=${entry.id}`
+        : `/?from=${from}&id=${id}&entry=${entry.id}`;
     }
   };
 

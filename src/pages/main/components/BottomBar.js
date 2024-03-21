@@ -6,7 +6,7 @@ import {
   markCategoryEntriesAsRead,
   markFeedEntriesAsRead,
   markUserEntriesAsRead,
-} from "../../../interface/api";
+} from "../../../api/api";
 import { useSearchParams } from "react-router-dom";
 
 export default function BottomBar() {

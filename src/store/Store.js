@@ -5,7 +5,7 @@ import {
   getFeeds,
   toggleEntryBookmark,
   updateEntries,
-} from "../interface/api";
+} from "../api/api";
 import Confetti from "canvas-confetti";
 import { Message } from "@arco-design/web-react";
 
