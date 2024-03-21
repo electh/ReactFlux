@@ -7,9 +7,11 @@ const LoadingCards = ({ loading }) => {
   const cardCount = layout === "large" ? 2 : 4;
 
   return loading
-    ? Array.from({ length: cardCount }, () =>
+    ? Array.from({ length: cardCount }, (_, index) =>
         layout === "large" ? (
           <Card
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+            key={index}
             style={{ width: "100%", marginBottom: "10px" }}
             cover={
               <Skeleton
@@ -36,7 +38,12 @@ const LoadingCards = ({ loading }) => {
             />
           </Card>
         ) : (
-          <Card style={{ width: "100%", marginBottom: "10px" }} cover={null}>
+          <Card
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+            key={index}
+            style={{ width: "100%", marginBottom: "10px" }}
+            cover={null}
+          >
             <Card.Meta
               description={
                 <Skeleton

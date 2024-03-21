@@ -1,9 +1,11 @@
 import { Button } from "@arco-design/web-react";
 import { IconArrowDown } from "@arco-design/web-react/icon";
 import { forwardRef, useContext } from "react";
+import isURL from "validator/es/lib/isURL";
 
 import useStore from "../../Store";
 import useLoadMore from "../../hooks/useLoadMore";
+import { extractProtocolAndHostname } from "../../utils/URL";
 import ContentContext from "../Content/ContentContext";
 import ArticleCard from "./ArticleCard";
 import ArticleCardMini from "./ArticleCardMini";
@@ -34,8 +36,14 @@ const ArticleList = forwardRef(
         <LoadingCards loading={loading} />
         {loading ? null : (
           <div ref={cardsRef}>
-            {entries.map((entry) =>
-              layout === "small" ? (
+            {entries.map((entry) => {
+              if (!isURL(entry.feed.site_url)) {
+                entry.feed.site_url = extractProtocolAndHostname(
+                  entry.feed.feed_url,
+                );
+              }
+
+              return layout === "small" ? (
                 <ArticleCardMini
                   key={entry.id}
                   entry={entry}
@@ -47,8 +55,8 @@ const ArticleList = forwardRef(
                   entry={entry}
                   handleEntryClick={handleEntryClick}
                 />
-              ),
-            )}
+              );
+            })}
           </div>
         )}
         {!loading &&

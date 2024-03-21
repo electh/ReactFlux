@@ -18,7 +18,3 @@ export const setConfig = (name, value) => {
   const newConfig = { ...config, [name]: value };
   localStorage.setItem("config", JSON.stringify(newConfig));
 };
-
-export const delConfig = () => {
-  localStorage.removeItem("config");
-};

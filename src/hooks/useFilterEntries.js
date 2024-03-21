@@ -19,6 +19,7 @@ const useFilterEntries = () => {
     unreadCount,
   } = useContext(ContentContext);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setEntries([]);
     const filteredArticles = filterEntries(

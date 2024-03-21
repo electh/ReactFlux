@@ -6,9 +6,9 @@ import UseFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "../Content/ContentContext";
 
 const SearchInput = () => {
-  const { filterStatus, filterString, filterType, setActiveContent } =
-    useContext(ContentContext);
+  const { filterStatus, filterString, filterType } = useContext(ContentContext);
   const activeContent = useStore((state) => state.activeContent);
+  const setActiveContent = useStore((state) => state.setActiveContent);
 
   const { handleFilter } = UseFilterEntries();
 

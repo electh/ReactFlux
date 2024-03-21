@@ -17,8 +17,10 @@ import {
 } from "@arco-design/web-react/icon";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import isURL from "validator/es/lib/isURL";
 
 import useStore from "../../Store";
+import { extractProtocolAndHostname } from "../../utils/URL";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
@@ -111,6 +113,9 @@ const Sidebar = () => {
   };
 
   const feedsGroupedById = feeds.reduce((groupedFeeds, feed) => {
+    if (!isURL(feed.site_url)) {
+      feed.site_url = extractProtocolAndHostname(feed.feed_url);
+    }
     const { id: groupId } = feed.category;
     groupedFeeds[groupId] = groupedFeeds[groupId] || [];
     groupedFeeds[groupId].push(feed);
@@ -243,22 +248,22 @@ const Sidebar = () => {
                         alignItems: "center",
                       }}
                     >
-                      {showFeedIcon && (
-                        <img
-                          src={`https://icons.duckduckgo.com/ip3/${new URL(feed.feed_url).hostname}.ico`}
-                          alt="Icon"
-                          style={{
-                            marginRight: "8px",
-                            width: "16px",
-                            height: "16px",
-                          }}
-                        />
-                      )}
                       <Typography.Ellipsis
                         expandable={false}
                         showTooltip={true}
                         style={{ width: feed.unread !== 0 ? "80%" : "100%" }}
                       >
+                        {showFeedIcon && (
+                          <img
+                            src={`https://icons.duckduckgo.com/ip3/${new URL(feed.site_url).hostname}.ico`}
+                            alt="Icon"
+                            style={{
+                              marginRight: "8px",
+                              width: "16px",
+                              height: "16px",
+                            }}
+                          />
+                        )}
                         {feed.title}
                       </Typography.Ellipsis>
                       {feed.unread !== 0 && (

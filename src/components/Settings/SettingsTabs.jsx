@@ -48,6 +48,7 @@ const SettingsTabs = () => {
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     refreshData();
   }, []);
