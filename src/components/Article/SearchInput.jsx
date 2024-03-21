@@ -1,17 +1,14 @@
 import { Input, Select } from "@arco-design/web-react";
 import { useContext } from "react";
 
+import useStore from "../../Store";
 import UseFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "../Content/ContentContext";
 
 const SearchInput = () => {
-  const {
-    activeContent,
-    filterStatus,
-    filterString,
-    filterType,
-    setActiveContent,
-  } = useContext(ContentContext);
+  const { filterStatus, filterString, filterType, setActiveContent } =
+    useContext(ContentContext);
+  const activeContent = useStore((state) => state.activeContent);
 
   const { handleFilter } = UseFilterEntries();
 
@@ -33,12 +30,12 @@ const SearchInput = () => {
           <Select.Option value="1">Content</Select.Option>
         </Select>
       }
-      onChange={(value) => {
+      onFocus={() => {
         if (activeContent) {
           setActiveContent(null);
         }
-        handleFilter(filterType, filterStatus, value);
       }}
+      onChange={(value) => handleFilter(filterType, filterStatus, value)}
       style={{
         marginBottom: "10px",
         width: "100%",

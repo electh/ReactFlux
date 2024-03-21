@@ -64,12 +64,23 @@ export async function editGroup(id, newTitle) {
   });
 }
 
-export async function editFeed(feed_id, newTitle, group_id, is_full_text) {
+export async function editFeed(
+  feed_id,
+  newUrl,
+  newTitle,
+  group_id,
+  is_full_text,
+) {
   return await thunder.request({
     method: "put",
     url: `/v1/feeds/${feed_id}`,
     headers: { "Content-Type": "application/json" },
-    data: { title: newTitle, category_id: group_id, crawler: is_full_text },
+    data: {
+      feed_url: newUrl,
+      title: newTitle,
+      category_id: group_id,
+      crawler: is_full_text,
+    },
   });
 }
 

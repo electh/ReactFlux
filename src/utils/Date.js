@@ -1,13 +1,22 @@
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
-export const isInLast24Hours = (dateStr) => {
+dayjs.extend(relativeTime);
+
+const isInLast24Hours = (dateStr) => {
   const givenDate = dayjs(dateStr);
   const now = dayjs();
   return givenDate.isAfter(now.subtract(24, "hour"));
 };
 
-export const get24HoursAgoUnixTimestamp = () => {
+const get24HoursAgoUnixTimestamp = () => {
   const now = dayjs();
   const twentyFourHoursAgo = now.subtract(24, "hour");
   return twentyFourHoursAgo.unix();
 };
+
+const generateRelativeTime = (dateStr) => {
+  return dayjs(dateStr).fromNow();
+};
+
+export { isInLast24Hours, get24HoursAgoUnixTimestamp, generateRelativeTime };

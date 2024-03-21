@@ -2,14 +2,13 @@ import { Divider, Typography } from "@arco-design/web-react";
 import { IconEmpty } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import { Parser as HtmlToReactParser } from "html-to-react";
-import { forwardRef, useContext } from "react";
+import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 
 import useStore from "../../Store";
-import ContentContext from "../Content/ContentContext";
 
 const ArticleDetail = forwardRef((_, ref) => {
-  const { activeContent } = useContext(ContentContext);
+  const activeContent = useStore((state) => state.activeContent);
   const fontSize = useStore((state) => state.fontSize);
 
   const htmlToReactParser = new HtmlToReactParser();

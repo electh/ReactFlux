@@ -99,6 +99,7 @@ const Sidebar = () => {
   const unreadToday = useStore((state) => state.unreadToday);
   const starredCount = useStore((state) => state.starredCount);
   const readCount = useStore((state) => state.readCount);
+  const showFeedIcon = useStore((state) => state.showFeedIcon);
   const setCollapsed = useStore((state) => state.setCollapsed);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
@@ -242,6 +243,17 @@ const Sidebar = () => {
                         alignItems: "center",
                       }}
                     >
+                      {showFeedIcon && (
+                        <img
+                          src={`https://icons.duckduckgo.com/ip3/${new URL(feed.site_url).hostname}.ico`}
+                          alt="Icon"
+                          style={{
+                            marginRight: "8px",
+                            width: "16px",
+                            height: "16px",
+                          }}
+                        />
+                      )}
                       <Typography.Ellipsis
                         expandable={false}
                         showTooltip={true}
