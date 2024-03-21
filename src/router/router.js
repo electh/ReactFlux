@@ -5,7 +5,7 @@ import RouterProtect from "./RouterProtect";
 
 const router = createBrowserRouter([
   {
-    index: true,
+    path: "/",
     element: (
       <RouterProtect>
         <App />

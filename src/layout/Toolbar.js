@@ -15,7 +15,7 @@ import { useStore } from "../store/Store";
 import { useState } from "react";
 import Settings from "../pages/settings/Settings";
 import SideDrawer from "./SideDrawer";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { applyColor } from "../utils/colors";
 
 export default function Toolbar() {
@@ -28,7 +28,18 @@ export default function Toolbar() {
   const [drawVisible, setDrawVisible] = useState(false);
   const isMobile = useStore((state) => state.isMobile);
   const [visible, setVisible] = useState(false);
-  const setActiveEntry = useStore((state) => state.setActiveEntry);
+  const nav = useNavigate();
+  const [params] = useSearchParams();
+  const from = params.get("from");
+  const id = params.get("id") || "";
+
+  const formatURL = (from, id) => {
+    if (id === "") {
+      return `/?from=${from}`;
+    } else {
+      return `/?from=${from}&id=${id}`;
+    }
+  };
   const handelToggleStar = (entry) => {
     toggleStar(entry);
   };
@@ -65,7 +76,7 @@ export default function Toolbar() {
           className="back-button"
           shape="round"
           icon={<IconLeft />}
-          onClick={() => setActiveEntry(null)}
+          onClick={() => nav(formatURL(from, id))}
           style={{
             visibility: isMobile && activeEntry ? "visible" : "hidden",
             opacity: isMobile && activeEntry ? "1" : "0",

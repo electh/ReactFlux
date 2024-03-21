@@ -53,7 +53,7 @@ export default function Sidebar(props) {
         defaultSelectedKeys={[`${from}${id}`]}
         {...props}
       >
-        <Menu.Item key="all" onClick={() => nav("/")}>
+        <Menu.Item key="all" onClick={() => nav("/?from=all")}>
           <div style={{ display: "flex" }}>
             <span style={{ flex: 1 }}>
               <IconUnorderedList />

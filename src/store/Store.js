@@ -41,7 +41,10 @@ const useStore = create((set) => ({
   setCollapsed: () => set((state) => ({ collapsed: !state.collapsed })),
   setEntries: (value) => set({ entries: value }),
   setIsDarkMode: (value) => set({ isDarkMode: value }),
-  setActiveEntry: (entry) => set({ activeEntry: entry }),
+  setActiveEntry: (entry) => {
+    console.log(entry);
+    set({ activeEntry: entry });
+  },
   setFilterString: (value) => set({ filterString: value }),
   setUnreadOnly: () => set((state) => ({ unreadOnly: !state.unreadOnly })),
   setSearchType: () =>
@@ -71,7 +74,7 @@ const useStore = create((set) => ({
     const resp = await toggleEntryBookmark(entry);
     if (resp?.status === 204) {
       set((state) => ({
-        activeEntry: { ...entry, starred: !entry.starred },
+        // activeEntry: { ...entry, starred: !entry.starred },
         entries: state.entries.map((a) => {
           return a.id === entry.id ? { ...a, starred: !entry.starred } : a;
         }),
@@ -93,10 +96,10 @@ const useStore = create((set) => ({
     const resp = await updateEntries(entry.id, newStatus);
     if (resp?.status === 204) {
       set((state) => ({
-        activeEntry: {
-          ...entry,
-          status: newStatus,
-        },
+        // activeEntry: {
+        //   ...entry,
+        //   status: newStatus,
+        // },
         entries: state.entries.map((a) => {
           return a.id === entry.id ? { ...a, status: newStatus } : a;
         }),
@@ -109,7 +112,7 @@ const useStore = create((set) => ({
   },
   clickCard: async (entry) => {
     set((state) => ({
-      activeEntry: { ...entry, status: "read" },
+      // activeEntry: { ...entry, status: "read" },
       entries: state.entries.map((a) => {
         return a.id === entry.id ? { ...a, status: "read" } : a;
       }),

@@ -5,6 +5,7 @@ import "./EntryCard.css";
 import classNames from "classnames";
 import { formatDate } from "../../../utils/formatDate";
 import { IconStarFill } from "@arco-design/web-react/icon";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const { Meta } = Card;
 
@@ -12,6 +13,18 @@ const EntryCard = ({ entry }) => {
   const activeEntry = useStore((state) => state.activeEntry);
   const clickCard = useStore((state) => state.clickCard);
   const isMobile = useStore((state) => state.isMobile);
+  const nav = useNavigate();
+  const [params] = useSearchParams();
+  const from = params.get("from");
+  const id = params.get("id") || "";
+
+  const formatURL = (from, id, entry) => {
+    if (id === "") {
+      return `/?from=${from}&entry=${entry.id}`;
+    } else {
+      return `/?from=${from}&id=${id}&entry=${entry.id}`;
+    }
+  };
 
   const handelClickCard = (entry) => {
     clickCard(entry);
@@ -25,6 +38,7 @@ const EntryCard = ({ entry }) => {
         { read: entry.status === "card-read" },
       )}
       onClick={() => {
+        nav(formatURL(from, id, entry));
         handelClickCard(entry);
       }}
       style={{ width: "100%", marginBottom: "10px", cursor: "pointer" }}

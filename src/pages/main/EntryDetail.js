@@ -1,10 +1,21 @@
 import { useStore } from "../../store/Store";
 import EntryContent from "./components/EntryContent";
 import { Empty } from "@arco-design/web-react";
+import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function EntryDetail() {
-  const activeEntry = useStore((state) => state.activeEntry);
   const isMobile = useStore((state) => state.isMobile);
+  const entries = useStore((state) => state.entries);
+  const activeEntry = useStore((state) => state.activeEntry);
+  const setActiveEntry = useStore((state) => state.setActiveEntry);
+  const [params] = useSearchParams();
+  const entryId = params.get("entry");
+  useEffect(() => {
+    setActiveEntry(entries.filter((a) => a.id === parseInt(entryId))[0]);
+    console.log(entryId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entryId, entries]);
   return (
     <div
       className="entry-detail-container"

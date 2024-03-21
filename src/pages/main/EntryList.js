@@ -13,7 +13,6 @@ export default function EntryList({ entries, info }) {
   const setOffset = useStore((state) => state.setOffset);
   const showEntries = useStore((state) => state.showEntries);
   const setShowEntries = useStore((state) => state.setShowEntries);
-  const setActiveEntry = useStore((state) => state.setActiveEntry);
   const entryListRef = useRef(null);
   const loading = useStore((state) => state.loading);
   const layout = useConfigStore((state) => state.layout);
@@ -27,7 +26,6 @@ export default function EntryList({ entries, info }) {
   useEffect(() => {
     setOffset(0);
     entryListRef.current.scrollTo(0, 0);
-    setActiveEntry(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [info]);
 

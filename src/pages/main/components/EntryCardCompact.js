@@ -5,14 +5,28 @@ import "./EntryCard.css";
 import classNames from "classnames";
 import { formatDate } from "../../../utils/formatDate";
 import { IconStarFill } from "@arco-design/web-react/icon";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const { Meta } = Card;
 
 const EntryCardCompact = ({ entry }) => {
   const activeEntry = useStore((state) => state.activeEntry);
   const clickCard = useStore((state) => state.clickCard);
+  const nav = useNavigate();
+  const [params] = useSearchParams();
+  const from = params.get("from");
+  const id = params.get("id") || "";
+
+  const formatURL = (from, id, entry) => {
+    if (id === "") {
+      return `/?from=${from}&entry=${entry.id}`;
+    } else {
+      return `/?from=${from}&id=${id}&entry=${entry.id}`;
+    }
+  };
 
   const handelClickCard = (entry) => {
+    nav(formatURL(from, id, entry));
     clickCard(entry);
   };
   return (
