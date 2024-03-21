@@ -15,6 +15,8 @@ import { IconDelete, IconEdit } from "@arco-design/web-react/icon";
 import { useState } from "react";
 
 import { deleteFeed, editFeed } from "../../apis";
+import { generateRelativeTime } from "../../utils/Date";
+import { includesIgnoreCase } from "../../utils/Filter";
 
 const FeedList = ({
   feeds,
@@ -34,6 +36,8 @@ const FeedList = ({
     title: feed.title,
     feed_url: feed.feed_url,
     category: feed.category,
+    checked_at: feed.checked_at,
+    parsing_error_count: feed.parsing_error_count,
     feed: feed,
   }));
 
@@ -41,6 +45,7 @@ const FeedList = ({
     setSelectedFeed(record.feed);
     setFeedModalVisible(true);
     feedForm.setFieldsValue({
+      url: record.feed.feed_url,
       title: record.feed.title,
       group: record.feed.category.id,
       crawler: record.feed.crawler,
@@ -51,15 +56,22 @@ const FeedList = ({
     {
       title: "Title",
       dataIndex: "title",
-      render: (col) => (
-        <Typography.Ellipsis expandable={false} showTooltip={true}>
-          {col}
-        </Typography.Ellipsis>
-      ),
+      sorter: (a, b) => a.title.localeCompare(b.title),
+      render: (title, feed) => {
+        const displayText =
+          feed.parsing_error_count > 0 ? `⚠️ ${title}` : title;
+
+        return (
+          <Typography.Ellipsis expandable={false} showTooltip={true}>
+            {displayText}
+          </Typography.Ellipsis>
+        );
+      },
     },
     {
       title: "Url",
       dataIndex: "feed_url",
+      sorter: (a, b) => a.feed_url.localeCompare(b.feed_url),
       render: (col) => (
         <Typography.Ellipsis expandable={false} showTooltip={true}>
           {col}
@@ -69,7 +81,18 @@ const FeedList = ({
     {
       title: "Group",
       dataIndex: "category.title",
+      sorter: (a, b) => a.category.title.localeCompare(b.category.title),
       render: (col) => <Tag>{col}</Tag>,
+    },
+    {
+      title: "Checked at",
+      dataIndex: "checked_at",
+      sorter: (a, b) => a.checked_at.localeCompare(b.checked_at),
+      render: (col) => (
+        <Typography.Ellipsis expandable={false} showTooltip={true}>
+          {generateRelativeTime(col)}
+        </Typography.Ellipsis>
+      ),
     },
     {
       title: "Actions",
@@ -116,9 +139,21 @@ const FeedList = ({
     },
   ];
 
-  const handleEditFeed = async (feed_id, newTitle, group_id, is_full_text) => {
+  const handleEditFeed = async (
+    feed_id,
+    newUrl,
+    newTitle,
+    group_id,
+    is_full_text,
+  ) => {
     setFeedModalLoading(true);
-    const response = await editFeed(feed_id, newTitle, group_id, is_full_text);
+    const response = await editFeed(
+      feed_id,
+      newUrl,
+      newTitle,
+      group_id,
+      is_full_text,
+    );
     if (response) {
       setFeeds(
         feeds.map((feed) => (feed.id === feed_id ? response.data : feed)),
@@ -138,9 +173,15 @@ const FeedList = ({
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Input.Search
           searchButton
-          placeholder="Search feed title"
+          placeholder="Search feed title or url"
           onChange={(value) =>
-            setShowFeeds(feeds.filter((feed) => feed.title.includes(value)))
+            setShowFeeds(
+              feeds.filter(
+                (feed) =>
+                  includesIgnoreCase(feed.title, value) ||
+                  includesIgnoreCase(feed.feed_url, value),
+              ),
+            )
           }
           style={{
             width: 300,
@@ -176,6 +217,7 @@ const FeedList = ({
             onSubmit={(values) =>
               handleEditFeed(
                 selectedFeed.id,
+                values.url,
                 values.title,
                 values.group,
                 values.crawler,
@@ -188,6 +230,13 @@ const FeedList = ({
               span: 17,
             }}
           >
+            <Form.Item
+              label="Feed URL"
+              field="url"
+              rules={[{ required: true }]}
+            >
+              <Input placeholder="Please input feed URL" />
+            </Form.Item>
             <Form.Item label="Title" field="title" rules={[{ required: true }]}>
               <Input placeholder="Please input feed title" />
             </Form.Item>

@@ -1,14 +1,11 @@
 import { Card, Typography } from "@arco-design/web-react";
 import { IconStarFill } from "@arco-design/web-react/icon";
 import classNames from "classnames";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 
 import useStore from "../../Store";
+import { generateRelativeTime } from "../../utils/Date";
 import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
-
-dayjs.extend(relativeTime);
 
 const ArticleCard = ({ entry, handleEntryClick }) => {
   const activeContent = useStore((state) => state.activeContent);
@@ -70,7 +67,7 @@ const ArticleCard = ({ entry, handleEntryClick }) => {
                 <br />
                 {entry.feed.title}
                 <br />
-                {dayjs().to(dayjs(entry.published_at))}
+                {generateRelativeTime(entry.published_at)}
               </Typography.Text>
               {entry.starred && (
                 <IconStarFill
