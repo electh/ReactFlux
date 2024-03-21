@@ -1,3 +1,5 @@
+import { MacScrollbar } from "mac-scrollbar";
+import "mac-scrollbar/dist/mac-scrollbar.css";
 import { useEffect } from "react";
 
 import "./App.css";
@@ -30,14 +32,16 @@ const App = () => {
   }, []);
 
   return (
-    <div
-      className="app"
-      style={{ display: "flex", backgroundColor: "var(--color-bg-1)" }}
-    >
-      <Header theme={theme} />
-      <Sidebar />
-      <Main />
-    </div>
+    <MacScrollbar>
+      <div
+        className="app"
+        style={{ display: "flex", backgroundColor: "var(--color-bg-1)" }}
+      >
+        <Header theme={theme} />
+        <Sidebar />
+        <Main />
+      </div>
+    </MacScrollbar>
   );
 };
 
