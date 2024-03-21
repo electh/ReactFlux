@@ -1,12 +1,15 @@
 # Stage 1: Build the React application
-FROM node:alpine as build
+# Specify the version to ensure consistent builds
+FROM node:21-alpine AS build
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the package.json files and install dependencies
+# Copy the package.json files
 COPY package*.json ./
-RUN npm install
+
+# Install dependencies
+RUN npm ci
 
 # Copy the rest of the code
 COPY . .
@@ -15,7 +18,9 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Run the server using Caddy
-FROM caddy:alpine
+# Specify the version for consistency
+FROM caddy:2-alpine
+
 
 # Copy built assets from the builder stage
 COPY --from=build /app/build /srv
