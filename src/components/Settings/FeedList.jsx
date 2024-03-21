@@ -31,7 +31,17 @@ const FeedList = ({
   const [feedForm] = Form.useForm();
   const [selectedFeed, setSelectedFeed] = useState({});
 
-  const tableData = showFeeds.map((feed) => ({
+  const sortedFeeds = showFeeds.sort((a, b) => {
+    if (a.parsing_error_count > 0 && b.parsing_error_count === 0) {
+      return -1;
+    }
+    if (a.parsing_error_count === 0 && b.parsing_error_count > 0) {
+      return 1;
+    }
+    return 0;
+  });
+
+  const tableData = sortedFeeds.map((feed) => ({
     key: feed.id,
     title: feed.title,
     feed_url: feed.feed_url,
@@ -124,7 +134,7 @@ const FeedList = ({
               if (response) {
                 setFeeds(feeds.filter((feed) => feed.id !== record.feed.id));
                 setShowFeeds(
-                  showFeeds.filter((feed) => feed.id !== record.feed.id),
+                  sortedFeeds.filter((feed) => feed.id !== record.feed.id),
                 );
                 Message.success("Unfollowed");
               }
@@ -159,7 +169,7 @@ const FeedList = ({
         feeds.map((feed) => (feed.id === feed_id ? response.data : feed)),
       );
       setShowFeeds(
-        showFeeds.map((feed) => (feed.id === feed_id ? response.data : feed)),
+        sortedFeeds.map((feed) => (feed.id === feed_id ? response.data : feed)),
       );
       Message.success("Success");
       setFeedModalVisible(false);
@@ -176,7 +186,7 @@ const FeedList = ({
           placeholder="Search feed title or url"
           onChange={(value) =>
             setShowFeeds(
-              feeds.filter(
+              sortedFeeds.filter(
                 (feed) =>
                   includesIgnoreCase(feed.title, value) ||
                   includesIgnoreCase(feed.feed_url, value),
