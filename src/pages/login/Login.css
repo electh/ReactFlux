@@ -5,8 +5,6 @@
 
   .form-panel {
     width: 100% !important;
-    background-color: rgba(255,255,255,0.97) !important; /* 设置半透明背景 */
-    backdrop-filter: blur(10px) !important; /* 设置模糊效果 */
     position: absolute !important;
     z-index: 2 !important;
   }
