@@ -82,6 +82,6 @@ next 分支最初是为了提高对移动设备的兼容性而创建的，因此
 </tr>
 </table>
 
-## 星标历史
+### 星标历史
 
 [![ 星标历史](https://starchart.cc/electh/ReactFlux.svg)](https://starchart.cc/electh/ReactFlux)
