@@ -40,7 +40,7 @@ export default function SideDrawer({ visible, setVisible }) {
           Reactflux
         </Typography.Title>
       </div>
-      <Sidebar />
+      <Sidebar setVisible={setVisible} />
     </Drawer>
   );
 }

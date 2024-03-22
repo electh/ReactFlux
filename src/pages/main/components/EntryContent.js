@@ -41,7 +41,7 @@ export default function EntryContent({ activeEntry }) {
         key={activeEntry.id}
         initial={{ opacity: 0, y: isMobile ? 0 : 100 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.2 }}
       >
         <div
           className="article-title"
@@ -71,7 +71,14 @@ export default function EntryContent({ activeEntry }) {
           <Divider />
         </div>
 
-        <EntryBody htmlString={content} />
+        <motion.div
+          key={activeEntry.title}
+          initial={{ opacity: 0, y: isMobile ? 0 : 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <EntryBody htmlString={content} />
+        </motion.div>
       </motion.div>
     </div>
   );

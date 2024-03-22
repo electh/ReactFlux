@@ -29,12 +29,13 @@ function MenuTitle({ title, unread }) {
   );
 }
 
-export default function Sidebar(props) {
+export default function Sidebar({ style, setVisible }) {
   const nav = useNavigate();
   const entries = useStore((state) => state.entries);
   const feeds = useStore((state) => state.feeds);
   const categories = useStore((state) => state.categories);
   const loading = useStore((state) => state.loading);
+  const isMobile = useStore((state) => state.isMobile);
 
   const [params] = useSearchParams();
   const from = params.get("from") || "all";
@@ -51,9 +52,15 @@ export default function Sidebar(props) {
         defaultOpenKeys={["feed", "category"]}
         // defaultOpenKeys={[from]}
         defaultSelectedKeys={[`${from}${id}`]}
-        {...props}
+        style={style}
       >
-        <Menu.Item key="all" onClick={() => nav("/?from=all")}>
+        <Menu.Item
+          key="all"
+          onClick={() => {
+            isMobile && setVisible(false);
+            nav("/?from=all");
+          }}
+        >
           <div style={{ display: "flex" }}>
             <span style={{ flex: 1 }}>
               <IconUnorderedList />
@@ -66,7 +73,13 @@ export default function Sidebar(props) {
             </span>
           </div>
         </Menu.Item>
-        <Menu.Item key="starred" onClick={() => nav("/?from=starred")}>
+        <Menu.Item
+          key="starred"
+          onClick={() => {
+            isMobile && setVisible(false);
+            nav("/?from=starred");
+          }}
+        >
           <div style={{ display: "flex" }}>
             <span style={{ flex: 1 }}>
               <IconStar />
@@ -91,7 +104,10 @@ export default function Sidebar(props) {
           {categories.map((category) => (
             <Menu.Item
               key={`category${category.id}`}
-              onClick={() => nav(`/?from=category&id=${category.id}`)}
+              onClick={() => {
+                isMobile && setVisible(false);
+                nav(`/?from=category&id=${category.id}`);
+              }}
             >
               <MenuTitle
                 title={category.title}
@@ -118,7 +134,10 @@ export default function Sidebar(props) {
           {feeds.map((feed) => (
             <Menu.Item
               key={`feed${feed.id}`}
-              onClick={() => nav(`/?from=feed&id=${feed.id}`)}
+              onClick={() => {
+                isMobile && setVisible(false);
+                nav(`/?from=feed&id=${feed.id}`);
+              }}
             >
               <MenuTitle
                 title={feed.title}
