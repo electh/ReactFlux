@@ -12,6 +12,7 @@
     "canvas-confetti": "^1.9.2",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.10",
+    "framer-motion": "^11.0.20",
     "html-react-parser": "^5.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

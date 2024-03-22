@@ -27,6 +27,7 @@ export default function Toolbar() {
   const [drawVisible, setDrawVisible] = useState(false);
   const isMobile = useStore((state) => state.isMobile);
   const [visible, setVisible] = useState(false);
+  const setEntries = useStore((state) => state.setEntries);
 
   const handelToggleStar = (entry) => {
     toggleStar(entry);
@@ -38,7 +39,9 @@ export default function Toolbar() {
 
   const handleLogout = () => {
     localStorage.clear();
+    setEntries([]);
     document.body.removeAttribute("arco-theme");
+
     applyColor("Blue");
     navigate("/login");
     Message.success("Logout");

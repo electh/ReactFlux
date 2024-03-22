@@ -7,6 +7,7 @@ import { IconArrowDown } from "@arco-design/web-react/icon";
 import { useStore } from "../../store/Store";
 import { useConfigStore } from "../../store/configStore";
 import EntryCardCompact from "./components/EntryCardCompact";
+import { motion } from "framer-motion";
 
 export default function EntryList({ entries, info }) {
   const offset = useStore((state) => state.offset);
@@ -58,25 +59,32 @@ export default function EntryList({ entries, info }) {
         style={{ flex: 1, overflowY: "auto" }}
       >
         <SearchBar />
-        <div className="card-list" style={{ padding: "0 10px 0 10px" }}>
-          {showEntries.map((entry) =>
-            layout === "compact" ? (
-              <EntryCardCompact entry={entry} key={entry.id} />
-            ) : (
-              <EntryCard entry={entry} key={entry.id} />
-            ),
-          )}
-          {entries.length > showEntries.length && (
-            <Button
-              style={{ marginBottom: 10 }}
-              long
-              onClick={handleLoadMore}
-              icon={<IconArrowDown />}
-            >
-              Load more
-            </Button>
-          )}
-        </div>
+        <motion.div
+          key={info}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="card-list" style={{ padding: "0 10px 0 10px" }}>
+            {showEntries.map((entry) =>
+              layout === "compact" ? (
+                <EntryCardCompact entry={entry} key={entry.id} />
+              ) : (
+                <EntryCard entry={entry} key={entry.id} />
+              ),
+            )}
+            {entries.length > showEntries.length && (
+              <Button
+                style={{ marginBottom: 10 }}
+                long
+                onClick={handleLoadMore}
+                icon={<IconArrowDown />}
+              >
+                Load more
+              </Button>
+            )}
+          </div>
+        </motion.div>
       </Spin>
       <BottomBar />
     </div>

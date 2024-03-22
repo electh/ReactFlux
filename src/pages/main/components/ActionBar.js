@@ -1,7 +1,7 @@
 import { Button } from "@arco-design/web-react";
 import { useStore } from "../../../store/Store";
 import {
-  IconClose,
+  IconArrowLeft,
   IconMinusCircle,
   IconRecord,
   IconStar,
@@ -38,7 +38,7 @@ export default function ActionBar() {
         type="primary"
         shape="round"
         size="large"
-        icon={<IconClose />}
+        icon={<IconArrowLeft />}
         onClick={() => nav(-1)}
       />
       <Button
