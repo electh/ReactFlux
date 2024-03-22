@@ -65,6 +65,12 @@ export async function addFeed(feedUrl, groupId, isFullText) {
   });
 }
 
+export const getAllEntries = async (offset = 0, status = null) => {
+  const base_url = `/v1/entries?order=created_at&direction=asc&offset=${offset}`;
+  const url = status ? `${base_url}&status=${status}` : base_url;
+  return apiClient.get(url);
+};
+
 export const getHistoryEntries = async (offset = 0) => {
   const url = `/v1/entries?order=changed_at&direction=desc&status=read&offset=${offset}`;
   return apiClient.get(url);

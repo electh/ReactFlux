@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import {
+  getAllEntries,
   getFeeds,
   getGroups,
   getHistoryEntries,
@@ -32,8 +33,13 @@ const updateUnreadCount = (items, itemId, status) => {
 const useStore = create((set, get) => ({
   feeds: [],
   groups: [],
+  allResponse: null,
+  historyResponse: null,
+  starredResponse: null,
+  todayResponse: null,
   unreadTotal: 0,
   unreadToday: 0,
+  unreadStarred: 0,
   starredCount: 0,
   readCount: 0,
   loading: true,
@@ -47,6 +53,7 @@ const useStore = create((set, get) => ({
   showFeedIcon: getConfig("showFeedIcon") || true,
   collapsed: window.innerWidth <= 992,
   activeContent: null,
+  isInited: false,
 
   setUnreadTotal: (unreadTotal) => {
     set({ unreadTotal: unreadTotal });
@@ -70,17 +77,28 @@ const useStore = create((set, get) => ({
       feedResponse,
       groupResponse,
       unreadResponse,
+      allResponse,
       historyResponse,
       starredResponse,
+      starredUnreadResponse,
       todayResponse,
+      todayUnreadResponse,
     ] = await Promise.all([
       getFeeds(),
       getGroups(),
       getUnreadInfo(),
+      getAllEntries(),
       getHistoryEntries(),
       getStarredEntries(),
+      getStarredEntries(0, "unread"),
+      getTodayEntries(),
       getTodayEntries(0, "unread"),
     ]);
+
+    set({ allResponse });
+    set({ historyResponse });
+    set({ starredResponse });
+    set({ todayResponse });
 
     if (
       feedResponse &&
@@ -88,17 +106,25 @@ const useStore = create((set, get) => ({
       groupResponse &&
       historyResponse &&
       starredResponse &&
-      todayResponse
+      starredUnreadResponse &&
+      todayUnreadResponse
     ) {
       const unreadInfo = unreadResponse.data.unreads;
       const unreadTotal = Object.values(unreadInfo).reduce(
         (acc, cur) => acc + cur,
         0,
       );
+
+      set({ unreadTotal });
+
       const feedsWithUnread = feedResponse.data.map((feed) => ({
         ...feed,
         unread: unreadInfo[feed.id] || 0,
       }));
+
+      set({
+        feeds: feedsWithUnread.sort((a, b) => a.title.localeCompare(b.title)),
+      });
 
       const groupsWithUnread = groupResponse.data.map((group) => {
         let unreadCount = 0;
@@ -118,20 +144,15 @@ const useStore = create((set, get) => ({
         };
       });
 
-      const readCount = historyResponse.data.total;
-      const starredCount = starredResponse.data.total;
-      const unreadToday = todayResponse.data.total;
-
-      set({
-        feeds: feedsWithUnread.sort((a, b) => a.title.localeCompare(b.title)),
-      });
       set({
         groups: groupsWithUnread.sort((a, b) => a.title.localeCompare(b.title)),
       });
-      set({ unreadTotal });
-      set({ readCount });
-      set({ starredCount });
-      set({ unreadToday });
+
+      set({ readCount: historyResponse.data.total });
+      set({ starredCount: starredResponse.data.total });
+      set({ unreadStarred: starredUnreadResponse.data.total });
+      set({ unreadToday: todayUnreadResponse.data.total });
+      set({ isInited: true });
       set({ loading: false });
     }
   },

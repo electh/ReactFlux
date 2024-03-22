@@ -15,10 +15,10 @@ const ContentProvider = ({ children }) => {
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
   // unread 页签加载更多按钮可见性
   const [loadMoreUnreadVisible, setLoadMoreUnreadVisible] = useState(false);
-  // 页面显示的文章
-  const [entries, setEntries] = useState([]);
   // 接口返回的文章
-  const [allEntries, setAllEntries] = useState([]);
+  const [entries, setEntries] = useState([]);
+  // 页面显示的文章
+  const [filteredEntries, setFilteredEntries] = useState([]);
   // all | unread
   const [filterStatus, setFilterStatus] = useState("all");
   // 0: title | 1: content
@@ -34,8 +34,8 @@ const ContentProvider = ({ children }) => {
 
   const value = useMemo(
     () => ({
-      allEntries,
       entries,
+      filteredEntries,
       filterStatus,
       filterString,
       filterType,
@@ -43,8 +43,8 @@ const ContentProvider = ({ children }) => {
       loadMoreUnreadVisible,
       loadMoreVisible,
       offset,
-      setAllEntries,
       setEntries,
+      setFilteredEntries,
       setFilterStatus,
       setFilterString,
       setFilterType,
@@ -60,8 +60,8 @@ const ContentProvider = ({ children }) => {
       updateGroupUnread,
     }),
     [
-      allEntries,
       entries,
+      filteredEntries,
       filterStatus,
       filterString,
       filterType,

@@ -17,8 +17,14 @@ import FilterAndMarkPanel from "./FilterAndMarkPanel";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
+  const isInited = useStore((state) => state.isInited);
+  const allResponse = useStore((state) => state.allResponse);
+  const historyResponse = useStore((state) => state.historyResponse);
+  const starredResponse = useStore((state) => state.starredResponse);
+  const todayResponse = useStore((state) => state.todayResponse);
   const unreadTotal = useStore((state) => state.unreadTotal);
   const unreadToday = useStore((state) => state.unreadToday);
+  const unreadStarred = useStore((state) => state.unreadStarred);
   const readCount = useStore((state) => state.readCount);
   const activeContent = useStore((state) => state.activeContent);
   const setUnreadTotal = useStore((state) => state.setUnreadTotal);
@@ -27,13 +33,13 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const setActiveContent = useStore((state) => state.setActiveContent);
 
   const {
-    allEntries,
     entries,
+    filteredEntries,
     filterStatus,
     loading,
     offset,
-    setAllEntries,
     setEntries,
+    setFilteredEntries,
     setLoading,
     setLoadMoreUnreadVisible,
     setLoadMoreVisible,
@@ -84,7 +90,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           updateFeedUnread(entry.feed.id, "read");
           updateGroupUnread(entry.feed.category.id, "read");
           setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
-          setAllEntries(updateLocalEntryStatus(allEntries, entry.id, "read"));
+          setFilteredEntries(
+            updateLocalEntryStatus(filteredEntries, entry.id, "read"),
+          );
           setUnreadTotal(Math.max(0, unreadTotal - 1));
           setUnreadCount(Math.max(0, unreadCount - 1));
           setReadCount(readCount + 1);
@@ -132,7 +140,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       document.removeEventListener("keydown", handleKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeContent, entries, showArticleDetail]);
+  }, [activeContent, filteredEntries, showArticleDetail]);
 
   const fetchEntries = async () => {
     const responseAll = await getEntries();
@@ -140,8 +148,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     return { responseAll, responseUnread };
   };
 
-  const processEntries = (responseAll) => {
-    const fetchedArticles = responseAll.data.entries.map(getFirstImage);
+  const processEntries = (response) => {
+    const fetchedArticles = response.data.entries.map(getFirstImage);
 
     const filteredArticles =
       filterStatus === "all"
@@ -155,17 +163,23 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     fetchedArticles,
     filteredArticles,
     responseAll,
-    responseUnread,
+    responseUnread = null,
+    unreadCount = null,
   ) => {
-    setAllEntries(fetchedArticles);
-    setEntries(filteredArticles);
+    setEntries(fetchedArticles);
+    setFilteredEntries(filteredArticles);
 
     setTotal(responseAll.data.total);
     setLoadMoreVisible(fetchedArticles.length < responseAll.data.total);
-    setUnreadCount(responseUnread.data.total);
-    setLoadMoreUnreadVisible(
-      filteredArticles.length < responseUnread.data.total,
-    );
+    if (responseUnread) {
+      setUnreadCount(responseUnread.data.total);
+      setLoadMoreUnreadVisible(
+        filteredArticles.length < responseUnread.data.total,
+      );
+    } else if (unreadCount) {
+      setUnreadCount(unreadCount);
+      setLoadMoreUnreadVisible(filteredArticles.length < unreadCount);
+    }
   };
 
   const handleResponses = (responseAll, responseUnread) => {
@@ -177,6 +191,36 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const getArticleList = async () => {
     setLoading(true);
+    if (["all", "today", "starred", "history"].includes(info.from)) {
+      let response = null;
+      let unreadCount = 0;
+      switch (info.from) {
+        case "all":
+          response = allResponse;
+          unreadCount = unreadTotal;
+          break;
+        case "today":
+          response = todayResponse;
+          unreadCount = unreadToday;
+          break;
+        case "starred": {
+          response = starredResponse;
+          unreadCount = unreadStarred;
+          break;
+        }
+        case "history":
+          response = historyResponse;
+          break;
+        default:
+          break;
+      }
+
+      const { fetchedArticles, filteredArticles } = processEntries(response);
+      updateUI(fetchedArticles, filteredArticles, response, null, unreadCount);
+      setLoading(false);
+      return;
+    }
+
     try {
       const { responseAll, responseUnread } = await fetchEntries();
       handleResponses(responseAll, responseUnread);
@@ -189,7 +233,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    getArticleList();
+    if (isInited) {
+      getArticleList();
+    }
     setActiveContent(null);
     if (entryListRef.current) {
       entryListRef.current.scrollTo(0, 0);
@@ -199,7 +245,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
     setOffset(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [info]);
+  }, [info, isInited]);
 
   return (
     <>

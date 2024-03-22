@@ -14,8 +14,12 @@ import SearchInput from "./SearchInput";
 
 const ArticleList = forwardRef(
   ({ loading, getEntries, handleEntryClick, cardsRef }, ref) => {
-    const { entries, filterStatus, loadMoreUnreadVisible, loadMoreVisible } =
-      useContext(ContentContext);
+    const {
+      filteredEntries,
+      filterStatus,
+      loadMoreUnreadVisible,
+      loadMoreVisible,
+    } = useContext(ContentContext);
 
     const { loadingMore, handleLoadMore } = useLoadMore();
     const layout = useStore((state) => state.layout);
@@ -36,7 +40,7 @@ const ArticleList = forwardRef(
         <LoadingCards loading={loading} />
         {loading ? null : (
           <div ref={cardsRef}>
-            {entries.map((entry) => {
+            {filteredEntries.map((entry) => {
               if (!isURL(entry.feed.site_url)) {
                 entry.feed.site_url = extractProtocolAndHostname(
                   entry.feed.feed_url,

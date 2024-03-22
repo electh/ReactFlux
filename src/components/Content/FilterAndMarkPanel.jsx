@@ -8,13 +8,13 @@ import ContentContext from "./ContentContext";
 
 const FilterAndMarkPanel = forwardRef(({ info, markAllAsRead }, ref) => {
   const {
-    allEntries,
     entries,
+    filteredEntries,
     filterStatus,
     filterString,
     filterType,
-    setAllEntries,
     setEntries,
+    setFilteredEntries,
     setUnreadCount,
   } = useContext(ContentContext);
 
@@ -28,8 +28,10 @@ const FilterAndMarkPanel = forwardRef(({ info, markAllAsRead }, ref) => {
       const response = await markAllAsRead();
       response && Message.success("Success");
       await initData();
-      setAllEntries(allEntries.map((e) => ({ ...e, status: "read" })));
       setEntries(entries.map((e) => ({ ...e, status: "read" })));
+      setFilteredEntries(
+        filteredEntries.map((e) => ({ ...e, status: "read" })),
+      );
       setUnreadCount(0);
     };
     readAll();

@@ -5,13 +5,13 @@ import { filterEntries } from "../utils/Filter";
 
 const useLoadMore = () => {
   const {
-    allEntries,
+    entries,
     filterStatus,
     filterString,
     filterType,
     offset,
-    setAllEntries,
     setEntries,
+    setFilteredEntries,
     setLoadMoreUnreadVisible,
     setLoadMoreVisible,
     setOffset,
@@ -42,13 +42,13 @@ const useLoadMore = () => {
         const newArticlesWithImage = response.data.entries.map(getFirstImage);
         const updatedAllArticles = [
           ...new Map(
-            [...allEntries, ...newArticlesWithImage].map((entry) => [
+            [...entries, ...newArticlesWithImage].map((entry) => [
               entry.id,
               entry,
             ]),
           ).values(),
         ];
-        setAllEntries(updatedAllArticles);
+        setEntries(updatedAllArticles);
 
         const filteredArticles =
           filterStatus === "all"
@@ -64,7 +64,7 @@ const useLoadMore = () => {
             )
           : filteredArticles;
 
-        setEntries(filteredByString);
+        setFilteredEntries(filteredByString);
         setLoadMoreVisible(updatedAllArticles.length < total);
         setLoadMoreUnreadVisible(
           filteredArticles.length < unreadCount && filterStatus === "unread",

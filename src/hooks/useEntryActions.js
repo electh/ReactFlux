@@ -22,10 +22,10 @@ const useEntryActions = () => {
   const setActiveContent = useStore((state) => state.setActiveContent);
 
   const {
-    allEntries,
     entries,
-    setAllEntries,
+    filteredEntries,
     setEntries,
+    setFilteredEntries,
     setUnreadCount,
     unreadCount,
     updateFeedUnread,
@@ -41,7 +41,9 @@ const useEntryActions = () => {
   const updateUI = (newContentStatus, updateFunction) => {
     setActiveContent({ ...activeContent, ...newContentStatus });
     setEntries(updateEntries(entries, activeContent, updateFunction));
-    setAllEntries(updateEntries(allEntries, activeContent, updateFunction));
+    setFilteredEntries(
+      updateEntries(filteredEntries, activeContent, updateFunction),
+    );
   };
 
   const handleToggleStatus = async (newStatus) => {

@@ -1,4 +1,4 @@
-import { getCurrentUser } from "../apis";
+import { getAllEntries, getCurrentUser } from "../apis";
 import { apiClient } from "../apis/axios";
 import Content from "../components/Content/Content";
 import { ContentProvider } from "../components/Content/ContentContext";
