@@ -74,6 +74,9 @@ const ArticleCard = ({ entry, handleEntryClick }) => {
                       marginRight: "8px",
                       width: "16px",
                       height: "16px",
+                      position: "absolute",
+                      right: "2px",
+                      bottom: "12px",
                     }}
                   />
                 )}

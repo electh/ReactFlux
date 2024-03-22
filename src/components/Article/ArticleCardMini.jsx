@@ -29,7 +29,12 @@ const ArticleCardMini = ({ entry, handleEntryClick }) => {
       >
         <Card.Meta
           description={
-            <div style={{ display: "flex" }}>
+            <div
+              style={{
+                display: "flex",
+                paddingLeft: showFeedIcon ? "22px" : "0",
+              }}
+            >
               <div style={{ marginRight: "10px", flex: "1" }}>
                 <Typography.Text
                   style={
@@ -58,6 +63,9 @@ const ArticleCardMini = ({ entry, handleEntryClick }) => {
                         marginRight: "8px",
                         width: "16px",
                         height: "16px",
+                        position: "absolute",
+                        left: "10px",
+                        top: "14px",
                       }}
                     />
                   )}

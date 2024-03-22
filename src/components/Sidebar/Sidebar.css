@@ -5,3 +5,9 @@
 .arco-menu-vertical .arco-menu-inline-header {
   padding-right: 12px;
 }
+
+.arco-ellipsis-text {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
