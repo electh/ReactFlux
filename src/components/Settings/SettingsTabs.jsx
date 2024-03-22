@@ -58,7 +58,6 @@ const SettingsTabs = () => {
     <Tabs
       defaultActiveTab="1"
       tabPosition="left"
-      onChange={refreshData}
       style={{ marginLeft: "-20px" }}
     >
       <Tabs.TabPane

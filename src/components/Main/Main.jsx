@@ -35,10 +35,7 @@ const Main = () => {
           setActiveContent(null);
         }
       }}
-      onCancel={() => {
-        setVisible("settings", false);
-        initData();
-      }}
+      onCancel={() => setVisible("settings", false)}
       autoFocus={false}
       focusLock={true}
     >
