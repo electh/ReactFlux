@@ -27,7 +27,7 @@ Reactflux 是 [Miniflux](https://github.com/miniflux/miniflux) 的第三方 Web 
 
 Reactflux 使用 React 编写，build 之后只是一堆静态网页文件，可以直接使用部署在 Cloudflare Pages 上的演示站。
 
-或者你可以自行部署在 Cloudflare Pages 上，`框架预设`选择`Create React App`即可。
+或者你可以自行部署在 Cloudflare Pages 上，`框架预设` 选择 `Create React App` 即可。
 
 #### Vercel
 
@@ -57,7 +57,7 @@ main 分支提供了最多的功能，新功能一般会最先出现在本分支
 next 分支最初是为了提高对移动设备的兼容性而创建的，因此为移动设备提供了更好的体验和性能，当然也支持桌面设备的显示，
 但目前缺乏键盘快捷键、订阅源管理等功能，对于 main 分支的后续功能会进行选择性迁移。
 
-如果您想快速体验 next 分支，这里有一个[实例](https://arcoflux.pages.dev/login)
+如果您想快速体验 next 分支，这里有一个 [实例](https://arcoflux.pages.dev/login)
 
 ### 贡献者
 
@@ -81,3 +81,7 @@ next 分支最初是为了提高对移动设备的兼容性而创建的，因此
     </td>
 </tr>
 </table>
+
+## 星标历史
+
+[![ 星标历史](https://starchart.cc/electh/ReactFlux.svg)](https://starchart.cc/electh/ReactFlux)
