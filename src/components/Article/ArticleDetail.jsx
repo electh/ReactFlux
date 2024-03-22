@@ -52,7 +52,7 @@ const ArticleDetail = forwardRef((_, ref) => {
           style={{ color: "var(--color-text-3)", fontSize: "10px" }}
         >
           <Link
-            to={`/${activeContent.feed.category.id}/${activeContent.feed.id}`}
+            to={`/feed/${activeContent.feed.id}`}
             style={{ color: "inherit", textDecoration: "none" }}
           >
             {activeContent.feed.title}

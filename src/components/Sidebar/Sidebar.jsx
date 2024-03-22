@@ -59,7 +59,7 @@ const GroupTitle = ({ group, isOpen }) => (
   </div>
 );
 
-const CustomMenuItem = ({ icon, label, key, onClick, count }) => {
+const CustomMenuItem = ({ count, icon, key, label, onClick }) => {
   return (
     <MenuItem key={key} onClick={onClick}>
       <div
@@ -145,13 +145,14 @@ const Sidebar = () => {
       }}
     >
       <Menu
+        autoScrollIntoView={true}
+        collapse={collapsed}
+        defaultSelectedKeys={[path]}
+        hasCollapseButton
+        onClickSubMenu={handleClickSubMenu}
+        onCollapseChange={() => setCollapsed(!collapsed)}
         selectedKeys={selectedKeys}
         style={{ width: "240px", height: "100%" }}
-        onCollapseChange={() => setCollapsed(!collapsed)}
-        collapse={collapsed}
-        hasCollapseButton
-        defaultSelectedKeys={[path]}
-        onClickSubMenu={handleClickSubMenu}
       >
         <div
           style={{
@@ -187,32 +188,32 @@ const Sidebar = () => {
         {loading ? null : (
           <div>
             <CustomMenuItem
-              icon={<IconUnorderedList />}
-              label="All"
-              key={"/"}
-              onClick={() => navigate("/")}
               count={unreadTotal}
+              icon={<IconUnorderedList />}
+              key={"/"}
+              label="All"
+              onClick={() => navigate("/")}
             />
             <CustomMenuItem
-              icon={<IconCalendar />}
-              label="Today"
-              key={"/today"}
-              onClick={() => navigate("/today")}
               count={unreadToday}
+              icon={<IconCalendar />}
+              key={"/today"}
+              label="Today"
+              onClick={() => navigate("/today")}
             />
             <CustomMenuItem
-              icon={<IconStar />}
-              label="Starred"
-              key={"/starred"}
-              onClick={() => navigate("/starred")}
               count={starredCount}
+              icon={<IconStar />}
+              key={"/starred"}
+              label="Starred"
+              onClick={() => navigate("/starred")}
             />
             <CustomMenuItem
-              icon={<IconHistory />}
-              label="History"
-              key={"/history"}
-              onClick={() => navigate("/history")}
               count={readCount}
+              icon={<IconHistory />}
+              key={"/history"}
+              label="History"
+              onClick={() => navigate("/history")}
             />
           </div>
         )}
@@ -227,19 +228,35 @@ const Sidebar = () => {
           ? null
           : groups.map((group) => (
               <Menu.SubMenu
+                key={`/group/${group.id}`}
+                selectable={true}
                 style={{ cursor: "not-allowed" }}
-                key={`/${group.id}`}
                 title={
                   <GroupTitle
                     group={group}
-                    isOpen={openKeys.includes(`/${group.id}`)}
+                    isOpen={openKeys.includes(`/group/${group.id}`)}
                   />
                 }
+                onClick={(e) => {
+                  setSelectedKeys([`/group/${group.id}`]);
+                  if (
+                    !(
+                      e.target.tagName === "svg" || e.target.tagName === "path"
+                    ) &&
+                    path !== `/group/${group.id}`
+                  ) {
+                    navigate(`/group/${group.id}`);
+                  }
+                }}
               >
                 {feedsGroupedById[group.id]?.map((feed) => (
                   <MenuItem
-                    key={`/${group.id}/${feed.id}`}
-                    onClick={() => navigate(`${group.id}/${feed.id}`)}
+                    key={`/feed/${feed.id}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedKeys([`/group/${group.id}`]);
+                      navigate(`/feed/${feed.id}`);
+                    }}
                   >
                     <div
                       style={{

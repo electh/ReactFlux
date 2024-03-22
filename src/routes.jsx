@@ -42,7 +42,7 @@ const router = createBrowserRouter([
         element: <Group />,
       },
       {
-        path: "/:c_id/:f_id",
+        path: "/feed/:f_id",
         element: <Feed />,
       },
     ],
