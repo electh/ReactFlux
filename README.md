@@ -37,9 +37,27 @@ Reactflux 使用 React 编写，build 之后只是一堆静态网页文件，可
 
 [![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/OKXO3W)
 
+#### Docker
+
+```
+docker run -p 2000:2000 electh/reactflux
+```
+
 ### 配置
 
-你需要一个可用的 Miniflux 实例来使用本项目，Server Address 请填写实例地址，API Token 请填写实例 token，可在“Settings > API Keys > Create a new API key”生成一个。
+您需要一个可用的 Miniflux 实例来使用本项目，支持以下两种登录方式：
+
+1. 使用实例用户名和密码登录（不推荐）；
+2. 使用 Miniflux 的 token 登录，可在“Settings > API Keys > Create a new API key”生成一个。
+
+### 分支说明
+
+main 分支提供了最多的功能，新功能一般会最先出现在本分支上，可能适合绝大多数的桌面设备用户。
+
+next 分支最初是为了提高对移动设备的兼容性而创建的，因此为移动设备提供了更好的体验和性能，当然也支持桌面设备的显示，
+但目前缺乏键盘快捷键、订阅源管理等功能，对于 main 分支的后续功能会进行选择性迁移。
+
+如果您想快速体验 next 分支，这里有一个[实例](https://arcoflux.pages.dev/login)
 
 ### 贡献者
 
