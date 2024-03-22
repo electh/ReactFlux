@@ -45,7 +45,7 @@ const useEntryActions = () => {
   };
 
   const handleToggleStatus = async (newStatus) => {
-    const response = await updateEntryStatus(activeContent);
+    const response = await updateEntryStatus(activeContent.id, newStatus);
     if (response) {
       updateFeedUnread(activeContent.feed.id, newStatus);
       updateGroupUnread(activeContent.feed.category.id, newStatus);
@@ -73,7 +73,7 @@ const useEntryActions = () => {
 
   const handleToggleStarred = async () => {
     const newStarred = !activeContent.starred;
-    const response = await toggleEntryStarredApi(activeContent);
+    const response = await toggleEntryStarredApi(activeContent.id);
     if (response) {
       updateUI({ starred: newStarred }, (entry) => ({
         ...entry,

@@ -1,22 +1,19 @@
 import { get24HoursAgoTimestamp } from "../utils/Date";
 import { apiClient } from "./axios";
 
-export async function updateEntryStatus(entry, status = "toggle") {
-  let newStatus;
-  if (status === "toggle") {
-    newStatus = entry.status === "read" ? "unread" : "read";
-  } else {
-    newStatus = status;
-  }
-
+export async function updateEntriesStatus(entryIds, newStatus) {
   return apiClient.put("/v1/entries", {
-    entry_ids: [entry.id],
+    entry_ids: entryIds,
     status: newStatus,
   });
 }
 
-export async function toggleEntryStarred(entry) {
-  return apiClient.put(`/v1/entries/${entry.id}/bookmark`);
+export async function updateEntryStatus(entryId, newStatus) {
+  return updateEntriesStatus([entryId], newStatus);
+}
+
+export async function toggleEntryStarred(entryId) {
+  return apiClient.put(`/v1/entries/${entryId}/bookmark`);
 }
 
 export async function getCurrentUser() {
@@ -47,8 +44,8 @@ export async function editGroup(id, newTitle) {
   return apiClient.put(`/v1/categories/${id}`, { title: newTitle });
 }
 
-export async function editFeed(feed_id, newUrl, newTitle, groupId, isFullText) {
-  return apiClient.put(`/v1/feeds/${feed_id}`, {
+export async function editFeed(feedId, newUrl, newTitle, groupId, isFullText) {
+  return apiClient.put(`/v1/feeds/${feedId}`, {
     feed_url: newUrl,
     title: newTitle,
     category_id: groupId,
@@ -79,9 +76,18 @@ export const getStarredEntries = async (offset = 0, status = null) => {
   return apiClient.get(url);
 };
 
-export const getTodayEntries = async (offset = 0, status = null) => {
+export const getTodayEntries = async (
+  offset = 0,
+  status = null,
+  limit = null,
+) => {
   const timestamp = get24HoursAgoTimestamp();
-  const baseUrl = `/v1/entries?order=published_at&direction=desc&published_after=${timestamp}&offset=${offset}`;
-  const url = status ? `${baseUrl}&status=${status}` : baseUrl;
+  let url = `/v1/entries?order=published_at&direction=desc&published_after=${timestamp}&offset=${offset}`;
+  if (status) {
+    url += `&status=${status}`;
+  }
+  if (limit) {
+    url += `&limit=${limit}`;
+  }
   return apiClient.get(url);
 };

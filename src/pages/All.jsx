@@ -19,7 +19,7 @@ const All = () => {
     <ContentProvider>
       <Content
         info={{ from: "all", id: "" }}
-        getEntries={getEntries}
+        getEntries={getAllEntries}
         markAllAsRead={markAllAsRead}
       />
     </ContentProvider>

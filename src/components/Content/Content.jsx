@@ -79,7 +79,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       }, 200);
 
       if (entry.status === "unread") {
-        const response = await updateEntryStatus(entry, "read");
+        const response = await updateEntryStatus(entry.id, "read");
         if (response) {
           updateFeedUnread(entry.feed.id, "read");
           updateGroupUnread(entry.feed.category.id, "read");

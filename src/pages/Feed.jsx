@@ -13,7 +13,7 @@ const Feed = () => {
     return apiClient.get(url);
   };
 
-  const markAllAsRead = async () => {
+  const markFeedAsRead = async () => {
     return apiClient.put(`/v1/feeds/${f_id}/mark-all-as-read`);
   };
 
@@ -22,7 +22,7 @@ const Feed = () => {
       <Content
         info={{ from: "feed", id: f_id }}
         getEntries={getFeedEntries}
-        markAllAsRead={markAllAsRead}
+        markAllAsRead={markFeedAsRead}
       />
     </ContentProvider>
   );

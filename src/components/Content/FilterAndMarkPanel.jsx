@@ -65,7 +65,7 @@ const FilterAndMarkPanel = forwardRef(({ info, markAllAsRead }, ref) => {
         <Radio value="all">ALL</Radio>
         <Radio value="unread">UNREAD</Radio>
       </Radio.Group>
-      {info.from !== "today" && info.from !== "starred" && (
+      {info.from !== "starred" && (
         <Popconfirm
           focusLock
           title="Mark All As Read?"
