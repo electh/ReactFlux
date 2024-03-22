@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { create } from "zustand";
 
 import {
@@ -105,8 +104,12 @@ const useStore = create((set, get) => ({
       const starredCount = starredResponse.data.total;
       const unreadToday = todayResponse.data.total;
 
-      set({ feeds: _.orderBy(feedsWithUnread, ["title"], ["asc"]) });
-      set({ groups: _.orderBy(groupsWithUnread, ["title"], ["asc"]) });
+      set({
+        feeds: feedsWithUnread.sort((a, b) => a.title.localeCompare(b.title)),
+      });
+      set({
+        groups: groupsWithUnread.sort((a, b) => a.title.localeCompare(b.title)),
+      });
       set({ unreadTotal });
       set({ readCount });
       set({ starredCount });
