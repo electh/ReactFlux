@@ -16,7 +16,7 @@ const useLoadMore = () => {
     setLoadMoreVisible,
     setOffset,
     total,
-    unreadTotal,
+    unreadCount,
   } = useContext(ContentContext);
 
   /* 加载更多 loading*/
@@ -67,7 +67,7 @@ const useLoadMore = () => {
         setEntries(filteredByString);
         setLoadMoreVisible(updatedAllArticles.length < total);
         setLoadMoreUnreadVisible(
-          filteredArticles.length < unreadTotal && filterStatus === "unread",
+          filteredArticles.length < unreadCount && filterStatus === "unread",
         );
       }
     } catch (error) {

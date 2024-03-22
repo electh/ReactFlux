@@ -14,6 +14,7 @@ import {
 import { IconDelete, IconEdit } from "@arco-design/web-react/icon";
 import { useState } from "react";
 
+import useStore from "../../Store";
 import { deleteFeed, editFeed } from "../../apis";
 import { generateRelativeTime } from "../../utils/Date";
 import { includesIgnoreCase } from "../../utils/Filter";
@@ -26,6 +27,7 @@ const FeedList = ({
   setShowFeeds,
   showFeeds,
 }) => {
+  const initData = useStore((state) => state.initData);
   const [feedModalVisible, setFeedModalVisible] = useState(false);
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
@@ -60,6 +62,16 @@ const FeedList = ({
       group: record.feed.category.id,
       crawler: record.feed.crawler,
     });
+  };
+
+  const handleDeleteFeed = async (record) => {
+    const response = await deleteFeed(record.feed.id);
+    if (response) {
+      setFeeds(feeds.filter((feed) => feed.id !== record.feed.id));
+      setShowFeeds(sortedFeeds.filter((feed) => feed.id !== record.feed.id));
+      Message.success("Unfollowed");
+      await initData();
+    }
   };
 
   const columns = [
@@ -130,14 +142,7 @@ const FeedList = ({
             focusLocka
             title="Unfollow？"
             onOk={async () => {
-              const response = await deleteFeed(record.feed.id);
-              if (response) {
-                setFeeds(feeds.filter((feed) => feed.id !== record.feed.id));
-                setShowFeeds(
-                  sortedFeeds.filter((feed) => feed.id !== record.feed.id),
-                );
-                Message.success("Unfollowed");
-              }
+              await handleDeleteFeed(record);
             }}
           >
             <span className="list-demo-actions-icon">
@@ -173,6 +178,7 @@ const FeedList = ({
       );
       Message.success("Success");
       setFeedModalVisible(false);
+      await initData();
     }
     setFeedModalLoading(false);
     feedForm.resetFields();

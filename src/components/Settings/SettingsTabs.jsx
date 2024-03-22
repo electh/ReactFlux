@@ -5,7 +5,6 @@ import {
   IconFolder,
   IconSkin,
 } from "@arco-design/web-react/icon";
-import _ from "lodash";
 import { useEffect, useState } from "react";
 
 import { getFeeds, getGroups } from "../../apis";
@@ -41,8 +40,10 @@ const SettingsTabs = () => {
           feedCount: feedCount,
         };
       });
-      setFeeds(_.orderBy(feeds, ["title"], ["asc"]));
-      setGroups(_.orderBy(groupsWithFeedCount, ["title"], ["asc"]));
+      setFeeds(feeds.sort((a, b) => a.title.localeCompare(b.title)));
+      setGroups(
+        groupsWithFeedCount.sort((a, b) => a.title.localeCompare(b.title)),
+      );
       setShowFeeds(feeds);
       setLoading(false);
     }
@@ -57,7 +58,6 @@ const SettingsTabs = () => {
     <Tabs
       defaultActiveTab="1"
       tabPosition="left"
-      onChange={refreshData}
       style={{ marginLeft: "-20px" }}
     >
       <Tabs.TabPane

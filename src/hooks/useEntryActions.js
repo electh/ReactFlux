@@ -46,19 +46,20 @@ const useEntryActions = () => {
     if (response) {
       updateFeedUnread(activeContent.feed.id, newStatus);
       updateGroupUnread(activeContent.feed.category.id, newStatus);
-      setUnreadTotal(
-        newStatus === "read" ? Math.max(0, unreadTotal - 1) : unreadTotal + 1,
-      );
-      setUnreadCount(
-        newStatus === "read" ? Math.max(0, unreadCount - 1) : unreadCount + 1,
-      );
-      setReadCount(
-        newStatus === "read" ? readCount + 1 : Math.max(0, readCount - 1),
-      );
-      if (isInLast24Hours(activeContent.published_at)) {
-        setUnreadToday(
-          newStatus === "read" ? Math.max(0, unreadToday - 1) : unreadToday + 1,
-        );
+      if (newStatus === "read") {
+        setUnreadTotal(Math.max(0, unreadTotal - 1));
+        setUnreadCount(Math.max(0, unreadCount - 1));
+        setReadCount(readCount + 1);
+        if (isInLast24Hours(activeContent.published_at)) {
+          setUnreadToday(Math.max(0, unreadToday - 1));
+        }
+      } else {
+        setUnreadTotal(unreadTotal + 1);
+        setUnreadCount(unreadCount + 1);
+        setReadCount(Math.max(0, readCount - 1));
+        if (isInLast24Hours(activeContent.published_at)) {
+          setUnreadToday(unreadToday + 1);
+        }
       }
       updateUI({ status: newStatus }, (entry) => ({
         ...entry,
@@ -82,9 +83,11 @@ const useEntryActions = () => {
           spread: 70,
           origin: { x: 1, y: 1 },
         });
-      setStarredCount(
-        newStarred ? starredCount + 1 : Math.max(0, starredCount - 1),
-      );
+      if (newStarred) {
+        setStarredCount(starredCount + 1);
+      } else {
+        setStarredCount(Math.max(0, starredCount - 1));
+      }
     }
   };
 

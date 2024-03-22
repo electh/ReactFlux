@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { create } from "zustand";
 
 import {
@@ -11,6 +10,24 @@ import {
 } from "./apis";
 import { applyColor } from "./utils/Colors";
 import { getConfig, setConfig } from "./utils/Config";
+
+const calculateUnread = (currentUnread, status) => {
+  if (status === "read") {
+    return Math.max(0, currentUnread - 1);
+  }
+  return currentUnread + 1;
+};
+
+const updateUnreadCount = (items, itemId, status) => {
+  return items.map((item) =>
+    item.id === itemId
+      ? {
+          ...item,
+          unread: calculateUnread(item.unread, status),
+        }
+      : item,
+  );
+};
 
 const useStore = create((set, get) => ({
   feeds: [],
@@ -105,8 +122,12 @@ const useStore = create((set, get) => ({
       const starredCount = starredResponse.data.total;
       const unreadToday = todayResponse.data.total;
 
-      set({ feeds: _.orderBy(feedsWithUnread, ["title"], ["asc"]) });
-      set({ groups: _.orderBy(groupsWithUnread, ["title"], ["asc"]) });
+      set({
+        feeds: feedsWithUnread.sort((a, b) => a.title.localeCompare(b.title)),
+      });
+      set({
+        groups: groupsWithUnread.sort((a, b) => a.title.localeCompare(b.title)),
+      });
       set({ unreadTotal });
       set({ readCount });
       set({ starredCount });
@@ -116,37 +137,15 @@ const useStore = create((set, get) => ({
   },
 
   updateFeedUnread: (feedId, status) => {
-    set((state) => {
-      const updatedFeeds = state.feeds.map((feed) =>
-        feed.id === feedId
-          ? {
-              ...feed,
-              unread:
-                status === "read"
-                  ? Math.max(0, feed.unread - 1)
-                  : feed.unread + 1,
-            }
-          : feed,
-      );
-      return { feeds: updatedFeeds };
-    });
+    set((state) => ({
+      feeds: updateUnreadCount(state.feeds, feedId, status),
+    }));
   },
 
   updateGroupUnread: (groupId, status) => {
-    set((state) => {
-      const updatedGroups = state.groups.map((group) =>
-        group.id === groupId
-          ? {
-              ...group,
-              unread:
-                status === "read"
-                  ? Math.max(0, group.unread - 1)
-                  : group.unread + 1,
-            }
-          : group,
-      );
-      return { groups: updatedGroups };
-    });
+    set((state) => ({
+      groups: updateUnreadCount(state.groups, groupId, status),
+    }));
   },
 
   toggleTheme: () => {

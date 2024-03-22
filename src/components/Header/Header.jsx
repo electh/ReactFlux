@@ -22,9 +22,10 @@ import useStore from "../../Store";
 import { applyColor } from "../../utils/Colors";
 import "./Header.css";
 
-const Header = ({ theme }) => {
+const Header = () => {
   const navigate = useNavigate();
   const setVisible = useStore((state) => state.setVisible);
+  const theme = useStore((state) => state.theme);
   const toggleTheme = useStore((state) => state.toggleTheme);
   const collapsed = useStore((state) => state.collapsed);
   const setCollapsed = useStore((state) => state.setCollapsed);
