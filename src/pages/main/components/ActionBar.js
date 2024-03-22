@@ -27,7 +27,7 @@ export default function ActionBar() {
     <Button.Group
       style={{
         display: isMobile && activeEntry ? "block" : "none",
-        position: "absolute",
+        position: "fixed",
         zIndex: "3",
         left: "50%",
         bottom: "30px",
