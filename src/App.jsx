@@ -35,7 +35,7 @@ const App = () => {
       className="app"
       style={{ display: "flex", backgroundColor: "var(--color-bg-1)" }}
     >
-      <Header theme={theme} />
+      <Header />
       <Sidebar />
       <Main />
     </div>

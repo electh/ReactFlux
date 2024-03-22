@@ -9,9 +9,11 @@ import {
 import { IconPlus } from "@arco-design/web-react/icon";
 import { useState } from "react";
 
+import useStore from "../../Store";
 import { addGroup, delGroup, editGroup } from "../../apis";
 
 const GroupList = ({ groups, loading, setGroups }) => {
+  const initData = useStore((state) => state.initData);
   const [showAddInput, setShowAddInput] = useState(false);
   const [inputAddValue, setInputAddValue] = useState("");
   const [groupModalVisible, setGroupModalVisible] = useState(false);
@@ -29,6 +31,7 @@ const GroupList = ({ groups, loading, setGroups }) => {
         ]);
         setInputAddValue("");
         Message.success("Success");
+        await initData();
       }
     }
     setInputAddValue("");
@@ -44,9 +47,21 @@ const GroupList = ({ groups, loading, setGroups }) => {
       );
       Message.success("Success");
       setGroupModalVisible(false);
+      await initData();
     }
     setGroupModalLoading(false);
     groupForm.resetFields();
+  };
+
+  const handleDeleteGroup = async (group_id) => {
+    const response = await delGroup(group_id);
+    if (response.status === 204) {
+      setGroups(groups.filter((group) => group.id !== group_id));
+      Message.success("Deleted");
+      await initData();
+    } else {
+      throw new Error("failed to delete group");
+    }
   };
 
   return (
@@ -67,16 +82,7 @@ const GroupList = ({ groups, loading, setGroups }) => {
               }}
               onClose={async (event) => {
                 event.stopPropagation();
-                const response = await delGroup(group.id);
-                return new Promise((resolve, reject) => {
-                  if (response.status === 204) {
-                    resolve();
-                    Message.success("Deleted");
-                  } else {
-                    Message.error("Failed");
-                    reject(new Error("Failed to delete group"));
-                  }
-                });
+                await handleDeleteGroup(group.id);
               }}
               style={{
                 marginRight: "10px",

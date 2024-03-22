@@ -1,4 +1,4 @@
-export const getAuth = () => {
+const getAuth = () => {
   const auth = JSON.parse(localStorage.getItem("auth"));
   if (!auth) {
     console.log("No auth info found in localStorage");
@@ -7,7 +7,9 @@ export const getAuth = () => {
   return auth;
 };
 
-export const setAuth = (method, secret) => {
+const setAuth = (method, secret) => {
   const auth = { method: method, secret: secret };
   localStorage.setItem("auth", JSON.stringify(auth));
 };
+
+export { getAuth, setAuth };

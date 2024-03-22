@@ -126,6 +126,13 @@ const Sidebar = () => {
     setSelectedKeys([path]);
   }, [path]);
 
+  useEffect(() => {
+    if (!loading) {
+      setOpenKeys([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
   return (
     <Sider
       className="sidebar"
@@ -230,7 +237,6 @@ const Sidebar = () => {
               <Menu.SubMenu
                 key={`/group/${group.id}`}
                 selectable={true}
-                style={{ cursor: "not-allowed" }}
                 title={
                   <GroupTitle
                     group={group}
