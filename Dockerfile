@@ -29,6 +29,6 @@ COPY --from=build /app/build /srv
 COPY Caddyfile /etc/caddy/Caddyfile
 
 # Expose the port Caddy listens on
-EXPOSE 80
+EXPOSE 2000
 
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
