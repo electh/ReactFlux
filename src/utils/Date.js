@@ -9,7 +9,7 @@ const isInLast24Hours = (dateStr) => {
   return givenDate.isAfter(now.subtract(24, "hour"));
 };
 
-const get24HoursAgoUnixTimestamp = () => {
+const get24HoursAgoTimestamp = () => {
   const now = dayjs();
   const twentyFourHoursAgo = now.subtract(24, "hour");
   return twentyFourHoursAgo.unix();
@@ -19,4 +19,4 @@ const generateRelativeTime = (dateStr) => {
   return dayjs(dateStr).fromNow();
 };
 
-export { isInLast24Hours, get24HoursAgoUnixTimestamp, generateRelativeTime };
+export { isInLast24Hours, get24HoursAgoTimestamp, generateRelativeTime };

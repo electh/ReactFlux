@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import { thunder } from "../apis/axios";
+import { apiClient } from "../apis/axios";
 import Content from "../components/Content/Content";
 import { ContentProvider } from "../components/Content/ContentContext";
 
@@ -10,15 +10,11 @@ const Group = () => {
   const getGroupEntries = async (offset = 0, status = null) => {
     const base_url = `/v1/categories/${c_id}/entries?order=published_at&direction=desc&offset=${offset}`;
     const url = status ? `${base_url}&status=${status}` : base_url;
-
-    return await thunder.request({ method: "get", url });
+    return apiClient.get(url);
   };
 
   const markGroupAsRead = async () => {
-    return await thunder.request({
-      method: "put",
-      url: `/v1/categories/${c_id}/mark-all-as-read`,
-    });
+    return apiClient.put(`/v1/categories/${c_id}/mark-all-as-read`);
   };
 
   return (

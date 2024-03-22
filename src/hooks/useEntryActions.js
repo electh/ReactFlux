@@ -2,7 +2,10 @@ import Confetti from "canvas-confetti";
 import { useContext } from "react";
 
 import useStore from "../Store";
-import { updateEntryStarred, updateEntryStatus } from "../apis";
+import {
+  toggleEntryStarred as toggleEntryStarredApi,
+  updateEntryStatus,
+} from "../apis";
 import ContentContext from "../components/Content/ContentContext";
 import { isInLast24Hours } from "../utils/Date";
 
@@ -70,7 +73,7 @@ const useEntryActions = () => {
 
   const handleToggleStarred = async () => {
     const newStarred = !activeContent.starred;
-    const response = await updateEntryStarred(activeContent);
+    const response = await toggleEntryStarredApi(activeContent);
     if (response) {
       updateUI({ starred: newStarred }, (entry) => ({
         ...entry,

@@ -10,7 +10,7 @@ import { IconPlus } from "@arco-design/web-react/icon";
 import { useState } from "react";
 
 import useStore from "../../Store";
-import { addGroup, delGroup, editGroup } from "../../apis";
+import { addGroup, deleteGroup, editGroup } from "../../apis";
 
 const GroupList = ({ groups, loading, setGroups }) => {
   const initData = useStore((state) => state.initData);
@@ -54,7 +54,7 @@ const GroupList = ({ groups, loading, setGroups }) => {
   };
 
   const handleDeleteGroup = async (group_id) => {
-    const response = await delGroup(group_id);
+    const response = await deleteGroup(group_id);
     if (response.status === 204) {
       setGroups(groups.filter((group) => group.id !== group_id));
       Message.success("Deleted");
