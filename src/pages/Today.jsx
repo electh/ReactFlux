@@ -1,6 +1,5 @@
 import useStore from "../Store";
-import { getTodayEntries } from "../apis";
-import { updateEntriesStatus } from "../apis";
+import { getTodayEntries, updateEntriesStatus } from "../apis";
 import Content from "../components/Content/Content";
 import { ContentProvider } from "../components/Content/ContentContext";
 
