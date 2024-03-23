@@ -66,7 +66,7 @@ export async function addFeed(feedUrl, groupId, isFullText) {
 }
 
 export const getAllEntries = async (offset = 0, status = null) => {
-  const base_url = `/v1/entries?order=created_at&direction=asc&offset=${offset}`;
+  const base_url = `/v1/entries?order=published_at&direction=desc&offset=${offset}`;
   const url = status ? `${base_url}&status=${status}` : base_url;
   return apiClient.get(url);
 };

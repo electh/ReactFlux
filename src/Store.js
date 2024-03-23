@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
 import {
-  getAllEntries,
   getFeeds,
   getGroups,
   getHistoryEntries,
@@ -33,13 +32,8 @@ const updateUnreadCount = (items, itemId, status) => {
 const useStore = create((set, get) => ({
   feeds: [],
   groups: [],
-  allResponse: null,
-  historyResponse: null,
-  starredResponse: null,
-  todayResponse: null,
   unreadTotal: 0,
   unreadToday: 0,
-  unreadStarred: 0,
   starredCount: 0,
   readCount: 0,
   loading: true,
@@ -53,7 +47,6 @@ const useStore = create((set, get) => ({
   showFeedIcon: getConfig("showFeedIcon") || true,
   collapsed: window.innerWidth <= 992,
   activeContent: null,
-  isInited: false,
 
   setUnreadTotal: (unreadTotal) => {
     set({ unreadTotal: unreadTotal });
@@ -77,28 +70,17 @@ const useStore = create((set, get) => ({
       feedResponse,
       groupResponse,
       unreadResponse,
-      allResponse,
       historyResponse,
       starredResponse,
-      starredUnreadResponse,
-      todayResponse,
       todayUnreadResponse,
     ] = await Promise.all([
       getFeeds(),
       getGroups(),
       getUnreadInfo(),
-      getAllEntries(),
       getHistoryEntries(),
       getStarredEntries(),
-      getStarredEntries(0, "unread"),
-      getTodayEntries(),
       getTodayEntries(0, "unread"),
     ]);
-
-    set({ allResponse });
-    set({ historyResponse });
-    set({ starredResponse });
-    set({ todayResponse });
 
     if (
       feedResponse &&
@@ -106,7 +88,6 @@ const useStore = create((set, get) => ({
       groupResponse &&
       historyResponse &&
       starredResponse &&
-      starredUnreadResponse &&
       todayUnreadResponse
     ) {
       const unreadInfo = unreadResponse.data.unreads;
@@ -150,9 +131,7 @@ const useStore = create((set, get) => ({
 
       set({ readCount: historyResponse.data.total });
       set({ starredCount: starredResponse.data.total });
-      set({ unreadStarred: starredUnreadResponse.data.total });
       set({ unreadToday: todayUnreadResponse.data.total });
-      set({ isInited: true });
       set({ loading: false });
     }
   },
