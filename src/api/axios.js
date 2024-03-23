@@ -5,7 +5,7 @@ import { router } from "../router/router";
 import { getAuth } from "../utils/auth";
 
 const thunder = axios.create({
-  timeout: 10000,
+  timeout: 30000,
 });
 
 // 添加请求拦截器
