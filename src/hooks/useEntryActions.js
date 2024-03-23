@@ -3,6 +3,7 @@ import { useContext } from "react";
 
 import useStore from "../Store";
 import {
+  fetchOriginalArticle,
   toggleEntryStarred as toggleEntryStarredApi,
   updateEntryStatus,
 } from "../apis";
@@ -96,6 +97,13 @@ const useEntryActions = () => {
     }
   };
 
+  const handleFetchContent = async () => {
+    const response = await fetchOriginalArticle(activeContent.id);
+    if (response) {
+      setActiveContent({ ...activeContent, content: response.data.content });
+    }
+  };
+
   const toggleEntryStatus = () => {
     const newStatus = activeContent.status === "read" ? "unread" : "read";
     handleToggleStatus(newStatus);
@@ -105,7 +113,7 @@ const useEntryActions = () => {
     handleToggleStarred();
   };
 
-  return { toggleEntryStatus, toggleEntryStarred };
+  return { handleFetchContent, toggleEntryStatus, toggleEntryStarred };
 };
 
 export default useEntryActions;

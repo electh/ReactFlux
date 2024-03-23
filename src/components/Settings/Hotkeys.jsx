@@ -34,11 +34,16 @@ const hotkeysData = [
   },
   {
     key: "5",
+    keyName: "D",
+    description: "Fetch original article",
+  },
+  {
+    key: "6",
     keyName: "M",
     description: "Mark as read / unread",
   },
   {
-    key: "6",
+    key: "7",
     keyName: "S",
     description: "Star / Unstar",
   },

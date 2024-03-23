@@ -2,6 +2,7 @@ import { Button, Space, Tooltip } from "@arco-design/web-react";
 import {
   IconArrowLeft,
   IconArrowRight,
+  IconCloudDownload,
   IconMinusCircle,
   IconRecord,
   IconStar,
@@ -14,7 +15,8 @@ import useKeyHandlers from "../../hooks/useKeyHandlers";
 
 const ActionButtons = ({ handleEntryClick }) => {
   const activeContent = useStore((state) => state.activeContent);
-  const { toggleEntryStarred, toggleEntryStatus } = useEntryActions();
+  const { handleFetchContent, toggleEntryStarred, toggleEntryStatus } =
+    useEntryActions();
   const { handleLeftKey, handleRightKey } = useKeyHandlers();
 
   if (!activeContent) {
@@ -67,6 +69,18 @@ const ActionButtons = ({ handleEntryClick }) => {
                 <IconStar />
               )
             }
+          />
+        </Tooltip>
+        <Tooltip mini position="left" content="Fetch original article">
+          <Button
+            type="primary"
+            size="mini"
+            style={{
+              borderTop: "1px solid rgb(var(--primary-5))",
+              borderRadius: "0",
+            }}
+            onClick={handleFetchContent}
+            icon={<IconCloudDownload />}
           />
         </Tooltip>
         <Tooltip mini position="left" content="Previous Article">

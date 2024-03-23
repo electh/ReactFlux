@@ -45,9 +45,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     updateGroupUnread,
   } = useContext(ContentContext);
 
-  const { toggleEntryStarred, toggleEntryStatus } = useEntryActions();
+  const { handleFetchContent, toggleEntryStarred, toggleEntryStatus } =
+    useEntryActions();
   const {
     handleBKey,
+    handleDKey,
     handleEscapeKey,
     handleLeftKey,
     handleMKey,
@@ -109,6 +111,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       37: () => handleLeftKey(handleEntryClick),
       39: () => handleRightKey(handleEntryClick),
       66: () => handleBKey(),
+      68: () => handleDKey(handleFetchContent),
       77: () => handleMKey(toggleEntryStatus),
       83: () => handleSKey(toggleEntryStarred),
     };
