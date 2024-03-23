@@ -21,7 +21,9 @@ const ImageWithLazyLoading = ({
           const image = new Image();
           image.onload = () => setLoaded(true);
           image.src = src;
-          observer.unobserve(imgRef.current);
+          if (imgRef.current) {
+            observer.unobserve(imgRef.current);
+          }
         }
       }
     });
