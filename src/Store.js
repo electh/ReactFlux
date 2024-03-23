@@ -104,7 +104,9 @@ const useStore = create((set, get) => ({
       }));
 
       set({
-        feeds: feedsWithUnread.sort((a, b) => a.title.localeCompare(b.title)),
+        feeds: feedsWithUnread.sort((a, b) =>
+          a.title.localeCompare(b.title, "en"),
+        ),
       });
 
       const groupsWithUnread = groupResponse.data.map((group) => {
@@ -126,7 +128,9 @@ const useStore = create((set, get) => ({
       });
 
       set({
-        groups: groupsWithUnread.sort((a, b) => a.title.localeCompare(b.title)),
+        groups: groupsWithUnread.sort((a, b) =>
+          a.title.localeCompare(b.title, "en"),
+        ),
       });
 
       set({ readCount: historyResponse.data.total });
