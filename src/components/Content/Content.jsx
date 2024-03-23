@@ -70,40 +70,36 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     return entries.map((e) => (e.id === entryId ? { ...e, status } : e));
   };
 
-  const handleEntryClick = (entry) => {
-    const processEntryClick = async () => {
-      setShowArticleDetail(false);
+  const handleEntryClick = async (entry) => {
+    setShowArticleDetail(false);
 
-      setTimeout(() => {
-        setActiveContent({ ...entry, status: "read" });
-      }, 200);
+    setTimeout(() => {
+      setActiveContent({ ...entry, status: "read" });
+    }, 200);
 
-      if (entry.status === "unread") {
-        const response = await updateEntryStatus(entry.id, "read");
-        if (response) {
-          updateFeedUnread(entry.feed.id, "read");
-          updateGroupUnread(entry.feed.category.id, "read");
-          setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
-          setFilteredEntries(
-            updateLocalEntryStatus(filteredEntries, entry.id, "read"),
-          );
-          setUnreadTotal(Math.max(0, unreadTotal - 1));
-          setUnreadCount(Math.max(0, unreadCount - 1));
-          setReadCount(readCount + 1);
-          if (isInLast24Hours(entry.published_at)) {
-            setUnreadToday(Math.max(0, unreadToday - 1));
-          }
+    if (entry.status === "unread") {
+      const response = await updateEntryStatus(entry.id, "read");
+      if (response) {
+        updateFeedUnread(entry.feed.id, "read");
+        updateGroupUnread(entry.feed.category.id, "read");
+        setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
+        setFilteredEntries(
+          updateLocalEntryStatus(filteredEntries, entry.id, "read"),
+        );
+        setUnreadTotal(Math.max(0, unreadTotal - 1));
+        setUnreadCount(Math.max(0, unreadCount - 1));
+        setReadCount(readCount + 1);
+        if (isInLast24Hours(entry.published_at)) {
+          setUnreadToday(Math.max(0, unreadToday - 1));
         }
       }
+    }
 
-      if (entryDetailRef.current) {
-        entryDetailRef.current.setAttribute("tabIndex", "-1");
-        entryDetailRef.current.focus();
-        entryDetailRef.current.scrollTo(0, 0);
-      }
-    };
-
-    processEntryClick();
+    if (entryDetailRef.current) {
+      entryDetailRef.current.setAttribute("tabIndex", "-1");
+      entryDetailRef.current.focus();
+      entryDetailRef.current.scrollTo(0, 0);
+    }
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
