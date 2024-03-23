@@ -11,89 +11,63 @@ const ArticleCard = ({ entry, handleEntryClick }) => {
   const activeContent = useStore((state) => state.activeContent);
   const showFeedIcon = useStore((state) => state.showFeedIcon);
 
+  const isSelected = activeContent && entry.id === activeContent.id;
+
+  const entryClickHandler = () => handleEntryClick(entry);
+
+  const coverImage = entry.imgSrc ? (
+    <div className="cover-image">
+      <ImageWithLazyLoading
+        width={"100%"}
+        height="160px"
+        alt={entry.id}
+        src={entry.imgSrc}
+        status={entry.status}
+      />
+    </div>
+  ) : null;
+
+  const FeedIcon = ({ url }) => (
+    <img
+      className="feed-icon"
+      src={`https://icons.duckduckgo.com/ip3/${new URL(url).hostname}.ico`}
+      alt="Icon"
+    />
+  );
+
+  const ArticleCardContent = ({ entry, showFeedIcon }) => (
+    <div>
+      <Typography.Text
+        className={entry.status === "unread" ? "title-unread" : "title-read"}
+      >
+        {entry.title}
+      </Typography.Text>
+      <Typography.Text className="article-info">
+        <br />
+        {showFeedIcon && <FeedIcon url={entry.feed.site_url} />}
+        {entry.feed.title}
+        <br />
+        {generateRelativeTime(entry.published_at)}
+      </Typography.Text>
+      {entry.starred && <IconStarFill className="icon-starred" />}
+    </div>
+  );
+
   return (
-    <div style={{ marginBottom: "10px" }} key={entry.id}>
+    <div className="article-card" key={entry.id}>
       <Card
         className={classNames("card-custom-hover-style", {
-          "card-custom-selected-style": activeContent
-            ? entry.id === activeContent.id
-            : false,
+          "card-custom-selected-style": isSelected,
         })}
         hoverable
         data-entry-id={entry.id}
         style={{ width: "100%", cursor: "pointer" }}
-        onClick={() => {
-          handleEntryClick(entry);
-        }}
-        cover={
-          <div
-            style={{
-              display: entry.imgSrc ? "block" : "none",
-              height: 160,
-              overflow: "hidden",
-              borderBottom: "1px solid var(--color-border-1)",
-            }}
-          >
-            <ImageWithLazyLoading
-              width={"100%"}
-              height="160px"
-              alt={entry.id}
-              src={entry.imgSrc}
-              status={entry.status}
-            />
-          </div>
-        }
+        onClick={entryClickHandler}
+        cover={coverImage}
       >
         <Card.Meta
           description={
-            <div>
-              <Typography.Text
-                style={
-                  entry.status === "unread"
-                    ? { fontWeight: "500" }
-                    : {
-                        color: "var(--color-text-3)",
-                        fontWeight: "500",
-                      }
-                }
-              >
-                {entry.title}
-              </Typography.Text>
-              <Typography.Text
-                style={{
-                  color: "var(--color-text-3)",
-                  fontSize: "13px",
-                }}
-              >
-                <br />
-                {showFeedIcon && (
-                  <img
-                    src={`https://icons.duckduckgo.com/ip3/${new URL(entry.feed.site_url).hostname}.ico`}
-                    alt="Icon"
-                    style={{
-                      marginRight: "8px",
-                      width: "16px",
-                      height: "16px",
-                      position: "absolute",
-                      right: "2px",
-                      bottom: "12px",
-                    }}
-                  />
-                )}
-                {entry.feed.title}
-                <br />
-                {generateRelativeTime(entry.published_at)}
-              </Typography.Text>
-              {entry.starred && (
-                <IconStarFill
-                  style={{
-                    fontSize: "13px",
-                    marginLeft: "8px",
-                    color: "var(--color-text-3)",
-                  }}
-                />
-              )}
-            </div>
+            <ArticleCardContent entry={entry} showFeedIcon={showFeedIcon} />
           }
         />
       </Card>

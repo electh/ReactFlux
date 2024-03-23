@@ -47,14 +47,10 @@ const ArticleList = forwardRef(
                 );
               }
 
-              return layout === "small" ? (
-                <ArticleCardMini
-                  key={entry.id}
-                  entry={entry}
-                  handleEntryClick={handleEntryClick}
-                />
-              ) : (
-                <ArticleCard
+              const ArticleComponent =
+                layout === "small" ? ArticleCardMini : ArticleCard;
+              return (
+                <ArticleComponent
                   key={entry.id}
                   entry={entry}
                   handleEntryClick={handleEntryClick}
@@ -64,8 +60,9 @@ const ArticleList = forwardRef(
           </div>
         )}
         {!loading &&
-          ((filterStatus === "all" && loadMoreVisible) ||
-            (filterStatus === "unread" && loadMoreUnreadVisible)) && (
+          (filterStatus === "all"
+            ? loadMoreVisible
+            : loadMoreUnreadVisible) && (
             <Button
               onClick={() => handleLoadMore(getEntries)}
               loading={loadingMore}

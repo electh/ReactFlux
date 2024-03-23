@@ -2,3 +2,9 @@
   /*filter: brightness(60%);*/
   opacity: 0.5;
 }
+
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
