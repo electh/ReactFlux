@@ -24,11 +24,7 @@ function MenuTitle({ icon, title, unread, showIcons }) {
       }}
     >
       {showIcons !== "off" && ( // 如果showIcons不是"off"，则显示图标
-        <div
-          style={{ marginRight: "8px", display: "flex", alignItems: "center" }}
-        >
-          {icon}
-        </div>
+        <div style={{ display: "flex", alignItems: "center" }}>{icon}</div>
       )}
       <span
         style={{

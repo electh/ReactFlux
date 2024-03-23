@@ -1,5 +1,4 @@
 import isURL from "validator/es/lib/isURL";
-import { useStore } from "../../../store/Store";
 
 const getFeedIcon = (feed) => {
   if (isURL(feed.site_url)) {
@@ -9,7 +8,6 @@ const getFeedIcon = (feed) => {
   }
 };
 export default function FeedIcon({ feed }) {
-  const isDarkMode = useStore((state) => state.isDarkMode);
   return (
     <img
       src={getFeedIcon(feed)}
@@ -19,8 +17,8 @@ export default function FeedIcon({ feed }) {
         height: "16px",
         marginRight: "8px",
         borderRadius: "2px",
-        padding: isDarkMode ? "2px" : 0,
-        backgroundColor: isDarkMode ? "var(--color-text-1)" : "none",
+        padding: "2px",
+        backgroundColor: "white",
       }}
     />
   );
