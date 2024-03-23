@@ -3,6 +3,7 @@ import AccentColor from "./components/AccentColor";
 import CompactLayout from "./components/CompactLayout";
 import FontSize from "./components/FontSize";
 import TextAlignment from "./components/TextAlignment";
+import Favicons from "./components/Favicons";
 
 export default function Settings({ visible, setVisible }) {
   return (
@@ -22,6 +23,8 @@ export default function Settings({ visible, setVisible }) {
       <AccentColor />
       <Divider />
       <CompactLayout />
+      <Divider />
+      <Favicons />
       <Divider />
       <TextAlignment />
       <Divider />

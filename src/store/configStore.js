@@ -7,6 +7,10 @@ const useConfigStore = create((set) => ({
   contentSize: getConfig("contentSize") || 1.05,
   layout: getConfig("layout") || "expensive",
   align: getConfig("align") || "left",
+  showIcons: getConfig("showIcons") || "on",
+  setShowIcons: (value) => {
+    set({ showIcons: value });
+  },
   setColor: (value) => {
     set({ color: value });
   },

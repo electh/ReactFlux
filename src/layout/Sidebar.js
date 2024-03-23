@@ -1,5 +1,6 @@
 import { Menu, Skeleton, Typography } from "@arco-design/web-react";
 import {
+  IconApps,
   IconFile,
   IconFolder,
   IconStar,
@@ -7,34 +8,47 @@ import {
 } from "@arco-design/web-react/icon";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useStore } from "../store/Store";
+import { useConfigStore } from "../store/configStore";
+import FeedIcon from "../pages/main/components/FeedIcon";
 
-function MenuTitle({ title, unread }) {
+function MenuTitle({ icon, title, unread, showIcons }) {
   return (
     <div
       style={{
+        margin: 0,
+        whiteSpace: "nowrap",
+        width: "100%",
+        overflow: "hidden",
         display: "flex",
-        justifyContent: "space-between",
         alignItems: "center",
       }}
     >
-      <Typography.Ellipsis
-        expandable={false}
-        style={{ width: unread > 0 ? "75%" : "100%" }}
+      {showIcons !== "off" && ( // 如果showIcons不是"off"，则显示图标
+        <div
+          style={{ marginRight: "8px", display: "flex", alignItems: "center" }}
+        >
+          {icon}
+        </div>
+      )}
+      <span
+        style={{
+          textOverflow: "ellipsis",
+          overflow: "hidden",
+          width: "100%", // 将宽度设置为100%以确保ellipsis正常工作
+        }}
       >
         {title}
-      </Typography.Ellipsis>
-      {unread > 0 ? (
-        <Typography.Ellipsis
+      </span>
+      {unread > 0 && ( // 只有在有未读时才显示计数
+        <Typography.Text
           style={{
             color: "var(--color-text-4)",
-            width: "25%",
-            display: "flex",
-            justifyContent: "flex-end",
+            whiteSpace: "nowrap",
           }}
         >
           {unread}
-        </Typography.Ellipsis>
-      ) : null}
+        </Typography.Text>
+      )}
     </div>
   );
 }
@@ -47,6 +61,7 @@ export default function Sidebar({ style, setVisible }) {
   const loading = useStore((state) => state.loading);
   const isMobile = useStore((state) => state.isMobile);
   const unreadOnly = useStore((state) => state.unreadOnly);
+  const showIcons = useConfigStore((state) => state.showIcons);
 
   const [params] = useSearchParams();
   const from = params.get("from") || "all";
@@ -107,7 +122,7 @@ export default function Sidebar({ style, setVisible }) {
           key="category"
           title={
             <span>
-              <IconFolder />
+              <IconApps />
               Categories
             </span>
           }
@@ -132,6 +147,7 @@ export default function Sidebar({ style, setVisible }) {
                 }}
               >
                 <MenuTitle
+                  icon={<IconFolder style={{ marginRight: "8px" }} />}
                   title={category.title}
                   unread={
                     entries.filter(
@@ -140,6 +156,7 @@ export default function Sidebar({ style, setVisible }) {
                         entry.status === "unread",
                     ).length
                   }
+                  showIcons={showIcons}
                 />
               </Menu.Item>
             ))}
@@ -173,6 +190,7 @@ export default function Sidebar({ style, setVisible }) {
                 }}
               >
                 <MenuTitle
+                  icon={<FeedIcon feed={feed} />}
                   title={feed.title}
                   unread={
                     entries.filter(
@@ -180,6 +198,7 @@ export default function Sidebar({ style, setVisible }) {
                         entry.feed.id === feed.id && entry.status === "unread",
                     ).length
                   }
+                  showIcons={showIcons}
                 />
               </Menu.Item>
             ))}
