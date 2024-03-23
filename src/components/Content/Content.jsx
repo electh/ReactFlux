@@ -69,7 +69,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const cardsRef = useRef(null);
 
   useEffect(() => {
-    setShowArticleDetail(activeContent);
+    setShowArticleDetail(activeContent !== null);
   }, [activeContent]);
 
   const updateLocalEntryStatus = (entries, entryId, status) => {

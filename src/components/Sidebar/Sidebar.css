@@ -11,3 +11,24 @@
   flex-direction: row;
   align-items: center;
 }
+
+.group-title,
+.custom-menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.unread-count {
+  width: 20%;
+  color: var(--color-text-4);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.item-count {
+  width: 50%;
+  color: var(--color-text-4);
+  display: flex;
+  justify-content: flex-end;
+}

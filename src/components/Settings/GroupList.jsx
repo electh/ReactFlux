@@ -30,7 +30,7 @@ const GroupList = ({ groups, loading, setGroups }) => {
           { ...response.data, feedCount: 0 },
         ]);
         setInputAddValue("");
-        Message.success("Success");
+        Message.success("Group added successfully");
         await initData();
       }
     }
@@ -38,14 +38,14 @@ const GroupList = ({ groups, loading, setGroups }) => {
     setShowAddInput(false);
   };
 
-  const handleEditGroup = async (group_id, newTitle) => {
+  const handleEditGroup = async (groupId, newTitle) => {
     setGroupModalLoading(true);
-    const response = await editGroup(group_id, newTitle);
+    const response = await editGroup(groupId, newTitle);
     if (response) {
       setGroups(
-        groups.map((group) => (group.id === group_id ? response.data : group)),
+        groups.map((group) => (group.id === groupId ? response.data : group)),
       );
-      Message.success("Success");
+      Message.success("Group updated successfully");
       setGroupModalVisible(false);
       await initData();
     }
@@ -53,14 +53,14 @@ const GroupList = ({ groups, loading, setGroups }) => {
     groupForm.resetFields();
   };
 
-  const handleDeleteGroup = async (group_id) => {
-    const response = await deleteGroup(group_id);
+  const handleDeleteGroup = async (groupId) => {
+    const response = await deleteGroup(groupId);
     if (response.status === 204) {
-      setGroups(groups.filter((group) => group.id !== group_id));
-      Message.success("Deleted");
+      setGroups(groups.filter((group) => group.id !== groupId));
+      Message.success("Group deleted successfully");
       await initData();
     } else {
-      throw new Error("failed to delete group");
+      Message.error("Failed to delete group");
     }
   };
 

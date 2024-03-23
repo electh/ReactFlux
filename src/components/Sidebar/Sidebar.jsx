@@ -27,31 +27,20 @@ const MenuItem = Menu.Item;
 const { Sider } = Layout;
 
 const GroupTitle = ({ group, isOpen }) => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-    }}
-  >
+  <div className="group-title">
     <Typography.Ellipsis
       expandable={false}
       showTooltip={true}
-      style={{ width: group.unread !== 0 ? "80%" : "100%" }}
+      style={{ width: group.unread ? "80%" : "100%" }}
     >
       {isOpen ? <IconDown /> : <IconRight />}
       {group.title}
     </Typography.Ellipsis>
-    {group.unread !== 0 && (
+    {group.unread > 0 && (
       <Typography.Ellipsis
+        className="unread-count"
         expandable={false}
         showTooltip={true}
-        style={{
-          width: "20%",
-          color: "var(--color-text-4)",
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
       >
         {group.unread}
       </Typography.Ellipsis>
@@ -59,36 +48,23 @@ const GroupTitle = ({ group, isOpen }) => (
   </div>
 );
 
-const CustomMenuItem = ({ count, icon, key, label, onClick }) => {
-  return (
-    <MenuItem key={key} onClick={onClick}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
+const CustomMenuItem = ({ count, icon, key, label, onClick }) => (
+  <MenuItem key={key} onClick={onClick}>
+    <div className="custom-menu-item">
+      <span>
+        {icon}
+        {label}
+      </span>
+      <Typography.Ellipsis
+        className="item-count"
+        expandable={false}
+        showTooltip={true}
       >
-        <span>
-          {icon}
-          {label}
-        </span>
-        <Typography.Ellipsis
-          expandable={false}
-          showTooltip={true}
-          style={{
-            width: "50%",
-            color: "var(--color-text-4)",
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-        >
-          {count === 0 ? "" : count}
-        </Typography.Ellipsis>
-      </div>
-    </MenuItem>
-  );
-};
+        {count || ""}
+      </Typography.Ellipsis>
+    </div>
+  </MenuItem>
+);
 
 const Sidebar = () => {
   const location = useLocation();

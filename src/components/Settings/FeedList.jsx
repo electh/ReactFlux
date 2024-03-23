@@ -155,28 +155,28 @@ const FeedList = ({
   ];
 
   const handleEditFeed = async (
-    feed_id,
+    feedId,
     newUrl,
     newTitle,
-    group_id,
-    is_full_text,
+    groupId,
+    isFullText,
   ) => {
     setFeedModalLoading(true);
     const response = await editFeed(
-      feed_id,
+      feedId,
       newUrl,
       newTitle,
-      group_id,
-      is_full_text,
+      groupId,
+      isFullText,
     );
     if (response) {
       setFeeds(
-        feeds.map((feed) => (feed.id === feed_id ? response.data : feed)),
+        feeds.map((feed) => (feed.id === feedId ? response.data : feed)),
       );
       setShowFeeds(
-        sortedFeeds.map((feed) => (feed.id === feed_id ? response.data : feed)),
+        sortedFeeds.map((feed) => (feed.id === feedId ? response.data : feed)),
       );
-      Message.success("Success");
+      Message.success("Feed updated successfully");
       setFeedModalVisible(false);
       await initData();
     }
