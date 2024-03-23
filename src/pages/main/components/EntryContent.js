@@ -39,9 +39,9 @@ export default function EntryContent({ activeEntry }) {
     >
       <motion.div
         key={activeEntry.id}
-        initial={{ opacity: 0, y: isMobile ? 0 : 100 }}
+        initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.1 }}
       >
         <div
           className="article-title"
@@ -73,9 +73,9 @@ export default function EntryContent({ activeEntry }) {
 
         <motion.div
           key={activeEntry.title}
-          initial={{ opacity: 0, y: isMobile ? 0 : 100 }}
+          initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
         >
           <EntryBody htmlString={content} />
         </motion.div>
