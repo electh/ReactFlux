@@ -2,7 +2,10 @@ import Confetti from "canvas-confetti";
 import { useContext } from "react";
 
 import useStore from "../Store";
-import { updateEntryStarred, updateEntryStatus } from "../apis";
+import {
+  toggleEntryStarred as toggleEntryStarredApi,
+  updateEntryStatus,
+} from "../apis";
 import ContentContext from "../components/Content/ContentContext";
 import { isInLast24Hours } from "../utils/Date";
 
@@ -19,10 +22,10 @@ const useEntryActions = () => {
   const setActiveContent = useStore((state) => state.setActiveContent);
 
   const {
-    allEntries,
     entries,
-    setAllEntries,
+    filteredEntries,
     setEntries,
+    setFilteredEntries,
     setUnreadCount,
     unreadCount,
     updateFeedUnread,
@@ -38,11 +41,13 @@ const useEntryActions = () => {
   const updateUI = (newContentStatus, updateFunction) => {
     setActiveContent({ ...activeContent, ...newContentStatus });
     setEntries(updateEntries(entries, activeContent, updateFunction));
-    setAllEntries(updateEntries(allEntries, activeContent, updateFunction));
+    setFilteredEntries(
+      updateEntries(filteredEntries, activeContent, updateFunction),
+    );
   };
 
   const handleToggleStatus = async (newStatus) => {
-    const response = await updateEntryStatus(activeContent);
+    const response = await updateEntryStatus(activeContent.id, newStatus);
     if (response) {
       updateFeedUnread(activeContent.feed.id, newStatus);
       updateGroupUnread(activeContent.feed.category.id, newStatus);
@@ -70,7 +75,7 @@ const useEntryActions = () => {
 
   const handleToggleStarred = async () => {
     const newStarred = !activeContent.starred;
-    const response = await updateEntryStarred(activeContent);
+    const response = await toggleEntryStarredApi(activeContent.id);
     if (response) {
       updateUI({ starred: newStarred }, (entry) => ({
         ...entry,

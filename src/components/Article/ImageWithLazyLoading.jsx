@@ -19,31 +19,25 @@ const ImageWithLazyLoading = ({
       for (const entry of entries) {
         if (entry.isIntersecting) {
           const image = new Image();
-          image.onload = () => {
-            setLoaded(true);
-          };
+          image.onload = () => setLoaded(true);
           image.src = src;
-          observer.unobserve(imgRef.current);
+          if (imgRef.current) {
+            observer.unobserve(imgRef.current);
+          }
         }
       }
     });
 
-    observer.observe(imgRef.current);
-
-    // 在清理函数中使用局部变量保存 imgRef.current 的值
     const currentImgRef = imgRef.current;
-    return () => {
-      if (currentImgRef) {
-        observer.unobserve(currentImgRef);
-      }
-    };
+    if (currentImgRef) {
+      observer.observe(currentImgRef);
+    }
+
+    return () => observer.disconnect();
   }, [src]);
 
   return (
-    <div
-      ref={imgRef}
-      style={{ position: "relative", width: "100%", height: "100%" }}
-    >
+    <div className="image-container" ref={imgRef}>
       {!loaded && (
         <div
           style={{
@@ -57,28 +51,29 @@ const ImageWithLazyLoading = ({
             text={{ rows: 0 }}
             image={{
               style: {
-                width: width,
-                height: height,
+                width,
+                height,
                 margin: "0",
-                borderRadius: borderRadius,
+                borderRadius,
               },
             }}
             animation={true}
           />
         </div>
       )}
-      <img
-        className={status !== "unread" ? "read" : ""}
-        src={loaded ? src : ""}
-        alt={alt}
-        style={{
-          display: loaded ? "block" : "none",
-          width: width,
-          height: height,
-          objectFit: "cover",
-          borderRadius: borderRadius,
-        }}
-      />
+      {loaded && (
+        <img
+          className={status !== "unread" ? "read" : ""}
+          src={src}
+          alt={alt}
+          style={{
+            width,
+            height,
+            objectFit: "cover",
+            borderRadius,
+          }}
+        />
+      )}
     </div>
   );
 };

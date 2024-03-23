@@ -11,18 +11,42 @@ const ArticleDetail = forwardRef((_, ref) => {
   const activeContent = useStore((state) => state.activeContent);
   const fontSize = useStore((state) => state.fontSize);
 
-  const htmlToReactParser = new HtmlToReactParser();
-  const reactElement = htmlToReactParser.parse(activeContent?.content);
+  if (!activeContent) {
+    return (
+      <div
+        ref={ref}
+        className="content-empty"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "var(--color-fill-1)",
+          color: "var(--color-text-3)",
+          alignItems: "center",
+          justifyContent: "center",
+          flex: "1",
+          padding: "40px 16px",
+        }}
+      >
+        <IconEmpty style={{ fontSize: "64px" }} />
+        <Typography.Title
+          heading={6}
+          style={{ color: "var(--color-text-3)", marginTop: "10px" }}
+        >
+          ReactFlux
+        </Typography.Title>
+      </div>
+    );
+  }
 
-  return activeContent ? (
+  const htmlToReactParser = new HtmlToReactParser();
+  const reactElement = htmlToReactParser.parse(activeContent.content);
+
+  return (
     <div
       ref={ref}
       className="article-content"
       style={{
-        paddingTop: "40px",
-        paddingBottom: "40px",
-        paddingLeft: "5%",
-        paddingRight: "5%",
+        padding: "40px 5%",
         flex: "1",
         overflowY: "auto",
         overflowX: "hidden",
@@ -32,15 +56,13 @@ const ArticleDetail = forwardRef((_, ref) => {
         className="article-title"
         style={{
           maxWidth: "600px",
-          marginLeft: "auto",
-          marginRight: "auto",
+          margin: "0 auto",
         }}
       >
         <Typography.Text
           style={{ color: "var(--color-text-3)", fontSize: "10px" }}
         >
-          {dayjs(activeContent.published_at).format("MMMM D, YYYY")}
-          {" AT "}
+          {dayjs(activeContent.published_at).format("MMMM D, YYYY")} AT{" "}
           {dayjs(activeContent.published_at).format("hh:mm")}
         </Typography.Text>
         <Typography.Title heading={3} style={{ margin: 0 }}>
@@ -65,37 +87,13 @@ const ArticleDetail = forwardRef((_, ref) => {
         key={activeContent.id}
         style={{
           fontSize: `${fontSize}rem`,
-          overflowWrap: "break-word",
           maxWidth: "600px",
-          marginLeft: "auto",
-          marginRight: "auto",
+          margin: "0 auto",
+          overflowWrap: "break-word",
         }}
       >
         {reactElement}
       </div>
-    </div>
-  ) : (
-    <div
-      ref={ref}
-      className="content-empty"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "var(--color-fill-1)",
-        color: "var(--color-text-3)",
-        alignItems: "center",
-        justifyContent: "center",
-        flex: "1",
-        padding: "40px 16px",
-      }}
-    >
-      <IconEmpty style={{ fontSize: "64px" }} />
-      <Typography.Title
-        heading={6}
-        style={{ color: "var(--color-text-3)", marginTop: "10px" }}
-      >
-        ReactFlux
-      </Typography.Title>
     </div>
   );
 });

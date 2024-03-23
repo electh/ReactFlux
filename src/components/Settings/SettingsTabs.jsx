@@ -27,22 +27,16 @@ const SettingsTabs = () => {
 
     if (feedResponse && groupResponse) {
       const feeds = feedResponse.data;
-      const groupsWithFeedCount = groupResponse.data.map((group) => {
-        const feedCount = feeds.reduce((total, feed) => {
-          if (feed.category.id === group.id) {
-            return total + 1;
-          }
-          return total;
-        }, 0);
+      const groupsWithFeedCount = groupResponse.data.map((group) => ({
+        ...group,
+        feedCount: feeds.filter((feed) => feed.category.id === group.id).length,
+      }));
 
-        return {
-          ...group,
-          feedCount: feedCount,
-        };
-      });
-      setFeeds(feeds.sort((a, b) => a.title.localeCompare(b.title)));
+      setFeeds(feeds.sort((a, b) => a.title.localeCompare(b.title, "en")));
       setGroups(
-        groupsWithFeedCount.sort((a, b) => a.title.localeCompare(b.title)),
+        groupsWithFeedCount.sort((a, b) =>
+          a.title.localeCompare(b.title, "en"),
+        ),
       );
       setShowFeeds(feeds);
       setLoading(false);

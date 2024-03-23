@@ -78,7 +78,7 @@ const FeedList = ({
     {
       title: "Title",
       dataIndex: "title",
-      sorter: (a, b) => a.title.localeCompare(b.title),
+      sorter: (a, b) => a.title.localeCompare(b.title, "en"),
       render: (title, feed) => {
         const displayText =
           feed.parsing_error_count > 0 ? `⚠️ ${title}` : title;
@@ -93,7 +93,7 @@ const FeedList = ({
     {
       title: "Url",
       dataIndex: "feed_url",
-      sorter: (a, b) => a.feed_url.localeCompare(b.feed_url),
+      sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
       render: (col) => (
         <Typography.Ellipsis expandable={false} showTooltip={true}>
           {col}
@@ -103,13 +103,13 @@ const FeedList = ({
     {
       title: "Group",
       dataIndex: "category.title",
-      sorter: (a, b) => a.category.title.localeCompare(b.category.title),
+      sorter: (a, b) => a.category.title.localeCompare(b.category.title, "en"),
       render: (col) => <Tag>{col}</Tag>,
     },
     {
       title: "Checked at",
       dataIndex: "checked_at",
-      sorter: (a, b) => a.checked_at.localeCompare(b.checked_at),
+      sorter: (a, b) => a.checked_at.localeCompare(b.checked_at, "en"),
       render: (col) => (
         <Typography.Ellipsis expandable={false} showTooltip={true}>
           {generateRelativeTime(col)}
@@ -155,28 +155,28 @@ const FeedList = ({
   ];
 
   const handleEditFeed = async (
-    feed_id,
+    feedId,
     newUrl,
     newTitle,
-    group_id,
-    is_full_text,
+    groupId,
+    isFullText,
   ) => {
     setFeedModalLoading(true);
     const response = await editFeed(
-      feed_id,
+      feedId,
       newUrl,
       newTitle,
-      group_id,
-      is_full_text,
+      groupId,
+      isFullText,
     );
     if (response) {
       setFeeds(
-        feeds.map((feed) => (feed.id === feed_id ? response.data : feed)),
+        feeds.map((feed) => (feed.id === feedId ? response.data : feed)),
       );
       setShowFeeds(
-        sortedFeeds.map((feed) => (feed.id === feed_id ? response.data : feed)),
+        sortedFeeds.map((feed) => (feed.id === feedId ? response.data : feed)),
       );
-      Message.success("Success");
+      Message.success("Feed updated successfully");
       setFeedModalVisible(false);
       await initData();
     }

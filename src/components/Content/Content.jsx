@@ -27,13 +27,13 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const setActiveContent = useStore((state) => state.setActiveContent);
 
   const {
-    allEntries,
     entries,
+    filteredEntries,
     filterStatus,
     loading,
     offset,
-    setAllEntries,
     setEntries,
+    setFilteredEntries,
     setLoading,
     setLoadMoreUnreadVisible,
     setLoadMoreVisible,
@@ -63,7 +63,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const cardsRef = useRef(null);
 
   useEffect(() => {
-    setShowArticleDetail(activeContent);
+    setShowArticleDetail(activeContent !== null);
   }, [activeContent]);
 
   const updateLocalEntryStatus = (entries, entryId, status) => {
@@ -79,12 +79,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       }, 200);
 
       if (entry.status === "unread") {
-        const response = await updateEntryStatus(entry, "read");
+        const response = await updateEntryStatus(entry.id, "read");
         if (response) {
           updateFeedUnread(entry.feed.id, "read");
           updateGroupUnread(entry.feed.category.id, "read");
           setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
-          setAllEntries(updateLocalEntryStatus(allEntries, entry.id, "read"));
+          setFilteredEntries(
+            updateLocalEntryStatus(filteredEntries, entry.id, "read"),
+          );
           setUnreadTotal(Math.max(0, unreadTotal - 1));
           setUnreadCount(Math.max(0, unreadCount - 1));
           setReadCount(readCount + 1);
@@ -132,7 +134,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       document.removeEventListener("keydown", handleKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeContent, entries, showArticleDetail]);
+  }, [activeContent, filteredEntries, showArticleDetail]);
 
   const fetchEntries = async () => {
     const responseAll = await getEntries();
@@ -140,8 +142,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     return { responseAll, responseUnread };
   };
 
-  const processEntries = (responseAll) => {
-    const fetchedArticles = responseAll.data.entries.map(getFirstImage);
+  const processEntries = (response) => {
+    const fetchedArticles = response.data.entries.map(getFirstImage);
 
     const filteredArticles =
       filterStatus === "all"
@@ -157,8 +159,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     responseAll,
     responseUnread,
   ) => {
-    setAllEntries(fetchedArticles);
-    setEntries(filteredArticles);
+    setEntries(fetchedArticles);
+    setFilteredEntries(filteredArticles);
 
     setTotal(responseAll.data.total);
     setLoadMoreVisible(fetchedArticles.length < responseAll.data.total);

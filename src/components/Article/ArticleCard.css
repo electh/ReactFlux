@@ -25,3 +25,58 @@
   background-color: var(--color-fill-2);
   border: 1px solid var(--color-border-2);
 }
+
+.cover-image {
+  height: 160px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border-1);
+}
+
+.article-card {
+  margin-bottom: 10px;
+}
+
+.title-unread {
+  font-weight: 500;
+}
+
+.title-read {
+  color: var(--color-text-3);
+  font-weight: 500;
+}
+
+.article-info {
+  color: var(--color-text-3);
+  font-size: 13px;
+}
+
+.feed-icon {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: 2px;
+  bottom: 12px;
+}
+
+.feed-icon-mini {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  left: 10px;
+  top: 14px;
+}
+
+.icon-starred {
+  font-size: 13px;
+  margin-left: 8px;
+  color: var(--color-text-3);
+}
+
+.thumbnail {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 4px;
+}

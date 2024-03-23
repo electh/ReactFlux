@@ -1,39 +1,48 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { IconCheck } from "@arco-design/web-react/icon";
-import { forwardRef, useContext } from "react";
+import { forwardRef, useCallback, useContext } from "react";
 
 import useStore from "../../Store";
-import UseFilterEntries from "../../hooks/useFilterEntries";
+import useFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "./ContentContext";
 
 const FilterAndMarkPanel = forwardRef(({ info, markAllAsRead }, ref) => {
   const {
-    allEntries,
     entries,
+    filteredEntries,
     filterStatus,
     filterString,
     filterType,
-    setAllEntries,
     setEntries,
+    setFilteredEntries,
     setUnreadCount,
   } = useContext(ContentContext);
 
-  const { handleFilter } = UseFilterEntries();
+  const { handleFilter } = useFilterEntries();
 
   /*menu 数据初始化函数 */
   const initData = useStore((state) => state.initData);
 
-  const handleMarkAllAsRead = () => {
-    const readAll = async () => {
-      const response = await markAllAsRead();
-      response && Message.success("Success");
+  const handleMarkAllAsRead = useCallback(async () => {
+    const response = await markAllAsRead();
+    if (response) {
+      Message.success("Success");
       await initData();
-      setAllEntries(allEntries.map((e) => ({ ...e, status: "read" })));
-      setEntries(entries.map((e) => ({ ...e, status: "read" })));
+      setEntries(entries.map((entry) => ({ ...entry, status: "read" })));
+      setFilteredEntries(
+        filteredEntries.map((entry) => ({ ...entry, status: "read" })),
+      );
       setUnreadCount(0);
-    };
-    readAll();
-  };
+    }
+  }, [
+    entries,
+    filteredEntries,
+    initData,
+    markAllAsRead,
+    setEntries,
+    setFilteredEntries,
+    setUnreadCount,
+  ]);
 
   return info.from !== "history" ? (
     <div
@@ -65,11 +74,11 @@ const FilterAndMarkPanel = forwardRef(({ info, markAllAsRead }, ref) => {
         <Radio value="all">ALL</Radio>
         <Radio value="unread">UNREAD</Radio>
       </Radio.Group>
-      {info.from !== "today" && info.from !== "starred" && (
+      {info.from !== "starred" && (
         <Popconfirm
           focusLock
           title="Mark All As Read?"
-          onOk={() => handleMarkAllAsRead()}
+          onOk={handleMarkAllAsRead}
         >
           <Button icon={<IconCheck />} shape="circle" />
         </Popconfirm>

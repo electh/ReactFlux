@@ -4,17 +4,16 @@ import axios from "axios";
 import router from "../routes";
 import { getAuth } from "../utils/Auth";
 
-const thunder = axios.create({
+const apiClient = axios.create({
   timeout: 5000,
 });
 
 // 添加请求拦截器
-thunder.interceptors.request.use(
+apiClient.interceptors.request.use(
   (config) => {
     // 在发送请求之前做些什么
     const auth = getAuth();
-    const secret = auth?.secret || {};
-    const { server, token, username, password } = secret;
+    const { server, token, username, password } = auth?.secret || {};
 
     config.baseURL = server;
 
@@ -22,12 +21,8 @@ thunder.interceptors.request.use(
       config.headers["X-Auth-Token"] = token;
     }
 
-    if (username || password) {
-      config.auth = {
-        ...config.auth,
-        ...(username && { username }),
-        ...(password && { password }),
-      };
+    if (username && password) {
+      config.auth = { username, password };
     }
 
     return config;
@@ -39,7 +34,7 @@ thunder.interceptors.request.use(
 );
 
 // 添加响应拦截器
-thunder.interceptors.response.use(
+apiClient.interceptors.response.use(
   (response) => {
     // 2xx 范围内的状态码都会触发该函数。
     // 对响应数据做点什么
@@ -49,7 +44,8 @@ thunder.interceptors.response.use(
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
     console.error(error);
-    Message.error(error.response?.data?.error_message || error.message);
+    const errorMessage = error.response?.data?.error_message || error.message;
+    Message.error(errorMessage);
 
     if (error.response?.status === 401) {
       localStorage.removeItem("auth");
@@ -60,4 +56,4 @@ thunder.interceptors.response.use(
   },
 );
 
-export { thunder };
+export { apiClient };

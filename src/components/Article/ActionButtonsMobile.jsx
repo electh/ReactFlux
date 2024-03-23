@@ -18,7 +18,14 @@ const ActionButtonsMobile = ({ handleEntryClick }) => {
   const { toggleEntryStarred, toggleEntryStatus } = useEntryActions();
   const { handleLeftKey, handleRightKey, handleEscapeKey } = useKeyHandlers();
 
-  return activeContent ? (
+  if (!activeContent) {
+    return null;
+  }
+
+  const isUnread = activeContent.status === "unread";
+  const isStarred = activeContent.starred;
+
+  return (
     <Button.Group
       className="action-buttons-mobile"
       style={{
@@ -41,19 +48,13 @@ const ActionButtonsMobile = ({ handleEntryClick }) => {
       <Button
         type="primary"
         onClick={() => toggleEntryStatus()}
-        icon={
-          activeContent.status === "unread" ? (
-            <IconMinusCircle />
-          ) : (
-            <IconRecord />
-          )
-        }
+        icon={isUnread ? <IconMinusCircle /> : <IconRecord />}
       />
       <Button
         type="primary"
         onClick={() => toggleEntryStarred()}
         icon={
-          activeContent.starred ? (
+          isStarred ? (
             <IconStarFill style={{ color: "#ffcd00" }} />
           ) : (
             <IconStar />
@@ -72,7 +73,7 @@ const ActionButtonsMobile = ({ handleEntryClick }) => {
         icon={<IconArrowRight />}
       />
     </Button.Group>
-  ) : null;
+  );
 };
 
 export default ActionButtonsMobile;

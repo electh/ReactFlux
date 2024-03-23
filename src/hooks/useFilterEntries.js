@@ -5,13 +5,13 @@ import { filterEntries } from "../utils/Filter";
 
 const useFilterEntries = () => {
   const {
-    allEntries,
     entries,
+    filteredEntries,
     filterStatus,
     filterString,
     filterType,
     loadMoreUnreadVisible,
-    setEntries,
+    setFilteredEntries,
     setFilterStatus,
     setFilterString,
     setFilterType,
@@ -21,17 +21,17 @@ const useFilterEntries = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    setEntries([]);
+    setFilteredEntries([]);
     const filteredArticles = filterEntries(
-      allEntries,
+      entries,
       filterType,
       filterStatus,
       filterString,
     );
-    setEntries(filteredArticles);
+    setFilteredEntries(filteredArticles);
 
     if (filterStatus === "unread") {
-      const unreadArticles = allEntries.filter(
+      const unreadArticles = entries.filter(
         (entry) => entry.status === "unread",
       );
       setLoadMoreUnreadVisible(unreadArticles.length < unreadCount);
@@ -45,7 +45,7 @@ const useFilterEntries = () => {
     setFilterString(filterString);
   };
 
-  return { entries, handleFilter, loadMoreUnreadVisible };
+  return { filteredEntries, handleFilter, loadMoreUnreadVisible };
 };
 
 export default useFilterEntries;
