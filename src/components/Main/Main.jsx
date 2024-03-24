@@ -6,7 +6,7 @@ import {
   Select,
   Switch,
 } from "@arco-design/web-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import useStore from "../../Store";
@@ -21,6 +21,24 @@ const Main = () => {
   const groups = useStore((state) => state.groups);
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      const entryPanel = document.querySelector(".entry-panel");
+      const entryPanelHeight = entryPanel ? entryPanel.offsetHeight : 0;
+      const viewportHeight = window.innerHeight;
+      const adjustedHeight = viewportHeight - entryPanelHeight;
+      document.documentElement.style.setProperty(
+        "--dynamic-viewport-height",
+        `${adjustedHeight}px`,
+      );
+    };
+
+    window.addEventListener("resize", updateHeight);
+    updateHeight();
+
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
 
   const SettingsModal = () => (
     <Modal
@@ -119,7 +137,7 @@ const Main = () => {
   };
 
   return (
-    <div className="main">
+    <div className="main" style={{ height: "var(--dynamic-viewport-height)" }}>
       <Outlet />
       <SettingsModal />
       <AddFeedModal />

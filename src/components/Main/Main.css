@@ -2,7 +2,6 @@
   background-color: var(--color-fill-1);
   padding-top: 49px;
   padding-left: 240px;
-  height: calc(100vh - 49px);
   display: flex;
   transition:
     padding-left 0.1s linear,
