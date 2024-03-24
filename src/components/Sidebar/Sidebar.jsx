@@ -48,24 +48,6 @@ const GroupTitle = ({ group, isOpen }) => (
   </div>
 );
 
-// const CustomMenuItem = ({ count, icon, key, label, onClick }) => (
-//   <MenuItem key={key} onClick={onClick}>
-//     <div className="custom-menu-item">
-//       <span>
-//         {icon}
-//         {label}
-//       </span>
-//       <Typography.Ellipsis
-//         className="item-count"
-//         expandable={false}
-//         showTooltip={true}
-//       >
-//         {count || ""}
-//       </Typography.Ellipsis>
-//     </div>
-//   </MenuItem>
-// );
-
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
