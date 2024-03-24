@@ -141,26 +141,50 @@ export default function Sidebar({ style, setVisible }) {
                 ).length > 0,
             )
             .map((category) => (
-              <Menu.Item
-                key={`category${category.id}`}
-                onClick={() => {
-                  isMobile && setVisible(false);
-                  nav(`/?from=category&id=${category.id}`);
-                }}
+              <Dropdown
+                trigger="contextMenu"
+                position="bl"
+                droplist={
+                  <Menu>
+                    <Menu.Item key={"0"} disabled>
+                      {category.title}
+                    </Menu.Item>
+                    <Divider style={{ margin: "4px 0" }} />
+                    <Menu.Item
+                      key="1"
+                      disabled={
+                        entries.filter(
+                          (a) => a.feed.category.id === category.id,
+                        ).length > 0
+                      }
+                    >
+                      Delete...
+                    </Menu.Item>
+                    <Menu.Item key="2">Edit...</Menu.Item>
+                  </Menu>
+                }
               >
-                <MenuTitle
-                  icon={<IconFolder style={{ marginRight: "8px" }} />}
-                  title={category.title}
-                  unread={
-                    entries.filter(
-                      (entry) =>
-                        entry.feed.category.id === category.id &&
-                        entry.status === "unread",
-                    ).length
-                  }
-                  showIcons={showIcons}
-                />
-              </Menu.Item>
+                <Menu.Item
+                  key={`category${category.id}`}
+                  onClick={() => {
+                    isMobile && setVisible(false);
+                    nav(`/?from=category&id=${category.id}`);
+                  }}
+                >
+                  <MenuTitle
+                    icon={<IconFolder style={{ marginRight: "8px" }} />}
+                    title={category.title}
+                    unread={
+                      entries.filter(
+                        (entry) =>
+                          entry.feed.category.id === category.id &&
+                          entry.status === "unread",
+                      ).length
+                    }
+                    showIcons={showIcons}
+                  />
+                </Menu.Item>
+              </Dropdown>
             ))}
         </Menu.SubMenu>
         <Menu.SubMenu

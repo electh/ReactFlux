@@ -1,8 +1,16 @@
-import { Button, Dropdown, Menu, Message, Space } from "@arco-design/web-react";
+import {
+  Button,
+  Dropdown,
+  Menu,
+  Message,
+  Space,
+  Tooltip,
+} from "@arco-design/web-react";
 import {
   IconMenuFold,
   IconMenuUnfold,
   IconMinusCircle,
+  IconPlus,
   IconPoweroff,
   IconRecord,
   IconSkin,
@@ -16,6 +24,7 @@ import Appearance from "../pages/appearance/Appearance";
 import SideDrawer from "./SideDrawer";
 import { useNavigate } from "react-router-dom";
 import { applyColor } from "../utils/colors";
+import { useModalStore } from "../store/modalStore";
 
 export default function Toolbar() {
   const navigate = useNavigate();
@@ -28,6 +37,7 @@ export default function Toolbar() {
   const isMobile = useStore((state) => state.isMobile);
   const [visible, setVisible] = useState(false);
   const setEntries = useStore((state) => state.setEntries);
+  const setNewFeedVisible = useModalStore((state) => state.setNewFeedVisible);
 
   const handelToggleStar = (entry) => {
     toggleStar(entry);
@@ -68,69 +78,78 @@ export default function Toolbar() {
       <div
         style={{ display: "flex", alignItems: "center", marginRight: "10px" }}
       >
-        <Button.Group
-          style={{ display: isMobile ? "none" : "block", marginRight: "8px" }}
-        >
-          <Button
-            shape="round"
-            onClick={() => handelToggleStar(activeEntry)}
-            icon={
-              activeEntry?.starred ? (
-                <IconStarFill style={{ color: "#ffcd00" }} />
-              ) : (
-                <IconStar />
-              )
-            }
-            disabled={!activeEntry}
-          />
-          <Button
-            shape="round"
-            onClick={() => handelToggleUnreadStatus(activeEntry)}
-            icon={
-              activeEntry?.status === "read" ? (
-                <IconMinusCircle />
-              ) : (
-                <IconRecord />
-              )
-            }
-            disabled={!activeEntry}
-          />
-        </Button.Group>
-        <Dropdown
-          droplist={
-            <Menu>
-              <Menu.Item
-                key="0"
-                onClick={() => {
-                  setDrawVisible(true);
-                }}
-              >
-                <IconSkin
-                  style={{
-                    marginRight: 8,
-                    fontSize: 16,
-                    transform: "translateY(1px)",
+        <Space>
+          <Tooltip content="Add feed" mini>
+            <Button
+              shape="circle"
+              size="small"
+              type="primary"
+              icon={<IconPlus />}
+              onClick={() => setNewFeedVisible(true)}
+            />
+          </Tooltip>
+          <Button.Group style={{ display: isMobile ? "none" : "block" }}>
+            <Button
+              shape="round"
+              onClick={() => handelToggleStar(activeEntry)}
+              icon={
+                activeEntry?.starred ? (
+                  <IconStarFill style={{ color: "#ffcd00" }} />
+                ) : (
+                  <IconStar />
+                )
+              }
+              disabled={!activeEntry}
+            />
+            <Button
+              shape="round"
+              onClick={() => handelToggleUnreadStatus(activeEntry)}
+              icon={
+                activeEntry?.status === "read" ? (
+                  <IconMinusCircle />
+                ) : (
+                  <IconRecord />
+                )
+              }
+              disabled={!activeEntry}
+            />
+          </Button.Group>
+          <Dropdown
+            droplist={
+              <Menu>
+                <Menu.Item
+                  key="0"
+                  onClick={() => {
+                    setDrawVisible(true);
                   }}
-                />
-                Appearance
-              </Menu.Item>
-              <Menu.Item key="1" onClick={handleLogout}>
-                <IconPoweroff
-                  style={{
-                    marginRight: 8,
-                    fontSize: 16,
-                    transform: "translateY(1px)",
-                  }}
-                />
-                Logout
-              </Menu.Item>
-            </Menu>
-          }
-          trigger="click"
-          position="br"
-        >
-          <Button shape="circle" icon={<IconUser />}></Button>
-        </Dropdown>
+                >
+                  <IconSkin
+                    style={{
+                      marginRight: 8,
+                      fontSize: 16,
+                      transform: "translateY(1px)",
+                    }}
+                  />
+                  Appearance
+                </Menu.Item>
+                <Menu.Item key="1" onClick={handleLogout}>
+                  <IconPoweroff
+                    style={{
+                      marginRight: 8,
+                      fontSize: 16,
+                      transform: "translateY(1px)",
+                    }}
+                  />
+                  Logout
+                </Menu.Item>
+              </Menu>
+            }
+            trigger="click"
+            position="br"
+          >
+            <Button shape="circle" icon={<IconUser />}></Button>
+          </Dropdown>
+        </Space>
         <Appearance visible={drawVisible} setVisible={setDrawVisible} />
       </div>
     </div>

@@ -75,3 +75,42 @@ export const toggleEntryBookmark = async (entry) => {
     url: `/v1/entries/${entry.id}/bookmark`,
   });
 };
+
+export async function createCategory(title) {
+  return thunder.post("/v1/categories", { title });
+}
+
+export async function updateCategory(id, newTitle) {
+  return thunder.put(`/v1/categories/${id}`, { title: newTitle });
+}
+
+export async function removeCategory(id) {
+  return thunder.delete(`/v1/categories/${id}`);
+}
+
+export async function createFeed(feedUrl, categoryId, isFullText) {
+  return thunder.post("/v1/feeds", {
+    feed_url: feedUrl,
+    category_id: categoryId,
+    crawler: isFullText,
+  });
+}
+
+export async function updateFeed(
+  feedId,
+  newUrl,
+  newTitle,
+  groupId,
+  isFullText,
+) {
+  return thunder.put(`/v1/feeds/${feedId}`, {
+    feed_url: newUrl,
+    title: newTitle,
+    category_id: groupId,
+    crawler: isFullText,
+  });
+}
+
+export async function removeFeed(feedId) {
+  return thunder.delete(`/v1/feeds/${feedId}`);
+}

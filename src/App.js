@@ -9,6 +9,7 @@ import { IconBook } from "@arco-design/web-react/icon";
 import { useConfigStore } from "./store/configStore";
 import { applyColor } from "./utils/colors";
 import ActionBar from "./pages/main/components/ActionBar";
+import Modals from "./modals/Modals";
 
 const Sider = Layout.Sider;
 const Header = Layout.Header;
@@ -117,6 +118,7 @@ export default function App() {
         </Header>
         <Content />
         <ActionBar />
+        <Modals />
       </Layout>
     </Layout>
   );
