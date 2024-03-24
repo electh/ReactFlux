@@ -57,6 +57,13 @@ const useKeyHandlers = () => {
     }
   };
 
+  // fetch original article
+  const handleDKey = (handleFetchContent) => {
+    if (activeContent) {
+      handleFetchContent();
+    }
+  };
+
   // mark as read or unread
   const handleMKey = (handleUpdateEntry) => {
     if (activeContent) {
@@ -76,6 +83,7 @@ const useKeyHandlers = () => {
     handleLeftKey,
     handleRightKey,
     handleBKey,
+    handleDKey,
     handleMKey,
     handleSKey,
   };

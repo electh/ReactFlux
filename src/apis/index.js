@@ -16,6 +16,10 @@ export async function toggleEntryStarred(entryId) {
   return apiClient.put(`/v1/entries/${entryId}/bookmark`);
 }
 
+export async function fetchOriginalArticle(entryId) {
+  return apiClient.get(`/v1/entries/${entryId}/fetch-content`);
+}
+
 export async function getCurrentUser() {
   return apiClient.get("/v1/me");
 }

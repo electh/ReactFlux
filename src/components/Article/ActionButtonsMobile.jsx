@@ -3,6 +3,7 @@ import {
   IconArrowLeft,
   IconArrowRight,
   IconClose,
+  IconCloudDownload,
   IconMinusCircle,
   IconRecord,
   IconStar,
@@ -15,7 +16,8 @@ import useKeyHandlers from "../../hooks/useKeyHandlers";
 
 const ActionButtonsMobile = ({ handleEntryClick }) => {
   const activeContent = useStore((state) => state.activeContent);
-  const { toggleEntryStarred, toggleEntryStatus } = useEntryActions();
+  const { handleFetchContent, toggleEntryStarred, toggleEntryStatus } =
+    useEntryActions();
   const { handleLeftKey, handleRightKey, handleEscapeKey } = useKeyHandlers();
 
   if (!activeContent) {
@@ -60,6 +62,11 @@ const ActionButtonsMobile = ({ handleEntryClick }) => {
             <IconStar />
           )
         }
+      />
+      <Button
+        type="primary"
+        onClick={() => handleFetchContent()}
+        icon={<IconCloudDownload />}
       />
       <Button
         type="primary"
