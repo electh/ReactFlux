@@ -98,8 +98,16 @@ const Sidebar = () => {
     return groupedFeeds;
   }, {});
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setSelectedKeys([path]);
+    if (!collapsed) {
+      const viewportWidth = window.innerWidth;
+      if (viewportWidth <= 992) {
+        setCollapsed(true);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path]);
 
   useEffect(() => {
