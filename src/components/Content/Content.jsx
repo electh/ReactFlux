@@ -71,7 +71,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }, 200);
 
     if (entry.status === "unread") {
-      handleEntryStatusUpdate(entry, "read");
+      setTimeout(() => {
+        handleEntryStatusUpdate(entry, "read");
+      }, 200);
 
       const response = await updateEntryStatus(entry.id, "read");
       if (!response) {
