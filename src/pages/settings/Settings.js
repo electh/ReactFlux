@@ -10,7 +10,7 @@ export default function Settings({ visible, setVisible }) {
     <Drawer
       width={332}
       title={
-        <Typography.Title heading={5} style={{ margin: 0 }}>
+        <Typography.Title heading={6} style={{ margin: 0 }}>
           Settings
         </Typography.Title>
       }
