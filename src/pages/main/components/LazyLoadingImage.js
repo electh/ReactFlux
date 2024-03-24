@@ -8,6 +8,7 @@ const LazyLoadingImage = ({
   alt,
   width,
   height,
+  className,
   status,
   borderRadius,
 }) => {
@@ -56,6 +57,7 @@ const LazyLoadingImage = ({
           <img
             src={src}
             alt={alt}
+            className={className}
             style={{
               width: width,
               height: height,

@@ -3,18 +3,18 @@
 }
 
 .card-custom-hover-style .arco-card-body {
-  padding: 10px !important;
+  padding: 12px !important;
 }
 
 .card-custom-hover-style:hover {
   box-shadow: 0 4px 10px rgb(var(--color-black));
 }
 
-.card-custom-hover-style img {
+.card-custom-hover-style .card-cover {
   transition: scale 0.15s ease-in-out; /* 添加过渡效果 */
 }
 
-.card-custom-hover-style:hover img {
+.card-custom-hover-style:hover .card-cover {
   /*opacity: 0.9; !* 设置透明度为 0.90 *!*/
   scale: 1.05;
 }

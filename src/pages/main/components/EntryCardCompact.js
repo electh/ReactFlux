@@ -77,6 +77,7 @@ const EntryCardCompact = ({ entry }) => {
             <div style={{ flex: 1, marginLeft: 10 }}>
               <Typography.Text
                 style={{
+                  lineHeight: "1em",
                   fontSize: "14px",
                   fontWeight: 500,
                   color:
@@ -88,7 +89,7 @@ const EntryCardCompact = ({ entry }) => {
                 {entry.title}
               </Typography.Text>
               <br />
-              {entry.feed.title}
+              {entry.feed.title.toUpperCase()}
               <br />
               <div
                 style={{
