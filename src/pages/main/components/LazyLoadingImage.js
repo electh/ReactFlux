@@ -52,17 +52,18 @@ const LazyLoadingImage = ({
           },
         }}
       >
-        <img
-          className={status === "read" ? "read" : "unread"}
-          src={src}
-          alt={alt}
-          style={{
-            width: width,
-            height: height,
-            objectFit: "cover",
-            borderRadius: borderRadius,
-          }}
-        />
+        <div className={status === "read" ? "read" : "unread"}>
+          <img
+            src={src}
+            alt={alt}
+            style={{
+              width: width,
+              height: height,
+              objectFit: "cover",
+              borderRadius: borderRadius,
+            }}
+          />
+        </div>
       </Skeleton>
     </div>
   );
