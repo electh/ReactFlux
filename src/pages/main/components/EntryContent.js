@@ -4,7 +4,7 @@ import { dayjs } from "@arco-design/web-react/es/_util/dayjs";
 import "./EntryContent.css";
 import { useConfigStore } from "../../../store/configStore";
 import EntryBody from "./EntryBody";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "../../../store/Store";
 
 export default function EntryContent({ activeEntry }) {
@@ -37,49 +37,54 @@ export default function EntryContent({ activeEntry }) {
         overflowX: "hidden",
       }}
     >
-      <motion.div
-        key={activeEntry.id}
-        initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.1 }}
-      >
-        <div
-          className="article-title"
-          style={{
-            maxWidth: "600px",
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-        >
-          <Typography.Text
-            style={{ color: "var(--color-text-3)", fontSize: "10px" }}
-          >
-            {/* 优化部分：将日期格式化代码简化并放在一行中 */}
-            {dayjs(published_at).format("MMMM D, YYYY")} AT{" "}
-            {dayjs(published_at).format("hh:mm")}
-          </Typography.Text>
-          <Typography.Title heading={titleSize} style={{ margin: 0 }}>
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              {title}
-            </a>
-          </Typography.Title>
-          <Typography.Text
-            style={{ color: "var(--color-text-3)", fontSize: "10px" }}
-          >
-            {feed.title}
-          </Typography.Text>
-          <Divider />
-        </div>
-
+      <AnimatePresence>
         <motion.div
-          key={activeEntry.title}
+          key={activeEntry.id}
           initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
           animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: isMobile ? 0 : -20 }}
           transition={{ duration: 0.2 }}
         >
-          <EntryBody htmlString={content} />
+          <div
+            className="article-title"
+            style={{
+              maxWidth: "600px",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <Typography.Text
+              style={{ color: "var(--color-text-3)", fontSize: "10px" }}
+            >
+              {/* 优化部分：将日期格式化代码简化并放在一行中 */}
+              {dayjs(published_at).format("MMMM D, YYYY")} AT{" "}
+              {dayjs(published_at).format("hh:mm")}
+            </Typography.Text>
+            <Typography.Title heading={titleSize} style={{ margin: 0 }}>
+              <a href={url} target="_blank" rel="noopener noreferrer">
+                {title}
+              </a>
+            </Typography.Title>
+            <Typography.Text
+              style={{ color: "var(--color-text-3)", fontSize: "10px" }}
+            >
+              {feed.title}
+            </Typography.Text>
+            <Divider />
+          </div>
+          <AnimatePresence>
+            <motion.div
+              key={activeEntry.title}
+              initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, y: isMobile ? 0 : -20 }}
+            >
+              <EntryBody htmlString={content} />
+            </motion.div>
+          </AnimatePresence>
         </motion.div>
-      </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
