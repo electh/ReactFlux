@@ -5,13 +5,13 @@ import FontSize from "./components/FontSize";
 import TextAlignment from "./components/TextAlignment";
 import Favicons from "./components/Favicons";
 
-export default function Settings({ visible, setVisible }) {
+export default function Appearance({ visible, setVisible }) {
   return (
     <Drawer
       width={332}
       title={
         <Typography.Title heading={6} style={{ margin: 0 }}>
-          Settings
+          Appearance
         </Typography.Title>
       }
       footer={null}

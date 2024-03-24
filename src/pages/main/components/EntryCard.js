@@ -1,4 +1,4 @@
-import { Card, Typography } from "@arco-design/web-react";
+import { Card, Space, Typography } from "@arco-design/web-react";
 import LazyLoadingImage from "./LazyLoadingImage";
 import { useStore } from "../../../store/Store";
 import "./EntryCard.css";
@@ -95,18 +95,19 @@ const EntryCard = ({ entry }) => {
                 }}
               >
                 {showIcons === "on" ? <FeedIcon feed={entry.feed} /> : null}
-                <span
-                  style={{
-                    maxWidth: "50%",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {entry.feed.title.toUpperCase()}
-                </span>
-                {" · "}
-                {formatDate(entry.published_at)}
+                <Space>
+                  <span
+                    style={{
+                      maxWidth: "50%",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {entry.feed.title.toUpperCase()}
+                  </span>
+                  <span>{formatDate(entry.published_at)}</span>
+                </Space>
               </span>
               {entry.starred && <IconStarFill />}
             </div>

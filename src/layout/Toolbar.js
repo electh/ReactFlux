@@ -5,14 +5,14 @@ import {
   IconMinusCircle,
   IconPoweroff,
   IconRecord,
-  IconSettings,
+  IconSkin,
   IconStar,
   IconStarFill,
   IconUser,
 } from "@arco-design/web-react/icon";
 import { useStore } from "../store/Store";
 import { useState } from "react";
-import Settings from "../pages/settings/Settings";
+import Appearance from "../pages/appearance/Appearance";
 import SideDrawer from "./SideDrawer";
 import { useNavigate } from "react-router-dom";
 import { applyColor } from "../utils/colors";
@@ -105,14 +105,14 @@ export default function Toolbar() {
                   setDrawVisible(true);
                 }}
               >
-                <IconSettings
+                <IconSkin
                   style={{
                     marginRight: 8,
                     fontSize: 16,
                     transform: "translateY(1px)",
                   }}
                 />
-                Settings
+                Appearance
               </Menu.Item>
               <Menu.Item key="1" onClick={handleLogout}>
                 <IconPoweroff
@@ -131,7 +131,7 @@ export default function Toolbar() {
         >
           <Button shape="circle" icon={<IconUser />}></Button>
         </Dropdown>
-        <Settings visible={drawVisible} setVisible={setDrawVisible} />
+        <Appearance visible={drawVisible} setVisible={setDrawVisible} />
       </div>
     </div>
   );
