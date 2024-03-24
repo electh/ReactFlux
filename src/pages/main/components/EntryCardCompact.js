@@ -63,6 +63,7 @@ const EntryCardCompact = ({ entry }) => {
                   overflow: "hidden",
                   border: "1px solid var(--color-border-1)",
                   borderRadius: "4px",
+                  marginRight: "10px",
                 }}
               >
                 <LazyLoadingImage
@@ -74,7 +75,7 @@ const EntryCardCompact = ({ entry }) => {
                 />
               </div>
             ) : null}
-            <div style={{ flex: 1, marginLeft: 10 }}>
+            <div style={{ flex: 1 }}>
               <Typography.Text
                 style={{
                   lineHeight: "1em",

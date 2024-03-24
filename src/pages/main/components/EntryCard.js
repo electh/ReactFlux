@@ -88,9 +88,23 @@ const EntryCard = ({ entry }) => {
                 marginTop: "8px",
               }}
             >
-              <span style={{ display: "flex", alignItems: "center" }}>
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
                 {showIcons === "on" ? <FeedIcon feed={entry.feed} /> : null}
-                {entry.feed.title.toUpperCase()}
+                <span
+                  style={{
+                    maxWidth: "50%",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {entry.feed.title.toUpperCase()}
+                </span>
                 {" · "}
                 {formatDate(entry.published_at)}
               </span>

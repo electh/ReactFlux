@@ -72,17 +72,7 @@ export default function EntryContent({ activeEntry }) {
             </Typography.Text>
             <Divider />
           </div>
-          <AnimatePresence>
-            <motion.div
-              key={activeEntry.title}
-              initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              exit={{ opacity: 0, y: isMobile ? 0 : -20 }}
-            >
-              <EntryBody htmlString={content} />
-            </motion.div>
-          </AnimatePresence>
+          <EntryBody htmlString={content} />
         </motion.div>
       </AnimatePresence>
     </div>
