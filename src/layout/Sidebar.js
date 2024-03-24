@@ -1,4 +1,10 @@
-import { Menu, Skeleton, Typography } from "@arco-design/web-react";
+import {
+  Divider,
+  Dropdown,
+  Menu,
+  Skeleton,
+  Typography,
+} from "@arco-design/web-react";
 import {
   IconApps,
   IconFile,
@@ -178,25 +184,41 @@ export default function Sidebar({ style, setVisible }) {
                 ).length > 0,
             )
             .map((feed) => (
-              <Menu.Item
-                key={`feed${feed.id}`}
-                onClick={() => {
-                  isMobile && setVisible(false);
-                  nav(`/?from=feed&id=${feed.id}`);
-                }}
+              <Dropdown
+                trigger="contextMenu"
+                position="bl"
+                droplist={
+                  <Menu>
+                    <Menu.Item key={"0"} disabled>
+                      {feed.title}
+                    </Menu.Item>
+                    <Divider style={{ margin: "4px 0" }} />
+                    <Menu.Item key="1">Unsubscribe...</Menu.Item>
+                    <Menu.Item key="2">Edit...</Menu.Item>
+                  </Menu>
+                }
               >
-                <MenuTitle
-                  icon={<FeedIcon feed={feed} />}
-                  title={feed.title}
-                  unread={
-                    entries.filter(
-                      (entry) =>
-                        entry.feed.id === feed.id && entry.status === "unread",
-                    ).length
-                  }
-                  showIcons={showIcons}
-                />
-              </Menu.Item>
+                <Menu.Item
+                  key={`feed${feed.id}`}
+                  onClick={() => {
+                    isMobile && setVisible(false);
+                    nav(`/?from=feed&id=${feed.id}`);
+                  }}
+                >
+                  <MenuTitle
+                    icon={<FeedIcon feed={feed} />}
+                    title={feed.title}
+                    unread={
+                      entries.filter(
+                        (entry) =>
+                          entry.feed.id === feed.id &&
+                          entry.status === "unread",
+                      ).length
+                    }
+                    showIcons={showIcons}
+                  />
+                </Menu.Item>
+              </Dropdown>
             ))}
         </Menu.SubMenu>
       </Menu>
