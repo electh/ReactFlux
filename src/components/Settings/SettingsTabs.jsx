@@ -49,11 +49,7 @@ const SettingsTabs = () => {
   }, []);
 
   return (
-    <Tabs
-      defaultActiveTab="1"
-      tabPosition="left"
-      style={{ marginLeft: "-20px" }}
-    >
+    <Tabs defaultActiveTab="1" tabPosition="top">
       <Tabs.TabPane
         key="1"
         title={

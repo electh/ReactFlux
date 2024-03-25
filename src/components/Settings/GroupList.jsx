@@ -23,16 +23,19 @@ const GroupList = ({ groups, loading, setGroups }) => {
 
   const handleAddGroup = async () => {
     if (inputAddValue) {
-      const response = await addGroup(inputAddValue);
-      if (response) {
-        setGroups((prevGroups) => [
-          ...prevGroups,
-          { ...response.data, feedCount: 0 },
-        ]);
-        setInputAddValue("");
-        Message.success("Group added successfully");
-        await initData();
-      }
+      addGroup(inputAddValue)
+        .then((response) => {
+          setGroups((prevGroups) => [
+            ...prevGroups,
+            { ...response.data, feedCount: 0 },
+          ]);
+          setInputAddValue("");
+          Message.success("Group added successfully");
+          initData();
+        })
+        .catch(() => {
+          Message.error("Failed to add group");
+        });
     }
     setInputAddValue("");
     setShowAddInput(false);
@@ -40,28 +43,36 @@ const GroupList = ({ groups, loading, setGroups }) => {
 
   const handleEditGroup = async (groupId, newTitle) => {
     setGroupModalLoading(true);
-    const response = await editGroup(groupId, newTitle);
-    if (response) {
-      setGroups(
-        groups.map((group) => (group.id === groupId ? response.data : group)),
-      );
-      Message.success("Group updated successfully");
-      setGroupModalVisible(false);
-      await initData();
-    }
+    editGroup(groupId, newTitle)
+      .then((response) => {
+        setGroups(
+          groups.map((group) => (group.id === groupId ? response.data : group)),
+        );
+        Message.success("Group updated successfully");
+        setGroupModalVisible(false);
+        initData();
+      })
+      .catch(() => {
+        Message.error("Failed to update group");
+      });
     setGroupModalLoading(false);
     groupForm.resetFields();
   };
 
   const handleDeleteGroup = async (groupId) => {
-    const response = await deleteGroup(groupId);
-    if (response.status === 204) {
-      setGroups(groups.filter((group) => group.id !== groupId));
-      Message.success("Group deleted successfully");
-      await initData();
-    } else {
-      Message.error("Failed to delete group");
-    }
+    deleteGroup(groupId)
+      .then((response) => {
+        if (response.status === 204) {
+          setGroups(groups.filter((group) => group.id !== groupId));
+          Message.success("Group deleted successfully");
+          initData();
+        } else {
+          Message.error("Failed to delete group");
+        }
+      })
+      .catch(() => {
+        Message.error("Failed to delete group");
+      });
   };
 
   return (
