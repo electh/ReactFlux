@@ -1,3 +1,4 @@
+import { Message } from "@arco-design/web-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
@@ -75,10 +76,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         handleEntryStatusUpdate(entry, "read");
       }, 200);
 
-      const response = await updateEntryStatus(entry.id, "read");
-      if (!response) {
+      updateEntryStatus(entry.id, "read").catch(() => {
+        Message.error("Failed to mark entry as read, please try again later.");
         handleEntryStatusUpdate(entry, "unread");
-      }
+      });
     }
 
     if (entryDetailRef.current) {
