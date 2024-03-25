@@ -57,6 +57,10 @@ export async function editFeed(feedId, newUrl, newTitle, groupId, isFullText) {
   });
 }
 
+export async function refreshFeed(feedId) {
+  return apiClient.put(`/v1/feeds/${feedId}/refresh`);
+}
+
 export async function deleteFeed(feedId) {
   return apiClient.delete(`/v1/feeds/${feedId}`);
 }

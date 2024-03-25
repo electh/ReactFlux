@@ -22,11 +22,10 @@ const SettingsModal = ({
 }) => (
   <Modal
     visible={visible.settings}
-    alignCenter={false}
     title="Settings"
     footer={null}
     unmountOnExit
-    style={{ width: "720px", top: "10%" }}
+    style={{ width: "720px" }}
     onFocus={() => {
       if (activeContent) {
         setActiveContent(null);

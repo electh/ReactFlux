@@ -9,15 +9,28 @@ import {
   Switch,
   Table,
   Tag,
+  Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import { IconDelete, IconEdit } from "@arco-design/web-react/icon";
+import { IconDelete, IconEdit, IconRefresh } from "@arco-design/web-react/icon";
 import { useState } from "react";
 
 import useStore from "../../Store";
-import { deleteFeed, editFeed } from "../../apis";
+import { deleteFeed, editFeed, refreshFeed } from "../../apis";
 import { generateRelativeTime } from "../../utils/Date";
 import { includesIgnoreCase } from "../../utils/Filter";
+
+const getSortedFeedsByErrorCount = (feeds) => {
+  return feeds.slice().sort((a, b) => {
+    if (a.parsing_error_count > 0 && b.parsing_error_count === 0) {
+      return -1;
+    }
+    if (a.parsing_error_count === 0 && b.parsing_error_count > 0) {
+      return 1;
+    }
+    return 0;
+  });
+};
 
 const FeedList = ({
   feeds,
@@ -33,16 +46,7 @@ const FeedList = ({
   const [feedForm] = Form.useForm();
   const [selectedFeed, setSelectedFeed] = useState({});
 
-  const sortedFeeds = showFeeds.sort((a, b) => {
-    if (a.parsing_error_count > 0 && b.parsing_error_count === 0) {
-      return -1;
-    }
-    if (a.parsing_error_count === 0 && b.parsing_error_count > 0) {
-      return 1;
-    }
-    return 0;
-  });
-
+  let sortedFeeds = getSortedFeedsByErrorCount(showFeeds);
   const tableData = sortedFeeds.map((feed) => ({
     key: feed.id,
     title: feed.title,
@@ -64,14 +68,31 @@ const FeedList = ({
     });
   };
 
+  const handleRefreshFeed = async (record) => {
+    refreshFeed(record.feed.id)
+      .then(() => {
+        Message.success("Refreshed");
+        record.feed.parsing_error_count = 0;
+        initData();
+      })
+      .catch(() => {
+        Message.error("Failed to refresh");
+        record.feed.parsing_error_count++;
+      })
+      .finally(() => {
+        setFeeds(feeds);
+        sortedFeeds = getSortedFeedsByErrorCount(sortedFeeds);
+        setShowFeeds(sortedFeeds);
+      });
+  };
+
   const handleDeleteFeed = async (record) => {
-    const response = await deleteFeed(record.feed.id);
-    if (response) {
+    deleteFeed(record.feed.id).then(() => {
+      Message.success("Unfollowed");
       setFeeds(feeds.filter((feed) => feed.id !== record.feed.id));
       setShowFeeds(sortedFeeds.filter((feed) => feed.id !== record.feed.id));
-      Message.success("Unfollowed");
-      await initData();
-    }
+      initData();
+    });
   };
 
   const columns = [
@@ -82,30 +103,41 @@ const FeedList = ({
       render: (title, feed) => {
         const displayText =
           feed.parsing_error_count > 0 ? `⚠️ ${title}` : title;
+        const tooltipText =
+          feed.parsing_error_count > 0
+            ? `${title} ⚠️ Parsing error count: ${feed.parsing_error_count}`
+            : title;
 
         return (
           <Typography.Ellipsis expandable={false} showTooltip={true}>
-            {displayText}
+            <Tooltip mini content={tooltipText} position="left">
+              {displayText}
+            </Tooltip>
           </Typography.Ellipsis>
         );
       },
     },
+
     {
       title: "Url",
       dataIndex: "feed_url",
       sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
       render: (col) => (
         <Typography.Ellipsis expandable={false} showTooltip={true}>
-          {col}
+          <Tooltip mini content={col} position="left">
+            {col}
+          </Tooltip>
         </Typography.Ellipsis>
       ),
     },
+
     {
       title: "Group",
       dataIndex: "category.title",
       sorter: (a, b) => a.category.title.localeCompare(b.category.title, "en"),
       render: (col) => <Tag>{col}</Tag>,
     },
+
     {
       title: "Checked at",
       dataIndex: "checked_at",
@@ -116,11 +148,12 @@ const FeedList = ({
         </Typography.Ellipsis>
       ),
     },
+
     {
       title: "Actions",
       dataIndex: "op",
       fixed: "right",
-      width: 80,
+      width: 120,
       render: (col, record) => (
         <Space>
           <span
@@ -136,6 +169,20 @@ const FeedList = ({
             aria-label="Edit this feed"
           >
             <IconEdit />
+          </span>
+          <span
+            className="list-demo-actions-icon"
+            role="button"
+            tabIndex="0"
+            onClick={() => handleRefreshFeed(record)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                handleRefreshFeed(record);
+              }
+            }}
+            aria-label="Refresh this feed"
+          >
+            <IconRefresh />
           </span>
           <Popconfirm
             position="left"
@@ -208,9 +255,10 @@ const FeedList = ({
       <Table
         columns={columns}
         data={tableData}
-        size={"small"}
         loading={loading}
+        pagePosition="bottomCenter"
         scroll={{ x: true }}
+        size={"small"}
         style={{ width: "100%" }}
       />
       {selectedFeed && (
