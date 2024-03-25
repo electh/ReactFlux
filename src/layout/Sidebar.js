@@ -132,12 +132,11 @@ export default function Sidebar({ style, setVisible }) {
           {categories
             .filter(
               (category) =>
-                entries.filter(
-                  (entry) =>
-                    entry.feed.category.id === category.id &&
-                    (unreadOnly
-                      ? entry.status === "unread"
-                      : entry.status.length > 0),
+                entries.filter((entry) =>
+                  unreadOnly
+                    ? entry.status === "unread" &&
+                      entry.feed.category.id === category.id
+                    : entry.status.length > 0,
                 ).length > 0,
             )
             .map((category) => (

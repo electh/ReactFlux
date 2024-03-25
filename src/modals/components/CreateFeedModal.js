@@ -130,7 +130,7 @@ export default function CreateFeedModal() {
                 </div>
               </div>
             )}
-            dropdownMenuStyle={{ maxHeight: 300 }}
+            dropdownMenuStyle={{ maxHeight: 200 }}
           >
             {options.map((category) => (
               <Select.Option key={category.id} value={category.id}>
