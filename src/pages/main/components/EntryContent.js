@@ -37,12 +37,12 @@ export default function EntryContent({ activeEntry }) {
         overflowX: "hidden",
       }}
     >
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         <motion.div
           key={activeEntry.id}
           initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
           animate={{ opacity: 1, y: 0 }}
-          // exit={{ opacity: 0, y: isMobile ? 0 : -20 }}
+          exit={{ opacity: 0, y: isMobile ? 0 : -20 }}
           transition={{ duration: 0.2 }}
         >
           <div
