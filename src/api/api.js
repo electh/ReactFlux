@@ -96,15 +96,8 @@ export async function createFeed(feedUrl, categoryId, isFullText) {
   });
 }
 
-export async function updateFeed(
-  feedId,
-  newUrl,
-  newTitle,
-  groupId,
-  isFullText,
-) {
+export async function updateFeed(feedId, newTitle, groupId, isFullText) {
   return thunder.put(`/v1/feeds/${feedId}`, {
-    feed_url: newUrl,
     title: newTitle,
     category_id: groupId,
     crawler: isFullText,

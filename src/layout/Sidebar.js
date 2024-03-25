@@ -16,6 +16,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useStore } from "../store/Store";
 import { useConfigStore } from "../store/configStore";
 import FeedIcon from "../pages/main/components/FeedIcon";
+import { useModalStore } from "../store/modalStore";
 
 function MenuTitle({ icon, title, unread, showIcons }) {
   return (
@@ -64,6 +65,15 @@ export default function Sidebar({ style, setVisible }) {
   const isMobile = useStore((state) => state.isMobile);
   const unreadOnly = useStore((state) => state.unreadOnly);
   const showIcons = useConfigStore((state) => state.showIcons);
+  const setEditFeedVisible = useModalStore((state) => state.setEditFeedVisible);
+  const setEditCategoryVisible = useModalStore(
+    (state) => state.setEditCategoryVisible,
+  );
+  const setActiveFeed = useModalStore((state) => state.setActiveFeed);
+  const setActiveCategory = useModalStore((state) => state.setActiveCategory);
+  const setDeleteFeedVisible = useModalStore(
+    (state) => state.setDeleteFeedVisible,
+  );
 
   const [params] = useSearchParams();
   const from = params.get("from") || "all";
@@ -141,7 +151,7 @@ export default function Sidebar({ style, setVisible }) {
             )
             .map((category) => (
               <Dropdown
-                trigger="contextMenu"
+                trigger={["contextMenu", "focus"]}
                 position="bl"
                 droplist={
                   <Menu>
@@ -159,7 +169,15 @@ export default function Sidebar({ style, setVisible }) {
                     >
                       Delete...
                     </Menu.Item>
-                    <Menu.Item key="2">Edit...</Menu.Item>
+                    <Menu.Item
+                      key="2"
+                      onClick={() => {
+                        setEditCategoryVisible(true);
+                        setActiveCategory(category);
+                      }}
+                    >
+                      Edit...
+                    </Menu.Item>
                   </Menu>
                 }
               >
@@ -216,8 +234,24 @@ export default function Sidebar({ style, setVisible }) {
                       {feed.title}
                     </Menu.Item>
                     <Divider style={{ margin: "4px 0" }} />
-                    <Menu.Item key="1">Unsubscribe...</Menu.Item>
-                    <Menu.Item key="2">Edit...</Menu.Item>
+                    <Menu.Item
+                      key="1"
+                      onClick={() => {
+                        setDeleteFeedVisible(true);
+                        setActiveFeed(feed);
+                      }}
+                    >
+                      Unsubscribe...
+                    </Menu.Item>
+                    <Menu.Item
+                      key="2"
+                      onClick={() => {
+                        setEditFeedVisible(true);
+                        setActiveFeed(feed);
+                      }}
+                    >
+                      Edit...
+                    </Menu.Item>
                   </Menu>
                 }
               >

@@ -4,8 +4,10 @@ const useModalStore = create((set) => ({
   newFeedVisible: false,
   editFeedVisible: false,
   deleteFeedVisible: false,
-  newCategoryVisible: false,
+  editCategoryVisible: false,
   modalLoading: false,
+  activeFeed: null,
+  activeCategory: null,
   setNewFeedVisible: (value) => {
     set({ newFeedVisible: value });
   },
@@ -15,11 +17,17 @@ const useModalStore = create((set) => ({
   setDeleteFeedVisible: (value) => {
     set({ deleteFeedVisible: value });
   },
-  setNewCategoryVisible: (value) => {
-    set({ newCategoryVisible: value });
+  setEditCategoryVisible: (value) => {
+    set({ editCategoryVisible: value });
   },
   setModalLoading: (value) => {
     set({ modalLoading: value });
+  },
+  setActiveFeed: (value) => {
+    set({ activeFeed: value });
+  },
+  setActiveCategory: (value) => {
+    set({ activeCategory: value });
   },
 }));
 

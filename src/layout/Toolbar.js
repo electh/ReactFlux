@@ -108,7 +108,6 @@ export default function Toolbar() {
           <Tooltip content="Add feed" mini>
             <Button
               shape="circle"
-              size="small"
               type="primary"
               icon={<IconPlus />}
               onClick={() => setNewFeedVisible(true)}

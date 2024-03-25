@@ -9,19 +9,19 @@ import {
   Switch,
 } from "@arco-design/web-react";
 import { useModalStore } from "../../store/modalStore";
-import { createCategory, createFeed } from "../../api/api";
+import { createCategory, updateFeed } from "../../api/api";
 import { useStore } from "../../store/Store";
 import { useEffect, useState } from "react";
 import { IconPlus } from "@arco-design/web-react/icon";
 
-export default function CreateFeedModal() {
+export default function EditFeedModal({ feed }) {
   const initData = useStore((state) => state.initData);
   const categories = useStore((state) => state.categories);
   const modalLoading = useModalStore((state) => state.modalLoading);
   const setModalLoading = useModalStore((state) => state.setModalLoading);
-  const newFeedVisible = useModalStore((state) => state.newFeedVisible);
-  const setNewFeedVisible = useModalStore((state) => state.setNewFeedVisible);
-  const [feedForm] = Form.useForm();
+  const editFeedVisible = useModalStore((state) => state.editFeedVisible);
+  const setEditFeedVisible = useModalStore((state) => state.setEditFeedVisible);
+  const [editFeedForm] = Form.useForm();
   const [newCategoryName, setNewCategoryName] = useState("");
   const [options, setOptions] = useState([]);
   const [edit, setEdit] = useState(false);
@@ -30,21 +30,26 @@ export default function CreateFeedModal() {
     setOptions(categories);
   }, [categories]);
 
-  const handleCreateFeed = async (feedUrl, categoryId, isFullText) => {
+  const handleUpdateFeed = async (feedId, newTitle, categoryId, isFullText) => {
     setModalLoading(true);
     try {
-      const response = await createFeed(feedUrl, categoryId, isFullText);
+      const response = await updateFeed(
+        feedId,
+        newTitle,
+        categoryId,
+        isFullText,
+      );
       if (response) {
         Message.success("Success");
-        setNewFeedVisible(false);
+        setEditFeedVisible(false);
         await initData();
       }
     } catch (error) {
-      console.error("Error creating feed:", error);
+      console.error("Error updating feed:", error);
       // Message.error("Failed to create feed");
     } finally {
       setModalLoading(false);
-      feedForm.resetFields();
+      editFeedForm.resetFields();
     }
   };
 
@@ -70,36 +75,55 @@ export default function CreateFeedModal() {
 
   return (
     <Modal
-      title="Add Feed"
-      visible={newFeedVisible}
+      title="Update Feed"
+      visible={editFeedVisible}
       unmountOnExit
       style={{ width: "400px", maxWidth: "calc(100% - 20px)" }}
-      onOk={feedForm.submit}
+      onOk={editFeedForm.submit}
       confirmLoading={modalLoading}
       onCancel={() => {
-        setNewFeedVisible(false);
-        feedForm.resetFields();
+        setEditFeedVisible(false);
+        editFeedForm.resetFields();
         edit && initData();
         setEdit(false);
       }}
     >
       <Form
-        form={feedForm}
+        form={editFeedForm}
         layout="vertical"
         onSubmit={(values) =>
-          handleCreateFeed(values.url, values.category, values.crawler)
+          handleUpdateFeed(
+            feed.id,
+            values.title,
+            values.category,
+            values.crawler,
+          )
         }
         labelCol={{ span: 7 }}
         wrapperCol={{ span: 17 }}
       >
-        <Form.Item label="Feed URL" field="url" rules={[{ required: true }]}>
-          <Input placeholder="Please input feed URL" />
+        <Form.Item
+          label="Feed URL"
+          field="url"
+          rules={[{ required: true }]}
+          initialValue={feed?.feed_url}
+        >
+          <Input disabled placeholder="Please input feed URL" />
+        </Form.Item>
+        <Form.Item
+          label="Feed Title"
+          field="title"
+          rules={[{ required: true }]}
+          initialValue={feed?.title}
+        >
+          <Input placeholder="Please input feed title" />
         </Form.Item>
         <Form.Item
           label="Category"
           required
           field="category"
           rules={[{ required: true }]}
+          initialValue={feed?.category?.id}
         >
           <Select
             placeholder="Please select"
@@ -117,8 +141,8 @@ export default function CreateFeedModal() {
                   <Input
                     size="small"
                     style={{ marginRight: 18 }}
-                    value={newCategoryName}
                     placeholder="Please input"
+                    value={newCategoryName}
                     onChange={(value) => setNewCategoryName(value)}
                   />
                   <Button
@@ -147,7 +171,9 @@ export default function CreateFeedModal() {
           field="crawler"
           style={{ marginBottom: 0 }}
           triggerPropName="checked"
+          tooltip={<div>Only affects newly retrieved articles</div>}
           rules={[{ type: "boolean" }]}
+          initialValue={feed?.crawler}
         >
           <Switch />
         </Form.Item>
