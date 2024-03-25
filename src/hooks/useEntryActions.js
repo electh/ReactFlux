@@ -117,10 +117,13 @@ const useEntryActions = () => {
   };
 
   const handleFetchContent = async () => {
-    const response = await fetchOriginalArticle(activeContent.id);
-    if (response) {
-      setActiveContent({ ...activeContent, content: response.data.content });
-    }
+    fetchOriginalArticle(activeContent.id)
+      .then((response) => {
+        setActiveContent({ ...activeContent, content: response.data.content });
+      })
+      .catch(() => {
+        Message.error("Failed to fetch content, please try again later.");
+      });
   };
 
   const toggleEntryStatus = () => {

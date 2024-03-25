@@ -75,12 +75,15 @@ const AddFeedModal = ({
 
   const handleAddFeed = async (feed_url, group_id, is_full_text) => {
     setFeedModalLoading(true);
-    const response = await addFeed(feed_url, group_id, is_full_text);
-    if (response) {
-      await initData();
-      Message.success("Success");
-      setVisible("addFeed", false);
-    }
+    addFeed(feed_url, group_id, is_full_text)
+      .then(() => {
+        initData();
+        Message.success("Added a feed successfully");
+        setVisible("addFeed", false);
+      })
+      .catch(() => {
+        Message.error("Failed to add a feed");
+      });
     setFeedModalLoading(false);
     feedForm.resetFields();
   };

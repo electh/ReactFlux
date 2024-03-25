@@ -1,77 +1,58 @@
 import { get24HoursAgoTimestamp } from "../utils/Date";
 import { apiClient } from "./axios";
 
-export async function updateEntriesStatus(entryIds, newStatus) {
-  return apiClient.put("/v1/entries", {
+export const updateEntriesStatus = async (entryIds, newStatus) =>
+  apiClient.put("/v1/entries", {
     entry_ids: entryIds,
     status: newStatus,
   });
-}
 
-export async function updateEntryStatus(entryId, newStatus) {
-  return updateEntriesStatus([entryId], newStatus);
-}
+export const updateEntryStatus = async (entryId, newStatus) =>
+  updateEntriesStatus([entryId], newStatus);
 
-export async function toggleEntryStarred(entryId) {
-  return apiClient.put(`/v1/entries/${entryId}/bookmark`);
-}
+export const toggleEntryStarred = async (entryId) =>
+  apiClient.put(`/v1/entries/${entryId}/bookmark`);
 
-export async function fetchOriginalArticle(entryId) {
-  return apiClient.get(`/v1/entries/${entryId}/fetch-content`);
-}
+export const fetchOriginalArticle = async (entryId) =>
+  apiClient.get(`/v1/entries/${entryId}/fetch-content`);
 
-export async function getCurrentUser() {
-  return apiClient.get("/v1/me");
-}
+export const getCurrentUser = async () => apiClient.get("/v1/me");
 
-export async function getUnreadInfo() {
-  return apiClient.get("/v1/feeds/counters");
-}
+export const getUnreadInfo = async () => apiClient.get("/v1/feeds/counters");
 
-export async function getFeeds() {
-  return apiClient.get("/v1/feeds");
-}
+export const getFeeds = async () => apiClient.get("/v1/feeds");
 
-export async function getGroups() {
-  return apiClient.get("/v1/categories");
-}
+export const getGroups = async () => apiClient.get("/v1/categories");
 
-export async function deleteGroup(id) {
-  return apiClient.delete(`/v1/categories/${id}`);
-}
+export const deleteGroup = async (id) =>
+  apiClient.delete(`/v1/categories/${id}`);
 
-export async function addGroup(title) {
-  return apiClient.post("/v1/categories", { title });
-}
+export const addGroup = async (title) =>
+  apiClient.post("/v1/categories", { title });
 
-export async function editGroup(id, newTitle) {
-  return apiClient.put(`/v1/categories/${id}`, { title: newTitle });
-}
+export const editGroup = async (id, newTitle) =>
+  apiClient.put(`/v1/categories/${id}`, { title: newTitle });
 
-export async function editFeed(feedId, newUrl, newTitle, groupId, isFullText) {
-  return apiClient.put(`/v1/feeds/${feedId}`, {
+export const editFeed = async (feedId, newUrl, newTitle, groupId, isFullText) =>
+  apiClient.put(`/v1/feeds/${feedId}`, {
     feed_url: newUrl,
     title: newTitle,
     category_id: groupId,
     crawler: isFullText,
   });
-}
 
-export async function refreshFeed(feedId) {
-  return apiClient.put(`/v1/feeds/${feedId}/refresh`);
-}
+export const refreshFeed = async (feedId) =>
+  apiClient.put(`/v1/feeds/${feedId}/refresh`);
 
-export async function deleteFeed(feedId) {
-  return apiClient.delete(`/v1/feeds/${feedId}`);
-}
+export const deleteFeed = async (feedId) =>
+  apiClient.delete(`/v1/feeds/${feedId}`);
 
-export async function addFeed(feedUrl, groupId, isFullText) {
-  return apiClient.post("/v1/feeds", {
+export const addFeed = async (feedUrl, groupId, isFullText) =>
+  apiClient.post("/v1/feeds", {
     feed_url: feedUrl,
     category_id: groupId,
     crawler: isFullText,
   });
-}
 
 export const getAllEntries = async (offset = 0, status = null) => {
   const base_url = `/v1/entries?order=published_at&direction=desc&offset=${offset}`;

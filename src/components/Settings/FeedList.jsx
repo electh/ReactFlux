@@ -219,24 +219,23 @@ const FeedList = ({
     isFullText,
   ) => {
     setFeedModalLoading(true);
-    const response = await editFeed(
-      feedId,
-      newUrl,
-      newTitle,
-      groupId,
-      isFullText,
-    );
-    if (response) {
-      setFeeds(
-        feeds.map((feed) => (feed.id === feedId ? response.data : feed)),
-      );
-      setShowFeeds(
-        sortedFeeds.map((feed) => (feed.id === feedId ? response.data : feed)),
-      );
-      Message.success("Feed updated successfully");
-      setFeedModalVisible(false);
-      await initData();
-    }
+    editFeed(feedId, newUrl, newTitle, groupId, isFullText)
+      .then((response) => {
+        setFeeds(
+          feeds.map((feed) => (feed.id === feedId ? response.data : feed)),
+        );
+        setShowFeeds(
+          sortedFeeds.map((feed) =>
+            feed.id === feedId ? response.data : feed,
+          ),
+        );
+        Message.success("Feed updated successfully");
+        setFeedModalVisible(false);
+        initData();
+      })
+      .catch(() => {
+        Message.error("Failed to update feed");
+      });
     setFeedModalLoading(false);
     feedForm.resetFields();
   };
