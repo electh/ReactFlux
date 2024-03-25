@@ -107,8 +107,7 @@ export default function Toolbar() {
           </Button.Group>
           <Tooltip content="Add feed" mini>
             <Button
-              shape="circle"
-              type="primary"
+              shape="round"
               icon={<IconPlus />}
               onClick={() => setNewFeedVisible(true)}
             />
@@ -146,7 +145,7 @@ export default function Toolbar() {
             trigger="click"
             position="br"
           >
-            <Button shape="circle" icon={<IconUser />}></Button>
+            <Button shape="circle" type="primary" icon={<IconUser />}></Button>
           </Dropdown>
         </Space>
         <Appearance visible={drawVisible} setVisible={setDrawVisible} />

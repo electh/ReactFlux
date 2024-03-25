@@ -2,6 +2,7 @@ import {
   Divider,
   Dropdown,
   Menu,
+  Message,
   Skeleton,
   Typography,
 } from "@arco-design/web-react";
@@ -17,6 +18,7 @@ import { useStore } from "../store/Store";
 import { useConfigStore } from "../store/configStore";
 import FeedIcon from "../pages/main/components/FeedIcon";
 import { useModalStore } from "../store/modalStore";
+import { removeCategory } from "../api/api";
 
 function MenuTitle({ icon, title, unread, showIcons }) {
   return (
@@ -58,6 +60,7 @@ function MenuTitle({ icon, title, unread, showIcons }) {
 
 export default function Sidebar({ style, setVisible }) {
   const nav = useNavigate();
+  const initData = useStore((state) => state.initData);
   const entries = useStore((state) => state.entries);
   const feeds = useStore((state) => state.feeds);
   const categories = useStore((state) => state.categories);
@@ -78,6 +81,18 @@ export default function Sidebar({ style, setVisible }) {
   const [params] = useSearchParams();
   const from = params.get("from") || "all";
   const id = params.get("id") || "";
+
+  const handelDeleteCategory = async (categoryId) => {
+    try {
+      const response = await removeCategory(categoryId);
+      if (response) {
+        Message.success("Success");
+        await initData();
+      }
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
+  };
 
   return (
     <Skeleton
@@ -151,7 +166,7 @@ export default function Sidebar({ style, setVisible }) {
             )
             .map((category) => (
               <Dropdown
-                trigger={["contextMenu", "focus"]}
+                trigger="contextMenu"
                 position="bl"
                 droplist={
                   <Menu>
@@ -166,6 +181,7 @@ export default function Sidebar({ style, setVisible }) {
                           (a) => a.feed.category.id === category.id,
                         ).length > 0
                       }
+                      onClick={() => handelDeleteCategory(category.id)}
                     >
                       Delete...
                     </Menu.Item>
