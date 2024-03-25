@@ -79,15 +79,6 @@ export default function Toolbar() {
         style={{ display: "flex", alignItems: "center", marginRight: "10px" }}
       >
         <Space>
-          <Tooltip content="Add feed" mini>
-            <Button
-              shape="circle"
-              size="small"
-              type="primary"
-              icon={<IconPlus />}
-              onClick={() => setNewFeedVisible(true)}
-            />
-          </Tooltip>
           <Button.Group style={{ display: isMobile ? "none" : "block" }}>
             <Button
               shape="round"
@@ -114,6 +105,15 @@ export default function Toolbar() {
               disabled={!activeEntry}
             />
           </Button.Group>
+          <Tooltip content="Add feed" mini>
+            <Button
+              shape="circle"
+              size="small"
+              type="primary"
+              icon={<IconPlus />}
+              onClick={() => setNewFeedVisible(true)}
+            />
+          </Tooltip>
           <Dropdown
             droplist={
               <Menu>

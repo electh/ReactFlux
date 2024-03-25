@@ -42,7 +42,7 @@ export default function CreateFeedModal() {
       title="Add Feed"
       visible={newFeedVisible}
       unmountOnExit
-      style={{ width: "400px" }}
+      style={{ width: "400px", maxWidth: "calc(100% - 20px)" }}
       onOk={feedForm.submit}
       confirmLoading={modalLoading}
       onCancel={() => {
