@@ -1,3 +1,4 @@
+import { Message } from "@arco-design/web-react";
 import Confetti from "canvas-confetti";
 import { useContext } from "react";
 
@@ -21,6 +22,8 @@ const useEntryActions = () => {
   const setStarredCount = useStore((state) => state.setStarredCount);
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
+  const updateFeedUnread = useStore((state) => state.updateFeedUnread);
+  const updateGroupUnread = useStore((state) => state.updateGroupUnread);
 
   const {
     entries,
@@ -29,8 +32,6 @@ const useEntryActions = () => {
     setFilteredEntries,
     setUnreadCount,
     unreadCount,
-    updateFeedUnread,
-    updateGroupUnread,
   } = useContext(ContentContext);
 
   const updateEntries = (entries, entry, updateFunction) => {
@@ -94,13 +95,15 @@ const useEntryActions = () => {
 
   const handleToggleStatus = async () => {
     const prevStatus = activeContent.status;
-    const newStatus = activeContent.status === "read" ? "unread" : "read";
+    const newStatus = prevStatus === "read" ? "unread" : "read";
     handleEntryStatusUpdate(activeContent, newStatus);
 
-    const response = await updateEntryStatus(activeContent.id, newStatus);
-    if (!response) {
+    updateEntryStatus(activeContent.id, newStatus).catch(() => {
+      Message.error(
+        `Failed to mark entry as ${newStatus}, please try again later.`,
+      );
       handleEntryStatusUpdate(activeContent, prevStatus);
-    }
+    });
   };
 
   const handleToggleStarred = async () => {
@@ -108,10 +111,12 @@ const useEntryActions = () => {
     const newStarred = !activeContent.starred;
     handleEntryStarredUpdate(activeContent, newStarred);
 
-    const response = await toggleEntryStarredApi(id);
-    if (!response) {
+    toggleEntryStarredApi(id).catch(() => {
+      Message.error(
+        `Failed to ${newStarred ? "star" : "unstar"} entry, please try again later.`,
+      );
       handleEntryStarredUpdate(activeContent, !newStarred);
-    }
+    });
   };
 
   const handleFetchContent = async () => {
