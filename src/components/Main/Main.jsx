@@ -19,25 +19,47 @@ const SettingsModal = ({
   setActiveContent,
   setVisible,
   visible,
-}) => (
-  <Modal
-    visible={visible.settings}
-    title="Settings"
-    footer={null}
-    unmountOnExit
-    style={{ width: "720px" }}
-    onFocus={() => {
-      if (activeContent) {
-        setActiveContent(null);
-      }
-    }}
-    onCancel={() => setVisible("settings", false)}
-    autoFocus={false}
-    focusLock={true}
-  >
-    <SettingsTabs />
-  </Modal>
-);
+}) => {
+  const [modalWidth, setModalWidth] = useState("720px");
+  const [modalTop, setModalTop] = useState("10%");
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth <= 700 ? "100%" : "720px";
+      const top = window.innerWidth <= 700 ? "5%" : "10%";
+      setModalWidth(width);
+      setModalTop(top);
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return (
+    <Modal
+      visible={visible.settings}
+      alignCenter={false}
+      title="Settings"
+      footer={null}
+      unmountOnExit
+      style={{ width: modalWidth, top: modalTop }}
+      onFocus={() => {
+        if (activeContent) {
+          setActiveContent(null);
+        }
+      }}
+      onCancel={() => setVisible("settings", false)}
+      autoFocus={false}
+      focusLock={true}
+    >
+      <SettingsTabs />
+    </Modal>
+  );
+};
 
 const AddFeedModal = ({
   activeContent,
@@ -128,16 +150,14 @@ const Main = () => {
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
 
+  const [adjustedHeight, setAdjustedHeight] = useState(0);
+
   useEffect(() => {
     const updateHeight = () => {
       const entryPanel = document.querySelector(".entry-panel");
       const entryPanelHeight = entryPanel ? entryPanel.offsetHeight : 0;
       const viewportHeight = window.innerHeight;
-      const adjustedHeight = viewportHeight - entryPanelHeight;
-      document.documentElement.style.setProperty(
-        "--dynamic-viewport-height",
-        `${adjustedHeight}px`,
-      );
+      setAdjustedHeight(viewportHeight - entryPanelHeight);
     };
 
     window.addEventListener("resize", updateHeight);
@@ -147,7 +167,7 @@ const Main = () => {
   }, []);
 
   return (
-    <div className="main" style={{ height: "var(--dynamic-viewport-height)" }}>
+    <div className="main" style={{ height: `${adjustedHeight}px` }}>
       <Outlet />
       <SettingsModal
         activeContent={activeContent}

@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import { IconDelete, IconEdit, IconRefresh } from "@arco-design/web-react/icon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import useStore from "../../Store";
 import { deleteFeed, editFeed, refreshFeed } from "../../apis";
@@ -45,6 +45,7 @@ const FeedList = ({
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
   const [selectedFeed, setSelectedFeed] = useState({});
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   let sortedFeeds = getSortedFeedsByErrorCount(showFeeds);
   const tableData = sortedFeeds.map((feed) => ({
@@ -56,6 +57,14 @@ const FeedList = ({
     parsing_error_count: feed.parsing_error_count,
     feed: feed,
   }));
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleSelectFeed = (record) => {
     setSelectedFeed(record.feed);
@@ -95,6 +104,7 @@ const FeedList = ({
     });
   };
 
+  const isMobileView = screenWidth <= 700;
   const columns = [
     {
       title: "Title",
@@ -118,7 +128,7 @@ const FeedList = ({
       },
     },
 
-    {
+    !isMobileView && {
       title: "Url",
       dataIndex: "feed_url",
       sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
@@ -138,7 +148,7 @@ const FeedList = ({
       render: (col) => <Tag>{col}</Tag>,
     },
 
-    {
+    !isMobileView && {
       title: "Checked at",
       dataIndex: "checked_at",
       sorter: (a, b) => a.checked_at.localeCompare(b.checked_at, "en"),
@@ -153,7 +163,7 @@ const FeedList = ({
       title: "Actions",
       dataIndex: "op",
       fixed: "right",
-      width: 120,
+      width: 100,
       render: (col, record) => (
         <Space>
           <span
@@ -199,7 +209,7 @@ const FeedList = ({
         </Space>
       ),
     },
-  ];
+  ].filter(Boolean);
 
   const handleEditFeed = async (
     feedId,
@@ -260,6 +270,7 @@ const FeedList = ({
         scroll={{ x: true }}
         size={"small"}
         style={{ width: "100%" }}
+        borderCell={true}
       />
       {selectedFeed && (
         <Modal
