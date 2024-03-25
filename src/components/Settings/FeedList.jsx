@@ -243,7 +243,7 @@ const FeedList = ({
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <Input.Search
           searchButton
           placeholder="Search feed title or url"
