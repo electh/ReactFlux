@@ -48,18 +48,14 @@ const useStore = create((set, get) => ({
   collapsed: window.innerWidth <= 992,
   activeContent: null,
 
-  setUnreadTotal: (unreadTotal) => {
-    set({ unreadTotal: unreadTotal });
-  },
-  setUnreadToday: (unreadToday) => {
-    set({ unreadToday: unreadToday });
-  },
-  setStarredCount: (starredCount) => {
-    set({ starredCount: starredCount });
-  },
-  setReadCount: (readCount) => {
-    set({ readCount: readCount });
-  },
+  setUnreadTotal: (updater) =>
+    set((state) => ({ unreadTotal: updater(state.unreadTotal) })),
+  setUnreadToday: (updater) =>
+    set((state) => ({ unreadToday: updater(state.unreadToday) })),
+  setStarredCount: (updater) =>
+    set((state) => ({ starredCount: updater(state.starredCount) })),
+  setReadCount: (updater) =>
+    set((state) => ({ readCount: updater(state.readCount) })),
   setActiveContent: (activeContent) => {
     set({ activeContent: activeContent });
   },
