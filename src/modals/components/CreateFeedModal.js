@@ -1,4 +1,6 @@
 import {
+  Button,
+  Divider,
   Form,
   Input,
   Message,
@@ -7,8 +9,10 @@ import {
   Switch,
 } from "@arco-design/web-react";
 import { useModalStore } from "../../store/modalStore";
-import { createFeed } from "../../api/api";
+import { createCategory, createFeed } from "../../api/api";
 import { useStore } from "../../store/Store";
+import { useEffect, useState } from "react";
+import { IconPlus } from "@arco-design/web-react/icon";
 
 export default function CreateFeedModal() {
   const initData = useStore((state) => state.initData);
@@ -18,15 +22,22 @@ export default function CreateFeedModal() {
   const newFeedVisible = useModalStore((state) => state.newFeedVisible);
   const setNewFeedVisible = useModalStore((state) => state.setNewFeedVisible);
   const [feedForm] = Form.useForm();
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [options, setOptions] = useState([]);
+  const [edit, setEdit] = useState(false);
+
+  useEffect(() => {
+    setOptions(categories);
+  }, [categories]);
 
   const handleCreateFeed = async (feedUrl, categoryId, isFullText) => {
     setModalLoading(true);
     try {
       const response = await createFeed(feedUrl, categoryId, isFullText);
       if (response) {
-        await initData();
         Message.success("Success");
         setNewFeedVisible(false);
+        await initData();
       }
     } catch (error) {
       console.error("Error creating feed:", error);
@@ -34,6 +45,24 @@ export default function CreateFeedModal() {
     } finally {
       setModalLoading(false);
       feedForm.resetFields();
+    }
+  };
+
+  const handelCreateCategory = async (categoryName) => {
+    try {
+      const response = await createCategory(categoryName);
+      if (response) {
+        setOptions([
+          ...options,
+          {
+            id: response.data?.id,
+            title: response.data?.title,
+          },
+        ]);
+        setEdit(true);
+      }
+    } catch (error) {
+      console.error("Error creating category:", error);
     }
   };
 
@@ -48,6 +77,8 @@ export default function CreateFeedModal() {
       onCancel={() => {
         setNewFeedVisible(false);
         feedForm.resetFields();
+        edit && initData();
+        setEdit(false);
       }}
     >
       <Form
@@ -68,8 +99,40 @@ export default function CreateFeedModal() {
           field="category"
           rules={[{ required: true }]}
         >
-          <Select placeholder="Please select">
-            {categories.map((category) => (
+          <Select
+            placeholder="Please select"
+            dropdownRender={(menu) => (
+              <div>
+                {menu}
+                <Divider style={{ margin: 0 }} />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "10px 12px",
+                  }}
+                >
+                  <Input
+                    size="small"
+                    style={{ marginRight: 18 }}
+                    value={newCategoryName}
+                    onChange={(value) => setNewCategoryName(value)}
+                  />
+                  <Button
+                    style={{ fontSize: 14, padding: "0 6px" }}
+                    type="text"
+                    size="mini"
+                    onClick={() => handelCreateCategory(newCategoryName)}
+                  >
+                    <IconPlus />
+                    Add category
+                  </Button>
+                </div>
+              </div>
+            )}
+            dropdownMenuStyle={{ maxHeight: 300 }}
+          >
+            {options.map((category) => (
               <Select.Option key={category.id} value={category.id}>
                 {category.title}
               </Select.Option>
