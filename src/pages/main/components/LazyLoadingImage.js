@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
-import "./LazyLoadingImage.css";
-
 const LazyLoadingImage = ({ src, alt, className, status, style }) => {
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef(null);
@@ -36,10 +34,10 @@ const LazyLoadingImage = ({ src, alt, className, status, style }) => {
     <div ref={imgRef}>
       {loaded ? (
         <motion.div
-          className={status === "read" ? "read" : "unread"}
+          // className={status === "read" ? "read" : "unread"}
           key={src}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: status === "read" ? 0.5 : 1 }}
           transition={{ duration: 0.2 }}
         >
           <img src={src} alt={alt} className={className} style={style} />
