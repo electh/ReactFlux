@@ -274,22 +274,22 @@ const FeedList = ({
         >
           <Form
             form={feedForm}
+            labelCol={{ span: 7 }}
             layout="vertical"
-            onChange={(value, values) => console.log(value, values)}
-            onSubmit={(values) =>
-              handleEditFeed(
-                selectedFeed.id,
-                values.url,
-                values.title,
-                values.group,
-                values.crawler,
-              )
-            }
-            labelCol={{
-              span: 7,
-            }}
-            wrapperCol={{
-              span: 17,
+            wrapperCol={{ span: 17 }}
+            onSubmit={(values) => {
+              const url = values.url.trim();
+              if (url) {
+                handleEditFeed(
+                  selectedFeed.id,
+                  values.url,
+                  values.title,
+                  values.group,
+                  values.crawler,
+                );
+              } else {
+                Message.error("Feed URL cannot be empty");
+              }
             }}
           >
             <Form.Item

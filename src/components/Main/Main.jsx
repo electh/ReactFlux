@@ -108,12 +108,17 @@ const AddFeedModal = ({
     >
       <Form
         form={feedForm}
-        layout="vertical"
-        onSubmit={(values) =>
-          handleAddFeed(values.url, values.group, values.crawler)
-        }
         labelCol={{ span: 7 }}
+        layout="vertical"
         wrapperCol={{ span: 17 }}
+        onSubmit={(values) => {
+          const url = values.url.trim();
+          if (url) {
+            handleAddFeed(values.url.trim(), values.group, values.crawler);
+          } else {
+            Message.error("Feed URL cannot be empty");
+          }
+        }}
       >
         <Form.Item label="Feed URL" field="url" rules={[{ required: true }]}>
           <Input placeholder="Please input feed URL" />
