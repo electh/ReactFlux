@@ -8,8 +8,12 @@ const useConfigStore = create((set) => ({
   layout: getConfig("layout") || "expensive",
   align: getConfig("align") || "left",
   showIcons: getConfig("showIcons") || "on",
+  theme: getConfig("theme") || "system",
   setShowIcons: (value) => {
     set({ showIcons: value });
+  },
+  setTheme: (value) => {
+    set({ theme: value });
   },
   setColor: (value) => {
     set({ color: value });

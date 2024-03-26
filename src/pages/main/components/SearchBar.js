@@ -8,7 +8,7 @@ export default function SearchBar() {
   const setSearchType = useStore((state) => state.setSearchType);
 
   return (
-    <Input
+    <Input.Search
       style={{ width: "calc(100% - 20px)", margin: 10 }}
       value={filterString}
       onChange={(value) => setFilterString(value)}
@@ -24,7 +24,7 @@ export default function SearchBar() {
         </Select>
       }
       allowClear={true}
-      placeholder="Please enter"
+      placeholder="Search..."
     />
   );
 }

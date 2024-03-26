@@ -166,6 +166,7 @@ export default function Sidebar({ style, setVisible }) {
             )
             .map((category) => (
               <Dropdown
+                key={category.id}
                 trigger="contextMenu"
                 position="bl"
                 droplist={
@@ -242,6 +243,7 @@ export default function Sidebar({ style, setVisible }) {
             )
             .map((feed) => (
               <Dropdown
+                key={feed.id}
                 trigger="contextMenu"
                 position="bl"
                 droplist={

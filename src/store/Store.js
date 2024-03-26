@@ -25,7 +25,7 @@ const useStore = create((set) => ({
   entries: [],
   feeds: [],
   categories: [],
-  isDarkMode:
+  isSysDarkMode:
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   activeEntry: null,
@@ -40,7 +40,7 @@ const useStore = create((set) => ({
   setShowEntries: (value) => set({ showEntries: value }),
   setCollapsed: () => set((state) => ({ collapsed: !state.collapsed })),
   setEntries: (value) => set({ entries: value }),
-  setIsDarkMode: (value) => set({ isDarkMode: value }),
+  setIsSysDarkMode: (value) => set({ isSysDarkMode: value }),
   setActiveEntry: (entry) => set({ activeEntry: entry }),
   setFilterString: (value) => set({ filterString: value }),
   setUnreadOnly: () => set((state) => ({ unreadOnly: !state.unreadOnly })),

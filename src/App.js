@@ -16,12 +16,13 @@ const Header = Layout.Header;
 export default function App() {
   const collapsed = useStore((state) => state.collapsed);
   const setCollapsed = useStore((state) => state.setCollapsed);
-  const isDarkMode = useStore((state) => state.isDarkMode);
-  const setIsDarkMode = useStore((state) => state.setIsDarkMode);
+  const isSysDarkMode = useStore((state) => state.isSysDarkMode);
+  const setIsSysDarkMode = useStore((state) => state.setIsSysDarkMode);
   const color = useConfigStore((state) => state.color);
   const setIsMobile = useStore((state) => state.setIsMobile);
   const isMobile = useStore((state) => state.isMobile);
   const initData = useStore((state) => state.initData);
+  const theme = useConfigStore((state) => state.theme);
 
   useEffect(() => {
     async function fetchData() {
@@ -37,7 +38,7 @@ export default function App() {
     };
 
     const handelDarkMode = (event) => {
-      setIsDarkMode(event.matches);
+      setIsSysDarkMode(event.matches);
     };
 
     // 添加窗口大小变化监听器
@@ -63,6 +64,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const isDarkMode = theme === "system" ? isSysDarkMode : theme === "dark";
     if (isDarkMode) {
       document.body.setAttribute("arco-theme", "dark");
       document.body.style.colorScheme = "dark";
@@ -70,7 +72,7 @@ export default function App() {
       document.body.removeAttribute("arco-theme");
       document.body.style.colorScheme = "light";
     }
-  }, [isDarkMode]);
+  }, [isSysDarkMode, theme]);
 
   useEffect(() => {
     applyColor(color);

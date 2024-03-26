@@ -4,6 +4,7 @@ import CompactLayout from "./components/CompactLayout";
 import FontSize from "./components/FontSize";
 import TextAlignment from "./components/TextAlignment";
 import Favicons from "./components/Favicons";
+import Theme from "./components/Theme";
 
 export default function Appearance({ visible, setVisible }) {
   return (
@@ -20,6 +21,8 @@ export default function Appearance({ visible, setVisible }) {
         setVisible(false);
       }}
     >
+      <Theme />
+      <Divider />
       <AccentColor />
       <Divider />
       <CompactLayout />

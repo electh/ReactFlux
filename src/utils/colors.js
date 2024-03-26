@@ -1,4 +1,5 @@
 import { generate, getRgbStr } from "@arco-design/color";
+import { getConfig } from "./config";
 
 const colors = [
   {
@@ -31,15 +32,13 @@ const colors = [
 function getColorValue(colorName) {
   // 查找匹配颜色名称的对象
   const selectedColor = colors.find((color) => color.name === colorName);
-  const theme =
+  const isSysDarkMode =
     window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const theme = getConfig("theme") || "light";
+  const isDarkMode = theme === "system" ? isSysDarkMode : theme === "dark";
   if (selectedColor) {
-    return theme === "light"
-      ? selectedColor.valueLight
-      : selectedColor.valueDark;
+    return isDarkMode ? selectedColor.valueDark : selectedColor.valueLight;
   } else {
     return "#165DFF";
   }
