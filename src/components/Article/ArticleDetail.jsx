@@ -27,32 +27,21 @@ const CustomLink = ({ url, text }) => {
   );
 };
 
-// 自定义解析规则，用于替换img标签
+// 自定义解析规则，用于替换 img 标签
 const htmlParserOptions = {
   replace: (node) => {
-    if (
-      node.name === "a" &&
-      node.children &&
-      node.children[0]?.name === "img"
-    ) {
-      const imgNode = node.children[0];
+    const isAnchorWithImg =
+      node.name === "a" && node.children?.[0]?.name === "img";
+    const isImgNode = node.name === "img";
+
+    if (isAnchorWithImg || isImgNode) {
+      const imgNode = isAnchorWithImg ? node.children[0] : node;
       const { src, alt } = imgNode.attribs;
+
       return (
-        <PhotoProvider maskOpacity={0.7} bannerVisible={false}>
-          <PhotoView src={src}>
-            <img src={src} alt={alt} />
-          </PhotoView>
-        </PhotoProvider>
-      );
-    }
-    if (node.name === "img") {
-      const { src, alt } = node.attribs;
-      return (
-        <PhotoProvider maskOpacity={0.7} bannerVisible={false}>
-          <PhotoView src={src}>
-            <img src={src} alt={alt} />
-          </PhotoView>
-        </PhotoProvider>
+        <PhotoView src={src}>
+          <img src={src} alt={alt} />
+        </PhotoView>
       );
     }
   },
@@ -166,7 +155,7 @@ const ArticleDetail = forwardRef((_, ref) => {
           overflowWrap: "break-word",
         }}
       >
-        {reactElement}
+        <PhotoProvider maskOpacity={0.7}>{reactElement}</PhotoProvider>
       </div>
     </div>
   );
