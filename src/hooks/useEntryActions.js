@@ -97,7 +97,7 @@ const useEntryActions = () => {
 
     updateEntryStatus(activeContent.id, newStatus).catch(() => {
       Message.error(
-        `Failed to mark entry as ${newStatus}, please try again later.`,
+        `Failed to mark entry as ${newStatus}, please try again later`,
       );
       handleEntryStatusUpdate(activeContent, prevStatus);
     });
@@ -110,7 +110,7 @@ const useEntryActions = () => {
 
     toggleEntryStarredApi(id).catch(() => {
       Message.error(
-        `Failed to ${newStarred ? "star" : "unstar"} entry, please try again later.`,
+        `Failed to ${newStarred ? "star" : "unstar"} entry, please try again later`,
       );
       handleEntryStarredUpdate(activeContent, !newStarred);
     });
@@ -119,10 +119,11 @@ const useEntryActions = () => {
   const handleFetchContent = async () => {
     fetchOriginalArticle(activeContent.id)
       .then((response) => {
+        Message.success("Fetched content successfully");
         setActiveContent({ ...activeContent, content: response.data.content });
       })
       .catch(() => {
-        Message.error("Failed to fetch content, please try again later.");
+        Message.error("Failed to fetch content, please try again later");
       });
   };
 

@@ -124,7 +124,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       }, 200);
 
       updateEntryStatus(entry.id, "read").catch(() => {
-        Message.error("Failed to mark entry as read, please try again later.");
+        Message.error("Failed to mark entry as read, please try again later");
         handleEntryStatusUpdate(entry, "unread");
       });
     }
