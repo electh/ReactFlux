@@ -11,22 +11,31 @@ import {
 import { applyColor } from "./utils/Colors";
 import { getConfig, setConfig } from "./utils/Config";
 
-const calculateUnread = (currentUnread, status) => {
+const calculateUnreadCount = (currentCount, status) => {
   if (status === "read") {
-    return Math.max(0, currentUnread - 1);
+    return Math.max(0, currentCount - 1);
   }
-  return currentUnread + 1;
+  return currentCount + 1;
 };
 
-const updateUnreadCount = (items, itemId, status) => {
-  return items.map((item) =>
-    item.id === itemId
-      ? {
-          ...item,
-          unread: calculateUnread(item.unread, status),
-        }
-      : item,
-  );
+const updateUnreadCount = (items, itemId, countOrStatus) => {
+  return items.map((item) => {
+    if (item.id === itemId) {
+      let newUnreadCount;
+
+      if (typeof countOrStatus === "string") {
+        newUnreadCount = calculateUnreadCount(item.unreadCount, countOrStatus);
+      } else {
+        newUnreadCount = countOrStatus;
+      }
+
+      return {
+        ...item,
+        unreadCount: newUnreadCount,
+      };
+    }
+    return item;
+  });
 };
 
 const useStore = create((set, get) => ({
@@ -96,7 +105,7 @@ const useStore = create((set, get) => ({
 
       const feedsWithUnread = feedResponse.data.map((feed) => ({
         ...feed,
-        unread: unreadInfo[feed.id] || 0,
+        unreadCount: unreadInfo[feed.id] || 0,
       }));
 
       set({
@@ -111,14 +120,14 @@ const useStore = create((set, get) => ({
 
         for (const feed of feedsWithUnread) {
           if (feed.category.id === group.id) {
-            unreadCount += feed.unread;
+            unreadCount += feed.unreadCount;
             feedCount += 1;
           }
         }
 
         return {
           ...group,
-          unread: unreadCount,
+          unreadCount: unreadCount,
           feed: feedCount,
         };
       });
@@ -136,15 +145,15 @@ const useStore = create((set, get) => ({
     }
   },
 
-  updateFeedUnread: (feedId, status) => {
+  updateFeedUnreadCount: (feedId, countOrStatus) => {
     set((state) => ({
-      feeds: updateUnreadCount(state.feeds, feedId, status),
+      feeds: updateUnreadCount(state.feeds, feedId, countOrStatus),
     }));
   },
 
-  updateGroupUnread: (groupId, status) => {
+  updateGroupUnreadCount: (groupId, countOrStatus) => {
     set((state) => ({
-      groups: updateUnreadCount(state.groups, groupId, status),
+      groups: updateUnreadCount(state.groups, groupId, countOrStatus),
     }));
   },
 

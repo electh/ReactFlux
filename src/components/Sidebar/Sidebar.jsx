@@ -31,18 +31,18 @@ const GroupTitle = ({ group, isOpen }) => (
     <Typography.Ellipsis
       expandable={false}
       showTooltip={true}
-      style={{ width: group.unread ? "80%" : "100%" }}
+      style={{ width: group.unreadCount ? "80%" : "100%" }}
     >
       {isOpen ? <IconDown /> : <IconRight />}
       {group.title}
     </Typography.Ellipsis>
-    {group.unread > 0 && (
+    {group.unreadCount > 0 && (
       <Typography.Ellipsis
         className="unread-count"
         expandable={false}
         showTooltip={true}
       >
-        {group.unread}
+        {group.unreadCount}
       </Typography.Ellipsis>
     )}
   </div>
@@ -272,7 +272,9 @@ const Sidebar = () => {
                       <Typography.Ellipsis
                         expandable={false}
                         showTooltip={true}
-                        style={{ width: feed.unread !== 0 ? "80%" : "100%" }}
+                        style={{
+                          width: feed.unreadCount !== 0 ? "80%" : "100%",
+                        }}
                       >
                         {showFeedIcon && (
                           <img
@@ -287,7 +289,7 @@ const Sidebar = () => {
                         )}
                         {feed.title}
                       </Typography.Ellipsis>
-                      {feed.unread !== 0 && (
+                      {feed.unreadCount !== 0 && (
                         <Typography.Ellipsis
                           expandable={false}
                           showTooltip={true}
@@ -298,7 +300,7 @@ const Sidebar = () => {
                             justifyContent: "flex-end",
                           }}
                         >
-                          {feed.unread}
+                          {feed.unreadCount}
                         </Typography.Ellipsis>
                       )}
                     </div>

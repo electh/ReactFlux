@@ -119,7 +119,7 @@ const FeedList = ({
             : title;
 
         return (
-          <Typography.Ellipsis expandable={false} showTooltip={true}>
+          <Typography.Ellipsis expandable={false}>
             <Tooltip mini content={tooltipText} position="left">
               {displayText}
             </Tooltip>
@@ -133,7 +133,7 @@ const FeedList = ({
       dataIndex: "feed_url",
       sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
       render: (col) => (
-        <Typography.Ellipsis expandable={false} showTooltip={true}>
+        <Typography.Ellipsis expandable={false}>
           <Tooltip mini content={col} position="left">
             {col}
           </Tooltip>
@@ -166,34 +166,22 @@ const FeedList = ({
       width: 100,
       render: (col, record) => (
         <Space>
-          <span
-            className="list-demo-actions-icon"
-            role="button"
-            tabIndex="0"
-            onClick={() => handleSelectFeed(record)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                handleSelectFeed(record);
-              }
-            }}
+          <button
             aria-label="Edit this feed"
+            className="list-item-action"
+            onClick={() => handleSelectFeed(record)}
+            type="button"
           >
             <IconEdit />
-          </span>
-          <span
-            className="list-demo-actions-icon"
-            role="button"
-            tabIndex="0"
-            onClick={() => handleRefreshFeed(record)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                handleRefreshFeed(record);
-              }
-            }}
+          </button>
+          <button
             aria-label="Refresh this feed"
+            className="list-item-action"
+            onClick={() => handleRefreshFeed(record)}
+            type="button"
           >
             <IconRefresh />
-          </span>
+          </button>
           <Popconfirm
             position="left"
             focusLocka
@@ -202,7 +190,7 @@ const FeedList = ({
               await handleDeleteFeed(record);
             }}
           >
-            <span className="list-demo-actions-icon">
+            <span className="list-item-action">
               <IconDelete />
             </span>
           </Popconfirm>
@@ -286,22 +274,22 @@ const FeedList = ({
         >
           <Form
             form={feedForm}
+            labelCol={{ span: 7 }}
             layout="vertical"
-            onChange={(value, values) => console.log(value, values)}
-            onSubmit={(values) =>
-              handleEditFeed(
-                selectedFeed.id,
-                values.url,
-                values.title,
-                values.group,
-                values.crawler,
-              )
-            }
-            labelCol={{
-              span: 7,
-            }}
-            wrapperCol={{
-              span: 17,
+            wrapperCol={{ span: 17 }}
+            onSubmit={(values) => {
+              const url = values.url.trim();
+              if (url) {
+                handleEditFeed(
+                  selectedFeed.id,
+                  values.url,
+                  values.title,
+                  values.group,
+                  values.crawler,
+                );
+              } else {
+                Message.error("Feed URL cannot be empty");
+              }
             }}
           >
             <Form.Item

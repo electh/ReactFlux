@@ -15,12 +15,11 @@ const useEntryActions = () => {
   const setUnreadTotal = useStore((state) => state.setUnreadTotal);
   const setUnreadToday = useStore((state) => state.setUnreadToday);
   const setReadCount = useStore((state) => state.setReadCount);
-  const starredCount = useStore((state) => state.starredCount);
   const setStarredCount = useStore((state) => state.setStarredCount);
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
-  const updateFeedUnread = useStore((state) => state.updateFeedUnread);
-  const updateGroupUnread = useStore((state) => state.updateGroupUnread);
+  const updateFeedUnread = useStore((state) => state.updateFeedUnreadCount);
+  const updateGroupUnread = useStore((state) => state.updateGroupUnreadCount);
 
   const {
     entries,
@@ -73,7 +72,7 @@ const useEntryActions = () => {
 
   const handleEntryStarredUpdate = (entry, newStarred) => {
     if (newStarred) {
-      setStarredCount(starredCount + 1);
+      setStarredCount((current) => current + 1);
       Confetti({
         particleCount: 100,
         angle: 120,
@@ -81,7 +80,7 @@ const useEntryActions = () => {
         origin: { x: 1, y: 1 },
       });
     } else {
-      setStarredCount(Math.max(0, starredCount - 1));
+      setStarredCount((current) => Math.max(0, current - 1));
     }
 
     updateUI(entry, { starred: newStarred }, (entry) => ({
@@ -97,7 +96,7 @@ const useEntryActions = () => {
 
     updateEntryStatus(activeContent.id, newStatus).catch(() => {
       Message.error(
-        `Failed to mark entry as ${newStatus}, please try again later.`,
+        `Failed to mark entry as ${newStatus}, please try again later`,
       );
       handleEntryStatusUpdate(activeContent, prevStatus);
     });
@@ -110,7 +109,7 @@ const useEntryActions = () => {
 
     toggleEntryStarredApi(id).catch(() => {
       Message.error(
-        `Failed to ${newStarred ? "star" : "unstar"} entry, please try again later.`,
+        `Failed to ${newStarred ? "star" : "unstar"} entry, please try again later`,
       );
       handleEntryStarredUpdate(activeContent, !newStarred);
     });
@@ -119,10 +118,11 @@ const useEntryActions = () => {
   const handleFetchContent = async () => {
     fetchOriginalArticle(activeContent.id)
       .then((response) => {
+        Message.success("Fetched content successfully");
         setActiveContent({ ...activeContent, content: response.data.content });
       })
       .catch(() => {
-        Message.error("Failed to fetch content, please try again later.");
+        Message.error("Failed to fetch content, please try again later");
       });
   };
 

@@ -19,6 +19,16 @@ import "./Transition.css";
 const Content = ({ info, getEntries, markAllAsRead }) => {
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
+  const setReadCount = useStore((state) => state.setReadCount);
+  const setStarredCount = useStore((state) => state.setStarredCount);
+  const setUnreadToday = useStore((state) => state.setUnreadToday);
+  const setUnreadTotal = useStore((state) => state.setUnreadTotal);
+  const updateFeedUnreadCount = useStore(
+    (state) => state.updateFeedUnreadCount,
+  );
+  const updateGroupUnreadCount = useStore(
+    (state) => state.updateGroupUnreadCount,
+  );
 
   const {
     filteredEntries,
@@ -33,6 +43,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setOffset,
     setTotal,
     setUnreadCount,
+    total,
+    unreadCount,
   } = useContext(ContentContext);
 
   const {
@@ -64,6 +76,41 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setShowArticleDetail(activeContent !== null);
   }, [activeContent]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (unreadCount === 0 || total === 0) {
+      return;
+    }
+
+    switch (info.from) {
+      case "all":
+        setUnreadTotal(() => unreadCount);
+        break;
+      case "today":
+        setUnreadToday(() => unreadCount);
+        break;
+      case "starred":
+        setStarredCount(() => total);
+        break;
+      case "history":
+        setReadCount(() => total);
+        break;
+      case "feed": {
+        const feedId = Number.parseInt(info.id);
+        updateFeedUnreadCount(feedId, unreadCount);
+        break;
+      }
+      case "group": {
+        const groupId = Number.parseInt(info.id);
+        updateGroupUnreadCount(groupId, unreadCount);
+        break;
+      }
+      default:
+        break;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [total, unreadCount]);
+
   const handleEntryClick = async (entry) => {
     setShowArticleDetail(false);
 
@@ -77,7 +124,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       }, 200);
 
       updateEntryStatus(entry.id, "read").catch(() => {
-        Message.error("Failed to mark entry as read, please try again later.");
+        Message.error("Failed to mark entry as read, please try again later");
         handleEntryStatusUpdate(entry, "unread");
       });
     }

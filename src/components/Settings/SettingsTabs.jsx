@@ -32,13 +32,16 @@ const SettingsTabs = () => {
         feedCount: feeds.filter((feed) => feed.category.id === group.id).length,
       }));
 
-      setFeeds(feeds.sort((a, b) => a.title.localeCompare(b.title, "en")));
+      const sortedFeeds = feeds.sort((a, b) =>
+        a.title.localeCompare(b.title, "en"),
+      );
+      setFeeds(sortedFeeds);
       setGroups(
         groupsWithFeedCount.sort((a, b) =>
           a.title.localeCompare(b.title, "en"),
         ),
       );
-      setShowFeeds(feeds);
+      setShowFeeds(sortedFeeds);
       setLoading(false);
     }
   };
