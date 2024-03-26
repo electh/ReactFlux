@@ -38,7 +38,7 @@ const useLoadMore = () => {
     try {
       const response = await getEntries(offset + 100);
       if (response?.data?.entries) {
-        setOffset(offset + 100);
+        setOffset((current) => current + 100);
         const newArticlesWithImage = response.data.entries.map(getFirstImage);
         const updatedAllArticles = [
           ...new Map(
