@@ -158,7 +158,7 @@ const Main = () => {
   useEffect(() => {
     const updateHeight = () => {
       const entryPanel = document.querySelector(".entry-panel");
-      const entryPanelHeight = entryPanel ? entryPanel.offsetHeight : 0;
+      const entryPanelHeight = entryPanel ? entryPanel.offsetHeight : 49;
       const viewportHeight = window.innerHeight;
       setAdjustedHeight(viewportHeight - entryPanelHeight);
     };

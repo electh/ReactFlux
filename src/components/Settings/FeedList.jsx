@@ -166,34 +166,22 @@ const FeedList = ({
       width: 100,
       render: (col, record) => (
         <Space>
-          <span
-            className="list-demo-actions-icon"
-            role="button"
-            tabIndex="0"
-            onClick={() => handleSelectFeed(record)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                handleSelectFeed(record);
-              }
-            }}
+          <button
             aria-label="Edit this feed"
+            className="list-item-action"
+            onClick={() => handleSelectFeed(record)}
+            type="button"
           >
             <IconEdit />
-          </span>
-          <span
-            className="list-demo-actions-icon"
-            role="button"
-            tabIndex="0"
-            onClick={() => handleRefreshFeed(record)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                handleRefreshFeed(record);
-              }
-            }}
+          </button>
+          <button
             aria-label="Refresh this feed"
+            className="list-item-action"
+            onClick={() => handleRefreshFeed(record)}
+            type="button"
           >
             <IconRefresh />
-          </span>
+          </button>
           <Popconfirm
             position="left"
             focusLocka
@@ -202,7 +190,7 @@ const FeedList = ({
               await handleDeleteFeed(record);
             }}
           >
-            <span className="list-demo-actions-icon">
+            <span className="list-item-action">
               <IconDelete />
             </span>
           </Popconfirm>
