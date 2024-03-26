@@ -5,24 +5,18 @@
   "dependencies": {
     "@arco-design/color": "^0.4.0",
     "@arco-design/web-react": "^2.61.1",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.8",
     "canvas-confetti": "^1.9.2",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.10",
     "html-react-parser": "^5.1.9",
-    "html-to-react": "^1.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-photo-view": "^1.2.4",
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
     "react-transition-group": "^4.4.5",
-    "serve": "^14.2.1",
     "validator": "^13.11.0",
-    "web-vitals": "^2.1.4",
     "zustand": "^4.5.2"
   },
   "scripts": {
@@ -31,12 +25,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prepare": "husky"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
