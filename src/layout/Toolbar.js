@@ -37,6 +37,7 @@ export default function Toolbar() {
   const isMobile = useStore((state) => state.isMobile);
   const [visible, setVisible] = useState(false);
   const setEntries = useStore((state) => state.setEntries);
+  const loading = useStore((state) => state.loading);
   const setNewFeedVisible = useModalStore((state) => state.setNewFeedVisible);
 
   const handelToggleStar = (entry) => {
@@ -112,6 +113,7 @@ export default function Toolbar() {
           <Tooltip content="Add feed" mini>
             <Button
               shape="round"
+              disabled={loading}
               icon={<IconPlus />}
               onClick={() => setNewFeedVisible(true)}
             />
