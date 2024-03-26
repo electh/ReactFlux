@@ -7,13 +7,13 @@ import {
   Tooltip,
 } from "@arco-design/web-react";
 import {
+  IconBgColors,
   IconMenuFold,
   IconMenuUnfold,
   IconMinusCircle,
   IconPlus,
   IconPoweroff,
   IconRecord,
-  IconSkin,
   IconStar,
   IconStarFill,
   IconUser,
@@ -76,7 +76,11 @@ export default function Toolbar() {
       </Space>
       <SideDrawer visible={visible} setVisible={setVisible} />
       <div
-        style={{ display: "flex", alignItems: "center", marginRight: "10px" }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginRight: "10px",
+        }}
       >
         <Space>
           <Button.Group style={{ display: isMobile ? "none" : "block" }}>
@@ -121,7 +125,7 @@ export default function Toolbar() {
                     setDrawVisible(true);
                   }}
                 >
-                  <IconSkin
+                  <IconBgColors
                     style={{
                       marginRight: 8,
                       fontSize: 16,
