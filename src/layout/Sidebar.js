@@ -139,9 +139,13 @@ export default function Sidebar({ style, setVisible }) {
               <span>Starred</span>
             </span>
             <span style={{ color: "var(--color-text-4)" }}>
-              {entries.filter((a) => a.starred === true).length === 0
+              {entries.filter(
+                (a) => a.starred === true && a.status === "unread",
+              ).length === 0
                 ? ""
-                : entries.filter((a) => a.starred === true).length}
+                : entries.filter(
+                    (a) => a.starred === true && a.status === "unread",
+                  ).length}
             </span>
           </div>
         </Menu.Item>
