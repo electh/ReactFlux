@@ -15,7 +15,7 @@ import {
   IconStar,
   IconUnorderedList,
 } from "@arco-design/web-react/icon";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import isURL from "validator/es/lib/isURL";
 
@@ -278,7 +278,9 @@ const Sidebar = () => {
                       >
                         {showFeedIcon && (
                           <img
-                            src={`https://icons.duckduckgo.com/ip3/${new URL(feed.site_url).hostname}.ico`}
+                            src={`https://icons.duckduckgo.com/ip3/${
+                              new URL(feed.site_url).hostname
+                            }.ico`}
                             alt="Icon"
                             style={{
                               marginRight: "8px",

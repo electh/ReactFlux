@@ -7,7 +7,7 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import useStore from "../../Store";
 import darkThemePreview from "../../assets/dark.png";
@@ -50,7 +50,9 @@ const Appearance = () => {
                 {({ checked }) => {
                   return (
                     <div
-                      className={`custom-radio-card ${checked ? "custom-radio-card-checked" : ""}`}
+                      className={`custom-radio-card ${
+                        checked ? "custom-radio-card-checked" : ""
+                      }`}
                     >
                       <img
                         className="theme-preview"

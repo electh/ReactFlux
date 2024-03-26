@@ -16,6 +16,7 @@ import {
   IconSunFill,
   IconUser,
 } from "@arco-design/web-react/icon";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";

@@ -9,6 +9,7 @@ import {
   IconStar,
   IconStarFill,
 } from "@arco-design/web-react/icon";
+import React from "react";
 
 import useStore from "../../Store";
 import useEntryActions from "../../hooks/useEntryActions";

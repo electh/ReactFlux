@@ -2,7 +2,7 @@ import { Divider, Tag, Typography } from "@arco-design/web-react";
 import { IconEmpty } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
-import { forwardRef, useState } from "react";
+import React, { forwardRef, useState } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import { Link, useNavigate } from "react-router-dom";

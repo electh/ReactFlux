@@ -16,7 +16,6 @@ const validateAndFormatFormFields = (form) => {
     }
   }
 
-  console.log(isFormValid);
   return isFormValid;
 };
 
