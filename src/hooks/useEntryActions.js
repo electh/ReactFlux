@@ -19,8 +19,8 @@ const useEntryActions = () => {
   const setStarredCount = useStore((state) => state.setStarredCount);
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
-  const updateFeedUnread = useStore((state) => state.updateFeedUnread);
-  const updateGroupUnread = useStore((state) => state.updateGroupUnread);
+  const updateFeedUnread = useStore((state) => state.updateFeedUnreadCount);
+  const updateGroupUnread = useStore((state) => state.updateGroupUnreadCount);
 
   const {
     entries,
