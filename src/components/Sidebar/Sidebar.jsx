@@ -89,14 +89,12 @@ const Sidebar = () => {
         setCollapsed(true);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path]);
 
   useEffect(() => {
     if (!loading) {
       setOpenKeys([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   return (

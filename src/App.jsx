@@ -27,7 +27,6 @@ const App = () => {
   useEffect(() => {
     initData();
     initTheme();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

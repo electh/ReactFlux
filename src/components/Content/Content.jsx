@@ -108,7 +108,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       default:
         break;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [total, unreadCount]);
 
   const handleEntryClick = async (entry) => {
@@ -164,7 +163,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeContent, filteredEntries, showArticleDetail]);
 
   const fetchEntries = async () => {
@@ -231,7 +229,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       entryDetailRef.current.scrollTo(0, 0);
     }
     setOffset(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [info]);
 
   return (

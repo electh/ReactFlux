@@ -36,7 +36,6 @@ const Login = () => {
     if (getAuth()) {
       navigate("/");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const healthCheck = async () => {
