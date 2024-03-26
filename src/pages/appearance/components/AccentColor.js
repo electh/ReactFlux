@@ -8,7 +8,7 @@ export default function AccentColor() {
   const setColor = useConfigStore((state) => state.setColor);
   return (
     <Space direction="vertical">
-      <Typography.Title heading={6} style={{ marginBottom: 0 }}>
+      <Typography.Title heading={6} style={{ margin: 0 }}>
         Accent color
       </Typography.Title>
       <div style={{ display: "flex" }}>
