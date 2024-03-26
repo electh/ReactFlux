@@ -38,7 +38,7 @@ const LazyLoadingImage = ({ src, alt, className, status, style }) => {
           key={src}
           initial={{ opacity: 0 }}
           animate={{ opacity: status === "read" ? 0.5 : 1 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.5 }}
         >
           <img src={src} alt={alt} className={className} style={style} />
         </motion.div>
