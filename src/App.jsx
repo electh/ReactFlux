@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 import "./App.css";
 import useStore from "./Store";
@@ -27,7 +27,6 @@ const App = () => {
   useEffect(() => {
     initData();
     initTheme();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

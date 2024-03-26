@@ -7,7 +7,7 @@ import {
   Tag,
 } from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import useStore from "../../Store";
 import { addGroup, deleteGroup, editGroup } from "../../apis";
@@ -149,7 +149,6 @@ const GroupList = ({ groups, loading, setGroups }) => {
           <Form
             form={groupForm}
             layout="vertical"
-            onChange={(value, values) => console.log(value, values)}
             onSubmit={(values) =>
               handleEditGroup(selectedGroup.id, values.title)
             }

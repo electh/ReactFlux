@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import { IconDelete, IconEdit, IconRefresh } from "@arco-design/web-react/icon";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import useStore from "../../Store";
 import { deleteFeed, editFeed, refreshFeed } from "../../apis";
@@ -111,8 +111,7 @@ const FeedList = ({
       dataIndex: "title",
       sorter: (a, b) => a.title.localeCompare(b.title, "en"),
       render: (title, feed) => {
-        const displayText =
-          feed.parsing_error_count > 0 ? `⚠️ ${title}` : title;
+        const displayText = feed.parsing_error_count > 0 ? `⚠️ ${title}` : title;
         const tooltipText =
           feed.parsing_error_count > 0
             ? `${title} ⚠️ Parsing error count: ${feed.parsing_error_count}`

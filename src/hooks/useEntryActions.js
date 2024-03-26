@@ -109,7 +109,9 @@ const useEntryActions = () => {
 
     toggleEntryStarredApi(id).catch(() => {
       Message.error(
-        `Failed to ${newStarred ? "star" : "unstar"} entry, please try again later`,
+        `Failed to ${
+          newStarred ? "star" : "unstar"
+        } entry, please try again later`,
       );
       handleEntryStarredUpdate(activeContent, !newStarred);
     });

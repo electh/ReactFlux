@@ -5,7 +5,7 @@ import {
   IconFolder,
   IconSkin,
 } from "@arco-design/web-react/icon";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { getFeeds, getGroups } from "../../apis";
 import Appearance from "./Appearance";

@@ -1,6 +1,7 @@
 import { Card, Typography } from "@arco-design/web-react";
 import { IconStarFill } from "@arco-design/web-react/icon";
 import classNames from "classnames";
+import React from "react";
 
 import useStore from "../../Store";
 import { generateRelativeTime } from "../../utils/Date";

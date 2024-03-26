@@ -6,7 +6,7 @@ import {
   Select,
   Switch,
 } from "@arco-design/web-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import useStore from "../../Store";

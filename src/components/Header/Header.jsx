@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from "@arco-design/web-react";
 import {
+  IconGithub,
   IconMenu,
   IconMoonFill,
   IconPlus,
@@ -16,6 +17,7 @@ import {
   IconSunFill,
   IconUser,
 } from "@arco-design/web-react/icon";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
@@ -65,6 +67,14 @@ const Header = () => {
               onClick={() => setVisible("addFeed", true)}
             />
           </Tooltip>
+          <Button
+            shape="circle"
+            size="small"
+            icon={<IconGithub />}
+            onClick={() =>
+              window.open("https://github.com/electh/ReactFlux", "_blank")
+            }
+          />
           <Button
             shape="circle"
             size="small"
