@@ -1,5 +1,5 @@
 .card-custom-hover-style {
-  transition-property: box-shadow;
+  transition-property: box-shadow !important;
 }
 
 .card-custom-hover-style .arco-card-body {

@@ -2,6 +2,7 @@ import ReactHtmlParser from "html-react-parser";
 import { useConfigStore } from "../../../store/configStore";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
+import { useStore } from "../../../store/Store";
 
 // 自定义解析规则，用于替换 img 标签
 const htmlParserOptions = {
@@ -27,6 +28,7 @@ export default function EntryBody({ htmlString }) {
   const reactElement = ReactHtmlParser(htmlString, htmlParserOptions);
   const contentSize = useConfigStore((state) => state.contentSize);
   const align = useConfigStore((state) => state.align);
+  const isMobile = useStore((state) => state.isMobile);
   return (
     <div
       className="article-body"
@@ -39,7 +41,9 @@ export default function EntryBody({ htmlString }) {
         textAlign: align,
       }}
     >
-      <PhotoProvider maskOpacity={0.7}>{reactElement}</PhotoProvider>
+      <PhotoProvider maskOpacity={0.7} bannerVisible={!isMobile}>
+        {reactElement}
+      </PhotoProvider>
     </div>
   );
 }

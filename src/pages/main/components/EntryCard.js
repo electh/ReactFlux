@@ -46,7 +46,13 @@ const EntryCard = ({ entry }) => {
         nav(formatURL(from, id, entry));
         handelClickCard(entry);
       }}
-      style={{ width: "100%", marginBottom: "10px", cursor: "pointer" }}
+      style={{
+        width: "100%",
+        marginBottom: "10px",
+        cursor: "pointer",
+        borderRadius: "8px",
+        overflow: "hidden",
+      }}
       cover={
         entry.imgSrc ? (
           <div

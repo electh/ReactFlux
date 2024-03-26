@@ -42,7 +42,13 @@ const EntryCardCompact = ({ entry }) => {
       onClick={() => {
         handelClickCard(entry);
       }}
-      style={{ width: "100%", marginBottom: "10px", cursor: "pointer" }}
+      style={{
+        width: "100%",
+        marginBottom: "10px",
+        cursor: "pointer",
+        borderRadius: "8px",
+        overflow: "hidden",
+      }}
       cover={null}
     >
       <Meta
