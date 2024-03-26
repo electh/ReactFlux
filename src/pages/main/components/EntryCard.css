@@ -19,6 +19,12 @@
   scale: 1.05;
 }
 
+@media screen and (max-width: 700px) {
+  .card-custom-hover-style:hover .card-cover {
+    scale: 1;
+  }
+}
+
 .selected {
   outline: 4px solid var(--color-fill-3);
 }
