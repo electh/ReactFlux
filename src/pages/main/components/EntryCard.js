@@ -49,13 +49,26 @@ const EntryCard = ({ entry }) => {
       style={{ width: "100%", marginBottom: "10px", cursor: "pointer" }}
       cover={
         entry.imgSrc ? (
-          <div style={{ height: 140, overflow: "hidden" }}>
+          <div
+            style={{
+              overflow: "hidden",
+              width: isMobile ? "100%" : "280px",
+              aspectRatio: "16/9",
+              position: "relative",
+            }}
+          >
             <LazyLoadingImage
               alt={entry.title}
               src={entry.imgSrc}
               className="card-cover"
-              width={isMobile ? "100%" : "280px"}
-              height="140px"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                position: "absolute",
+                top: 0,
+                left: 0,
+              }}
               status={entry.status}
             />
           </div>

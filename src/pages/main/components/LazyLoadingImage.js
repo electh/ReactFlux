@@ -1,17 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import "./LazyLoadingImage.css";
-import { Skeleton } from "@arco-design/web-react";
 
-const LazyLoadingImage = ({
-  src,
-  alt,
-  width,
-  height,
-  className,
-  status,
-  borderRadius,
-}) => {
+const LazyLoadingImage = ({ src, alt, className, status, style }) => {
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef(null);
 
@@ -42,31 +33,22 @@ const LazyLoadingImage = ({
 
   return (
     <div ref={imgRef}>
-      <Skeleton
-        loading={!loaded}
-        animation
-        text={{ rows: 0 }}
-        image={{
-          style: {
-            width: width,
-            height: height,
-          },
-        }}
-      >
+      {loaded ? (
         <div className={status === "read" ? "read" : "unread"}>
-          <img
-            src={src}
-            alt={alt}
-            className={className}
-            style={{
-              width: width,
-              height: height,
-              objectFit: "cover",
-              borderRadius: borderRadius,
-            }}
-          />
+          <img src={src} alt={alt} className={className} style={style} />
         </div>
-      </Skeleton>
+      ) : (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "var(--color-fill-2)",
+            position: "absolute",
+            left: 0,
+            top: 0,
+          }}
+        />
+      )}
     </div>
   );
 };
