@@ -1,7 +1,5 @@
 import { createContext, useMemo, useState } from "react";
 
-import useStore from "../../Store";
-
 const ContentContext = createContext(null);
 
 const ContentProvider = ({ children }) => {
@@ -27,10 +25,6 @@ const ContentProvider = ({ children }) => {
   const [filterString, setFilterString] = useState("");
   // 初始 loading
   const [loading, setLoading] = useState(true);
-  // 更新 menu 中 feed 未读数
-  const updateFeedUnread = useStore((state) => state.updateFeedUnread);
-  // 更新 menu 中 group 未读数
-  const updateGroupUnread = useStore((state) => state.updateGroupUnread);
 
   const value = useMemo(
     () => ({
@@ -56,8 +50,6 @@ const ContentProvider = ({ children }) => {
       setUnreadCount,
       total,
       unreadCount,
-      updateFeedUnread,
-      updateGroupUnread,
     }),
     [
       entries,
@@ -71,8 +63,6 @@ const ContentProvider = ({ children }) => {
       offset,
       total,
       unreadCount,
-      updateFeedUnread,
-      updateGroupUnread,
     ],
   );
 

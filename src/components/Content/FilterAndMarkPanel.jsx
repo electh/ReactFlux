@@ -24,16 +24,19 @@ const FilterAndMarkPanel = forwardRef(({ info, markAllAsRead }, ref) => {
   const initData = useStore((state) => state.initData);
 
   const handleMarkAllAsRead = useCallback(async () => {
-    const response = await markAllAsRead();
-    if (response) {
-      Message.success("Success");
-      await initData();
-      setEntries(entries.map((entry) => ({ ...entry, status: "read" })));
-      setFilteredEntries(
-        filteredEntries.map((entry) => ({ ...entry, status: "read" })),
-      );
-      setUnreadCount(0);
-    }
+    markAllAsRead()
+      .then(() => {
+        Message.success("Marked all as read successfully");
+        initData();
+        setEntries(entries.map((entry) => ({ ...entry, status: "read" })));
+        setFilteredEntries(
+          filteredEntries.map((entry) => ({ ...entry, status: "read" })),
+        );
+        setUnreadCount(0);
+      })
+      .catch(() => {
+        Message.error("Failed to mark all as read");
+      });
   }, [
     entries,
     filteredEntries,

@@ -1,3 +1,4 @@
+import { Message } from "@arco-design/web-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
@@ -6,7 +7,6 @@ import { updateEntryStatus } from "../../apis";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import useLoadMore from "../../hooks/useLoadMore";
-import { isInLast24Hours } from "../../utils/Date";
 import ActionButtons from "../Article/ActionButtons";
 import ActionButtonsMobile from "../Article/ActionButtonsMobile";
 import ArticleDetail from "../Article/ArticleDetail";
@@ -17,17 +17,20 @@ import FilterAndMarkPanel from "./FilterAndMarkPanel";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const unreadTotal = useStore((state) => state.unreadTotal);
-  const unreadToday = useStore((state) => state.unreadToday);
-  const readCount = useStore((state) => state.readCount);
   const activeContent = useStore((state) => state.activeContent);
-  const setUnreadTotal = useStore((state) => state.setUnreadTotal);
-  const setUnreadToday = useStore((state) => state.setUnreadToday);
-  const setReadCount = useStore((state) => state.setReadCount);
   const setActiveContent = useStore((state) => state.setActiveContent);
+  const setReadCount = useStore((state) => state.setReadCount);
+  const setStarredCount = useStore((state) => state.setStarredCount);
+  const setUnreadToday = useStore((state) => state.setUnreadToday);
+  const setUnreadTotal = useStore((state) => state.setUnreadTotal);
+  const updateFeedUnreadCount = useStore(
+    (state) => state.updateFeedUnreadCount,
+  );
+  const updateGroupUnreadCount = useStore(
+    (state) => state.updateGroupUnreadCount,
+  );
 
   const {
-    entries,
     filteredEntries,
     filterStatus,
     loading,
@@ -40,13 +43,17 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setOffset,
     setTotal,
     setUnreadCount,
+    total,
     unreadCount,
-    updateFeedUnread,
-    updateGroupUnread,
   } = useContext(ContentContext);
 
-  const { handleFetchContent, toggleEntryStarred, toggleEntryStatus } =
-    useEntryActions();
+  const {
+    handleFetchContent,
+    toggleEntryStarred,
+    toggleEntryStatus,
+    handleEntryStatusUpdate,
+  } = useEntryActions();
+
   const {
     handleBKey,
     handleDKey,
@@ -56,6 +63,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleRightKey,
     handleSKey,
   } = useKeyHandlers();
+
   const { getFirstImage } = useLoadMore();
 
   const [showArticleDetail, setShowArticleDetail] = useState(false);
@@ -68,9 +76,40 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setShowArticleDetail(activeContent !== null);
   }, [activeContent]);
 
-  const updateLocalEntryStatus = (entries, entryId, status) => {
-    return entries.map((e) => (e.id === entryId ? { ...e, status } : e));
-  };
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (unreadCount === 0 || total === 0) {
+      return;
+    }
+
+    switch (info.from) {
+      case "all":
+        setUnreadTotal(() => unreadCount);
+        break;
+      case "today":
+        setUnreadToday(() => unreadCount);
+        break;
+      case "starred":
+        setStarredCount(() => total);
+        break;
+      case "history":
+        setReadCount(() => total);
+        break;
+      case "feed": {
+        const feedId = Number.parseInt(info.id);
+        updateFeedUnreadCount(feedId, unreadCount);
+        break;
+      }
+      case "group": {
+        const groupId = Number.parseInt(info.id);
+        updateGroupUnreadCount(groupId, unreadCount);
+        break;
+      }
+      default:
+        break;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [total, unreadCount]);
 
   const handleEntryClick = async (entry) => {
     setShowArticleDetail(false);
@@ -80,21 +119,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }, 200);
 
     if (entry.status === "unread") {
-      const response = await updateEntryStatus(entry.id, "read");
-      if (response) {
-        updateFeedUnread(entry.feed.id, "read");
-        updateGroupUnread(entry.feed.category.id, "read");
-        setEntries(updateLocalEntryStatus(entries, entry.id, "read"));
-        setFilteredEntries(
-          updateLocalEntryStatus(filteredEntries, entry.id, "read"),
-        );
-        setUnreadTotal(Math.max(0, unreadTotal - 1));
-        setUnreadCount(Math.max(0, unreadCount - 1));
-        setReadCount(readCount + 1);
-        if (isInLast24Hours(entry.published_at)) {
-          setUnreadToday(Math.max(0, unreadToday - 1));
-        }
-      }
+      setTimeout(() => {
+        handleEntryStatusUpdate(entry, "read");
+      }, 200);
+
+      updateEntryStatus(entry.id, "read").catch(() => {
+        Message.error("Failed to mark entry as read, please try again later");
+        handleEntryStatusUpdate(entry, "unread");
+      });
     }
 
     if (entryDetailRef.current) {

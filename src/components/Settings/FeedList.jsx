@@ -9,15 +9,28 @@ import {
   Switch,
   Table,
   Tag,
+  Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import { IconDelete, IconEdit } from "@arco-design/web-react/icon";
-import { useState } from "react";
+import { IconDelete, IconEdit, IconRefresh } from "@arco-design/web-react/icon";
+import { useEffect, useState } from "react";
 
 import useStore from "../../Store";
-import { deleteFeed, editFeed } from "../../apis";
+import { deleteFeed, editFeed, refreshFeed } from "../../apis";
 import { generateRelativeTime } from "../../utils/Date";
 import { includesIgnoreCase } from "../../utils/Filter";
+
+const getSortedFeedsByErrorCount = (feeds) => {
+  return feeds.slice().sort((a, b) => {
+    if (a.parsing_error_count > 0 && b.parsing_error_count === 0) {
+      return -1;
+    }
+    if (a.parsing_error_count === 0 && b.parsing_error_count > 0) {
+      return 1;
+    }
+    return 0;
+  });
+};
 
 const FeedList = ({
   feeds,
@@ -32,17 +45,9 @@ const FeedList = ({
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
   const [selectedFeed, setSelectedFeed] = useState({});
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
-  const sortedFeeds = showFeeds.sort((a, b) => {
-    if (a.parsing_error_count > 0 && b.parsing_error_count === 0) {
-      return -1;
-    }
-    if (a.parsing_error_count === 0 && b.parsing_error_count > 0) {
-      return 1;
-    }
-    return 0;
-  });
-
+  let sortedFeeds = getSortedFeedsByErrorCount(showFeeds);
   const tableData = sortedFeeds.map((feed) => ({
     key: feed.id,
     title: feed.title,
@@ -52,6 +57,14 @@ const FeedList = ({
     parsing_error_count: feed.parsing_error_count,
     feed: feed,
   }));
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleSelectFeed = (record) => {
     setSelectedFeed(record.feed);
@@ -64,16 +77,34 @@ const FeedList = ({
     });
   };
 
-  const handleDeleteFeed = async (record) => {
-    const response = await deleteFeed(record.feed.id);
-    if (response) {
-      setFeeds(feeds.filter((feed) => feed.id !== record.feed.id));
-      setShowFeeds(sortedFeeds.filter((feed) => feed.id !== record.feed.id));
-      Message.success("Unfollowed");
-      await initData();
-    }
+  const handleRefreshFeed = async (record) => {
+    refreshFeed(record.feed.id)
+      .then(() => {
+        Message.success("Refreshed");
+        record.feed.parsing_error_count = 0;
+        initData();
+      })
+      .catch(() => {
+        Message.error("Failed to refresh");
+        record.feed.parsing_error_count++;
+      })
+      .finally(() => {
+        setFeeds(feeds);
+        sortedFeeds = getSortedFeedsByErrorCount(sortedFeeds);
+        setShowFeeds(sortedFeeds);
+      });
   };
 
+  const handleDeleteFeed = async (record) => {
+    deleteFeed(record.feed.id).then(() => {
+      Message.success("Unfollowed");
+      setFeeds(feeds.filter((feed) => feed.id !== record.feed.id));
+      setShowFeeds(sortedFeeds.filter((feed) => feed.id !== record.feed.id));
+      initData();
+    });
+  };
+
+  const isMobileView = screenWidth <= 700;
   const columns = [
     {
       title: "Title",
@@ -82,31 +113,42 @@ const FeedList = ({
       render: (title, feed) => {
         const displayText =
           feed.parsing_error_count > 0 ? `⚠️ ${title}` : title;
+        const tooltipText =
+          feed.parsing_error_count > 0
+            ? `${title} ⚠️ Parsing error count: ${feed.parsing_error_count}`
+            : title;
 
         return (
-          <Typography.Ellipsis expandable={false} showTooltip={true}>
-            {displayText}
+          <Typography.Ellipsis expandable={false}>
+            <Tooltip mini content={tooltipText} position="left">
+              {displayText}
+            </Tooltip>
           </Typography.Ellipsis>
         );
       },
     },
-    {
+
+    !isMobileView && {
       title: "Url",
       dataIndex: "feed_url",
       sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
       render: (col) => (
-        <Typography.Ellipsis expandable={false} showTooltip={true}>
-          {col}
+        <Typography.Ellipsis expandable={false}>
+          <Tooltip mini content={col} position="left">
+            {col}
+          </Tooltip>
         </Typography.Ellipsis>
       ),
     },
+
     {
       title: "Group",
       dataIndex: "category.title",
       sorter: (a, b) => a.category.title.localeCompare(b.category.title, "en"),
       render: (col) => <Tag>{col}</Tag>,
     },
-    {
+
+    !isMobileView && {
       title: "Checked at",
       dataIndex: "checked_at",
       sorter: (a, b) => a.checked_at.localeCompare(b.checked_at, "en"),
@@ -116,27 +158,30 @@ const FeedList = ({
         </Typography.Ellipsis>
       ),
     },
+
     {
       title: "Actions",
       dataIndex: "op",
       fixed: "right",
-      width: 80,
+      width: 100,
       render: (col, record) => (
         <Space>
-          <span
-            className="list-demo-actions-icon"
-            role="button"
-            tabIndex="0"
-            onClick={() => handleSelectFeed(record)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                handleSelectFeed(record);
-              }
-            }}
+          <button
             aria-label="Edit this feed"
+            className="list-item-action"
+            onClick={() => handleSelectFeed(record)}
+            type="button"
           >
             <IconEdit />
-          </span>
+          </button>
+          <button
+            aria-label="Refresh this feed"
+            className="list-item-action"
+            onClick={() => handleRefreshFeed(record)}
+            type="button"
+          >
+            <IconRefresh />
+          </button>
           <Popconfirm
             position="left"
             focusLocka
@@ -145,14 +190,14 @@ const FeedList = ({
               await handleDeleteFeed(record);
             }}
           >
-            <span className="list-demo-actions-icon">
+            <span className="list-item-action">
               <IconDelete />
             </span>
           </Popconfirm>
         </Space>
       ),
     },
-  ];
+  ].filter(Boolean);
 
   const handleEditFeed = async (
     feedId,
@@ -162,31 +207,30 @@ const FeedList = ({
     isFullText,
   ) => {
     setFeedModalLoading(true);
-    const response = await editFeed(
-      feedId,
-      newUrl,
-      newTitle,
-      groupId,
-      isFullText,
-    );
-    if (response) {
-      setFeeds(
-        feeds.map((feed) => (feed.id === feedId ? response.data : feed)),
-      );
-      setShowFeeds(
-        sortedFeeds.map((feed) => (feed.id === feedId ? response.data : feed)),
-      );
-      Message.success("Feed updated successfully");
-      setFeedModalVisible(false);
-      await initData();
-    }
+    editFeed(feedId, newUrl, newTitle, groupId, isFullText)
+      .then((response) => {
+        setFeeds(
+          feeds.map((feed) => (feed.id === feedId ? response.data : feed)),
+        );
+        setShowFeeds(
+          sortedFeeds.map((feed) =>
+            feed.id === feedId ? response.data : feed,
+          ),
+        );
+        Message.success("Feed updated successfully");
+        setFeedModalVisible(false);
+        initData();
+      })
+      .catch(() => {
+        Message.error("Failed to update feed");
+      });
     setFeedModalLoading(false);
     feedForm.resetFields();
   };
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <Input.Search
           searchButton
           placeholder="Search feed title or url"
@@ -208,10 +252,12 @@ const FeedList = ({
       <Table
         columns={columns}
         data={tableData}
-        size={"small"}
         loading={loading}
+        pagePosition="bottomCenter"
         scroll={{ x: true }}
+        size={"small"}
         style={{ width: "100%" }}
+        borderCell={true}
       />
       {selectedFeed && (
         <Modal
@@ -228,22 +274,22 @@ const FeedList = ({
         >
           <Form
             form={feedForm}
+            labelCol={{ span: 7 }}
             layout="vertical"
-            onChange={(value, values) => console.log(value, values)}
-            onSubmit={(values) =>
-              handleEditFeed(
-                selectedFeed.id,
-                values.url,
-                values.title,
-                values.group,
-                values.crawler,
-              )
-            }
-            labelCol={{
-              span: 7,
-            }}
-            wrapperCol={{
-              span: 17,
+            wrapperCol={{ span: 17 }}
+            onSubmit={(values) => {
+              const url = values.url.trim();
+              if (url) {
+                handleEditFeed(
+                  selectedFeed.id,
+                  values.url,
+                  values.title,
+                  values.group,
+                  values.crawler,
+                );
+              } else {
+                Message.error("Feed URL cannot be empty");
+              }
             }}
           >
             <Form.Item

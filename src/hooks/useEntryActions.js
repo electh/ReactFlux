@@ -1,3 +1,4 @@
+import { Message } from "@arco-design/web-react";
 import Confetti from "canvas-confetti";
 import { useContext } from "react";
 
@@ -8,19 +9,17 @@ import {
   updateEntryStatus,
 } from "../apis";
 import ContentContext from "../components/Content/ContentContext";
-import { isInLast24Hours } from "../utils/Date";
+import { checkIsInLast24Hours } from "../utils/Date";
 
 const useEntryActions = () => {
-  const unreadTotal = useStore((state) => state.unreadTotal);
   const setUnreadTotal = useStore((state) => state.setUnreadTotal);
-  const unreadToday = useStore((state) => state.unreadToday);
   const setUnreadToday = useStore((state) => state.setUnreadToday);
-  const readCount = useStore((state) => state.readCount);
   const setReadCount = useStore((state) => state.setReadCount);
-  const starredCount = useStore((state) => state.starredCount);
   const setStarredCount = useStore((state) => state.setStarredCount);
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
+  const updateFeedUnread = useStore((state) => state.updateFeedUnreadCount);
+  const updateGroupUnread = useStore((state) => state.updateGroupUnreadCount);
 
   const {
     entries,
@@ -28,92 +27,119 @@ const useEntryActions = () => {
     setEntries,
     setFilteredEntries,
     setUnreadCount,
-    unreadCount,
-    updateFeedUnread,
-    updateGroupUnread,
   } = useContext(ContentContext);
 
-  const updateEntries = (entries, activeContent, updateFunction) => {
-    return entries.map((entry) =>
-      entry.id === activeContent.id ? updateFunction(entry) : entry,
-    );
+  const updateEntries = (entries, entry, updateFunction) => {
+    return entries.map((e) => (e.id === entry.id ? updateFunction(e) : e));
   };
 
-  const updateUI = (newContentStatus, updateFunction) => {
-    setActiveContent({ ...activeContent, ...newContentStatus });
-    setEntries(updateEntries(entries, activeContent, updateFunction));
-    setFilteredEntries(
-      updateEntries(filteredEntries, activeContent, updateFunction),
-    );
+  const updateUI = (entry, newContentStatus, updateFunction) => {
+    setActiveContent({ ...entry, ...newContentStatus });
+    setEntries(updateEntries(entries, entry, updateFunction));
+    setFilteredEntries(updateEntries(filteredEntries, entry, updateFunction));
   };
 
-  const handleToggleStatus = async (newStatus) => {
-    const response = await updateEntryStatus(activeContent.id, newStatus);
-    if (response) {
-      updateFeedUnread(activeContent.feed.id, newStatus);
-      updateGroupUnread(activeContent.feed.category.id, newStatus);
-      if (newStatus === "read") {
-        setUnreadTotal(Math.max(0, unreadTotal - 1));
-        setUnreadCount(Math.max(0, unreadCount - 1));
-        setReadCount(readCount + 1);
-        if (isInLast24Hours(activeContent.published_at)) {
-          setUnreadToday(Math.max(0, unreadToday - 1));
-        }
-      } else {
-        setUnreadTotal(unreadTotal + 1);
-        setUnreadCount(unreadCount + 1);
-        setReadCount(Math.max(0, readCount - 1));
-        if (isInLast24Hours(activeContent.published_at)) {
-          setUnreadToday(unreadToday + 1);
-        }
+  const handleEntryStatusUpdate = (entry, newStatus) => {
+    const { feed } = entry;
+    const feedId = feed.id;
+    const groupId = feed.category.id;
+    const isInLast24Hours = checkIsInLast24Hours(entry.published_at);
+
+    updateFeedUnread(feedId, newStatus);
+    updateGroupUnread(groupId, newStatus);
+
+    if (newStatus === "read") {
+      setUnreadTotal((current) => Math.max(0, current - 1));
+      setUnreadCount((current) => Math.max(0, current - 1));
+      setReadCount((current) => current + 1);
+      if (isInLast24Hours) {
+        setUnreadToday((current) => Math.max(0, current - 1));
       }
-      updateUI({ status: newStatus }, (entry) => ({
-        ...entry,
-        status: newStatus,
-      }));
+    } else {
+      setUnreadTotal((current) => current + 1);
+      setUnreadCount((current) => current + 1);
+      setReadCount((current) => Math.max(0, current - 1));
+      if (isInLast24Hours) {
+        setUnreadToday((current) => current + 1);
+      }
     }
+
+    updateUI(entry, { status: newStatus }, (entry) => ({
+      ...entry,
+      status: newStatus,
+    }));
+  };
+
+  const handleEntryStarredUpdate = (entry, newStarred) => {
+    if (newStarred) {
+      setStarredCount((current) => current + 1);
+      Confetti({
+        particleCount: 100,
+        angle: 120,
+        spread: 70,
+        origin: { x: 1, y: 1 },
+      });
+    } else {
+      setStarredCount((current) => Math.max(0, current - 1));
+    }
+
+    updateUI(entry, { starred: newStarred }, (entry) => ({
+      ...entry,
+      starred: newStarred,
+    }));
+  };
+
+  const handleToggleStatus = async () => {
+    const prevStatus = activeContent.status;
+    const newStatus = prevStatus === "read" ? "unread" : "read";
+    handleEntryStatusUpdate(activeContent, newStatus);
+
+    updateEntryStatus(activeContent.id, newStatus).catch(() => {
+      Message.error(
+        `Failed to mark entry as ${newStatus}, please try again later`,
+      );
+      handleEntryStatusUpdate(activeContent, prevStatus);
+    });
   };
 
   const handleToggleStarred = async () => {
+    const { id } = activeContent;
     const newStarred = !activeContent.starred;
-    const response = await toggleEntryStarredApi(activeContent.id);
-    if (response) {
-      updateUI({ starred: newStarred }, (entry) => ({
-        ...entry,
-        starred: newStarred,
-      }));
-      newStarred === true &&
-        Confetti({
-          particleCount: 100,
-          angle: 120,
-          spread: 70,
-          origin: { x: 1, y: 1 },
-        });
-      if (newStarred) {
-        setStarredCount(starredCount + 1);
-      } else {
-        setStarredCount(Math.max(0, starredCount - 1));
-      }
-    }
+    handleEntryStarredUpdate(activeContent, newStarred);
+
+    toggleEntryStarredApi(id).catch(() => {
+      Message.error(
+        `Failed to ${newStarred ? "star" : "unstar"} entry, please try again later`,
+      );
+      handleEntryStarredUpdate(activeContent, !newStarred);
+    });
   };
 
   const handleFetchContent = async () => {
-    const response = await fetchOriginalArticle(activeContent.id);
-    if (response) {
-      setActiveContent({ ...activeContent, content: response.data.content });
-    }
+    fetchOriginalArticle(activeContent.id)
+      .then((response) => {
+        Message.success("Fetched content successfully");
+        setActiveContent({ ...activeContent, content: response.data.content });
+      })
+      .catch(() => {
+        Message.error("Failed to fetch content, please try again later");
+      });
   };
 
   const toggleEntryStatus = () => {
-    const newStatus = activeContent.status === "read" ? "unread" : "read";
-    handleToggleStatus(newStatus);
+    handleToggleStatus();
   };
 
   const toggleEntryStarred = () => {
     handleToggleStarred();
   };
 
-  return { handleFetchContent, toggleEntryStatus, toggleEntryStarred };
+  return {
+    handleEntryStatusUpdate,
+    handleFetchContent,
+    toggleEntryStarred,
+    toggleEntryStatus,
+  };
 };
 
 export default useEntryActions;

@@ -1,14 +1,22 @@
-.list-demo-actions-icon {
+.list-item-action {
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   transition: all 0.1s;
+  border: none;
+  background: transparent;
+  padding: 0;
 }
 
-.list-demo-actions-icon:hover {
+.list-item-action:hover {
   background-color: var(--color-fill-3);
+}
+
+.list-item-action:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-fill-3);
 }

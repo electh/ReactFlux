@@ -20,6 +20,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { getAuth, setAuth } from "../utils/Auth";
+import {
+  handleEnterKeyToSubmit,
+  validateAndFormatFormFields,
+} from "../utils/Form";
 
 const Login = () => {
   const [loginForm] = useForm();
@@ -102,72 +106,79 @@ const Login = () => {
             }}
           >
             <Form
+              autoComplete="off"
               form={loginForm}
               layout="vertical"
-              autoComplete="off"
-              // onChange={(value, values) => console.log(value, values)}
-              onSubmit={handleLogin}
+              onSubmit={() => {
+                if (validateAndFormatFormFields(loginForm)) {
+                  handleLogin();
+                } else {
+                  Message.error("Please fill in all required fields");
+                }
+              }}
             >
               <Form.Item
-                label="Server address"
                 field="server"
+                label="Server address"
                 rules={[{ required: true }]}
+                onKeyDown={(event) => {
+                  handleEnterKeyToSubmit(event, loginForm);
+                }}
               >
                 <Input
                   disabled={loading}
+                  placeholder="Please input server address"
                   prefix={<IconHome />}
-                  placeholder="please input server address"
                 />
               </Form.Item>
-              {method === "token" ? (
+              {method === "token" && (
                 <Form.Item
-                  label="API Token"
                   field="token"
+                  label="API Token"
                   rules={[{ required: true }]}
+                  onKeyDown={(event) => {
+                    handleEnterKeyToSubmit(event, loginForm);
+                  }}
                 >
                   <Input
                     disabled={loading}
+                    placeholder="Please input api token"
                     prefix={<IconLock />}
-                    placeholder="please input api token"
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        loginForm.submit();
-                      }
-                    }}
                   />
                 </Form.Item>
-              ) : null}
-              {method === "user" ? (
+              )}
+              {method === "user" && (
                 <>
                   <Form.Item
-                    label="Username"
                     field="username"
+                    label="Username"
                     rules={[{ required: true }]}
+                    onKeyDown={(event) => {
+                      handleEnterKeyToSubmit(event, loginForm);
+                    }}
                   >
                     <Input
                       disabled={loading}
                       prefix={<IconUser />}
-                      placeholder="please input username"
+                      placeholder="Please input username"
                     />
                   </Form.Item>
                   <Form.Item
-                    label="Password"
                     field="password"
+                    label="Password"
                     rules={[{ required: true }]}
+                    onKeyDown={(event) => {
+                      handleEnterKeyToSubmit(event, loginForm);
+                    }}
                   >
                     <Input.Password
                       disabled={loading}
                       prefix={<IconLock />}
-                      placeholder="please input password"
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                          loginForm.submit();
-                        }
-                      }}
+                      placeholder="Please input password"
                     />
                   </Form.Item>
                 </>
-              ) : null}
+              )}
             </Form>
             <Button
               loading={loading}

@@ -31,40 +31,22 @@ const GroupTitle = ({ group, isOpen }) => (
     <Typography.Ellipsis
       expandable={false}
       showTooltip={true}
-      style={{ width: group.unread ? "80%" : "100%" }}
+      style={{ width: group.unreadCount ? "80%" : "100%" }}
     >
       {isOpen ? <IconDown /> : <IconRight />}
       {group.title}
     </Typography.Ellipsis>
-    {group.unread > 0 && (
+    {group.unreadCount > 0 && (
       <Typography.Ellipsis
         className="unread-count"
         expandable={false}
         showTooltip={true}
       >
-        {group.unread}
+        {group.unreadCount}
       </Typography.Ellipsis>
     )}
   </div>
 );
-
-// const CustomMenuItem = ({ count, icon, key, label, onClick }) => (
-//   <MenuItem key={key} onClick={onClick}>
-//     <div className="custom-menu-item">
-//       <span>
-//         {icon}
-//         {label}
-//       </span>
-//       <Typography.Ellipsis
-//         className="item-count"
-//         expandable={false}
-//         showTooltip={true}
-//       >
-//         {count || ""}
-//       </Typography.Ellipsis>
-//     </div>
-//   </MenuItem>
-// );
 
 const Sidebar = () => {
   const location = useLocation();
@@ -98,8 +80,16 @@ const Sidebar = () => {
     return groupedFeeds;
   }, {});
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setSelectedKeys([path]);
+    if (!collapsed) {
+      const viewportWidth = window.innerWidth;
+      if (viewportWidth <= 992) {
+        setCollapsed(true);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path]);
 
   useEffect(() => {
@@ -282,7 +272,9 @@ const Sidebar = () => {
                       <Typography.Ellipsis
                         expandable={false}
                         showTooltip={true}
-                        style={{ width: feed.unread !== 0 ? "80%" : "100%" }}
+                        style={{
+                          width: feed.unreadCount !== 0 ? "80%" : "100%",
+                        }}
                       >
                         {showFeedIcon && (
                           <img
@@ -297,7 +289,7 @@ const Sidebar = () => {
                         )}
                         {feed.title}
                       </Typography.Ellipsis>
-                      {feed.unread !== 0 && (
+                      {feed.unreadCount !== 0 && (
                         <Typography.Ellipsis
                           expandable={false}
                           showTooltip={true}
@@ -308,7 +300,7 @@ const Sidebar = () => {
                             justifyContent: "flex-end",
                           }}
                         >
-                          {feed.unread}
+                          {feed.unreadCount}
                         </Typography.Ellipsis>
                       )}
                     </div>
