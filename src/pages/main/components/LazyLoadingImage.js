@@ -32,29 +32,28 @@ const LazyLoadingImage = ({ src, alt, className, status, style }) => {
 
   return (
     <div ref={imgRef}>
+      <div
+        className="img-placeholder"
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "var(--color-fill-2)",
+          position: "absolute",
+          left: 0,
+          top: 0,
+        }}
+      />
       <AnimatePresence mode="wait">
         {loaded ? (
           <motion.div
             key={src}
             initial={{ opacity: 0 }}
             animate={{ opacity: status === "read" ? 0.5 : 1 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.4 }}
           >
             <img src={src} alt={alt} className={className} style={style} />
           </motion.div>
-        ) : (
-          <div
-            className="img-placeholder"
-            style={{
-              width: "100%",
-              height: "100%",
-              backgroundColor: "var(--color-fill-2)",
-              position: "absolute",
-              left: 0,
-              top: 0,
-            }}
-          />
-        )}
+        ) : null}
       </AnimatePresence>
     </div>
   );
