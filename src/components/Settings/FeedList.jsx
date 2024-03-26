@@ -119,7 +119,7 @@ const FeedList = ({
             : title;
 
         return (
-          <Typography.Ellipsis expandable={false} showTooltip={true}>
+          <Typography.Ellipsis expandable={false}>
             <Tooltip mini content={tooltipText} position="left">
               {displayText}
             </Tooltip>
@@ -133,7 +133,7 @@ const FeedList = ({
       dataIndex: "feed_url",
       sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
       render: (col) => (
-        <Typography.Ellipsis expandable={false} showTooltip={true}>
+        <Typography.Ellipsis expandable={false}>
           <Tooltip mini content={col} position="left">
             {col}
           </Tooltip>
