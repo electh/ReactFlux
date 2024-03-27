@@ -42,43 +42,41 @@ const Appearance = () => {
           name="card-radio-group"
           style={{ marginTop: "16px" }}
           defaultValue={theme}
-          onChange={(value) => {
-            setTheme(value);
-            setConfig("theme", value);
+          onChange={(newTheme) => {
+            setTheme(newTheme);
+            setConfig("theme", newTheme);
           }}
         >
-          {["light", "dark", "system"].map((mode) => {
-            return (
-              <Tooltip
-                key={mode}
-                content={mode.charAt(0).toUpperCase() + mode.slice(1)}
-              >
-                <Radio value={mode}>
-                  {({ checked }) => {
-                    return (
-                      <div
-                        className={`custom-radio-card ${
-                          checked ? "custom-radio-card-checked" : ""
-                        }`}
-                      >
-                        <img
-                          className="theme-preview"
-                          src={
-                            mode === "light"
-                              ? lightThemePreview
-                              : mode === "dark"
-                                ? darkThemePreview
-                                : systemThemePreview
-                          }
-                          alt={mode}
-                        />
-                      </div>
-                    );
-                  }}
-                </Radio>
-              </Tooltip>
-            );
-          })}
+          {["light", "dark", "system"].map((mode) => (
+            <Tooltip
+              key={mode}
+              content={mode.charAt(0).toUpperCase() + mode.slice(1)}
+            >
+              <Radio value={mode}>
+                {({ checked }) => {
+                  const themePreviewSrc = {
+                    light: lightThemePreview,
+                    dark: darkThemePreview,
+                    system: systemThemePreview,
+                  }[mode];
+
+                  return (
+                    <div
+                      className={`custom-radio-card ${
+                        checked ? "custom-radio-card-checked" : ""
+                      }`}
+                    >
+                      <img
+                        className="theme-preview"
+                        src={themePreviewSrc}
+                        alt={mode}
+                      />
+                    </div>
+                  );
+                }}
+              </Radio>
+            </Tooltip>
+          ))}
         </Radio.Group>
       </div>
       <Divider />

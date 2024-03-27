@@ -30,7 +30,7 @@ const colors = [
   },
 ];
 
-function getColorValue(colorName) {
+const getColorValue = (colorName) => {
   // 查找匹配颜色名称的对象
   const selectedColor = colors.find((color) => color.name === colorName);
   const isSysDarkMode = window.matchMedia(
@@ -42,7 +42,7 @@ function getColorValue(colorName) {
     return isDarkMode ? selectedColor.valueDark : selectedColor.valueLight;
   }
   return "#165DFF";
-}
+};
 
 const applyColor = (colorName) => {
   const list = generate(getColorValue(colorName), {

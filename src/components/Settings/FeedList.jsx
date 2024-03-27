@@ -90,6 +90,9 @@ const FeedList = ({
       })
       .finally(() => {
         setFeeds(feeds);
+        sortedFeeds = feeds.sort((a, b) =>
+          a.title.localeCompare(b.title, "en"),
+        );
         sortedFeeds = getSortedFeedsByErrorCount(sortedFeeds);
         setShowFeeds(sortedFeeds);
       });
@@ -111,15 +114,24 @@ const FeedList = ({
       dataIndex: "title",
       sorter: (a, b) => a.title.localeCompare(b.title, "en"),
       render: (title, feed) => {
-        const displayText = feed.parsing_error_count > 0 ? `⚠️ ${title}` : title;
-        const tooltipText =
-          feed.parsing_error_count > 0
-            ? `${title} ⚠️ Parsing error count: ${feed.parsing_error_count}`
-            : title;
+        const parsingErrorCount = feed.parsing_error_count;
+        const displayText = parsingErrorCount ? `⚠️ ${title}` : title;
+
+        const tooltipContent = (
+          <div>
+            {title}
+            {parsingErrorCount > 0 && (
+              <>
+                <br />
+                ⚠️ Parsing error count: {parsingErrorCount}
+              </>
+            )}
+          </div>
+        );
 
         return (
           <Typography.Ellipsis expandable={false}>
-            <Tooltip mini content={tooltipText} position="left">
+            <Tooltip mini content={tooltipContent}>
               {displayText}
             </Tooltip>
           </Typography.Ellipsis>
@@ -131,11 +143,9 @@ const FeedList = ({
       title: "Url",
       dataIndex: "feed_url",
       sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
-      render: (col) => (
-        <Typography.Ellipsis expandable={false}>
-          <Tooltip mini content={col} position="left">
-            {col}
-          </Tooltip>
+      render: (feedUrl) => (
+        <Typography.Ellipsis expandable={false} showTooltip={true}>
+          {feedUrl}
         </Typography.Ellipsis>
       ),
     },
@@ -144,7 +154,11 @@ const FeedList = ({
       title: "Group",
       dataIndex: "category.title",
       sorter: (a, b) => a.category.title.localeCompare(b.category.title, "en"),
-      render: (col) => <Tag>{col}</Tag>,
+      render: (col) => (
+        <Typography.Ellipsis expandable={false} showTooltip={true}>
+          <Tag>{col}</Tag>
+        </Typography.Ellipsis>
+      ),
     },
 
     !isMobileView && {
@@ -152,7 +166,7 @@ const FeedList = ({
       dataIndex: "checked_at",
       sorter: (a, b) => a.checked_at.localeCompare(b.checked_at, "en"),
       render: (col) => (
-        <Typography.Ellipsis expandable={false} showTooltip={true}>
+        <Typography.Ellipsis expandable={false}>
           {generateRelativeTime(col)}
         </Typography.Ellipsis>
       ),

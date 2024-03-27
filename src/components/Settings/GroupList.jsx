@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import useStore from "../../Store";
 import { addGroup, deleteGroup, editGroup } from "../../apis";
 
-const GroupList = ({ groups, loading, setGroups }) => {
+const GroupList = ({ groups, loading, setGroups, setShowFeeds, showFeeds }) => {
   const initData = useStore((state) => state.initData);
   const [showAddInput, setShowAddInput] = useState(false);
   const [inputAddValue, setInputAddValue] = useState("");
@@ -45,6 +45,13 @@ const GroupList = ({ groups, loading, setGroups }) => {
     setGroupModalLoading(true);
     editGroup(groupId, newTitle)
       .then((response) => {
+        setShowFeeds(
+          showFeeds.map((feed) =>
+            feed.category.id === groupId
+              ? { ...feed, category: { ...feed.category, title: newTitle } }
+              : feed,
+          ),
+        );
         setGroups(
           groups.map((group) => (group.id === groupId ? response.data : group)),
         );
