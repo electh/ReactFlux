@@ -50,13 +50,9 @@ export default function App() {
         handelDarkMode(event);
       });
 
-    document.body.addEventListener(
-      "touchmove",
-      function (e) {
-        e.preventDefault();
-      },
-      { passive: false },
-    );
+    document.body.addEventListener("touchmove", function (e) {
+      e.cancelable && e.preventDefault();
+    });
 
     // 在组件卸载时清除监听器
     return () => {
