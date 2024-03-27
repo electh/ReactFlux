@@ -68,14 +68,14 @@ export default function EntryList({ entries, info }) {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                height: 60,
+                height: 70,
                 fontWeight: 500,
               }}
             >
               Pull to refresh
             </Typography.Text>
           }
-          resistance={2.5}
+          resistance={5}
           pullDownThreshold={80}
           maxPullDownDistance={100}
           refreshingContent={<Spin dot style={{ marginTop: "20px" }} />}
