@@ -60,7 +60,14 @@ export default function EntryList({ entries, info }) {
         className="entry-list-container"
         style={{ flex: 1, overflowY: "auto" }}
       >
-        <PullToRefresh onRefresh={initData} pullingContent={null}>
+        <PullToRefresh
+          onRefresh={initData}
+          pullingContent={null}
+          resistance={5}
+          pullDownThreshold={90}
+          maxPullDownDistance={120}
+          refreshingContent={<Spin dot style={{ marginTop: "20px" }} />}
+        >
           <SearchBar />
           <AnimatePresence mode="wait">
             <motion.div
