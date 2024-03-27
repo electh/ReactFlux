@@ -2,7 +2,7 @@ import EntryCard from "./components/EntryCard";
 import SearchBar from "./components/SearchBar";
 import BottomBar from "./components/BottomBar";
 import { useEffect, useRef } from "react";
-import { Button, Spin } from "@arco-design/web-react";
+import { Button, Spin, Typography } from "@arco-design/web-react";
 import { IconArrowDown } from "@arco-design/web-react/icon";
 import { useStore } from "../../store/Store";
 import { useConfigStore } from "../../store/configStore";
@@ -62,8 +62,20 @@ export default function EntryList({ entries, info }) {
       >
         <PullToRefresh
           onRefresh={initData}
-          pullingContent={null}
-          resistance={5}
+          pullingContent={
+            <Typography.Text
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: 60,
+                fontWeight: 500,
+              }}
+            >
+              Pull to refresh
+            </Typography.Text>
+          }
+          resistance={2.5}
           pullDownThreshold={80}
           maxPullDownDistance={100}
           refreshingContent={<Spin dot style={{ marginTop: "20px" }} />}
