@@ -8,9 +8,11 @@ import { useStore } from "../../store/Store";
 import { useConfigStore } from "../../store/configStore";
 import EntryCardCompact from "./components/EntryCardCompact";
 import { AnimatePresence, motion } from "framer-motion";
+import PullToRefresh from "react-simple-pull-to-refresh";
 
 export default function EntryList({ entries, info }) {
   const offset = useStore((state) => state.offset);
+  const initData = useStore((state) => state.initData);
   const setOffset = useStore((state) => state.setOffset);
   const showEntries = useStore((state) => state.showEntries);
   const setShowEntries = useStore((state) => state.setShowEntries);
@@ -58,37 +60,40 @@ export default function EntryList({ entries, info }) {
         className="entry-list-container"
         style={{ flex: 1, overflowY: "auto" }}
       >
-        <SearchBar />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={info}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ y: -20, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="card-list" style={{ padding: "0 10px 0 10px" }}>
-              {showEntries.map((entry) =>
-                layout === "compact" ? (
-                  <EntryCardCompact entry={entry} key={entry.id} />
-                ) : (
-                  <EntryCard entry={entry} key={entry.id} />
-                ),
-              )}
-              {entries.length > showEntries.length && (
-                <Button
-                  style={{ marginBottom: 10 }}
-                  long
-                  onClick={handleLoadMore}
-                  icon={<IconArrowDown />}
-                >
-                  Load more
-                </Button>
-              )}
-            </div>
-          </motion.div>
-        </AnimatePresence>
+        <PullToRefresh onRefresh={initData} pullingContent={null}>
+          <SearchBar />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={info}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ y: -20, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="card-list" style={{ padding: "0 10px 0 10px" }}>
+                {showEntries.map((entry) =>
+                  layout === "compact" ? (
+                    <EntryCardCompact entry={entry} key={entry.id} />
+                  ) : (
+                    <EntryCard entry={entry} key={entry.id} />
+                  ),
+                )}
+                {entries.length > showEntries.length && (
+                  <Button
+                    style={{ marginBottom: 10 }}
+                    long
+                    onClick={handleLoadMore}
+                    icon={<IconArrowDown />}
+                  >
+                    Load more
+                  </Button>
+                )}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </PullToRefresh>
       </Spin>
+
       <BottomBar />
     </div>
   );
