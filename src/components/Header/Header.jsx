@@ -58,7 +58,7 @@ const Header = () => {
       </div>
       <div className="button-group" style={{ marginRight: "10px" }}>
         <Space size={16}>
-          <Tooltip content="Add feed" mini>
+          <Tooltip content="Add a feed" mini>
             <Button
               shape="circle"
               size="small"

@@ -42,7 +42,7 @@ const ActionButtons = ({ handleEntryClick }) => {
         <Tooltip
           mini
           position="left"
-          content={isUnread ? "Mark as Read" : "Mark as Unread"}
+          content={isUnread ? "Mark as read" : "Mark as unread"}
         >
           <Button
             type="primary"
@@ -84,7 +84,7 @@ const ActionButtons = ({ handleEntryClick }) => {
             icon={<IconCloudDownload />}
           />
         </Tooltip>
-        <Tooltip mini position="left" content="Previous Article">
+        <Tooltip mini position="left" content="Previous article">
           <Button
             type="primary"
             size="mini"
@@ -96,7 +96,7 @@ const ActionButtons = ({ handleEntryClick }) => {
             icon={<IconArrowLeft />}
           />
         </Tooltip>
-        <Tooltip mini position="left" content="Next Article">
+        <Tooltip mini position="left" content="Next article">
           <Button
             type="primary"
             size="mini"

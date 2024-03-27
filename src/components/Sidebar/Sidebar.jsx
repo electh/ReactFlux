@@ -37,11 +37,7 @@ const GroupTitle = ({ group, isOpen }) => (
       {group.title}
     </Typography.Ellipsis>
     {group.unreadCount > 0 && (
-      <Typography.Ellipsis
-        className="unread-count"
-        expandable={false}
-        showTooltip={true}
-      >
+      <Typography.Ellipsis className="unread-count" expandable={false}>
         {group.unreadCount}
       </Typography.Ellipsis>
     )}
@@ -164,11 +160,7 @@ const Sidebar = () => {
                   <IconUnorderedList />
                   All
                 </span>
-                <Typography.Ellipsis
-                  className="item-count"
-                  expandable={false}
-                  showTooltip={true}
-                >
+                <Typography.Ellipsis className="item-count" expandable={false}>
                   {unreadTotal || ""}
                 </Typography.Ellipsis>
               </div>
@@ -179,11 +171,7 @@ const Sidebar = () => {
                   <IconCalendar />
                   Today
                 </span>
-                <Typography.Ellipsis
-                  className="item-count"
-                  expandable={false}
-                  showTooltip={true}
-                >
+                <Typography.Ellipsis className="item-count" expandable={false}>
                   {unreadToday || ""}
                 </Typography.Ellipsis>
               </div>
@@ -194,11 +182,7 @@ const Sidebar = () => {
                   <IconStar />
                   Starred
                 </span>
-                <Typography.Ellipsis
-                  className="item-count"
-                  expandable={false}
-                  showTooltip={true}
-                >
+                <Typography.Ellipsis className="item-count" expandable={false}>
                   {starredCount || ""}
                 </Typography.Ellipsis>
               </div>
@@ -209,11 +193,7 @@ const Sidebar = () => {
                   <IconHistory />
                   History
                 </span>
-                <Typography.Ellipsis
-                  className="item-count"
-                  expandable={false}
-                  showTooltip={true}
-                >
+                <Typography.Ellipsis className="item-count" expandable={false}>
                   {readCount || ""}
                 </Typography.Ellipsis>
               </div>
@@ -284,6 +264,7 @@ const Sidebar = () => {
                               marginRight: "8px",
                               width: "16px",
                               height: "16px",
+                              verticalAlign: "-2px",
                             }}
                           />
                         )}
@@ -292,9 +273,7 @@ const Sidebar = () => {
                       {feed.unreadCount !== 0 && (
                         <Typography.Ellipsis
                           expandable={false}
-                          showTooltip={true}
                           style={{
-                            width: "20%",
                             color: "var(--color-text-4)",
                             display: "flex",
                             justifyContent: "flex-end",
