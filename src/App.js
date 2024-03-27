@@ -50,7 +50,7 @@ export default function App() {
         handelDarkMode(event);
       });
 
-    document.body.addEventListener("touchmove", function (e) {
+    document.body.addEventListener("touchstart", function (e) {
       e.cancelable && e.preventDefault();
     });
 
