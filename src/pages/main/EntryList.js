@@ -64,8 +64,8 @@ export default function EntryList({ entries, info }) {
           onRefresh={initData}
           pullingContent={null}
           resistance={5}
-          pullDownThreshold={90}
-          maxPullDownDistance={120}
+          pullDownThreshold={80}
+          maxPullDownDistance={100}
           refreshingContent={<Spin dot style={{ marginTop: "20px" }} />}
         >
           <SearchBar />
