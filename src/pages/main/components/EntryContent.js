@@ -73,10 +73,10 @@ export default function EntryContent({ activeEntry }) {
             <Divider />
           </div>
           <motion.div
-            initial={{ opacity: 0, y: isMobile ? 0 : 100 }}
+            initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: isMobile ? 0 : -20 }}
-            transition={{ duration: 0.1 }}
+            transition={{ duration: 0.2 }}
           >
             <EntryBody htmlString={content} />
           </motion.div>
