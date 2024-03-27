@@ -8,7 +8,7 @@ import {
   getTodayEntries,
   getUnreadInfo,
 } from "./apis";
-import { getConfig, setConfig } from "./utils/Config";
+import { getConfig } from "./utils/Config";
 
 const calculateUnreadCount = (currentCount, status) => {
   if (status === "read") {
@@ -165,26 +165,14 @@ const useStore = create((set, get) => ({
     }));
   },
 
-  toggleTheme: (value) => {
-    set({ theme: value });
-    setConfig("theme", value);
-  },
-
   toggleLayout: () => {
     const newLayout = get().layout === "large" ? "small" : "large";
     set({ layout: newLayout });
-    setConfig("layout", newLayout);
   },
 
-  setFontSize: (sizeStr) => {
-    set({ fontSize: sizeStr });
-    setConfig("fontSize", sizeStr);
-  },
+  setFontSize: (sizeStr) => set({ fontSize: sizeStr }),
 
-  setShowFeedIcon: (showFeedIcon) => {
-    set({ showFeedIcon: showFeedIcon });
-    setConfig("showFeedIcon", showFeedIcon);
-  },
+  setShowFeedIcon: (showFeedIcon) => set({ showFeedIcon: showFeedIcon }),
 
   setVisible: (modalName, visible) => {
     set((state) => ({ visible: { ...state.visible, [modalName]: visible } }));

@@ -7,7 +7,7 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import React from "react";
+import React, { useEffect } from "react";
 
 import useStore from "../../Store";
 import darkThemePreview from "../../assets/dark.png";
@@ -29,6 +29,27 @@ const Appearance = () => {
   const themeColor = useStore((state) => state.color);
   const setThemeColor = useStore((state) => state.setColor);
 
+  useEffect(() => {
+    setConfig("fontSize", fontSize);
+  }, [fontSize]);
+
+  useEffect(() => {
+    setConfig("layout", layout);
+  }, [layout]);
+
+  useEffect(() => {
+    setConfig("showFeedIcon", showFeedIcon);
+  }, [showFeedIcon]);
+
+  useEffect(() => {
+    setConfig("theme", theme);
+  }, [theme]);
+
+  useEffect(() => {
+    setConfig("themeColor", themeColor);
+    applyColor(themeColor);
+  }, [themeColor]);
+
   return (
     <>
       <Typography.Title heading={6} style={{ marginTop: 0 }}>
@@ -42,10 +63,7 @@ const Appearance = () => {
           name="card-radio-group"
           style={{ marginTop: "16px" }}
           defaultValue={theme}
-          onChange={(newTheme) => {
-            setTheme(newTheme);
-            setConfig("theme", newTheme);
-          }}
+          onChange={(newTheme) => setTheme(newTheme)}
         >
           {["light", "dark", "system"].map((mode) => (
             <Tooltip
@@ -107,16 +125,10 @@ const Appearance = () => {
                       ? `1px solid ${getColorValue(c.name)}`
                       : "none",
                 }}
-                onClick={() => {
-                  setThemeColor(c.name);
-                  setConfig("themeColor", c.name);
-                  applyColor(c.name);
-                }}
+                onClick={() => setThemeColor(c.name)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     setThemeColor(c.name);
-                    setConfig("themeColor", c.name);
-                    applyColor(c.name);
                   }
                 }}
               />
