@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { getFeeds, getGroups } from "../../apis";
 import darkThemePreview from "../../assets/dark.png";
 import lightThemePreview from "../../assets/light.png";
+import systemThemePreview from "../../assets/system.png";
 import Appearance from "./Appearance";
 import FeedList from "./FeedList";
 import GroupList from "./GroupList";
@@ -49,7 +50,7 @@ const SettingsTabs = () => {
   };
 
   const preloadImages = () => {
-    const images = [darkThemePreview, lightThemePreview];
+    const images = [darkThemePreview, lightThemePreview, systemThemePreview];
     for (const image of images) {
       const img = new Image();
       img.src = image;

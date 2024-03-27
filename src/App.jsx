@@ -18,41 +18,32 @@ const App = () => {
   useEffect(() => {
     initData();
 
-    const handelDarkMode = (event) => {
+    const handleDarkModeChange = (event) => {
       setIsSysDarkMode(event.matches);
     };
 
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (event) => {
-        handelDarkMode(event);
-      });
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    mediaQuery.addEventListener("change", handleDarkModeChange);
 
     // 在组件卸载时清除监听器
     return () => {
-      window
-        .matchMedia("(prefers-color-scheme: dark)")
-        .removeEventListener("change", (event) => {
-          handelDarkMode(event);
-        });
+      mediaQuery.removeEventListener("change", handleDarkModeChange);
     };
   }, []);
 
   useEffect(() => {
-    const isDarkMode = theme === "system" ? isSysDarkMode : theme === "dark";
-    if (isDarkMode) {
-      document.body.setAttribute("arco-theme", "dark");
-      document.body.style.colorScheme = "dark";
-    } else {
-      document.body.removeAttribute("arco-theme");
-      document.body.style.colorScheme = "light";
-    }
+    const applyTheme = (isDarkMode) => {
+      document.body.setAttribute("arco-theme", isDarkMode ? "dark" : "light");
+      document.body.style.colorScheme = isDarkMode ? "dark" : "light";
+    };
+
+    applyTheme(theme === "system" ? isSysDarkMode : theme === "dark");
   }, [isSysDarkMode, theme]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     applyColor(color);
-  }, [color, isSysDarkMode, theme]);
+    // }, [color, isSysDarkMode, theme]);
+  }, [color]);
 
   return (
     <div
