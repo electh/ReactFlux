@@ -8,7 +8,6 @@ import {
   getTodayEntries,
   getUnreadInfo,
 } from "./apis";
-import { applyColor } from "./utils/Colors";
 import { getConfig, setConfig } from "./utils/Config";
 
 const calculateUnreadCount = (currentCount, status) => {
@@ -50,12 +49,14 @@ const useStore = create((set, get) => ({
     settings: false,
     addFeed: false,
   },
-  theme: getConfig("theme") || "light",
+  theme: getConfig("theme") || "system",
   layout: getConfig("layout") || "large",
   fontSize: getConfig("fontSize") || 1.05,
   showFeedIcon: getConfig("showFeedIcon") || true,
   collapsed: window.innerWidth <= 992,
   activeContent: null,
+  isSysDarkMode: window.matchMedia("(prefers-color-scheme: dark)").matches,
+  color: getConfig("themeColor") || "Blue",
 
   setUnreadTotal: (updater) =>
     set((state) => ({ unreadTotal: updater(state.unreadTotal) })),
@@ -67,6 +68,13 @@ const useStore = create((set, get) => ({
     set((state) => ({ readCount: updater(state.readCount) })),
   setActiveContent: (activeContent) => {
     set({ activeContent: activeContent });
+  },
+  setIsSysDarkMode: (value) => set({ isSysDarkMode: value }),
+  setColor: (value) => {
+    set({ color: value });
+  },
+  setTheme: (value) => {
+    set({ theme: value });
   },
 
   initData: async () => {
@@ -157,18 +165,9 @@ const useStore = create((set, get) => ({
     }));
   },
 
-  toggleTheme: () => {
-    const newTheme = get().theme === "dark" ? "light" : "dark";
-    set({ theme: newTheme });
-    setConfig("theme", newTheme);
-    if (newTheme === "dark") {
-      document.body.setAttribute("arco-theme", "dark");
-      document.body.style.colorScheme = "dark";
-    } else {
-      document.body.removeAttribute("arco-theme");
-      document.body.style.colorScheme = "light";
-    }
-    applyColor(getConfig("themeColor") || "Blue");
+  toggleTheme: (value) => {
+    set({ theme: value });
+    setConfig("theme", value);
   },
 
   toggleLayout: () => {

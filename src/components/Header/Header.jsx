@@ -8,6 +8,8 @@ import {
   Tooltip,
 } from "@arco-design/web-react";
 import {
+  IconCheck,
+  IconDesktop,
   IconGithub,
   IconMenu,
   IconMoonFill,
@@ -75,12 +77,44 @@ const Header = () => {
               window.open("https://github.com/electh/ReactFlux", "_blank")
             }
           />
-          <Button
-            shape="circle"
-            size="small"
-            icon={theme === "dark" ? <IconSunFill /> : <IconMoonFill />}
-            onClick={toggleTheme}
-          />
+          <Dropdown
+            droplist={
+              <Menu defaultSelectedKeys={[theme]} className="theme-menu">
+                {["light", "dark", "system"].map((item) => (
+                  <Menu.Item
+                    className={theme === item ? "selected-menu" : ""}
+                    key={item}
+                    onClick={() => toggleTheme(item)}
+                    style={{
+                      display: "flex",
+                      width: 100,
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    {item.charAt(0).toUpperCase() + item.slice(1)}
+                    {theme === item && <IconCheck style={{ marginLeft: 8 }} />}
+                  </Menu.Item>
+                ))}
+              </Menu>
+            }
+            trigger="hover"
+            position="bottom"
+          >
+            <Button
+              shape="circle"
+              size="small"
+              icon={
+                theme === "dark" ? (
+                  <IconMoonFill />
+                ) : theme === "light" ? (
+                  <IconSunFill />
+                ) : (
+                  <IconDesktop />
+                )
+              }
+            />
+          </Dropdown>
           <Dropdown
             droplist={
               <Menu>

@@ -30,17 +30,19 @@ const colors = [
   },
 ];
 
-const getColorValue = (colorName) => {
+function getColorValue(colorName) {
   // 查找匹配颜色名称的对象
   const selectedColor = colors.find((color) => color.name === colorName);
+  const isSysDarkMode = window.matchMedia(
+    "(prefers-color-scheme: dark)",
+  ).matches;
   const theme = getConfig("theme") || "light";
+  const isDarkMode = theme === "system" ? isSysDarkMode : theme === "dark";
   if (selectedColor) {
-    return theme === "light"
-      ? selectedColor.valueLight
-      : selectedColor.valueDark;
+    return isDarkMode ? selectedColor.valueDark : selectedColor.valueLight;
   }
   return "#165DFF";
-};
+}
 
 const applyColor = (colorName) => {
   const list = generate(getColorValue(colorName), {

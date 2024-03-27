@@ -7,27 +7,27 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import React, { useState } from "react";
+import React from "react";
 
 import useStore from "../../Store";
 import darkThemePreview from "../../assets/dark.png";
 import lightThemePreview from "../../assets/light.png";
+import systemThemePreview from "../../assets/system.png";
 import { applyColor, colors, getColorValue } from "../../utils/Colors";
-import { getConfig, setConfig } from "../../utils/Config";
+import { setConfig } from "../../utils/Config";
 import "./Appearance.css";
 
 const Appearance = () => {
   const theme = useStore((state) => state.theme);
-  const toggleTheme = useStore((state) => state.toggleTheme);
+  const setTheme = useStore((state) => state.setTheme);
   const toggleLayout = useStore((state) => state.toggleLayout);
   const layout = useStore((state) => state.layout);
   const fontSize = useStore((state) => state.fontSize);
   const setFontSize = useStore((state) => state.setFontSize);
   const showFeedIcon = useStore((state) => state.showFeedIcon);
   const setShowFeedIcon = useStore((state) => state.setShowFeedIcon);
-  const [themeColor, setThemeColor] = useState(
-    getConfig("themeColor") || "Blue",
-  );
+  const themeColor = useStore((state) => state.color);
+  const setThemeColor = useStore((state) => state.setColor);
 
   return (
     <>
@@ -42,31 +42,41 @@ const Appearance = () => {
           name="card-radio-group"
           style={{ marginTop: "16px" }}
           defaultValue={theme}
-          onChange={() => toggleTheme()}
+          onChange={(value) => {
+            setTheme(value);
+            setConfig("theme", value);
+          }}
         >
-          {["light", "dark"].map((mode) => {
+          {["light", "dark", "system"].map((mode) => {
             return (
-              <Radio key={mode} value={mode}>
-                {({ checked }) => {
-                  return (
-                    <div
-                      className={`custom-radio-card ${
-                        checked ? "custom-radio-card-checked" : ""
-                      }`}
-                    >
-                      <img
-                        className="theme-preview"
-                        src={
-                          mode === "light"
-                            ? lightThemePreview
-                            : darkThemePreview
-                        }
-                        alt={mode}
-                      />
-                    </div>
-                  );
-                }}
-              </Radio>
+              <Tooltip
+                key={mode}
+                content={mode.charAt(0).toUpperCase() + mode.slice(1)}
+              >
+                <Radio value={mode}>
+                  {({ checked }) => {
+                    return (
+                      <div
+                        className={`custom-radio-card ${
+                          checked ? "custom-radio-card-checked" : ""
+                        }`}
+                      >
+                        <img
+                          className="theme-preview"
+                          src={
+                            mode === "light"
+                              ? lightThemePreview
+                              : mode === "dark"
+                                ? darkThemePreview
+                                : systemThemePreview
+                          }
+                          alt={mode}
+                        />
+                      </div>
+                    );
+                  }}
+                </Radio>
+              </Tooltip>
             );
           })}
         </Radio.Group>
