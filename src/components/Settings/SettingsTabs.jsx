@@ -8,6 +8,8 @@ import {
 import React, { useEffect, useState } from "react";
 
 import { getFeeds, getGroups } from "../../apis";
+import darkThemePreview from "../../assets/dark.png";
+import lightThemePreview from "../../assets/light.png";
 import Appearance from "./Appearance";
 import FeedList from "./FeedList";
 import GroupList from "./GroupList";
@@ -46,9 +48,18 @@ const SettingsTabs = () => {
     }
   };
 
+  const preloadImages = () => {
+    const images = [darkThemePreview, lightThemePreview];
+    for (const image of images) {
+      const img = new Image();
+      img.src = image;
+    }
+  };
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     refreshData();
+    preloadImages();
   }, []);
 
   return (
