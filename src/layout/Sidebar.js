@@ -105,7 +105,7 @@ export default function Sidebar({ style, setVisible }) {
         defaultOpenKeys={["feed", "category"]}
         // defaultOpenKeys={[from]}
         defaultSelectedKeys={[`${from}${id}`]}
-        style={style}
+        style={{ ...style, fontWeight: 500 }}
       >
         <Menu.Item
           key="all"

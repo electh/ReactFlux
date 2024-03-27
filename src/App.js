@@ -76,7 +76,7 @@ export default function App() {
 
   useEffect(() => {
     applyColor(color);
-  }, [color]);
+  }, [color, isSysDarkMode, theme]);
 
   return (
     <Layout className="layout-collapse-demo">
