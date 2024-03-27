@@ -91,7 +91,13 @@ const SettingsTabs = () => {
           </span>
         }
       >
-        <GroupList groups={groups} loading={loading} setGroups={setGroups} />
+        <GroupList
+          groups={groups}
+          loading={loading}
+          setGroups={setGroups}
+          setShowFeeds={setShowFeeds}
+          showFeeds={showFeeds}
+        />
       </Tabs.TabPane>
       <Tabs.TabPane
         key="3"

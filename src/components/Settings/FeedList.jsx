@@ -90,6 +90,9 @@ const FeedList = ({
       })
       .finally(() => {
         setFeeds(feeds);
+        sortedFeeds = feeds.sort((a, b) =>
+          a.title.localeCompare(b.title, "en"),
+        );
         sortedFeeds = getSortedFeedsByErrorCount(sortedFeeds);
         setShowFeeds(sortedFeeds);
       });
