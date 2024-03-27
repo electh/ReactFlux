@@ -3,12 +3,13 @@ import SearchBar from "./components/SearchBar";
 import BottomBar from "./components/BottomBar";
 import { useEffect, useRef } from "react";
 import { Button, Spin, Typography } from "@arco-design/web-react";
-import { IconArrowDown } from "@arco-design/web-react/icon";
+import { IconArrowDown, IconDoubleDown } from "@arco-design/web-react/icon";
 import { useStore } from "../../store/Store";
 import { useConfigStore } from "../../store/configStore";
 import EntryCardCompact from "./components/EntryCardCompact";
 import { AnimatePresence, motion } from "framer-motion";
 import PullToRefresh from "react-simple-pull-to-refresh";
+import "./EntryList.css";
 
 export default function EntryList({ entries, info }) {
   const offset = useStore((state) => state.offset);
@@ -63,17 +64,23 @@ export default function EntryList({ entries, info }) {
         <PullToRefresh
           onRefresh={initData}
           pullingContent={
-            <Typography.Text
+            <div
               style={{
                 display: "flex",
-                justifyContent: "center",
+                flexDirection: "column",
                 alignItems: "center",
-                height: 70,
-                fontWeight: 500,
+                padding: 20,
               }}
             >
-              Pull to refresh
-            </Typography.Text>
+              <Typography.Text
+                style={{
+                  fontWeight: 500,
+                }}
+              >
+                Pull to refresh
+              </Typography.Text>
+              <IconDoubleDown style={{ color: "var(--color-text-1)" }} />
+            </div>
           }
           resistance={5}
           pullDownThreshold={80}
