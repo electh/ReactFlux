@@ -13,7 +13,6 @@ export default function EntryDetail() {
   const entryId = params.get("entry");
   useEffect(() => {
     setActiveEntry(entries.filter((a) => a.id === parseInt(entryId))[0]);
-    console.log(entryId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entryId, entries]);
   return (

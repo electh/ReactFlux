@@ -25,6 +25,7 @@ export default function App() {
   const theme = useConfigStore((state) => state.theme);
 
   useEffect(() => {
+    console.log(isMobile, isSysDarkMode);
     async function fetchData() {
       await initData();
     }
@@ -49,10 +50,6 @@ export default function App() {
       .addEventListener("change", (event) => {
         handelDarkMode(event);
       });
-
-    document.body.addEventListener("touchstart", function (e) {
-      e.cancelable && e.preventDefault();
-    });
 
     // 在组件卸载时清除监听器
     return () => {
