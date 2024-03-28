@@ -34,7 +34,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     filteredEntries,
     filterStatus,
     loading,
-    offset,
     setEntries,
     setFilteredEntries,
     setLoading,
@@ -165,12 +164,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     };
   }, [activeContent, filteredEntries, showArticleDetail]);
 
-  const fetchEntries = async () => {
-    const responseAll = await getEntries();
-    const responseUnread = await getEntries(offset, "unread");
-    return { responseAll, responseUnread };
-  };
-
   const processEntries = (response) => {
     const fetchedArticles = response.data.entries.map(getFirstImage);
 
@@ -209,8 +202,13 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const getArticleList = async () => {
     setLoading(true);
     try {
-      const { responseAll, responseUnread } = await fetchEntries();
-      handleResponses(responseAll, responseUnread);
+      const responseAll = await getEntries();
+      if (info.from === "history") {
+        handleResponses(responseAll, responseAll);
+      } else {
+        const responseUnread = await getEntries(0, "unread");
+        handleResponses(responseAll, responseUnread);
+      }
     } catch (error) {
       console.error("Error fetching articles:", error);
     } finally {
