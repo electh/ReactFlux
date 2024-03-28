@@ -32,8 +32,7 @@ const Header = () => {
   const setVisible = useStore((state) => state.setVisible);
   const theme = useStore((state) => state.theme);
   const setTheme = useStore((state) => state.setTheme);
-  const collapsed = useStore((state) => state.collapsed);
-  const setCollapsed = useStore((state) => state.setCollapsed);
+  const toggleCollapsed = useStore((state) => state.toggleCollapsed);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -70,7 +69,7 @@ const Header = () => {
           size="small"
           className="trigger"
           style={{ marginRight: "5px", display: "none" }}
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={toggleCollapsed}
         >
           {<IconMenu />}
         </Button>

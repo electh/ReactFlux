@@ -25,7 +25,7 @@ const Appearance = () => {
   const fontSize = useStore((state) => state.fontSize);
   const setFontSize = useStore((state) => state.setFontSize);
   const showFeedIcon = useStore((state) => state.showFeedIcon);
-  const setShowFeedIcon = useStore((state) => state.setShowFeedIcon);
+  const toggleShowFeedIcon = useStore((state) => state.toggleShowFeedIcon);
   const themeColor = useStore((state) => state.color);
   const setThemeColor = useStore((state) => state.setColor);
 
@@ -63,7 +63,7 @@ const Appearance = () => {
           name="card-radio-group"
           style={{ marginTop: "16px" }}
           defaultValue={theme}
-          onChange={(newTheme) => setTheme(newTheme)}
+          onChange={setTheme}
         >
           {["light", "dark", "system"].map((mode) => (
             <Tooltip
@@ -138,13 +138,7 @@ const Appearance = () => {
       </div>
 
       <Divider />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
             Compact article list
@@ -154,20 +148,11 @@ const Appearance = () => {
           </Typography.Text>
         </div>
         <div>
-          <Switch
-            checked={layout === "small"}
-            onChange={() => toggleLayout()}
-          />
+          <Switch checked={layout === "small"} onChange={toggleLayout} />
         </div>
       </div>
       <Divider />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
             Show feed icon
@@ -177,20 +162,11 @@ const Appearance = () => {
           </Typography.Text>
         </div>
         <div>
-          <Switch
-            checked={showFeedIcon}
-            onChange={() => setShowFeedIcon(!showFeedIcon)}
-          />
+          <Switch checked={showFeedIcon} onChange={toggleShowFeedIcon} />
         </div>
       </div>
       <Divider />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
             Font size
