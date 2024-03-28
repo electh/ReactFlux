@@ -107,7 +107,7 @@ const FeedList = ({
     });
   };
 
-  const isMobileView = screenWidth <= 700;
+  const isMobileView = screenWidth <= 768;
   const columns = [
     {
       title: "Title",
@@ -197,7 +197,7 @@ const FeedList = ({
           </button>
           <Popconfirm
             position="left"
-            focusLocka
+            focusLock
             title="Unfollow？"
             onOk={async () => {
               await handleDeleteFeed(record);

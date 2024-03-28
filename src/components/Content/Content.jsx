@@ -31,6 +31,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   );
   const showAllFeeds = useStore((state) => state.showAllFeeds);
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
+  const orderBy = useStore((state) => state.orderBy);
+  const orderDirection = useStore((state) => state.orderDirection);
 
   const {
     entries,
@@ -72,17 +74,29 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!showAllFeeds) {
-      if (hiddenFeedIds) {
-        setFilteredEntries(() => {
-          return filterArticles(entries).filter(
-            (entry) => !hiddenFeedIds.includes(entry.feed.id),
-          );
-        });
-        setIsFilteredEntriesUpdated(true);
-      }
-    } else {
-      setFilteredEntries(() => filterArticles(entries));
+    if (info.from === "history") {
+      return;
+    }
+    setTimeout(() => {
+      getArticleList();
+    }, 200);
+  }, [orderBy]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setTimeout(() => {
+      getArticleList();
+    }, 200);
+  }, [orderDirection]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (!showAllFeeds && hiddenFeedIds) {
+      setFilteredEntries((entries) => {
+        return entries.filter(
+          (entry) => !hiddenFeedIds.includes(entry.feed.id),
+        );
+      });
       setIsFilteredEntriesUpdated(true);
     }
   }, [entries, hiddenFeedIds, showAllFeeds]);

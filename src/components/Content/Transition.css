@@ -19,7 +19,7 @@
   transition: opacity 200ms, transform 200ms;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .fade-enter {
     opacity: 0;
     transform: translateX(100%);
