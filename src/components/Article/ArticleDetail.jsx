@@ -140,8 +140,9 @@ const ArticleDetail = forwardRef((_, ref) => {
         <Typography.Text
           style={{ color: "var(--color-text-3)", fontSize: "0.75 rem" }}
         >
-          {dayjs(activeContent.published_at).format("MMMM D, YYYY")} AT{" "}
-          {dayjs(activeContent.published_at).format("hh:mm")}
+          {dayjs(activeContent.published_at).format(
+            "dddd, MMMM D, YYYY [at] h:mm A",
+          )}
         </Typography.Text>
         <Divider />
       </div>
