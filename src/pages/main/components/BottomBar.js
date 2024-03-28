@@ -1,6 +1,6 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { useStore } from "../../../store/Store";
-import { IconCheck } from "@arco-design/web-react/icon";
+import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
 import {
   getCurrentUser,
   markCategoryEntriesAsRead,
@@ -14,6 +14,8 @@ export default function BottomBar() {
   const setUnreadOnly = useStore((state) => state.setUnreadOnly);
   const entries = useStore((state) => state.entries);
   const setEntries = useStore((state) => state.setEntries);
+  const loading = useStore((state) => state.loading);
+  const initData = useStore((state) => state.initData);
   const showEntries = useStore((state) => state.showEntries);
   const setShowEntries = useStore((state) => state.setShowEntries);
   const isMoble = useStore((state) => state.isMobile);
@@ -79,6 +81,12 @@ export default function BottomBar() {
         borderTop: "1px solid var(--color-border-2)",
       }}
     >
+      <Button
+        icon={<IconRefresh />}
+        shape="circle"
+        loading={loading}
+        onClick={initData}
+      />
       <Radio.Group
         type="button"
         name="unreadOnly"
