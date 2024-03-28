@@ -23,8 +23,8 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
-import { applyColor } from "../../utils/Colors";
-import { setConfig } from "../../utils/Config.js";
+import { applyColor } from "../../utils/colors";
+import { setConfig } from "../../utils/config.js";
 import "./Header.css";
 
 const Header = () => {

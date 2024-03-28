@@ -8,7 +8,7 @@ import {
   getTodayEntries,
   getUnreadInfo,
 } from "./apis";
-import { getConfig } from "./utils/Config";
+import { getConfig } from "./utils/config";
 
 const calculateUnreadCount = (currentCount, status) => {
   if (status === "read") {

@@ -7,7 +7,7 @@ import {
 } from "@arco-design/web-react";
 import React, { useEffect } from "react";
 import useStore from "../../Store.js";
-import { setConfig } from "../../utils/Config.js";
+import { setConfig } from "../../utils/config.js";
 
 const General = () => {
   const entriesOrder = useStore((state) => state.entriesOrder);

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 
 import useStore from "../Store";
 import ContentContext from "../components/Content/ContentContext";
+import { scrollToElement } from "../utils/scroll.js";
 import useLoadMore from "./useLoadMore.js";
 
 const useKeyHandlers = (
@@ -52,10 +53,7 @@ const useKeyHandlers = (
     if (currentIndex > 0) {
       const prevEntry = filteredEntries[currentIndex - 1];
       handleEntryClick(prevEntry);
-      const card = document.querySelector(".card-custom-selected-style");
-      if (card) {
-        card.scrollIntoView({ behavior: "smooth", block: "end" });
-      }
+      scrollToElement(".card-custom-selected-style", "end");
     }
   };
 
@@ -85,10 +83,7 @@ const useKeyHandlers = (
       const nextEntry = filteredEntries[currentIndex + 1];
       handleEntryClick(nextEntry);
       setCheckNext(false);
-      const card = document.querySelector(".card-custom-selected-style");
-      if (card) {
-        card.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      scrollToElement(".card-custom-selected-style");
     }
   };
 

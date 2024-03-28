@@ -2,7 +2,7 @@ import { Message } from "@arco-design/web-react";
 import axios from "axios";
 
 import router from "../routes";
-import { getAuth } from "../utils/Auth";
+import { getAuth } from "../utils/auth";
 
 const apiClient = axios.create({
   timeout: 5000,

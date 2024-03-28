@@ -1,5 +1,5 @@
-import { getConfig } from "../utils/Config.js";
-import { get24HoursAgoTimestamp } from "../utils/Date";
+import { getConfig } from "../utils/config.js";
+import { get24HoursAgoTimestamp } from "../utils/date";
 import { apiClient } from "./axios";
 
 export const updateEntriesStatus = async (entryIds, newStatus) =>

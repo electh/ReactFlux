@@ -20,7 +20,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import isURL from "validator/es/lib/isURL";
 
 import useStore from "../../Store";
-import { extractProtocolAndHostname } from "../../utils/URL";
+import { extractProtocolAndHostname } from "../../utils/url";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;

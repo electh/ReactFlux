@@ -9,7 +9,7 @@ import {
   updateEntryStatus,
 } from "../apis";
 import ContentContext from "../components/Content/ContentContext";
-import { checkIsInLast24Hours } from "../utils/Date";
+import { checkIsInLast24Hours } from "../utils/date";
 
 const useEntryActions = () => {
   const setUnreadTotal = useStore((state) => state.setUnreadTotal);

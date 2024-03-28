@@ -5,7 +5,7 @@ import isURL from "validator/es/lib/isURL";
 
 import useStore from "../../Store";
 import useLoadMore from "../../hooks/useLoadMore";
-import { extractProtocolAndHostname } from "../../utils/URL";
+import { extractProtocolAndHostname } from "../../utils/url";
 import ContentContext from "../Content/ContentContext";
 import ArticleCard from "./ArticleCard";
 import ArticleCardMini from "./ArticleCardMini";

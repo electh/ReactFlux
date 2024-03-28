@@ -13,8 +13,8 @@ import useStore from "../../Store";
 import darkThemePreview from "../../assets/dark.png";
 import lightThemePreview from "../../assets/light.png";
 import systemThemePreview from "../../assets/system.png";
-import { applyColor, colors, getColorValue } from "../../utils/Colors";
-import { setConfig } from "../../utils/Config";
+import { applyColor, colors, getColorValue } from "../../utils/colors";
+import { setConfig } from "../../utils/config";
 import "./Appearance.css";
 
 const Appearance = () => {
