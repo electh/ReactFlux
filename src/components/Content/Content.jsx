@@ -29,6 +29,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const updateGroupUnreadCount = useStore(
     (state) => state.updateGroupUnreadCount,
   );
+  const showAllFeeds = useStore((state) => state.showAllFeeds);
 
   const {
     filteredEntries,
@@ -83,7 +84,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
     switch (info.from) {
       case "all":
-        setUnreadTotal(() => unreadCount);
+        if (showAllFeeds) {
+          setUnreadTotal(() => unreadCount);
+        }
         break;
       case "today":
         setUnreadToday(() => unreadCount);

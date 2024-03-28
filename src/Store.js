@@ -54,7 +54,7 @@ const useStore = create((set, get) => ({
     settings: false,
     addFeed: false,
   },
-  theme: getConfig("theme") || "system",
+  theme: getConfig("theme") || "light",
   layout: getConfig("layout") || "large",
   fontSize: getConfig("fontSize") || 1.05,
   showFeedIcon: getConfig("showFeedIcon") || true,
@@ -112,14 +112,6 @@ const useStore = create((set, get) => ({
       starredResponse &&
       todayUnreadResponse
     ) {
-      const unreadInfo = unreadResponse.data.unreads;
-      const unreadTotal = Object.values(unreadInfo).reduce(
-        (acc, cur) => acc + cur,
-        0,
-      );
-
-      set({ unreadTotal });
-
       const hiddenFeedIds = feedResponse.data
         .filter((feed) => feed.hide_globally || feed.category.hide_globally)
         .map((feed) => feed.id);
@@ -129,6 +121,20 @@ const useStore = create((set, get) => ({
 
       set({ hiddenFeedIds });
       set({ hiddenGroupIds });
+
+      const unreadInfo = unreadResponse.data.unreads;
+
+      const unreadTotal = Object.keys(unreadInfo).reduce((acc, id) => {
+        if (
+          get().showAllFeeds ||
+          !hiddenFeedIds.includes(Number.parseInt(id))
+        ) {
+          return acc + unreadInfo[id];
+        }
+        return acc;
+      }, 0);
+
+      set({ unreadTotal });
 
       const feedsWithUnread = feedResponse.data.map((feed) => ({
         ...feed,
