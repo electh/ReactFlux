@@ -17,8 +17,8 @@ import React, { useEffect, useState } from "react";
 
 import useStore from "../../Store";
 import { deleteFeed, editFeed, refreshFeed } from "../../apis";
-import { generateRelativeTime } from "../../utils/Date";
-import { includesIgnoreCase } from "../../utils/Filter";
+import { generateRelativeTime } from "../../utils/date";
+import { includesIgnoreCase } from "../../utils/filter";
 
 const getSortedFeedsByErrorCount = (feeds) => {
   return feeds.slice().sort((a, b) => {

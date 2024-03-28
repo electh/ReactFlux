@@ -19,20 +19,20 @@ import {
   IconSunFill,
   IconUser,
 } from "@arco-design/web-react/icon";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
-import { applyColor } from "../../utils/Colors";
+import { applyColor } from "../../utils/colors";
+import { setConfig } from "../../utils/config.js";
 import "./Header.css";
 
 const Header = () => {
   const navigate = useNavigate();
   const setVisible = useStore((state) => state.setVisible);
   const theme = useStore((state) => state.theme);
-  const toggleTheme = useStore((state) => state.toggleTheme);
-  const collapsed = useStore((state) => state.collapsed);
-  const setCollapsed = useStore((state) => state.setCollapsed);
+  const setTheme = useStore((state) => state.setTheme);
+  const toggleCollapsed = useStore((state) => state.toggleCollapsed);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -47,12 +47,16 @@ const Header = () => {
     case "dark":
       themeIcon = <IconMoonFill />;
       break;
-    case "light":
-      themeIcon = <IconSunFill />;
+    case "system":
+      themeIcon = <IconDesktop />;
       break;
     default:
-      themeIcon = <IconDesktop />;
+      themeIcon = <IconSunFill />;
   }
+
+  useEffect(() => {
+    setConfig("theme", theme);
+  }, [theme]);
 
   return (
     <div className="header">
@@ -65,7 +69,7 @@ const Header = () => {
           size="small"
           className="trigger"
           style={{ marginRight: "5px", display: "none" }}
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={toggleCollapsed}
         >
           {<IconMenu />}
         </Button>
@@ -96,7 +100,7 @@ const Header = () => {
                   <Menu.Item
                     className={theme === themeOption ? "selected-menu" : ""}
                     key={themeOption}
-                    onClick={() => toggleTheme(themeOption)}
+                    onClick={() => setTheme(themeOption)}
                     style={{
                       display: "flex",
                       width: 100,
@@ -115,7 +119,23 @@ const Header = () => {
             trigger="hover"
             position="bottom"
           >
-            <Button shape="circle" size="small" icon={themeIcon} />
+            <Button
+              icon={themeIcon}
+              shape="circle"
+              size="small"
+              onClick={() => {
+                switch (theme) {
+                  case "light":
+                    setTheme("dark");
+                    break;
+                  case "dark":
+                    setTheme("light");
+                    break;
+                  default:
+                    break;
+                }
+              }}
+            />
           </Dropdown>
           <Dropdown
             droplist={

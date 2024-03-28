@@ -7,14 +7,14 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import React from "react";
+import React, { useEffect } from "react";
 
 import useStore from "../../Store";
 import darkThemePreview from "../../assets/dark.png";
 import lightThemePreview from "../../assets/light.png";
 import systemThemePreview from "../../assets/system.png";
-import { applyColor, colors, getColorValue } from "../../utils/Colors";
-import { setConfig } from "../../utils/Config";
+import { applyColor, colors, getColorValue } from "../../utils/colors";
+import { setConfig } from "../../utils/config";
 import "./Appearance.css";
 
 const Appearance = () => {
@@ -25,9 +25,30 @@ const Appearance = () => {
   const fontSize = useStore((state) => state.fontSize);
   const setFontSize = useStore((state) => state.setFontSize);
   const showFeedIcon = useStore((state) => state.showFeedIcon);
-  const setShowFeedIcon = useStore((state) => state.setShowFeedIcon);
+  const toggleShowFeedIcon = useStore((state) => state.toggleShowFeedIcon);
   const themeColor = useStore((state) => state.color);
   const setThemeColor = useStore((state) => state.setColor);
+
+  useEffect(() => {
+    setConfig("fontSize", fontSize);
+  }, [fontSize]);
+
+  useEffect(() => {
+    setConfig("layout", layout);
+  }, [layout]);
+
+  useEffect(() => {
+    setConfig("showFeedIcon", showFeedIcon);
+  }, [showFeedIcon]);
+
+  useEffect(() => {
+    setConfig("theme", theme);
+  }, [theme]);
+
+  useEffect(() => {
+    setConfig("themeColor", themeColor);
+    applyColor(themeColor);
+  }, [themeColor]);
 
   return (
     <>
@@ -42,10 +63,7 @@ const Appearance = () => {
           name="card-radio-group"
           style={{ marginTop: "16px" }}
           defaultValue={theme}
-          onChange={(newTheme) => {
-            setTheme(newTheme);
-            setConfig("theme", newTheme);
-          }}
+          onChange={setTheme}
         >
           {["light", "dark", "system"].map((mode) => (
             <Tooltip
@@ -107,16 +125,10 @@ const Appearance = () => {
                       ? `1px solid ${getColorValue(c.name)}`
                       : "none",
                 }}
-                onClick={() => {
-                  setThemeColor(c.name);
-                  setConfig("themeColor", c.name);
-                  applyColor(c.name);
-                }}
+                onClick={() => setThemeColor(c.name)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     setThemeColor(c.name);
-                    setConfig("themeColor", c.name);
-                    applyColor(c.name);
                   }
                 }}
               />
@@ -126,13 +138,7 @@ const Appearance = () => {
       </div>
 
       <Divider />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
             Compact article list
@@ -142,20 +148,11 @@ const Appearance = () => {
           </Typography.Text>
         </div>
         <div>
-          <Switch
-            checked={layout === "small"}
-            onChange={() => toggleLayout()}
-          />
+          <Switch checked={layout === "small"} onChange={toggleLayout} />
         </div>
       </div>
       <Divider />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
             Show feed icon
@@ -165,20 +162,11 @@ const Appearance = () => {
           </Typography.Text>
         </div>
         <div>
-          <Switch
-            checked={showFeedIcon}
-            onChange={() => setShowFeedIcon(!showFeedIcon)}
-          />
+          <Switch checked={showFeedIcon} onChange={toggleShowFeedIcon} />
         </div>
       </div>
       <Divider />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
             Font size

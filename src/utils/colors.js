@@ -1,6 +1,6 @@
 import { generate, getRgbStr } from "@arco-design/color";
 
-import { getConfig } from "./Config";
+import { getConfig } from "./config";
 
 const colors = [
   {

@@ -19,11 +19,11 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getAuth, setAuth } from "../utils/Auth";
+import { getAuth, setAuth } from "../utils/auth";
 import {
   handleEnterKeyToSubmit,
   validateAndFormatFormFields,
-} from "../utils/Form";
+} from "../utils/form";
 
 const Login = () => {
   const [loginForm] = useForm();

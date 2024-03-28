@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-import { getAuth } from "../utils/Auth";
+import { getAuth } from "../utils/auth";
 
 const RouterProtect = ({ children }) => {
   const auth = getAuth();

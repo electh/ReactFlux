@@ -5,7 +5,7 @@ import useStore from "./Store";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Sidebar from "./components/Sidebar/Sidebar";
-import { applyColor } from "./utils/Colors";
+import { applyColor } from "./utils/colors";
 
 const App = () => {
   const initData = useStore((state) => state.initData);

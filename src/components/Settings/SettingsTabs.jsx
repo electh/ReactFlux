@@ -4,6 +4,7 @@ import {
   IconFile,
   IconFolder,
   IconSkin,
+  IconStorage,
 } from "@arco-design/web-react/icon";
 import React, { useEffect, useState } from "react";
 
@@ -13,6 +14,7 @@ import lightThemePreview from "../../assets/light.png";
 import systemThemePreview from "../../assets/system.png";
 import Appearance from "./Appearance";
 import FeedList from "./FeedList";
+import General from "./General.jsx";
 import GroupList from "./GroupList";
 import Hotkeys from "./Hotkeys";
 import "./SettingsTabs.css";
@@ -104,6 +106,17 @@ const SettingsTabs = () => {
         key="3"
         title={
           <span>
+            <IconStorage style={{ marginRight: 6 }} />
+            General
+          </span>
+        }
+      >
+        <General />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        key="4"
+        title={
+          <span>
             <IconSkin style={{ marginRight: 6 }} />
             Appearance
           </span>
@@ -112,7 +125,7 @@ const SettingsTabs = () => {
         <Appearance />
       </Tabs.TabPane>
       <Tabs.TabPane
-        key="4"
+        key="5"
         title={
           <span>
             <IconCommand style={{ marginRight: 6 }} />

@@ -39,11 +39,11 @@ const router = createBrowserRouter([
         element: <History />,
       },
       {
-        path: "/group/:c_id",
+        path: "/group/:id",
         element: <Group />,
       },
       {
-        path: "/feed/:f_id",
+        path: "/feed/:id",
         element: <Feed />,
       },
     ],

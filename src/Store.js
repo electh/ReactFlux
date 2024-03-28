@@ -8,7 +8,7 @@ import {
   getTodayEntries,
   getUnreadInfo,
 } from "./apis";
-import { getConfig, setConfig } from "./utils/Config";
+import { getConfig } from "./utils/config";
 
 const calculateUnreadCount = (currentCount, status) => {
   if (status === "read") {
@@ -44,12 +44,17 @@ const useStore = create((set, get) => ({
   unreadToday: 0,
   starredCount: 0,
   readCount: 0,
+  hiddenFeedIds: [],
+  hiddenGroupIds: [],
+  entriesOrder: getConfig("entriesOrder") || "desc",
+  entriesPerPage: getConfig("entriesPerPage") || 100,
+  showAllFeeds: getConfig("showAllFeeds") || false,
   loading: true,
   visible: {
     settings: false,
     addFeed: false,
   },
-  theme: getConfig("theme") || "system",
+  theme: getConfig("theme") || "light",
   layout: getConfig("layout") || "large",
   fontSize: getConfig("fontSize") || 1.05,
   showFeedIcon: getConfig("showFeedIcon") || true,
@@ -66,6 +71,10 @@ const useStore = create((set, get) => ({
     set((state) => ({ starredCount: updater(state.starredCount) })),
   setReadCount: (updater) =>
     set((state) => ({ readCount: updater(state.readCount) })),
+  setEntriesOrder: (value) => set({ entriesOrder: value }),
+  setEntriesPerPage: (value) => set({ entriesPerPage: value }),
+  toggleShowAllFeeds: () =>
+    set((state) => ({ showAllFeeds: !state.showAllFeeds })),
   setActiveContent: (activeContent) => {
     set({ activeContent: activeContent });
   },
@@ -103,11 +112,27 @@ const useStore = create((set, get) => ({
       starredResponse &&
       todayUnreadResponse
     ) {
+      const hiddenFeedIds = feedResponse.data
+        .filter((feed) => feed.hide_globally || feed.category.hide_globally)
+        .map((feed) => feed.id);
+      const hiddenGroupIds = groupResponse.data
+        .filter((group) => group.hide_globally)
+        .map((group) => group.id);
+
+      set({ hiddenFeedIds });
+      set({ hiddenGroupIds });
+
       const unreadInfo = unreadResponse.data.unreads;
-      const unreadTotal = Object.values(unreadInfo).reduce(
-        (acc, cur) => acc + cur,
-        0,
-      );
+
+      const unreadTotal = Object.keys(unreadInfo).reduce((acc, id) => {
+        if (
+          get().showAllFeeds ||
+          !hiddenFeedIds.includes(Number.parseInt(id))
+        ) {
+          return acc + unreadInfo[id];
+        }
+        return acc;
+      }, 0);
 
       set({ unreadTotal });
 
@@ -165,34 +190,21 @@ const useStore = create((set, get) => ({
     }));
   },
 
-  toggleTheme: (value) => {
-    set({ theme: value });
-    setConfig("theme", value);
-  },
-
   toggleLayout: () => {
     const newLayout = get().layout === "large" ? "small" : "large";
     set({ layout: newLayout });
-    setConfig("layout", newLayout);
   },
 
-  setFontSize: (sizeStr) => {
-    set({ fontSize: sizeStr });
-    setConfig("fontSize", sizeStr);
-  },
+  setFontSize: (sizeStr) => set({ fontSize: sizeStr }),
 
-  setShowFeedIcon: (showFeedIcon) => {
-    set({ showFeedIcon: showFeedIcon });
-    setConfig("showFeedIcon", showFeedIcon);
-  },
+  toggleShowFeedIcon: () =>
+    set((state) => ({ showFeedIcon: !state.showFeedIcon })),
 
   setVisible: (modalName, visible) => {
     set((state) => ({ visible: { ...state.visible, [modalName]: visible } }));
   },
 
-  setCollapsed: (collapsed) => {
-    set({ collapsed: collapsed });
-  },
+  toggleCollapsed: () => set((state) => ({ collapsed: !state.collapsed })),
 }));
 
 export default useStore;

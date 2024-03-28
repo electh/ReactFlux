@@ -5,7 +5,7 @@ import isURL from "validator/es/lib/isURL";
 
 import useStore from "../../Store";
 import useLoadMore from "../../hooks/useLoadMore";
-import { extractProtocolAndHostname } from "../../utils/URL";
+import { extractProtocolAndHostname } from "../../utils/url";
 import ContentContext from "../Content/ContentContext";
 import ArticleCard from "./ArticleCard";
 import ArticleCardMini from "./ArticleCardMini";
@@ -23,6 +23,8 @@ const ArticleList = forwardRef(
 
     const { loadingMore, handleLoadMore } = useLoadMore();
     const layout = useStore((state) => state.layout);
+    const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
+    const showAllFeeds = useStore((state) => state.showAllFeeds);
 
     return (
       <div
@@ -40,23 +42,28 @@ const ArticleList = forwardRef(
         <LoadingCards loading={loading} />
         {loading ? null : (
           <div ref={cardsRef}>
-            {filteredEntries.map((entry) => {
-              if (!isURL(entry.feed.site_url)) {
-                entry.feed.site_url = extractProtocolAndHostname(
-                  entry.feed.feed_url,
-                );
-              }
+            {filteredEntries
+              .filter(
+                (entry) =>
+                  showAllFeeds || !hiddenFeedIds.includes(entry.feed.id),
+              )
+              .map((entry) => {
+                if (!isURL(entry.feed.site_url)) {
+                  entry.feed.site_url = extractProtocolAndHostname(
+                    entry.feed.feed_url,
+                  );
+                }
 
-              const ArticleComponent =
-                layout === "small" ? ArticleCardMini : ArticleCard;
-              return (
-                <ArticleComponent
-                  key={entry.id}
-                  entry={entry}
-                  handleEntryClick={handleEntryClick}
-                />
-              );
-            })}
+                const ArticleComponent =
+                  layout === "small" ? ArticleCardMini : ArticleCard;
+                return (
+                  <ArticleComponent
+                    key={entry.id}
+                    entry={entry}
+                    handleEntryClick={handleEntryClick}
+                  />
+                );
+              })}
           </div>
         )}
         {!loading &&

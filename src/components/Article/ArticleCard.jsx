@@ -4,7 +4,7 @@ import classNames from "classnames";
 import React from "react";
 
 import useStore from "../../Store";
-import { generateRelativeTime } from "../../utils/Date";
+import { generateRelativeTime } from "../../utils/date";
 import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 
