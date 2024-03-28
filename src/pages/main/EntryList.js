@@ -8,7 +8,6 @@ import { useStore } from "../../store/Store";
 import { useConfigStore } from "../../store/configStore";
 import EntryCardCompact from "./components/EntryCardCompact";
 import { AnimatePresence, motion } from "framer-motion";
-import "./EntryList.css";
 
 export default function EntryList({ entries, info }) {
   const offset = useStore((state) => state.offset);
