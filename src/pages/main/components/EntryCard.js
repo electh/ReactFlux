@@ -11,7 +11,7 @@ import { useConfigStore } from "../../../store/configStore";
 
 const { Meta } = Card;
 
-const EntryCard = ({ entry }) => {
+const EntryCard = ({ entry, children }) => {
   const activeEntry = useStore((state) => state.activeEntry);
   const clickCard = useStore((state) => state.clickCard);
   const isMobile = useStore((state) => state.isMobile);
@@ -130,6 +130,7 @@ const EntryCard = ({ entry }) => {
               </span>
               {entry.starred && <IconStarFill />}
             </div>
+            <div>{children}</div>
           </div>
         }
       />

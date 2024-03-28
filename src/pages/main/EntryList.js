@@ -8,6 +8,7 @@ import { useStore } from "../../store/Store";
 import { useConfigStore } from "../../store/configStore";
 import EntryCardCompact from "./components/EntryCardCompact";
 import { AnimatePresence, motion } from "framer-motion";
+import Ripple from "./components/Ripple";
 
 export default function EntryList({ entries, info }) {
   const offset = useStore((state) => state.offset);
@@ -70,9 +71,13 @@ export default function EntryList({ entries, info }) {
             <div className="card-list" style={{ padding: "0 10px 0 10px" }}>
               {showEntries.map((entry) =>
                 layout === "compact" ? (
-                  <EntryCardCompact entry={entry} key={entry.id} />
+                  <EntryCardCompact entry={entry} key={entry.id}>
+                    <Ripple color="var(--color-text-4)" duration={1000} />
+                  </EntryCardCompact>
                 ) : (
-                  <EntryCard entry={entry} key={entry.id} />
+                  <EntryCard entry={entry} key={entry.id}>
+                    <Ripple color="var(--color-text-4)" duration={1000} />
+                  </EntryCard>
                 ),
               )}
               {entries.length > showEntries.length && (

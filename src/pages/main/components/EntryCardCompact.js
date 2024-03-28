@@ -9,7 +9,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 const { Meta } = Card;
 
-const EntryCardCompact = ({ entry }) => {
+const EntryCardCompact = ({ entry, children }) => {
   const activeEntry = useStore((state) => state.activeEntry);
   const clickCard = useStore((state) => state.clickCard);
   const nav = useNavigate();
@@ -123,6 +123,7 @@ const EntryCardCompact = ({ entry }) => {
                 />
               )}
             </div>
+            <div>{children}</div>
           </div>
         }
       />
