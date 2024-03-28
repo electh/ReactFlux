@@ -80,17 +80,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!showAllFeeds) {
-      if (hiddenFeedIds) {
-        setFilteredEntries(() => {
-          return filterArticles(entries).filter(
-            (entry) => !hiddenFeedIds.includes(entry.feed.id),
-          );
-        });
-        setIsFilteredEntriesUpdated(true);
-      }
-    } else {
-      setFilteredEntries(() => filterArticles(entries));
+    if (!showAllFeeds && hiddenFeedIds) {
+      setFilteredEntries((entries) => {
+        return entries.filter(
+          (entry) => !hiddenFeedIds.includes(entry.feed.id),
+        );
+      });
       setIsFilteredEntriesUpdated(true);
     }
   }, [entries, hiddenFeedIds, showAllFeeds]);
