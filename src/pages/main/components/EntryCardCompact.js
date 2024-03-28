@@ -1,4 +1,4 @@
-import { Card, Typography } from "@arco-design/web-react";
+import { Card, Space, Typography } from "@arco-design/web-react";
 import LazyLoadingImage from "./LazyLoadingImage";
 import { useStore } from "../../../store/Store";
 import "./EntryCard.css";
@@ -57,14 +57,14 @@ const EntryCardCompact = ({ entry }) => {
           <div
             style={{
               color: "var(--color-text-3)",
-              fontSize: "10px",
+              fontSize: "12px",
               display: "flex",
             }}
           >
             {entry.imgSrc ? (
               <div
                 style={{
-                  height: 70,
+                  height: 80,
                   aspectRatio: 1,
                   overflow: "hidden",
                   border: "1px solid var(--color-border-1)",
@@ -88,31 +88,31 @@ const EntryCardCompact = ({ entry }) => {
               </div>
             ) : null}
             <div style={{ flex: 1 }}>
-              <Typography.Text
-                style={{
-                  lineHeight: "1em",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  color:
-                    entry.status === "unread"
-                      ? "var(--color-text-1)"
-                      : "var(--color-text-3)",
-                }}
-              >
-                {entry.title}
-              </Typography.Text>
-              <br />
-              {entry.feed.title.toUpperCase()}
-              <br />
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                {formatDate(entry.published_at)}
-              </div>
+              <Space direction="vertical" size={4}>
+                <Typography.Text
+                  style={{
+                    lineHeight: "1em",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color:
+                      entry.status === "unread"
+                        ? "var(--color-text-1)"
+                        : "var(--color-text-3)",
+                  }}
+                >
+                  {entry.title}
+                </Typography.Text>
+                {entry.feed.title.toUpperCase()}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {formatDate(entry.published_at)}
+                </div>
+              </Space>
               {entry.starred && (
                 <IconStarFill
                   style={{

@@ -154,7 +154,7 @@ export default function Toolbar() {
           trigger="click"
           position="br"
         >
-          <Avatar size={32}>
+          <Avatar size={32} style={{ cursor: "pointer" }}>
             <IconUser />
           </Avatar>
         </Dropdown>

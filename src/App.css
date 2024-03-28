@@ -12,12 +12,12 @@
     margin-left: 10px;
 }
 
-.arco-menu-vertical .arco-menu-item,
-.arco-menu-vertical .arco-menu-group-title,
-.arco-menu-vertical .arco-menu-pop-header,
-.arco-menu-vertical .arco-menu-inline-header {
-    line-height: 32px !important;
-}
+/*.arco-menu-vertical .arco-menu-item,*/
+/*.arco-menu-vertical .arco-menu-group-title,*/
+/*.arco-menu-vertical .arco-menu-pop-header,*/
+/*.arco-menu-vertical .arco-menu-inline-header {*/
+/*    line-height: 32px !important;*/
+/*}*/
 
 /*::-webkit-scrollbar {*/
 /*    background-color: transparent;*/

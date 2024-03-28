@@ -30,29 +30,18 @@ export default function TextAlignment() {
         </Typography.Text>
       </div>
       <div>
-        <Radio.Group
-          options={[
-            {
-              value: "left",
-              label: (
-                <Tooltip content="Left">
-                  <IconAlignLeft />
-                </Tooltip>
-              ),
-            },
-            {
-              value: "justify",
-              label: (
-                <Tooltip content="Justify">
-                  <IconAlignCenter />
-                </Tooltip>
-              ),
-            },
-          ]}
-          type="button"
-          value={align}
-          onChange={() => toggleAlign()}
-        />
+        <Radio.Group type="button" value={align} onChange={() => toggleAlign()}>
+          <Tooltip content="Left" mini>
+            <Radio value="left">
+              <IconAlignLeft />
+            </Radio>
+          </Tooltip>
+          <Tooltip content="Justify" mini>
+            <Radio value="justify">
+              <IconAlignCenter />
+            </Radio>
+          </Tooltip>
+        </Radio.Group>
       </div>
     </div>
   );

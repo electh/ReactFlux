@@ -4,12 +4,13 @@
 }
 
 .custom-radio-card {
-  padding: 4px 4px 1px 4px;
+  padding: 8px 0 1px 20px;
   border: 1px solid var(--color-border-2);
-  border-radius: 4px;
+  border-radius: 8px;
   box-sizing: border-box;
   height: 54px;
   transition: all 0.1s linear;
+  overflow: hidden;
 }
 
 input[name="card-radio-group"]:focus-visible + .custom-radio-card {
@@ -29,15 +30,39 @@ input[name="card-radio-group"]:focus-visible + .custom-radio-card {
 
 .theme-preview {
   height: 100%;
+  width: 100%;
   object-fit: cover;
-  border-radius: 2px 2px 0 0;
+  border-radius: 2px 0 0 0;
   border-left: 1px solid var(--color-border-2);
   border-top: 1px solid var(--color-border-2);
-  border-right: 1px solid var(--color-border-2);
 }
 
 .setting-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.custom-radio-card-mask {
+  height: 14px;
+  width: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  border: 1px solid var(--color-border-2);
+  box-sizing: border-box;
+  position: absolute;
+  left: 4px;
+  top: 4px;
+}
+
+.custom-radio-card-mask-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+}
+
+.custom-radio-card-checked .custom-radio-card-mask-dot {
+  background-color: rgb(var(--primary-6));
 }

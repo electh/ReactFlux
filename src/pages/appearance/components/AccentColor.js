@@ -13,7 +13,7 @@ export default function AccentColor() {
       </Typography.Title>
       <div style={{ display: "flex" }}>
         {colors.map((c) => (
-          <Tooltip content={c.name} key={c.name}>
+          <Tooltip content={c.name} key={c.name} mini>
             <div
               style={{
                 width: "18px",

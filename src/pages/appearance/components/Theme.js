@@ -31,6 +31,7 @@ export default function Theme() {
             return (
               <Tooltip
                 key={mode}
+                mini
                 content={mode.charAt(0).toUpperCase() + mode.slice(1)}
               >
                 <Radio value={mode}>
@@ -39,6 +40,9 @@ export default function Theme() {
                       <div
                         className={`custom-radio-card ${checked ? "custom-radio-card-checked" : ""}`}
                       >
+                        <div className="custom-radio-card-mask">
+                          <div className="custom-radio-card-mask-dot"></div>
+                        </div>
                         <img
                           className="theme-preview"
                           src={

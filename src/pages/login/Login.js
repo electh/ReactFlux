@@ -76,9 +76,6 @@ const Login = () => {
         }}
       >
         <div style={{ width: "340px", padding: "10% 0" }}>
-          {/*<Avatar>*/}
-          {/*  <IconBook />*/}
-          {/*</Avatar>*/}
           <Typography.Title heading={3}>
             Connect to your server
           </Typography.Title>
@@ -181,12 +178,14 @@ const Login = () => {
       <div
         className="background"
         style={{
+          borderRadius: "12px",
+          margin: "12px 12px 12px 0",
           backgroundImage: `url(${background})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           width: "50%",
-          height: "100svh",
+          height: "calc(100svh - 24px)",
         }}
       ></div>
     </div>
