@@ -1,3 +1,4 @@
+import { getConfig } from "../utils/Config.js";
 import { get24HoursAgoTimestamp } from "../utils/Date";
 import { apiClient } from "./axios";
 
@@ -54,20 +55,69 @@ export const addFeed = async (feedUrl, groupId, isFullText) =>
     crawler: isFullText,
   });
 
+export const buildEntriesUrl = (baseParams, extraParams = {}) => {
+  const { baseUrl, orderField, direction, offset, limit, status } = baseParams;
+  const queryParams = new URLSearchParams({
+    ...extraParams,
+    order: orderField,
+    direction,
+    offset,
+    limit,
+  });
+
+  if (status) {
+    queryParams.append("status", status);
+  }
+
+  return `${baseUrl}?${queryParams.toString()}`;
+};
+
 export const getAllEntries = async (offset = 0, status = null) => {
-  const base_url = `/v1/entries?order=published_at&direction=desc&offset=${offset}`;
-  const url = status ? `${base_url}&status=${status}` : base_url;
+  const entriesOrder = getConfig("entriesOrder");
+  const entriesPerPage = getConfig("entriesPerPage");
+  const baseParams = {
+    baseUrl: "/v1/entries",
+    orderField: "created_at",
+    direction: entriesOrder,
+    offset,
+    limit: entriesPerPage,
+    status,
+  };
+
+  const url = buildEntriesUrl(baseParams);
   return apiClient.get(url);
 };
 
 export const getHistoryEntries = async (offset = 0) => {
-  const url = `/v1/entries?order=changed_at&direction=desc&status=read&offset=${offset}`;
+  const entriesOrder = getConfig("entriesOrder");
+  const entriesPerPage = getConfig("entriesPerPage");
+  const baseParams = {
+    baseUrl: "/v1/entries",
+    orderField: "changed_at",
+    direction: entriesOrder,
+    offset,
+    limit: entriesPerPage,
+    status: "read",
+  };
+
+  const url = buildEntriesUrl(baseParams);
   return apiClient.get(url);
 };
 
 export const getStarredEntries = async (offset = 0, status = null) => {
-  const baseUrl = `/v1/entries?order=published_at&direction=desc&starred=true&offset=${offset}`;
-  const url = status ? `${baseUrl}&status=${status}` : baseUrl;
+  const entriesOrder = getConfig("entriesOrder");
+  const entriesPerPage = getConfig("entriesPerPage");
+  const baseParams = {
+    baseUrl: "/v1/entries",
+    orderField: "published_at",
+    direction: entriesOrder,
+    offset,
+    limit: entriesPerPage,
+    status,
+  };
+  const extraParams = { starred: "true" };
+
+  const url = buildEntriesUrl(baseParams, extraParams);
   return apiClient.get(url);
 };
 
@@ -76,13 +126,19 @@ export const getTodayEntries = async (
   status = null,
   limit = null,
 ) => {
+  const entriesOrder = getConfig("entriesOrder");
+  const entriesPerPage = limit || getConfig("entriesPerPage");
   const timestamp = get24HoursAgoTimestamp();
-  let url = `/v1/entries?order=published_at&direction=desc&published_after=${timestamp}&offset=${offset}`;
-  if (status) {
-    url += `&status=${status}`;
-  }
-  if (limit) {
-    url += `&limit=${limit}`;
-  }
+  const baseParams = {
+    baseUrl: "/v1/entries",
+    orderField: "published_at",
+    direction: entriesOrder,
+    offset,
+    limit: entriesPerPage,
+    status,
+  };
+  const extraParams = { published_after: timestamp };
+
+  const url = buildEntriesUrl(baseParams, extraParams);
   return apiClient.get(url);
 };

@@ -20,6 +20,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import isURL from "validator/es/lib/isURL";
 
 import useStore from "../../Store";
+import { getConfig } from "../../utils/Config.js";
 import { extractProtocolAndHostname } from "../../utils/URL";
 import "./Sidebar.css";
 
@@ -56,9 +57,12 @@ const Sidebar = () => {
   const starredCount = useStore((state) => state.starredCount);
   const readCount = useStore((state) => state.readCount);
   const showFeedIcon = useStore((state) => state.showFeedIcon);
-  const setCollapsed = useStore((state) => state.setCollapsed);
+  const toggleCollapsed = useStore((state) => state.toggleCollapsed);
+  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
+  const hiddenGroupIds = useStore((state) => state.hiddenGroupIds);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
+  const showAllFeeds = getConfig("showAllFeeds") || false;
 
   const path = location.pathname;
 
@@ -67,9 +71,14 @@ const Sidebar = () => {
   };
 
   const feedsGroupedById = feeds.reduce((groupedFeeds, feed) => {
+    if (!showAllFeeds && hiddenFeedIds.includes(feed.id)) {
+      return groupedFeeds;
+    }
+
     if (!isURL(feed.site_url)) {
       feed.site_url = extractProtocolAndHostname(feed.feed_url);
     }
+
     const { id: groupId } = feed.category;
     groupedFeeds[groupId] = groupedFeeds[groupId] || [];
     groupedFeeds[groupId].push(feed);
@@ -82,7 +91,7 @@ const Sidebar = () => {
     if (!collapsed) {
       const viewportWidth = window.innerWidth;
       if (viewportWidth <= 992) {
-        setCollapsed(true);
+        toggleCollapsed(true);
       }
     }
   }, [path]);
@@ -100,7 +109,7 @@ const Sidebar = () => {
       width={240}
       collapsedWidth={0}
       breakpoint="lg"
-      onCollapse={setCollapsed}
+      onCollapse={toggleCollapsed}
       collapsed={collapsed}
       collapsible
       style={{
@@ -117,7 +126,7 @@ const Sidebar = () => {
         defaultSelectedKeys={[path]}
         hasCollapseButton
         onClickSubMenu={handleClickSubMenu}
-        onCollapseChange={() => setCollapsed(!collapsed)}
+        onCollapseChange={toggleCollapsed}
         selectedKeys={selectedKeys}
         style={{ width: "240px", height: "100%" }}
       >
@@ -209,84 +218,89 @@ const Sidebar = () => {
         <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
         {loading
           ? null
-          : groups.map((group) => (
-              <Menu.SubMenu
-                key={`/group/${group.id}`}
-                selectable={true}
-                title={
-                  <GroupTitle
-                    group={group}
-                    isOpen={openKeys.includes(`/group/${group.id}`)}
-                  />
-                }
-                onClick={(e) => {
-                  setSelectedKeys([`/group/${group.id}`]);
-                  if (
-                    !(
-                      e.target.tagName === "svg" || e.target.tagName === "path"
-                    ) &&
-                    path !== `/group/${group.id}`
-                  ) {
-                    navigate(`/group/${group.id}`);
+          : groups
+              .filter(
+                (group) => showAllFeeds || !hiddenGroupIds.includes(group.id),
+              )
+              .map((group) => (
+                <Menu.SubMenu
+                  key={`/group/${group.id}`}
+                  selectable={true}
+                  title={
+                    <GroupTitle
+                      group={group}
+                      isOpen={openKeys.includes(`/group/${group.id}`)}
+                    />
                   }
-                }}
-              >
-                {feedsGroupedById[group.id]?.map((feed) => (
-                  <MenuItem
-                    key={`/feed/${feed.id}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedKeys([`/group/${group.id}`]);
-                      navigate(`/feed/${feed.id}`);
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
+                  onClick={(e) => {
+                    setSelectedKeys([`/group/${group.id}`]);
+                    if (
+                      !(
+                        e.target.tagName === "svg" ||
+                        e.target.tagName === "path"
+                      ) &&
+                      path !== `/group/${group.id}`
+                    ) {
+                      navigate(`/group/${group.id}`);
+                    }
+                  }}
+                >
+                  {feedsGroupedById[group.id]?.map((feed) => (
+                    <MenuItem
+                      key={`/feed/${feed.id}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedKeys([`/group/${group.id}`]);
+                        navigate(`/feed/${feed.id}`);
                       }}
                     >
-                      <Typography.Ellipsis
-                        expandable={false}
-                        showTooltip={true}
+                      <div
                         style={{
-                          width: feed.unreadCount !== 0 ? "80%" : "100%",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
                         }}
                       >
-                        {showFeedIcon && (
-                          <img
-                            src={`https://icons.duckduckgo.com/ip3/${
-                              new URL(feed.site_url).hostname
-                            }.ico`}
-                            alt="Icon"
-                            style={{
-                              marginRight: "8px",
-                              width: "16px",
-                              height: "16px",
-                              verticalAlign: "-2px",
-                            }}
-                          />
-                        )}
-                        {feed.title}
-                      </Typography.Ellipsis>
-                      {feed.unreadCount !== 0 && (
                         <Typography.Ellipsis
                           expandable={false}
+                          showTooltip={true}
                           style={{
-                            color: "var(--color-text-4)",
-                            display: "flex",
-                            justifyContent: "flex-end",
+                            width: feed.unreadCount !== 0 ? "80%" : "100%",
                           }}
                         >
-                          {feed.unreadCount}
+                          {showFeedIcon && (
+                            <img
+                              src={`https://icons.duckduckgo.com/ip3/${
+                                new URL(feed.site_url).hostname
+                              }.ico`}
+                              alt="Icon"
+                              style={{
+                                marginRight: "8px",
+                                width: "16px",
+                                height: "16px",
+                                verticalAlign: "-2px",
+                              }}
+                            />
+                          )}
+                          {feed.title}
                         </Typography.Ellipsis>
-                      )}
-                    </div>
-                  </MenuItem>
-                ))}
-              </Menu.SubMenu>
-            ))}
+                        {feed.unreadCount !== 0 && (
+                          <Typography.Ellipsis
+                            expandable={false}
+                            style={{
+                              color: "var(--color-text-4)",
+                              display: "flex",
+                              justifyContent: "flex-end",
+                            }}
+                          >
+                            {feed.unreadCount}
+                          </Typography.Ellipsis>
+                        )}
+                      </div>
+                    </MenuItem>
+                  ))}
+                </Menu.SubMenu>
+              ))}
       </Menu>
     </Sider>
   );

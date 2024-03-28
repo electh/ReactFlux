@@ -44,6 +44,11 @@ const useStore = create((set, get) => ({
   unreadToday: 0,
   starredCount: 0,
   readCount: 0,
+  hiddenFeedIds: [],
+  hiddenGroupIds: [],
+  entriesOrder: getConfig("entriesOrder") || "desc",
+  entriesPerPage: getConfig("entriesPerPage") || 100,
+  showAllFeeds: getConfig("showAllFeeds") || false,
   loading: true,
   visible: {
     settings: false,
@@ -66,6 +71,10 @@ const useStore = create((set, get) => ({
     set((state) => ({ starredCount: updater(state.starredCount) })),
   setReadCount: (updater) =>
     set((state) => ({ readCount: updater(state.readCount) })),
+  setEntriesOrder: (value) => set({ entriesOrder: value }),
+  setEntriesPerPage: (value) => set({ entriesPerPage: value }),
+  toggleShowAllFeeds: () =>
+    set((state) => ({ showAllFeeds: !state.showAllFeeds })),
   setActiveContent: (activeContent) => {
     set({ activeContent: activeContent });
   },
@@ -110,6 +119,16 @@ const useStore = create((set, get) => ({
       );
 
       set({ unreadTotal });
+
+      const hiddenFeedIds = feedResponse.data
+        .filter((feed) => feed.hide_globally || feed.category.hide_globally)
+        .map((feed) => feed.id);
+      const hiddenGroupIds = groupResponse.data
+        .filter((group) => group.hide_globally)
+        .map((group) => group.id);
+
+      set({ hiddenFeedIds });
+      set({ hiddenGroupIds });
 
       const feedsWithUnread = feedResponse.data.map((feed) => ({
         ...feed,
@@ -172,15 +191,14 @@ const useStore = create((set, get) => ({
 
   setFontSize: (sizeStr) => set({ fontSize: sizeStr }),
 
-  setShowFeedIcon: (showFeedIcon) => set({ showFeedIcon: showFeedIcon }),
+  toggleShowFeedIcon: () =>
+    set((state) => ({ showFeedIcon: !state.showFeedIcon })),
 
   setVisible: (modalName, visible) => {
     set((state) => ({ visible: { ...state.visible, [modalName]: visible } }));
   },
 
-  setCollapsed: (collapsed) => {
-    set({ collapsed: collapsed });
-  },
+  toggleCollapsed: () => set((state) => ({ collapsed: !state.collapsed })),
 }));
 
 export default useStore;
