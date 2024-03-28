@@ -1,16 +1,21 @@
+.arco-radio-group {
+  display: flex !important;
+}
+
 .arco-radio {
   padding-left: 0 !important;
   margin-right: 10px !important;
+  flex-grow: 1;
 }
 
 .custom-radio-card {
-  padding: 8px 0 1px 20px;
   border: 1px solid var(--color-border-2);
   border-radius: 8px;
+  aspect-ratio: 4/3;
   box-sizing: border-box;
-  height: 54px;
   transition: all 0.1s linear;
   overflow: hidden;
+  position: relative;
 }
 
 input[name="card-radio-group"]:focus-visible + .custom-radio-card {
@@ -30,9 +35,12 @@ input[name="card-radio-group"]:focus-visible + .custom-radio-card {
 
 .theme-preview {
   height: 100%;
-  width: 100%;
+  width: auto;
   object-fit: cover;
-  border-radius: 2px 0 0 0;
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  border-radius: 4px 0 0 0;
   border-left: 1px solid var(--color-border-2);
   border-top: 1px solid var(--color-border-2);
 }
