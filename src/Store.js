@@ -46,22 +46,22 @@ const useStore = create((set, get) => ({
   readCount: 0,
   hiddenFeedIds: [],
   hiddenGroupIds: [],
-  entriesOrder: getConfig("entriesOrder") || "desc",
-  entriesPerPage: getConfig("entriesPerPage") || 100,
-  showAllFeeds: getConfig("showAllFeeds") || false,
+  entriesOrder: getConfig("entriesOrder"),
+  entriesPerPage: getConfig("entriesPerPage"),
+  showAllFeeds: getConfig("showAllFeeds"),
   loading: true,
   visible: {
     settings: false,
     addFeed: false,
   },
-  theme: getConfig("theme") || "light",
-  layout: getConfig("layout") || "large",
-  fontSize: getConfig("fontSize") || 1.05,
-  showFeedIcon: getConfig("showFeedIcon") || true,
+  theme: getConfig("theme"),
+  layout: getConfig("layout"),
+  fontSize: getConfig("fontSize"),
+  showFeedIcon: getConfig("showFeedIcon"),
   collapsed: window.innerWidth <= 992,
   activeContent: null,
   isSysDarkMode: window.matchMedia("(prefers-color-scheme: dark)").matches,
-  color: getConfig("themeColor") || "Blue",
+  color: getConfig("themeColor"),
 
   setUnreadTotal: (updater) =>
     set((state) => ({ unreadTotal: updater(state.unreadTotal) })),
@@ -91,26 +91,26 @@ const useStore = create((set, get) => ({
     const [
       feedResponse,
       groupResponse,
-      unreadResponse,
       historyResponse,
       starredResponse,
       todayUnreadResponse,
+      unreadResponse,
     ] = await Promise.all([
       getFeeds(),
       getGroups(),
-      getUnreadInfo(),
       getHistoryEntries(),
       getStarredEntries(),
       getTodayEntries(0, "unread"),
+      getUnreadInfo(),
     ]);
 
     if (
       feedResponse &&
-      unreadResponse &&
       groupResponse &&
       historyResponse &&
       starredResponse &&
-      todayUnreadResponse
+      todayUnreadResponse &&
+      unreadResponse
     ) {
       const hiddenFeedIds = feedResponse.data
         .filter((feed) => feed.hide_globally || feed.category.hide_globally)
