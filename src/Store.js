@@ -46,8 +46,9 @@ const useStore = create((set, get) => ({
   readCount: 0,
   hiddenFeedIds: [],
   hiddenGroupIds: [],
-  entriesOrder: getConfig("entriesOrder"),
-  entriesPerPage: getConfig("entriesPerPage"),
+  orderBy: getConfig("orderBy"),
+  orderDirection: getConfig("orderDirection"),
+  pageSize: getConfig("pageSize"),
   showAllFeeds: getConfig("showAllFeeds"),
   loading: true,
   visible: {
@@ -71,8 +72,9 @@ const useStore = create((set, get) => ({
     set((state) => ({ starredCount: updater(state.starredCount) })),
   setReadCount: (updater) =>
     set((state) => ({ readCount: updater(state.readCount) })),
-  setEntriesOrder: (value) => set({ entriesOrder: value }),
-  setEntriesPerPage: (value) => set({ entriesPerPage: value }),
+  setOrderBy: (value) => set({ orderBy: value }),
+  setOrderDirection: (value) => set({ orderDirection: value }),
+  setPageSize: (value) => set({ pageSize: value }),
   toggleShowAllFeeds: () =>
     set((state) => ({ showAllFeeds: !state.showAllFeeds })),
   setActiveContent: (activeContent) => {

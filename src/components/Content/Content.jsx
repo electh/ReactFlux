@@ -31,7 +31,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   );
   const showAllFeeds = useStore((state) => state.showAllFeeds);
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
-  const entriesOrder = useStore((state) => state.entriesOrder);
+  const orderBy = useStore((state) => state.orderBy);
+  const orderDirection = useStore((state) => state.orderDirection);
 
   const {
     entries,
@@ -76,7 +77,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setTimeout(() => {
       getArticleList();
     }, 200);
-  }, [entriesOrder]);
+  }, [orderBy, orderDirection]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {

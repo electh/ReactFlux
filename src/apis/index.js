@@ -73,14 +73,15 @@ export const buildEntriesUrl = (baseParams, extraParams = {}) => {
 };
 
 export const getAllEntries = async (offset = 0, status = null) => {
-  const entriesOrder = getConfig("entriesOrder");
-  const entriesPerPage = getConfig("entriesPerPage");
+  const orderBy = getConfig("orderBy");
+  const orderDirection = getConfig("orderDirection");
+  const pageSize = getConfig("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
-    orderField: "created_at",
-    direction: entriesOrder,
+    orderField: orderBy,
+    direction: orderDirection,
     offset,
-    limit: entriesPerPage,
+    limit: pageSize,
     status,
   };
 
@@ -89,14 +90,14 @@ export const getAllEntries = async (offset = 0, status = null) => {
 };
 
 export const getHistoryEntries = async (offset = 0) => {
-  const entriesOrder = getConfig("entriesOrder");
-  const entriesPerPage = getConfig("entriesPerPage");
+  const orderDirection = getConfig("orderDirection");
+  const pageSize = getConfig("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: "changed_at",
-    direction: entriesOrder,
+    direction: orderDirection,
     offset,
-    limit: entriesPerPage,
+    limit: pageSize,
     status: "read",
   };
 
@@ -105,14 +106,15 @@ export const getHistoryEntries = async (offset = 0) => {
 };
 
 export const getStarredEntries = async (offset = 0, status = null) => {
-  const entriesOrder = getConfig("entriesOrder");
-  const entriesPerPage = getConfig("entriesPerPage");
+  const orderBy = getConfig("orderBy");
+  const orderDirection = getConfig("orderDirection");
+  const pageSize = getConfig("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
-    orderField: "published_at",
-    direction: entriesOrder,
+    orderField: orderBy,
+    direction: orderDirection,
     offset,
-    limit: entriesPerPage,
+    limit: pageSize,
     status,
   };
   const extraParams = { starred: "true" };
@@ -126,15 +128,16 @@ export const getTodayEntries = async (
   status = null,
   limit = null,
 ) => {
-  const entriesOrder = getConfig("entriesOrder");
-  const entriesPerPage = limit || getConfig("entriesPerPage");
+  const orderBy = getConfig("orderBy");
+  const orderDirection = getConfig("orderDirection");
+  const pageSize = limit || getConfig("pageSize");
   const timestamp = get24HoursAgoTimestamp();
   const baseParams = {
     baseUrl: "/v1/entries",
-    orderField: "published_at",
-    direction: entriesOrder,
+    orderField: orderBy,
+    direction: orderDirection,
     offset,
-    limit: entriesPerPage,
+    limit: pageSize,
     status,
   };
   const extraParams = { published_after: timestamp };

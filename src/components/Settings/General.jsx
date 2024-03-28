@@ -10,20 +10,26 @@ import useStore from "../../Store.js";
 import { setConfig } from "../../utils/config.js";
 
 const General = () => {
-  const entriesOrder = useStore((state) => state.entriesOrder);
-  const entriesPerPage = useStore((state) => state.entriesPerPage);
+  const orderBy = useStore((state) => state.orderBy);
+  const orderDirection = useStore((state) => state.orderDirection);
+  const pageSize = useStore((state) => state.pageSize);
   const showAllFeeds = useStore((state) => state.showAllFeeds);
-  const setEntriesOrder = useStore((state) => state.setEntriesOrder);
-  const setEntriesPerPage = useStore((state) => state.setEntriesPerPage);
+  const setOrderBy = useStore((state) => state.setOrderBy);
+  const setOrderDirection = useStore((state) => state.setOrderDirection);
+  const setPageSize = useStore((state) => state.setPageSize);
   const toggleShowAllFeeds = useStore((state) => state.toggleShowAllFeeds);
 
   useEffect(() => {
-    setConfig("entriesOrder", entriesOrder);
-  }, [entriesOrder]);
+    setConfig("orderBy", orderBy);
+  }, [orderBy]);
 
   useEffect(() => {
-    setConfig("entriesPerPage", entriesPerPage);
-  }, [entriesPerPage]);
+    setConfig("orderDirection", orderDirection);
+  }, [orderDirection]);
+
+  useEffect(() => {
+    setConfig("pageSize", pageSize);
+  }, [pageSize]);
 
   useEffect(() => {
     setConfig("showAllFeeds", showAllFeeds);
@@ -42,10 +48,32 @@ const General = () => {
         </div>
         <div>
           <Select
-            onChange={setEntriesOrder}
+            onChange={setOrderBy}
             placeholder="Select order"
-            style={{ width: 120, marginLeft: 16 }}
-            value={entriesOrder}
+            style={{ width: 128, marginLeft: 16 }}
+            value={orderBy}
+          >
+            <Select.Option value="published_at">Published at</Select.Option>
+            <Select.Option value="created_at">Created at</Select.Option>
+          </Select>
+        </div>
+      </div>
+      <Divider />
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Entries order direction
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            What order direction to show entries:
+          </Typography.Text>
+        </div>
+        <div>
+          <Select
+            onChange={setOrderDirection}
+            placeholder="Select order"
+            style={{ width: 128, marginLeft: 16 }}
+            value={orderDirection}
           >
             <Select.Option value="asc">Oldest first</Select.Option>
             <Select.Option value="desc">Newest first</Select.Option>
@@ -64,12 +92,12 @@ const General = () => {
         </div>
         <div>
           <InputNumber
-            defaultValue={entriesPerPage}
+            defaultValue={pageSize}
             min={1}
             mode="button"
-            onChange={setEntriesPerPage}
+            onChange={setPageSize}
             size="small"
-            style={{ width: 120, marginLeft: 16 }}
+            style={{ width: 128, marginLeft: 16 }}
           />
         </div>
       </div>

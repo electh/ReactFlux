@@ -5,7 +5,7 @@ import ContentContext from "../components/Content/ContentContext";
 import { filterEntries } from "../utils/filter";
 
 const useLoadMore = () => {
-  const entriesPerPage = useStore((state) => state.entriesPerPage);
+  const pageSize = useStore((state) => state.pageSize);
 
   const {
     entries,
@@ -39,9 +39,9 @@ const useLoadMore = () => {
     setLoadingMore(true);
 
     try {
-      const response = await getEntries(offset + entriesPerPage);
+      const response = await getEntries(offset + pageSize);
       if (response?.data?.entries) {
-        setOffset((current) => current + entriesPerPage);
+        setOffset((current) => current + pageSize);
         const newArticlesWithImage = response.data.entries.map(getFirstImage);
         const updatedAllArticles = [
           ...new Map(

@@ -1,7 +1,8 @@
 const defaultConfig = {
   color: "Blue",
-  entriesOrder: "desc",
-  entriesPerPage: 100,
+  orderBy: "published_at",
+  orderDirection: "desc",
+  pageSize: 100,
   fontSize: 1.05,
   layout: "large",
   showAllFeeds: false,

@@ -9,16 +9,17 @@ import { ContentProvider } from "../components/Content/ContentContext";
 
 const Feed = () => {
   const { id: feedId } = useParams();
-  const entriesOrder = useStore((state) => state.entriesOrder);
-  const entriesPerPage = useStore((state) => state.entriesPerPage);
+  const orderBy = useStore((state) => state.orderBy);
+  const orderDirection = useStore((state) => state.orderDirection);
+  const pageSize = useStore((state) => state.pageSize);
 
   const getFeedEntries = async (offset = 0, status = null) => {
     const baseParams = {
       baseUrl: `/v1/feeds/${feedId}/entries`,
-      orderField: "published_at",
-      direction: entriesOrder,
+      orderField: orderBy,
+      direction: orderDirection,
       offset,
-      limit: entriesPerPage,
+      limit: pageSize,
       status,
     };
 
