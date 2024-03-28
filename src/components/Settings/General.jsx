@@ -65,10 +65,11 @@ const General = () => {
         <div>
           <InputNumber
             defaultValue={entriesPerPage}
+            min={1}
             mode="button"
+            onChange={setEntriesPerPage}
             size="small"
             style={{ width: 120, marginLeft: 16 }}
-            onChange={setEntriesPerPage}
           />
         </div>
       </div>
