@@ -11,6 +11,7 @@ import { Outlet } from "react-router-dom";
 
 import useStore from "../../Store";
 import { addFeed } from "../../apis";
+import { isMobileWidth } from "../../utils/viewport.js";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
 
@@ -25,8 +26,8 @@ const SettingsModal = ({
 
   useEffect(() => {
     const handleResize = () => {
-      const width = window.innerWidth <= 700 ? "100%" : "720px";
-      const top = window.innerWidth <= 700 ? "5%" : "10%";
+      const width = isMobileWidth() ? "100%" : "720px";
+      const top = isMobileWidth() ? "5%" : "10%";
       setModalWidth(width);
       setModalTop(top);
     };
