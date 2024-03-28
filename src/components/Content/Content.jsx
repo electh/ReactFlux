@@ -30,8 +30,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     (state) => state.updateGroupUnreadCount,
   );
   const showAllFeeds = useStore((state) => state.showAllFeeds);
+  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
 
   const {
+    entries,
     filteredEntries,
     filterStatus,
     loading,
@@ -54,19 +56,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleEntryStatusUpdate,
   } = useEntryActions();
 
-  const {
-    handleBKey,
-    handleDKey,
-    handleEscapeKey,
-    handleLeftKey,
-    handleMKey,
-    handleRightKey,
-    handleSKey,
-  } = useKeyHandlers();
-
   const { getFirstImage } = useLoadMore();
 
   const [showArticleDetail, setShowArticleDetail] = useState(false);
+  const [isFilteredEntriesUpdated, setIsFilteredEntriesUpdated] =
+    useState(false);
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
@@ -75,6 +69,29 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   useEffect(() => {
     setShowArticleDetail(activeContent !== null);
   }, [activeContent]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (!showAllFeeds) {
+      if (hiddenFeedIds) {
+        setFilteredEntries(() => {
+          return filterArticles(entries).filter(
+            (entry) => !hiddenFeedIds.includes(entry.feed.id),
+          );
+        });
+        setIsFilteredEntriesUpdated(true);
+      }
+    } else {
+      setFilteredEntries(() => filterArticles(entries));
+      setIsFilteredEntriesUpdated(true);
+    }
+  }, [entries, hiddenFeedIds, showAllFeeds]);
+
+  useEffect(() => {
+    if (isFilteredEntriesUpdated) {
+      setIsFilteredEntriesUpdated(false);
+    }
+  }, [isFilteredEntriesUpdated]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -137,12 +154,22 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   };
 
+  const {
+    handleBKey,
+    handleDKey,
+    handleEscapeKey,
+    handleLeftKey,
+    handleMKey,
+    handleRightKey,
+    handleSKey,
+  } = useKeyHandlers(handleEntryClick, getEntries, isFilteredEntriesUpdated);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const keyMap = {
       27: () => handleEscapeKey(entryListRef),
-      37: () => handleLeftKey(handleEntryClick),
-      39: () => handleRightKey(handleEntryClick),
+      37: () => handleLeftKey(),
+      39: () => handleRightKey(),
       66: () => handleBKey(),
       68: () => handleDKey(handleFetchContent),
       77: () => handleMKey(toggleEntryStatus),
@@ -167,15 +194,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     };
   }, [activeContent, filteredEntries, showArticleDetail]);
 
-  const processEntries = (response) => {
-    const fetchedArticles = response.data.entries.map(getFirstImage);
-
-    const filteredArticles =
-      filterStatus === "all"
-        ? fetchedArticles
-        : fetchedArticles.filter((a) => a.status === "unread");
-
-    return { fetchedArticles, filteredArticles };
+  const filterArticles = (articles) => {
+    if (filterStatus === "all") {
+      return articles;
+    }
+    return articles.filter((article) => article.status === "unread");
   };
 
   const updateUI = (
@@ -197,7 +220,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const handleResponses = (responseAll, responseUnread) => {
     if (responseAll?.data?.entries && responseUnread?.data?.total >= 0) {
-      const { fetchedArticles, filteredArticles } = processEntries(responseAll);
+      const fetchedArticles = responseAll.data.entries.map(getFirstImage);
+      const filteredArticles = filterArticles(fetchedArticles);
       updateUI(fetchedArticles, filteredArticles, responseAll, responseUnread);
     }
   };
@@ -271,8 +295,16 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       >
         <ArticleDetail ref={entryDetailRef} />
       </CSSTransition>
-      <ActionButtons handleEntryClick={handleEntryClick} />
-      <ActionButtonsMobile handleEntryClick={handleEntryClick} />
+      <ActionButtons
+        handleEntryClick={handleEntryClick}
+        getEntries={getEntries}
+        isFilteredEntriesUpdated={isFilteredEntriesUpdated}
+      />
+      <ActionButtonsMobile
+        handleEntryClick={handleEntryClick}
+        getEntries={getEntries}
+        isFilteredEntriesUpdated={isFilteredEntriesUpdated}
+      />
     </>
   );
 };
