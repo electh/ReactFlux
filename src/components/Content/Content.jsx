@@ -74,10 +74,20 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    if (info.from === "history") {
+      return;
+    }
     setTimeout(() => {
       getArticleList();
     }, 200);
-  }, [orderBy, orderDirection]);
+  }, [orderBy]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setTimeout(() => {
+      getArticleList();
+    }, 200);
+  }, [orderDirection]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
