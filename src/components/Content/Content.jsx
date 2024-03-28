@@ -13,7 +13,7 @@ import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
 import "./Content.css";
 import ContentContext from "./ContentContext";
-import FilterAndMarkPanel from "./FilterAndMarkPanel";
+import FooterPanel from "./FooterPanel.jsx";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
@@ -280,8 +280,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
             ref={entryListRef}
           />
         </CSSTransition>
-        <FilterAndMarkPanel
+        <FooterPanel
           info={info}
+          getArticleList={getArticleList}
           markAllAsRead={markAllAsRead}
           ref={entryListRef}
         />
