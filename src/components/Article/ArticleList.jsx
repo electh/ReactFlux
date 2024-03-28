@@ -5,7 +5,6 @@ import isURL from "validator/es/lib/isURL";
 
 import useStore from "../../Store";
 import useLoadMore from "../../hooks/useLoadMore";
-import { getConfig } from "../../utils/Config.js";
 import { extractProtocolAndHostname } from "../../utils/URL";
 import ContentContext from "../Content/ContentContext";
 import ArticleCard from "./ArticleCard";
@@ -25,7 +24,7 @@ const ArticleList = forwardRef(
     const { loadingMore, handleLoadMore } = useLoadMore();
     const layout = useStore((state) => state.layout);
     const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
-    const showAllFeeds = getConfig("showAllFeeds") || false;
+    const showAllFeeds = useStore((state) => state.showAllFeeds);
 
     return (
       <div

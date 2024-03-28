@@ -20,7 +20,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import isURL from "validator/es/lib/isURL";
 
 import useStore from "../../Store";
-import { getConfig } from "../../utils/Config.js";
 import { extractProtocolAndHostname } from "../../utils/URL";
 import "./Sidebar.css";
 
@@ -60,9 +59,9 @@ const Sidebar = () => {
   const toggleCollapsed = useStore((state) => state.toggleCollapsed);
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
   const hiddenGroupIds = useStore((state) => state.hiddenGroupIds);
+  const showAllFeeds = useStore((state) => state.showAllFeeds);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
-  const showAllFeeds = getConfig("showAllFeeds") || false;
 
   const path = location.pathname;
 
