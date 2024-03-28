@@ -1,22 +1,24 @@
-const getConfig = (name) => {
-  const config = JSON.parse(localStorage.getItem("config"));
-  if (!config) {
-    console.log("No config found in localStorage");
-    return null;
-  }
+const defaultConfig = {
+  color: "Blue",
+  entriesOrder: "desc",
+  entriesPerPage: 100,
+  fontSize: 1.05,
+  layout: "large",
+  showAllFeeds: false,
+  showFeedIcon: true,
+  theme: "light",
+};
 
-  const value = config[name];
-  if (typeof value === "undefined") {
-    console.log(`Config for "${name}" not found`);
-    return null;
-  }
-  return value;
+const getConfig = (name) => {
+  const config = JSON.parse(localStorage.getItem("config")) || {};
+  const hasProperty = Object.prototype.hasOwnProperty.call(config, name);
+  return hasProperty ? config[name] : defaultConfig[name] || null;
 };
 
 const setConfig = (name, value) => {
   const config = JSON.parse(localStorage.getItem("config")) || {};
-  const newConfig = { ...config, [name]: value };
-  localStorage.setItem("config", JSON.stringify(newConfig));
+  config[name] = value;
+  localStorage.setItem("config", JSON.stringify(config));
 };
 
 export { getConfig, setConfig };

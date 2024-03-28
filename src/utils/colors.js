@@ -36,7 +36,7 @@ const getColorValue = (colorName) => {
   const isSysDarkMode = window.matchMedia(
     "(prefers-color-scheme: dark)",
   ).matches;
-  const theme = getConfig("theme") || "light";
+  const theme = getConfig("theme");
   const isDarkMode = theme === "system" ? isSysDarkMode : theme === "dark";
   if (selectedColor) {
     return isDarkMode ? selectedColor.valueDark : selectedColor.valueLight;
