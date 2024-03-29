@@ -2,18 +2,30 @@
   .bottom-bar {
     position: fixed !important;
     padding: 8px !important;
-    bottom: 20px !important;
+    bottom: 30px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     border-radius: 50px;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.3) !important;
     backdrop-filter: blur(20px) !important;
     box-shadow:
       inset 0 -1px 1px 0 rgba(255, 255, 255, 0.1),
       inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
       0 8px 6px 0 rgba(0, 0, 0, 0.05);
-    border: none !important;
-    gap: 16px !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    gap: 8px !important;
     width: auto !important;
+  }
+
+  body[arco-theme="dark"] .bottom-bar {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+  }
+
+  body[arco-theme="dark"] .bottom-bar .arco-radio-button::after {
+    background-color: rgba(0, 0, 0, 0) !important;
+  }
+
+  body[arco-theme="dark"] .arco-radio-button.arco-radio-checked {
+    color: white !important;
   }
 }
