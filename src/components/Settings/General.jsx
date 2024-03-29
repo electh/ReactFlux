@@ -10,6 +10,10 @@ import useStore from "../../Store.js";
 import { setConfig } from "../../utils/config.js";
 
 const General = () => {
+  const showStatus = useStore((state) => state.showStatus);
+  const setShowStatus = useStore((state) => state.setShowStatus);
+  const homePage = useStore((state) => state.homePage);
+  const setHomePage = useStore((state) => state.setHomePage);
   const orderBy = useStore((state) => state.orderBy);
   const orderDirection = useStore((state) => state.orderDirection);
   const pageSize = useStore((state) => state.pageSize);
@@ -18,6 +22,14 @@ const General = () => {
   const setOrderDirection = useStore((state) => state.setOrderDirection);
   const setPageSize = useStore((state) => state.setPageSize);
   const toggleShowAllFeeds = useStore((state) => state.toggleShowAllFeeds);
+
+  useEffect(() => {
+    setConfig("showStatus", showStatus);
+  }, [showStatus]);
+
+  useEffect(() => {
+    setConfig("homePage", homePage);
+  }, [homePage]);
 
   useEffect(() => {
     setConfig("orderBy", orderBy);
@@ -37,6 +49,52 @@ const General = () => {
 
   return (
     <>
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Default show status
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Which status to show by default:
+          </Typography.Text>
+        </div>
+        <div>
+          <Select
+            onChange={setShowStatus}
+            placeholder="Select status"
+            style={{ width: 128, marginLeft: 16 }}
+            value={showStatus}
+          >
+            <Select.Option value="all">All</Select.Option>
+            <Select.Option value="unread">Unread</Select.Option>
+          </Select>
+        </div>
+      </div>
+      <Divider />
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Default home page
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Which page to show by default:
+          </Typography.Text>
+        </div>
+        <div>
+          <Select
+            onChange={setHomePage}
+            placeholder="Select page"
+            style={{ width: 128, marginLeft: 16 }}
+            value={homePage}
+          >
+            <Select.Option value="all">All</Select.Option>
+            <Select.Option value="today">Today</Select.Option>
+            <Select.Option value="starred">Starred</Select.Option>
+            <Select.Option value="history">History</Select.Option>
+          </Select>
+        </div>
+      </div>
+      <Divider />
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>

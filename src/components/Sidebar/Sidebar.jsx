@@ -162,7 +162,7 @@ const Sidebar = () => {
         <Skeleton loading={loading} animation={true} text={{ rows: 3 }} />
         {loading ? null : (
           <div>
-            <MenuItem key={"/"} onClick={() => navigate("/")}>
+            <MenuItem key={"/all"} onClick={() => navigate("/all")}>
               <div className="custom-menu-item">
                 <span>
                   <IconUnorderedList />

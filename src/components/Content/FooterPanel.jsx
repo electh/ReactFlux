@@ -1,13 +1,13 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
-import React, { forwardRef, useCallback, useContext } from "react";
+import React, { forwardRef, useCallback, useContext, useEffect } from "react";
 
 import useStore from "../../Store";
 import useFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "./ContentContext";
 
 const FooterPanel = forwardRef(
-  ({ info, getArticleList, markAllAsRead }, ref) => {
+  ({ info, refreshArticleList, markAllAsRead }, ref) => {
     const {
       entries,
       filteredEntries,
@@ -17,6 +17,7 @@ const FooterPanel = forwardRef(
       loading,
       setEntries,
       setFilteredEntries,
+      setFilterStatus,
       setUnreadCount,
     } = useContext(ContentContext);
 
@@ -24,6 +25,8 @@ const FooterPanel = forwardRef(
 
     /*menu 数据初始化函数 */
     const initData = useStore((state) => state.initData);
+
+    const showStatus = useStore((state) => state.showStatus);
 
     const handleMarkAllAsRead = useCallback(async () => {
       markAllAsRead()
@@ -49,7 +52,12 @@ const FooterPanel = forwardRef(
       setUnreadCount,
     ]);
 
-    return info.from !== "history" ? (
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+      setFilterStatus(showStatus);
+    }, [showStatus]);
+
+    return (
       <div
         className="entry-panel"
         style={{
@@ -79,7 +87,7 @@ const FooterPanel = forwardRef(
           <Radio value="all">ALL</Radio>
           <Radio value="unread">UNREAD</Radio>
         </Radio.Group>
-        {info.from !== "starred" && (
+        {info.from !== "starred" && info.from !== "history" && (
           <Popconfirm
             focusLock
             title="Mark All As Read?"
@@ -92,10 +100,10 @@ const FooterPanel = forwardRef(
           icon={<IconRefresh />}
           loading={loading}
           shape="circle"
-          onClick={getArticleList}
+          onClick={refreshArticleList}
         />
       </div>
-    ) : null;
+    );
   },
 );
 
