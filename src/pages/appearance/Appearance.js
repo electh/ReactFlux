@@ -1,4 +1,4 @@
-import { Divider, Drawer, Typography } from "@arco-design/web-react";
+import { Divider, Drawer } from "@arco-design/web-react";
 import AccentColor from "./components/AccentColor";
 import CompactLayout from "./components/CompactLayout";
 import FontSize from "./components/FontSize";
@@ -10,16 +10,14 @@ export default function Appearance({ visible, setVisible }) {
   return (
     <Drawer
       width={332}
-      title={
-        <Typography.Title heading={6} style={{ margin: 0 }}>
-          Appearance
-        </Typography.Title>
-      }
+      title={null}
+      closable={false}
       footer={null}
       visible={visible}
       onCancel={() => {
         setVisible(false);
       }}
+      unmountOnExit
     >
       <Theme />
       <Divider />

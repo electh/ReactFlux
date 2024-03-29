@@ -16,6 +16,7 @@ export default function SideDrawer({ visible, setVisible }) {
       className="side-drawer"
       width={300}
       height={300}
+      closable={false}
       title={null}
       footer={null}
       visible={visible}
@@ -23,6 +24,7 @@ export default function SideDrawer({ visible, setVisible }) {
       onCancel={() => {
         setVisible(false);
       }}
+      unmountOnExit
     >
       <div
         style={{ display: "flex", alignItems: "center", margin: "8px 12px" }}
