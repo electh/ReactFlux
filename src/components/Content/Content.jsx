@@ -1,5 +1,11 @@
 import { Message } from "@arco-design/web-react";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { CSSTransition } from "react-transition-group";
 
 import useStore from "../../Store";
@@ -92,16 +98,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!showAllFeeds && hiddenFeedIds) {
-      setFilteredEntries((entries) => {
-        return entries.filter(
-          (entry) => !hiddenFeedIds.includes(entry.feed.id),
-        );
-      });
+      setFilteredEntries((entries) =>
+        entries.filter((entry) => !hiddenFeedIds.includes(entry.feed.id)),
+      );
     } else {
       setFilteredEntries(() => filterArticles(entries));
     }
     setIsFilteredEntriesUpdated(true);
-  }, [entries, hiddenFeedIds, showAllFeeds]);
+  }, [hiddenFeedIds, showAllFeeds]);
 
   useEffect(() => {
     if (isFilteredEntriesUpdated) {
@@ -145,7 +149,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   }, [total, unreadCount]);
 
-  const handleEntryClick = async (entry) => {
+  const handleEntryClick = useCallback(async (entry) => {
     setShowArticleDetail(false);
 
     setTimeout(() => {
@@ -168,7 +172,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       entryDetailRef.current.focus();
       entryDetailRef.current.scrollTo(0, 0);
     }
-  };
+  });
 
   const {
     handleBKey,
