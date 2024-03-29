@@ -7,7 +7,7 @@ import useFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "./ContentContext";
 
 const FooterPanel = forwardRef(
-  ({ info, getArticleList, markAllAsRead }, ref) => {
+  ({ info, refreshArticleList, markAllAsRead }, ref) => {
     const {
       entries,
       filteredEntries,
@@ -92,7 +92,7 @@ const FooterPanel = forwardRef(
           icon={<IconRefresh />}
           loading={loading}
           shape="circle"
-          onClick={getArticleList}
+          onClick={refreshArticleList}
         />
       </div>
     ) : null;

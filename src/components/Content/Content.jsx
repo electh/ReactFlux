@@ -78,14 +78,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       return;
     }
     setTimeout(() => {
-      getArticleList();
+      refreshArticleList();
     }, 200);
   }, [orderBy]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setTimeout(() => {
-      getArticleList();
+      refreshArticleList();
     }, 200);
   }, [orderDirection]);
 
@@ -259,17 +259,21 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    getArticleList();
-    setActiveContent(null);
+  const refreshArticleList = async () => {
+    await getArticleList();
     if (entryListRef.current) {
       entryListRef.current.scrollTo(0, 0);
     }
+    setOffset(0);
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    refreshArticleList();
+    setActiveContent(null);
     if (entryDetailRef.current) {
       entryDetailRef.current.scrollTo(0, 0);
     }
-    setOffset(0);
   }, [info]);
 
   return (
@@ -298,7 +302,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         </CSSTransition>
         <FooterPanel
           info={info}
-          getArticleList={getArticleList}
+          refreshArticleList={refreshArticleList}
           markAllAsRead={markAllAsRead}
           ref={entryListRef}
         />
