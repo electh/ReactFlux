@@ -11,6 +11,7 @@ import { Outlet } from "react-router-dom";
 
 import useStore from "../../Store";
 import { addFeed } from "../../apis";
+import { includesIgnoreCase } from "../../utils/filter.js";
 import { isMobileWidth } from "../../utils/viewport.js";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
@@ -122,7 +123,7 @@ const AddFeedModal = ({
         }}
       >
         <Form.Item label="Feed URL" field="url" rules={[{ required: true }]}>
-          <Input placeholder="Please input feed URL" />
+          <Input placeholder="Please input a feed URL" />
         </Form.Item>
         <Form.Item
           label="Group"
@@ -130,7 +131,13 @@ const AddFeedModal = ({
           field="group"
           rules={[{ required: true }]}
         >
-          <Select placeholder="Please select">
+          <Select
+            placeholder="Please select a category"
+            showSearch
+            filterOption={(inputValue, option) =>
+              includesIgnoreCase(option.props.children, inputValue)
+            }
+          >
             {groups.map((group) => (
               <Select.Option key={group.id} value={group.id}>
                 {group.title}
