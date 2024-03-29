@@ -69,6 +69,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const [showArticleDetail, setShowArticleDetail] = useState(false);
   const [isFilteredEntriesUpdated, setIsFilteredEntriesUpdated] =
     useState(false);
+  const [isShowAllFeedsUpdated, setIsShowAllFeedsUpdated] = useState(false);
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
@@ -77,6 +78,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   useEffect(() => {
     setShowArticleDetail(activeContent !== null);
   }, [activeContent]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setIsShowAllFeedsUpdated(true);
+  }, [showAllFeeds]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -101,17 +107,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       setFilteredEntries((entries) =>
         entries.filter((entry) => !hiddenFeedIds.includes(entry.feed.id)),
       );
-    } else {
+    } else if (isShowAllFeedsUpdated) {
       setFilteredEntries(() => filterArticles(entries));
+      setIsShowAllFeedsUpdated(false);
     }
     setIsFilteredEntriesUpdated(true);
   }, [hiddenFeedIds, showAllFeeds]);
-
-  useEffect(() => {
-    if (isFilteredEntriesUpdated) {
-      setIsFilteredEntriesUpdated(false);
-    }
-  }, [isFilteredEntriesUpdated]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -182,7 +183,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleMKey,
     handleRightKey,
     handleSKey,
-  } = useKeyHandlers(handleEntryClick, getEntries, isFilteredEntriesUpdated);
+  } = useKeyHandlers(
+    handleEntryClick,
+    getEntries,
+    isFilteredEntriesUpdated,
+    setIsFilteredEntriesUpdated,
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -324,11 +330,13 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         handleEntryClick={handleEntryClick}
         getEntries={getEntries}
         isFilteredEntriesUpdated={isFilteredEntriesUpdated}
+        setIsFilteredEntriesUpdated={setIsFilteredEntriesUpdated}
       />
       <ActionButtonsMobile
         handleEntryClick={handleEntryClick}
         getEntries={getEntries}
         isFilteredEntriesUpdated={isFilteredEntriesUpdated}
+        setIsFilteredEntriesUpdated={setIsFilteredEntriesUpdated}
       />
     </>
   );

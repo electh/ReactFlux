@@ -18,6 +18,7 @@ const ActionButtons = ({
   handleEntryClick,
   getEntries,
   isFilteredEntriesUpdated,
+  setIsFilteredEntriesUpdated,
 }) => {
   const activeContent = useStore((state) => state.activeContent);
   const { handleFetchContent, toggleEntryStarred, toggleEntryStatus } =
@@ -26,6 +27,7 @@ const ActionButtons = ({
     handleEntryClick,
     getEntries,
     isFilteredEntriesUpdated,
+    setIsFilteredEntriesUpdated,
   );
 
   if (!activeContent) {
