@@ -16,12 +16,12 @@ import { isMobileWidth } from "../../utils/viewport.js";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
 
-const SettingsModal = ({
-  activeContent,
-  setActiveContent,
-  setVisible,
-  visible,
-}) => {
+const SettingsModal = () => {
+  const activeContent = useStore((state) => state.activeContent);
+  const setActiveContent = useStore((state) => state.setActiveContent);
+  const setVisible = useStore((state) => state.setVisible);
+  const visible = useStore((state) => state.visible);
+
   const [modalWidth, setModalWidth] = useState("720px");
   const [modalTop, setModalTop] = useState("10%");
 
@@ -63,14 +63,13 @@ const SettingsModal = ({
   );
 };
 
-const AddFeedModal = ({
-  activeContent,
-  setActiveContent,
-  setVisible,
-  visible,
-}) => {
-  const initData = useStore((state) => state.initData);
+const AddFeedModal = () => {
+  const activeContent = useStore((state) => state.activeContent);
   const groups = useStore((state) => state.groups);
+  const initData = useStore((state) => state.initData);
+  const setActiveContent = useStore((state) => state.setActiveContent);
+  const setVisible = useStore((state) => state.setVisible);
+  const visible = useStore((state) => state.visible);
 
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
@@ -161,11 +160,6 @@ const AddFeedModal = ({
 };
 
 const Main = () => {
-  const visible = useStore((state) => state.visible);
-  const setVisible = useStore((state) => state.setVisible);
-  const activeContent = useStore((state) => state.activeContent);
-  const setActiveContent = useStore((state) => state.setActiveContent);
-
   const [adjustedHeight, setAdjustedHeight] = useState(0);
 
   useEffect(() => {
@@ -185,18 +179,8 @@ const Main = () => {
   return (
     <div className="main" style={{ height: `${adjustedHeight}px` }}>
       <Outlet />
-      <SettingsModal
-        activeContent={activeContent}
-        setActiveContent={setActiveContent}
-        setVisible={setVisible}
-        visible={visible}
-      />
-      <AddFeedModal
-        activeContent={activeContent}
-        setActiveContent={setActiveContent}
-        setVisible={setVisible}
-        visible={visible}
-      />
+      <SettingsModal />
+      <AddFeedModal />
     </div>
   );
 };

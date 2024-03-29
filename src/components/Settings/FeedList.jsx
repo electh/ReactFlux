@@ -32,30 +32,24 @@ const getSortedFeedsByErrorCount = (feeds) => {
   });
 };
 
-const FeedList = ({
-  feeds,
-  groups,
-  loading,
-  setFeeds,
-  setShowFeeds,
-  showFeeds,
-}) => {
-  const initData = useStore((state) => state.initData);
+const FeedList = () => {
   const [feedModalVisible, setFeedModalVisible] = useState(false);
-  const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
-  const [selectedFeed, setSelectedFeed] = useState({});
+  const [selectedFeedId, setSelectedFeedId] = useState(null);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const feeds = useStore((state) => state.feeds);
+  const setFeeds = useStore((state) => state.setFeeds);
+  const [showFeeds, setShowFeeds] = useState(getSortedFeedsByErrorCount(feeds));
+  const groups = useStore((state) => state.groups);
 
-  let sortedFeeds = getSortedFeedsByErrorCount(showFeeds);
-  const tableData = sortedFeeds.map((feed) => ({
-    key: feed.id,
-    title: feed.title,
-    feed_url: feed.feed_url,
+  const tableData = showFeeds.map((feed) => ({
     category: feed.category,
     checked_at: feed.checked_at,
+    crawler: feed.crawler,
+    feed_url: feed.feed_url,
+    key: feed.id,
     parsing_error_count: feed.parsing_error_count,
-    feed: feed,
+    title: feed.title,
   }));
 
   useEffect(() => {
@@ -66,45 +60,52 @@ const FeedList = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setShowFeeds(getSortedFeedsByErrorCount(feeds));
+  }, feeds);
+
   const handleSelectFeed = (record) => {
-    setSelectedFeed(record.feed);
+    setSelectedFeedId(record.key);
     setFeedModalVisible(true);
     feedForm.setFieldsValue({
-      url: record.feed.feed_url,
-      title: record.feed.title,
-      group: record.feed.category.id,
-      crawler: record.feed.crawler,
+      crawler: record.crawler,
+      group: record.category.id,
+      title: record.title,
+      url: record.feed_url,
     });
   };
 
   const handleRefreshFeed = async (record) => {
-    refreshFeed(record.feed.id)
+    refreshFeed(record.key)
       .then(() => {
         Message.success("Refreshed");
-        record.feed.parsing_error_count = 0;
-        initData();
+        record.parsing_error_count = 0;
       })
       .catch(() => {
         Message.error("Failed to refresh");
-        record.feed.parsing_error_count++;
+        record.parsing_error_count++;
       })
       .finally(() => {
-        setFeeds(feeds);
-        sortedFeeds = feeds.sort((a, b) =>
-          a.title.localeCompare(b.title, "en"),
+        setFeeds(
+          feeds.map((feed) =>
+            feed.id === record.key
+              ? { ...feed, parsing_error_count: record.parsing_error_count }
+              : feed,
+          ),
         );
-        sortedFeeds = getSortedFeedsByErrorCount(sortedFeeds);
-        setShowFeeds(sortedFeeds);
       });
   };
 
   const handleDeleteFeed = async (record) => {
-    deleteFeed(record.feed.id).then(() => {
-      Message.success("Unfollowed");
-      setFeeds(feeds.filter((feed) => feed.id !== record.feed.id));
-      setShowFeeds(sortedFeeds.filter((feed) => feed.id !== record.feed.id));
-      initData();
-    });
+    deleteFeed(record.key)
+      .then(() => {
+        Message.success("Unfollowed");
+        setFeeds(feeds.filter((feed) => feed.id !== record.key));
+      })
+      .catch(() => {
+        Message.error("Failed to unfollow");
+      });
   };
 
   const isMobileView = screenWidth <= 768;
@@ -219,25 +220,19 @@ const FeedList = ({
     groupId,
     isFullText,
   ) => {
-    setFeedModalLoading(true);
     editFeed(feedId, newUrl, newTitle, groupId, isFullText)
       .then((response) => {
         setFeeds(
-          feeds.map((feed) => (feed.id === feedId ? response.data : feed)),
-        );
-        setShowFeeds(
-          sortedFeeds.map((feed) =>
-            feed.id === feedId ? response.data : feed,
+          feeds.map((feed) =>
+            feed.id === feedId ? { ...feed, ...response.data } : feed,
           ),
         );
         Message.success("Feed updated successfully");
         setFeedModalVisible(false);
-        initData();
       })
       .catch(() => {
         Message.error("Failed to update feed");
       });
-    setFeedModalLoading(false);
     feedForm.resetFields();
   };
 
@@ -249,7 +244,7 @@ const FeedList = ({
           placeholder="Search feed title or url"
           onChange={(value) =>
             setShowFeeds(
-              sortedFeeds.filter(
+              getSortedFeedsByErrorCount(feeds).filter(
                 (feed) =>
                   includesIgnoreCase(feed.title, value) ||
                   includesIgnoreCase(feed.feed_url, value),
@@ -265,21 +260,19 @@ const FeedList = ({
       <Table
         columns={columns}
         data={tableData}
-        loading={loading}
         pagePosition="bottomCenter"
         scroll={{ x: true }}
         size={"small"}
         style={{ width: "100%" }}
         borderCell={true}
       />
-      {selectedFeed && (
+      {selectedFeedId && (
         <Modal
           title="Edit Feed"
           visible={feedModalVisible}
           unmountOnExit
           onOk={feedForm.submit}
           style={{ width: "400px" }}
-          confirmLoading={feedModalLoading}
           onCancel={() => {
             setFeedModalVisible(false);
             feedForm.resetFields();
@@ -294,7 +287,7 @@ const FeedList = ({
               const url = values.url.trim();
               if (url) {
                 handleEditFeed(
-                  selectedFeed.id,
+                  selectedFeedId,
                   values.url,
                   values.title,
                   values.group,

@@ -14,7 +14,7 @@ const defaultConfig = {
 
 const getConfig = (name) => {
   const config = JSON.parse(localStorage.getItem("config")) || {};
-  const hasProperty = Object.prototype.hasOwnProperty.call(config, name);
+  const hasProperty = Object.hasOwn(config, name);
   return hasProperty ? config[name] : defaultConfig[name] || null;
 };
 

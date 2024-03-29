@@ -10,6 +10,7 @@ const useKeyHandlers = (
   handleEntryClick,
   getEntries,
   isFilteredEntriesUpdated,
+  setIsFilteredEntriesUpdated,
 ) => {
   const {
     filteredEntries,
@@ -32,7 +33,6 @@ const useKeyHandlers = (
       return;
     }
 
-    console.log(activeContent);
     if (activeContent) {
       entryList.style.visibility = "hidden";
     } else {
@@ -45,8 +45,9 @@ const useKeyHandlers = (
     if (checkNext && !isLoading && isFilteredEntriesUpdated) {
       handleRightKey();
       setCheckNext(false);
+      setIsFilteredEntriesUpdated(false);
     }
-  }, [filteredEntries, isLoading, checkNext, isFilteredEntriesUpdated]);
+  }, [isLoading, checkNext]);
 
   // go back to entry list
   const handleEscapeKey = (entryListRef) => {
@@ -92,6 +93,13 @@ const useKeyHandlers = (
         .then(() => setCheckNext(true))
         .finally(() => setIsLoading(false));
       return;
+    }
+
+    if (currentIndex === -1) {
+      const entryList = document.querySelector(".entry-list");
+      if (entryList) {
+        entryList.scrollTo(0, 0);
+      }
     }
 
     if (currentIndex < filteredEntries.length - 1) {

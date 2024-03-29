@@ -66,6 +66,8 @@ const useStore = create((set, get) => ({
   isSysDarkMode: window.matchMedia("(prefers-color-scheme: dark)").matches,
   color: getConfig("themeColor"),
 
+  setFeeds: (value) => set({ feeds: value }),
+  setGroups: (value) => set({ groups: value }),
   setUnreadTotal: (updater) =>
     set((state) => ({ unreadTotal: updater(state.unreadTotal) })),
   setUnreadToday: (updater) =>
@@ -164,11 +166,7 @@ const useStore = create((set, get) => ({
           }
         }
 
-        return {
-          ...group,
-          unreadCount: unreadCount,
-          feed: feedCount,
-        };
+        return { ...group, unreadCount, feedCount };
       });
 
       set({

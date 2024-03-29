@@ -20,6 +20,12 @@ const ImageWithLazyLoading = ({
         if (entry.isIntersecting) {
           const image = new Image();
           image.onload = () => setLoaded(true);
+          image.onerror = () => {
+            if (imgRef.current) {
+              observer.unobserve(imgRef.current);
+              imgRef.current.parentElement.style.display = "none";
+            }
+          };
           image.src = src;
           if (imgRef.current) {
             observer.unobserve(imgRef.current);

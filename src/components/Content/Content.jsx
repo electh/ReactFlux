@@ -1,5 +1,11 @@
 import { Message } from "@arco-design/web-react";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { CSSTransition } from "react-transition-group";
 
 import useStore from "../../Store";
@@ -63,6 +69,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const [showArticleDetail, setShowArticleDetail] = useState(false);
   const [isFilteredEntriesUpdated, setIsFilteredEntriesUpdated] =
     useState(false);
+  const [isShowAllFeedsUpdated, setIsShowAllFeedsUpdated] = useState(false);
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
@@ -71,6 +78,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   useEffect(() => {
     setShowArticleDetail(activeContent !== null);
   }, [activeContent]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setIsShowAllFeedsUpdated(true);
+  }, [showAllFeeds]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -92,22 +104,15 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!showAllFeeds && hiddenFeedIds) {
-      setFilteredEntries((entries) => {
-        return entries.filter(
-          (entry) => !hiddenFeedIds.includes(entry.feed.id),
-        );
-      });
-    } else {
+      setFilteredEntries((entries) =>
+        entries.filter((entry) => !hiddenFeedIds.includes(entry.feed.id)),
+      );
+    } else if (isShowAllFeedsUpdated) {
       setFilteredEntries(() => filterArticles(entries));
+      setIsShowAllFeedsUpdated(false);
     }
     setIsFilteredEntriesUpdated(true);
-  }, [entries, hiddenFeedIds, showAllFeeds]);
-
-  useEffect(() => {
-    if (isFilteredEntriesUpdated) {
-      setIsFilteredEntriesUpdated(false);
-    }
-  }, [isFilteredEntriesUpdated]);
+  }, [hiddenFeedIds, showAllFeeds]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -145,7 +150,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   }, [total, unreadCount]);
 
-  const handleEntryClick = async (entry) => {
+  const handleEntryClick = useCallback(async (entry) => {
     setShowArticleDetail(false);
 
     setTimeout(() => {
@@ -168,7 +173,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       entryDetailRef.current.focus();
       entryDetailRef.current.scrollTo(0, 0);
     }
-  };
+  });
 
   const {
     handleBKey,
@@ -178,7 +183,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleMKey,
     handleRightKey,
     handleSKey,
-  } = useKeyHandlers(handleEntryClick, getEntries, isFilteredEntriesUpdated);
+  } = useKeyHandlers(
+    handleEntryClick,
+    getEntries,
+    isFilteredEntriesUpdated,
+    setIsFilteredEntriesUpdated,
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -320,11 +330,13 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         handleEntryClick={handleEntryClick}
         getEntries={getEntries}
         isFilteredEntriesUpdated={isFilteredEntriesUpdated}
+        setIsFilteredEntriesUpdated={setIsFilteredEntriesUpdated}
       />
       <ActionButtonsMobile
         handleEntryClick={handleEntryClick}
         getEntries={getEntries}
         isFilteredEntriesUpdated={isFilteredEntriesUpdated}
+        setIsFilteredEntriesUpdated={setIsFilteredEntriesUpdated}
       />
     </>
   );
