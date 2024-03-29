@@ -23,7 +23,7 @@ const ImageWithLazyLoading = ({
           image.onerror = () => {
             if (imgRef.current) {
               observer.unobserve(imgRef.current);
-              imgRef.current.style.display = "none";
+              imgRef.current.parentElement.style.display = "none";
             }
           };
           image.src = src;
