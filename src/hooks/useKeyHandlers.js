@@ -40,13 +40,12 @@ const useKeyHandlers = (
     }
   }, [activeContent]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (checkNext && !isLoading && isFilteredEntriesUpdated) {
       handleRightKey();
       setCheckNext(false);
     }
-  }, [filteredEntries, isLoading, checkNext, isFilteredEntriesUpdated]);
+  }, [isLoading, checkNext, isFilteredEntriesUpdated]);
 
   // go back to entry list
   const handleEscapeKey = (entryListRef) => {
