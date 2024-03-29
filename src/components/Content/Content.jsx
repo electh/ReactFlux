@@ -97,8 +97,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           (entry) => !hiddenFeedIds.includes(entry.feed.id),
         );
       });
-      setIsFilteredEntriesUpdated(true);
+    } else {
+      setFilteredEntries(() => filterArticles(entries));
     }
+    setIsFilteredEntriesUpdated(true);
   }, [entries, hiddenFeedIds, showAllFeeds]);
 
   useEffect(() => {
