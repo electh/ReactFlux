@@ -112,7 +112,7 @@ export default function Toolbar() {
             disabled={!activeEntry}
           />
         </Button.Group>
-        <Tooltip content="Add feed" mini>
+        <Tooltip content="Add feed" mini position="bottom">
           <Button
             shape="round"
             disabled={loading}

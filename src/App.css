@@ -76,7 +76,7 @@
 
   .entry-list-container {
     margin-top: calc(48px + env(safe-area-inset-top)) !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
+    padding-bottom: calc(45px + env(safe-area-inset-bottom)) !important;
   }
 
   /*文章容器*/
@@ -90,43 +90,34 @@
   }
 }
 
-/*@media screen and (display-mode: fullscreen) and (orientation: landscape) {*/
-/*  !*调整 header 样式*!*/
-/*  .layout-collapse-demo .arco-layout-header {*/
-/*    padding-top: env(safe-area-inset-top) !important;*/
-/*    height: calc(48px + env(safe-area-inset-top)) !important;*/
-/*    position: fixed;*/
-/*    width: 100%;*/
-/*    z-index: 999;*/
-/*  }*/
+@media screen and (display-mode: fullscreen) and (orientation: landscape) {
+  /*调整 header 样式*/
+  .layout-collapse-demo .arco-layout-header {
+    padding-right: env(safe-area-inset-right);
+  }
 
-/*  !*增加 Drawer 安全内边距*!*/
-/*  .arco-drawer-content {*/
-/*    padding-top: env(safe-area-inset-top) !important;*/
-/*  }*/
+  /*增加 Drawer 安全内边距*/
+  .arco-drawer-content {
+    padding-right: env(safe-area-inset-right) !important;
+  }
 
-/*  !*增加登录表单安全内边距*!*/
-/*  .login-form {*/
-/*    padding-top: calc(10% + env(safe-area-inset-top)) !important;*/
-/*  }*/
+  .font-size-slider {
+    width: calc(260px - env(safe-area-inset-right)) !important;
+  }
 
-/*  !*文章列表*!*/
-/*  .inner-content {*/
-/*    height: 100% !important;*/
-/*  }*/
+  /*侧栏安全内边距*/
+  .arco-layout-sider {
+    padding-left: env(safe-area-inset-left) !important;
+  }
 
-/*  .entry-list-container {*/
-/*    margin-top: calc(48px + env(safe-area-inset-top)) !important;*/
-/*    padding-bottom: env(safe-area-inset-bottom) !important;*/
-/*  }*/
+  /*增加登录界面安全内边距*/
+  .page-layout {
+    padding-left: env(safe-area-inset-left) !important;
+    padding-right: env(safe-area-inset-right) !important;
+  }
 
-/*  !*文章容器*!*/
-/*  .entry-detail-container {*/
-/*    top: calc(48px + env(safe-area-inset-top)) !important;*/
-/*    height: calc(100% - calc(48px + env(safe-area-inset-top))) !important;*/
-/*  }*/
-
-/*  .article-content {*/
-/*    padding-bottom: calc(48px + env(safe-area-inset-bottom)) !important;*/
-/*  }*/
-/*}*/
+  /*文章容器*/
+  .entry-detail-container {
+    padding-right: env(safe-area-inset-right) !important;
+  }
+}
