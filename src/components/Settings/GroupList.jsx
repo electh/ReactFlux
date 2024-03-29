@@ -1,23 +1,18 @@
-import {
-  Form,
-  Input,
-  Message,
-  Modal,
-  Skeleton,
-  Tag,
-} from "@arco-design/web-react";
+import { Form, Input, Message, Modal, Tag } from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
 import React, { useState } from "react";
 
 import useStore from "../../Store";
 import { addGroup, deleteGroup, editGroup } from "../../apis";
 
-const GroupList = ({ groups, loading, setGroups, setShowFeeds, showFeeds }) => {
-  const initData = useStore((state) => state.initData);
+const GroupList = () => {
+  const feeds = useStore((state) => state.feeds);
+  const setFeeds = useStore((state) => state.setFeeds);
+  const groups = useStore((state) => state.groups);
+  const setGroups = useStore((state) => state.setGroups);
   const [showAddInput, setShowAddInput] = useState(false);
   const [inputAddValue, setInputAddValue] = useState("");
   const [groupModalVisible, setGroupModalVisible] = useState(false);
-  const [groupModalLoading, setGroupModalLoading] = useState(false);
   const [groupForm] = Form.useForm();
   const [selectedGroup, setSelectedGroup] = useState({});
 
@@ -31,7 +26,6 @@ const GroupList = ({ groups, loading, setGroups, setShowFeeds, showFeeds }) => {
           ]);
           setInputAddValue("");
           Message.success("Group added successfully");
-          initData();
         })
         .catch(() => {
           Message.error("Failed to add group");
@@ -42,11 +36,10 @@ const GroupList = ({ groups, loading, setGroups, setShowFeeds, showFeeds }) => {
   };
 
   const handleEditGroup = async (groupId, newTitle) => {
-    setGroupModalLoading(true);
     editGroup(groupId, newTitle)
       .then((response) => {
-        setShowFeeds(
-          showFeeds.map((feed) =>
+        setFeeds(
+          feeds.map((feed) =>
             feed.category.id === groupId
               ? { ...feed, category: { ...feed.category, title: newTitle } }
               : feed,
@@ -57,12 +50,10 @@ const GroupList = ({ groups, loading, setGroups, setShowFeeds, showFeeds }) => {
         );
         Message.success("Group updated successfully");
         setGroupModalVisible(false);
-        initData();
       })
       .catch(() => {
         Message.error("Failed to update group");
       });
-    setGroupModalLoading(false);
     groupForm.resetFields();
   };
 
@@ -72,7 +63,6 @@ const GroupList = ({ groups, loading, setGroups, setShowFeeds, showFeeds }) => {
         if (response.status === 204) {
           setGroups(groups.filter((group) => group.id !== groupId));
           Message.success("Group deleted successfully");
-          initData();
         } else {
           Message.error("Failed to delete group");
         }
@@ -85,60 +75,58 @@ const GroupList = ({ groups, loading, setGroups, setShowFeeds, showFeeds }) => {
   return (
     <>
       <div>
-        <Skeleton loading={loading} animation={true} text={{ rows: 3 }}>
-          {groups.map((group) => (
-            <Tag
-              key={group.id}
-              size="medium"
-              closable={group.feedCount === 0}
-              onClick={() => {
-                setSelectedGroup(group);
-                setGroupModalVisible(true);
-                groupForm.setFieldsValue({
-                  title: group.title,
-                });
-              }}
-              onClose={async (event) => {
-                event.stopPropagation();
-                await handleDeleteGroup(group.id);
-              }}
-              style={{
-                marginRight: "10px",
-                marginBottom: "10px",
-                cursor: "pointer",
-              }}
-            >
-              {group.title}
-            </Tag>
-          ))}
-          {showAddInput ? (
-            <Input
-              autoFocus
-              size="small"
-              value={inputAddValue}
-              style={{ width: 84 }}
-              onPressEnter={handleAddGroup}
-              onBlur={handleAddGroup}
-              onChange={setInputAddValue}
-            />
-          ) : (
-            <Tag
-              icon={<IconPlus />}
-              style={{
-                width: 84,
-                backgroundColor: "var(--color-fill-2)",
-                border: "1px dashed var(--color-fill-3)",
-                cursor: "pointer",
-              }}
-              size="medium"
-              className="add-group"
-              tabIndex={0}
-              onClick={() => setShowAddInput(true)}
-            >
-              Add
-            </Tag>
-          )}
-        </Skeleton>
+        {groups.map((group) => (
+          <Tag
+            key={group.id}
+            size="medium"
+            closable={group.feedCount === 0}
+            onClick={() => {
+              setSelectedGroup(group);
+              setGroupModalVisible(true);
+              groupForm.setFieldsValue({
+                title: group.title,
+              });
+            }}
+            onClose={async (event) => {
+              event.stopPropagation();
+              await handleDeleteGroup(group.id);
+            }}
+            style={{
+              marginRight: "10px",
+              marginBottom: "10px",
+              cursor: "pointer",
+            }}
+          >
+            {group.title}
+          </Tag>
+        ))}
+        {showAddInput ? (
+          <Input
+            autoFocus
+            size="small"
+            value={inputAddValue}
+            style={{ width: 84 }}
+            onPressEnter={handleAddGroup}
+            onBlur={handleAddGroup}
+            onChange={setInputAddValue}
+          />
+        ) : (
+          <Tag
+            icon={<IconPlus />}
+            style={{
+              width: 84,
+              backgroundColor: "var(--color-fill-2)",
+              border: "1px dashed var(--color-fill-3)",
+              cursor: "pointer",
+            }}
+            size="medium"
+            className="add-group"
+            tabIndex={0}
+            onClick={() => setShowAddInput(true)}
+          >
+            Add
+          </Tag>
+        )}
       </div>
       {selectedGroup && (
         <Modal
@@ -147,7 +135,6 @@ const GroupList = ({ groups, loading, setGroups, setShowFeeds, showFeeds }) => {
           unmountOnExit
           style={{ width: "400px" }}
           onOk={groupForm.submit}
-          confirmLoading={groupModalLoading}
           onCancel={() => {
             setGroupModalVisible(false);
             groupForm.resetFields();

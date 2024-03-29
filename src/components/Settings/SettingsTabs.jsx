@@ -6,9 +6,8 @@ import {
   IconSkin,
   IconStorage,
 } from "@arco-design/web-react/icon";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-import { getFeeds, getGroups } from "../../apis";
 import darkThemePreview from "../../assets/dark.png";
 import lightThemePreview from "../../assets/light.png";
 import systemThemePreview from "../../assets/system.png";
@@ -20,37 +19,6 @@ import Hotkeys from "./Hotkeys";
 import "./SettingsTabs.css";
 
 const SettingsTabs = () => {
-  const [feeds, setFeeds] = useState([]);
-  const [groups, setGroups] = useState([]);
-  const [showFeeds, setShowFeeds] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const refreshData = async () => {
-    setLoading(true);
-    const feedResponse = await getFeeds();
-    const groupResponse = await getGroups();
-
-    if (feedResponse && groupResponse) {
-      const feeds = feedResponse.data;
-      const groupsWithFeedCount = groupResponse.data.map((group) => ({
-        ...group,
-        feedCount: feeds.filter((feed) => feed.category.id === group.id).length,
-      }));
-
-      const sortedFeeds = feeds.sort((a, b) =>
-        a.title.localeCompare(b.title, "en"),
-      );
-      setFeeds(sortedFeeds);
-      setGroups(
-        groupsWithFeedCount.sort((a, b) =>
-          a.title.localeCompare(b.title, "en"),
-        ),
-      );
-      setShowFeeds(sortedFeeds);
-      setLoading(false);
-    }
-  };
-
   const preloadImages = () => {
     const images = [darkThemePreview, lightThemePreview, systemThemePreview];
     for (const image of images) {
@@ -61,7 +29,6 @@ const SettingsTabs = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    refreshData();
     preloadImages();
   }, []);
 
@@ -76,14 +43,7 @@ const SettingsTabs = () => {
           </span>
         }
       >
-        <FeedList
-          feeds={feeds}
-          groups={groups}
-          loading={loading}
-          setFeeds={setFeeds}
-          setShowFeeds={setShowFeeds}
-          showFeeds={showFeeds}
-        />
+        <FeedList />
       </Tabs.TabPane>
       <Tabs.TabPane
         key="2"
@@ -94,13 +54,7 @@ const SettingsTabs = () => {
           </span>
         }
       >
-        <GroupList
-          groups={groups}
-          loading={loading}
-          setGroups={setGroups}
-          setShowFeeds={setShowFeeds}
-          showFeeds={showFeeds}
-        />
+        <GroupList />
       </Tabs.TabPane>
       <Tabs.TabPane
         key="3"
