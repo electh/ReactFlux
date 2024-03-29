@@ -8,6 +8,7 @@ import {
   markUserEntriesAsRead,
 } from "../../../api/api";
 import { useSearchParams } from "react-router-dom";
+import "./BottomBar.css";
 
 export default function BottomBar() {
   const unreadOnly = useStore((state) => state.unreadOnly);
@@ -18,7 +19,6 @@ export default function BottomBar() {
   const initData = useStore((state) => state.initData);
   const showEntries = useStore((state) => state.showEntries);
   const setShowEntries = useStore((state) => state.setShowEntries);
-  const isMobile = useStore((state) => state.isMobile);
 
   const [params] = useSearchParams();
   const from = params.get("from") || "all";
@@ -71,12 +71,12 @@ export default function BottomBar() {
       className="bottom-bar"
       style={{
         display: "flex",
-        width: isMobile ? "calc(100% - 50px)" : "280px",
+        width: "280px",
         bottom: 0,
         zIndex: "2",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: isMobile ? "7px 25px 34px 25px" : 10,
+        padding: 10,
         backgroundColor: "var(--color-bg-4)",
         borderTop: "1px solid var(--color-border-2)",
       }}
