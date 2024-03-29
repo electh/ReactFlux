@@ -57,7 +57,7 @@ const FooterPanel = forwardRef(
       setFilterStatus(showStatus);
     }, [showStatus]);
 
-    return info.from !== "history" ? (
+    return (
       <div
         className="entry-panel"
         style={{
@@ -87,7 +87,7 @@ const FooterPanel = forwardRef(
           <Radio value="all">ALL</Radio>
           <Radio value="unread">UNREAD</Radio>
         </Radio.Group>
-        {info.from !== "starred" && (
+        {info.from !== "starred" && info.from !== "history" && (
           <Popconfirm
             focusLock
             title="Mark All As Read?"
@@ -103,7 +103,7 @@ const FooterPanel = forwardRef(
           onClick={refreshArticleList}
         />
       </div>
-    ) : null;
+    );
   },
 );
 
