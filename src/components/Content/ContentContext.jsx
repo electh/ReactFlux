@@ -1,4 +1,5 @@
 import React, { createContext, useMemo, useState } from "react";
+import { getConfig } from "../../utils/config.js";
 
 const ContentContext = createContext(null);
 
@@ -18,7 +19,7 @@ const ContentProvider = ({ children }) => {
   // 页面显示的文章
   const [filteredEntries, setFilteredEntries] = useState([]);
   // all | unread
-  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterStatus, setFilterStatus] = useState(getConfig("showStatus"));
   // 0: title | 1: content
   const [filterType, setFilterType] = useState("0");
   // 搜索文本

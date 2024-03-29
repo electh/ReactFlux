@@ -46,6 +46,8 @@ const useStore = create((set, get) => ({
   readCount: 0,
   hiddenFeedIds: [],
   hiddenGroupIds: [],
+  showStatus: getConfig("showStatus"),
+  homePage: getConfig("homePage"),
   orderBy: getConfig("orderBy"),
   orderDirection: getConfig("orderDirection"),
   pageSize: getConfig("pageSize"),
@@ -72,6 +74,8 @@ const useStore = create((set, get) => ({
     set((state) => ({ starredCount: updater(state.starredCount) })),
   setReadCount: (updater) =>
     set((state) => ({ readCount: updater(state.readCount) })),
+  setShowStatus: (value) => set({ showStatus: value }),
+  setHomePage: (value) => set({ homePage: value }),
   setOrderBy: (value) => set({ orderBy: value }),
   setOrderDirection: (value) => set({ orderDirection: value }),
   setPageSize: (value) => set({ pageSize: value }),

@@ -1,5 +1,7 @@
 const defaultConfig = {
   color: "Blue",
+  showStatus: "all",
+  homePage: "all",
   orderBy: "published_at",
   orderDirection: "desc",
   pageSize: 100,

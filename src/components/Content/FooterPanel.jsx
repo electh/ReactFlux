@@ -1,6 +1,6 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
-import React, { forwardRef, useCallback, useContext } from "react";
+import React, { forwardRef, useCallback, useContext, useEffect } from "react";
 
 import useStore from "../../Store";
 import useFilterEntries from "../../hooks/useFilterEntries";
@@ -17,6 +17,7 @@ const FooterPanel = forwardRef(
       loading,
       setEntries,
       setFilteredEntries,
+      setFilterStatus,
       setUnreadCount,
     } = useContext(ContentContext);
 
@@ -24,6 +25,8 @@ const FooterPanel = forwardRef(
 
     /*menu 数据初始化函数 */
     const initData = useStore((state) => state.initData);
+
+    const showStatus = useStore((state) => state.showStatus);
 
     const handleMarkAllAsRead = useCallback(async () => {
       markAllAsRead()
@@ -48,6 +51,11 @@ const FooterPanel = forwardRef(
       setFilteredEntries,
       setUnreadCount,
     ]);
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+      setFilterStatus(showStatus);
+    }, [showStatus]);
 
     return info.from !== "history" ? (
       <div
