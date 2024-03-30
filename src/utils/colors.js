@@ -13,9 +13,19 @@ const colors = [
     valueDark: "#F9925A",
   },
   {
+    name: "Gold",
+    valueLight: "#F7BA1E",
+    valueDark: "#F9CC44",
+  },
+  {
     name: "Green",
     valueLight: "#00B42A",
     valueDark: "#27C346",
+  },
+  {
+    name: "Cyan",
+    valueLight: "#14C9C9",
+    valueDark: "#3FD4CF",
   },
   {
     name: "Blue",
@@ -26,6 +36,11 @@ const colors = [
     name: "Purple",
     valueLight: "#722ED1",
     valueDark: "#8E51DA",
+  },
+  {
+    name: "Magenta",
+    valueLight: "#F5319D",
+    valueDark: "#F756A9",
   },
 ];
 
