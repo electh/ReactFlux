@@ -228,10 +228,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setEntries(articles);
     setUnreadEntries(articlesUnread);
 
-    if (filterStatus === "unread") {
-      setFilteredEntries(articlesUnread);
-    } else {
+    if (filterStatus === "all") {
       setFilteredEntries(articles);
+    } else {
+      setFilteredEntries(articlesUnread);
     }
 
     setTotal(responseAll.data.total);

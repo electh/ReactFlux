@@ -43,10 +43,10 @@ const useLoadMore = () => {
     try {
       let response;
       // if (filterStatus === "unread" && location.pathname !== "history") {
-      if (filterStatus === "unread") {
-        response = await getEntries(offset + pageSize, filterStatus);
-      } else {
+      if (filterStatus === "all") {
         response = await getEntries(offset + pageSize);
+      } else {
+        response = await getEntries(offset + pageSize, filterStatus);
       }
       if (response?.data?.entries) {
         setOffset((current) => current + pageSize);
@@ -54,12 +54,12 @@ const useLoadMore = () => {
         const updatedAllArticles = [
           ...new Map(
             [
-              ...(filterStatus === "unread" ? entries : unreadEntries),
+              ...(filterStatus === "all" ? entries : unreadEntries),
               ...newArticlesWithImage,
             ].map((entry) => [entry.id, entry]),
           ).values(),
         ];
-        if (filterStatus === "unread") {
+        if (filterStatus === "all") {
           setEntries(updatedAllArticles);
         } else {
           setUnreadEntries(updatedAllArticles);
@@ -75,10 +75,10 @@ const useLoadMore = () => {
           : updatedAllArticles;
 
         setFilteredEntries(filteredByString);
-        if (filterStatus === "unread") {
-          setLoadMoreUnreadVisible(updatedAllArticles.length < unreadCount);
-        } else {
+        if (filterStatus === "all") {
           setLoadMoreVisible(updatedAllArticles.length < total);
+        } else {
+          setLoadMoreUnreadVisible(updatedAllArticles.length < unreadCount);
         }
       }
     } catch (error) {
