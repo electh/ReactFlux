@@ -15,7 +15,9 @@ const FooterPanel = forwardRef(
       loading,
       setEntries,
       setFilteredEntries,
+      setOffset,
       setUnreadCount,
+      setUnreadEntries,
     } = useContext(ContentContext);
 
     const { setFilterStatus } = useFilterEntries();
@@ -30,9 +32,14 @@ const FooterPanel = forwardRef(
           Message.success("Marked all as read successfully");
           initData();
           setEntries(entries.map((entry) => ({ ...entry, status: "read" })));
-          setFilteredEntries(
-            filteredEntries.map((entry) => ({ ...entry, status: "read" })),
-          );
+          setUnreadEntries([]);
+          if (filterStatus === "all") {
+            setFilteredEntries(
+              filteredEntries.map((entry) => ({ ...entry, status: "read" })),
+            );
+          } else {
+            setFilteredEntries([]);
+          }
           setUnreadCount(0);
         })
         .catch(() => {
@@ -41,12 +48,19 @@ const FooterPanel = forwardRef(
     }, [
       entries,
       filteredEntries,
+      filterStatus,
       initData,
       markAllAsRead,
       setEntries,
       setFilteredEntries,
       setUnreadCount,
+      setUnreadEntries,
     ]);
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+      setOffset(0);
+    }, [filterStatus]);
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {

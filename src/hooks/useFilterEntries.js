@@ -9,13 +9,10 @@ const useFilterEntries = () => {
     filterStatus,
     filterString,
     filterType,
-    loadMoreUnreadVisible,
     setFilteredEntries,
     setFilterStatus,
     setFilterString,
     setFilterType,
-    setLoadMoreUnreadVisible,
-    unreadCount,
   } = useContext(ContentContext);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -28,14 +25,7 @@ const useFilterEntries = () => {
       filterString,
     );
     setFilteredEntries(filteredArticles);
-
-    if (filterStatus === "unread") {
-      const unreadArticles = entries.filter(
-        (entry) => entry.status === "unread",
-      );
-      setLoadMoreUnreadVisible(unreadArticles.length < unreadCount);
-    }
-  }, [filterStatus, filterString, filterType, loadMoreUnreadVisible]);
+  }, [filterStatus, filterString, filterType]);
 
   return { setFilterStatus, setFilterString, setFilterType };
 };
