@@ -13,12 +13,7 @@ const LoadingCards = ({ loading }) => {
       style={{ width: "100%", marginBottom: "10px" }}
       cover={
         layout === "large" && (
-          <Skeleton
-            loading={loading}
-            animation={true}
-            text={{ rows: 0 }}
-            image={{ style: { width: "100%", height: 160 } }}
-          />
+          <div style={{ width: "100%", aspectRatio: 16 / 9 }} />
         )
       }
     >

@@ -116,15 +116,14 @@ const FeedList = () => {
       sorter: (a, b) => a.title.localeCompare(b.title, "en"),
       render: (title, feed) => {
         const parsingErrorCount = feed.parsing_error_count;
-        const displayText = parsingErrorCount ? `⚠️ ${title}` : title;
+        const displayText = parsingErrorCount ? `! ${title}` : title;
 
         const tooltipContent = (
           <div>
             {title}
             {parsingErrorCount > 0 && (
               <>
-                <br />
-                ⚠️ Parsing error count: {parsingErrorCount}
+                <br />! Parsing error count: {parsingErrorCount}
               </>
             )}
           </div>
@@ -238,7 +237,7 @@ const FeedList = () => {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Input.Search
           searchButton
           placeholder="Search feed title or url"
@@ -253,14 +252,14 @@ const FeedList = () => {
           }
           style={{
             width: 300,
-            marginBottom: "24px",
+            marginBottom: "16px",
           }}
         />
       </div>
       <Table
         columns={columns}
         data={tableData}
-        pagePosition="bottomCenter"
+        // pagePosition="bottomCenter"
         scroll={{ x: true }}
         size={"small"}
         style={{ width: "100%" }}

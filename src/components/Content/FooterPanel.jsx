@@ -73,6 +73,15 @@ const FooterPanel = forwardRef(
           borderTop: "1px solid var(--color-border-2)",
         }}
       >
+        {info.from !== "starred" && info.from !== "history" && (
+          <Popconfirm
+            focusLock
+            title="Mark All As Read?"
+            onOk={handleMarkAllAsRead}
+          >
+            <Button icon={<IconCheck />} shape="circle" />
+          </Popconfirm>
+        )}
         <Radio.Group
           type="button"
           name="lang"
@@ -87,15 +96,7 @@ const FooterPanel = forwardRef(
           <Radio value="all">ALL</Radio>
           <Radio value="unread">UNREAD</Radio>
         </Radio.Group>
-        {info.from !== "starred" && info.from !== "history" && (
-          <Popconfirm
-            focusLock
-            title="Mark All As Read?"
-            onOk={handleMarkAllAsRead}
-          >
-            <Button icon={<IconCheck />} shape="circle" />
-          </Popconfirm>
-        )}
+
         <Button
           icon={<IconRefresh />}
           loading={loading}
