@@ -26,26 +26,6 @@ const General = () => {
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
   const setUnreadTotal = useStore((state) => state.setUnreadTotal);
 
-  useEffect(() => {
-    setConfig("showStatus", showStatus);
-  }, [showStatus]);
-
-  useEffect(() => {
-    setConfig("homePage", homePage);
-  }, [homePage]);
-
-  useEffect(() => {
-    setConfig("orderBy", orderBy);
-  }, [orderBy]);
-
-  useEffect(() => {
-    setConfig("orderDirection", orderDirection);
-  }, [orderDirection]);
-
-  useEffect(() => {
-    setConfig("pageSize", pageSize);
-  }, [pageSize]);
-
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setConfig("showAllFeeds", showAllFeeds);
@@ -74,7 +54,10 @@ const General = () => {
         </div>
         <div>
           <Select
-            onChange={setShowStatus}
+            onChange={(showStatus) => {
+              setShowStatus(showStatus);
+              setConfig("showStatus", showStatus);
+            }}
             placeholder="Select status"
             style={{ width: 128, marginLeft: 16 }}
             value={showStatus}
@@ -96,7 +79,10 @@ const General = () => {
         </div>
         <div>
           <Select
-            onChange={setHomePage}
+            onChange={(homePage) => {
+              setHomePage(homePage);
+              setConfig("homePage", homePage);
+            }}
             placeholder="Select page"
             style={{ width: 128, marginLeft: 16 }}
             value={homePage}
@@ -120,7 +106,10 @@ const General = () => {
         </div>
         <div>
           <Select
-            onChange={setOrderBy}
+            onChange={(orderBy) => {
+              setOrderBy(orderBy);
+              setConfig("orderBy", orderBy);
+            }}
             placeholder="Select order"
             style={{ width: 128, marginLeft: 16 }}
             value={orderBy}
@@ -142,7 +131,10 @@ const General = () => {
         </div>
         <div>
           <Select
-            onChange={setOrderDirection}
+            onChange={(orderDirection) => {
+              setOrderDirection(orderDirection);
+              setConfig("orderDirection", orderDirection);
+            }}
             placeholder="Select order"
             style={{ width: 128, marginLeft: 16 }}
             value={orderDirection}
@@ -167,7 +159,10 @@ const General = () => {
             defaultValue={pageSize}
             min={1}
             mode="button"
-            onChange={setPageSize}
+            onChange={(pageSize) => {
+              setPageSize(pageSize);
+              setConfig("pageSize", pageSize);
+            }}
             size="small"
             style={{ width: 128, marginLeft: 16 }}
           />
