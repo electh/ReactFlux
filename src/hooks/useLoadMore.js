@@ -44,7 +44,6 @@ const useLoadMore = () => {
 
     try {
       let response;
-      // if (filterStatus === "unread" && location.pathname !== "history") {
       if (filterStatus === "all") {
         response = await getEntries(offset + pageSize);
       } else {
