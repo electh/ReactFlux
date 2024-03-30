@@ -14,8 +14,10 @@ const ContentProvider = ({ children }) => {
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
   // unread 页签加载更多按钮可见性
   const [loadMoreUnreadVisible, setLoadMoreUnreadVisible] = useState(false);
-  // 接口返回的文章
+  // 接口返回的所有文章
   const [entries, setEntries] = useState([]);
+  // 接口返回的未读文章
+  const [unreadEntries, setUnreadEntries] = useState([]);
   // 页面显示的文章
   const [filteredEntries, setFilteredEntries] = useState([]);
   // all | unread
@@ -49,8 +51,10 @@ const ContentProvider = ({ children }) => {
       setOffset,
       setTotal,
       setUnreadCount,
+      setUnreadEntries,
       total,
       unreadCount,
+      unreadEntries,
     }),
     [
       entries,
@@ -64,6 +68,7 @@ const ContentProvider = ({ children }) => {
       offset,
       total,
       unreadCount,
+      unreadEntries,
     ],
   );
 

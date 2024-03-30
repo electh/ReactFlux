@@ -12,20 +12,16 @@ const FooterPanel = forwardRef(
       entries,
       filteredEntries,
       filterStatus,
-      filterString,
-      filterType,
       loading,
       setEntries,
       setFilteredEntries,
-      setFilterStatus,
       setUnreadCount,
     } = useContext(ContentContext);
 
-    const { handleFilter } = useFilterEntries();
+    const { setFilterStatus } = useFilterEntries();
 
     /*menu 数据初始化函数 */
     const initData = useStore((state) => state.initData);
-
     const showStatus = useStore((state) => state.showStatus);
 
     const handleMarkAllAsRead = useCallback(async () => {
@@ -54,8 +50,17 @@ const FooterPanel = forwardRef(
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
-      setFilterStatus(showStatus);
+      if (info.from !== "history") {
+        setFilterStatus(showStatus);
+      }
     }, [showStatus]);
+
+    const handleRadioChange = (value) => {
+      if (ref.current) {
+        ref.current.scrollTo(0, 0);
+      }
+      setFilterStatus(value);
+    };
 
     return (
       <div
@@ -83,15 +88,11 @@ const FooterPanel = forwardRef(
           </Popconfirm>
         )}
         <Radio.Group
-          type="button"
+          disabled={info.from === "history"}
           name="lang"
-          value={filterStatus}
-          onChange={(value) => {
-            if (ref.current) {
-              ref.current.scrollTo(0, 0);
-            }
-            handleFilter(filterType, value, filterString);
-          }}
+          onChange={(value) => handleRadioChange(value)}
+          type="button"
+          value={info.from === "history" ? "all" : filterStatus}
         >
           <Radio value="all">ALL</Radio>
           <Radio value="unread">UNREAD</Radio>

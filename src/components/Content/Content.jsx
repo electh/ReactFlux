@@ -53,8 +53,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setOffset,
     setTotal,
     setUnreadCount,
+    setUnreadEntries,
     total,
     unreadCount,
+    unreadEntries,
   } = useContext(ContentContext);
 
   const {
@@ -108,11 +110,13 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         entries.filter((entry) => !hiddenFeedIds.includes(entry.feed.id)),
       );
     } else if (isShowAllFeedsUpdated) {
-      setFilteredEntries(() => filterArticles(entries));
+      setFilteredEntries(() =>
+        filterStatus === "all" ? entries : unreadEntries,
+      );
       setIsShowAllFeedsUpdated(false);
     }
     setIsFilteredEntriesUpdated(true);
-  }, [hiddenFeedIds, showAllFeeds]);
+  }, [filterStatus, hiddenFeedIds, showAllFeeds]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -220,35 +224,27 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     };
   }, [activeContent, filteredEntries, showArticleDetail]);
 
-  const filterArticles = (articles) => {
-    if (filterStatus === "all") {
-      return articles;
-    }
-    return articles.filter((article) => article.status === "unread");
-  };
+  const updateUI = (articles, articlesUnread, responseAll, responseUnread) => {
+    setEntries(articles);
+    setUnreadEntries(articlesUnread);
 
-  const updateUI = (
-    fetchedArticles,
-    filteredArticles,
-    responseAll,
-    responseUnread,
-  ) => {
-    setEntries(fetchedArticles);
-    setFilteredEntries(filteredArticles);
+    if (filterStatus === "unread") {
+      setFilteredEntries(articlesUnread);
+    } else {
+      setFilteredEntries(articles);
+    }
 
     setTotal(responseAll.data.total);
-    setLoadMoreVisible(fetchedArticles.length < responseAll.data.total);
+    setLoadMoreVisible(articles.length < responseAll.data.total);
     setUnreadCount(responseUnread.data.total);
-    setLoadMoreUnreadVisible(
-      filteredArticles.length < responseUnread.data.total,
-    );
+    setLoadMoreUnreadVisible(articlesUnread.length < responseUnread.data.total);
   };
 
   const handleResponses = (responseAll, responseUnread) => {
     if (responseAll?.data?.entries && responseUnread?.data?.total >= 0) {
-      const fetchedArticles = responseAll.data.entries.map(getFirstImage);
-      const filteredArticles = filterArticles(fetchedArticles);
-      updateUI(fetchedArticles, filteredArticles, responseAll, responseUnread);
+      const articles = responseAll.data.entries.map(getFirstImage);
+      const articlesUnread = responseUnread.data.entries.map(getFirstImage);
+      updateUI(articles, articlesUnread, responseAll, responseUnread);
     }
   };
 

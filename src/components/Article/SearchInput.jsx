@@ -6,11 +6,11 @@ import useFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "../Content/ContentContext";
 
 const SearchInput = () => {
-  const { filterStatus, filterString, filterType } = useContext(ContentContext);
+  const { filterString, filterType } = useContext(ContentContext);
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
 
-  const { handleFilter } = useFilterEntries();
+  const { setFilterString, setFilterType } = useFilterEntries();
 
   return (
     <Input.Search
@@ -20,9 +20,7 @@ const SearchInput = () => {
       addBefore={
         <Select
           placeholder="Select type"
-          onChange={(type) => {
-            handleFilter(type, filterStatus, filterString);
-          }}
+          onChange={setFilterType}
           style={{ width: 100 }}
           value={filterType}
         >
@@ -31,7 +29,7 @@ const SearchInput = () => {
         </Select>
       }
       onFocus={() => activeContent && setActiveContent(null)}
-      onChange={(text) => handleFilter(filterType, filterStatus, text)}
+      onChange={setFilterString}
       style={{
         marginBottom: "10px",
         width: "100%",

@@ -6,7 +6,6 @@ import { filterEntries } from "../utils/filter";
 const useFilterEntries = () => {
   const {
     entries,
-    filteredEntries,
     filterStatus,
     filterString,
     filterType,
@@ -38,13 +37,7 @@ const useFilterEntries = () => {
     }
   }, [filterStatus, filterString, filterType, loadMoreUnreadVisible]);
 
-  const handleFilter = (filterType, filterStatus, filterString) => {
-    setFilterType(filterType);
-    setFilterStatus(filterStatus);
-    setFilterString(filterString);
-  };
-
-  return { filteredEntries, handleFilter, loadMoreUnreadVisible };
+  return { setFilterStatus, setFilterString, setFilterType };
 };
 
 export default useFilterEntries;
