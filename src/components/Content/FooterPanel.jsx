@@ -12,20 +12,18 @@ const FooterPanel = forwardRef(
       entries,
       filteredEntries,
       filterStatus,
-      filterString,
-      filterType,
       loading,
       setEntries,
       setFilteredEntries,
-      setFilterStatus,
       setUnreadCount,
+      setUnreadEntries,
+      unreadEntries,
     } = useContext(ContentContext);
 
-    const { handleFilter } = useFilterEntries();
+    const { setFilterStatus } = useFilterEntries();
 
     /*menu 数据初始化函数 */
     const initData = useStore((state) => state.initData);
-
     const showStatus = useStore((state) => state.showStatus);
 
     const handleMarkAllAsRead = useCallback(async () => {
@@ -34,9 +32,14 @@ const FooterPanel = forwardRef(
           Message.success("Marked all as read successfully");
           initData();
           setEntries(entries.map((entry) => ({ ...entry, status: "read" })));
-          setFilteredEntries(
-            filteredEntries.map((entry) => ({ ...entry, status: "read" })),
-          );
+          setUnreadEntries([]);
+          if (filterStatus === "all") {
+            setFilteredEntries(
+              filteredEntries.map((entry) => ({ ...entry, status: "read" })),
+            );
+          } else {
+            setFilteredEntries([]);
+          }
           setUnreadCount(0);
         })
         .catch(() => {
@@ -45,17 +48,37 @@ const FooterPanel = forwardRef(
     }, [
       entries,
       filteredEntries,
+      filterStatus,
       initData,
       markAllAsRead,
       setEntries,
       setFilteredEntries,
       setUnreadCount,
+      setUnreadEntries,
     ]);
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
-      setFilterStatus(showStatus);
+      if (filterStatus === "all") {
+        setFilteredEntries(entries);
+      } else {
+        setFilteredEntries(unreadEntries);
+      }
+    }, [filterStatus]);
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+      if (info.from !== "history") {
+        setFilterStatus(showStatus);
+      }
     }, [showStatus]);
+
+    const handleRadioChange = (value) => {
+      if (ref.current) {
+        ref.current.scrollTo(0, 0);
+      }
+      setFilterStatus(value);
+    };
 
     return (
       <div
@@ -83,15 +106,11 @@ const FooterPanel = forwardRef(
           </Popconfirm>
         )}
         <Radio.Group
-          type="button"
+          disabled={info.from === "history"}
           name="lang"
-          value={filterStatus}
-          onChange={(value) => {
-            if (ref.current) {
-              ref.current.scrollTo(0, 0);
-            }
-            handleFilter(filterType, value, filterString);
-          }}
+          onChange={(value) => handleRadioChange(value)}
+          type="button"
+          value={info.from === "history" ? "all" : filterStatus}
         >
           <Radio value="all">ALL</Radio>
           <Radio value="unread">UNREAD</Radio>

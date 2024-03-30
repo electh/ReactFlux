@@ -106,12 +106,11 @@ export const getHistoryEntries = async (offset = 0) => {
 };
 
 export const getStarredEntries = async (offset = 0, status = null) => {
-  const orderBy = getConfig("orderBy");
   const orderDirection = getConfig("orderDirection");
   const pageSize = getConfig("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
-    orderField: orderBy,
+    orderField: "changed_at",
     direction: orderDirection,
     offset,
     limit: pageSize,

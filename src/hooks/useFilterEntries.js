@@ -6,17 +6,13 @@ import { filterEntries } from "../utils/filter";
 const useFilterEntries = () => {
   const {
     entries,
-    filteredEntries,
     filterStatus,
     filterString,
     filterType,
-    loadMoreUnreadVisible,
     setFilteredEntries,
     setFilterStatus,
     setFilterString,
     setFilterType,
-    setLoadMoreUnreadVisible,
-    unreadCount,
   } = useContext(ContentContext);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -29,22 +25,9 @@ const useFilterEntries = () => {
       filterString,
     );
     setFilteredEntries(filteredArticles);
+  }, [filterStatus, filterString, filterType]);
 
-    if (filterStatus === "unread") {
-      const unreadArticles = entries.filter(
-        (entry) => entry.status === "unread",
-      );
-      setLoadMoreUnreadVisible(unreadArticles.length < unreadCount);
-    }
-  }, [filterStatus, filterString, filterType, loadMoreUnreadVisible]);
-
-  const handleFilter = (filterType, filterStatus, filterString) => {
-    setFilterType(filterType);
-    setFilterStatus(filterStatus);
-    setFilterString(filterString);
-  };
-
-  return { filteredEntries, handleFilter, loadMoreUnreadVisible };
+  return { setFilterStatus, setFilterString, setFilterType };
 };
 
 export default useFilterEntries;

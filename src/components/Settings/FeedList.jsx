@@ -116,14 +116,15 @@ const FeedList = () => {
       sorter: (a, b) => a.title.localeCompare(b.title, "en"),
       render: (title, feed) => {
         const parsingErrorCount = feed.parsing_error_count;
-        const displayText = parsingErrorCount ? `! ${title}` : title;
+        const displayText = parsingErrorCount ? `⚠️ ${title}` : title;
 
         const tooltipContent = (
           <div>
             {title}
             {parsingErrorCount > 0 && (
               <>
-                <br />! Parsing error count: {parsingErrorCount}
+                <br />
+                ⚠️ Parsing error count: {parsingErrorCount}
               </>
             )}
           </div>

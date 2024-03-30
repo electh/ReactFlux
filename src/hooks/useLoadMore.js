@@ -18,8 +18,12 @@ const useLoadMore = () => {
     setLoadMoreUnreadVisible,
     setLoadMoreVisible,
     setOffset,
+    setUnreadEntries,
+    setUnreadOffset,
     total,
     unreadCount,
+    unreadEntries,
+    unreadOffset,
   } = useContext(ContentContext);
 
   /* 加载更多 loading*/
@@ -39,39 +43,49 @@ const useLoadMore = () => {
     setLoadingMore(true);
 
     try {
-      const response = await getEntries(offset + pageSize);
+      let response;
+      // if (filterStatus === "unread" && location.pathname !== "history") {
+      if (filterStatus === "all") {
+        response = await getEntries(offset + pageSize);
+      } else {
+        response = await getEntries(unreadOffset + pageSize, filterStatus);
+      }
       if (response?.data?.entries) {
-        setOffset((current) => current + pageSize);
+        if (filterStatus === "all") {
+          setOffset((current) => current + pageSize);
+        } else {
+          setUnreadOffset((current) => current + pageSize);
+        }
         const newArticlesWithImage = response.data.entries.map(getFirstImage);
         const updatedAllArticles = [
           ...new Map(
-            [...entries, ...newArticlesWithImage].map((entry) => [
-              entry.id,
-              entry,
-            ]),
+            [
+              ...(filterStatus === "all" ? entries : unreadEntries),
+              ...newArticlesWithImage,
+            ].map((entry) => [entry.id, entry]),
           ).values(),
         ];
-        setEntries(updatedAllArticles);
-
-        const filteredArticles =
-          filterStatus === "all"
-            ? updatedAllArticles
-            : updatedAllArticles.filter((a) => a.status === "unread");
+        if (filterStatus === "all") {
+          setEntries(updatedAllArticles);
+        } else {
+          setUnreadEntries(updatedAllArticles);
+        }
 
         const filteredByString = filterString
           ? filterEntries(
-              filteredArticles,
+              updatedAllArticles,
               filterType,
               filterStatus,
               filterString,
             )
-          : filteredArticles;
+          : updatedAllArticles;
 
         setFilteredEntries(filteredByString);
-        setLoadMoreVisible(updatedAllArticles.length < total);
-        setLoadMoreUnreadVisible(
-          filteredArticles.length < unreadCount && filterStatus === "unread",
-        );
+        if (filterStatus === "all") {
+          setLoadMoreVisible(updatedAllArticles.length < total);
+        } else {
+          setLoadMoreUnreadVisible(updatedAllArticles.length < unreadCount);
+        }
       }
     } catch (error) {
       console.error("Error fetching more articles:", error);

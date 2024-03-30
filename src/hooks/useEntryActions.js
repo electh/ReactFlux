@@ -24,9 +24,12 @@ const useEntryActions = () => {
   const {
     entries,
     filteredEntries,
+    filterStatus,
     setEntries,
     setFilteredEntries,
     setUnreadCount,
+    setUnreadEntries,
+    unreadEntries,
   } = useContext(ContentContext);
 
   const updateEntries = (entries, entry, updateFunction) => {
@@ -35,7 +38,11 @@ const useEntryActions = () => {
 
   const updateUI = (entry, newContentStatus, updateFunction) => {
     setActiveContent({ ...entry, ...newContentStatus });
-    setEntries(updateEntries(entries, entry, updateFunction));
+    if (filterStatus === "all") {
+      setEntries(updateEntries(entries, entry, updateFunction));
+    } else {
+      setUnreadEntries(updateEntries(unreadEntries, entry, updateFunction));
+    }
     setFilteredEntries(updateEntries(filteredEntries, entry, updateFunction));
   };
 
