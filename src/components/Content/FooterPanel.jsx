@@ -15,9 +15,9 @@ const FooterPanel = forwardRef(
       loading,
       setEntries,
       setFilteredEntries,
-      setOffset,
       setUnreadCount,
       setUnreadEntries,
+      unreadEntries,
     } = useContext(ContentContext);
 
     const { setFilterStatus } = useFilterEntries();
@@ -59,7 +59,11 @@ const FooterPanel = forwardRef(
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
-      setOffset(0);
+      if (filterStatus === "all") {
+        setFilteredEntries(entries);
+      } else {
+        setFilteredEntries(unreadEntries);
+      }
     }, [filterStatus]);
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>

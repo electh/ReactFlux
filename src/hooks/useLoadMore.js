@@ -7,17 +7,20 @@ import { filterEntries } from "../utils/filter";
 const useLoadMore = () => {
   const pageSize = useStore((state) => state.pageSize);
 
+  // 所有文章分页参数
+  const [offset, setOffset] = useState(0);
+  // 未读文章分页参数
+  const [unreadOffset, setUnreadOffset] = useState(0);
+
   const {
     entries,
     filterStatus,
     filterString,
     filterType,
-    offset,
     setEntries,
     setFilteredEntries,
     setLoadMoreUnreadVisible,
     setLoadMoreVisible,
-    setOffset,
     setUnreadEntries,
     total,
     unreadCount,
@@ -46,10 +49,14 @@ const useLoadMore = () => {
       if (filterStatus === "all") {
         response = await getEntries(offset + pageSize);
       } else {
-        response = await getEntries(offset + pageSize, filterStatus);
+        response = await getEntries(unreadOffset + pageSize, filterStatus);
       }
       if (response?.data?.entries) {
-        setOffset((current) => current + pageSize);
+        if (filterStatus === "all") {
+          setOffset((current) => current + pageSize);
+        } else {
+          setUnreadOffset((current) => current + pageSize);
+        }
         const newArticlesWithImage = response.data.entries.map(getFirstImage);
         const updatedAllArticles = [
           ...new Map(
