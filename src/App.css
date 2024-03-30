@@ -117,6 +117,6 @@
   }
 
   .inner-content {
-    margin-right: env(safe-area-inset-right) !important;
+    margin-right: env(safe-area-inset-right);
   }
 }

@@ -68,3 +68,9 @@
     background-color: var(--color-neutral-2) !important;
   }
 }
+
+@media screen and (display-mode: fullscreen) and (orientation: landscape) {
+  .inner-content {
+    margin-right: calc(8px + env(safe-area-inset-right)) !important;
+  }
+}
