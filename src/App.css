@@ -98,7 +98,7 @@
 
   /*增加 Drawer 安全内边距*/
   .arco-drawer-content {
-    padding-right: env(safe-area-inset-right) !important;
+    padding-right: calc(16px + env(safe-area-inset-right)) !important;
   }
 
   .font-size-slider {

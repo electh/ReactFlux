@@ -24,7 +24,7 @@ export default function CompactLayout() {
           Compact article list
         </Typography.Title>
         <Typography.Text type="secondary">
-          Use small thumbnail in article list
+          Small thumbnail in article list
         </Typography.Text>
       </div>
       <div>

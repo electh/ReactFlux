@@ -26,7 +26,7 @@ export default function TextAlignment() {
           Text alignment
         </Typography.Title>
         <Typography.Text type="secondary">
-          Choose your text alignment
+          Within article content
         </Typography.Text>
       </div>
       <div>
