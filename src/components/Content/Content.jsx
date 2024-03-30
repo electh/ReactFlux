@@ -54,6 +54,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setTotal,
     setUnreadCount,
     setUnreadEntries,
+    setUnreadOffset,
     total,
     unreadCount,
     unreadEntries,
@@ -271,6 +272,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       entryListRef.current.scrollTo(0, 0);
     }
     setOffset(0);
+    setUnreadOffset(0);
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>

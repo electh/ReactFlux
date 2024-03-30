@@ -8,6 +8,10 @@ const ContentProvider = ({ children }) => {
   const [total, setTotal] = useState(0);
   // 接口返回未读文章数原始值，不受接口返回数据长度限制
   const [unreadCount, setUnreadCount] = useState(0);
+  // 所有文章分页参数
+  const [offset, setOffset] = useState(0);
+  // 未读文章分页参数
+  const [unreadOffset, setUnreadOffset] = useState(0);
   // all 页签加载更多按钮可见性
   const [loadMoreVisible, setLoadMoreVisible] = useState(false);
   // unread 页签加载更多按钮可见性
@@ -37,6 +41,7 @@ const ContentProvider = ({ children }) => {
       loading,
       loadMoreUnreadVisible,
       loadMoreVisible,
+      offset,
       setEntries,
       setFilteredEntries,
       setFilterStatus,
@@ -45,12 +50,15 @@ const ContentProvider = ({ children }) => {
       setLoading,
       setLoadMoreUnreadVisible,
       setLoadMoreVisible,
+      setOffset,
       setTotal,
       setUnreadCount,
       setUnreadEntries,
+      setUnreadOffset,
       total,
       unreadCount,
       unreadEntries,
+      unreadOffset,
     }),
     [
       entries,
@@ -61,9 +69,11 @@ const ContentProvider = ({ children }) => {
       loading,
       loadMoreUnreadVisible,
       loadMoreVisible,
+      offset,
       total,
       unreadCount,
       unreadEntries,
+      unreadOffset,
     ],
   );
 

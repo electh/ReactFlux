@@ -7,24 +7,23 @@ import { filterEntries } from "../utils/filter";
 const useLoadMore = () => {
   const pageSize = useStore((state) => state.pageSize);
 
-  // 所有文章分页参数
-  const [offset, setOffset] = useState(0);
-  // 未读文章分页参数
-  const [unreadOffset, setUnreadOffset] = useState(0);
-
   const {
     entries,
     filterStatus,
     filterString,
     filterType,
+    offset,
     setEntries,
     setFilteredEntries,
     setLoadMoreUnreadVisible,
     setLoadMoreVisible,
+    setOffset,
     setUnreadEntries,
+    setUnreadOffset,
     total,
     unreadCount,
     unreadEntries,
+    unreadOffset,
   } = useContext(ContentContext);
 
   /* 加载更多 loading*/
