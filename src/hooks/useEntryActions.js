@@ -21,30 +21,11 @@ const useEntryActions = () => {
   const updateFeedUnread = useStore((state) => state.updateFeedUnreadCount);
   const updateGroupUnread = useStore((state) => state.updateGroupUnreadCount);
 
-  const {
-    entries,
-    filteredEntries,
-    filterStatus,
-    setEntries,
-    setFilteredEntries,
-    setUnreadCount,
-    setUnreadEntries,
-    unreadEntries,
-  } = useContext(ContentContext);
+  const { setEntries, setFilteredEntries, setUnreadCount, setUnreadEntries } =
+    useContext(ContentContext);
 
-  const updateEntries = (entries, entry, updateFunction) => {
-    return entries.map((e) => (e.id === entry.id ? updateFunction(e) : e));
-  };
-
-  const updateUI = (entry, newContentStatus, updateFunction) => {
-    setActiveContent({ ...entry, ...newContentStatus });
-    if (filterStatus === "all") {
-      setEntries(updateEntries(entries, entry, updateFunction));
-    } else {
-      setUnreadEntries(updateEntries(unreadEntries, entry, updateFunction));
-    }
-    setFilteredEntries(updateEntries(filteredEntries, entry, updateFunction));
-  };
+  const updateEntries = (entries, entry) =>
+    entries.map((e) => (e.id === entry.id ? entry : e));
 
   const handleEntryStatusUpdate = (entry, newStatus) => {
     const { feed } = entry;
@@ -71,10 +52,13 @@ const useEntryActions = () => {
       }
     }
 
-    updateUI(entry, { status: newStatus }, (entry) => ({
-      ...entry,
-      status: newStatus,
-    }));
+    const updatedEntry = { ...entry, status: newStatus };
+    setActiveContent(updatedEntry);
+    setEntries((prevEntries) => updateEntries(prevEntries, updatedEntry));
+    setUnreadEntries((prevEntries) => updateEntries(prevEntries, updatedEntry));
+    setFilteredEntries((prevEntries) =>
+      updateEntries(prevEntries, updatedEntry),
+    );
   };
 
   const handleEntryStarredUpdate = (entry, newStarred) => {
@@ -90,10 +74,13 @@ const useEntryActions = () => {
       setStarredCount((current) => Math.max(0, current - 1));
     }
 
-    updateUI(entry, { starred: newStarred }, (entry) => ({
-      ...entry,
-      starred: newStarred,
-    }));
+    const updatedEntry = { ...entry, starred: newStarred };
+    setActiveContent(updatedEntry);
+    setEntries((prevEntries) => updateEntries(prevEntries, updatedEntry));
+    setUnreadEntries((prevEntries) => updateEntries(prevEntries, updatedEntry));
+    setFilteredEntries((prevEntries) =>
+      updateEntries(prevEntries, updatedEntry),
+    );
   };
 
   const handleToggleStatus = async () => {
