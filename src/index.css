@@ -28,6 +28,10 @@ body,
   overflow: hidden;
 }
 
+#root {
+  background-color: var(--color-neutral-2);
+}
+
 body {
   overscroll-behavior: none;
 }

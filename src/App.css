@@ -116,8 +116,7 @@
     padding-right: env(safe-area-inset-right) !important;
   }
 
-  /*文章容器*/
-  .entry-detail-container {
-    padding-right: env(safe-area-inset-right) !important;
+  .inner-content {
+    margin-right: env(safe-area-inset-right) !important;
   }
 }
