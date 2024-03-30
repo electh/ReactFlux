@@ -11,7 +11,7 @@ export default function Theme() {
   const setTheme = useConfigStore((state) => state.setTheme);
   return (
     <div>
-      <Typography.Title heading={6} style={{ marginTop: 0 }}>
+      <Typography.Title heading={6} style={{ marginTop: "0.5em" }}>
         Theme
       </Typography.Title>
       <Typography.Text type="secondary">
