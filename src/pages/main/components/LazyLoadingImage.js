@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 
 const LazyLoadingImage = ({ src, alt, className, status, style }) => {
   const [loaded, setLoaded] = useState(false);
@@ -43,18 +42,14 @@ const LazyLoadingImage = ({ src, alt, className, status, style }) => {
           top: 0,
         }}
       />
-      <AnimatePresence mode="wait">
-        {loaded ? (
-          <motion.div
-            key={src}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: status === "read" ? 0.5 : 1 }}
-            transition={{ duration: 0.4 }}
-          >
-            <img src={src} alt={alt} className={className} style={style} />
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      {loaded ? (
+        <img
+          src={src}
+          alt={alt}
+          className={className}
+          style={{ ...style, opacity: status === "read" ? 0.5 : 1 }}
+        />
+      ) : null}
     </div>
   );
 };
