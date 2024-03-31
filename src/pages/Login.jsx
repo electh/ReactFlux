@@ -31,12 +31,12 @@ const Login = () => {
   /* token or user */
   const [method, setMethod] = useState(getAuth() || "token");
   const navigate = useNavigate();
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+
   useEffect(() => {
     if (getAuth()) {
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   const healthCheck = async () => {
     setLoading(true);
@@ -183,7 +183,7 @@ const Login = () => {
               loading={loading}
               type="primary"
               long={true}
-              onClick={() => loginForm.submit()}
+              onClick={handleLogin}
               style={{ marginTop: "20px" }}
             >
               Connect

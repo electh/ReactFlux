@@ -16,6 +16,10 @@ import { isMobileWidth } from "../../utils/viewport.js";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
 
+const urlRule = [{ required: true }];
+const groupRule = [{ required: true }];
+const crawlerRule = [{ type: "boolean" }];
+
 const SettingsModal = () => {
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
@@ -121,15 +125,10 @@ const AddFeedModal = () => {
           }
         }}
       >
-        <Form.Item label="Feed URL" field="url" rules={[{ required: true }]}>
+        <Form.Item label="Feed URL" field="url" rules={urlRule}>
           <Input placeholder="Please input a feed URL" />
         </Form.Item>
-        <Form.Item
-          label="Group"
-          required
-          field="group"
-          rules={[{ required: true }]}
-        >
+        <Form.Item label="Group" required field="group" rules={groupRule}>
           <Select
             placeholder="Please select a category"
             showSearch
@@ -150,7 +149,7 @@ const AddFeedModal = () => {
           field="crawler"
           style={{ marginBottom: 0 }}
           triggerPropName="checked"
-          rules={[{ type: "boolean" }]}
+          rules={crawlerRule}
         >
           <Switch />
         </Form.Item>

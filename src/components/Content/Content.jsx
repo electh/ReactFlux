@@ -1,11 +1,5 @@
 import { Message } from "@arco-design/web-react";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import useStore from "../../Store";
@@ -62,8 +56,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const {
     handleFetchContent,
-    toggleEntryStarred,
-    toggleEntryStatus,
+    handleToggleStarred,
+    handleToggleStatus,
     handleEntryStatusUpdate,
   } = useEntryActions();
 
@@ -155,7 +149,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   }, [total, unreadCount]);
 
-  const handleEntryClick = useCallback(async (entry) => {
+  const handleEntryClick = async (entry) => {
     setShowArticleDetail(false);
 
     setTimeout(() => {
@@ -178,7 +172,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       entryDetailRef.current.focus();
       entryDetailRef.current.scrollTo(0, 0);
     }
-  });
+  };
 
   const {
     handleBKey,
@@ -203,8 +197,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       39: () => handleRightKey(),
       66: () => handleBKey(),
       68: () => handleDKey(handleFetchContent),
-      77: () => handleMKey(toggleEntryStatus),
-      83: () => handleSKey(toggleEntryStarred),
+      77: () => handleMKey(handleToggleStatus),
+      83: () => handleSKey(handleToggleStarred),
     };
 
     const handleKeyDown = (event) => {

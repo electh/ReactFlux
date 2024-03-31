@@ -22,7 +22,7 @@ const ActionButtonsMobile = ({
   setIsFilteredEntriesUpdated,
 }) => {
   const activeContent = useStore((state) => state.activeContent);
-  const { handleFetchContent, toggleEntryStarred, toggleEntryStatus } =
+  const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
     useEntryActions();
   const { handleLeftKey, handleRightKey, handleEscapeKey } = useKeyHandlers(
     handleEntryClick,
@@ -55,17 +55,17 @@ const ActionButtonsMobile = ({
       <Button
         type="primary"
         shape="round"
-        onClick={() => handleEscapeKey(handleEntryClick)}
+        onClick={handleEscapeKey}
         icon={<IconClose />}
       />
       <Button
         type="primary"
-        onClick={() => toggleEntryStatus()}
+        onClick={handleToggleStatus}
         icon={isUnread ? <IconMinusCircle /> : <IconRecord />}
       />
       <Button
         type="primary"
-        onClick={() => toggleEntryStarred()}
+        onClick={handleToggleStarred}
         icon={
           isStarred ? (
             <IconStarFill style={{ color: "#ffcd00" }} />
@@ -79,15 +79,11 @@ const ActionButtonsMobile = ({
         onClick={() => handleFetchContent()}
         icon={<IconCloudDownload />}
       />
-      <Button
-        type="primary"
-        onClick={() => handleLeftKey(handleEntryClick)}
-        icon={<IconArrowLeft />}
-      />
+      <Button type="primary" onClick={handleLeftKey} icon={<IconArrowLeft />} />
       <Button
         type="primary"
         shape="round"
-        onClick={() => handleRightKey(handleEntryClick)}
+        onClick={handleRightKey}
         icon={<IconArrowRight />}
       />
     </Button.Group>
