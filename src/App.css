@@ -50,6 +50,11 @@
 
 /*pwa 专用样式*/
 @media screen and (display-mode: fullscreen) and (orientation: portrait) and (max-width: 700px) {
+  html,
+  body,
+  #root {
+    height: 100lvh !important;
+  }
   /*调整 header 样式*/
   .layout-collapse-demo .arco-layout-header {
     padding-top: env(safe-area-inset-top) !important;
@@ -90,7 +95,7 @@
   }
 }
 
-@media screen and (display-mode: fullscreen) and (orientation: landscape) {
+@media screen and (orientation: landscape) {
   /*调整 header 样式*/
   .layout-collapse-demo .arco-layout-header {
     padding-right: env(safe-area-inset-right);

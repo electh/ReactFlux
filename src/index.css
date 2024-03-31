@@ -23,7 +23,7 @@ code {
 html,
 body,
 #root {
-  height: 100lvh;
+  height: 100svh;
   margin: 0;
   overflow: hidden;
 }

@@ -181,14 +181,12 @@ const Login = () => {
       <div
         className="background"
         style={{
-          borderRadius: "12px",
-          margin: "12px 12px 12px 0",
           backgroundImage: `url(${background})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           width: "50%",
-          height: "calc(100svh - 24px)",
+          height: "100%",
         }}
       ></div>
     </div>
