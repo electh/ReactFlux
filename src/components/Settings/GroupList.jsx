@@ -50,11 +50,11 @@ const GroupList = () => {
         );
         Message.success("Group updated successfully");
         setGroupModalVisible(false);
+        groupForm.resetFields();
       })
       .catch(() => {
         Message.error("Failed to update group");
       });
-    groupForm.resetFields();
   };
 
   const handleDeleteGroup = async (groupId) => {

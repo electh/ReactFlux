@@ -229,11 +229,11 @@ const FeedList = () => {
         );
         Message.success("Feed updated successfully");
         setFeedModalVisible(false);
+        feedForm.resetFields();
       })
       .catch(() => {
         Message.error("Failed to update feed");
       });
-    feedForm.resetFields();
   };
 
   return (

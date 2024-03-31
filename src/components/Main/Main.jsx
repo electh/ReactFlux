@@ -81,12 +81,12 @@ const AddFeedModal = () => {
         initData();
         Message.success("Added a feed successfully");
         setVisible("addFeed", false);
+        feedForm.resetFields();
       })
       .catch(() => {
         Message.error("Failed to add a feed");
       });
     setFeedModalLoading(false);
-    feedForm.resetFields();
   };
 
   return (
