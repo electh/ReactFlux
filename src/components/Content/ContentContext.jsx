@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useState } from "react";
+import React, { createContext, useState } from "react";
 import { getConfig } from "../../utils/config.js";
 
 const ContentContext = createContext(null);
@@ -31,51 +31,34 @@ const ContentProvider = ({ children }) => {
   // 初始 loading
   const [loading, setLoading] = useState(true);
 
-  const value = useMemo(
-    () => ({
-      entries,
-      filteredEntries,
-      filterStatus,
-      filterString,
-      filterType,
-      loading,
-      loadMoreUnreadVisible,
-      loadMoreVisible,
-      offset,
-      setEntries,
-      setFilteredEntries,
-      setFilterStatus,
-      setFilterString,
-      setFilterType,
-      setLoading,
-      setLoadMoreUnreadVisible,
-      setLoadMoreVisible,
-      setOffset,
-      setTotal,
-      setUnreadCount,
-      setUnreadEntries,
-      setUnreadOffset,
-      total,
-      unreadCount,
-      unreadEntries,
-      unreadOffset,
-    }),
-    [
-      entries,
-      filteredEntries,
-      filterStatus,
-      filterString,
-      filterType,
-      loading,
-      loadMoreUnreadVisible,
-      loadMoreVisible,
-      offset,
-      total,
-      unreadCount,
-      unreadEntries,
-      unreadOffset,
-    ],
-  );
+  const value = {
+    entries,
+    filteredEntries,
+    filterStatus,
+    filterString,
+    filterType,
+    loading,
+    loadMoreUnreadVisible,
+    loadMoreVisible,
+    offset,
+    setEntries,
+    setFilteredEntries,
+    setFilterStatus,
+    setFilterString,
+    setFilterType,
+    setLoading,
+    setLoadMoreUnreadVisible,
+    setLoadMoreVisible,
+    setOffset,
+    setTotal,
+    setUnreadCount,
+    setUnreadEntries,
+    setUnreadOffset,
+    total,
+    unreadCount,
+    unreadEntries,
+    unreadOffset,
+  };
 
   return (
     <ContentContext.Provider value={value}>{children}</ContentContext.Provider>

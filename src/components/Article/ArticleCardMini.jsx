@@ -71,7 +71,6 @@ const ArticleCardMini = ({ entry, handleEntryClick }) => {
         data-entry-id={entry.id}
         style={{ width: "100%", cursor: "pointer" }}
         onClick={entryClickHandler}
-        cover={null}
       >
         <Card.Meta
           description={

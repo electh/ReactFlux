@@ -21,7 +21,7 @@ const ActionButtons = ({
   setIsFilteredEntriesUpdated,
 }) => {
   const activeContent = useStore((state) => state.activeContent);
-  const { handleFetchContent, toggleEntryStarred, toggleEntryStatus } =
+  const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
     useEntryActions();
   const { handleLeftKey, handleRightKey } = useKeyHandlers(
     handleEntryClick,
@@ -61,7 +61,7 @@ const ActionButtons = ({
               borderBottom: "1px solid rgb(var(--primary-5))",
               borderRadius: "50% 50% 0 0",
             }}
-            onClick={toggleEntryStatus}
+            onClick={handleToggleStatus}
             icon={isUnread ? <IconMinusCircle /> : <IconRecord />}
           />
         </Tooltip>
@@ -72,7 +72,7 @@ const ActionButtons = ({
             style={{
               borderRadius: "0",
             }}
-            onClick={toggleEntryStarred}
+            onClick={handleToggleStarred}
             icon={
               isStarred ? (
                 <IconStarFill style={{ color: "#ffcd00" }} />
@@ -102,7 +102,7 @@ const ActionButtons = ({
               borderTop: "1px solid rgb(var(--primary-5))",
               borderRadius: "0",
             }}
-            onClick={() => handleLeftKey(handleEntryClick)}
+            onClick={handleLeftKey}
             icon={<IconArrowLeft />}
           />
         </Tooltip>
@@ -114,7 +114,7 @@ const ActionButtons = ({
               borderTop: "1px solid rgb(var(--primary-5))",
               borderRadius: "0 0 50% 50%",
             }}
-            onClick={() => handleRightKey(handleEntryClick)}
+            onClick={handleRightKey}
             icon={<IconArrowRight />}
           />
         </Tooltip>

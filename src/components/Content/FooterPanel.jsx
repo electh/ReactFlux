@@ -1,6 +1,6 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
-import React, { forwardRef, useCallback, useContext, useEffect } from "react";
+import React, { forwardRef, useContext, useEffect } from "react";
 
 import useStore from "../../Store";
 import useFilterEntries from "../../hooks/useFilterEntries";
@@ -26,7 +26,7 @@ const FooterPanel = forwardRef(
     const initData = useStore((state) => state.initData);
     const showStatus = useStore((state) => state.showStatus);
 
-    const handleMarkAllAsRead = useCallback(async () => {
+    const handleMarkAllAsRead = async () => {
       markAllAsRead()
         .then(() => {
           Message.success("Marked all as read successfully");
@@ -45,17 +45,7 @@ const FooterPanel = forwardRef(
         .catch(() => {
           Message.error("Failed to mark all as read");
         });
-    }, [
-      entries,
-      filteredEntries,
-      filterStatus,
-      initData,
-      markAllAsRead,
-      setEntries,
-      setFilteredEntries,
-      setUnreadCount,
-      setUnreadEntries,
-    ]);
+    };
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {

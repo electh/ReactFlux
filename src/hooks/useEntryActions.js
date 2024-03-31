@@ -28,10 +28,11 @@ const useEntryActions = () => {
     entries.map((e) => (e.id === entry.id ? entry : e));
 
   const handleEntryStatusUpdate = (entry, newStatus) => {
-    const { feed } = entry;
-    const feedId = feed.id;
-    const groupId = feed.category.id;
-    const isInLast24Hours = checkIsInLast24Hours(entry.published_at);
+    const {
+      id: feedId,
+      category: { id: groupId },
+    } = entry.feed;
+    const isRecent = checkIsInLast24Hours(entry.published_at);
 
     updateFeedUnread(feedId, newStatus);
     updateGroupUnread(groupId, newStatus);
@@ -40,14 +41,14 @@ const useEntryActions = () => {
       setUnreadTotal((current) => Math.max(0, current - 1));
       setUnreadCount((current) => Math.max(0, current - 1));
       setReadCount((current) => current + 1);
-      if (isInLast24Hours) {
+      if (isRecent) {
         setUnreadToday((current) => Math.max(0, current - 1));
       }
     } else {
       setUnreadTotal((current) => current + 1);
       setUnreadCount((current) => current + 1);
       setReadCount((current) => Math.max(0, current - 1));
-      if (isInLast24Hours) {
+      if (isRecent) {
         setUnreadToday((current) => current + 1);
       }
     }
@@ -122,19 +123,11 @@ const useEntryActions = () => {
       });
   };
 
-  const toggleEntryStatus = () => {
-    handleToggleStatus();
-  };
-
-  const toggleEntryStarred = () => {
-    handleToggleStarred();
-  };
-
   return {
     handleEntryStatusUpdate,
     handleFetchContent,
-    toggleEntryStarred,
-    toggleEntryStatus,
+    handleToggleStarred,
+    handleToggleStatus,
   };
 };
 
