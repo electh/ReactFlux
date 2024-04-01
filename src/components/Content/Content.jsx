@@ -67,6 +67,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const [isFilteredEntriesUpdated, setIsFilteredEntriesUpdated] =
     useState(false);
   const [isShowAllFeedsUpdated, setIsShowAllFeedsUpdated] = useState(false);
+  const [isFirstRenderCompleted, setIsFirstRenderCompleted] = useState(false);
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
@@ -83,7 +84,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (info.from === "history") {
+    if (!isFirstRenderCompleted || info.from === "history") {
       return;
     }
     setTimeout(() => {
@@ -93,6 +94,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    if (!isFirstRenderCompleted) {
+      return;
+    }
     setTimeout(() => {
       refreshArticleList();
     }, 200);
@@ -271,8 +275,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    getArticleList();
     setActiveContent(null);
+    getArticleList().then(setIsFirstRenderCompleted(true));
   }, []);
 
   return (
