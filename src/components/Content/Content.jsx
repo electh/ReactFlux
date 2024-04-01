@@ -271,12 +271,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    refreshArticleList();
+    getArticleList();
     setActiveContent(null);
-    if (entryDetailRef.current) {
-      entryDetailRef.current.scrollTo(0, 0);
-    }
-  }, [info]);
+  }, []);
 
   return (
     <>
