@@ -65,6 +65,7 @@ const useStore = create((set, get) => ({
   activeContent: null,
   isSysDarkMode: window.matchMedia("(prefers-color-scheme: dark)").matches,
   themeColor: getConfig("themeColor"),
+  isInitCompleted: false,
 
   setFeeds: (value) => set({ feeds: value }),
   setGroups: (value) => set({ groups: value }),
@@ -178,6 +179,7 @@ const useStore = create((set, get) => ({
       set({ readCount: historyResponse.data.total });
       set({ starredCount: starredResponse.data.total });
       set({ unreadToday: todayUnreadResponse.data.total });
+      set({ isInitCompleted: true });
       set({ loading: false });
     }
   },

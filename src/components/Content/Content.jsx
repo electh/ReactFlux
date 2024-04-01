@@ -33,6 +33,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
   const orderBy = useStore((state) => state.orderBy);
   const orderDirection = useStore((state) => state.orderDirection);
+  const initData = useStore((state) => state.initData);
+  const isInitCompleted = useStore((state) => state.isInitCompleted);
 
   const {
     entries,
@@ -265,19 +267,31 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   };
 
   const refreshArticleList = async () => {
-    await getArticleList();
     if (entryListRef.current) {
       entryListRef.current.scrollTo(0, 0);
     }
     setOffset(0);
     setUnreadOffset(0);
+    if (!isInitCompleted) {
+      initData();
+      return;
+    }
+    await getArticleList();
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    setActiveContent(null);
-    getArticleList().then(setIsFirstRenderCompleted(true));
+    if (activeContent) {
+      setActiveContent(null);
+    }
   }, []);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (isInitCompleted) {
+      getArticleList().then(() => setIsFirstRenderCompleted(true));
+    }
+  }, [isInitCompleted]);
 
   return (
     <>
