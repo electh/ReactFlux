@@ -2,7 +2,7 @@ const defaultConfig = {
   fontSize: 1.05,
   homePage: "all",
   layout: "large",
-  orderBy: "published_at",
+  orderBy: "created_at",
   orderDirection: "desc",
   pageSize: 100,
   showAllFeeds: false,
