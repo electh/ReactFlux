@@ -1,21 +1,26 @@
 const defaultConfig = {
-  color: "Blue",
-  showStatus: "all",
+  fontSize: 1.05,
   homePage: "all",
-  orderBy: "published_at",
+  layout: "large",
+  orderBy: "created_at",
   orderDirection: "desc",
   pageSize: 100,
-  fontSize: 1.05,
-  layout: "large",
   showAllFeeds: false,
   showFeedIcon: true,
+  showStatus: "all",
   theme: "light",
+  themeColor: "Blue",
 };
 
 const getConfig = (name) => {
   const config = JSON.parse(localStorage.getItem("config")) || {};
-  const hasProperty = Object.hasOwn(config, name);
-  return hasProperty ? config[name] : defaultConfig[name] || null;
+  if (Object.hasOwn(config, name)) {
+    return config[name];
+  }
+  if (Object.hasOwn(defaultConfig, name)) {
+    return defaultConfig[name];
+  }
+  return null;
 };
 
 const setConfig = (name, value) => {

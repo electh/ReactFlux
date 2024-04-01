@@ -7,6 +7,7 @@ import { updateEntryStatus } from "../../apis";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import useLoadMore from "../../hooks/useLoadMore";
+import { filterEntriesByVisibility } from "../../utils/filter.js";
 import ActionButtons from "../Article/ActionButtons";
 import ActionButtonsMobile from "../Article/ActionButtonsMobile";
 import ArticleDetail from "../Article/ArticleDetail";
@@ -33,6 +34,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
   const orderBy = useStore((state) => state.orderBy);
   const orderDirection = useStore((state) => state.orderDirection);
+  const initData = useStore((state) => state.initData);
+  const isInitCompleted = useStore((state) => state.isInitCompleted);
 
   const {
     entries,
@@ -61,12 +64,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleEntryStatusUpdate,
   } = useEntryActions();
 
-  const { getFirstImage } = useLoadMore();
+  const { getFirstImage } = useLoadMore(info);
 
   const [showArticleDetail, setShowArticleDetail] = useState(false);
   const [isFilteredEntriesUpdated, setIsFilteredEntriesUpdated] =
     useState(false);
-  const [isShowAllFeedsUpdated, setIsShowAllFeedsUpdated] = useState(false);
+  const [isFirstRenderCompleted, setIsFirstRenderCompleted] = useState(false);
 
   const entryListRef = useRef(null);
   const entryDetailRef = useRef(null);
@@ -78,12 +81,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    setIsShowAllFeedsUpdated(true);
-  }, [showAllFeeds]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (info.from === "history") {
+    if (!isFirstRenderCompleted || info.from === "history") {
       return;
     }
     setTimeout(() => {
@@ -93,6 +91,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    if (!isFirstRenderCompleted) {
+      return;
+    }
     setTimeout(() => {
       refreshArticleList();
     }, 200);
@@ -100,16 +101,21 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!showAllFeeds && hiddenFeedIds) {
-      setFilteredEntries((entries) =>
-        entries.filter((entry) => !hiddenFeedIds.includes(entry.feed.id)),
-      );
-    } else if (isShowAllFeedsUpdated) {
+    if (["all", "today"].includes(info.from)) {
+      setFilteredEntries(() => {
+        if (!showAllFeeds) {
+          return entries.filter(
+            (entry) => !hiddenFeedIds.includes(entry.feed.id),
+          );
+        }
+        return filterStatus === "all" ? entries : unreadEntries;
+      });
+    } else {
       setFilteredEntries(() =>
         filterStatus === "all" ? entries : unreadEntries,
       );
-      setIsShowAllFeedsUpdated(false);
     }
+
     setIsFilteredEntriesUpdated(true);
   }, [filterStatus, hiddenFeedIds, showAllFeeds]);
 
@@ -182,19 +188,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleMKey,
     handleRightKey,
     handleSKey,
-  } = useKeyHandlers(
-    handleEntryClick,
-    getEntries,
-    isFilteredEntriesUpdated,
-    setIsFilteredEntriesUpdated,
-  );
+  } = useKeyHandlers(info, handleEntryClick, getEntries);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const keyMap = {
       27: () => handleEscapeKey(entryListRef),
       37: () => handleLeftKey(),
-      39: () => handleRightKey(),
+      39: () => handleRightKey(info),
       66: () => handleBKey(),
       68: () => handleDKey(handleFetchContent),
       77: () => handleMKey(handleToggleStatus),
@@ -224,9 +225,18 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setUnreadEntries(articlesUnread);
 
     if (filterStatus === "all") {
-      setFilteredEntries(articles);
+      setFilteredEntries(
+        filterEntriesByVisibility(articles, info, showAllFeeds, hiddenFeedIds),
+      );
     } else {
-      setFilteredEntries(articlesUnread);
+      setFilteredEntries(
+        filterEntriesByVisibility(
+          articlesUnread,
+          info,
+          showAllFeeds,
+          hiddenFeedIds,
+        ),
+      );
     }
 
     setTotal(responseAll.data.total);
@@ -261,22 +271,31 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   };
 
   const refreshArticleList = async () => {
-    await getArticleList();
     if (entryListRef.current) {
       entryListRef.current.scrollTo(0, 0);
     }
     setOffset(0);
     setUnreadOffset(0);
+    if (!isInitCompleted) {
+      initData();
+      return;
+    }
+    await getArticleList();
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    refreshArticleList();
-    setActiveContent(null);
-    if (entryDetailRef.current) {
-      entryDetailRef.current.scrollTo(0, 0);
+    if (activeContent) {
+      setActiveContent(null);
     }
-  }, [info]);
+  }, []);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (isInitCompleted) {
+      getArticleList().then(() => setIsFirstRenderCompleted(true));
+    }
+  }, [isInitCompleted]);
 
   return (
     <>
@@ -295,6 +314,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           classNames="fade"
         >
           <ArticleList
+            info={info}
             cardsRef={cardsRef}
             loading={loading}
             getEntries={getEntries}
@@ -319,12 +339,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         <ArticleDetail ref={entryDetailRef} />
       </CSSTransition>
       <ActionButtons
+        info={info}
         handleEntryClick={handleEntryClick}
         getEntries={getEntries}
         isFilteredEntriesUpdated={isFilteredEntriesUpdated}
         setIsFilteredEntriesUpdated={setIsFilteredEntriesUpdated}
       />
       <ActionButtonsMobile
+        info={info}
         handleEntryClick={handleEntryClick}
         getEntries={getEntries}
         isFilteredEntriesUpdated={isFilteredEntriesUpdated}

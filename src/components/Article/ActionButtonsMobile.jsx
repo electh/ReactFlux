@@ -15,20 +15,14 @@ import useStore from "../../Store";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 
-const ActionButtonsMobile = ({
-  handleEntryClick,
-  getEntries,
-  isFilteredEntriesUpdated,
-  setIsFilteredEntriesUpdated,
-}) => {
+const ActionButtonsMobile = ({ info, handleEntryClick, getEntries }) => {
   const activeContent = useStore((state) => state.activeContent);
   const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
     useEntryActions();
   const { handleLeftKey, handleRightKey, handleEscapeKey } = useKeyHandlers(
+    info,
     handleEntryClick,
     getEntries,
-    isFilteredEntriesUpdated,
-    setIsFilteredEntriesUpdated,
   );
 
   if (!activeContent) {

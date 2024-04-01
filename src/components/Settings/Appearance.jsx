@@ -26,8 +26,8 @@ const Appearance = () => {
   const setFontSize = useStore((state) => state.setFontSize);
   const showFeedIcon = useStore((state) => state.showFeedIcon);
   const toggleShowFeedIcon = useStore((state) => state.toggleShowFeedIcon);
-  const themeColor = useStore((state) => state.color);
-  const setThemeColor = useStore((state) => state.setColor);
+  const themeColor = useStore((state) => state.themeColor);
+  const setThemeColor = useStore((state) => state.setThemeColor);
 
   useEffect(() => {
     setConfig("fontSize", fontSize);
