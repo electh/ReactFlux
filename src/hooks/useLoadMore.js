@@ -2,10 +2,12 @@ import { useContext, useState } from "react";
 
 import useStore from "../Store.js";
 import ContentContext from "../components/Content/ContentContext";
-import { filterEntries } from "../utils/filter";
+import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
 
 const useLoadMore = () => {
   const pageSize = useStore((state) => state.pageSize);
+  const showAllFeeds = useStore((state) => state.showAllFeeds);
+  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
 
   const {
     entries,
@@ -39,7 +41,7 @@ const useLoadMore = () => {
     return entry;
   };
 
-  const handleLoadMore = async (getEntries) => {
+  const handleLoadMore = async (info, getEntries) => {
     setLoadingMore(true);
 
     try {
@@ -79,7 +81,14 @@ const useLoadMore = () => {
             )
           : updatedAllArticles;
 
-        setFilteredEntries(filteredByString);
+        const filteredByVisibility = filterEntriesByVisibility(
+          filteredByString,
+          info,
+          showAllFeeds,
+          hiddenFeedIds,
+        );
+
+        setFilteredEntries(filteredByVisibility);
         if (filterStatus === "all") {
           setLoadMoreVisible(updatedAllArticles.length < total);
         } else {

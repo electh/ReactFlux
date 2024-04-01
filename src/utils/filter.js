@@ -22,4 +22,17 @@ const filterEntries = (entries, filterType, filterStatus, filterString) => {
       );
 };
 
-export { includesIgnoreCase, filterEntries };
+const filterEntriesByVisibility = (
+  entries,
+  info,
+  showAllFeeds,
+  hiddenFeedIds,
+) => {
+  return info.from === "all" || info.from === "today"
+    ? entries.filter(
+        (entry) => showAllFeeds || !hiddenFeedIds.includes(entry.feed.id),
+      )
+    : entries;
+};
+
+export { includesIgnoreCase, filterEntries, filterEntriesByVisibility };

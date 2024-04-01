@@ -13,7 +13,7 @@ import LoadingCards from "./LoadingCards";
 import SearchInput from "./SearchInput";
 
 const ArticleList = forwardRef(
-  ({ loading, getEntries, handleEntryClick, cardsRef }, ref) => {
+  ({ info, loading, getEntries, handleEntryClick, cardsRef }, ref) => {
     const {
       filteredEntries,
       filterStatus,
@@ -23,8 +23,6 @@ const ArticleList = forwardRef(
 
     const { loadingMore, handleLoadMore } = useLoadMore();
     const layout = useStore((state) => state.layout);
-    const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
-    const showAllFeeds = useStore((state) => state.showAllFeeds);
 
     return (
       <div
@@ -42,28 +40,23 @@ const ArticleList = forwardRef(
         <LoadingCards loading={loading} />
         {loading ? null : (
           <div ref={cardsRef}>
-            {filteredEntries
-              .filter(
-                (entry) =>
-                  showAllFeeds || !hiddenFeedIds.includes(entry.feed.id),
-              )
-              .map((entry) => {
-                if (!isURL(entry.feed.site_url)) {
-                  entry.feed.site_url = extractProtocolAndHostname(
-                    entry.feed.feed_url,
-                  );
-                }
-
-                const ArticleComponent =
-                  layout === "small" ? ArticleCardMini : ArticleCard;
-                return (
-                  <ArticleComponent
-                    key={entry.id}
-                    entry={entry}
-                    handleEntryClick={handleEntryClick}
-                  />
+            {filteredEntries.map((entry) => {
+              if (!isURL(entry.feed.site_url)) {
+                entry.feed.site_url = extractProtocolAndHostname(
+                  entry.feed.feed_url,
                 );
-              })}
+              }
+
+              const ArticleComponent =
+                layout === "small" ? ArticleCardMini : ArticleCard;
+              return (
+                <ArticleComponent
+                  key={entry.id}
+                  entry={entry}
+                  handleEntryClick={handleEntryClick}
+                />
+              );
+            })}
           </div>
         )}
         {!loading &&
@@ -71,7 +64,7 @@ const ArticleList = forwardRef(
             ? loadMoreVisible
             : loadMoreUnreadVisible) && (
             <Button
-              onClick={() => handleLoadMore(getEntries)}
+              onClick={() => handleLoadMore(info, getEntries)}
               loading={loadingMore}
               long={true}
               style={{ margin: "10px auto", display: "block" }}
