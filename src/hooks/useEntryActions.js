@@ -18,14 +18,20 @@ const useEntryActions = () => {
   const setStarredCount = useStore((state) => state.setStarredCount);
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
-  const updateFeedUnread = useStore((state) => state.updateFeedUnreadCount);
-  const updateGroupUnread = useStore((state) => state.updateGroupUnreadCount);
+  const updateFeedUnreadCount = useStore(
+    (state) => state.updateFeedUnreadCount,
+  );
+  const updateGroupUnreadCount = useStore(
+    (state) => state.updateGroupUnreadCount,
+  );
 
   const { setEntries, setFilteredEntries, setUnreadCount, setUnreadEntries } =
     useContext(ContentContext);
 
-  const updateEntries = (entries, entry) =>
-    entries.map((e) => (e.id === entry.id ? entry : e));
+  const updateEntries = (entries, updatedEntry) =>
+    entries.map((entry) =>
+      entry.id === updatedEntry.id ? updatedEntry : entry,
+    );
 
   const handleEntryStatusUpdate = (entry, newStatus) => {
     const {
@@ -34,37 +40,35 @@ const useEntryActions = () => {
     } = entry.feed;
     const isRecent = checkIsInLast24Hours(entry.published_at);
 
-    updateFeedUnread(feedId, newStatus);
-    updateGroupUnread(groupId, newStatus);
+    updateFeedUnreadCount(feedId, newStatus);
+    updateGroupUnreadCount(groupId, newStatus);
 
     if (newStatus === "read") {
-      setUnreadTotal((current) => Math.max(0, current - 1));
-      setUnreadCount((current) => Math.max(0, current - 1));
-      setReadCount((current) => current + 1);
+      setUnreadTotal((prev) => Math.max(0, prev - 1));
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+      setReadCount((prev) => prev + 1);
       if (isRecent) {
-        setUnreadToday((current) => Math.max(0, current - 1));
+        setUnreadToday((prev) => Math.max(0, prev - 1));
       }
     } else {
-      setUnreadTotal((current) => current + 1);
-      setUnreadCount((current) => current + 1);
-      setReadCount((current) => Math.max(0, current - 1));
+      setUnreadTotal((prev) => prev + 1);
+      setUnreadCount((prev) => prev + 1);
+      setReadCount((prev) => Math.max(0, prev - 1));
       if (isRecent) {
-        setUnreadToday((current) => current + 1);
+        setUnreadToday((prev) => prev + 1);
       }
     }
 
     const updatedEntry = { ...entry, status: newStatus };
     setActiveContent(updatedEntry);
-    setEntries((prevEntries) => updateEntries(prevEntries, updatedEntry));
-    setUnreadEntries((prevEntries) => updateEntries(prevEntries, updatedEntry));
-    setFilteredEntries((prevEntries) =>
-      updateEntries(prevEntries, updatedEntry),
-    );
+    setEntries((prev) => updateEntries(prev, updatedEntry));
+    setUnreadEntries((prev) => updateEntries(prev, updatedEntry));
+    setFilteredEntries((prev) => updateEntries(prev, updatedEntry));
   };
 
   const handleEntryStarredUpdate = (entry, newStarred) => {
     if (newStarred) {
-      setStarredCount((current) => current + 1);
+      setStarredCount((prev) => prev + 1);
       Confetti({
         particleCount: 100,
         angle: 120,
@@ -72,16 +76,14 @@ const useEntryActions = () => {
         origin: { x: 1, y: 1 },
       });
     } else {
-      setStarredCount((current) => Math.max(0, current - 1));
+      setStarredCount((prev) => Math.max(0, prev - 1));
     }
 
     const updatedEntry = { ...entry, starred: newStarred };
     setActiveContent(updatedEntry);
-    setEntries((prevEntries) => updateEntries(prevEntries, updatedEntry));
-    setUnreadEntries((prevEntries) => updateEntries(prevEntries, updatedEntry));
-    setFilteredEntries((prevEntries) =>
-      updateEntries(prevEntries, updatedEntry),
-    );
+    setEntries((prev) => updateEntries(prev, updatedEntry));
+    setUnreadEntries((prev) => updateEntries(prev, updatedEntry));
+    setFilteredEntries((prev) => updateEntries(prev, updatedEntry));
   };
 
   const handleToggleStatus = async () => {
@@ -98,11 +100,10 @@ const useEntryActions = () => {
   };
 
   const handleToggleStarred = async () => {
-    const { id } = activeContent;
     const newStarred = !activeContent.starred;
     handleEntryStarredUpdate(activeContent, newStarred);
 
-    toggleEntryStarredApi(id).catch(() => {
+    toggleEntryStarredApi(activeContent.id).catch(() => {
       Message.error(
         `Failed to ${
           newStarred ? "star" : "unstar"

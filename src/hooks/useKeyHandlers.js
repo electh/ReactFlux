@@ -8,6 +8,7 @@ import useLoadMore from "./useLoadMore.js";
 
 const useKeyHandlers = (info, handleEntryClick, getEntries) => {
   const {
+    entryDetailRef,
     filteredEntries,
     filterStatus,
     loadMoreUnreadVisible,
@@ -52,6 +53,9 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
     if (entryListRef.current) {
       entryListRef.current.setAttribute("tabIndex", "-1");
       entryListRef.current.focus();
+    }
+    if (entryDetailRef.current) {
+      entryDetailRef.current.scrollTo(0, 0);
     }
   };
 
