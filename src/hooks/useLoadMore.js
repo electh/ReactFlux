@@ -53,9 +53,9 @@ const useLoadMore = () => {
       }
       if (response?.data?.entries) {
         if (filterStatus === "all") {
-          setOffset((current) => current + pageSize);
+          setOffset((prev) => prev + pageSize);
         } else {
-          setUnreadOffset((current) => current + pageSize);
+          setUnreadOffset((prev) => prev + pageSize);
         }
         const newArticlesWithImage = response.data.entries.map(getFirstImage);
         const updatedAllArticles = [

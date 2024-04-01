@@ -70,7 +70,7 @@ const ActionButtonsMobile = ({ info, handleEntryClick, getEntries }) => {
       />
       <Button
         type="primary"
-        onClick={() => handleFetchContent()}
+        onClick={handleFetchContent}
         icon={<IconCloudDownload />}
       />
       <Button type="primary" onClick={handleLeftKey} icon={<IconArrowLeft />} />

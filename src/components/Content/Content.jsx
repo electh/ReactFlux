@@ -39,6 +39,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const {
     entries,
+    entryDetailRef,
     filteredEntries,
     filterStatus,
     loading,
@@ -72,7 +73,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const [isFirstRenderCompleted, setIsFirstRenderCompleted] = useState(false);
 
   const entryListRef = useRef(null);
-  const entryDetailRef = useRef(null);
   const cardsRef = useRef(null);
 
   useEffect(() => {

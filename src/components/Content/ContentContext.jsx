@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useRef, useState } from "react";
 import { getConfig } from "../../utils/config.js";
 
 const ContentContext = createContext(null);
@@ -30,9 +30,12 @@ const ContentProvider = ({ children }) => {
   const [filterString, setFilterString] = useState("");
   // 初始 loading
   const [loading, setLoading] = useState(true);
+  // 文章详情页的引用
+  const entryDetailRef = useRef(null);
 
   const value = {
     entries,
+    entryDetailRef,
     filteredEntries,
     filterStatus,
     filterString,

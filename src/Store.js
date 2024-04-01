@@ -10,11 +10,11 @@ import {
 } from "./apis";
 import { getConfig } from "./utils/config";
 
-const calculateUnreadCount = (currentCount, status) => {
+const calculateUnreadCount = (prevCount, status) => {
   if (status === "read") {
-    return Math.max(0, currentCount - 1);
+    return Math.max(0, prevCount - 1);
   }
-  return currentCount + 1;
+  return prevCount + 1;
 };
 
 const updateUnreadCount = (items, itemId, countOrStatus) => {
