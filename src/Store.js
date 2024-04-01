@@ -64,7 +64,7 @@ const useStore = create((set, get) => ({
   collapsed: window.innerWidth <= 992,
   activeContent: null,
   isSysDarkMode: window.matchMedia("(prefers-color-scheme: dark)").matches,
-  color: getConfig("themeColor"),
+  themeColor: getConfig("themeColor"),
 
   setFeeds: (value) => set({ feeds: value }),
   setGroups: (value) => set({ groups: value }),
@@ -87,8 +87,8 @@ const useStore = create((set, get) => ({
     set({ activeContent: activeContent });
   },
   setIsSysDarkMode: (value) => set({ isSysDarkMode: value }),
-  setColor: (value) => {
-    set({ color: value });
+  setThemeColor: (value) => {
+    set({ themeColor: value });
   },
   setTheme: (value) => {
     set({ theme: value });

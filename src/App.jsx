@@ -12,7 +12,7 @@ const App = () => {
   const theme = useStore((state) => state.theme);
   const isSysDarkMode = useStore((state) => state.isSysDarkMode);
   const setIsSysDarkMode = useStore((state) => state.setIsSysDarkMode);
-  const color = useStore((state) => state.color);
+  const themeColor = useStore((state) => state.themeColor);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -41,9 +41,9 @@ const App = () => {
   }, [isSysDarkMode, theme]);
 
   useEffect(() => {
-    applyColor(color);
+    applyColor(themeColor);
     // }, [color, isSysDarkMode, theme]);
-  }, [color]);
+  }, [themeColor]);
 
   return (
     <div
