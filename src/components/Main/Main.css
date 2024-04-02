@@ -3,8 +3,7 @@
   padding-top: 49px;
   padding-left: 240px;
   display: flex;
-  transition:
-    padding-left 0.1s linear,
-    width 0.1s linear;
+  transition: padding-left 0.1s linear,
+  width 0.1s linear;
   width: calc(100% - 240px);
 }

@@ -14,6 +14,7 @@ h5,
 h6,
 b,
 strong {
+  color: var(--color-text-1);
   font-weight: var(--font-weight-500);
 }
 

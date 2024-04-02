@@ -10,6 +10,8 @@ import {
 import {
   IconCheck,
   IconDesktop,
+  IconEye,
+  IconEyeInvisible,
   IconGithub,
   IconMenu,
   IconMoonFill,
@@ -33,6 +35,11 @@ const Header = () => {
   const theme = useStore((state) => state.theme);
   const setTheme = useStore((state) => state.setTheme);
   const toggleCollapsed = useStore((state) => state.toggleCollapsed);
+  const showAllFeeds = useStore((state) => state.showAllFeeds);
+  const toggleShowAllFeeds = useStore((state) => state.toggleShowAllFeeds);
+  const feeds = useStore((state) => state.feeds);
+  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
+  const setUnreadTotal = useStore((state) => state.setUnreadTotal);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -57,6 +64,21 @@ const Header = () => {
   useEffect(() => {
     setConfig("theme", theme);
   }, [theme]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setConfig("showAllFeeds", showAllFeeds);
+    if (!showAllFeeds && hiddenFeedIds) {
+      const showedFeedsUnreadCount = feeds
+        .filter((feed) => !hiddenFeedIds.includes(feed.id))
+        .reduce((acc, feed) => acc + feed.unreadCount, 0);
+      setUnreadTotal(() => showedFeedsUnreadCount);
+    } else {
+      setUnreadTotal(() =>
+        feeds.reduce((acc, feed) => acc + feed.unreadCount, 0),
+      );
+    }
+  }, [showAllFeeds]);
 
   return (
     <div className="header">
@@ -83,6 +105,17 @@ const Header = () => {
               type="primary"
               icon={<IconPlus />}
               onClick={() => setVisible("addFeed", true)}
+            />
+          </Tooltip>
+          <Tooltip
+            content={showAllFeeds ? "Hide some feeds" : "Show all feeds"}
+            mini
+          >
+            <Button
+              shape="circle"
+              size="small"
+              icon={showAllFeeds ? <IconEye /> : <IconEyeInvisible />}
+              onClick={toggleShowAllFeeds}
             />
           </Tooltip>
           <Button

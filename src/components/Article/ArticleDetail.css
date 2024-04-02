@@ -1,0 +1,40 @@
+.content-empty {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-fill-1);
+  color: var(--color-text-3);
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 40px 16px;
+}
+
+.article-content {
+  padding: 40px 5%;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.article-title {
+  margin: 0 20px;
+  text-align: center;
+}
+
+.article-body {
+  margin: 0 20px;
+  overflow-wrap: break-word;
+  counter-reset: section;
+}
+
+.article-body img {
+  display: block;
+  margin: 20px auto;
+  max-width: 50% !important;
+  height: auto;
+}
+
+.article-body video {
+  display: block;
+  margin: 20px auto;
+}

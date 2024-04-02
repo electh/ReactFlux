@@ -86,7 +86,7 @@ const FooterPanel = forwardRef(
           borderTop: "1px solid var(--color-border-2)",
         }}
       >
-        {info.from !== "starred" && info.from !== "history" && (
+        {!["starred", "history"].includes(info.from) && (
           <Popconfirm
             focusLock
             title="Mark All As Read?"
