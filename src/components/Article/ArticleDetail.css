@@ -33,3 +33,8 @@
   max-width: 50% !important;
   height: auto;
 }
+
+.article-body video {
+  display: block;
+  margin: 20px auto;
+}
