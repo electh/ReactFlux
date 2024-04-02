@@ -17,13 +17,11 @@
 }
 
 .article-title {
-    max-width: 600px;
-    margin: 0 auto;
+    margin: 0 20px;
 }
 
 .article-body {
-    max-width: 600px;
-    margin: 0 auto;
+    margin: 0 20px;
     overflow-wrap: break-word;
     counter-reset: section;
 }
