@@ -107,7 +107,10 @@ const Header = () => {
               onClick={() => setVisible("addFeed", true)}
             />
           </Tooltip>
-          <Tooltip>
+          <Tooltip
+            content={showAllFeeds ? "Hide some feeds" : "Show all feeds"}
+            mini
+          >
             <Button
               shape="circle"
               size="small"
