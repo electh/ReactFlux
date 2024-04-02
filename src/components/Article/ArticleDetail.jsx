@@ -117,7 +117,7 @@ const ArticleDetail = forwardRef((_, ref) => {
       <div
         className="article-body"
         key={activeContent.id}
-        style={{ fontSize: `${fontSize}rem` }}
+        style={{ fontSize: `${fontSize}rem`, textIndent: `${fontSize * 2}rem` }}
       >
         <PhotoProvider maskOpacity={0.7}>{reactElement}</PhotoProvider>
       </div>
