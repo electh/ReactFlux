@@ -72,7 +72,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   return (
     <div ref={ref} className="article-content">
       <div className="article-title">
-        <Typography.Title heading={3} style={{ margin: 0 }}>
+        <Typography.Title heading={3}>
           <a href={activeContent.url} target="_blank" rel="noopener noreferrer">
             {activeContent.title}
           </a>
