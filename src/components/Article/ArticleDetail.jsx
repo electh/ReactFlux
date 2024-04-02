@@ -31,20 +31,15 @@ const CustomLink = ({ url, text }) => {
 // 自定义解析规则，用于替换 img 标签
 const htmlParserOptions = {
   replace: (node) => {
-    const isAnchorWithImg =
-      node.name === "a" && node.children?.[0]?.name === "img";
-    const isImgNode = node.name === "img";
-
-    if (isAnchorWithImg || isImgNode) {
-      const imgNode = isAnchorWithImg ? node.children[0] : node;
-      const { src, alt } = imgNode.attribs;
-
+    if (node.name === "img") {
+      const { src, alt } = node.attribs;
       return (
         <PhotoView src={src}>
           <img src={src} alt={alt} />
         </PhotoView>
       );
     }
+    return node;
   },
 };
 
