@@ -8,6 +8,7 @@ const useModalStore = create((set) => ({
   modalLoading: false,
   activeFeed: null,
   activeCategory: null,
+  settingsVisible: false,
   setNewFeedVisible: (value) => {
     set({ newFeedVisible: value });
   },
@@ -28,6 +29,9 @@ const useModalStore = create((set) => ({
   },
   setActiveCategory: (value) => {
     set({ activeCategory: value });
+  },
+  setSettingsVisible: (value) => {
+    set({ settingsVisible: value });
   },
 }));
 

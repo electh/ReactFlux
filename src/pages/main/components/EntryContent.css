@@ -98,3 +98,10 @@ p {
   border-radius: 4px;
   overflow: auto;
 }
+
+iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: none !important;
+  border-radius: 4px;
+}

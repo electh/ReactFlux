@@ -1,11 +1,13 @@
 import {
   Avatar,
   Button,
+  Divider,
   Dropdown,
   Menu,
   Message,
   Space,
   Tooltip,
+  Typography,
 } from "@arco-design/web-react";
 import {
   IconBgColors,
@@ -15,17 +17,19 @@ import {
   IconPlus,
   IconPoweroff,
   IconRecord,
+  IconSettings,
   IconStar,
   IconStarFill,
   IconUser,
 } from "@arco-design/web-react/icon";
 import { useStore } from "../store/Store";
 import { useState } from "react";
-import Appearance from "../pages/appearance/Appearance";
+import Appearance from "./appearance/Appearance";
 import SideDrawer from "./SideDrawer";
 import { useNavigate } from "react-router-dom";
 import { applyColor } from "../utils/colors";
 import { useModalStore } from "../store/modalStore";
+import { getAuth } from "../utils/auth";
 
 export default function Toolbar() {
   const navigate = useNavigate();
@@ -40,6 +44,7 @@ export default function Toolbar() {
   const setEntries = useStore((state) => state.setEntries);
   const loading = useStore((state) => state.loading);
   const setNewFeedVisible = useModalStore((state) => state.setNewFeedVisible);
+  const setSettingsVisible = useModalStore((state) => state.setSettingsVisible);
 
   const handelToggleStar = (entry) => {
     toggleStar(entry);
@@ -123,7 +128,22 @@ export default function Toolbar() {
         </Tooltip>
         <Dropdown
           droplist={
-            <Menu>
+            <Menu style={{ width: "160px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  padding: "6px 12px",
+                  alignItems: "center",
+                }}
+              >
+                <Avatar size={32} style={{ marginRight: "8px" }}>
+                  <IconUser />
+                </Avatar>
+                <Typography.Text type="secondary">
+                  {getAuth().secret.username}
+                </Typography.Text>
+              </div>
+              <Divider style={{ margin: "4px 0" }} />
               <Menu.Item
                 key="0"
                 onClick={() => {
@@ -139,7 +159,22 @@ export default function Toolbar() {
                 />
                 Appearance
               </Menu.Item>
-              <Menu.Item key="1" onClick={handleLogout}>
+              <Menu.Item
+                key="1"
+                onClick={() => {
+                  setSettingsVisible(true);
+                }}
+              >
+                <IconSettings
+                  style={{
+                    marginRight: 8,
+                    fontSize: 16,
+                    transform: "translateY(1px)",
+                  }}
+                />
+                Settings
+              </Menu.Item>
+              <Menu.Item key="2" onClick={handleLogout}>
                 <IconPoweroff
                   style={{
                     marginRight: 8,

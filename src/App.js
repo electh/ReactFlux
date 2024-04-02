@@ -10,6 +10,7 @@ import { useConfigStore } from "./store/configStore";
 import { applyColor } from "./utils/colors";
 import ActionBar from "./pages/main/components/ActionBar";
 import Modals from "./modals/Modals";
+import Settings from "./layout/settings/Settings";
 
 const Sider = Layout.Sider;
 const Header = Layout.Header;
@@ -121,6 +122,7 @@ export default function App() {
         </Header>
         <Content />
         <ActionBar />
+        <Settings />
         <Modals />
       </Layout>
     </Layout>
