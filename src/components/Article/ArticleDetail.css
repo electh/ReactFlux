@@ -27,12 +27,3 @@
     overflow-wrap: break-word;
     counter-reset: section;
 }
-
-.article-body h1,
-.article-body h2,
-.article-body h3,
-.article-body h4,
-.article-body h5,
-.article-body h6 {
-    font-weight: bold;
-}
