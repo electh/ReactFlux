@@ -10,7 +10,7 @@ import ContentContext from "../Content/ContentContext";
 import ArticleCard from "./ArticleCard";
 import ArticleCardMini from "./ArticleCardMini";
 import LoadingCards from "./LoadingCards";
-import SearchInput from "./SearchInput";
+import SearchAndSortBar from "./SearchAndSortBar.jsx";
 
 const ArticleList = forwardRef(
   ({ info, loading, getEntries, handleEntryClick, cardsRef }, ref) => {
@@ -36,7 +36,7 @@ const ArticleList = forwardRef(
           flex: "1",
         }}
       >
-        <SearchInput />
+        <SearchAndSortBar />
         <LoadingCards loading={loading} />
         {loading ? null : (
           <div ref={cardsRef}>

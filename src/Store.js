@@ -80,7 +80,10 @@ const useStore = create((set, get) => ({
   setShowStatus: (value) => set({ showStatus: value }),
   setHomePage: (value) => set({ homePage: value }),
   setOrderBy: (value) => set({ orderBy: value }),
-  setOrderDirection: (value) => set({ orderDirection: value }),
+  toggleOrderDirection: () =>
+    set((state) => ({
+      orderDirection: state.orderDirection === "desc" ? "asc" : "desc",
+    })),
   setPageSize: (value) => set({ pageSize: value }),
   toggleShowAllFeeds: () =>
     set((state) => ({ showAllFeeds: !state.showAllFeeds })),
