@@ -1,0 +1,38 @@
+.content-empty {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-fill-1);
+    color: var(--color-text-3);
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 40px 16px;
+}
+
+.article-content {
+    padding: 40px 5%;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.article-title {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.article-body {
+    max-width: 600px;
+    margin: 0 auto;
+    overflow-wrap: break-word;
+    counter-reset: section;
+}
+
+.article-body h1,
+.article-body h2,
+.article-body h3,
+.article-body h4,
+.article-body h5,
+.article-body h6 {
+    font-weight: bold;
+}

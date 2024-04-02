@@ -8,6 +8,7 @@ import "react-photo-view/dist/react-photo-view.css";
 import { Link, useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
+import "./ArticleDetail.css";
 
 const CustomLink = ({ url, text }) => {
   const [hover, setHover] = useState(false);
@@ -54,20 +55,7 @@ const ArticleDetail = forwardRef((_, ref) => {
 
   if (!activeContent) {
     return (
-      <div
-        ref={ref}
-        className="content-empty"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          backgroundColor: "var(--color-fill-1)",
-          color: "var(--color-text-3)",
-          alignItems: "center",
-          justifyContent: "center",
-          flex: "1",
-          padding: "40px 16px",
-        }}
-      >
+      <div ref={ref} className="content-empty">
         <IconEmpty style={{ fontSize: "64px" }} />
         <Typography.Title
           heading={6}
@@ -87,23 +75,8 @@ const ArticleDetail = forwardRef((_, ref) => {
   const groupTitle = activeContent.feed.category.title;
 
   return (
-    <div
-      ref={ref}
-      className="article-content"
-      style={{
-        padding: "40px 5%",
-        flex: "1",
-        overflowY: "auto",
-        overflowX: "hidden",
-      }}
-    >
-      <div
-        className="article-title"
-        style={{
-          maxWidth: "600px",
-          margin: "0 auto",
-        }}
-      >
+    <div ref={ref} className="article-content">
+      <div className="article-title">
         <Typography.Title heading={3} style={{ margin: 0 }}>
           <a href={activeContent.url} target="_blank" rel="noopener noreferrer">
             {activeContent.title}
@@ -149,12 +122,7 @@ const ArticleDetail = forwardRef((_, ref) => {
       <div
         className="article-body"
         key={activeContent.id}
-        style={{
-          fontSize: `${fontSize}rem`,
-          maxWidth: "600px",
-          margin: "0 auto",
-          overflowWrap: "break-word",
-        }}
+        style={{ fontSize: `${fontSize}rem` }}
       >
         <PhotoProvider maskOpacity={0.7}>{reactElement}</PhotoProvider>
       </div>
