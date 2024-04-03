@@ -17,18 +17,19 @@
 }
 
 .article-title {
-  margin: 0 20px;
+  padding: 0 20px;
   text-align: center;
 }
 
 .article-top-bar {
-  margin: 0 20px;
+  padding: 0 20px;
   display: flex;
   justify-content: flex-end;
 }
 
 .article-body {
-  margin: 0 20px;
+  margin: 0 auto;
+  padding: 0 20px;
   overflow-wrap: break-word;
   counter-reset: section;
 }

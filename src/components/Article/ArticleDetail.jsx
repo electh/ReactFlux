@@ -5,7 +5,12 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import { IconEmpty, IconImage } from "@arco-design/web-react/icon";
+import {
+  IconEmpty,
+  IconImage,
+  IconMinus,
+  IconPlus,
+} from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
 import React, { forwardRef, useState } from "react";
@@ -39,6 +44,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   const navigate = useNavigate();
   const activeContent = useStore((state) => state.activeContent);
   const fontSize = useStore((state) => state.fontSize);
+  const [bodyWidth, setBodyWidth] = useState(80);
   const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);
 
   if (!activeContent) {
@@ -106,19 +112,39 @@ const ArticleDetail = forwardRef((_, ref) => {
         <Divider />
       </div>
       <div className="article-top-bar">
-        <Tooltip content="Open photo slider" mini>
-          <Button
-            type="primary"
-            size="mini"
-            onClick={() => setIsPhotoSliderVisible(true)}
-            icon={<IconImage />}
-          />
-        </Tooltip>
+        <Button.Group>
+          <Tooltip content="Expand article body" mini>
+            <Button
+              disabled={bodyWidth === 100}
+              icon={<IconPlus />}
+              size="mini"
+              type="primary"
+              onClick={() => setBodyWidth((prev) => prev + 10)}
+            />
+          </Tooltip>
+          <Tooltip content="Reduce article body" mini>
+            <Button
+              disabled={bodyWidth === 60}
+              icon={<IconMinus />}
+              size="mini"
+              type="primary"
+              onClick={() => setBodyWidth((prev) => prev - 10)}
+            />
+          </Tooltip>
+          <Tooltip content="Open photo slider" mini>
+            <Button
+              icon={<IconImage />}
+              size="mini"
+              type="primary"
+              onClick={() => setIsPhotoSliderVisible(true)}
+            />
+          </Tooltip>
+        </Button.Group>
       </div>
       <div
         className="article-body"
         key={activeContent.id}
-        style={{ fontSize: `${fontSize}rem`, textIndent: `${fontSize * 2}rem` }}
+        style={{ fontSize: `${fontSize}rem`, width: `${bodyWidth}%` }}
       >
         {parsedHtml}
         {imageSources.length > 0 && (
