@@ -74,13 +74,11 @@ const FooterPanel = forwardRef(
       <div
         className="entry-panel"
         style={{
-          // position: "absolute",
           backgroundColor: "var(--color-bg-2)",
           bottom: "0",
           display: "flex",
           flexDirection: "row",
           padding: "8px 10px",
-          // width: "302px",
           zIndex: "2",
           justifyContent: "space-between",
           borderTop: "1px solid var(--color-border-2)",

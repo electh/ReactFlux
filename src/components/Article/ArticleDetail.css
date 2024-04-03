@@ -17,24 +17,29 @@
 }
 
 .article-title {
-  margin: 0 20px;
+  padding: 0 20px;
   text-align: center;
 }
 
+.article-top-bar {
+  padding: 0 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .article-body {
-  margin: 0 20px;
+  margin: 0 auto;
+  padding: 0 20px;
   overflow-wrap: break-word;
   counter-reset: section;
 }
 
-.article-body img {
+.article-body img, .article-body video, .article-body iframe {
   display: block;
   margin: 20px auto;
-  max-width: 50% !important;
-  height: auto;
 }
 
-.article-body video {
-  display: block;
-  margin: 20px auto;
+.article-body img {
+  max-width: 80% !important;
+  height: auto;
 }
