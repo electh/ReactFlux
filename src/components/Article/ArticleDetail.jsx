@@ -133,6 +133,7 @@ const ArticleDetail = forwardRef((_, ref) => {
           </Tooltip>
           <Tooltip content="Open photo slider" mini>
             <Button
+              disabled={imageSources.length === 0}
               icon={<IconImage />}
               size="mini"
               type="primary"
