@@ -47,7 +47,7 @@ export default function Settings() {
           )}
         >
           <Typography.Paragraph style={style}>
-            Content of Tab Panel 1
+            Nothing here yet
           </Typography.Paragraph>
         </Tabs.TabPane>
         <Tabs.TabPane
@@ -58,7 +58,7 @@ export default function Settings() {
           )}
         >
           <Typography.Paragraph style={style}>
-            Content of Tab Panel 2
+            Nothing here yet
           </Typography.Paragraph>
         </Tabs.TabPane>
       </Tabs>

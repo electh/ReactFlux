@@ -6,16 +6,11 @@
   padding: 12px !important;
 }
 
-.card-custom-hover-style:hover {
-  box-shadow: 0 4px 10px rgb(var(--color-black));
-}
-
 .card-custom-hover-style .card-cover {
   transition: scale 0.15s ease-in-out; /* 添加过渡效果 */
 }
 
 .card-custom-hover-style:hover .card-cover {
-  /*opacity: 0.9; !* 设置透明度为 0.90 *!*/
   scale: 1.05;
 }
 
@@ -27,4 +22,20 @@
 
 .selected {
   outline: 4px solid var(--color-fill-3);
+}
+
+.arco-card-bordered {
+  border: none !important;
+  box-shadow:
+    0 0 5px 0 rgba(0, 0, 0, 0.02),
+    0 2px 10px 0 rgba(0, 0, 0, 0.06),
+    0 0 1px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+body[arco-theme="dark"] .arco-card-bordered {
+  border: none !important;
+  box-shadow:
+    0 0 5px 0 rgba(0, 0, 0, 0.05),
+    0 2px 10px 0 rgba(0, 0, 0, 0.2),
+    inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15) !important;
 }
