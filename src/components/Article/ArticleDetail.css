@@ -21,6 +21,12 @@
   text-align: center;
 }
 
+.article-top-bar {
+  margin: 0 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .article-body {
   margin: 0 20px;
   overflow-wrap: break-word;
@@ -30,7 +36,7 @@
 .article-body img {
   display: block;
   margin: 20px auto;
-  max-width: 50% !important;
+  max-width: 80% !important;
   height: auto;
 }
 

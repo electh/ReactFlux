@@ -1,13 +1,20 @@
-import { Divider, Tag, Typography } from "@arco-design/web-react";
-import { IconEmpty } from "@arco-design/web-react/icon";
+import {
+  Button,
+  Divider,
+  Tag,
+  Tooltip,
+  Typography,
+} from "@arco-design/web-react";
+import { IconEmpty, IconImage } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
 import React, { forwardRef, useState } from "react";
-import { PhotoProvider, PhotoView } from "react-photo-view";
+import { PhotoSlider } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import { Link, useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
+import { extractAllImageSrc } from "../../utils/images.js";
 import "./ArticleDetail.css";
 
 const CustomLink = ({ url, text }) => {
@@ -28,25 +35,11 @@ const CustomLink = ({ url, text }) => {
   );
 };
 
-// 自定义解析规则，用于替换 img 标签
-const htmlParserOptions = {
-  replace: (node) => {
-    if (node.name === "img") {
-      const { src, alt } = node.attribs;
-      return (
-        <PhotoView src={src}>
-          <img src={src} alt={alt} />
-        </PhotoView>
-      );
-    }
-    return node;
-  },
-};
-
 const ArticleDetail = forwardRef((_, ref) => {
   const navigate = useNavigate();
   const activeContent = useStore((state) => state.activeContent);
   const fontSize = useStore((state) => state.fontSize);
+  const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);
 
   if (!activeContent) {
     return (
@@ -62,12 +55,10 @@ const ArticleDetail = forwardRef((_, ref) => {
     );
   }
 
-  const reactElement = ReactHtmlParser(
-    activeContent.content,
-    htmlParserOptions,
-  );
+  const parsedHtml = ReactHtmlParser(activeContent.content);
   const groupId = activeContent.feed.category.id;
   const groupTitle = activeContent.feed.category.title;
+  const imageSources = extractAllImageSrc(activeContent.content);
 
   return (
     <div ref={ref} className="article-content">
@@ -114,12 +105,29 @@ const ArticleDetail = forwardRef((_, ref) => {
         </Typography.Text>
         <Divider />
       </div>
+      <div className="article-top-bar">
+        <Tooltip content="Open photo slider" mini>
+          <Button
+            type="primary"
+            size="mini"
+            onClick={() => setIsPhotoSliderVisible(true)}
+            icon={<IconImage />}
+          />
+        </Tooltip>
+      </div>
       <div
         className="article-body"
         key={activeContent.id}
         style={{ fontSize: `${fontSize}rem`, textIndent: `${fontSize * 2}rem` }}
       >
-        <PhotoProvider maskOpacity={0.7}>{reactElement}</PhotoProvider>
+        {parsedHtml}
+        {imageSources.length > 0 && (
+          <PhotoSlider
+            images={imageSources.map((item) => ({ src: item, key: item }))}
+            visible={isPhotoSliderVisible}
+            onClose={() => setIsPhotoSliderVisible(false)}
+          />
+        )}
       </div>
     </div>
   );
