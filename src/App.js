@@ -132,7 +132,10 @@ export default function App() {
           style={{ borderBottom: "1px solid var(--color-border-2)" }}
           onClick={scrollToTop}
         >
-          <div onClick={(event) => event.stopPropagation()}>
+          <div
+            onClick={(event) => event.stopPropagation()}
+            style={{ backgroundColor: "red" }}
+          >
             <Toolbar />
           </div>
         </Header>
