@@ -31,7 +31,6 @@
   margin: 0 auto;
   padding: 0 20px;
   overflow-wrap: break-word;
-  counter-reset: section;
 }
 
 .article-body img, .article-body video, .article-body iframe {

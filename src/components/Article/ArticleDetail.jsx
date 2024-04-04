@@ -44,7 +44,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   const navigate = useNavigate();
   const activeContent = useStore((state) => state.activeContent);
   const fontSize = useStore((state) => state.fontSize);
-  const [bodyWidth, setBodyWidth] = useState(80);
+  const [bodyWidth, setBodyWidth] = useState(90);
   const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);
 
   if (!activeContent) {
@@ -115,7 +115,7 @@ const ArticleDetail = forwardRef((_, ref) => {
         <Button.Group>
           <Tooltip content="Expand article body" mini>
             <Button
-              disabled={bodyWidth === 100}
+              disabled={bodyWidth === 90}
               icon={<IconPlus />}
               size="mini"
               type="primary"
