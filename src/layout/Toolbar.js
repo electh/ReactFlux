@@ -102,7 +102,9 @@ export default function Toolbar() {
           {collapsed ? <IconMenuUnfold /> : <IconMenuFold />}
         </Button>
       </Space>
-      <SideDrawer visible={visible} setVisible={setVisible} />
+      <div onClick={(event) => event.stopPropagation()}>
+        <SideDrawer visible={visible} setVisible={setVisible} />
+      </div>
       <div
         style={{
           display: "flex",
