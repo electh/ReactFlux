@@ -49,15 +49,6 @@ const FooterPanel = forwardRef(
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
-      if (filterStatus === "all") {
-        setFilteredEntries(entries);
-      } else {
-        setFilteredEntries(unreadEntries);
-      }
-    }, [filterStatus]);
-
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
       if (info.from !== "history") {
         setFilterStatus(showStatus);
       }
@@ -68,6 +59,11 @@ const FooterPanel = forwardRef(
         ref.current.scrollTo(0, 0);
       }
       setFilterStatus(value);
+      if (value === "all") {
+        setFilteredEntries(entries);
+      } else {
+        setFilteredEntries(unreadEntries);
+      }
     };
 
     return (

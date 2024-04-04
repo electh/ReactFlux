@@ -21,7 +21,7 @@ import {
   IconSunFill,
   IconUser,
 } from "@arco-design/web-react/icon";
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
@@ -61,25 +61,6 @@ const Header = () => {
       themeIcon = <IconSunFill />;
   }
 
-  useEffect(() => {
-    setConfig("theme", theme);
-  }, [theme]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    setConfig("showAllFeeds", showAllFeeds);
-    if (!showAllFeeds && hiddenFeedIds) {
-      const showedFeedsUnreadCount = feeds
-        .filter((feed) => !hiddenFeedIds.includes(feed.id))
-        .reduce((acc, feed) => acc + feed.unreadCount, 0);
-      setUnreadTotal(() => showedFeedsUnreadCount);
-    } else {
-      setUnreadTotal(() =>
-        feeds.reduce((acc, feed) => acc + feed.unreadCount, 0),
-      );
-    }
-  }, [showAllFeeds]);
-
   return (
     <div className="header">
       <div
@@ -115,7 +96,20 @@ const Header = () => {
               shape="circle"
               size="small"
               icon={showAllFeeds ? <IconEye /> : <IconEyeInvisible />}
-              onClick={toggleShowAllFeeds}
+              onClick={() => {
+                toggleShowAllFeeds();
+                setConfig("showAllFeeds", showAllFeeds);
+                if (!showAllFeeds && hiddenFeedIds) {
+                  const showedFeedsUnreadCount = feeds
+                    .filter((feed) => !hiddenFeedIds.includes(feed.id))
+                    .reduce((acc, feed) => acc + feed.unreadCount, 0);
+                  setUnreadTotal(() => showedFeedsUnreadCount);
+                } else {
+                  setUnreadTotal(() =>
+                    feeds.reduce((acc, feed) => acc + feed.unreadCount, 0),
+                  );
+                }
+              }}
             />
           </Tooltip>
           <Button
@@ -133,7 +127,10 @@ const Header = () => {
                   <Menu.Item
                     className={theme === themeOption ? "selected-menu" : ""}
                     key={themeOption}
-                    onClick={() => setTheme(themeOption)}
+                    onClick={() => {
+                      setTheme(themeOption);
+                      setConfig("theme", themeOption);
+                    }}
                     style={{
                       display: "flex",
                       width: 100,
@@ -160,9 +157,11 @@ const Header = () => {
                 switch (theme) {
                   case "light":
                     setTheme("dark");
+                    setConfig("theme", "dark");
                     break;
                   case "dark":
                     setTheme("light");
+                    setConfig("theme", "light");
                     break;
                   default:
                     break;

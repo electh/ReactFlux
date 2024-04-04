@@ -7,7 +7,7 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import React, { useEffect } from "react";
+import React from "react";
 
 import useStore from "../../Store";
 import darkThemePreview from "../../assets/dark.png";
@@ -29,27 +29,6 @@ const Appearance = () => {
   const themeColor = useStore((state) => state.themeColor);
   const setThemeColor = useStore((state) => state.setThemeColor);
 
-  useEffect(() => {
-    setConfig("fontSize", fontSize);
-  }, [fontSize]);
-
-  useEffect(() => {
-    setConfig("layout", layout);
-  }, [layout]);
-
-  useEffect(() => {
-    setConfig("showFeedIcon", showFeedIcon);
-  }, [showFeedIcon]);
-
-  useEffect(() => {
-    setConfig("theme", theme);
-  }, [theme]);
-
-  useEffect(() => {
-    setConfig("themeColor", themeColor);
-    applyColor(themeColor);
-  }, [themeColor]);
-
   return (
     <>
       <Typography.Title heading={6} style={{ marginTop: 0 }}>
@@ -63,7 +42,10 @@ const Appearance = () => {
           name="card-radio-group"
           style={{ marginTop: "16px" }}
           defaultValue={theme}
-          onChange={setTheme}
+          onChange={(value) => {
+            setTheme(value);
+            setConfig("theme", value);
+          }}
         >
           {["light", "dark", "system"].map((mode) => (
             <Tooltip
@@ -125,7 +107,11 @@ const Appearance = () => {
                       ? `1px solid ${getColorValue(c.name)}`
                       : "none",
                 }}
-                onClick={() => setThemeColor(c.name)}
+                onClick={() => {
+                  setThemeColor(c.name);
+                  setConfig("themeColor", c.name);
+                  applyColor(c.name);
+                }}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     setThemeColor(c.name);
@@ -148,7 +134,13 @@ const Appearance = () => {
           </Typography.Text>
         </div>
         <div>
-          <Switch checked={layout === "small"} onChange={toggleLayout} />
+          <Switch
+            checked={layout === "small"}
+            onChange={(value) => {
+              toggleLayout();
+              setConfig("layout", value ? "small" : "large");
+            }}
+          />
         </div>
       </div>
       <Divider />
@@ -162,7 +154,13 @@ const Appearance = () => {
           </Typography.Text>
         </div>
         <div>
-          <Switch checked={showFeedIcon} onChange={toggleShowFeedIcon} />
+          <Switch
+            checked={showFeedIcon}
+            onChange={(value) => {
+              toggleShowFeedIcon();
+              setConfig("showFeedIcon", value);
+            }}
+          />
         </div>
       </div>
       <Divider />
@@ -185,7 +183,10 @@ const Appearance = () => {
               max={1.25}
               step={0.05}
               formatTooltip={(value) => `${value}rem`}
-              onChange={setFontSize}
+              onChange={(value) => {
+                setFontSize(value);
+                setConfig("fontSize", value);
+              }}
               style={{ width: 200 }}
             />
             <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
