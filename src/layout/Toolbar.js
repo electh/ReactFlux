@@ -45,8 +45,6 @@ export default function Toolbar() {
   const loading = useStore((state) => state.loading);
   const setNewFeedVisible = useModalStore((state) => state.setNewFeedVisible);
   const setSettingsVisible = useModalStore((state) => state.setSettingsVisible);
-  const listRef = useStore((state) => state.listRef);
-  const detailRef = useStore((state) => state.detailRef);
 
   const handelToggleStar = (entry) => {
     toggleStar(entry);
@@ -66,14 +64,6 @@ export default function Toolbar() {
     Message.success("Logout");
   };
 
-  const scrollToTop = () => {
-    if (activeEntry) {
-      detailRef.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      listRef.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    }
-  };
-
   return (
     <div
       style={{
@@ -81,30 +71,17 @@ export default function Toolbar() {
         justifyContent: "space-between",
         alignItems: "center",
       }}
-      onClick={() => scrollToTop()}
     >
       <Space>
         <Button
           shape="circle"
           className="trigger"
-          onClick={
-            isMobile
-              ? (event) => {
-                  event.stopPropagation(); // 阻止事件传递
-                  setVisible(!visible);
-                }
-              : (event) => {
-                  event.stopPropagation(); // 阻止事件传递
-                  setCollapsed();
-                }
-          }
+          onClick={isMobile ? () => setVisible(!visible) : setCollapsed}
         >
           {collapsed ? <IconMenuUnfold /> : <IconMenuFold />}
         </Button>
       </Space>
-      <div onClick={(event) => event.stopPropagation()}>
-        <SideDrawer visible={visible} setVisible={setVisible} />
-      </div>
+      <SideDrawer visible={visible} setVisible={setVisible} />
       <div
         style={{
           display: "flex",
@@ -117,10 +94,7 @@ export default function Toolbar() {
         >
           <Button
             shape="round"
-            onClick={(event) => {
-              event.stopPropagation();
-              handelToggleStar(activeEntry);
-            }}
+            onClick={() => handelToggleStar(activeEntry)}
             icon={
               activeEntry?.starred ? (
                 <IconStarFill style={{ color: "#ffcd00" }} />
@@ -132,10 +106,7 @@ export default function Toolbar() {
           />
           <Button
             shape="round"
-            onClick={(event) => {
-              event.stopPropagation();
-              handelToggleUnreadStatus(activeEntry);
-            }}
+            onClick={() => handelToggleUnreadStatus(activeEntry)}
             icon={
               activeEntry?.status === "read" ? (
                 <IconMinusCircle />
@@ -151,85 +122,78 @@ export default function Toolbar() {
             shape="round"
             disabled={loading}
             icon={<IconPlus />}
-            onClick={(event) => {
-              event.stopPropagation();
-              setNewFeedVisible(true);
-            }}
+            onClick={() => setNewFeedVisible(true)}
             style={{ marginRight: 8 }}
           />
         </Tooltip>
-        <div onClick={(event) => event.stopPropagation()}>
-          <Dropdown
-            droplist={
-              <Menu style={{ width: "160px" }}>
-                <div
+        <Dropdown
+          droplist={
+            <Menu style={{ width: "160px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  padding: "6px 12px",
+                  alignItems: "center",
+                }}
+              >
+                <Avatar size={32} style={{ marginRight: "8px" }}>
+                  <IconUser />
+                </Avatar>
+                <Typography.Text type="secondary">
+                  {getAuth().secret.username}
+                </Typography.Text>
+              </div>
+              <Divider style={{ margin: "4px 0" }} />
+              <Menu.Item
+                key="0"
+                onClick={() => {
+                  setDrawVisible(true);
+                }}
+              >
+                <IconBgColors
                   style={{
-                    display: "flex",
-                    padding: "6px 12px",
-                    alignItems: "center",
+                    marginRight: 8,
+                    fontSize: 16,
+                    transform: "translateY(1px)",
                   }}
-                >
-                  <Avatar size={32} style={{ marginRight: "8px" }}>
-                    <IconUser />
-                  </Avatar>
-                  <Typography.Text type="secondary">
-                    {getAuth().secret.username}
-                  </Typography.Text>
-                </div>
-                <Divider style={{ margin: "4px 0" }} />
-                <Menu.Item
-                  key="0"
-                  onClick={() => {
-                    setDrawVisible(true);
+                />
+                Appearance
+              </Menu.Item>
+              <Menu.Item
+                key="1"
+                onClick={() => {
+                  setSettingsVisible(true);
+                }}
+              >
+                <IconSettings
+                  style={{
+                    marginRight: 8,
+                    fontSize: 16,
+                    transform: "translateY(1px)",
                   }}
-                >
-                  <IconBgColors
-                    style={{
-                      marginRight: 8,
-                      fontSize: 16,
-                      transform: "translateY(1px)",
-                    }}
-                  />
-                  Appearance
-                </Menu.Item>
-                <Menu.Item
-                  key="1"
-                  onClick={() => {
-                    setSettingsVisible(true);
+                />
+                Settings
+              </Menu.Item>
+              <Menu.Item key="2" onClick={handleLogout}>
+                <IconPoweroff
+                  style={{
+                    marginRight: 8,
+                    fontSize: 16,
+                    transform: "translateY(1px)",
                   }}
-                >
-                  <IconSettings
-                    style={{
-                      marginRight: 8,
-                      fontSize: 16,
-                      transform: "translateY(1px)",
-                    }}
-                  />
-                  Settings
-                </Menu.Item>
-                <Menu.Item key="2" onClick={handleLogout}>
-                  <IconPoweroff
-                    style={{
-                      marginRight: 8,
-                      fontSize: 16,
-                      transform: "translateY(1px)",
-                    }}
-                  />
-                  Logout
-                </Menu.Item>
-              </Menu>
-            }
-            trigger="click"
-            position="br"
-          >
-            <Avatar size={32} style={{ cursor: "pointer" }}>
-              <IconUser />
-            </Avatar>
-          </Dropdown>
-        </div>
-        <div onClick={(event) => event.stopPropagation()}>
-          <Appearance visible={drawVisible} setVisible={setDrawVisible} />
-        </div>
+                />
+                Logout
+              </Menu.Item>
+            </Menu>
+          }
+          trigger="click"
+          position="br"
+        >
+          <Avatar size={32} style={{ cursor: "pointer" }}>
+            <IconUser />
+          </Avatar>
+        </Dropdown>
+        <Appearance visible={drawVisible} setVisible={setDrawVisible} />
       </div>
     </div>
   );

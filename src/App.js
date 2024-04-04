@@ -24,6 +24,9 @@ export default function App() {
   const isMobile = useStore((state) => state.isMobile);
   const initData = useStore((state) => state.initData);
   const theme = useConfigStore((state) => state.theme);
+  const listRef = useStore((state) => state.listRef);
+  const detailRef = useStore((state) => state.detailRef);
+  const activeEntry = useStore((state) => state.activeEntry);
 
   useEffect(() => {
     console.log(isMobile, isSysDarkMode);
@@ -80,6 +83,14 @@ export default function App() {
     applyColor(color);
   }, [color, isSysDarkMode, theme]);
 
+  const scrollToTop = () => {
+    if (activeEntry) {
+      detailRef.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      listRef.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <Layout className="layout-collapse-demo">
       <Sider
@@ -117,8 +128,13 @@ export default function App() {
         <Sidebar style={{ width: "100%" }} />
       </Sider>
       <Layout>
-        <Header style={{ borderBottom: "1px solid var(--color-border-2)" }}>
-          <Toolbar />
+        <Header
+          style={{ borderBottom: "1px solid var(--color-border-2)" }}
+          onClick={scrollToTop}
+        >
+          <div onClick={(event) => event.stopPropagation()}>
+            <Toolbar />
+          </div>
         </Header>
         <Content />
         <ActionBar />
