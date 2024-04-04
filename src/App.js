@@ -1,4 +1,4 @@
-import { Avatar, Layout } from "@arco-design/web-react";
+import { Avatar, Layout, Message } from "@arco-design/web-react";
 import { useStore } from "./store/Store";
 import Sidebar from "./layout/Sidebar";
 import "./App.css";
@@ -130,7 +130,10 @@ export default function App() {
       <Layout>
         <Header
           style={{ borderBottom: "1px solid var(--color-border-2)" }}
-          onClick={scrollToTop}
+          onClick={() => {
+            Message.success("clicked");
+            scrollToTop();
+          }}
         >
           <div
             onClick={(event) => event.stopPropagation()}
