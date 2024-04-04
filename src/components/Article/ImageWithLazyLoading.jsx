@@ -4,12 +4,12 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ImageWithLazyLoading.css";
 
 const ImageWithLazyLoading = ({
-  src,
   alt,
-  width,
-  height,
-  status,
   borderRadius,
+  height,
+  src,
+  status,
+  width,
 }) => {
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef(null);
@@ -45,14 +45,7 @@ const ImageWithLazyLoading = ({
   return (
     <div className="image-container" ref={imgRef}>
       {!loaded && (
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
+        <div className="skeleton-container">
           <Skeleton
             text={{ rows: 0 }}
             image={{

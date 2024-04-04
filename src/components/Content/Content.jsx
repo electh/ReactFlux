@@ -12,6 +12,7 @@ import ActionButtons from "../Article/ActionButtons";
 import ActionButtonsMobile from "../Article/ActionButtonsMobile";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
+import "./Content.css";
 import ContentContext from "./ContentContext";
 import FooterPanel from "./FooterPanel.jsx";
 import "./Transition.css";
@@ -298,14 +299,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          borderRight: "1px solid var(--color-border-2)",
-        }}
-        className="entry-col"
-      >
+      <div className="entry-col">
         <CSSTransition
           in={!loading}
           timeout={200}

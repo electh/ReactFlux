@@ -12,3 +12,31 @@
   width: calc(100% - 240px);
   z-index: 999;
 }
+
+.brand {
+  align-items: center;
+  display: flex;
+  margin-left: 10px;
+}
+
+.trigger {
+  display: none;
+  margin-right: 5px;
+}
+
+.button-group {
+  margin-right: 10px;
+}
+
+.theme-menu-item {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100px;
+}
+
+.icon-right {
+  font-size: 16px;
+  margin-right: 8px;
+  transform: translateY(1px);
+}

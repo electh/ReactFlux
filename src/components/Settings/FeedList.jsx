@@ -20,6 +20,8 @@ import { deleteFeed, editFeed, refreshFeed } from "../../apis";
 import { generateRelativeTime } from "../../utils/date";
 import { includesIgnoreCase } from "../../utils/filter";
 
+import "./FeedList.css";
+
 const getSortedFeedsByErrorCount = (feeds) => {
   return feeds.slice().sort((a, b) => {
     if (a.parsing_error_count > 0 && b.parsing_error_count === 0) {
@@ -239,8 +241,9 @@ const FeedList = () => {
     <>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Input.Search
-          searchButton
+          className="search-input"
           placeholder="Search feed title or url"
+          searchButton
           onChange={(value) =>
             setShowFeeds(
               getSortedFeedsByErrorCount(feeds).filter(
@@ -250,28 +253,24 @@ const FeedList = () => {
               ),
             )
           }
-          style={{
-            width: 300,
-            marginBottom: "16px",
-          }}
         />
       </div>
       <Table
+        borderCell={true}
+        className="feed-table"
         columns={columns}
         data={tableData}
         // pagePosition="bottomCenter"
         scroll={{ x: true }}
         size={"small"}
-        style={{ width: "100%" }}
-        borderCell={true}
       />
       {selectedFeedId && (
         <Modal
-          title="Edit Feed"
-          visible={feedModalVisible}
-          unmountOnExit
+          className="edit-modal"
           onOk={feedForm.submit}
-          style={{ width: "400px" }}
+          title="Edit Feed"
+          unmountOnExit
+          visible={feedModalVisible}
           onCancel={() => {
             setFeedModalVisible(false);
             feedForm.resetFields();

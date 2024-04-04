@@ -39,9 +39,9 @@ const Appearance = () => {
       </Typography.Text>
       <div>
         <Radio.Group
-          name="card-radio-group"
-          style={{ marginTop: "16px" }}
+          className="theme-selector"
           defaultValue={theme}
+          name="card-radio-group"
           onChange={(value) => {
             setTheme(value);
             setConfig("theme", value);
@@ -94,14 +94,9 @@ const Appearance = () => {
             <Tooltip content={c.name} key={c.name}>
               <button
                 type="button"
+                className="accent-color-button"
                 style={{
-                  width: "18px",
-                  height: "18px",
-                  borderRadius: "50%",
-                  margin: "2px",
                   backgroundColor: getColorValue(c.name),
-                  cursor: "pointer",
-                  border: "3px solid var(--color-bg-3)",
                   outline:
                     c.name === themeColor
                       ? `1px solid ${getColorValue(c.name)}`
@@ -177,17 +172,17 @@ const Appearance = () => {
           <Space>
             <Typography.Text style={{ fontSize: "0.75rem" }}>A</Typography.Text>
             <Slider
-              value={fontSize}
-              showTicks
-              min={0.75}
-              max={1.25}
-              step={0.05}
+              className="font-size-slider"
               formatTooltip={(value) => `${value}rem`}
+              max={1.25}
+              min={0.75}
+              showTicks
+              step={0.05}
+              value={fontSize}
               onChange={(value) => {
                 setFontSize(value);
                 setConfig("fontSize", value);
               }}
-              style={{ width: 200 }}
             />
             <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
           </Space>

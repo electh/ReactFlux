@@ -103,20 +103,16 @@ const Sidebar = () => {
 
   return (
     <Sider
+      breakpoint="lg"
       className="sidebar"
+      collapsed={collapsed}
+      collapsedWidth={0}
+      collapsible
+      onCollapse={toggleCollapsed}
       trigger={null}
       width={240}
-      collapsedWidth={0}
-      breakpoint="lg"
-      onCollapse={toggleCollapsed}
-      collapsed={collapsed}
-      collapsible
       style={{
-        height: "100%",
         borderRight: collapsed ? "none" : "1px solid var(--color-border-2)",
-        position: "fixed",
-        top: 0,
-        zIndex: 999,
       }}
     >
       <Menu
@@ -130,33 +126,20 @@ const Sidebar = () => {
         style={{ width: "240px", height: "100%" }}
       >
         <div
+          className="menu-header"
           style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "0 28px 0 10px",
-            height: "48px",
-            marginTop: "-4px",
             visibility: collapsed ? "hidden" : "visible",
           }}
         >
-          <Avatar
-            size={32}
-            style={{
-              marginRight: "10px",
-              backgroundColor: "var(--color-text-1)",
-            }}
-          >
+          <Avatar className="avatar" size={32}>
             <IconBook style={{ color: "var(--color-bg-1)" }} />
           </Avatar>
           <Typography.Title heading={6} style={{ margin: "0" }}>
             ReactFlux
           </Typography.Title>
         </div>
-        <Divider style={{ marginTop: 0, marginBottom: "4px" }} />
-        <Typography.Title
-          heading={6}
-          style={{ fontStyle: "italic", color: "var(--color-text-3)" }}
-        >
+        <Divider className="divider" />
+        <Typography.Title className="section-title" heading={6}>
           Articles
         </Typography.Title>
         <Skeleton loading={loading} animation={true} text={{ rows: 3 }} />
@@ -208,10 +191,7 @@ const Sidebar = () => {
             </MenuItem>
           </div>
         )}
-        <Typography.Title
-          heading={6}
-          style={{ fontStyle: "italic", color: "var(--color-text-3)" }}
-        >
+        <Typography.Title className="section-title" heading={6}>
           Feeds
         </Typography.Title>
         <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
@@ -253,13 +233,7 @@ const Sidebar = () => {
                         navigate(`/feed/${feed.id}`);
                       }}
                     >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
+                      <div className="custom-menu-item">
                         <Typography.Ellipsis
                           expandable={false}
                           showTooltip={true}
@@ -285,12 +259,8 @@ const Sidebar = () => {
                         </Typography.Ellipsis>
                         {feed.unreadCount !== 0 && (
                           <Typography.Ellipsis
+                            className="item-count"
                             expandable={false}
-                            style={{
-                              color: "var(--color-text-4)",
-                              display: "flex",
-                              justifyContent: "flex-end",
-                            }}
                           >
                             {feed.unreadCount}
                           </Typography.Ellipsis>

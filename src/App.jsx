@@ -39,10 +39,7 @@ const App = () => {
   }, [isSysDarkMode, theme]);
 
   return (
-    <div
-      className="app"
-      style={{ display: "flex", backgroundColor: "var(--color-bg-1)" }}
-    >
+    <div className="app">
       <Header />
       <Sidebar />
       <Main />

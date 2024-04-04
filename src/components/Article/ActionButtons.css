@@ -1,0 +1,37 @@
+.action-buttons {
+  border-radius: 50%;
+  bottom: 20px;
+  box-shadow: 0 4px 10px rgba(var(--primary-6), 0.4);
+  position: fixed;
+  right: 10px;
+}
+
+.action-buttons-mobile {
+  border-radius: 50%;
+  bottom: 40px;
+  box-shadow: 0 4px 10px rgba(var(--primary-6), 0.4);
+  display: none;
+  justify-content: center;
+  left: 50%;
+  position: fixed;
+  transform: translateX(-50%);
+}
+
+.button-read-unread {
+  border-bottom: 1px solid rgb(var(--primary-5));
+  border-radius: 50% 50% 0 0;
+}
+
+.button-star {
+  border-radius: 0;
+}
+
+.button-action {
+  border-radius: 0;
+  border-top: 1px solid rgb(var(--primary-5));
+}
+
+.button-next {
+  border-radius: 0 0 50% 50%;
+  border-top: 1px solid rgb(var(--primary-5));
+}

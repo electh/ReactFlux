@@ -63,21 +63,17 @@ const Header = () => {
 
   return (
     <div className="header">
-      <div
-        className="brand"
-        style={{ marginLeft: "10px", display: "flex", alignItems: "center" }}
-      >
+      <div className="brand">
         <Button
+          className="trigger"
+          onClick={toggleCollapsed}
           shape="circle"
           size="small"
-          className="trigger"
-          style={{ marginRight: "5px", display: "none" }}
-          onClick={toggleCollapsed}
         >
           {<IconMenu />}
         </Button>
       </div>
-      <div className="button-group" style={{ marginRight: "10px" }}>
+      <div className="button-group">
         <Space size={16}>
           <Tooltip content="Add a feed" mini>
             <Button
@@ -125,17 +121,11 @@ const Header = () => {
               <Menu defaultSelectedKeys={[theme]} className="theme-menu">
                 {["light", "dark", "system"].map((themeOption) => (
                   <Menu.Item
-                    className={theme === themeOption ? "selected-menu" : ""}
+                    className="theme-menu-item"
                     key={themeOption}
                     onClick={() => {
                       setTheme(themeOption);
                       setConfig("theme", themeOption);
-                    }}
-                    style={{
-                      display: "flex",
-                      width: 100,
-                      justifyContent: "space-between",
-                      alignItems: "center",
                     }}
                   >
                     {themeOption.charAt(0).toUpperCase() + themeOption.slice(1)}
@@ -173,23 +163,11 @@ const Header = () => {
             droplist={
               <Menu>
                 <Menu.Item key="0" onClick={() => setVisible("settings", true)}>
-                  <IconSettings
-                    style={{
-                      marginRight: 8,
-                      fontSize: 16,
-                      transform: "translateY(1px)",
-                    }}
-                  />
+                  <IconSettings className="icon-right" />
                   Settings
                 </Menu.Item>
                 <Menu.Item key="1" onClick={handleLogout}>
-                  <IconPoweroff
-                    style={{
-                      marginRight: 8,
-                      fontSize: 16,
-                      transform: "translateY(1px)",
-                    }}
-                  />
+                  <IconPoweroff className="icon-right" />
                   Logout
                 </Menu.Item>
               </Menu>

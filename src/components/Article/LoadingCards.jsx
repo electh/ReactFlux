@@ -3,19 +3,17 @@ import React from "react";
 
 import useStore from "../../Store";
 
+import "./LoadingCards.css";
+
 const LoadingCards = ({ loading }) => {
   const layout = useStore((state) => state.layout);
   const cardCount = layout === "large" ? 2 : 4;
 
   const renderCard = (index) => (
     <Card
+      calssName="card-style"
+      cover={layout === "large" && <div className="card-cover-style" />}
       key={index}
-      style={{ width: "100%", marginBottom: "10px" }}
-      cover={
-        layout === "large" && (
-          <div style={{ width: "100%", aspectRatio: 16 / 9 }} />
-        )
-      }
     >
       <Card.Meta
         description={

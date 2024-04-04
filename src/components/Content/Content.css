@@ -1,0 +1,5 @@
+.entry-col {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--color-border-2);
+}

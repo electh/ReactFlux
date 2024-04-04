@@ -6,6 +6,8 @@ import useStore from "../../Store";
 import useFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "./ContentContext";
 
+import "./FooterPanel.css";
+
 const FooterPanel = forwardRef(
   ({ info, refreshArticleList, markAllAsRead }, ref) => {
     const {
@@ -67,19 +69,7 @@ const FooterPanel = forwardRef(
     };
 
     return (
-      <div
-        className="entry-panel"
-        style={{
-          backgroundColor: "var(--color-bg-2)",
-          bottom: "0",
-          display: "flex",
-          flexDirection: "row",
-          padding: "8px 10px",
-          zIndex: "2",
-          justifyContent: "space-between",
-          borderTop: "1px solid var(--color-border-2)",
-        }}
-      >
+      <div className="entry-panel">
         {!["starred", "history"].includes(info.from) && (
           <Popconfirm
             focusLock

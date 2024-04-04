@@ -13,6 +13,7 @@ import React from "react";
 import useStore from "../../Store";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
+import "./ActionButtons.css";
 
 const ActionButtons = ({ info, handleEntryClick, getEntries }) => {
   const activeContent = useStore((state) => state.activeContent);
@@ -32,16 +33,7 @@ const ActionButtons = ({ info, handleEntryClick, getEntries }) => {
   const isStarred = activeContent.starred;
 
   return (
-    <div
-      className="action-buttons"
-      style={{
-        position: "fixed",
-        bottom: "20px",
-        right: "10px",
-        borderRadius: "50%",
-        boxShadow: "0 4px 10px rgba(var(--primary-6), 0.4)",
-      }}
-    >
+    <div className="action-buttons">
       <Space size={0} direction="vertical">
         <Tooltip
           mini
@@ -49,24 +41,19 @@ const ActionButtons = ({ info, handleEntryClick, getEntries }) => {
           content={isUnread ? "Mark as read" : "Mark as unread"}
         >
           <Button
-            type="primary"
-            size="mini"
-            style={{
-              borderBottom: "1px solid rgb(var(--primary-5))",
-              borderRadius: "50% 50% 0 0",
-            }}
+            className="button-read-unread"
             onClick={handleToggleStatus}
+            size="mini"
+            type="primary"
             icon={isUnread ? <IconMinusCircle /> : <IconRecord />}
           />
         </Tooltip>
         <Tooltip mini position="left" content={isStarred ? "Unstar" : "Star"}>
           <Button
-            type="primary"
-            size="mini"
-            style={{
-              borderRadius: "0",
-            }}
+            className="button-star"
             onClick={handleToggleStarred}
+            size="mini"
+            type="primary"
             icon={
               isStarred ? (
                 <IconStarFill style={{ color: "#ffcd00" }} />
@@ -78,38 +65,29 @@ const ActionButtons = ({ info, handleEntryClick, getEntries }) => {
         </Tooltip>
         <Tooltip mini position="left" content="Fetch original article">
           <Button
-            type="primary"
-            size="mini"
-            style={{
-              borderTop: "1px solid rgb(var(--primary-5))",
-              borderRadius: "0",
-            }}
-            onClick={handleFetchContent}
+            className="button-action"
             icon={<IconCloudDownload />}
+            onClick={handleFetchContent}
+            size="mini"
+            type="primary"
           />
         </Tooltip>
         <Tooltip mini position="left" content="Previous article">
           <Button
-            type="primary"
-            size="mini"
-            style={{
-              borderTop: "1px solid rgb(var(--primary-5))",
-              borderRadius: "0",
-            }}
-            onClick={handleLeftKey}
+            className="button-action"
             icon={<IconArrowLeft />}
+            onClick={handleLeftKey}
+            size="mini"
+            type="primary"
           />
         </Tooltip>
         <Tooltip mini position="left" content="Next article">
           <Button
-            type="primary"
-            size="mini"
-            style={{
-              borderTop: "1px solid rgb(var(--primary-5))",
-              borderRadius: "0 0 50% 50%",
-            }}
-            onClick={handleRightKey}
+            className="button-next"
             icon={<IconArrowRight />}
+            onClick={handleRightKey}
+            size="mini"
+            type="primary"
           />
         </Tooltip>
       </Space>

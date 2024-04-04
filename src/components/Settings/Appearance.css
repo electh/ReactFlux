@@ -40,3 +40,20 @@ input[name="card-radio-group"]:focus-visible + .custom-radio-card {
   display: flex;
   justify-content: space-between;
 }
+
+.theme-selector {
+  margin-top: 16px;
+}
+
+.accent-color-button {
+  border-radius: 50%;
+  border: 3px solid var(--color-bg-3);
+  cursor: pointer;
+  height: 18px;
+  margin: 2px;
+  width: 18px;
+}
+
+.font-size-slider {
+  width: 200px;
+}

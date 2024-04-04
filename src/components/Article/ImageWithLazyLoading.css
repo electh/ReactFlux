@@ -7,3 +7,10 @@
   position: relative;
   width: 100%;
 }
+
+.skeleton-container {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
