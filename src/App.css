@@ -65,7 +65,6 @@
 
   .toolbar {
     padding-top: env(safe-area-inset-top) !important;
-    height: calc(48px + env(safe-area-inset-top)) !important;
   }
 
   /*增加 Drawer 安全内边距*/
