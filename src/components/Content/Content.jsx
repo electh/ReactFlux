@@ -12,7 +12,6 @@ import ActionButtons from "../Article/ActionButtons";
 import ActionButtonsMobile from "../Article/ActionButtonsMobile";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
-import "./Content.css";
 import ContentContext from "./ContentContext";
 import FooterPanel from "./FooterPanel.jsx";
 import "./Transition.css";

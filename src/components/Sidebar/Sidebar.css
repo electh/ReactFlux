@@ -8,9 +8,9 @@
 
 .group-title,
 .custom-menu-item {
+  align-items: center;
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 .unread-count {
@@ -20,8 +20,8 @@
 }
 
 .item-count {
-  width: 50%;
   color: var(--color-text-4);
   display: flex;
   justify-content: flex-end;
+  width: 50%;
 }

@@ -1,8 +1,8 @@
 .main {
   background-color: var(--color-fill-1);
-  padding-top: 49px;
-  padding-left: 240px;
   display: flex;
+  padding-left: 240px;
+  padding-top: 49px;
   transition: padding-left 0.1s linear,
   width 0.1s linear;
   width: calc(100% - 240px);
