@@ -57,11 +57,15 @@
   }
   /*调整 header 样式*/
   .layout-collapse-demo .arco-layout-header {
-    padding-top: env(safe-area-inset-top) !important;
     height: calc(48px + env(safe-area-inset-top)) !important;
     position: fixed;
     width: 100%;
     z-index: 999;
+  }
+
+  .toolbar {
+    padding-top: env(safe-area-inset-top) !important;
+    height: calc(48px + env(safe-area-inset-top)) !important;
   }
 
   /*增加 Drawer 安全内边距*/

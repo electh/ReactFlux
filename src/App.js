@@ -1,4 +1,4 @@
-import { Avatar, Layout, Message } from "@arco-design/web-react";
+import { Avatar, Layout } from "@arco-design/web-react";
 import { useStore } from "./store/Store";
 import Sidebar from "./layout/Sidebar";
 import "./App.css";
@@ -24,9 +24,6 @@ export default function App() {
   const isMobile = useStore((state) => state.isMobile);
   const initData = useStore((state) => state.initData);
   const theme = useConfigStore((state) => state.theme);
-  const listRef = useStore((state) => state.listRef);
-  const detailRef = useStore((state) => state.detailRef);
-  const activeEntry = useStore((state) => state.activeEntry);
 
   useEffect(() => {
     console.log(isMobile, isSysDarkMode);
@@ -83,14 +80,6 @@ export default function App() {
     applyColor(color);
   }, [color, isSysDarkMode, theme]);
 
-  const scrollToTop = () => {
-    if (activeEntry) {
-      detailRef.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      listRef.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    }
-  };
-
   return (
     <Layout className="layout-collapse-demo">
       <Sider
@@ -128,19 +117,8 @@ export default function App() {
         <Sidebar style={{ width: "100%" }} />
       </Sider>
       <Layout>
-        <Header
-          style={{ borderBottom: "1px solid var(--color-border-2)" }}
-          onClick={() => {
-            Message.success("clicked");
-            scrollToTop();
-          }}
-        >
-          <div
-            onClick={(event) => event.stopPropagation()}
-            style={{ backgroundColor: "red" }}
-          >
-            <Toolbar />
-          </div>
+        <Header style={{ borderBottom: "1px solid var(--color-border-2)" }}>
+          <Toolbar />
         </Header>
         <Content />
         <ActionBar />
