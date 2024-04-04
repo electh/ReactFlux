@@ -239,7 +239,7 @@ const FeedList = () => {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <Input.Search
           className="search-input"
           placeholder="Search feed title or url"
@@ -260,9 +260,9 @@ const FeedList = () => {
         className="feed-table"
         columns={columns}
         data={tableData}
-        // pagePosition="bottomCenter"
+        pagePosition="bottomCenter"
         scroll={{ x: true }}
-        size={"small"}
+        size="small"
       />
       {selectedFeedId && (
         <Modal

@@ -33,7 +33,7 @@ const SettingsTabs = () => {
   }, []);
 
   return (
-    <Tabs defaultActiveTab="1" tabPosition="top">
+    <Tabs className="custom-tabs" defaultActiveTab="1" tabPosition="top">
       <Tabs.TabPane
         key="1"
         title={
