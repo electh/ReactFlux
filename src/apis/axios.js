@@ -43,7 +43,6 @@ apiClient.interceptors.response.use(
   (error) => {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
-    console.error(error);
     const errorMessage = error.response?.data?.error_message || error.message;
     Message.error(errorMessage);
 
