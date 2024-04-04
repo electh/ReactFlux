@@ -10,12 +10,18 @@ import { useStore } from "../../../store/Store";
 export default function EntryContent({ activeEntry }) {
   const entryContentRef = useRef(null);
   const isMobile = useStore((state) => state.isMobile);
+  const setDetailRef = useStore((state) => state.setDetailRef);
 
   useEffect(() => {
     entryContentRef.current?.scrollIntoView({
       block: "start",
     });
   }, [activeEntry?.id]);
+
+  useEffect(() => {
+    setDetailRef(entryContentRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entryContentRef]);
 
   const { published_at, url, title, feed, content } = activeEntry;
 

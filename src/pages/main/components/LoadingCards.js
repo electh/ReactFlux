@@ -7,7 +7,7 @@ const LoadingCards = ({ loading }) => {
   const cardCount = layout === "expensive" ? 2 : 4;
 
   const renderCard = (index) => (
-    <div style={{ padding: "0 10px" }}>
+    <div style={{ padding: "0 10px" }} key={index}>
       <Card
         key={index}
         style={{ width: "100%", marginBottom: "10px" }}

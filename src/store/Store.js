@@ -121,6 +121,10 @@ const useStore = create((set) => ({
       await updateEntries(entry.id, "read");
     }
   },
+  listRef: null,
+  setListRef: (ref) => set({ listRef: ref }),
+  detailRef: null,
+  setDetailRef: (ref) => set({ detailRef: ref }),
 }));
 
 export { useStore };

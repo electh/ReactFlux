@@ -20,6 +20,7 @@ export default function EntryList({ entries, info }) {
   const loading = useStore((state) => state.loading);
   const layout = useConfigStore((state) => state.layout);
   const isMoble = useStore((state) => state.isMobile);
+  const setListRef = useStore((state) => state.setListRef);
 
   useEffect(() => {
     setShowEntries(entries.slice(0, offset + 100));
@@ -41,6 +42,11 @@ export default function EntryList({ entries, info }) {
     setShowEntries(newShowEntries);
     setOffset(newOffset);
   };
+
+  useEffect(() => {
+    setListRef(entryListRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entryListRef]);
 
   return (
     <div
