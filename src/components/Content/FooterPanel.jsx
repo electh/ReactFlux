@@ -20,7 +20,7 @@ const FooterPanel = forwardRef(
       unreadEntries,
     } = useContext(ContentContext);
 
-    const { setFilterStatus } = useFilterEntries();
+    const { setFilterStatus } = useFilterEntries(info);
 
     /*menu 数据初始化函数 */
     const initData = useStore((state) => state.initData);

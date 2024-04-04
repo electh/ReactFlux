@@ -36,7 +36,7 @@ const ArticleList = forwardRef(
           flex: "1",
         }}
       >
-        <SearchAndSortBar />
+        <SearchAndSortBar info={info} />
         <LoadingCards loading={loading} />
         {loading ? null : (
           <div ref={cardsRef}>
