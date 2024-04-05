@@ -9,6 +9,7 @@ const useConfigStore = create((set) => ({
   align: getConfig("align") || "left",
   showIcons: getConfig("showIcons") || "on",
   theme: getConfig("theme") || "system",
+  newUI: getConfig("newUI") || "off",
   setShowIcons: (value) => {
     set({ showIcons: value });
   },
@@ -29,6 +30,9 @@ const useConfigStore = create((set) => ({
   },
   setAlign: (value) => {
     set({ align: value });
+  },
+  setNewUI: (value) => {
+    set({ newUI: value });
   },
 }));
 

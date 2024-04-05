@@ -24,6 +24,21 @@ export default function App() {
   const isMobile = useStore((state) => state.isMobile);
   const initData = useStore((state) => state.initData);
   const theme = useConfigStore((state) => state.theme);
+  const newUI = useConfigStore((state) => state.newUI);
+
+  const loadCssFile = () => {
+    if (newUI === "on") {
+      const link = document.createElement("link");
+      link.href = "/theme.css";
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
+    } else {
+      const existingLink = document.querySelector('link[href="/theme.css"]');
+      if (existingLink) {
+        existingLink.remove();
+      }
+    }
+  };
 
   useEffect(() => {
     console.log(isMobile, isSysDarkMode);
@@ -79,6 +94,11 @@ export default function App() {
   useEffect(() => {
     applyColor(color);
   }, [color, isSysDarkMode, theme]);
+
+  useEffect(() => {
+    loadCssFile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newUI]);
 
   return (
     <Layout className="layout-collapse-demo">

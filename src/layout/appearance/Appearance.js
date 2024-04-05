@@ -5,6 +5,7 @@ import FontSize from "./components/FontSize";
 import TextAlignment from "./components/TextAlignment";
 import Favicons from "./components/Favicons";
 import Theme from "./components/Theme";
+import NewUI from "./components/NewUI";
 
 export default function Appearance({ visible, setVisible }) {
   return (
@@ -22,6 +23,8 @@ export default function Appearance({ visible, setVisible }) {
       <Theme />
       <Divider />
       <AccentColor />
+      <Divider />
+      <NewUI />
       <Divider />
       <CompactLayout />
       <Divider />
