@@ -1,4 +1,4 @@
-import { Switch, Typography } from "@arco-design/web-react";
+import { Switch, Tag, Typography } from "@arco-design/web-react";
 import { useConfigStore } from "../../../store/configStore";
 import { setConfig } from "../../../utils/config";
 
@@ -22,7 +22,11 @@ export default function NewUI() {
       <div>
         <Typography.Title heading={6} style={{ marginTop: 0 }}>
           New UI
+          <Tag style={{ marginLeft: "8px" }} size="small">
+            beta
+          </Tag>
         </Typography.Title>
+
         <Typography.Text type="secondary">Enable new UI</Typography.Text>
       </div>
       <div>
