@@ -4,8 +4,11 @@ import axios from "axios";
 import router from "../routes";
 import { getAuth } from "../utils/auth";
 
+// 创建 axios 实例并设置默认配置
 const apiClient = axios.create({
-  timeout: 5000,
+  timeout: 3000,
+  retry: 3, // 默认重试次数
+  retryDelay: 1000, // 默认重试间隔
 });
 
 // 添加请求拦截器
@@ -33,6 +36,52 @@ apiClient.interceptors.request.use(
   },
 );
 
+const handleRetry = async (error) => {
+  const { config } = error;
+  // 检查是否因为超时而失败以及是否配置了重试策略
+  if (error.code !== "ECONNABORTED" || !config || !config.retry) {
+    return Promise.reject(error);
+  }
+
+  // 设置重试次数的默认值
+  config.__retryCount = config.__retryCount || 0;
+
+  // 检查是否已经达到最大重试次数
+  if (config.__retryCount >= config.retry) {
+    return Promise.reject(error);
+  }
+
+  // 增加重试次数
+  config.__retryCount += 1;
+
+  // 创建一个新的 Promise 来处理重试延时
+  const backoff = new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, config.retryDelay || 1000); // 重试间隔默认为 1 秒
+  });
+
+  // 等待再次尝试请求
+  await backoff;
+  return apiClient(config); // 返回重新尝试请求的 Promise
+};
+
+const handleError = (error) => {
+  // 提取错误消息
+  const errorMessage = error.response?.data?.error_message || error.message;
+  // 显示错误消息
+  Message.error(errorMessage);
+
+  // 如果是 401 错误，清除认证信息并跳转到登录页面
+  if (error.response?.status === 401) {
+    localStorage.removeItem("auth");
+    router.navigate("/login");
+  }
+
+  // 返回 Promise 拒绝状态
+  return Promise.reject(error);
+};
+
 // 添加响应拦截器
 apiClient.interceptors.response.use(
   (response) => {
@@ -40,19 +89,16 @@ apiClient.interceptors.response.use(
     // 对响应数据做点什么
     return response;
   },
-  (error) => {
+  async (error) => {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
-    console.error(error);
-    const errorMessage = error.response?.data?.error_message || error.message;
-    Message.error(errorMessage);
-
-    if (error.response?.status === 401) {
-      localStorage.removeItem("auth");
-      router.navigate("/login");
+    try {
+      // 如果是因为超时而失败，则尝试重试
+      return await handleRetry(error);
+    } catch (retryError) {
+      // 重试失败或不满足重试条件时，处理错误
+      return handleError(retryError);
     }
-
-    return Promise.reject(error);
   },
 );
 

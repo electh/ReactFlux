@@ -1,0 +1,12 @@
+.entry-list {
+  background-color: var(--color-fill-1);
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 10px 0 10px;
+  width: 302px;
+}
+
+.load-more-button {
+  display: block;
+  margin: 10px auto;
+}

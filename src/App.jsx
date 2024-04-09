@@ -5,14 +5,12 @@ import useStore from "./Store";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Sidebar from "./components/Sidebar/Sidebar";
-import { applyColor } from "./utils/colors";
 
 const App = () => {
   const initData = useStore((state) => state.initData);
   const theme = useStore((state) => state.theme);
   const isSysDarkMode = useStore((state) => state.isSysDarkMode);
   const setIsSysDarkMode = useStore((state) => state.setIsSysDarkMode);
-  const themeColor = useStore((state) => state.themeColor);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -40,16 +38,8 @@ const App = () => {
     applyTheme(theme === "system" ? isSysDarkMode : theme === "dark");
   }, [isSysDarkMode, theme]);
 
-  useEffect(() => {
-    applyColor(themeColor);
-    // }, [color, isSysDarkMode, theme]);
-  }, [themeColor]);
-
   return (
-    <div
-      className="app"
-      style={{ display: "flex", backgroundColor: "var(--color-bg-1)" }}
-    >
+    <div className="app">
       <Header />
       <Sidebar />
       <Main />

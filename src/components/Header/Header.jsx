@@ -21,7 +21,7 @@ import {
   IconSunFill,
   IconUser,
 } from "@arco-design/web-react/icon";
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
@@ -61,42 +61,19 @@ const Header = () => {
       themeIcon = <IconSunFill />;
   }
 
-  useEffect(() => {
-    setConfig("theme", theme);
-  }, [theme]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    setConfig("showAllFeeds", showAllFeeds);
-    if (!showAllFeeds && hiddenFeedIds) {
-      const showedFeedsUnreadCount = feeds
-        .filter((feed) => !hiddenFeedIds.includes(feed.id))
-        .reduce((acc, feed) => acc + feed.unreadCount, 0);
-      setUnreadTotal(() => showedFeedsUnreadCount);
-    } else {
-      setUnreadTotal(() =>
-        feeds.reduce((acc, feed) => acc + feed.unreadCount, 0),
-      );
-    }
-  }, [showAllFeeds]);
-
   return (
     <div className="header">
-      <div
-        className="brand"
-        style={{ marginLeft: "10px", display: "flex", alignItems: "center" }}
-      >
+      <div className="brand">
         <Button
+          className="trigger"
+          onClick={toggleCollapsed}
           shape="circle"
           size="small"
-          className="trigger"
-          style={{ marginRight: "5px", display: "none" }}
-          onClick={toggleCollapsed}
         >
           {<IconMenu />}
         </Button>
       </div>
-      <div className="button-group" style={{ marginRight: "10px" }}>
+      <div className="button-group">
         <Space size={16}>
           <Tooltip content="Add a feed" mini>
             <Button
@@ -115,7 +92,20 @@ const Header = () => {
               shape="circle"
               size="small"
               icon={showAllFeeds ? <IconEye /> : <IconEyeInvisible />}
-              onClick={toggleShowAllFeeds}
+              onClick={() => {
+                toggleShowAllFeeds();
+                setConfig("showAllFeeds", showAllFeeds);
+                if (!showAllFeeds && hiddenFeedIds) {
+                  const showedFeedsUnreadCount = feeds
+                    .filter((feed) => !hiddenFeedIds.includes(feed.id))
+                    .reduce((acc, feed) => acc + feed.unreadCount, 0);
+                  setUnreadTotal(() => showedFeedsUnreadCount);
+                } else {
+                  setUnreadTotal(() =>
+                    feeds.reduce((acc, feed) => acc + feed.unreadCount, 0),
+                  );
+                }
+              }}
             />
           </Tooltip>
           <Button
@@ -131,14 +121,11 @@ const Header = () => {
               <Menu defaultSelectedKeys={[theme]} className="theme-menu">
                 {["light", "dark", "system"].map((themeOption) => (
                   <Menu.Item
-                    className={theme === themeOption ? "selected-menu" : ""}
+                    className="theme-menu-item"
                     key={themeOption}
-                    onClick={() => setTheme(themeOption)}
-                    style={{
-                      display: "flex",
-                      width: 100,
-                      justifyContent: "space-between",
-                      alignItems: "center",
+                    onClick={() => {
+                      setTheme(themeOption);
+                      setConfig("theme", themeOption);
                     }}
                   >
                     {themeOption.charAt(0).toUpperCase() + themeOption.slice(1)}
@@ -160,9 +147,11 @@ const Header = () => {
                 switch (theme) {
                   case "light":
                     setTheme("dark");
+                    setConfig("theme", "dark");
                     break;
                   case "dark":
                     setTheme("light");
+                    setConfig("theme", "light");
                     break;
                   default:
                     break;
@@ -174,23 +163,11 @@ const Header = () => {
             droplist={
               <Menu>
                 <Menu.Item key="0" onClick={() => setVisible("settings", true)}>
-                  <IconSettings
-                    style={{
-                      marginRight: 8,
-                      fontSize: 16,
-                      transform: "translateY(1px)",
-                    }}
-                  />
+                  <IconSettings className="icon-right" />
                   Settings
                 </Menu.Item>
                 <Menu.Item key="1" onClick={handleLogout}>
-                  <IconPoweroff
-                    style={{
-                      marginRight: 8,
-                      fontSize: 16,
-                      transform: "translateY(1px)",
-                    }}
-                  />
+                  <IconPoweroff className="icon-right" />
                   Logout
                 </Menu.Item>
               </Menu>

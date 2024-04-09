@@ -1,37 +1,60 @@
-.content-empty {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--color-fill-1);
-  color: var(--color-text-3);
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: 40px 16px;
-}
-
-.article-content {
-  padding: 40px 5%;
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 .article-title {
   padding: 0 20px;
   text-align: center;
 }
 
+/* 文章标题链接样式 */
+.article-title a {
+  color: var(--color-text-1); /* 设置链接文字颜色 */
+  font-weight: 500;
+  text-decoration: none;
+}
+
 .article-top-bar {
-  padding: 0 20px;
   display: flex;
   justify-content: flex-end;
+  padding: 0 20px;
+}
+
+.article-body * {
+  max-width: 100%;
 }
 
 .article-body {
+  line-height: 1.8;
   margin: 0 auto;
-  padding: 0 20px;
   overflow-wrap: break-word;
-  counter-reset: section;
+  padding: 0 20px;
+}
+
+.article-content h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+b,
+strong {
+  color: var(--color-text-1);
+  font-weight: var(--font-weight-500);
+}
+
+.article-content li,
+p {
+  margin-block-end: 1.6em;
+  margin-block-start: 1.6em;
+}
+
+/* 文章内容图片样式 */
+.article-body img {
+  border-radius: 4px;
+  height: auto; /* 自动调整高度，保持原始比例 */
+  max-width: 80%; /* 图片最大宽度为容器的 80% */
+}
+
+/*video 相关样式 */
+.article-body video {
+  border-radius: 4px;
 }
 
 .article-body img, .article-body video, .article-body iframe {
@@ -39,7 +62,75 @@
   margin: 20px auto;
 }
 
-.article-body img {
-  max-width: 80% !important;
-  height: auto;
+/* 文章内容文本样式 */
+.article-content {
+  color: var(--color-text-2);
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 40px 5%;
+}
+
+/* 文章内容链接样式 */
+.article-body a {
+  border-bottom: 1px dotted rgb(var(--primary-6)); /* 设置链接文字颜色 */
+  color: rgb(var(--primary-6));
+  text-decoration: none;
+  transition: color 0.1s linear;
+}
+
+.article-body a:hover {
+  border-bottom: 1px dotted rgb(var(--primary-5)); /* 设置链接文字颜色 */
+  color: rgb(var(--primary-5));
+  text-decoration: none;
+}
+
+/* 文章内容引用样式 */
+.article-body blockquote {
+  border-left: 1px solid var(--color-border-3);
+  color: var(--color-text-3);
+  margin: 1em 0;
+  padding: 0 20px;
+}
+
+/*code 相关样式 - 表格 */
+.article-content td {
+  color: var(--color-text-3);
+  font-size: 0.8em;
+}
+
+/*code 相关样式 */
+.article-content code {
+  background-color: var(--color-neutral-3);
+  border-radius: 2px;
+  color: var(--color-text-2);
+  font-family: "JetBrains Mono", Consolas, Monaco, "Andale Mono", monospace;
+  font-size: 0.8em;
+  margin: 2px;
+  padding: 2px;
+}
+
+/*code 相关样式 */
+.article-content figure {
+  margin: 16px 0;
+}
+
+/*code 相关样式 */
+.article-content pre {
+  background-color: var(--color-neutral-3);
+  border-radius: 4px;
+  line-height: 1.2;
+  overflow: auto;
+  padding: 10px;
+}
+
+.content-empty {
+  align-items: center;
+  background-color: var(--color-fill-1);
+  color: var(--color-text-3);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  padding: 40px 16px;
 }

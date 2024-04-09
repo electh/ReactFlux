@@ -12,6 +12,8 @@ import ArticleCardMini from "./ArticleCardMini";
 import LoadingCards from "./LoadingCards";
 import SearchAndSortBar from "./SearchAndSortBar.jsx";
 
+import "./ArticleList.css";
+
 const ArticleList = forwardRef(
   ({ info, loading, getEntries, handleEntryClick, cardsRef }, ref) => {
     const {
@@ -25,18 +27,8 @@ const ArticleList = forwardRef(
     const layout = useStore((state) => state.layout);
 
     return (
-      <div
-        className="entry-list"
-        ref={ref}
-        style={{
-          overflowY: "auto",
-          padding: "10px 10px 0 10px",
-          width: "302px",
-          backgroundColor: "var(--color-fill-1)",
-          flex: "1",
-        }}
-      >
-        <SearchAndSortBar />
+      <div className="entry-list" ref={ref}>
+        <SearchAndSortBar info={info} />
         <LoadingCards loading={loading} />
         {loading ? null : (
           <div ref={cardsRef}>
@@ -64,10 +56,10 @@ const ArticleList = forwardRef(
             ? loadMoreVisible
             : loadMoreUnreadVisible) && (
             <Button
-              onClick={() => handleLoadMore(info, getEntries)}
+              className="load-more-button"
               loading={loadingMore}
               long={true}
-              style={{ margin: "10px auto", display: "block" }}
+              onClick={() => handleLoadMore(info, getEntries)}
             >
               {!loadingMore && <IconArrowDown />}Load more
             </Button>

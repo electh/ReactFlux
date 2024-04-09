@@ -1,9 +1,13 @@
 import { useContext, useEffect } from "react";
 
+import useStore from "../Store.js";
 import ContentContext from "../components/Content/ContentContext";
-import { filterEntries } from "../utils/filter";
+import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
 
-const useFilterEntries = () => {
+const useFilterEntries = (info) => {
+  const showAllFeeds = useStore((state) => state.showAllFeeds);
+  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
+
   const {
     entries,
     filterStatus,
@@ -24,7 +28,14 @@ const useFilterEntries = () => {
       filterStatus,
       filterString,
     );
-    setFilteredEntries(filteredArticles);
+    setFilteredEntries(
+      filterEntriesByVisibility(
+        filteredArticles,
+        info,
+        showAllFeeds,
+        hiddenFeedIds,
+      ),
+    );
   }, [filterStatus, filterString, filterType]);
 
   return { setFilterStatus, setFilterString, setFilterType };

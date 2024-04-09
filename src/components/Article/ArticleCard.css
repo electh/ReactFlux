@@ -1,4 +1,9 @@
 /* 文章列表卡片自定义样式 */
+.card-custom-style {
+  cursor: pointer;
+  width: 100%;
+}
+
 .card-custom-hover-style {
   transition-property: transform, box-shadow;
 }
@@ -8,8 +13,8 @@
 }
 
 .card-custom-hover-style:hover {
-  transform: translateY(-4px);
   box-shadow: 0 4px 10px rgb(var(--gray-3));
+  transform: translateY(-4px);
 }
 
 .card-custom-hover-style img {
@@ -27,13 +32,27 @@
 }
 
 .cover-image {
+  border-bottom: 1px solid var(--color-border-1);
   height: 160px;
   overflow: hidden;
-  border-bottom: 1px solid var(--color-border-1);
 }
 
 .article-card {
   margin-bottom: 10px;
+}
+
+.article-card-mini-content {
+  display: flex;
+  padding-left: 0;
+}
+
+.article-card-mini-content-padding {
+  padding-left: 22px;
+}
+
+.article-card-mini-content-text {
+  flex: 1;
+  margin-right: 10px;
 }
 
 .title-unread {
@@ -50,33 +69,33 @@
   font-size: 13px;
 }
 
-.feed-icon {
-  margin-right: 8px;
-  width: 16px;
+.feed-icon,
+.feed-icon-mini {
   height: 16px;
+  margin-right: 8px;
   position: absolute;
-  right: 2px;
+  width: 16px;
+}
+
+.feed-icon {
   bottom: 12px;
+  right: 2px;
 }
 
 .feed-icon-mini {
-  margin-right: 8px;
-  width: 16px;
-  height: 16px;
-  position: absolute;
   left: 10px;
   top: 14px;
 }
 
 .icon-starred {
+  color: var(--color-text-3);
   font-size: 13px;
   margin-left: 8px;
-  color: var(--color-text-3);
 }
 
 .thumbnail {
-  width: 100px;
+  border-radius: 4px;
   height: 100px;
   overflow: hidden;
-  border-radius: 4px;
+  width: 100px;
 }

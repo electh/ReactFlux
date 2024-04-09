@@ -31,26 +31,38 @@ export const deleteGroup = async (id) =>
 export const addGroup = async (title) =>
   apiClient.post("/v1/categories", { title });
 
-export const editGroup = async (id, newTitle) =>
-  apiClient.put(`/v1/categories/${id}`, { title: newTitle });
+export const editGroup = async (id, newTitle, hidden = false) => {
+  const params = { title: newTitle };
+  if (hidden) {
+    params.hide_globally = "on";
+  }
+  return apiClient.put(`/v1/categories/${id}`, params);
+};
 
-export const editFeed = async (feedId, newUrl, newTitle, groupId, isFullText) =>
-  apiClient.put(`/v1/feeds/${feedId}`, {
+export const editFeed = async (
+  id,
+  newUrl,
+  newTitle,
+  groupId,
+  isFullText,
+  hidden = false,
+) =>
+  apiClient.put(`/v1/feeds/${id}`, {
     feed_url: newUrl,
     title: newTitle,
     category_id: groupId,
     crawler: isFullText,
+    hide_globally: hidden,
   });
 
-export const refreshFeed = async (feedId) =>
-  apiClient.put(`/v1/feeds/${feedId}/refresh`);
+export const refreshFeed = async (id) =>
+  apiClient.put(`/v1/feeds/${id}/refresh`);
 
-export const deleteFeed = async (feedId) =>
-  apiClient.delete(`/v1/feeds/${feedId}`);
+export const deleteFeed = async (id) => apiClient.delete(`/v1/feeds/${id}`);
 
-export const addFeed = async (feedUrl, groupId, isFullText) =>
+export const addFeed = async (url, groupId, isFullText) =>
   apiClient.post("/v1/feeds", {
-    feed_url: feedUrl,
+    feed_url: url,
     category_id: groupId,
     crawler: isFullText,
   });

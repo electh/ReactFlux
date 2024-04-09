@@ -45,11 +45,11 @@ const ArticleCard = ({ entry, handleEntryClick }) => {
   const coverImage = entry.imgSrc ? (
     <div className="cover-image">
       <ImageWithLazyLoading
-        width={"100%"}
-        height="160px"
         alt={entry.id}
+        height="160px"
         src={entry.imgSrc}
         status={entry.status}
+        width={"100%"}
       />
     </div>
   ) : null;
@@ -57,14 +57,13 @@ const ArticleCard = ({ entry, handleEntryClick }) => {
   return (
     <div className="article-card" key={entry.id}>
       <Card
-        className={classNames("card-custom-hover-style", {
+        className={classNames("card-custom-style", "card-custom-hover-style", {
           "card-custom-selected-style": isSelected,
         })}
-        hoverable
-        data-entry-id={entry.id}
-        style={{ width: "100%", cursor: "pointer" }}
-        onClick={entryClickHandler}
         cover={coverImage}
+        data-entry-id={entry.id}
+        hoverable
+        onClick={entryClickHandler}
       >
         <Card.Meta
           description={

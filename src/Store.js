@@ -17,6 +17,24 @@ const calculateUnreadCount = (prevCount, status) => {
   return prevCount + 1;
 };
 
+const updateHidden = (items, itemId, hidden) => {
+  return items.map((item) => {
+    if (item.id === itemId) {
+      return {
+        ...item,
+        hide_globally: hidden,
+      };
+    }
+    return item;
+  });
+};
+
+const updateHiddenIds = (hiddenIds, id, hidden) => {
+  return hidden
+    ? [...hiddenIds, id]
+    : hiddenIds.filter((hiddenId) => hiddenId !== id);
+};
+
 const updateUnreadCount = (items, itemId, countOrStatus) => {
   return items.map((item) => {
     if (item.id === itemId) {
@@ -185,6 +203,55 @@ const useStore = create((set, get) => ({
       set({ isInitCompleted: true });
       set({ loading: false });
     }
+  },
+
+  updateFeedHidden: (feedId, hidden) => {
+    set((state) => {
+      let { unreadTotal } = state;
+      if (!get().showAllFeeds) {
+        const feed = state.feeds.find((f) => f.id === feedId);
+        if (feed) {
+          unreadTotal += hidden ? -feed.unreadCount : feed.unreadCount;
+          unreadTotal = Math.max(0, unreadTotal);
+        }
+      }
+
+      return {
+        feeds: updateHidden(state.feeds, feedId, hidden),
+        hiddenFeedIds: updateHiddenIds(state.hiddenFeedIds, feedId, hidden),
+        unreadTotal,
+      };
+    });
+  },
+
+  updateGroupHidden: (groupId, hidden) => {
+    set((state) => {
+      let { unreadTotal } = state;
+      let updatedHiddenFeedIds = [...state.hiddenFeedIds];
+
+      if (!get().showAllFeeds) {
+        const group = state.groups.find((g) => g.id === groupId);
+        if (group) {
+          unreadTotal += hidden ? -group.unreadCount : group.unreadCount;
+          unreadTotal = Math.max(0, unreadTotal);
+        }
+      }
+
+      const feedIdsInGroup = state.feeds
+        .filter((feed) => feed.category.id === groupId)
+        .map((feed) => feed.id);
+
+      updatedHiddenFeedIds = hidden
+        ? [...updatedHiddenFeedIds, ...feedIdsInGroup]
+        : updatedHiddenFeedIds.filter((id) => !feedIdsInGroup.includes(id));
+
+      return {
+        groups: updateHidden(state.groups, groupId, hidden),
+        hiddenGroupIds: updateHiddenIds(state.hiddenGroupIds, groupId, hidden),
+        hiddenFeedIds: updatedHiddenFeedIds,
+        unreadTotal,
+      };
+    });
   },
 
   updateFeedUnreadCount: (feedId, countOrStatus) => {

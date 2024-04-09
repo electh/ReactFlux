@@ -101,20 +101,16 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (["all", "today"].includes(info.from)) {
-      setFilteredEntries(() => {
-        if (!showAllFeeds) {
-          return entries.filter(
-            (entry) => !hiddenFeedIds.includes(entry.feed.id),
-          );
-        }
-        return filterStatus === "all" ? entries : unreadEntries;
-      });
-    } else {
-      setFilteredEntries(() =>
-        filterStatus === "all" ? entries : unreadEntries,
-      );
-    }
+    setFilteredEntries(() => {
+      if (["all", "today", "group"].includes(info.from) && !showAllFeeds) {
+        const targetEntries = filterStatus === "all" ? entries : unreadEntries;
+        return targetEntries.filter(
+          (entry) => !hiddenFeedIds.includes(entry.feed.id),
+        );
+      }
+
+      return filterStatus === "all" ? entries : unreadEntries;
+    });
 
     setIsFilteredEntriesUpdated(true);
   }, [filterStatus, hiddenFeedIds, showAllFeeds]);
@@ -299,14 +295,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          borderRight: "1px solid var(--color-border-2)",
-        }}
-        className="entry-col"
-      >
+      <div className="entry-col">
         <CSSTransition
           in={!loading}
           timeout={200}

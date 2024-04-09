@@ -8,6 +8,8 @@ import React from "react";
 import useStore from "../../Store.js";
 import { setConfig } from "../../utils/config.js";
 
+import "./General.css";
+
 const General = () => {
   const showStatus = useStore((state) => state.showStatus);
   const setShowStatus = useStore((state) => state.setShowStatus);
@@ -31,13 +33,13 @@ const General = () => {
         </div>
         <div>
           <Select
+            className="select-style"
+            placeholder="Select status"
+            value={showStatus}
             onChange={(showStatus) => {
               setShowStatus(showStatus);
               setConfig("showStatus", showStatus);
             }}
-            placeholder="Select status"
-            style={{ width: 128, marginLeft: 16 }}
-            value={showStatus}
           >
             <Select.Option value="all">All</Select.Option>
             <Select.Option value="unread">Unread</Select.Option>

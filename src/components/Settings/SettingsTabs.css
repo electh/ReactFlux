@@ -1,15 +1,15 @@
 .list-item-action {
+  align-items: center;
+  background: transparent;
+  border-radius: 50%;
+  border: none;
   cursor: pointer;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
   height: 16px;
-  border-radius: 50%;
-  transition: all 0.1s;
-  border: none;
-  background: transparent;
+  justify-content: center;
   padding: 0;
+  transition: all 0.1s;
+  width: 16px;
 }
 
 .list-item-action:hover {
@@ -17,6 +17,10 @@
 }
 
 .list-item-action:focus {
-  outline: none;
   box-shadow: 0 0 0 2px var(--color-fill-3);
+  outline: none;
+}
+
+.custom-tabs .arco-tabs-header {
+  margin: 0 auto !important;
 }

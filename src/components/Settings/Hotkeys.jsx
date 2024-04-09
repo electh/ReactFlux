@@ -51,7 +51,14 @@ const hotkeysData = [
 ];
 
 const Hotkeys = () => (
-  <Table columns={columns} data={hotkeysData} pagination={false} size="small" />
+  <Table
+    borderCell={true}
+    columns={columns}
+    data={hotkeysData}
+    pagination={false}
+    size="small"
+    style={{ margin: "0 auto", width: "80%" }}
+  />
 );
 
 export default Hotkeys;

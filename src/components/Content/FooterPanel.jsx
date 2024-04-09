@@ -6,6 +6,8 @@ import useStore from "../../Store";
 import useFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "./ContentContext";
 
+import "./FooterPanel.css";
+
 const FooterPanel = forwardRef(
   ({ info, refreshArticleList, markAllAsRead }, ref) => {
     const {
@@ -20,7 +22,7 @@ const FooterPanel = forwardRef(
       unreadEntries,
     } = useContext(ContentContext);
 
-    const { setFilterStatus } = useFilterEntries();
+    const { setFilterStatus } = useFilterEntries(info);
 
     /*menu 数据初始化函数 */
     const initData = useStore((state) => state.initData);
@@ -49,15 +51,6 @@ const FooterPanel = forwardRef(
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
-      if (filterStatus === "all") {
-        setFilteredEntries(entries);
-      } else {
-        setFilteredEntries(unreadEntries);
-      }
-    }, [filterStatus]);
-
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
       if (info.from !== "history") {
         setFilterStatus(showStatus);
       }
@@ -68,22 +61,15 @@ const FooterPanel = forwardRef(
         ref.current.scrollTo(0, 0);
       }
       setFilterStatus(value);
+      if (value === "all") {
+        setFilteredEntries(entries);
+      } else {
+        setFilteredEntries(unreadEntries);
+      }
     };
 
     return (
-      <div
-        className="entry-panel"
-        style={{
-          backgroundColor: "var(--color-bg-2)",
-          bottom: "0",
-          display: "flex",
-          flexDirection: "row",
-          padding: "8px 10px",
-          zIndex: "2",
-          justifyContent: "space-between",
-          borderTop: "1px solid var(--color-border-2)",
-        }}
-      >
+      <div className="entry-panel">
         {!["starred", "history"].includes(info.from) && (
           <Popconfirm
             focusLock

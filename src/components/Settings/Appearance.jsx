@@ -7,7 +7,7 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import React, { useEffect } from "react";
+import React from "react";
 
 import useStore from "../../Store";
 import darkThemePreview from "../../assets/dark.png";
@@ -29,27 +29,6 @@ const Appearance = () => {
   const themeColor = useStore((state) => state.themeColor);
   const setThemeColor = useStore((state) => state.setThemeColor);
 
-  useEffect(() => {
-    setConfig("fontSize", fontSize);
-  }, [fontSize]);
-
-  useEffect(() => {
-    setConfig("layout", layout);
-  }, [layout]);
-
-  useEffect(() => {
-    setConfig("showFeedIcon", showFeedIcon);
-  }, [showFeedIcon]);
-
-  useEffect(() => {
-    setConfig("theme", theme);
-  }, [theme]);
-
-  useEffect(() => {
-    setConfig("themeColor", themeColor);
-    applyColor(themeColor);
-  }, [themeColor]);
-
   return (
     <>
       <Typography.Title heading={6} style={{ marginTop: 0 }}>
@@ -60,10 +39,13 @@ const Appearance = () => {
       </Typography.Text>
       <div>
         <Radio.Group
-          name="card-radio-group"
-          style={{ marginTop: "16px" }}
+          className="theme-selector"
           defaultValue={theme}
-          onChange={setTheme}
+          name="card-radio-group"
+          onChange={(value) => {
+            setTheme(value);
+            setConfig("theme", value);
+          }}
         >
           {["light", "dark", "system"].map((mode) => (
             <Tooltip
@@ -112,20 +94,19 @@ const Appearance = () => {
             <Tooltip content={c.name} key={c.name}>
               <button
                 type="button"
+                className="accent-color-button"
                 style={{
-                  width: "18px",
-                  height: "18px",
-                  borderRadius: "50%",
-                  margin: "2px",
                   backgroundColor: getColorValue(c.name),
-                  cursor: "pointer",
-                  border: "3px solid var(--color-bg-3)",
                   outline:
                     c.name === themeColor
                       ? `1px solid ${getColorValue(c.name)}`
                       : "none",
                 }}
-                onClick={() => setThemeColor(c.name)}
+                onClick={() => {
+                  setThemeColor(c.name);
+                  setConfig("themeColor", c.name);
+                  applyColor(c.name);
+                }}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     setThemeColor(c.name);
@@ -148,7 +129,13 @@ const Appearance = () => {
           </Typography.Text>
         </div>
         <div>
-          <Switch checked={layout === "small"} onChange={toggleLayout} />
+          <Switch
+            checked={layout === "small"}
+            onChange={(value) => {
+              toggleLayout();
+              setConfig("layout", value ? "small" : "large");
+            }}
+          />
         </div>
       </div>
       <Divider />
@@ -162,7 +149,13 @@ const Appearance = () => {
           </Typography.Text>
         </div>
         <div>
-          <Switch checked={showFeedIcon} onChange={toggleShowFeedIcon} />
+          <Switch
+            checked={showFeedIcon}
+            onChange={(value) => {
+              toggleShowFeedIcon();
+              setConfig("showFeedIcon", value);
+            }}
+          />
         </div>
       </div>
       <Divider />
@@ -179,14 +172,17 @@ const Appearance = () => {
           <Space>
             <Typography.Text style={{ fontSize: "0.75rem" }}>A</Typography.Text>
             <Slider
-              value={fontSize}
-              showTicks
-              min={0.75}
-              max={1.25}
-              step={0.05}
+              className="font-size-slider"
               formatTooltip={(value) => `${value}rem`}
-              onChange={setFontSize}
-              style={{ width: 200 }}
+              max={1.25}
+              min={0.75}
+              showTicks
+              step={0.05}
+              value={fontSize}
+              onChange={(value) => {
+                setFontSize(value);
+                setConfig("fontSize", value);
+              }}
             />
             <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
           </Space>

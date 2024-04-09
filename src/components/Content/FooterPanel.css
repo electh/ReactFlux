@@ -1,0 +1,10 @@
+.entry-panel {
+  background-color: var(--color-bg-2);
+  border-top: 1px solid var(--color-border-2);
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 8px 10px;
+  z-index: 2;
+}

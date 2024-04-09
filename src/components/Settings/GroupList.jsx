@@ -1,15 +1,25 @@
-import { Form, Input, Message, Modal, Tag } from "@arco-design/web-react";
+import {
+  Form,
+  Input,
+  Message,
+  Modal,
+  Switch,
+  Tag,
+} from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
 import React, { useState } from "react";
 
 import useStore from "../../Store";
 import { addGroup, deleteGroup, editGroup } from "../../apis";
 
+import "./GroupList.css";
+
 const GroupList = () => {
   const feeds = useStore((state) => state.feeds);
   const setFeeds = useStore((state) => state.setFeeds);
   const groups = useStore((state) => state.groups);
   const setGroups = useStore((state) => state.setGroups);
+  const updateGroupHidden = useStore((state) => state.updateGroupHidden);
   const [showAddInput, setShowAddInput] = useState(false);
   const [inputAddValue, setInputAddValue] = useState("");
   const [groupModalVisible, setGroupModalVisible] = useState(false);
@@ -35,8 +45,8 @@ const GroupList = () => {
     setShowAddInput(false);
   };
 
-  const handleEditGroup = async (groupId, newTitle) => {
-    editGroup(groupId, newTitle)
+  const handleEditGroup = async (groupId, newTitle, hidden) => {
+    editGroup(groupId, newTitle, hidden)
       .then((response) => {
         setFeeds(
           feeds.map((feed) =>
@@ -46,7 +56,9 @@ const GroupList = () => {
           ),
         );
         setGroups(
-          groups.map((group) => (group.id === groupId ? response.data : group)),
+          groups.map((group) =>
+            group.id === groupId ? { ...group, ...response.data } : group,
+          ),
         );
         Message.success("Group updated successfully");
         setGroupModalVisible(false);
@@ -77,9 +89,10 @@ const GroupList = () => {
       <div>
         {groups.map((group) => (
           <Tag
+            className="tag-style"
+            closable={group.feedCount === 0}
             key={group.id}
             size="medium"
-            closable={group.feedCount === 0}
             onClick={() => {
               setSelectedGroup(group);
               setGroupModalVisible(true);
@@ -91,11 +104,6 @@ const GroupList = () => {
               event.stopPropagation();
               await handleDeleteGroup(group.id);
             }}
-            style={{
-              marginRight: "10px",
-              marginBottom: "10px",
-              cursor: "pointer",
-            }}
           >
             {group.title}
           </Tag>
@@ -103,26 +111,20 @@ const GroupList = () => {
         {showAddInput ? (
           <Input
             autoFocus
-            size="small"
-            value={inputAddValue}
-            style={{ width: 84 }}
-            onPressEnter={handleAddGroup}
+            className="input-style"
             onBlur={handleAddGroup}
             onChange={setInputAddValue}
+            onPressEnter={handleAddGroup}
+            size="small"
+            value={inputAddValue}
           />
         ) : (
           <Tag
+            className="add-group-tag"
             icon={<IconPlus />}
-            style={{
-              width: 84,
-              backgroundColor: "var(--color-fill-2)",
-              border: "1px dashed var(--color-fill-3)",
-              cursor: "pointer",
-            }}
-            size="medium"
-            className="add-group"
-            tabIndex={0}
             onClick={() => setShowAddInput(true)}
+            size="medium"
+            tabIndex={0}
           >
             Add
           </Tag>
@@ -130,11 +132,11 @@ const GroupList = () => {
       </div>
       {selectedGroup && (
         <Modal
-          title="Edit Group"
-          visible={groupModalVisible}
-          unmountOnExit
-          style={{ width: "400px" }}
+          className="modal-style"
           onOk={groupForm.submit}
+          title="Edit Group"
+          unmountOnExit
+          visible={groupModalVisible}
           onCancel={() => {
             setGroupModalVisible(false);
             groupForm.resetFields();
@@ -143,9 +145,17 @@ const GroupList = () => {
           <Form
             form={groupForm}
             layout="vertical"
-            onSubmit={(values) =>
-              handleEditGroup(selectedGroup.id, values.title)
-            }
+            onSubmit={(values) => {
+              handleEditGroup(
+                selectedGroup.id,
+                values.title,
+                values.hidden,
+              ).then(() => {
+                if (selectedGroup.hide_globally !== values.hidden) {
+                  updateGroupHidden(selectedGroup.id, values.hidden);
+                }
+              });
+            }}
             labelCol={{
               style: { flexBasis: 90 },
             }}
@@ -155,6 +165,15 @@ const GroupList = () => {
           >
             <Form.Item label="Title" field="title" rules={[{ required: true }]}>
               <Input placeholder="Please input group title" />
+            </Form.Item>
+            <Form.Item
+              label="Hidden"
+              field="hidden"
+              initialValue={selectedGroup.hide_globally}
+              triggerPropName="checked"
+              rules={[{ type: "boolean" }]}
+            >
+              <Switch />
             </Form.Item>
           </Form>
         </Modal>

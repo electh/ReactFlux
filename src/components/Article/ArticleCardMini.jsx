@@ -18,12 +18,11 @@ const FeedIcon = ({ url }) => (
 
 const ArticleMiniCardContent = ({ entry, showFeedIcon }) => (
   <div
-    style={{
-      display: "flex",
-      paddingLeft: showFeedIcon ? "22px" : "0",
-    }}
+    className={`article-card-mini-content ${
+      showFeedIcon ? "article-card-mini-content-padding" : ""
+    }`}
   >
-    <div style={{ marginRight: "10px", flex: 1 }}>
+    <div className="article-card-mini-content-text">
       <Typography.Text
         className={entry.status === "unread" ? "title-unread" : "title-read"}
       >
@@ -41,12 +40,12 @@ const ArticleMiniCardContent = ({ entry, showFeedIcon }) => (
     {entry.imgSrc && (
       <div className="thumbnail">
         <ImageWithLazyLoading
-          width={"100px"}
-          height="100px"
           alt={entry.id}
+          borderRadius="4px"
+          height="100px"
           src={entry.imgSrc}
           status={entry.status}
-          borderRadius="4px"
+          width={"100px"}
         />
       </div>
     )}
@@ -64,12 +63,11 @@ const ArticleCardMini = ({ entry, handleEntryClick }) => {
   return (
     <div className="article-card" key={entry.id}>
       <Card
-        className={classNames("card-custom-hover-style", {
+        className={classNames("card-custom-style", "card-custom-hover-style", {
           "card-custom-selected-style": isSelected,
         })}
-        hoverable
         data-entry-id={entry.id}
-        style={{ width: "100%", cursor: "pointer" }}
+        hoverable
         onClick={entryClickHandler}
       >
         <Card.Meta

@@ -1,3 +1,8 @@
+.app {
+  background-color: var(--color-bg-1);
+  display: flex;
+}
+
 .arco-menu-collapse-button {
   display: none;
 }
@@ -26,15 +31,15 @@
   }
 
   .main {
-    width: 100% !important;
     padding-left: 0 !important;
+    width: 100% !important;
   }
 }
 
 @media screen and (max-width: 768px) {
   .entry-col {
-    width: 100% !important;
     border: none !important;
+    width: 100% !important;
   }
 
   .entry-list {
@@ -42,15 +47,15 @@
   }
 
   .article-content {
-    display: block !important;
-    z-index: 3 !important;
-    position: absolute;
-    box-sizing: border-box;
-    top: 49px;
-    left: 0;
-    width: 100%;
-    height: calc(100% - 49px);
     background-color: var(--color-bg-2);
+    box-sizing: border-box;
+    display: block !important;
+    height: calc(100% - 49px);
+    left: 0;
+    position: absolute;
+    top: 49px;
+    width: 100%;
+    z-index: 3 !important;
   }
 
   .content-empty {
@@ -78,8 +83,8 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: transparent;
   background-clip: content-box;
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {

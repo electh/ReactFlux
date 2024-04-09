@@ -14,6 +14,7 @@ import React from "react";
 import useStore from "../../Store";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
+import "./ActionButtons.css";
 
 const ActionButtonsMobile = ({ info, handleEntryClick, getEntries }) => {
   const activeContent = useStore((state) => state.activeContent);
@@ -33,33 +34,21 @@ const ActionButtonsMobile = ({ info, handleEntryClick, getEntries }) => {
   const isStarred = activeContent.starred;
 
   return (
-    <Button.Group
-      className="action-buttons-mobile"
-      style={{
-        display: "none",
-        justifyContent: "center",
-        position: "fixed",
-        bottom: "40px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        borderRadius: "50%",
-        boxShadow: "0 4px 10px rgba(var(--primary-6), 0.4)",
-      }}
-    >
+    <Button.Group className="action-buttons-mobile">
       <Button
-        type="primary"
-        shape="round"
-        onClick={handleEscapeKey}
         icon={<IconClose />}
+        onClick={handleEscapeKey}
+        shape="round"
+        type="primary"
       />
       <Button
-        type="primary"
-        onClick={handleToggleStatus}
         icon={isUnread ? <IconMinusCircle /> : <IconRecord />}
+        onClick={handleToggleStatus}
+        type="primary"
       />
       <Button
-        type="primary"
         onClick={handleToggleStarred}
+        type="primary"
         icon={
           isStarred ? (
             <IconStarFill style={{ color: "#ffcd00" }} />
@@ -69,16 +58,16 @@ const ActionButtonsMobile = ({ info, handleEntryClick, getEntries }) => {
         }
       />
       <Button
-        type="primary"
-        onClick={handleFetchContent}
         icon={<IconCloudDownload />}
-      />
-      <Button type="primary" onClick={handleLeftKey} icon={<IconArrowLeft />} />
-      <Button
+        onClick={handleFetchContent}
         type="primary"
-        shape="round"
-        onClick={handleRightKey}
+      />
+      <Button icon={<IconArrowLeft />} onClick={handleLeftKey} type="primary" />
+      <Button
         icon={<IconArrowRight />}
+        onClick={handleRightKey}
+        shape="round"
+        type="primary"
       />
     </Button.Group>
   );

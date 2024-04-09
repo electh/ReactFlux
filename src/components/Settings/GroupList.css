@@ -1,0 +1,20 @@
+.tag-style {
+  cursor: pointer;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.input-style {
+  width: 84px;
+}
+
+.add-group-tag {
+  background-color: var(--color-fill-2);
+  border: 1px dashed var(--color-fill-3);
+  cursor: pointer;
+  width: 84px;
+}
+
+.modal-style {
+  width: 400px;
+}

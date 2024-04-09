@@ -10,25 +10,19 @@ import useFilterEntries from "../../hooks/useFilterEntries";
 import { setConfig } from "../../utils/config.js";
 import ContentContext from "../Content/ContentContext";
 
-const SearchAndSortBar = () => {
+import "./SearchAndSortBar.css";
+
+const SearchAndSortBar = (info) => {
   const { filterString, filterType } = useContext(ContentContext);
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
   const orderDirection = useStore((state) => state.orderDirection);
   const toggleOrderDirection = useStore((state) => state.toggleOrderDirection);
 
-  const { setFilterString, setFilterType } = useFilterEntries();
+  const { setFilterString, setFilterType } = useFilterEntries(info);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-        marginBottom: "8px",
-        width: "100%",
-      }}
-    >
+    <div className="search-and-sort-bar">
       <Input.Search
         allowClear
         placeholder="Search..."

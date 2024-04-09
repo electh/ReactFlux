@@ -8,9 +8,9 @@
 
 .group-title,
 .custom-menu-item {
+  align-items: center;
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 .unread-count {
@@ -20,8 +20,55 @@
 }
 
 .item-count {
-  width: 50%;
   color: var(--color-text-4);
   display: flex;
   justify-content: flex-end;
+  width: 50%;
+}
+
+.sidebar {
+  height: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+}
+
+.menu-header {
+  align-items: center;
+  display: flex;
+  height: 48px;
+  margin-top: -4px;
+  padding: 0 28px 0 10px;
+}
+
+.menu-header .avatar {
+  background-color: var(--color-text-1);
+  margin-right: 10px;
+}
+
+.divider {
+  margin-bottom: 4px;
+  margin-top: 0;
+}
+
+.section-title {
+  color: var(--color-text-3);
+  font-style: italic;
+}
+
+.custom-menu-item {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.custom-menu-item .item-count {
+  color: var(--color-text-4);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.group-title {
+  align-items: center;
+  display: flex;
 }
