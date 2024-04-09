@@ -17,6 +17,24 @@ const calculateUnreadCount = (prevCount, status) => {
   return prevCount + 1;
 };
 
+const updateHidden = (items, itemId, hidden) => {
+  return items.map((item) => {
+    if (item.id === itemId) {
+      return {
+        ...item,
+        hide_globally: hidden,
+      };
+    }
+    return item;
+  });
+};
+
+const updateHiddenIds = (hiddenIds, id, hidden) => {
+  return hidden
+    ? [...hiddenIds, id]
+    : hiddenIds.filter((hiddenId) => hiddenId !== id);
+};
+
 const updateUnreadCount = (items, itemId, countOrStatus) => {
   return items.map((item) => {
     if (item.id === itemId) {
@@ -185,6 +203,39 @@ const useStore = create((set, get) => ({
       set({ isInitCompleted: true });
       set({ loading: false });
     }
+  },
+
+  updateFeedHidden: (feedId, hidden) => {
+    set((state) => ({
+      feeds: updateHidden(state.feeds, feedId, hidden),
+      hiddenFeedIds: updateHiddenIds(state.hiddenFeedIds, feedId, hidden),
+    }));
+  },
+
+  updateGroupHidden: (groupId, hidden) => {
+    set((state) => {
+      let updatedHiddenFeedIds;
+
+      if (hidden) {
+        const hiddenFeedIds = state.feeds
+          .filter((feed) => feed.category.id === groupId)
+          .map((feed) => feed.id);
+        updatedHiddenFeedIds = [...state.hiddenFeedIds, ...hiddenFeedIds];
+      } else {
+        const showFeedIds = state.feeds
+          .filter((feed) => feed.category.id === groupId)
+          .map((feed) => feed.id);
+        updatedHiddenFeedIds = state.hiddenFeedIds.filter(
+          (id) => !showFeedIds.includes(id),
+        );
+      }
+
+      return {
+        groups: updateHidden(state.groups, groupId, hidden),
+        hiddenGroupIds: updateHiddenIds(state.hiddenGroupIds, groupId, hidden),
+        hiddenFeedIds: updatedHiddenFeedIds,
+      };
+    });
   },
 
   updateFeedUnreadCount: (feedId, countOrStatus) => {

@@ -37,12 +37,13 @@ const getSortedFeedsByErrorCount = (feeds) => {
 const FeedList = () => {
   const [feedModalVisible, setFeedModalVisible] = useState(false);
   const [feedForm] = Form.useForm();
-  const [selectedFeedId, setSelectedFeedId] = useState(null);
+  const [selectedFeed, setSelectedFeed] = useState({});
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const feeds = useStore((state) => state.feeds);
   const setFeeds = useStore((state) => state.setFeeds);
   const [showFeeds, setShowFeeds] = useState(getSortedFeedsByErrorCount(feeds));
   const groups = useStore((state) => state.groups);
+  const updateFeedHidden = useStore((state) => state.updateFeedHidden);
 
   const tableData = showFeeds.map((feed) => ({
     category: feed.category,
@@ -52,6 +53,7 @@ const FeedList = () => {
     key: feed.id,
     parsing_error_count: feed.parsing_error_count,
     title: feed.title,
+    hidden: feed.hide_globally,
   }));
 
   useEffect(() => {
@@ -67,13 +69,14 @@ const FeedList = () => {
   }, [feeds]);
 
   const handleSelectFeed = (record) => {
-    setSelectedFeedId(record.key);
+    setSelectedFeed(record);
     setFeedModalVisible(true);
     feedForm.setFieldsValue({
       crawler: record.crawler,
       group: record.category.id,
       title: record.title,
       url: record.feed_url,
+      hidden: record.hidden,
     });
   };
 
@@ -220,8 +223,9 @@ const FeedList = () => {
     newTitle,
     groupId,
     isFullText,
+    hidden,
   ) => {
-    editFeed(feedId, newUrl, newTitle, groupId, isFullText)
+    editFeed(feedId, newUrl, newTitle, groupId, isFullText, hidden)
       .then((response) => {
         setFeeds(
           feeds.map((feed) =>
@@ -264,7 +268,7 @@ const FeedList = () => {
         scroll={{ x: true }}
         size="small"
       />
-      {selectedFeedId && (
+      {selectedFeed && (
         <Modal
           className="edit-modal"
           onOk={feedForm.submit}
@@ -285,12 +289,17 @@ const FeedList = () => {
               const url = values.url.trim();
               if (url) {
                 handleEditFeed(
-                  selectedFeedId,
+                  selectedFeed.key,
                   values.url,
                   values.title,
                   values.group,
                   values.crawler,
-                );
+                  values.hidden,
+                ).then(() => {
+                  if (selectedFeed.hidden !== values.hidden) {
+                    updateFeedHidden(selectedFeed.key, values.hidden);
+                  }
+                });
               } else {
                 Message.error("Feed URL cannot be empty");
               }
@@ -319,6 +328,15 @@ const FeedList = () => {
                   </Select.Option>
                 ))}
               </Select>
+            </Form.Item>
+            <Form.Item
+              label="Hidden"
+              field="hidden"
+              initialValue={selectedFeed.hide_globally}
+              triggerPropName="checked"
+              rules={[{ type: "boolean" }]}
+            >
+              <Switch />
             </Form.Item>
             <Form.Item
               label="Fetch original content"

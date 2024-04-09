@@ -1,4 +1,11 @@
-import { Form, Input, Message, Modal, Tag } from "@arco-design/web-react";
+import {
+  Form,
+  Input,
+  Message,
+  Modal,
+  Switch,
+  Tag,
+} from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
 import React, { useState } from "react";
 
@@ -12,6 +19,7 @@ const GroupList = () => {
   const setFeeds = useStore((state) => state.setFeeds);
   const groups = useStore((state) => state.groups);
   const setGroups = useStore((state) => state.setGroups);
+  const updateGroupHidden = useStore((state) => state.updateGroupHidden);
   const [showAddInput, setShowAddInput] = useState(false);
   const [inputAddValue, setInputAddValue] = useState("");
   const [groupModalVisible, setGroupModalVisible] = useState(false);
@@ -37,8 +45,8 @@ const GroupList = () => {
     setShowAddInput(false);
   };
 
-  const handleEditGroup = async (groupId, newTitle) => {
-    editGroup(groupId, newTitle)
+  const handleEditGroup = async (groupId, newTitle, hidden) => {
+    editGroup(groupId, newTitle, hidden)
       .then((response) => {
         setFeeds(
           feeds.map((feed) =>
@@ -135,9 +143,17 @@ const GroupList = () => {
           <Form
             form={groupForm}
             layout="vertical"
-            onSubmit={(values) =>
-              handleEditGroup(selectedGroup.id, values.title)
-            }
+            onSubmit={(values) => {
+              handleEditGroup(
+                selectedGroup.id,
+                values.title,
+                values.hidden,
+              ).then(() => {
+                if (selectedGroup.hide_globally !== values.hidden) {
+                  updateGroupHidden(selectedGroup.id, values.hidden);
+                }
+              });
+            }}
             labelCol={{
               style: { flexBasis: 90 },
             }}
@@ -147,6 +163,15 @@ const GroupList = () => {
           >
             <Form.Item label="Title" field="title" rules={[{ required: true }]}>
               <Input placeholder="Please input group title" />
+            </Form.Item>
+            <Form.Item
+              label="Hidden"
+              field="hidden"
+              initialValue={selectedGroup.hide_globally}
+              triggerPropName="checked"
+              rules={[{ type: "boolean" }]}
+            >
+              <Switch />
             </Form.Item>
           </Form>
         </Modal>
