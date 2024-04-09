@@ -26,23 +26,34 @@ import "./Sidebar.css";
 const MenuItem = Menu.Item;
 const { Sider } = Layout;
 
-const GroupTitle = ({ group, isOpen }) => (
-  <div className="group-title">
-    <Typography.Ellipsis
-      expandable={false}
-      showTooltip={true}
-      style={{ width: group.unreadCount ? "80%" : "100%" }}
-    >
-      {isOpen ? <IconDown /> : <IconRight />}
-      {group.title}
-    </Typography.Ellipsis>
-    {group.unreadCount > 0 && (
-      <Typography.Ellipsis className="unread-count" expandable={false}>
-        {group.unreadCount}
+const GroupTitle = ({ group, isOpen, feedsGroupedById }) => {
+  const showAllFeeds = useStore((state) => state.showAllFeeds);
+  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
+
+  let { unreadCount } = group;
+  if (!showAllFeeds && hiddenFeedIds) {
+    unreadCount = feedsGroupedById[group.id]
+      .filter((feed) => !hiddenFeedIds.includes(feed.id))
+      .reduce((acc, feed) => acc + feed.unreadCount, 0);
+  }
+  return (
+    <div className="group-title">
+      <Typography.Ellipsis
+        expandable={false}
+        showTooltip={true}
+        style={{ width: unreadCount ? "80%" : "100%" }}
+      >
+        {isOpen ? <IconDown /> : <IconRight />}
+        {group.title}
       </Typography.Ellipsis>
-    )}
-  </div>
-);
+      {unreadCount > 0 && (
+        <Typography.Ellipsis className="unread-count" expandable={false}>
+          {unreadCount}
+        </Typography.Ellipsis>
+      )}
+    </div>
+  );
+};
 
 const Sidebar = () => {
   const location = useLocation();
@@ -209,6 +220,7 @@ const Sidebar = () => {
                     <GroupTitle
                       group={group}
                       isOpen={openKeys.includes(`/group/${group.id}`)}
+                      feedsGroupedById={feedsGroupedById}
                     />
                   }
                   onClick={(e) => {

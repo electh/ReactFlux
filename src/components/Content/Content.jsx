@@ -101,20 +101,16 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (["all", "today"].includes(info.from)) {
-      setFilteredEntries(() => {
-        if (!showAllFeeds) {
-          return entries.filter(
-            (entry) => !hiddenFeedIds.includes(entry.feed.id),
-          );
-        }
-        return filterStatus === "all" ? entries : unreadEntries;
-      });
-    } else {
-      setFilteredEntries(() =>
-        filterStatus === "all" ? entries : unreadEntries,
-      );
-    }
+    setFilteredEntries(() => {
+      if (["all", "today", "group"].includes(info.from) && !showAllFeeds) {
+        const targetEntries = filterStatus === "all" ? entries : unreadEntries;
+        return targetEntries.filter(
+          (entry) => !hiddenFeedIds.includes(entry.feed.id),
+        );
+      }
+
+      return filterStatus === "all" ? entries : unreadEntries;
+    });
 
     setIsFilteredEntriesUpdated(true);
   }, [filterStatus, hiddenFeedIds, showAllFeeds]);

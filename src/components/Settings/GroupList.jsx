@@ -56,7 +56,9 @@ const GroupList = () => {
           ),
         );
         setGroups(
-          groups.map((group) => (group.id === groupId ? response.data : group)),
+          groups.map((group) =>
+            group.id === groupId ? { ...group, ...response.data } : group,
+          ),
         );
         Message.success("Group updated successfully");
         setGroupModalVisible(false);

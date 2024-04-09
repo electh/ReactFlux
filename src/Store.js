@@ -206,34 +206,50 @@ const useStore = create((set, get) => ({
   },
 
   updateFeedHidden: (feedId, hidden) => {
-    set((state) => ({
-      feeds: updateHidden(state.feeds, feedId, hidden),
-      hiddenFeedIds: updateHiddenIds(state.hiddenFeedIds, feedId, hidden),
-    }));
+    set((state) => {
+      let { unreadTotal } = state;
+      if (!get().showAllFeeds) {
+        const feed = state.feeds.find((f) => f.id === feedId);
+        if (feed) {
+          unreadTotal += hidden ? -feed.unreadCount : feed.unreadCount;
+          unreadTotal = Math.max(0, unreadTotal);
+        }
+      }
+
+      return {
+        feeds: updateHidden(state.feeds, feedId, hidden),
+        hiddenFeedIds: updateHiddenIds(state.hiddenFeedIds, feedId, hidden),
+        unreadTotal,
+      };
+    });
   },
 
   updateGroupHidden: (groupId, hidden) => {
     set((state) => {
-      let updatedHiddenFeedIds;
+      let { unreadTotal } = state;
+      let updatedHiddenFeedIds = [...state.hiddenFeedIds];
 
-      if (hidden) {
-        const hiddenFeedIds = state.feeds
-          .filter((feed) => feed.category.id === groupId)
-          .map((feed) => feed.id);
-        updatedHiddenFeedIds = [...state.hiddenFeedIds, ...hiddenFeedIds];
-      } else {
-        const showFeedIds = state.feeds
-          .filter((feed) => feed.category.id === groupId)
-          .map((feed) => feed.id);
-        updatedHiddenFeedIds = state.hiddenFeedIds.filter(
-          (id) => !showFeedIds.includes(id),
-        );
+      if (!get().showAllFeeds) {
+        const group = state.groups.find((g) => g.id === groupId);
+        if (group) {
+          unreadTotal += hidden ? -group.unreadCount : group.unreadCount;
+          unreadTotal = Math.max(0, unreadTotal);
+        }
       }
+
+      const feedIdsInGroup = state.feeds
+        .filter((feed) => feed.category.id === groupId)
+        .map((feed) => feed.id);
+
+      updatedHiddenFeedIds = hidden
+        ? [...updatedHiddenFeedIds, ...feedIdsInGroup]
+        : updatedHiddenFeedIds.filter((id) => !feedIdsInGroup.includes(id));
 
       return {
         groups: updateHidden(state.groups, groupId, hidden),
         hiddenGroupIds: updateHiddenIds(state.hiddenGroupIds, groupId, hidden),
         hiddenFeedIds: updatedHiddenFeedIds,
+        unreadTotal,
       };
     });
   },
