@@ -63,12 +63,7 @@
   }
 
   .action-buttons {
-    display: none !important;
-  }
-
-  .action-buttons-mobile {
-    display: block !important;
-    z-index: 4;
+    position: fixed;
   }
 
   .entry-panel {

@@ -2,18 +2,8 @@
   border-radius: 50%;
   bottom: 20px;
   box-shadow: 0 4px 10px rgba(var(--primary-6), 0.4);
-  position: fixed;
-  right: 10px;
-}
-
-.action-buttons-mobile {
-  border-radius: 50%;
-  bottom: 40px;
-  box-shadow: 0 4px 10px rgba(var(--primary-6), 0.4);
-  display: none;
-  justify-content: center;
   left: 50%;
-  position: fixed;
+  position: sticky;
   transform: translateX(-50%);
 }
 

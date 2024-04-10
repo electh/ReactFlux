@@ -8,8 +8,6 @@ import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import useLoadMore from "../../hooks/useLoadMore";
 import { filterEntriesByVisibility } from "../../utils/filter.js";
-import ActionButtons from "../Article/ActionButtons";
-import ActionButtonsMobile from "../Article/ActionButtonsMobile";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
 import "./Content.css";
@@ -325,22 +323,15 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         classNames="fade"
         unmountOnExit
       >
-        <ArticleDetail ref={entryDetailRef} />
+        <ArticleDetail
+          info={info}
+          handleEntryClick={handleEntryClick}
+          getEntries={getEntries}
+          isFilteredEntriesUpdated={isFilteredEntriesUpdated}
+          setIsFilteredEntriesUpdated={setIsFilteredEntriesUpdated}
+          ref={entryDetailRef}
+        />
       </CSSTransition>
-      <ActionButtons
-        info={info}
-        handleEntryClick={handleEntryClick}
-        getEntries={getEntries}
-        isFilteredEntriesUpdated={isFilteredEntriesUpdated}
-        setIsFilteredEntriesUpdated={setIsFilteredEntriesUpdated}
-      />
-      <ActionButtonsMobile
-        info={info}
-        handleEntryClick={handleEntryClick}
-        getEntries={getEntries}
-        isFilteredEntriesUpdated={isFilteredEntriesUpdated}
-        setIsFilteredEntriesUpdated={setIsFilteredEntriesUpdated}
-      />
     </>
   );
 };
