@@ -27,44 +27,46 @@ const ArticleList = forwardRef(
     const layout = useStore((state) => state.layout);
 
     return (
-      <div className="entry-list" ref={ref}>
+      <>
         <SearchAndSortBar info={info} />
-        <LoadingCards loading={loading} />
-        {loading ? null : (
-          <div ref={cardsRef}>
-            {filteredEntries.map((entry) => {
-              if (!isURL(entry.feed.site_url)) {
-                entry.feed.site_url = extractProtocolAndHostname(
-                  entry.feed.feed_url,
-                );
-              }
+        <div className="entry-list" ref={ref}>
+          <LoadingCards loading={loading} />
+          {loading ? null : (
+            <div ref={cardsRef}>
+              {filteredEntries.map((entry) => {
+                if (!isURL(entry.feed.site_url)) {
+                  entry.feed.site_url = extractProtocolAndHostname(
+                    entry.feed.feed_url,
+                  );
+                }
 
-              const ArticleComponent =
-                layout === "small" ? ArticleCardMini : ArticleCard;
-              return (
-                <ArticleComponent
-                  key={entry.id}
-                  entry={entry}
-                  handleEntryClick={handleEntryClick}
-                />
-              );
-            })}
-          </div>
-        )}
-        {!loading &&
-          (filterStatus === "all"
-            ? loadMoreVisible
-            : loadMoreUnreadVisible) && (
-            <Button
-              className="load-more-button"
-              loading={loadingMore}
-              long={true}
-              onClick={() => handleLoadMore(info, getEntries)}
-            >
-              {!loadingMore && <IconArrowDown />}Load more
-            </Button>
+                const ArticleComponent =
+                  layout === "small" ? ArticleCardMini : ArticleCard;
+                return (
+                  <ArticleComponent
+                    key={entry.id}
+                    entry={entry}
+                    handleEntryClick={handleEntryClick}
+                  />
+                );
+              })}
+            </div>
           )}
-      </div>
+          {!loading &&
+            (filterStatus === "all"
+              ? loadMoreVisible
+              : loadMoreUnreadVisible) && (
+              <Button
+                className="load-more-button"
+                loading={loadingMore}
+                long={true}
+                onClick={() => handleLoadMore(info, getEntries)}
+              >
+                {!loadingMore && <IconArrowDown />}Load more
+              </Button>
+            )}
+        </div>
+      </>
     );
   },
 );

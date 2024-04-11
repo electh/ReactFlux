@@ -6,13 +6,12 @@ import {
   Select,
   Switch,
 } from "@arco-design/web-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import useStore from "../../Store";
 import { addFeed } from "../../apis";
 import { includesIgnoreCase } from "../../utils/filter.js";
-import { isMobileWidth } from "../../utils/viewport.js";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
 
@@ -26,33 +25,14 @@ const SettingsModal = () => {
   const setVisible = useStore((state) => state.setVisible);
   const visible = useStore((state) => state.visible);
 
-  const [modalWidth, setModalWidth] = useState("720px");
-  const [modalTop, setModalTop] = useState("10%");
-
-  useEffect(() => {
-    const handleResize = () => {
-      const width = isMobileWidth() ? "100%" : "720px";
-      const top = isMobileWidth() ? "5%" : "10%";
-      setModalWidth(width);
-      setModalTop(top);
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
     <Modal
+      className="settings-modal"
       visible={visible.settings}
       alignCenter={false}
       title="Settings"
       footer={null}
       unmountOnExit
-      style={{ width: modalWidth, top: modalTop }}
       onFocus={() => {
         if (activeContent) {
           setActiveContent(null);
@@ -158,30 +138,12 @@ const AddFeedModal = () => {
   );
 };
 
-const Main = () => {
-  const [adjustedHeight, setAdjustedHeight] = useState(0);
-
-  useEffect(() => {
-    const updateHeight = () => {
-      const entryPanel = document.querySelector(".entry-panel");
-      const entryPanelHeight = entryPanel ? entryPanel.offsetHeight : 49;
-      const viewportHeight = window.innerHeight;
-      setAdjustedHeight(viewportHeight - entryPanelHeight);
-    };
-
-    window.addEventListener("resize", updateHeight);
-    updateHeight();
-
-    return () => window.removeEventListener("resize", updateHeight);
-  }, []);
-
-  return (
-    <div className="main" style={{ height: `${adjustedHeight}px` }}>
-      <Outlet />
-      <SettingsModal />
-      <AddFeedModal />
-    </div>
-  );
-};
+const Main = () => (
+  <div className="main">
+    <Outlet />
+    <SettingsModal />
+    <AddFeedModal />
+  </div>
+);
 
 export default Main;

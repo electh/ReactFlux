@@ -108,7 +108,10 @@ p {
 }
 
 .article-body figcaption {
+  color: var(--color-text-3);
   font-size: 0.75rem;
+  margin: 0 auto;
+  text-align: center;
 }
 
 /*code 相关样式 - 表格 */

@@ -1,6 +1,13 @@
 .app {
   background-color: var(--color-bg-1);
-  display: flex;
+  display: grid;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main"
+;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: 48px 1fr;
+  height: calc(100dvh);
 }
 
 .arco-menu-collapse-button {
@@ -15,6 +22,16 @@
   .header {
     padding-left: 0 !important;
     width: 100% !important;
+  }
+
+  .app {
+    grid-template-areas: "header" "main";
+    grid-template-columns: 1fr;
+    grid-template-rows: 48px 1fr;
+  }
+
+  .sidebar {
+    display: none;
   }
 
   .trigger {

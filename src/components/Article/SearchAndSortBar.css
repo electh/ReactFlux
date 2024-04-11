@@ -1,7 +1,10 @@
 .search-and-sort-bar {
   align-items: center;
   display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-  width: 100%;
+  padding: 8px 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: var(--color-bg-2);
+  border-bottom: 1px solid var(--color-border-2);
 }

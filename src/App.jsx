@@ -40,8 +40,8 @@ const App = () => {
 
   return (
     <div className="app">
-      <Header />
       <Sidebar />
+      <Header />
       <Main />
     </div>
   );

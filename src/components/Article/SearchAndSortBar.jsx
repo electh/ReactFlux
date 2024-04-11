@@ -40,6 +40,7 @@ const SearchAndSortBar = (info) => {
         }
         onFocus={() => activeContent && setActiveContent(null)}
         onChange={setFilterString}
+        style={{ width: 278, marginLeft: 8 }}
       />
       <Tooltip
         mini
@@ -49,7 +50,7 @@ const SearchAndSortBar = (info) => {
         <Button
           shape="circle"
           size="small"
-          style={{ flexShrink: 0 }}
+          style={{ margin: "0 8px" }}
           icon={
             orderDirection === "desc" ? (
               <IconSortDescending />

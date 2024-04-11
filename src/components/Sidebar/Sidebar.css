@@ -31,6 +31,7 @@
   position: fixed;
   top: 0;
   z-index: 999;
+  grid-area: sidebar;
 }
 
 .menu-header {

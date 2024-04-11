@@ -124,6 +124,7 @@ const Sidebar = () => {
       width={240}
       style={{
         borderRight: collapsed ? "none" : "1px solid var(--color-border-2)",
+        display: collapsed ? "none" : "block",
       }}
     >
       <Menu
