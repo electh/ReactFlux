@@ -28,6 +28,7 @@
 
 .scroll-container {
   width: 100%;
+  height: calc(100% - 48px);
   overflow-y: auto;
 }
 
@@ -39,7 +40,6 @@
   line-height: 1.8;
   margin: 0 auto;
   overflow-wrap: break-word;
-  height: calc(100% - 48px);
 }
 
 .article-content h1,
