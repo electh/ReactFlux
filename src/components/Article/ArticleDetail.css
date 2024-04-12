@@ -26,12 +26,6 @@
   font-size: 0.75rem;
 }
 
-.article-top-bar {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0 20px;
-}
-
 .article-body * {
   max-width: 100%;
 }

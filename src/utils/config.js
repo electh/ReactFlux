@@ -1,4 +1,5 @@
 const defaultConfig = {
+  articleWidth: 90,
   fontSize: 1.05,
   homePage: "all",
   layout: "large",

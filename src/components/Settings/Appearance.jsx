@@ -22,6 +22,8 @@ const Appearance = () => {
   const toggleShowFeedIcon = useStore((state) => state.toggleShowFeedIcon);
   const themeColor = useStore((state) => state.themeColor);
   const setThemeColor = useStore((state) => state.setThemeColor);
+  const articleWidth = useStore((state) => state.articleWidth);
+  const setArticleWidth = useStore((state) => state.setArticleWidth);
 
   return (
     <>
@@ -136,6 +138,34 @@ const Appearance = () => {
               }}
             />
             <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
+          </Space>
+        </div>
+      </div>
+      <Divider />
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Article width
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Adjust article width
+          </Typography.Text>
+        </div>
+        <div>
+          <Space>
+            <Slider
+              className="article-width-slider"
+              max={90}
+              min={60}
+              showTicks
+              step={10}
+              style={{ width: 200 }}
+              value={articleWidth}
+              onChange={(value) => {
+                setArticleWidth(value);
+                setConfig("bodyWidth", value);
+              }}
+            />
           </Space>
         </div>
       </div>

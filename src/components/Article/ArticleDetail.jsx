@@ -1,16 +1,5 @@
-import {
-  Button,
-  Divider,
-  Tag,
-  Tooltip,
-  Typography,
-} from "@arco-design/web-react";
-import {
-  IconEmpty,
-  IconImage,
-  IconMinus,
-  IconPlus,
-} from "@arco-design/web-react/icon";
+import { Button, Divider, Tag, Typography } from "@arco-design/web-react";
+import { IconEmpty, IconImage } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
 import React, { forwardRef, useState } from "react";
@@ -88,7 +77,7 @@ const ArticleDetail = forwardRef(
     const navigate = useNavigate();
     const activeContent = useStore((state) => state.activeContent);
     const fontSize = useStore((state) => state.fontSize);
-    const [bodyWidth, setBodyWidth] = useState(90);
+    const articleWidth = useStore((state) => state.articleWidth);
     const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const togglePhotoSlider = (index) => {
@@ -178,32 +167,10 @@ const ArticleDetail = forwardRef(
           </Typography.Text>
           <Divider />
         </div>
-        <div className="article-top-bar">
-          <Button.Group>
-            <Tooltip content="Expand article body" mini>
-              <Button
-                disabled={bodyWidth === 90}
-                icon={<IconPlus />}
-                size="mini"
-                type="primary"
-                onClick={() => setBodyWidth((prev) => prev + 10)}
-              />
-            </Tooltip>
-            <Tooltip content="Reduce article body" mini>
-              <Button
-                disabled={bodyWidth === 60}
-                icon={<IconMinus />}
-                size="mini"
-                type="primary"
-                onClick={() => setBodyWidth((prev) => prev - 10)}
-              />
-            </Tooltip>
-          </Button.Group>
-        </div>
         <div
           className="article-body"
           key={activeContent.id}
-          style={{ fontSize: `${fontSize}rem`, width: `${bodyWidth}%` }}
+          style={{ fontSize: `${fontSize}rem`, width: `${articleWidth}%` }}
         >
           {parsedHtml}
           <PhotoSlider
