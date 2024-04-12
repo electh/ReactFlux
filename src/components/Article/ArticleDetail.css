@@ -84,6 +84,7 @@ p {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 /* 文章内容链接样式 */
