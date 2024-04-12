@@ -53,7 +53,3 @@ input[name="card-radio-group"]:focus-visible + .custom-radio-card {
   margin: 2px;
   width: 18px;
 }
-
-.font-size-slider {
-  width: 200px;
-}
