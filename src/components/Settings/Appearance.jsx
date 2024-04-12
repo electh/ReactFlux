@@ -153,8 +153,9 @@ const Appearance = () => {
         </div>
         <div>
           <Space>
+            <Typography.Text>60%</Typography.Text>
             <Slider
-              className="article-width-slider"
+              formatTooltip={(value) => `${value}%`}
               max={90}
               min={60}
               showTicks
@@ -166,6 +167,7 @@ const Appearance = () => {
                 setConfig("bodyWidth", value);
               }}
             />
+            <Typography.Text>90%</Typography.Text>
           </Space>
         </div>
       </div>

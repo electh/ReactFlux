@@ -167,19 +167,21 @@ const ArticleDetail = forwardRef(
           </Typography.Text>
           <Divider />
         </div>
-        <div
-          className="article-body"
-          key={activeContent.id}
-          style={{ fontSize: `${fontSize}rem`, width: `${articleWidth}%` }}
-        >
-          {parsedHtml}
-          <PhotoSlider
-            images={imageSources.map((item) => ({ src: item, key: item }))}
-            visible={isPhotoSliderVisible}
-            onClose={() => setIsPhotoSliderVisible(false)}
-            index={selectedIndex}
-            onIndexChange={setSelectedIndex}
-          />
+        <div className="scroll-container">
+          <div
+            className="article-body"
+            key={activeContent.id}
+            style={{ fontSize: `${fontSize}rem`, width: `${articleWidth}%` }}
+          >
+            {parsedHtml}
+            <PhotoSlider
+              images={imageSources.map((item) => ({ src: item, key: item }))}
+              visible={isPhotoSliderVisible}
+              onClose={() => setIsPhotoSliderVisible(false)}
+              index={selectedIndex}
+              onIndexChange={setSelectedIndex}
+            />
+          </div>
         </div>
         <ActionButtons
           info={info}

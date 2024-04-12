@@ -26,6 +26,11 @@
   font-size: 0.75rem;
 }
 
+.scroll-container {
+  width: 100%;
+  overflow-y: auto;
+}
+
 .article-body * {
   max-width: 100%;
 }
@@ -34,7 +39,6 @@
   line-height: 1.8;
   margin: 0 auto;
   overflow-wrap: break-word;
-  overflow-y: auto;
   height: calc(100% - 48px);
 }
 
