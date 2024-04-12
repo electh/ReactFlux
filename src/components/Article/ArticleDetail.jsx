@@ -127,47 +127,47 @@ const ArticleDetail = forwardRef(
 
     return (
       <div ref={ref} className="article-content">
-        <div className="article-header">
-          <Typography.Title className="article-title" heading={5}>
-            <a
-              href={activeContent.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {activeContent.title}
-            </a>
-          </Typography.Title>
-          <div className="article-meta">
-            <Typography.Text>
-              <CustomLink
-                url={`/feed/${activeContent.feed.id}`}
-                text={activeContent.feed.title}
-              />
-            </Typography.Text>
-            <Typography.Text>{` - ${activeContent.author}`}</Typography.Text>
-            <Typography.Text>
-              <Tag
-                size="small"
-                onClick={() => {
-                  navigate(`/group/${groupId}`);
-                }}
-                style={{
-                  marginLeft: "10px",
-                  cursor: "pointer",
-                }}
-              >
-                {groupTitle}
-              </Tag>
-            </Typography.Text>
-          </div>
-          <Typography.Text className="article-date">
-            {dayjs(activeContent.published_at).format(
-              "dddd, MMMM D, YYYY [at] h:mm A",
-            )}
-          </Typography.Text>
-          <Divider />
-        </div>
         <div className="scroll-container">
+          <div className="article-header">
+            <Typography.Title className="article-title" heading={5}>
+              <a
+                href={activeContent.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {activeContent.title}
+              </a>
+            </Typography.Title>
+            <div className="article-meta">
+              <Typography.Text>
+                <CustomLink
+                  url={`/feed/${activeContent.feed.id}`}
+                  text={activeContent.feed.title}
+                />
+              </Typography.Text>
+              <Typography.Text>{` - ${activeContent.author}`}</Typography.Text>
+              <Typography.Text>
+                <Tag
+                  size="small"
+                  onClick={() => {
+                    navigate(`/group/${groupId}`);
+                  }}
+                  style={{
+                    marginLeft: "10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {groupTitle}
+                </Tag>
+              </Typography.Text>
+            </div>
+            <Typography.Text className="article-date">
+              {dayjs(activeContent.published_at).format(
+                "dddd, MMMM D, YYYY [at] h:mm A",
+              )}
+            </Typography.Text>
+            <Divider />
+          </div>
           <div
             className="article-body"
             key={activeContent.id}
