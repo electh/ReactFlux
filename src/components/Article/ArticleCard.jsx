@@ -8,33 +8,67 @@ import { generateRelativeTime } from "../../utils/date";
 import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 
-const FeedIcon = ({ url }) => (
+const FeedIcon = ({ url, mini }) => (
   <img
-    className="feed-icon"
+    className={mini ? "feed-icon-mini" : "feed-icon"}
     src={`https://icons.duckduckgo.com/ip3/${new URL(url).hostname}.ico`}
-    alt="Icon"
+    alt="Feed icon"
   />
 );
 
-const ArticleCardContent = ({ entry, showFeedIcon }) => (
-  <div>
-    <Typography.Text
-      className={entry.status === "unread" ? "title-unread" : "title-read"}
-    >
-      {entry.title}
-    </Typography.Text>
-    <Typography.Text className="article-info">
-      <br />
-      {showFeedIcon && <FeedIcon url={entry.feed.site_url} />}
-      {entry.feed.title}
-      <br />
-      {generateRelativeTime(entry.published_at)}
-    </Typography.Text>
-    {entry.starred && <IconStarFill className="icon-starred" />}
-  </div>
-);
+const renderImage = (entry, isThumbnail) => {
+  const imageSize = isThumbnail
+    ? { width: "100px", height: "100px" }
+    : { width: "100%", height: "160px" };
+  const className = isThumbnail ? "thumbnail" : "cover-image";
 
-const ArticleCard = ({ entry, handleEntryClick }) => {
+  return (
+    entry.imgSrc && (
+      <div className={className}>
+        <ImageWithLazyLoading
+          alt={entry.id}
+          borderRadius={isThumbnail ? "4px" : undefined}
+          src={entry.imgSrc}
+          status={entry.status}
+          width={imageSize.width}
+          height={imageSize.height}
+        />
+      </div>
+    )
+  );
+};
+
+const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
+  const contentClass = classNames({
+    "article-card-mini-content": mini,
+    "article-card-mini-content-padding": mini && showFeedIcon,
+  });
+
+  const imageSection = mini ? renderImage(entry, true) : null;
+
+  return (
+    <div className={contentClass}>
+      <div className={mini ? "article-card-mini-content-text" : ""}>
+        <Typography.Text
+          className={entry.status === "unread" ? "title-unread" : "title-read"}
+        >
+          {entry.title}
+        </Typography.Text>
+        <Typography.Text className="article-info">
+          <br />
+          {showFeedIcon && <FeedIcon url={entry.feed.site_url} mini={mini} />}
+          {entry.feed.title}
+          <br />
+          {generateRelativeTime(entry.published_at)}
+        </Typography.Text>
+        {entry.starred && <IconStarFill className="icon-starred" />}
+      </div>
+      {imageSection}
+    </div>
+  );
+};
+
+const ArticleCard = ({ entry, handleEntryClick, mini }) => {
   const activeContent = useStore((state) => state.activeContent);
   const showFeedIcon = useStore((state) => state.showFeedIcon);
 
@@ -42,17 +76,7 @@ const ArticleCard = ({ entry, handleEntryClick }) => {
 
   const entryClickHandler = () => handleEntryClick(entry);
 
-  const coverImage = entry.imgSrc ? (
-    <div className="cover-image">
-      <ImageWithLazyLoading
-        alt={entry.id}
-        height="160px"
-        src={entry.imgSrc}
-        status={entry.status}
-        width={"100%"}
-      />
-    </div>
-  ) : null;
+  const coverImage = mini ? null : renderImage(entry, false);
 
   return (
     <div className="article-card" key={entry.id}>
@@ -67,7 +91,11 @@ const ArticleCard = ({ entry, handleEntryClick }) => {
       >
         <Card.Meta
           description={
-            <ArticleCardContent entry={entry} showFeedIcon={showFeedIcon} />
+            <ArticleCardContent
+              entry={entry}
+              showFeedIcon={showFeedIcon}
+              mini={mini}
+            />
           }
         />
       </Card>

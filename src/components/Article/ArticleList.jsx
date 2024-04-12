@@ -8,7 +8,6 @@ import useLoadMore from "../../hooks/useLoadMore";
 import { extractProtocolAndHostname } from "../../utils/url";
 import ContentContext from "../Content/ContentContext";
 import ArticleCard from "./ArticleCard";
-import ArticleCardMini from "./ArticleCardMini";
 import LoadingCards from "./LoadingCards";
 import SearchAndSortBar from "./SearchAndSortBar.jsx";
 
@@ -25,6 +24,7 @@ const ArticleList = forwardRef(
 
     const { loadingMore, handleLoadMore } = useLoadMore();
     const layout = useStore((state) => state.layout);
+    const mini = layout === "small";
 
     return (
       <>
@@ -40,13 +40,12 @@ const ArticleList = forwardRef(
                   );
                 }
 
-                const ArticleComponent =
-                  layout === "small" ? ArticleCardMini : ArticleCard;
                 return (
-                  <ArticleComponent
+                  <ArticleCard
                     key={entry.id}
                     entry={entry}
                     handleEntryClick={handleEntryClick}
+                    mini={mini}
                   />
                 );
               })}
