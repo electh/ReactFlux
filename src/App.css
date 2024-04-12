@@ -66,21 +66,14 @@
   .article-content {
     background-color: var(--color-bg-2);
     box-sizing: border-box;
-    display: block !important;
-    height: calc(100% - 49px);
-    left: 0;
     position: absolute;
-    top: 49px;
+    height: calc(100% - 48px);
     width: 100%;
     z-index: 3 !important;
   }
 
   .content-empty {
     display: none !important;
-  }
-
-  .action-buttons {
-    position: fixed;
   }
 
   .entry-panel {

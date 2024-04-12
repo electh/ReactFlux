@@ -40,7 +40,8 @@
   line-height: 1.8;
   margin: 0 auto;
   overflow-wrap: break-word;
-  padding-bottom: 72px;
+  overflow-y: auto;
+  height: calc(100% - 48px);
 }
 
 .article-content h1,
@@ -80,9 +81,9 @@ p {
 /* 文章内容文本样式 */
 .article-content {
   color: var(--color-text-2);
-  flex: 1;
   overflow-x: hidden;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 文章内容链接样式 */

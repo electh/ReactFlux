@@ -53,7 +53,7 @@ const SearchAndSortBar = (info) => {
         <Button
           shape="circle"
           size="small"
-          style={{ margin: "0 8px" }}
+          style={{ margin: "0 8px", flexShrink: 0 }}
           icon={
             orderDirection === "desc" ? (
               <IconSortDescending />
