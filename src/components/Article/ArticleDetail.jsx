@@ -19,12 +19,15 @@ import "react-photo-view/dist/react-photo-view.css";
 import { Link, useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
+import { useScreenWidth } from "../../hooks/useScreenWidth.js";
 import { extractAllImageSrc } from "../../utils/images.js";
 import ActionButtons from "./ActionButtons.jsx";
 import "./ArticleDetail.css";
 
 const CustomLink = ({ url, text }) => {
   const [hover, setHover] = useState(false);
+  const handleMouseEnter = () => setHover(true);
+  const handleMouseLeave = () => setHover(false);
 
   return (
     <Link
@@ -33,11 +36,41 @@ const CustomLink = ({ url, text }) => {
         color: "inherit",
         textDecoration: hover ? "underline" : "none",
       }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {text}
     </Link>
+  );
+};
+
+const ImageWithButton = ({ node, index, togglePhotoSlider }) => {
+  const [isHovering, setIsHovering] = useState(false);
+  const screenWidth = useScreenWidth();
+  const isMobileView = screenWidth <= 768;
+
+  return (
+    <div
+      style={{ textAlign: "center", position: "relative" }}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      <div style={{ display: "inline-block", position: "relative" }}>
+        <img {...node.attribs} alt={node.attribs.alt} />
+        <Button
+          icon={<IconImage />}
+          style={{
+            position: "absolute",
+            top: 30,
+            right: 10,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            opacity: isMobileView || isHovering ? 1 : 0,
+            transition: "opacity 0.3s",
+          }}
+          onClick={() => togglePhotoSlider(index)}
+        />
+      </div>
+    </div>
   );
 };
 
@@ -57,6 +90,11 @@ const ArticleDetail = forwardRef(
     const fontSize = useStore((state) => state.fontSize);
     const [bodyWidth, setBodyWidth] = useState(90);
     const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const togglePhotoSlider = (index) => {
+      setSelectedIndex(index);
+      setIsPhotoSliderVisible((prev) => !prev);
+    };
 
     if (!activeContent) {
       return (
@@ -72,10 +110,31 @@ const ArticleDetail = forwardRef(
       );
     }
 
-    const parsedHtml = ReactHtmlParser(activeContent.content);
+    const imageSources = extractAllImageSrc(activeContent.content);
+
+    const htmlParserOptions = {
+      replace: (node) => {
+        if (node.type === "tag" && node.name === "img") {
+          const index = imageSources.findIndex(
+            (src) => src === node.attribs.src,
+          );
+          return (
+            <ImageWithButton
+              node={node}
+              index={index}
+              togglePhotoSlider={togglePhotoSlider}
+            />
+          );
+        }
+        return node;
+      },
+    };
+    const parsedHtml = ReactHtmlParser(
+      activeContent.content,
+      htmlParserOptions,
+    );
     const groupId = activeContent.feed.category.id;
     const groupTitle = activeContent.feed.category.title;
-    const imageSources = extractAllImageSrc(activeContent.content);
 
     return (
       <div ref={ref} className="article-content">
@@ -139,15 +198,6 @@ const ArticleDetail = forwardRef(
                 onClick={() => setBodyWidth((prev) => prev - 10)}
               />
             </Tooltip>
-            <Tooltip content="Open photo slider" mini>
-              <Button
-                disabled={imageSources.length === 0}
-                icon={<IconImage />}
-                size="mini"
-                type="primary"
-                onClick={() => setIsPhotoSliderVisible(true)}
-              />
-            </Tooltip>
           </Button.Group>
         </div>
         <div
@@ -156,13 +206,13 @@ const ArticleDetail = forwardRef(
           style={{ fontSize: `${fontSize}rem`, width: `${bodyWidth}%` }}
         >
           {parsedHtml}
-          {imageSources.length > 0 && (
-            <PhotoSlider
-              images={imageSources.map((item) => ({ src: item, key: item }))}
-              visible={isPhotoSliderVisible}
-              onClose={() => setIsPhotoSliderVisible(false)}
-            />
-          )}
+          <PhotoSlider
+            images={imageSources.map((item) => ({ src: item, key: item }))}
+            visible={isPhotoSliderVisible}
+            onClose={() => setIsPhotoSliderVisible(false)}
+            index={selectedIndex}
+            onIndexChange={setSelectedIndex}
+          />
         </div>
         <ActionButtons
           info={info}
