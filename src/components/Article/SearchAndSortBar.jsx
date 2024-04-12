@@ -10,6 +10,7 @@ import useFilterEntries from "../../hooks/useFilterEntries";
 import { setConfig } from "../../utils/config.js";
 import ContentContext from "../Content/ContentContext";
 
+import { useScreenWidth } from "../../hooks/useScreenWidth.js";
 import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = (info) => {
@@ -18,6 +19,8 @@ const SearchAndSortBar = (info) => {
   const setActiveContent = useStore((state) => state.setActiveContent);
   const orderDirection = useStore((state) => state.orderDirection);
   const toggleOrderDirection = useStore((state) => state.toggleOrderDirection);
+  const screenWidth = useScreenWidth();
+  const isMobileView = screenWidth <= 768;
 
   const { setFilterString, setFilterType } = useFilterEntries(info);
 
@@ -40,7 +43,7 @@ const SearchAndSortBar = (info) => {
         }
         onFocus={() => activeContent && setActiveContent(null)}
         onChange={setFilterString}
-        style={{ width: 278, marginLeft: 8 }}
+        style={{ width: isMobileView ? "100%" : 278, marginLeft: 8 }}
       />
       <Tooltip
         mini

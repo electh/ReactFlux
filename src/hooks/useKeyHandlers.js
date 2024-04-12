@@ -3,8 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import useStore from "../Store";
 import ContentContext from "../components/Content/ContentContext";
 import { scrollToElement } from "../utils/scroll.js";
-import { isMobileWidth } from "../utils/viewport.js";
 import useLoadMore from "./useLoadMore.js";
+import { useScreenWidth } from "./useScreenWidth.js";
 
 const useKeyHandlers = (info, handleEntryClick, getEntries) => {
   const {
@@ -23,9 +23,12 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
   const [isLoading, setIsLoading] = useState(false);
   const [checkNext, setCheckNext] = useState(false);
 
+  const screenWidth = useScreenWidth();
+  const isMobileView = screenWidth <= 768;
+
   useEffect(() => {
     const entryList = document.querySelector(".entry-list");
-    if (!entryList || !isMobileWidth()) {
+    if (!entryList || !isMobileView) {
       return;
     }
 
@@ -34,7 +37,7 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
     } else {
       entryList.style.visibility = "visible";
     }
-  }, [activeContent]);
+  }, [activeContent, isMobileView]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {

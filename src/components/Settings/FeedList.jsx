@@ -20,6 +20,7 @@ import { deleteFeed, editFeed, refreshFeed } from "../../apis";
 import { generateRelativeTime } from "../../utils/date";
 import { includesIgnoreCase } from "../../utils/filter";
 
+import { useScreenWidth } from "../../hooks/useScreenWidth.js";
 import "./FeedList.css";
 
 const getSortedFeedsByErrorCount = (feeds) => {
@@ -38,12 +39,13 @@ const FeedList = () => {
   const [feedModalVisible, setFeedModalVisible] = useState(false);
   const [feedForm] = Form.useForm();
   const [selectedFeed, setSelectedFeed] = useState({});
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const feeds = useStore((state) => state.feeds);
   const setFeeds = useStore((state) => state.setFeeds);
   const [showFeeds, setShowFeeds] = useState(getSortedFeedsByErrorCount(feeds));
   const groups = useStore((state) => state.groups);
   const updateFeedHidden = useStore((state) => state.updateFeedHidden);
+  const screenWidth = useScreenWidth();
+  const isMobileView = screenWidth <= 768;
 
   const tableData = showFeeds.map((feed) => ({
     category: feed.category,
@@ -55,14 +57,6 @@ const FeedList = () => {
     title: feed.title,
     hidden: feed.hide_globally,
   }));
-
-  useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth);
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   useEffect(() => {
     setShowFeeds(getSortedFeedsByErrorCount(feeds));
@@ -112,7 +106,6 @@ const FeedList = () => {
       });
   };
 
-  const isMobileView = screenWidth <= 768;
   const columns = [
     {
       title: "Title",
