@@ -128,7 +128,7 @@ const ArticleDetail = forwardRef(
     return (
       <div ref={ref} className="article-content">
         <div className="scroll-container">
-          <div className="article-header">
+          <div className="article-header" style={{ width: `${articleWidth}%` }}>
             <Typography.Title className="article-title" heading={5}>
               <a
                 href={activeContent.url}

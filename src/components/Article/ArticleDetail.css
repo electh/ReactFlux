@@ -1,6 +1,7 @@
 .article-header {
   padding-top: 20px;
   text-align: center;
+  margin: 0 auto;
 }
 
 .article-title, .article-meta, .article-date {
