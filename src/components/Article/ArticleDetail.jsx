@@ -39,12 +39,12 @@ const ImageWithButton = ({ node, index, togglePhotoSlider }) => {
   const isMobileView = screenWidth <= 768;
 
   return (
-    <div
-      style={{ textAlign: "center", position: "relative" }}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-    >
-      <div style={{ display: "inline-block", position: "relative" }}>
+    <div style={{ textAlign: "center", position: "relative" }}>
+      <div
+        style={{ display: "inline-block", position: "relative" }}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+      >
         <img {...node.attribs} alt={node.attribs.alt} />
         <Button
           icon={<IconImage />}
