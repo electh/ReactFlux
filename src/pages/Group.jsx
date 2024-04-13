@@ -1,9 +1,9 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 
-import useStore from "../Store.js";
+import useStore from "../Store";
 import { apiClient } from "../apis/axios";
-import { buildEntriesUrl } from "../apis/index.js";
+import { buildEntriesUrl } from "../apis/index";
 import Content from "../components/Content/Content";
 import { ContentProvider } from "../components/Content/ContentContext";
 

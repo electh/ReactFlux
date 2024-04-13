@@ -7,12 +7,12 @@ import { updateEntryStatus } from "../../apis";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import useLoadMore from "../../hooks/useLoadMore";
-import { filterEntriesByVisibility } from "../../utils/filter.js";
+import { filterEntriesByVisibility } from "../../utils/filter";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
 import "./Content.css";
 import ContentContext from "./ContentContext";
-import FooterPanel from "./FooterPanel.jsx";
+import FooterPanel from "./FooterPanel";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
@@ -192,8 +192,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       39: () => handleRightKey(info),
       66: () => handleBKey(),
       68: () => handleDKey(handleFetchContent),
-      77: () => handleMKey(handleToggleStatus),
-      83: () => handleSKey(handleToggleStarred),
+      77: () => handleMKey(() => handleToggleStatus(activeContent)),
+      83: () => handleSKey(() => handleToggleStarred(activeContent)),
     };
 
     const handleKeyDown = (event) => {

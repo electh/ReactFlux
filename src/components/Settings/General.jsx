@@ -5,8 +5,8 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import React from "react";
-import useStore from "../../Store.js";
-import { setConfig } from "../../utils/config.js";
+import useStore from "../../Store";
+import { setConfig } from "../../utils/config";
 
 import "./General.css";
 

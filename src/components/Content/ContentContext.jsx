@@ -1,5 +1,5 @@
 import React, { createContext, useRef, useState } from "react";
-import { getConfig } from "../../utils/config.js";
+import { getConfig } from "../../utils/config";
 
 const ContentContext = createContext(null);
 

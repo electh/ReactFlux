@@ -7,10 +7,10 @@ import {
 } from "@arco-design/web-react/icon";
 import useStore from "../../Store";
 import useFilterEntries from "../../hooks/useFilterEntries";
-import { setConfig } from "../../utils/config.js";
+import { setConfig } from "../../utils/config";
 import ContentContext from "../Content/ContentContext";
 
-import { useScreenWidth } from "../../hooks/useScreenWidth.js";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = (info) => {

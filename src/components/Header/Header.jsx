@@ -26,7 +26,7 @@ import { useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
 import { applyColor } from "../../utils/colors";
-import { setConfig } from "../../utils/config.js";
+import { setConfig } from "../../utils/config";
 import "./Header.css";
 
 const Header = () => {

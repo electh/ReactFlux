@@ -20,7 +20,7 @@ import { deleteFeed, editFeed, refreshFeed } from "../../apis";
 import { generateRelativeTime } from "../../utils/date";
 import { includesIgnoreCase } from "../../utils/filter";
 
-import { useScreenWidth } from "../../hooks/useScreenWidth.js";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./FeedList.css";
 
 const getSortedFeedsByErrorCount = (feeds) => {

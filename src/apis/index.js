@@ -1,4 +1,4 @@
-import { getConfig } from "../utils/config.js";
+import { getConfig } from "../utils/config";
 import { get24HoursAgoTimestamp } from "../utils/date";
 import { apiClient } from "./axios";
 

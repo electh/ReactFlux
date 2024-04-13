@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 
-import useStore from "../Store.js";
+import useStore from "../Store";
 import ContentContext from "../components/Content/ContentContext";
 import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
 

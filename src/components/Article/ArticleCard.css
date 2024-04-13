@@ -12,11 +12,6 @@
   padding: 10px;
 }
 
-.card-custom-hover-style:hover {
-  box-shadow: 0 4px 10px rgb(var(--gray-3));
-  transform: translateY(-4px);
-}
-
 .card-custom-hover-style img {
   transition: scale 0.15s ease-in-out; /* 添加过渡效果 */
 }
@@ -39,6 +34,37 @@
 
 .article-card {
   margin-bottom: 10px;
+  scroll-snap-type: x mandatory;
+  user-select: none;
+  overflow-x: hidden;
+}
+
+.swipe-card {
+  display: flex;
+  min-width: 300%;
+  scroll-snap-align: start;
+}
+
+.swipe-action,
+.swipe-content {
+  flex: 0 0 calc(100% / 3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swipe-action.left {
+  background-color: rgb(var(--primary-5));
+  justify-content: flex-end;
+}
+
+.swipe-action.right {
+  background-color: rgb(var(--primary-5));
+  justify-content: flex-start;
+}
+
+.swipe-action svg {
+  padding: 0 20px;
 }
 
 .article-card-mini-content {

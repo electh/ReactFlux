@@ -9,7 +9,7 @@ import { extractProtocolAndHostname } from "../../utils/url";
 import ContentContext from "../Content/ContentContext";
 import ArticleCard from "./ArticleCard";
 import LoadingCards from "./LoadingCards";
-import SearchAndSortBar from "./SearchAndSortBar.jsx";
+import SearchAndSortBar from "./SearchAndSortBar";
 
 import "./ArticleList.css";
 

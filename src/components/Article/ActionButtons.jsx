@@ -43,11 +43,11 @@ const ActionButtons = ({ info, handleEntryClick, getEntries }) => {
       />
       <Button
         icon={isUnread ? <IconMinusCircle /> : <IconRecord />}
-        onClick={handleToggleStatus}
+        onClick={() => handleToggleStatus(activeContent)}
         type="primary"
       />
       <Button
-        onClick={handleToggleStarred}
+        onClick={() => handleToggleStarred(activeContent)}
         type="primary"
         icon={
           isStarred ? (

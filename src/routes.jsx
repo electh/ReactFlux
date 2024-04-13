@@ -11,7 +11,7 @@ import Login from "./pages/Login";
 import RouterProtect from "./pages/RouterProtect";
 import Starred from "./pages/Starred";
 import Today from "./pages/Today";
-import { getConfig } from "./utils/config.js";
+import { getConfig } from "./utils/config";
 
 const homePage = getConfig("homePage");
 

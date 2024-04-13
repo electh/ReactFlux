@@ -11,7 +11,7 @@ import { Outlet } from "react-router-dom";
 
 import useStore from "../../Store";
 import { addFeed } from "../../apis";
-import { includesIgnoreCase } from "../../utils/filter.js";
+import { includesIgnoreCase } from "../../utils/filter";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
 

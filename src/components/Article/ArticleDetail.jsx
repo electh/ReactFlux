@@ -8,9 +8,9 @@ import "react-photo-view/dist/react-photo-view.css";
 import { Link, useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
-import { useScreenWidth } from "../../hooks/useScreenWidth.js";
-import { extractAllImageSrc } from "../../utils/images.js";
-import ActionButtons from "./ActionButtons.jsx";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
+import { extractAllImageSrc } from "../../utils/images";
+import ActionButtons from "./ActionButtons";
 import "./ArticleDetail.css";
 
 const CustomLink = ({ url, text }) => {

@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from "react";
 
 import useStore from "../Store";
 import ContentContext from "../components/Content/ContentContext";
-import { scrollToElement } from "../utils/scroll.js";
-import useLoadMore from "./useLoadMore.js";
-import { useScreenWidth } from "./useScreenWidth.js";
+import { scrollToElement } from "../utils/scroll";
+import useLoadMore from "./useLoadMore";
+import { useScreenWidth } from "./useScreenWidth";
 
 const useKeyHandlers = (info, handleEntryClick, getEntries) => {
   const {

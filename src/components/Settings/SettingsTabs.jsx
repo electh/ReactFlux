@@ -10,7 +10,7 @@ import React from "react";
 
 import Appearance from "./Appearance";
 import FeedList from "./FeedList";
-import General from "./General.jsx";
+import General from "./General";
 import GroupList from "./GroupList";
 import Hotkeys from "./Hotkeys";
 import "./SettingsTabs.css";
