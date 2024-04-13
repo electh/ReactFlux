@@ -41,16 +41,23 @@
 
 .swipe-card {
   display: flex;
-  min-width: 300%;
+  min-width: calc(100% + 108px);
   scroll-snap-align: start;
 }
 
 .swipe-action,
 .swipe-content {
-  flex: 0 0 calc(100% / 3);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.swipe-action {
+  flex: 0 0 54px;
+}
+
+.swipe-content {
+  flex: 1;
 }
 
 .swipe-action.left {

@@ -85,7 +85,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const swipeThreshold = 50;
-  const containerWidth = 304;
+  const actionContainerWidth = 54;
 
   const isStarred = entry.starred;
   const isUnread = entry.status === "unread";
@@ -112,7 +112,6 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
       setSwipeOffset(0);
     },
     // trackMouse: true, // PC 测试用
-    delta: 10,
   });
 
   return (
@@ -125,7 +124,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
       <motion.div
         className="swipe-card"
         style={{ x: swipeOffset }}
-        initial={{ x: containerWidth }}
+        initial={{ x: actionContainerWidth }}
         animate={{ x: swipeOffset }}
         transition={{ type: "tween" }}
         onAnimationComplete={() => setIsVisible(true)}
