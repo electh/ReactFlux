@@ -3,6 +3,7 @@ const defaultConfig = {
   fontSize: 1.05,
   homePage: "all",
   layout: "large",
+  markReadOnScroll: false,
   orderBy: "created_at",
   orderDirection: "desc",
   pageSize: 100,

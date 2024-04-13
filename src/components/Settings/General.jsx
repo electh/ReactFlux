@@ -2,6 +2,7 @@ import {
   Divider,
   InputNumber,
   Select,
+  Switch,
   Typography,
 } from "@arco-design/web-react";
 import React from "react";
@@ -19,6 +20,10 @@ const General = () => {
   const pageSize = useStore((state) => state.pageSize);
   const setOrderBy = useStore((state) => state.setOrderBy);
   const setPageSize = useStore((state) => state.setPageSize);
+  const markReadOnScroll = useStore((state) => state.markReadOnScroll);
+  const toggleMarkReadOnScroll = useStore(
+    (state) => state.toggleMarkReadOnScroll,
+  );
 
   return (
     <>
@@ -119,6 +124,27 @@ const General = () => {
             }}
             size="small"
             style={{ width: 128, marginLeft: 16 }}
+          />
+        </div>
+      </div>
+      <Divider />
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Mark articles as read when scrolled off screen
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Automatically mark articles as read when they are scrolled out of
+            the visible screen area
+          </Typography.Text>
+        </div>
+        <div>
+          <Switch
+            checked={markReadOnScroll}
+            onChange={(value) => {
+              toggleMarkReadOnScroll();
+              setConfig("markReadOnScroll", value);
+            }}
           />
         </div>
       </div>

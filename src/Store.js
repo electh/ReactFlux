@@ -84,6 +84,7 @@ const useStore = create((set, get) => ({
   activeContent: null,
   isSysDarkMode: window.matchMedia("(prefers-color-scheme: dark)").matches,
   themeColor: getConfig("themeColor"),
+  markReadOnScroll: getConfig("markReadOnScroll"),
   isInitCompleted: false,
 
   setFeeds: (value) => set({ feeds: value }),
@@ -116,6 +117,11 @@ const useStore = create((set, get) => ({
   },
   setTheme: (value) => {
     set({ theme: value });
+  },
+  toggleMarkReadOnScroll: () => {
+    set((state) => ({
+      markReadOnScroll: !state.markReadOnScroll,
+    }));
   },
 
   initData: async () => {

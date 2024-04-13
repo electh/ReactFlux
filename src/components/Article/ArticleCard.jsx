@@ -8,6 +8,7 @@ import {
 import classNames from "classnames";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
 
 import useStore from "../../Store";
@@ -79,6 +80,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
 const ArticleCard = ({ entry, handleEntryClick, mini }) => {
   const activeContent = useStore((state) => state.activeContent);
   const showFeedIcon = useStore((state) => state.showFeedIcon);
+  const markReadOnScroll = useStore((state) => state.markReadOnScroll);
 
   const isSelected = activeContent && entry.id === activeContent.id;
 
@@ -115,12 +117,29 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
     },
   });
 
+  const [hasBeenInView, setHasBeenInView] = useState(false);
+  const { ref } = useInView({
+    onChange: (inView) => {
+      if (!markReadOnScroll || !isUnread) {
+        return;
+      }
+      if (inView) {
+        if (!hasBeenInView) {
+          setHasBeenInView(true);
+        }
+      } else if (hasBeenInView) {
+        handleToggleStatus(entry);
+      }
+    },
+  });
+
   return (
     <div
       {...handlers}
       className="article-card"
       style={{ visibility: isVisible ? "visible" : "hidden" }}
       key={entry.id}
+      ref={ref}
     >
       <motion.div
         className="swipe-card"
@@ -146,7 +165,6 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
               "card-custom-selected-style": isSelected,
             },
           )}
-          cover={null}
           data-entry-id={entry.id}
           hoverable
           onClick={() => handleEntryClick(entry)}
