@@ -111,7 +111,6 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
       }
       setSwipeOffset(0);
     },
-    // trackMouse: true, // PC 测试用
   });
 
   return (

@@ -60,7 +60,9 @@ const useEntryActions = () => {
     }
 
     const updatedEntry = { ...entry, status: newStatus };
-    setActiveContent(updatedEntry);
+    if (activeContent) {
+      setActiveContent(updatedEntry);
+    }
     setEntries((prev) => updateEntries(prev, updatedEntry));
     setUnreadEntries((prev) => updateEntries(prev, updatedEntry));
     setFilteredEntries((prev) => updateEntries(prev, updatedEntry));
@@ -80,7 +82,9 @@ const useEntryActions = () => {
     }
 
     const updatedEntry = { ...entry, starred: newStarred };
-    setActiveContent(updatedEntry);
+    if (activeContent) {
+      setActiveContent(updatedEntry);
+    }
     setEntries((prev) => updateEntries(prev, updatedEntry));
     setUnreadEntries((prev) => updateEntries(prev, updatedEntry));
     setFilteredEntries((prev) => updateEntries(prev, updatedEntry));

@@ -65,17 +65,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const { getFirstImage } = useLoadMore(info);
 
-  const [showArticleDetail, setShowArticleDetail] = useState(false);
   const [isFilteredEntriesUpdated, setIsFilteredEntriesUpdated] =
     useState(false);
   const [isFirstRenderCompleted, setIsFirstRenderCompleted] = useState(false);
 
   const entryListRef = useRef(null);
   const cardsRef = useRef(null);
-
-  useEffect(() => {
-    setShowArticleDetail(activeContent !== null);
-  }, [activeContent]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -150,7 +145,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   }, [total, unreadCount]);
 
   const handleEntryClick = async (entry) => {
-    setShowArticleDetail(false);
+    setActiveContent(null);
 
     setTimeout(() => {
       setActiveContent({ ...entry, status: "read" });
@@ -203,7 +198,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       }
     };
 
-    if (showArticleDetail) {
+    if (activeContent) {
       document.addEventListener("keydown", handleKeyDown);
     } else {
       document.removeEventListener("keydown", handleKeyDown);
@@ -212,7 +207,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [activeContent, filteredEntries, showArticleDetail]);
+  }, [activeContent, filteredEntries]);
 
   const updateUI = (articles, articlesUnread, responseAll, responseUnread) => {
     setEntries(articles);
@@ -317,7 +312,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         />
       </div>
       <CSSTransition
-        in={showArticleDetail}
+        in={activeContent != null}
         timeout={200}
         nodeRef={entryDetailRef}
         classNames="fade"
