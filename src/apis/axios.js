@@ -39,7 +39,7 @@ apiClient.interceptors.request.use(
 const handleRetry = async (error) => {
   const { config } = error;
   // 检查是否因为超时而失败以及是否配置了重试策略
-  if (error.code !== "ECONNABORTED" || !config || !config.retry) {
+  if (error.code !== "ECONNABORTED" || !config?.retry) {
     return Promise.reject(error);
   }
 
