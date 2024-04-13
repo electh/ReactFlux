@@ -118,17 +118,24 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
   });
 
   const [hasBeenInView, setHasBeenInView] = useState(false);
+  const [shouldSkip, setShouldSkip] = useState(false);
+  const toggleStatus = () => handleToggleStatus(entry);
+  const threshold = 20;
+
   const { ref } = useInView({
-    onChange: (inView) => {
+    skip: shouldSkip,
+    onChange: (inView, entry) => {
       if (!markReadOnScroll || !isUnread) {
         return;
       }
       if (inView) {
-        if (!hasBeenInView) {
-          setHasBeenInView(true);
-        }
+        setHasBeenInView(true);
       } else if (hasBeenInView) {
-        handleToggleStatus(entry);
+        const { top } = entry.boundingClientRect;
+        if (top < threshold) {
+          toggleStatus();
+          setShouldSkip(true);
+        }
       }
     },
   });
