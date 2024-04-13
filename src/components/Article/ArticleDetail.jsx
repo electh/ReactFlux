@@ -63,6 +63,22 @@ const ImageWithButton = ({ node, index, togglePhotoSlider }) => {
   );
 };
 
+const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
+  replace: (node) => {
+    if (node.type === "tag" && node.name === "img") {
+      const index = imageSources.findIndex((src) => src === node.attribs.src);
+      return (
+        <ImageWithButton
+          node={node}
+          index={index}
+          togglePhotoSlider={togglePhotoSlider}
+        />
+      );
+    }
+    return node;
+  },
+});
+
 const ArticleDetail = forwardRef(
   (
     {
@@ -100,24 +116,10 @@ const ArticleDetail = forwardRef(
     }
 
     const imageSources = extractAllImageSrc(activeContent.content);
-
-    const htmlParserOptions = {
-      replace: (node) => {
-        if (node.type === "tag" && node.name === "img") {
-          const index = imageSources.findIndex(
-            (src) => src === node.attribs.src,
-          );
-          return (
-            <ImageWithButton
-              node={node}
-              index={index}
-              togglePhotoSlider={togglePhotoSlider}
-            />
-          );
-        }
-        return node;
-      },
-    };
+    const htmlParserOptions = getHtmlParserOptions(
+      imageSources,
+      togglePhotoSlider,
+    );
     const parsedHtml = ReactHtmlParser(
       activeContent.content,
       htmlParserOptions,
