@@ -54,6 +54,9 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
 
   return (
     <div className={contentClass}>
+      <div style={{ padding: mini ? "0 8px 0 0" : "0 0 8px 0" }}>
+        <RenderImage entry={entry} isThumbnail={mini} />
+      </div>
       <div className={mini ? "article-card-mini-content-text" : ""}>
         <Typography.Text
           className={entry.status === "unread" ? "title-unread" : "title-read"}
@@ -69,7 +72,6 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
         </Typography.Text>
         {entry.starred && <IconStarFill className="icon-starred" />}
       </div>
-      <RenderImage entry={entry} isThumbnail={mini} />
     </div>
   );
 };
@@ -144,9 +146,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
               "card-custom-selected-style": isSelected,
             },
           )}
-          cover={
-            mini ? null : <RenderImage entry={entry} isThumbnail={false} />
-          }
+          cover={null}
           data-entry-id={entry.id}
           hoverable
           onClick={() => handleEntryClick(entry)}
