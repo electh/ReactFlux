@@ -63,7 +63,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleEntryStatusUpdate,
   } = useEntryActions();
 
-  const { getFirstImage } = useLoadMore(info);
+  const { parseFirstImage } = useLoadMore(info);
 
   const [isFilteredEntriesUpdated, setIsFilteredEntriesUpdated] =
     useState(false);
@@ -236,8 +236,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const handleResponses = (responseAll, responseUnread) => {
     if (responseAll?.data?.entries && responseUnread?.data?.total >= 0) {
-      const articles = responseAll.data.entries.map(getFirstImage);
-      const articlesUnread = responseUnread.data.entries.map(getFirstImage);
+      const articles = responseAll.data.entries.map(parseFirstImage);
+      const articlesUnread = responseUnread.data.entries.map(parseFirstImage);
       updateUI(articles, articlesUnread, responseAll, responseUnread);
     }
   };
