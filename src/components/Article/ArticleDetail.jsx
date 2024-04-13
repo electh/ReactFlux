@@ -56,7 +56,10 @@ const ImageWithButton = ({ node, index, togglePhotoSlider }) => {
             opacity: isMobileView || isHovering ? 1 : 0,
             transition: "opacity 0.3s",
           }}
-          onClick={() => togglePhotoSlider(index)}
+          onClick={(event) => {
+            event.preventDefault();
+            togglePhotoSlider(index);
+          }}
         />
       </div>
     </div>
