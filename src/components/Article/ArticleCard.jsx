@@ -54,7 +54,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
   });
 
   return (
-    <div className={contentClass}>
+    <div className={contentClass} style={{ width: "calc(100% - 32px)" }}>
       <div style={{ padding: mini ? "0 8px 0 0" : "0 0 8px 0" }}>
         <RenderImage entry={entry} isThumbnail={mini} />
       </div>
