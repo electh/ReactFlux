@@ -38,19 +38,30 @@
   scroll-snap-type: x mandatory;
   user-select: none;
   overflow-x: hidden;
+  position: relative;
 }
 
 .swipe-card {
   display: flex;
-  min-width: calc(100% + 108px);
-  scroll-snap-align: start;
+  position: relative;
+  z-index: 1;
 }
 
-.swipe-action,
-.swipe-content {
+.swipe-actions {
   display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  z-index: 0;
+  background-color: rgb(var(--primary-5));
+}
+
+.swipe-actions {
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  margin: 1px;
 }
 
 .swipe-action {

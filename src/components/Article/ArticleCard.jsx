@@ -87,9 +87,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
   const { handleToggleStarred, handleToggleStatus } = useEntryActions();
 
   const [swipeOffset, setSwipeOffset] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
   const swipeThreshold = 50;
-  const actionContainerWidth = 54;
 
   const isStarred = entry.starred;
   const isUnread = entry.status === "unread";
@@ -141,28 +139,13 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
   });
 
   return (
-    <div
-      {...handlers}
-      className="article-card"
-      style={{ visibility: isVisible ? "visible" : "hidden" }}
-      key={entry.id}
-    >
+    <div {...handlers} className="article-card" key={entry.id}>
       <div ref={ref}>
         <motion.div
           className="swipe-card"
-          style={{ x: swipeOffset }}
-          initial={{ x: actionContainerWidth }}
           animate={{ x: swipeOffset }}
           transition={{ type: "tween" }}
-          onAnimationComplete={() => setIsVisible(true)}
         >
-          <div className="swipe-action left">
-            {isStarred ? (
-              <IconStarFill style={{ color: "#ffcd00" }} />
-            ) : (
-              <IconStar />
-            )}
-          </div>
           <Card
             className={classNames(
               "swipe-content",
@@ -187,10 +170,19 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
               }
             />
           </Card>
+        </motion.div>
+        <div className="swipe-actions">
+          <div className="swipe-action left">
+            {isStarred ? (
+              <IconStarFill style={{ color: "#ffcd00" }} />
+            ) : (
+              <IconStar />
+            )}
+          </div>
           <div className="swipe-action right">
             {isUnread ? <IconMinusCircle /> : <IconRecord />}
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

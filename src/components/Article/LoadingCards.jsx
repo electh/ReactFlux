@@ -11,7 +11,7 @@ const LoadingCards = ({ loading }) => {
 
   const renderCard = (index) => (
     <Card
-      calssName="card-style"
+      className="card-style"
       cover={layout === "large" && <div className="card-cover-style" />}
       key={index}
     >
