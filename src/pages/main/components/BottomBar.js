@@ -71,7 +71,8 @@ export default function BottomBar() {
       className="bottom-bar"
       style={{
         display: "flex",
-        width: "280px",
+        width: "100%",
+        boxSizing: "border-box",
         bottom: 0,
         zIndex: "2",
         justifyContent: "space-between",

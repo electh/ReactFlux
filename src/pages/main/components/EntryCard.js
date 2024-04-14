@@ -11,7 +11,7 @@ import { useConfigStore } from "../../../store/configStore";
 
 const { Meta } = Card;
 
-const EntryCard = ({ entry, children }) => {
+const EntryCard = ({ entry, children, isCompact }) => {
   const activeEntry = useStore((state) => state.activeEntry);
   const clickCard = useStore((state) => state.clickCard);
   const isMobile = useStore((state) => state.isMobile);
@@ -54,84 +54,160 @@ const EntryCard = ({ entry, children }) => {
         overflow: "hidden",
       }}
       cover={
-        entry.imgSrc ? (
-          <div
-            style={{
-              overflow: "hidden",
-              width: isMobile ? "100%" : "280px",
-              aspectRatio: "16/9",
-              position: "relative",
-            }}
-          >
-            <LazyLoadingImage
-              alt={entry.title}
-              src={entry.imgSrc}
-              className="card-cover"
+        !isCompact ? (
+          entry.imgSrc ? (
+            <div
               style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                position: "absolute",
-                top: 0,
-                left: 0,
+                overflow: "hidden",
+                width: isMobile ? "100%" : "340px",
+                aspectRatio: "16/9",
+                position: "relative",
               }}
-              status={entry.status}
-            />
-          </div>
+            >
+              <LazyLoadingImage
+                alt={entry.title}
+                src={entry.imgSrc}
+                className="card-cover"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                }}
+                status={entry.status}
+              />
+            </div>
+          ) : null
         ) : null
       }
     >
       <Meta
         title={null}
         description={
-          <div style={{ color: "var(--color-text-3)", fontSize: "12px" }}>
-            <Typography.Text
-              style={{
-                lineHeight: "1em",
-                fontSize: "15px",
-                fontWeight: 500,
-                color:
-                  entry.status === "unread"
-                    ? "var(--color-text-1)"
-                    : "var(--color-text-3)",
-              }}
-            >
-              {entry.title}
-            </Typography.Text>
-            <br />
+          isCompact ? (
             <div
               style={{
+                color: "var(--color-text-3)",
+                fontSize: "12px",
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginTop: "8px",
               }}
             >
-              <span
+              {entry.imgSrc ? (
+                <div
+                  style={{
+                    height: 100,
+                    aspectRatio: 1,
+                    overflow: "hidden",
+                    border: "1px solid var(--color-border-1)",
+                    borderRadius: "4px",
+                    marginRight: "10px",
+                    position: "relative",
+                  }}
+                >
+                  <LazyLoadingImage
+                    alt={entry.title}
+                    src={entry.imgSrc}
+                    className="card-cover"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      position: "absolute",
+                    }}
+                    status={entry.status}
+                  />
+                </div>
+              ) : null}
+              <div style={{ flex: 1 }}>
+                <Space direction="vertical" size={4}>
+                  <Typography.Text
+                    style={{
+                      lineHeight: "1em",
+                      fontSize: "14px",
+                      fontWeight: 500,
+                      color:
+                        entry.status === "unread"
+                          ? "var(--color-text-1)"
+                          : "var(--color-text-3)",
+                    }}
+                  >
+                    {entry.title}
+                  </Typography.Text>
+                  {entry.feed.title.toUpperCase()}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    {formatDate(entry.published_at)}
+                  </div>
+                </Space>
+                {entry.starred && (
+                  <IconStarFill
+                    style={{
+                      position: "absolute",
+                      right: "12px",
+                      bottom: "12px",
+                    }}
+                  />
+                )}
+              </div>
+              <div>{children}</div>
+            </div>
+          ) : (
+            <div style={{ color: "var(--color-text-3)", fontSize: "12px" }}>
+              <Typography.Text
+                style={{
+                  lineHeight: "1em",
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  color:
+                    entry.status === "unread"
+                      ? "var(--color-text-1)"
+                      : "var(--color-text-3)",
+                }}
+              >
+                {entry.title}
+              </Typography.Text>
+              <br />
+              <div
                 style={{
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: "8px",
                 }}
               >
-                {showIcons === "on" ? <FeedIcon feed={entry.feed} /> : null}
-                <Space>
-                  <span
-                    style={{
-                      maxWidth: "50%",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {entry.feed.title.toUpperCase()}
-                  </span>
-                  <span>{formatDate(entry.published_at)}</span>
-                </Space>
-              </span>
-              {entry.starred && <IconStarFill />}
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {showIcons === "on" ? <FeedIcon feed={entry.feed} /> : null}
+                  <Space>
+                    <span
+                      style={{
+                        maxWidth: "50%",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {entry.feed.title.toUpperCase()}
+                    </span>
+                    <span>{formatDate(entry.published_at)}</span>
+                  </Space>
+                </span>
+                {entry.starred && <IconStarFill />}
+              </div>
+              <div>{children}</div>
             </div>
-            <div>{children}</div>
-          </div>
+          )
         }
       />
     </Card>

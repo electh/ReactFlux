@@ -6,7 +6,6 @@ import { Button } from "@arco-design/web-react";
 import { IconArrowDown } from "@arco-design/web-react/icon";
 import { useStore } from "../../store/Store";
 import { useConfigStore } from "../../store/configStore";
-import EntryCardCompact from "./components/EntryCardCompact";
 import { AnimatePresence, motion } from "framer-motion";
 import Ripple from "./components/Ripple";
 import LoadingCards from "./components/LoadingCards";
@@ -52,7 +51,7 @@ export default function EntryList({ entries, info }) {
     <div
       className="entry-list-panel"
       style={{
-        width: isMoble ? "100%" : "300px",
+        width: isMoble ? "100%" : "360px",
         height: "100%",
         display: "flex",
         flexDirection: "column",
@@ -77,17 +76,15 @@ export default function EntryList({ entries, info }) {
               transition={{ duration: 0.2 }}
             >
               <div className="card-list" style={{ padding: "0 10px 0 10px" }}>
-                {showEntries.map((entry) =>
-                  layout === "compact" ? (
-                    <EntryCardCompact entry={entry} key={entry.id}>
-                      <Ripple color="var(--color-text-4)" duration={1000} />
-                    </EntryCardCompact>
-                  ) : (
-                    <EntryCard entry={entry} key={entry.id}>
-                      <Ripple color="var(--color-text-4)" duration={1000} />
-                    </EntryCard>
-                  ),
-                )}
+                {showEntries.map((entry) => (
+                  <EntryCard
+                    entry={entry}
+                    key={entry.id}
+                    isCompact={layout === "compact"}
+                  >
+                    <Ripple color="var(--color-text-4)" duration={1000} />
+                  </EntryCard>
+                ))}
                 {entries.length > showEntries.length && (
                   <Button
                     style={{ marginBottom: 10 }}
