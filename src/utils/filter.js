@@ -3,6 +3,10 @@ const includesIgnoreCase = (text, searchText) => {
 };
 
 const filterEntries = (entries, filterType, filterStatus, filterString) => {
+  if (!filterString) {
+    return entries;
+  }
+
   // 0: title 1: content
   if (filterType === "0") {
     return filterStatus === "all"
