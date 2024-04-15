@@ -4,6 +4,7 @@ import { CSSTransition } from "react-transition-group";
 
 import useStore from "../../Store";
 import { updateEntryStatus } from "../../apis";
+import { useConfigAtom } from "../../hooks/useConfigAtom";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import useLoadMore from "../../hooks/useLoadMore";
@@ -28,12 +29,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const updateGroupUnreadCount = useStore(
     (state) => state.updateGroupUnreadCount,
   );
-  const showAllFeeds = useStore((state) => state.showAllFeeds);
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
-  const orderBy = useStore((state) => state.orderBy);
-  const orderDirection = useStore((state) => state.orderDirection);
   const initData = useStore((state) => state.initData);
   const isInitCompleted = useStore((state) => state.isInitCompleted);
+
+  const { config } = useConfigAtom();
+  const { orderBy, orderDirection, showAllFeeds } = config;
 
   const {
     entries,
@@ -268,7 +269,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setOffset(0);
     setUnreadOffset(0);
     if (!isInitCompleted) {
-      initData();
+      await initData();
       return;
     }
     await getArticleList();

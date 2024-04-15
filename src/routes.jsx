@@ -16,30 +16,12 @@ import { getConfig } from "./utils/config";
 const homePage = getConfig("homePage");
 
 const children = [
-  {
-    path: "/all",
-    element: <All />,
-  },
-  {
-    path: "/today",
-    element: <Today />,
-  },
-  {
-    path: "/starred",
-    element: <Starred />,
-  },
-  {
-    path: "/history",
-    element: <History />,
-  },
-  {
-    path: "/group/:id",
-    element: <Group />,
-  },
-  {
-    path: "/feed/:id",
-    element: <Feed />,
-  },
+  { path: "/all", element: <All /> },
+  { path: "/today", element: <Today /> },
+  { path: "/starred", element: <Starred /> },
+  { path: "/history", element: <History /> },
+  { path: "/group/:id", element: <Group /> },
+  { path: "/feed/:id", element: <Feed /> },
 ];
 
 const router = createBrowserRouter([

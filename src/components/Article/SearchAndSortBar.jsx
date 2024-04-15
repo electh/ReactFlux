@@ -5,9 +5,8 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@arco-design/web-react/icon";
-import useStore from "../../Store";
+import { useConfigAtom } from "../../hooks/useConfigAtom";
 import useFilterEntries from "../../hooks/useFilterEntries";
-import { setConfig } from "../../utils/config";
 import ContentContext from "../Content/ContentContext";
 
 import { useScreenWidth } from "../../hooks/useScreenWidth";
@@ -15,11 +14,12 @@ import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = (info) => {
   const { filterString, filterType } = useContext(ContentContext);
-  const orderDirection = useStore((state) => state.orderDirection);
-  const toggleOrderDirection = useStore((state) => state.toggleOrderDirection);
   const { isMobileView } = useScreenWidth();
 
   const { setFilterString, setFilterType } = useFilterEntries(info);
+
+  const { config, updateConfig } = useConfigAtom();
+  const { orderDirection } = config;
 
   return (
     <div className="search-and-sort-bar">
@@ -60,8 +60,7 @@ const SearchAndSortBar = (info) => {
           onClick={() => {
             const newOrderDirection =
               orderDirection === "desc" ? "asc" : "desc";
-            toggleOrderDirection();
-            setConfig("orderDirection", newOrderDirection);
+            updateConfig({ orderDirection: newOrderDirection });
           }}
         />
       </Tooltip>

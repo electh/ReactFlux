@@ -3,10 +3,11 @@ import { useContext, useState } from "react";
 import useStore from "../Store";
 import ContentContext from "../components/Content/ContentContext";
 import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
+import { useConfigAtom } from "./useConfigAtom";
 
 const useLoadMore = () => {
-  const pageSize = useStore((state) => state.pageSize);
-  const showAllFeeds = useStore((state) => state.showAllFeeds);
+  const { config } = useConfigAtom();
+  const { pageSize, showAllFeeds } = config;
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
 
   const {

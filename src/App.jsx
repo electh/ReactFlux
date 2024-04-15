@@ -5,10 +5,12 @@ import useStore from "./Store";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Sidebar from "./components/Sidebar/Sidebar";
+import { useConfigAtom } from "./hooks/useConfigAtom";
 
 const App = () => {
   const initData = useStore((state) => state.initData);
-  const theme = useStore((state) => state.theme);
+  const { config } = useConfigAtom();
+  const { theme } = config;
   const isSysDarkMode = useStore((state) => state.isSysDarkMode);
   const setIsSysDarkMode = useStore((state) => state.setIsSysDarkMode);
 

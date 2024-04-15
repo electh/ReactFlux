@@ -1,4 +1,4 @@
-const defaultConfig = {
+export const defaultConfig = {
   articleWidth: 90,
   fontSize: 1.05,
   homePage: "all",
@@ -14,7 +14,7 @@ const defaultConfig = {
   themeColor: "Blue",
 };
 
-const getConfig = (name) => {
+export const getConfig = (name) => {
   const config = JSON.parse(localStorage.getItem("config")) || {};
   if (Object.hasOwn(config, name)) {
     return config[name];
@@ -24,11 +24,3 @@ const getConfig = (name) => {
   }
   return null;
 };
-
-const setConfig = (name, value) => {
-  const config = JSON.parse(localStorage.getItem("config")) || {};
-  config[name] = value;
-  localStorage.setItem("config", JSON.stringify(config));
-};
-
-export { getConfig, setConfig };

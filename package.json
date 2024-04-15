@@ -19,6 +19,7 @@
     "classnames": "^2.5.1",
     "dayjs": "^1.11.10",
     "html-react-parser": "^5.1.9",
+    "jotai": "^2.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-intersection-observer": "^9.8.2",

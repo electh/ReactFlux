@@ -8,22 +8,14 @@ import {
 } from "@arco-design/web-react";
 import React from "react";
 
-import useStore from "../../Store";
 import { applyColor, colors, getColorValue } from "../../utils/colors";
-import { setConfig } from "../../utils/config";
 import "./Appearance.css";
 
+import { useConfigAtom } from "../../hooks/useConfigAtom";
+
 const Appearance = () => {
-  const toggleLayout = useStore((state) => state.toggleLayout);
-  const layout = useStore((state) => state.layout);
-  const fontSize = useStore((state) => state.fontSize);
-  const setFontSize = useStore((state) => state.setFontSize);
-  const showFeedIcon = useStore((state) => state.showFeedIcon);
-  const toggleShowFeedIcon = useStore((state) => state.toggleShowFeedIcon);
-  const themeColor = useStore((state) => state.themeColor);
-  const setThemeColor = useStore((state) => state.setThemeColor);
-  const articleWidth = useStore((state) => state.articleWidth);
-  const setArticleWidth = useStore((state) => state.setArticleWidth);
+  const { config, updateConfig } = useConfigAtom();
+  const { articleWidth, fontSize, layout, showFeedIcon, themeColor } = config;
 
   return (
     <>
@@ -56,13 +48,13 @@ const Appearance = () => {
                       : "none",
                 }}
                 onClick={() => {
-                  setThemeColor(c.name);
-                  setConfig("themeColor", c.name);
+                  updateConfig({ themeColor: c.name });
                   applyColor(c.name);
                 }}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
-                    setThemeColor(c.name);
+                    updateConfig({ themeColor: c.name });
+                    applyColor(c.name);
                   }
                 }}
               />
@@ -84,10 +76,9 @@ const Appearance = () => {
         <div>
           <Switch
             checked={layout === "small"}
-            onChange={(value) => {
-              toggleLayout();
-              setConfig("layout", value ? "small" : "large");
-            }}
+            onChange={(value) =>
+              updateConfig({ layout: value ? "small" : "large" })
+            }
           />
         </div>
       </div>
@@ -104,10 +95,7 @@ const Appearance = () => {
         <div>
           <Switch
             checked={showFeedIcon}
-            onChange={(value) => {
-              toggleShowFeedIcon();
-              setConfig("showFeedIcon", value);
-            }}
+            onChange={(value) => updateConfig({ showFeedIcon: value })}
           />
         </div>
       </div>
@@ -132,10 +120,7 @@ const Appearance = () => {
               step={0.05}
               style={{ width: 200 }}
               value={fontSize}
-              onChange={(value) => {
-                setFontSize(value);
-                setConfig("fontSize", value);
-              }}
+              onChange={(value) => updateConfig({ fontSize: value })}
             />
             <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
           </Space>
@@ -162,10 +147,7 @@ const Appearance = () => {
               step={10}
               style={{ width: 200 }}
               value={articleWidth}
-              onChange={(value) => {
-                setArticleWidth(value);
-                setConfig("bodyWidth", value);
-              }}
+              onChange={(value) => updateConfig({ articleWidth: value })}
             />
             <Typography.Text>90%</Typography.Text>
           </Space>

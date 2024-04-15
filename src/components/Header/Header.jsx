@@ -26,20 +26,20 @@ import { useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
 import { applyColor } from "../../utils/colors";
-import { setConfig } from "../../utils/config";
 import "./Header.css";
+
+import { useConfigAtom } from "../../hooks/useConfigAtom";
 
 const Header = () => {
   const navigate = useNavigate();
   const setVisible = useStore((state) => state.setVisible);
-  const theme = useStore((state) => state.theme);
-  const setTheme = useStore((state) => state.setTheme);
   const toggleCollapsed = useStore((state) => state.toggleCollapsed);
-  const showAllFeeds = useStore((state) => state.showAllFeeds);
-  const toggleShowAllFeeds = useStore((state) => state.toggleShowAllFeeds);
   const feeds = useStore((state) => state.feeds);
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
   const setUnreadTotal = useStore((state) => state.setUnreadTotal);
+
+  const { config, updateConfig } = useConfigAtom();
+  const { showAllFeeds, theme } = config;
 
   const handleLogout = () => {
     localStorage.clear();
@@ -93,18 +93,18 @@ const Header = () => {
               size="small"
               icon={showAllFeeds ? <IconEye /> : <IconEyeInvisible />}
               onClick={() => {
-                toggleShowAllFeeds();
-                setConfig("showAllFeeds", showAllFeeds);
-                if (!showAllFeeds && hiddenFeedIds) {
+                const newShowAllFeeds = !showAllFeeds;
+                if (newShowAllFeeds) {
+                  setUnreadTotal(() =>
+                    feeds.reduce((acc, feed) => acc + feed.unreadCount, 0),
+                  );
+                } else {
                   const showedFeedsUnreadCount = feeds
                     .filter((feed) => !hiddenFeedIds.includes(feed.id))
                     .reduce((acc, feed) => acc + feed.unreadCount, 0);
                   setUnreadTotal(() => showedFeedsUnreadCount);
-                } else {
-                  setUnreadTotal(() =>
-                    feeds.reduce((acc, feed) => acc + feed.unreadCount, 0),
-                  );
                 }
+                updateConfig({ showAllFeeds: newShowAllFeeds });
               }}
             />
           </Tooltip>
@@ -123,10 +123,7 @@ const Header = () => {
                   <Menu.Item
                     className="theme-menu-item"
                     key={themeOption}
-                    onClick={() => {
-                      setTheme(themeOption);
-                      setConfig("theme", themeOption);
-                    }}
+                    onClick={() => updateConfig({ theme: themeOption })}
                   >
                     {themeOption.charAt(0).toUpperCase() + themeOption.slice(1)}
                     {theme === themeOption && (
@@ -146,12 +143,10 @@ const Header = () => {
               onClick={() => {
                 switch (theme) {
                   case "light":
-                    setTheme("dark");
-                    setConfig("theme", "dark");
+                    updateConfig({ theme: "dark" });
                     break;
                   case "dark":
-                    setTheme("light");
-                    setConfig("theme", "light");
+                    updateConfig({ theme: "light" });
                     break;
                   default:
                     break;

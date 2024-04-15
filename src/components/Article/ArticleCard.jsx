@@ -12,6 +12,7 @@ import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
 
 import useStore from "../../Store";
+import { useConfigAtom } from "../../hooks/useConfigAtom";
 import useEntryActions from "../../hooks/useEntryActions";
 import { generateRelativeTime } from "../../utils/date";
 import "./ArticleCard.css";
@@ -79,8 +80,8 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
 
 const ArticleCard = ({ entry, handleEntryClick, mini }) => {
   const activeContent = useStore((state) => state.activeContent);
-  const showFeedIcon = useStore((state) => state.showFeedIcon);
-  const markReadOnScroll = useStore((state) => state.markReadOnScroll);
+  const { config } = useConfigAtom();
+  const { markReadOnScroll, showFeedIcon } = config;
 
   const isSelected = activeContent && entry.id === activeContent.id;
 

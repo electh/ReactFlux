@@ -64,27 +64,14 @@ const useStore = create((set, get) => ({
   readCount: 0,
   hiddenFeedIds: [],
   hiddenGroupIds: [],
-  articleWidth: getConfig("articleWidth"),
-  showStatus: getConfig("showStatus"),
-  homePage: getConfig("homePage"),
-  orderBy: getConfig("orderBy"),
-  orderDirection: getConfig("orderDirection"),
-  pageSize: getConfig("pageSize"),
-  showAllFeeds: getConfig("showAllFeeds"),
   loading: true,
   visible: {
     settings: false,
     addFeed: false,
   },
-  theme: getConfig("theme"),
-  layout: getConfig("layout"),
-  fontSize: getConfig("fontSize"),
-  showFeedIcon: getConfig("showFeedIcon"),
   collapsed: window.innerWidth <= 992,
   activeContent: null,
   isSysDarkMode: window.matchMedia("(prefers-color-scheme: dark)").matches,
-  themeColor: getConfig("themeColor"),
-  markReadOnScroll: getConfig("markReadOnScroll"),
   isInitCompleted: false,
 
   setFeeds: (value) => set({ feeds: value }),
@@ -97,32 +84,10 @@ const useStore = create((set, get) => ({
     set((state) => ({ starredCount: updater(state.starredCount) })),
   setReadCount: (updater) =>
     set((state) => ({ readCount: updater(state.readCount) })),
-  setArticleWidth: (value) => set({ articleWidth: value }),
-  setShowStatus: (value) => set({ showStatus: value }),
-  setHomePage: (value) => set({ homePage: value }),
-  setOrderBy: (value) => set({ orderBy: value }),
-  toggleOrderDirection: () =>
-    set((state) => ({
-      orderDirection: state.orderDirection === "desc" ? "asc" : "desc",
-    })),
-  setPageSize: (value) => set({ pageSize: value }),
-  toggleShowAllFeeds: () =>
-    set((state) => ({ showAllFeeds: !state.showAllFeeds })),
   setActiveContent: (activeContent) => {
     set({ activeContent: activeContent });
   },
   setIsSysDarkMode: (value) => set({ isSysDarkMode: value }),
-  setThemeColor: (value) => {
-    set({ themeColor: value });
-  },
-  setTheme: (value) => {
-    set({ theme: value });
-  },
-  toggleMarkReadOnScroll: () => {
-    set((state) => ({
-      markReadOnScroll: !state.markReadOnScroll,
-    }));
-  },
 
   initData: async () => {
     set({ loading: true });
@@ -162,11 +127,9 @@ const useStore = create((set, get) => ({
 
       const unreadInfo = unreadResponse.data.unreads;
 
+      const showAllFeeds = getConfig("showAllFeeds");
       const unreadTotal = Object.keys(unreadInfo).reduce((acc, id) => {
-        if (
-          get().showAllFeeds ||
-          !hiddenFeedIds.includes(Number.parseInt(id))
-        ) {
+        if (showAllFeeds || !hiddenFeedIds.includes(Number.parseInt(id))) {
           return acc + unreadInfo[id];
         }
         return acc;
@@ -216,7 +179,8 @@ const useStore = create((set, get) => ({
   updateFeedHidden: (feedId, hidden) => {
     set((state) => {
       let { unreadTotal } = state;
-      if (!get().showAllFeeds) {
+      const showAllFeeds = getConfig("showAllFeeds");
+      if (!showAllFeeds) {
         const feed = state.feeds.find((f) => f.id === feedId);
         if (feed) {
           unreadTotal += hidden ? -feed.unreadCount : feed.unreadCount;
@@ -237,7 +201,8 @@ const useStore = create((set, get) => ({
       let { unreadTotal } = state;
       let updatedHiddenFeedIds = [...state.hiddenFeedIds];
 
-      if (!get().showAllFeeds) {
+      const showAllFeeds = getConfig("showAllFeeds");
+      if (!showAllFeeds) {
         const group = state.groups.find((g) => g.id === groupId);
         if (group) {
           unreadTotal += hidden ? -group.unreadCount : group.unreadCount;
@@ -273,16 +238,6 @@ const useStore = create((set, get) => ({
       groups: updateUnreadCount(state.groups, groupId, countOrStatus),
     }));
   },
-
-  toggleLayout: () => {
-    const newLayout = get().layout === "large" ? "small" : "large";
-    set({ layout: newLayout });
-  },
-
-  setFontSize: (sizeStr) => set({ fontSize: sizeStr }),
-
-  toggleShowFeedIcon: () =>
-    set((state) => ({ showFeedIcon: !state.showFeedIcon })),
 
   setVisible: (modalName, visible) => {
     set((state) => ({ visible: { ...state.visible, [modalName]: visible } }));

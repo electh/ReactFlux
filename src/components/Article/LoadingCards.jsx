@@ -1,12 +1,13 @@
 import { Card, Skeleton } from "@arco-design/web-react";
 import React from "react";
 
-import useStore from "../../Store";
+import { useConfigAtom } from "../../hooks/useConfigAtom";
 
 import "./LoadingCards.css";
 
 const LoadingCards = ({ loading }) => {
-  const layout = useStore((state) => state.layout);
+  const { config } = useConfigAtom();
+  const { layout } = config;
   const cardCount = layout === "large" ? 2 : 4;
 
   const renderCard = (index) => (

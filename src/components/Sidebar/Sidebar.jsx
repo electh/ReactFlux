@@ -20,6 +20,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import isURL from "validator/es/lib/isURL";
 
 import useStore from "../../Store";
+import { useConfigAtom } from "../../hooks/useConfigAtom";
 import { extractProtocolAndHostname } from "../../utils/url";
 import "./Sidebar.css";
 
@@ -27,7 +28,9 @@ const MenuItem = Menu.Item;
 const { Sider } = Layout;
 
 const GroupTitle = ({ group, isOpen, feedsGroupedById }) => {
-  const showAllFeeds = useStore((state) => state.showAllFeeds);
+  const { config } = useConfigAtom();
+  const { showAllFeeds } = config;
+
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
 
   let { unreadCount } = group;
@@ -66,13 +69,14 @@ const Sidebar = () => {
   const unreadToday = useStore((state) => state.unreadToday);
   const starredCount = useStore((state) => state.starredCount);
   const readCount = useStore((state) => state.readCount);
-  const showFeedIcon = useStore((state) => state.showFeedIcon);
   const toggleCollapsed = useStore((state) => state.toggleCollapsed);
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
   const hiddenGroupIds = useStore((state) => state.hiddenGroupIds);
-  const showAllFeeds = useStore((state) => state.showAllFeeds);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
+
+  const { config } = useConfigAtom();
+  const { showAllFeeds, showFeedIcon } = config;
 
   const path = location.pathname;
 

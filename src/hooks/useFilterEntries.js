@@ -4,8 +4,11 @@ import useStore from "../Store";
 import ContentContext from "../components/Content/ContentContext";
 import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
 
+import { useConfigAtom } from "./useConfigAtom";
+
 const useFilterEntries = (info) => {
-  const showAllFeeds = useStore((state) => state.showAllFeeds);
+  const { config } = useConfigAtom();
+  const { showAllFeeds } = config;
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
 
   const {

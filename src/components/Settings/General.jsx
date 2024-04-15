@@ -6,24 +6,12 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import React from "react";
-import useStore from "../../Store";
-import { setConfig } from "../../utils/config";
-
+import { useConfigAtom } from "../../hooks/useConfigAtom";
 import "./General.css";
 
 const General = () => {
-  const showStatus = useStore((state) => state.showStatus);
-  const setShowStatus = useStore((state) => state.setShowStatus);
-  const homePage = useStore((state) => state.homePage);
-  const setHomePage = useStore((state) => state.setHomePage);
-  const orderBy = useStore((state) => state.orderBy);
-  const pageSize = useStore((state) => state.pageSize);
-  const setOrderBy = useStore((state) => state.setOrderBy);
-  const setPageSize = useStore((state) => state.setPageSize);
-  const markReadOnScroll = useStore((state) => state.markReadOnScroll);
-  const toggleMarkReadOnScroll = useStore(
-    (state) => state.toggleMarkReadOnScroll,
-  );
+  const { config, updateConfig } = useConfigAtom();
+  const { homePage, markReadOnScroll, orderBy, pageSize, showStatus } = config;
 
   return (
     <>
@@ -41,10 +29,7 @@ const General = () => {
             className="select-style"
             placeholder="Select status"
             value={showStatus}
-            onChange={(showStatus) => {
-              setShowStatus(showStatus);
-              setConfig("showStatus", showStatus);
-            }}
+            onChange={(value) => updateConfig({ showStatus: value })}
           >
             <Select.Option value="all">All</Select.Option>
             <Select.Option value="unread">Unread</Select.Option>
@@ -63,10 +48,7 @@ const General = () => {
         </div>
         <div>
           <Select
-            onChange={(homePage) => {
-              setHomePage(homePage);
-              setConfig("homePage", homePage);
-            }}
+            onChange={(value) => updateConfig({ homePage: value })}
             placeholder="Select page"
             style={{ width: 128, marginLeft: 16 }}
             value={homePage}
@@ -90,10 +72,7 @@ const General = () => {
         </div>
         <div>
           <Select
-            onChange={(orderBy) => {
-              setOrderBy(orderBy);
-              setConfig("orderBy", orderBy);
-            }}
+            onChange={(value) => updateConfig({ orderBy: value })}
             placeholder="Select order"
             style={{ width: 128, marginLeft: 16 }}
             value={orderBy}
@@ -118,10 +97,7 @@ const General = () => {
             defaultValue={pageSize}
             min={1}
             mode="button"
-            onChange={(pageSize) => {
-              setPageSize(pageSize);
-              setConfig("pageSize", pageSize);
-            }}
+            onChange={(value) => updateConfig({ pageSize: value })}
             size="small"
             style={{ width: 128, marginLeft: 16 }}
           />
@@ -141,10 +117,7 @@ const General = () => {
         <div>
           <Switch
             checked={markReadOnScroll}
-            onChange={(value) => {
-              toggleMarkReadOnScroll();
-              setConfig("markReadOnScroll", value);
-            }}
+            onChange={(value) => updateConfig({ markReadOnScroll: value })}
           />
         </div>
       </div>
