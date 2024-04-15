@@ -23,8 +23,7 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
   const [isLoading, setIsLoading] = useState(false);
   const [checkNext, setCheckNext] = useState(false);
 
-  const screenWidth = useScreenWidth();
-  const isMobileView = screenWidth <= 768;
+  const { isMobileView } = useScreenWidth();
 
   useEffect(() => {
     const entryList = document.querySelector(".entry-list");

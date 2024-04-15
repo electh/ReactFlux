@@ -44,8 +44,7 @@ const FeedList = () => {
   const [showFeeds, setShowFeeds] = useState(getSortedFeedsByErrorCount(feeds));
   const groups = useStore((state) => state.groups);
   const updateFeedHidden = useStore((state) => state.updateFeedHidden);
-  const screenWidth = useScreenWidth();
-  const isMobileView = screenWidth <= 768;
+  const { isMobileView } = useScreenWidth();
 
   const tableData = showFeeds.map((feed) => ({
     category: feed.category,

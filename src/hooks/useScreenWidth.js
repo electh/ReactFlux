@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 export const useScreenWidth = () => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const isMobileView = screenWidth <= 768;
 
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
@@ -11,5 +12,5 @@ export const useScreenWidth = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return screenWidth;
+  return { screenWidth, isMobileView };
 };

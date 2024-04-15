@@ -19,8 +19,7 @@ const SearchAndSortBar = (info) => {
   const setActiveContent = useStore((state) => state.setActiveContent);
   const orderDirection = useStore((state) => state.orderDirection);
   const toggleOrderDirection = useStore((state) => state.toggleOrderDirection);
-  const screenWidth = useScreenWidth();
-  const isMobileView = screenWidth <= 768;
+  const { isMobileView } = useScreenWidth();
 
   const { setFilterString, setFilterType } = useFilterEntries(info);
 

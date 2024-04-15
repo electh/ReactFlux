@@ -35,8 +35,7 @@ const CustomLink = ({ url, text }) => {
 
 const ImageWithButton = ({ node, index, togglePhotoSlider }) => {
   const [isHovering, setIsHovering] = useState(false);
-  const screenWidth = useScreenWidth();
-  const isMobileView = screenWidth <= 768;
+  const { isMobileView } = useScreenWidth();
 
   return (
     <div style={{ textAlign: "center", position: "relative" }}>
