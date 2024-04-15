@@ -189,7 +189,10 @@ const ArticleDetail = forwardRef(
             <PhotoSlider
               images={imageSources.map((item) => ({ src: item, key: item }))}
               visible={isPhotoSliderVisible}
-              onClose={() => setIsPhotoSliderVisible(false)}
+              onClose={() => {
+                setIsPhotoSliderVisible(false);
+                setIsArticleFocused(true);
+              }}
               index={selectedIndex}
               onIndexChange={setSelectedIndex}
             />
