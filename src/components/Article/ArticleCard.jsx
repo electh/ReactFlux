@@ -5,8 +5,8 @@ import {
   IconStar,
   IconStarFill,
 } from "@arco-design/web-react/icon";
+import { animated, useSpring } from "@react-spring/web";
 import classNames from "classnames";
-import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
@@ -87,16 +87,21 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
   const { handleToggleStarred, handleToggleStatus } = useEntryActions();
 
   const [swipeOffset, setSwipeOffset] = useState(0);
-  const swipeThreshold = 50;
+  const swipeThreshold = 100;
+  const initialDampingFactor = 0.5;
 
   const isStarred = entry.starred;
   const isUnread = entry.status === "unread";
 
   const handlers = useSwipeable({
+    preventScrollOnSwipe: true,
+    delta: swipeThreshold / 2,
     onSwiping: (eventData) => {
       const newOffset =
-        Math.min(Math.abs(eventData.deltaX), swipeThreshold) *
-        Math.sign(eventData.deltaX);
+        Math.min(
+          Math.abs(eventData.deltaX * initialDampingFactor),
+          swipeThreshold,
+        ) * Math.sign(eventData.deltaX);
       setSwipeOffset(newOffset);
     },
     onSwiped: (eventData) => {
@@ -138,14 +143,12 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
     },
   });
 
+  const styles = useSpring({ x: swipeOffset });
+
   return (
     <div {...handlers} className="article-card" key={entry.id}>
       <div ref={ref}>
-        <motion.div
-          className="swipe-card"
-          animate={{ x: swipeOffset }}
-          transition={{ type: "tween" }}
-        >
+        <animated.div className="swipe-card" style={styles}>
           <Card
             className={classNames(
               "swipe-content",
@@ -170,7 +173,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
               }
             />
           </Card>
-        </motion.div>
+        </animated.div>
         <div className="swipe-actions">
           <div className="swipe-action left">
             {isStarred ? (

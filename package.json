@@ -13,11 +13,11 @@
   "dependencies": {
     "@arco-design/color": "^0.4.0",
     "@arco-design/web-react": "^2.61.1",
+    "@react-spring/web": "^9.7.3",
     "axios": "^1.6.8",
     "canvas-confetti": "^1.9.2",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.10",
-    "framer-motion": "^11.0.28",
     "html-react-parser": "^5.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
