@@ -53,6 +53,13 @@ const FooterPanel = forwardRef(
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
+      if (info.from === "history") {
+        setFilterStatus("all");
+      }
+    }, []);
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
       if (info.from !== "history") {
         setFilterStatus(showStatus);
       }
