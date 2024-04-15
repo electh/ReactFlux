@@ -33,6 +33,10 @@
   overflow-y: auto;
 }
 
+.article-body * {
+  max-width: 100%;
+}
+
 .article-body {
   line-height: 1.8;
   margin: 0 auto;
