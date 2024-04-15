@@ -2,7 +2,7 @@ import { Button, Divider, Tag, Typography } from "@arco-design/web-react";
 import { IconEmpty, IconImage } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useContext, useState } from "react";
 import { PhotoSlider } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useStore from "../../Store";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { extractAllImageSrc } from "../../utils/images";
+import contentContext from "../Content/ContentContext.jsx";
 import ActionButtons from "./ActionButtons";
 import "./ArticleDetail.css";
 
@@ -96,8 +97,10 @@ const ArticleDetail = forwardRef(
     const activeContent = useStore((state) => state.activeContent);
     const fontSize = useStore((state) => state.fontSize);
     const articleWidth = useStore((state) => state.articleWidth);
+    const { setIsArticleFocused } = useContext(contentContext);
     const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
+
     const togglePhotoSlider = (index) => {
       setSelectedIndex(index);
       setIsPhotoSliderVisible((prev) => !prev);
@@ -130,7 +133,12 @@ const ArticleDetail = forwardRef(
     const groupTitle = activeContent.feed.category.title;
 
     return (
-      <div ref={ref} className="article-content">
+      <div
+        className="article-content"
+        onBlur={() => setIsArticleFocused(false)}
+        onFocus={() => setIsArticleFocused(true)}
+        ref={ref}
+      >
         <div className="scroll-container">
           <div className="article-header" style={{ width: `${articleWidth}%` }}>
             <Typography.Title className="article-title" heading={5}>

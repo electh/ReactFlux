@@ -40,9 +40,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     entryDetailRef,
     filteredEntries,
     filterStatus,
+    isArticleFocused,
     loading,
     setEntries,
     setFilteredEntries,
+    setIsArticleFocused,
     setLoading,
     setLoadMoreUnreadVisible,
     setLoadMoreVisible,
@@ -198,7 +200,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       }
     };
 
-    if (activeContent) {
+    if (isArticleFocused) {
       document.addEventListener("keydown", handleKeyDown);
     } else {
       document.removeEventListener("keydown", handleKeyDown);
@@ -207,7 +209,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [activeContent, filteredEntries]);
+  }, [activeContent, filteredEntries, isArticleFocused]);
 
   const updateUI = (articles, articlesUnread, responseAll, responseUnread) => {
     setEntries(articles);
@@ -283,6 +285,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   useEffect(() => {
     if (isInitCompleted) {
       getArticleList().then(() => setIsFirstRenderCompleted(true));
+      setIsArticleFocused(true);
     }
   }, [isInitCompleted]);
 

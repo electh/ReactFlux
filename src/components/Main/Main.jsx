@@ -20,8 +20,6 @@ const groupRule = [{ required: true }];
 const crawlerRule = [{ type: "boolean" }];
 
 const SettingsModal = () => {
-  const activeContent = useStore((state) => state.activeContent);
-  const setActiveContent = useStore((state) => state.setActiveContent);
   const setVisible = useStore((state) => state.setVisible);
   const visible = useStore((state) => state.visible);
 
@@ -33,11 +31,6 @@ const SettingsModal = () => {
       title="Settings"
       footer={null}
       unmountOnExit
-      onFocus={() => {
-        if (activeContent) {
-          setActiveContent(null);
-        }
-      }}
       onCancel={() => setVisible("settings", false)}
       autoFocus={false}
       focusLock={true}
@@ -48,10 +41,8 @@ const SettingsModal = () => {
 };
 
 const AddFeedModal = () => {
-  const activeContent = useStore((state) => state.activeContent);
   const groups = useStore((state) => state.groups);
   const initData = useStore((state) => state.initData);
-  const setActiveContent = useStore((state) => state.setActiveContent);
   const setVisible = useStore((state) => state.setVisible);
   const visible = useStore((state) => state.visible);
 
@@ -79,11 +70,6 @@ const AddFeedModal = () => {
       visible={visible.addFeed}
       unmountOnExit
       style={{ width: "400px" }}
-      onFocus={() => {
-        if (activeContent) {
-          setActiveContent(null);
-        }
-      }}
       onOk={feedForm.submit}
       confirmLoading={feedModalLoading}
       onCancel={() => {

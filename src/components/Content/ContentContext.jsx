@@ -30,6 +30,8 @@ const ContentProvider = ({ children }) => {
   const [filterString, setFilterString] = useState("");
   // 初始 loading
   const [loading, setLoading] = useState(true);
+  // 文章是否被聚焦
+  const [isArticleFocused, setIsArticleFocused] = useState(false);
   // 文章详情页的引用
   const entryDetailRef = useRef(null);
 
@@ -41,6 +43,7 @@ const ContentProvider = ({ children }) => {
       filterStatus,
       filterString,
       filterType,
+      isArticleFocused,
       loading,
       loadMoreUnreadVisible,
       loadMoreVisible,
@@ -50,6 +53,7 @@ const ContentProvider = ({ children }) => {
       setFilterStatus,
       setFilterString,
       setFilterType,
+      setIsArticleFocused,
       setLoading,
       setLoadMoreUnreadVisible,
       setLoadMoreVisible,
@@ -69,6 +73,7 @@ const ContentProvider = ({ children }) => {
       filterStatus,
       filterString,
       filterType,
+      isArticleFocused,
       loading,
       loadMoreUnreadVisible,
       loadMoreVisible,

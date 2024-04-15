@@ -15,8 +15,6 @@ import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = (info) => {
   const { filterString, filterType } = useContext(ContentContext);
-  const activeContent = useStore((state) => state.activeContent);
-  const setActiveContent = useStore((state) => state.setActiveContent);
   const orderDirection = useStore((state) => state.orderDirection);
   const toggleOrderDirection = useStore((state) => state.toggleOrderDirection);
   const { isMobileView } = useScreenWidth();
@@ -40,7 +38,6 @@ const SearchAndSortBar = (info) => {
             <Select.Option value="1">Content</Select.Option>
           </Select>
         }
-        onFocus={() => activeContent && setActiveContent(null)}
         onChange={setFilterString}
         style={{ width: isMobileView ? "100%" : 278, marginLeft: 8 }}
       />
