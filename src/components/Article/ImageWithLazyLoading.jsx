@@ -1,5 +1,6 @@
 import { Skeleton } from "@arco-design/web-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 import "./ImageWithLazyLoading.css";
 
@@ -11,40 +12,39 @@ const ImageWithLazyLoading = ({
   status,
   width,
 }) => {
-  const [loaded, setLoaded] = useState(false);
-  const imgRef = useRef(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const { ref, inView } = useInView();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          const image = new Image();
-          image.onload = () => setLoaded(true);
-          image.onerror = () => {
-            if (imgRef.current) {
-              observer.unobserve(imgRef.current);
-              imgRef.current.parentElement.style.display = "none";
-            }
-          };
-          image.src = src;
-          if (imgRef.current) {
-            observer.unobserve(imgRef.current);
-          }
+    if (inView && !isLoaded) {
+      const image = new Image();
+      image.onload = () => setIsLoaded(true);
+      image.onerror = () => {
+        const imageContainer = ref.current?.parentElement;
+        if (imageContainer) {
+          imageContainer.style.display = "none";
         }
-      }
-    });
-
-    const currentImgRef = imgRef.current;
-    if (currentImgRef) {
-      observer.observe(currentImgRef);
+      };
+      image.src = src;
     }
-
-    return () => observer.disconnect();
-  }, [src]);
+  }, [inView, isLoaded, src]);
 
   return (
-    <div className="image-container" ref={imgRef}>
-      {!loaded && (
+    <div className="image-container" ref={ref}>
+      {isLoaded ? (
+        <img
+          className={status === "unread" ? "" : "read"}
+          src={src}
+          alt={alt}
+          style={{
+            width,
+            height,
+            objectFit: "cover",
+            borderRadius,
+          }}
+        />
+      ) : (
         <div className="skeleton-container">
           <Skeleton
             text={{ rows: 0 }}
@@ -56,22 +56,9 @@ const ImageWithLazyLoading = ({
                 borderRadius,
               },
             }}
-            animation={true}
+            animation
           />
         </div>
-      )}
-      {loaded && (
-        <img
-          className={status !== "unread" ? "read" : ""}
-          src={src}
-          alt={alt}
-          style={{
-            width,
-            height,
-            objectFit: "cover",
-            borderRadius,
-          }}
-        />
       )}
     </div>
   );
