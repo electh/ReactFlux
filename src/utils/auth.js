@@ -1,15 +1,9 @@
-const getAuth = () => {
+export const getAuth = () => {
   const auth = JSON.parse(localStorage.getItem("auth"));
-  if (!auth) {
-    console.log("No auth info found in localStorage");
-    return null;
-  }
-  return auth;
+  return auth || {};
 };
 
-const setAuth = (method, secret) => {
-  const auth = { method: method, secret: secret };
-  localStorage.setItem("auth", JSON.stringify(auth));
+export const isValidAuth = (auth) => {
+  const { server, token, username, password } = auth;
+  return server && (token || (username && password));
 };
-
-export { getAuth, setAuth };

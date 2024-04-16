@@ -2,7 +2,7 @@ import { Message } from "@arco-design/web-react";
 import axios from "axios";
 
 import router from "../routes";
-import { getAuth } from "../utils/auth";
+import { getAuth, isValidAuth } from "../utils/auth";
 
 // 创建 axios 实例并设置默认配置
 const apiClient = axios.create({
@@ -16,15 +16,16 @@ apiClient.interceptors.request.use(
   (config) => {
     // 在发送请求之前做些什么
     const auth = getAuth();
-    const { server, token, username, password } = auth?.secret || {};
+    const { server, token, username, password } = auth;
+    if (!isValidAuth(auth)) {
+      return Promise.reject("Invalid auth");
+    }
 
     config.baseURL = server;
 
     if (token) {
       config.headers["X-Auth-Token"] = token;
-    }
-
-    if (username && password) {
+    } else {
       config.auth = { username, password };
     }
 

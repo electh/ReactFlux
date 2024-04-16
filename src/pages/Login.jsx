@@ -19,7 +19,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getAuth, setAuth } from "../utils/auth";
+import { useAuth } from "../hooks/useAuth";
+import { isValidAuth } from "../utils/auth";
 import {
   handleEnterKeyToSubmit,
   validateAndFormatFormFields,
@@ -29,14 +30,15 @@ const Login = () => {
   const [loginForm] = useForm();
   const [loading, setLoading] = useState(false);
   /* token or user */
-  const [method, setMethod] = useState(getAuth() || "token");
+  const [auth, setAuth] = useAuth();
+  const [method, setMethod] = useState("token");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (getAuth()) {
+    if (isValidAuth(auth)) {
       navigate("/");
     }
-  }, [navigate]);
+  }, [auth, navigate]);
 
   const healthCheck = async () => {
     setLoading(true);
@@ -54,7 +56,7 @@ const Login = () => {
       });
       if (response.status === 200) {
         Message.success("Success");
-        setAuth(method, loginForm.getFieldsValue());
+        setAuth(loginForm.getFieldsValue());
         navigate("/");
       }
     } catch (error) {
