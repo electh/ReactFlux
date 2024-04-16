@@ -6,11 +6,11 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import React from "react";
-import { useConfigAtom } from "../../hooks/useConfigAtom";
+import { useConfig } from "../../hooks/useConfig";
 import "./General.css";
 
 const General = () => {
-  const { config, updateConfig } = useConfigAtom();
+  const { config, updateConfig } = useConfig();
   const { homePage, markReadOnScroll, orderBy, pageSize, showStatus } = config;
 
   return (

@@ -5,11 +5,11 @@ import { apiClient } from "../apis/axios";
 import { buildEntriesUrl } from "../apis/index";
 import Content from "../components/Content/Content";
 import { ContentProvider } from "../components/Content/ContentContext";
-import { useConfigAtom } from "../hooks/useConfigAtom";
+import { useConfig } from "../hooks/useConfig";
 
 const Group = () => {
   const { id: groupId } = useParams();
-  const { config } = useConfigAtom();
+  const { config } = useConfig();
   const { orderBy, orderDirection, pageSize } = config;
   const getGroupEntries = async (offset = 0, status = null) => {
     const baseParams = {

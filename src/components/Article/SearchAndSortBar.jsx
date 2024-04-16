@@ -5,7 +5,7 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@arco-design/web-react/icon";
-import { useConfigAtom } from "../../hooks/useConfigAtom";
+import { useConfig } from "../../hooks/useConfig";
 import useFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "../Content/ContentContext";
 
@@ -18,7 +18,7 @@ const SearchAndSortBar = (info) => {
 
   const { setFilterString, setFilterType } = useFilterEntries(info);
 
-  const { config, updateConfig } = useConfigAtom();
+  const { config, updateConfig } = useConfig();
   const { orderDirection } = config;
 
   return (

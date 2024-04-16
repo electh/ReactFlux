@@ -8,10 +8,10 @@ import "react-photo-view/dist/react-photo-view.css";
 import { Link, useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
-import { useConfigAtom } from "../../hooks/useConfigAtom";
+import { useConfig } from "../../hooks/useConfig";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { extractAllImageSrc } from "../../utils/images";
-import contentContext from "../Content/ContentContext.jsx";
+import contentContext from "../Content/ContentContext";
 import ActionButtons from "./ActionButtons";
 import "./ArticleDetail.css";
 
@@ -96,7 +96,7 @@ const ArticleDetail = forwardRef(
   ) => {
     const navigate = useNavigate();
     const activeContent = useStore((state) => state.activeContent);
-    const { config } = useConfigAtom();
+    const { config } = useConfig();
     const { articleWidth, fontSize } = config;
     const { setIsArticleFocused } = useContext(contentContext);
     const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);

@@ -3,7 +3,7 @@ import { IconArrowDown } from "@arco-design/web-react/icon";
 import React, { forwardRef, useContext } from "react";
 import isURL from "validator/es/lib/isURL";
 
-import { useConfigAtom } from "../../hooks/useConfigAtom";
+import { useConfig } from "../../hooks/useConfig";
 import useLoadMore from "../../hooks/useLoadMore";
 import { extractProtocolAndHostname } from "../../utils/url";
 import ContentContext from "../Content/ContentContext";
@@ -23,7 +23,7 @@ const ArticleList = forwardRef(
     } = useContext(ContentContext);
 
     const { loadingMore, handleLoadMore } = useLoadMore();
-    const { config } = useConfigAtom();
+    const { config } = useConfig();
     const { layout } = config;
     const mini = layout === "small";
 

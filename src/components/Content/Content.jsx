@@ -4,7 +4,7 @@ import { CSSTransition } from "react-transition-group";
 
 import useStore from "../../Store";
 import { updateEntryStatus } from "../../apis";
-import { useConfigAtom } from "../../hooks/useConfigAtom";
+import { useConfig } from "../../hooks/useConfig";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import useLoadMore from "../../hooks/useLoadMore";
@@ -33,7 +33,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const initData = useStore((state) => state.initData);
   const isInitCompleted = useStore((state) => state.isInitCompleted);
 
-  const { config } = useConfigAtom();
+  const { config } = useConfig();
   const { orderBy, orderDirection, showAllFeeds } = config;
 
   const {

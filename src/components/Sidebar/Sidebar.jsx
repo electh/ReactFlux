@@ -20,7 +20,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import isURL from "validator/es/lib/isURL";
 
 import useStore from "../../Store";
-import { useConfigAtom } from "../../hooks/useConfigAtom";
+import { useConfig } from "../../hooks/useConfig";
 import { extractProtocolAndHostname } from "../../utils/url";
 import "./Sidebar.css";
 
@@ -28,7 +28,7 @@ const MenuItem = Menu.Item;
 const { Sider } = Layout;
 
 const GroupTitle = ({ group, isOpen, feedsGroupedById }) => {
-  const { config } = useConfigAtom();
+  const { config } = useConfig();
   const { showAllFeeds } = config;
 
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
@@ -75,7 +75,7 @@ const Sidebar = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
 
-  const { config } = useConfigAtom();
+  const { config } = useConfig();
   const { showAllFeeds, showFeedIcon } = config;
 
   const path = location.pathname;

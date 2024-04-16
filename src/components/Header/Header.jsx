@@ -28,7 +28,7 @@ import useStore from "../../Store";
 import { applyColor } from "../../utils/colors";
 import "./Header.css";
 
-import { useConfigAtom } from "../../hooks/useConfigAtom";
+import { useConfig } from "../../hooks/useConfig";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ const Header = () => {
   const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
   const setUnreadTotal = useStore((state) => state.setUnreadTotal);
 
-  const { config, updateConfig } = useConfigAtom();
+  const { config, updateConfig } = useConfig();
   const { showAllFeeds, theme } = config;
 
   const handleLogout = () => {

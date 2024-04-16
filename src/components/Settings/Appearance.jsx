@@ -11,10 +11,10 @@ import React from "react";
 import { applyColor, colors, getColorValue } from "../../utils/colors";
 import "./Appearance.css";
 
-import { useConfigAtom } from "../../hooks/useConfigAtom";
+import { useConfig } from "../../hooks/useConfig";
 
 const Appearance = () => {
-  const { config, updateConfig } = useConfigAtom();
+  const { config, updateConfig } = useConfig();
   const { articleWidth, fontSize, layout, showFeedIcon, themeColor } = config;
 
   return (
