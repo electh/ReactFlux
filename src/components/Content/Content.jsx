@@ -97,6 +97,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    refreshArticleList();
+  }, [info]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
     setFilteredEntries(() => {
       if (["all", "today", "group"].includes(info.from) && !showAllFeeds) {
         const targetEntries = filterStatus === "all" ? entries : unreadEntries;
