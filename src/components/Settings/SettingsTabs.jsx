@@ -6,12 +6,11 @@ import {
   IconSkin,
   IconStorage,
 } from "@arco-design/web-react/icon";
-import React from "react";
 
 import Appearance from "./Appearance";
+import CategoryList from "./CategoryList";
 import FeedList from "./FeedList";
 import General from "./General";
-import GroupList from "./GroupList";
 import Hotkeys from "./Hotkeys";
 import "./SettingsTabs.css";
 
@@ -33,11 +32,11 @@ const SettingsTabs = () => (
       title={
         <span>
           <IconFolder style={{ marginRight: 6 }} />
-          Groups
+          Categories
         </span>
       }
     >
-      <GroupList />
+      <CategoryList />
     </Tabs.TabPane>
     <Tabs.TabPane
       key="3"

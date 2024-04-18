@@ -1,12 +1,15 @@
 import { Message } from "@arco-design/web-react";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
+import { useAtomValue } from "jotai";
 import useStore from "../../Store";
-import { updateEntryStatus } from "../../apis";
-import { useConfig } from "../../hooks/useConfig";
+import { updateEntriesStatus } from "../../apis";
+import { configAtom } from "../../atoms/configAtom";
+import { hiddenFeedIdsAtom, isAppDataReadyAtom } from "../../atoms/dataAtom";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
+import { useLoadData } from "../../hooks/useLoadData";
 import useLoadMore from "../../hooks/useLoadMore";
 import { filterEntriesByVisibility } from "../../utils/filter";
 import ArticleDetail from "../Article/ArticleDetail";
@@ -19,21 +22,11 @@ import "./Transition.css";
 const Content = ({ info, getEntries, markAllAsRead }) => {
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
-  const setReadCount = useStore((state) => state.setReadCount);
-  const setStarredCount = useStore((state) => state.setStarredCount);
-  const setUnreadToday = useStore((state) => state.setUnreadToday);
-  const setUnreadTotal = useStore((state) => state.setUnreadTotal);
-  const updateFeedUnreadCount = useStore(
-    (state) => state.updateFeedUnreadCount,
-  );
-  const updateGroupUnreadCount = useStore(
-    (state) => state.updateGroupUnreadCount,
-  );
-  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
-  const initData = useStore((state) => state.initData);
-  const isInitCompleted = useStore((state) => state.isInitCompleted);
 
-  const { config } = useConfig();
+  const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
+  const isAppDataReady = useAtomValue(isAppDataReadyAtom);
+  const { loadData } = useLoadData();
+  const config = useAtomValue(configAtom);
   const { orderBy, orderDirection, showAllFeeds } = config;
 
   const {
@@ -54,8 +47,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setUnreadCount,
     setUnreadEntries,
     setUnreadOffset,
-    total,
-    unreadCount,
     unreadEntries,
   } = useContext(ContentContext);
 
@@ -80,30 +71,18 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     if (!isFirstRenderCompleted || info.from === "history") {
       return;
     }
-    setTimeout(() => {
-      refreshArticleList();
-    }, 200);
+    refreshArticleList();
   }, [orderBy]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!isFirstRenderCompleted) {
-      return;
-    }
-    setTimeout(() => {
-      refreshArticleList();
-    }, 200);
-  }, [orderDirection]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
     refreshArticleList();
-  }, [info]);
+  }, [info, orderDirection]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setFilteredEntries(() => {
-      if (["all", "today", "group"].includes(info.from) && !showAllFeeds) {
+      if (["all", "today", "category"].includes(info.from) && !showAllFeeds) {
         const targetEntries = filterStatus === "all" ? entries : unreadEntries;
         return targetEntries.filter(
           (entry) => !hiddenFeedIds.includes(entry.feed.id),
@@ -115,42 +94,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
     setIsFilteredEntriesUpdated(true);
   }, [filterStatus, hiddenFeedIds, showAllFeeds]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (unreadCount === 0 || total === 0) {
-      return;
-    }
-
-    switch (info.from) {
-      case "all":
-        if (showAllFeeds) {
-          setUnreadTotal(() => unreadCount);
-        }
-        break;
-      case "today":
-        setUnreadToday(() => unreadCount);
-        break;
-      case "starred":
-        setStarredCount(() => total);
-        break;
-      case "history":
-        setReadCount(() => total);
-        break;
-      case "feed": {
-        const feedId = Number.parseInt(info.id);
-        updateFeedUnreadCount(feedId, unreadCount);
-        break;
-      }
-      case "group": {
-        const groupId = Number.parseInt(info.id);
-        updateGroupUnreadCount(groupId, unreadCount);
-        break;
-      }
-      default:
-        break;
-    }
-  }, [total, unreadCount]);
 
   const handleEntryClick = async (entry) => {
     setActiveContent(null);
@@ -164,7 +107,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         handleEntryStatusUpdate(entry, "read");
       }, 200);
 
-      updateEntryStatus(entry.id, "read").catch(() => {
+      updateEntriesStatus([entry.id], "read").catch(() => {
         Message.error("Failed to mark entry as read, please try again later");
         handleEntryStatusUpdate(entry, "unread");
       });
@@ -273,8 +216,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
     setOffset(0);
     setUnreadOffset(0);
-    if (!isInitCompleted) {
-      await initData();
+    if (!isAppDataReady) {
+      loadData();
       return;
     }
     await getArticleList();
@@ -289,11 +232,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (isInitCompleted) {
+    if (isAppDataReady) {
       getArticleList().then(() => setIsFirstRenderCompleted(true));
       setIsArticleFocused(true);
     }
-  }, [isInitCompleted]);
+  }, [isAppDataReady]);
 
   return (
     <>

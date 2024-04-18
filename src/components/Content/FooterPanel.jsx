@@ -1,12 +1,13 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
-import React, { forwardRef, useContext, useEffect } from "react";
+import { forwardRef, useContext, useEffect } from "react";
 
-import useStore from "../../Store";
-import { useConfig } from "../../hooks/useConfig";
 import useFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "./ContentContext";
 
+import { useAtomValue } from "jotai";
+import { configAtom } from "../../atoms/configAtom";
+import { useLoadData } from "../../hooks/useLoadData";
 import "./FooterPanel.css";
 
 const FooterPanel = forwardRef(
@@ -26,15 +27,15 @@ const FooterPanel = forwardRef(
     const { setFilterStatus } = useFilterEntries(info);
 
     /*menu 数据初始化函数 */
-    const initData = useStore((state) => state.initData);
-    const { config } = useConfig();
+    const config = useAtomValue(configAtom);
+    const { loadData } = useLoadData();
     const { showStatus } = config;
 
     const handleMarkAllAsRead = async () => {
       markAllAsRead()
         .then(() => {
           Message.success("Marked all as read successfully");
-          initData();
+          loadData();
           setEntries(entries.map((entry) => ({ ...entry, status: "read" })));
           setUnreadEntries([]);
           if (filterStatus === "all") {

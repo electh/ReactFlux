@@ -34,7 +34,7 @@ const filterEntriesByVisibility = (
 ) => {
   const isVisible = (entry) =>
     showAllFeeds || !hiddenFeedIds.includes(entry.feed.id);
-  return ["all", "today", "group"].includes(info.from)
+  return ["all", "today", "category"].includes(info.from)
     ? entries.filter(isVisible)
     : entries;
 };

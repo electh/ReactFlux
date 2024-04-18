@@ -8,13 +8,10 @@ export const updateEntriesStatus = async (entryIds, newStatus) =>
     status: newStatus,
   });
 
-export const updateEntryStatus = async (entryId, newStatus) =>
-  updateEntriesStatus([entryId], newStatus);
-
 export const toggleEntryStarred = async (entryId) =>
   apiClient.put(`/v1/entries/${entryId}/bookmark`);
 
-export const fetchOriginalArticle = async (entryId) =>
+export const getOriginalContent = async (entryId) =>
   apiClient.get(`/v1/entries/${entryId}/fetch-content`);
 
 export const getCurrentUser = async () => apiClient.get("/v1/me");
@@ -23,58 +20,52 @@ export const getUnreadInfo = async () => apiClient.get("/v1/feeds/counters");
 
 export const getFeeds = async () => apiClient.get("/v1/feeds");
 
-export const getGroups = async () => apiClient.get("/v1/categories");
+export const getCategories = async () => apiClient.get("/v1/categories");
 
-export const deleteGroup = async (id) =>
+export const deleteCategory = async (id) =>
   apiClient.delete(`/v1/categories/${id}`);
 
-export const addGroup = async (title) =>
+export const addCategory = async (title) =>
   apiClient.post("/v1/categories", { title });
 
-export const editGroup = async (id, newTitle, hidden = false) => {
-  const params = { title: newTitle };
-  if (hidden) {
-    params.hide_globally = "on";
-  }
+export const updateCategory = async (id, newTitle, hidden = false) => {
+  const params = { title: newTitle, hide_globally: hidden ? "on" : undefined };
   return apiClient.put(`/v1/categories/${id}`, params);
 };
 
-export const editFeed = async (
-  id,
-  newUrl,
-  newTitle,
-  groupId,
-  isFullText,
-  hidden = false,
-) =>
-  apiClient.put(`/v1/feeds/${id}`, {
-    feed_url: newUrl,
-    title: newTitle,
-    category_id: groupId,
+export const updateFeed = async (id, newDetails) => {
+  const { url, title, categoryId, isFullText, hidden = false } = newDetails;
+
+  return apiClient.put(`/v1/feeds/${id}`, {
+    feed_url: url,
+    title,
+    category_id: categoryId,
     crawler: isFullText,
     hide_globally: hidden,
   });
+};
 
 export const refreshFeed = async (id) =>
   apiClient.put(`/v1/feeds/${id}/refresh`);
 
 export const deleteFeed = async (id) => apiClient.delete(`/v1/feeds/${id}`);
 
-export const addFeed = async (url, groupId, isFullText) =>
+export const addFeed = async (url, categoryId, isFullText) =>
   apiClient.post("/v1/feeds", {
     feed_url: url,
-    category_id: groupId,
+    category_id: categoryId,
     crawler: isFullText,
   });
 
 export const buildEntriesUrl = (baseParams, extraParams = {}) => {
-  const { baseUrl, orderField, direction, offset, limit, status } = baseParams;
+  const { baseUrl, orderField, offset, limit, status } = baseParams;
+  const orderDirection = getConfig("orderDirection");
   const queryParams = new URLSearchParams({
-    ...extraParams,
     order: orderField,
-    direction,
+    direction: orderDirection,
     offset,
     limit,
+    ...extraParams,
   });
 
   if (status) {
@@ -86,12 +77,10 @@ export const buildEntriesUrl = (baseParams, extraParams = {}) => {
 
 export const getAllEntries = async (offset = 0, status = null) => {
   const orderBy = getConfig("orderBy");
-  const orderDirection = getConfig("orderDirection");
   const pageSize = getConfig("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: orderBy,
-    direction: orderDirection,
     offset,
     limit: pageSize,
     status,
@@ -102,12 +91,10 @@ export const getAllEntries = async (offset = 0, status = null) => {
 };
 
 export const getHistoryEntries = async (offset = 0) => {
-  const orderDirection = getConfig("orderDirection");
   const pageSize = getConfig("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: "changed_at",
-    direction: orderDirection,
     offset,
     limit: pageSize,
     status: "read",
@@ -118,12 +105,10 @@ export const getHistoryEntries = async (offset = 0) => {
 };
 
 export const getStarredEntries = async (offset = 0, status = null) => {
-  const orderDirection = getConfig("orderDirection");
   const pageSize = getConfig("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: "changed_at",
-    direction: orderDirection,
     offset,
     limit: pageSize,
     status,
@@ -140,13 +125,11 @@ export const getTodayEntries = async (
   limit = null,
 ) => {
   const orderBy = getConfig("orderBy");
-  const orderDirection = getConfig("orderDirection");
-  const pageSize = limit || getConfig("pageSize");
+  const pageSize = limit ?? getConfig("pageSize");
   const timestamp = get24HoursAgoTimestamp();
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: orderBy,
-    direction: orderDirection,
     offset,
     limit: pageSize,
     status,

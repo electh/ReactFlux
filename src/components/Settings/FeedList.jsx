@@ -13,40 +13,40 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import { IconDelete, IconEdit, IconRefresh } from "@arco-design/web-react/icon";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import useStore from "../../Store";
-import { deleteFeed, editFeed, refreshFeed } from "../../apis";
+import { deleteFeed, refreshFeed, updateFeed } from "../../apis";
 import { generateRelativeTime } from "../../utils/date";
 import { includesIgnoreCase } from "../../utils/filter";
 
+import { useAtomValue, useSetAtom } from "jotai";
+import {
+  categoriesAtom,
+  feedsAtom,
+  feedsWithUnreadAtom,
+} from "../../atoms/dataAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./FeedList.css";
 
-const getSortedFeedsByErrorCount = (feeds) => {
-  return feeds.slice().sort((a, b) => {
-    if (a.parsing_error_count > 0 && b.parsing_error_count === 0) {
-      return -1;
-    }
-    if (a.parsing_error_count === 0 && b.parsing_error_count > 0) {
-      return 1;
-    }
-    return 0;
-  });
+const sortFeedsByErrorCount = (feeds) => {
+  return feeds
+    .slice()
+    .sort((a, b) => b.parsing_error_count - a.parsing_error_count);
 };
 
 const FeedList = () => {
   const [feedModalVisible, setFeedModalVisible] = useState(false);
-  const [feedForm] = Form.useForm();
   const [selectedFeed, setSelectedFeed] = useState({});
-  const feeds = useStore((state) => state.feeds);
-  const setFeeds = useStore((state) => state.setFeeds);
-  const [showFeeds, setShowFeeds] = useState(getSortedFeedsByErrorCount(feeds));
-  const groups = useStore((state) => state.groups);
-  const updateFeedHidden = useStore((state) => state.updateFeedHidden);
+  const [feedForm] = Form.useForm();
+  const feeds = useAtomValue(feedsAtom);
+  const setFeeds = useSetAtom(feedsWithUnreadAtom);
+  const [filteredFeeds, setFilteredFeeds] = useState(
+    sortFeedsByErrorCount(feeds),
+  );
+  const categories = useAtomValue(categoriesAtom);
   const { isMobileView } = useScreenWidth();
 
-  const tableData = showFeeds.map((feed) => ({
+  const tableData = filteredFeeds.map((feed) => ({
     category: feed.category,
     checked_at: feed.checked_at,
     crawler: feed.crawler,
@@ -58,51 +58,50 @@ const FeedList = () => {
   }));
 
   useEffect(() => {
-    setShowFeeds(getSortedFeedsByErrorCount(feeds));
+    setFilteredFeeds(sortFeedsByErrorCount(feeds));
   }, [feeds]);
 
-  const handleSelectFeed = (record) => {
-    setSelectedFeed(record);
+  const handleSelectFeed = (feed) => {
+    setSelectedFeed(feed);
     setFeedModalVisible(true);
     feedForm.setFieldsValue({
-      crawler: record.crawler,
-      group: record.category.id,
-      title: record.title,
-      url: record.feed_url,
-      hidden: record.hidden,
+      category: feed.category.id,
+      crawler: feed.crawler,
+      title: feed.title,
+      url: feed.feed_url,
+      hidden: feed.hidden,
     });
   };
 
-  const handleRefreshFeed = async (record) => {
-    refreshFeed(record.key)
-      .then(() => {
-        Message.success("Refreshed");
-        record.parsing_error_count = 0;
-      })
-      .catch(() => {
-        Message.error("Failed to refresh");
-        record.parsing_error_count++;
-      })
-      .finally(() => {
-        setFeeds(
-          feeds.map((feed) =>
-            feed.id === record.key
-              ? { ...feed, parsing_error_count: record.parsing_error_count }
-              : feed,
-          ),
-        );
-      });
+  const handleRefreshFeed = async (feed) => {
+    try {
+      await refreshFeed(feed.key);
+      Message.success("Refreshed");
+      setFeeds((feeds) =>
+        feeds.map((f) =>
+          f.id === feed.key ? { ...f, parsing_error_count: 0 } : f,
+        ),
+      );
+    } catch (error) {
+      Message.error("Failed to refresh");
+      setFeeds((feeds) =>
+        feeds.map((f) =>
+          f.id === feed.key
+            ? { ...f, parsing_error_count: f.parsing_error_count + 1 }
+            : f,
+        ),
+      );
+    }
   };
 
-  const handleDeleteFeed = async (record) => {
-    deleteFeed(record.key)
-      .then(() => {
-        Message.success("Unfollowed");
-        setFeeds(feeds.filter((feed) => feed.id !== record.key));
-      })
-      .catch(() => {
-        Message.error("Failed to unfollow");
-      });
+  const removeFeed = async (feed) => {
+    try {
+      await deleteFeed(feed.key);
+      Message.success("Unfollowed");
+      setFeeds((feeds) => feeds.filter((f) => f.id !== feed.key));
+    } catch (error) {
+      Message.error("Failed to unfollow");
+    }
   };
 
   const columns = [
@@ -148,7 +147,7 @@ const FeedList = () => {
     },
 
     {
-      title: "Group",
+      title: "Category",
       dataIndex: "category.title",
       sorter: (a, b) => a.category.title.localeCompare(b.category.title, "en"),
       render: (col) => (
@@ -197,7 +196,7 @@ const FeedList = () => {
             focusLock
             title="Unfollow？"
             onOk={async () => {
-              await handleDeleteFeed(record);
+              await removeFeed(record);
             }}
           >
             <span className="list-item-action">
@@ -209,28 +208,18 @@ const FeedList = () => {
     },
   ].filter(Boolean);
 
-  const handleEditFeed = async (
-    feedId,
-    newUrl,
-    newTitle,
-    groupId,
-    isFullText,
-    hidden,
-  ) => {
-    editFeed(feedId, newUrl, newTitle, groupId, isFullText, hidden)
-      .then((response) => {
-        setFeeds(
-          feeds.map((feed) =>
-            feed.id === feedId ? { ...feed, ...response.data } : feed,
-          ),
-        );
-        Message.success("Feed updated successfully");
-        setFeedModalVisible(false);
-        feedForm.resetFields();
-      })
-      .catch(() => {
-        Message.error("Failed to update feed");
-      });
+  const editFeed = async (feedId, newDetails) => {
+    try {
+      const response = await updateFeed(feedId, newDetails);
+      setFeeds((feeds) =>
+        feeds.map((f) => (f.id === feedId ? { ...f, ...response.data } : f)),
+      );
+      Message.success("Feed updated successfully");
+      setFeedModalVisible(false);
+      feedForm.resetFields();
+    } catch (error) {
+      Message.error("Failed to update feed");
+    }
   };
 
   return (
@@ -241,8 +230,8 @@ const FeedList = () => {
           placeholder="Search feed title or url"
           searchButton
           onChange={(value) =>
-            setShowFeeds(
-              getSortedFeedsByErrorCount(feeds).filter(
+            setFilteredFeeds(
+              sortFeedsByErrorCount(feeds).filter(
                 (feed) =>
                   includesIgnoreCase(feed.title, value) ||
                   includesIgnoreCase(feed.feed_url, value),
@@ -279,19 +268,15 @@ const FeedList = () => {
             wrapperCol={{ span: 17 }}
             onSubmit={(values) => {
               const url = values.url.trim();
+              const newDetails = {
+                url: values.url,
+                title: values.title,
+                categoryId: values.category,
+                isFullText: values.crawler,
+                hidden: values.hidden,
+              };
               if (url) {
-                handleEditFeed(
-                  selectedFeed.key,
-                  values.url,
-                  values.title,
-                  values.group,
-                  values.crawler,
-                  values.hidden,
-                ).then(() => {
-                  if (selectedFeed.hidden !== values.hidden) {
-                    updateFeedHidden(selectedFeed.key, values.hidden);
-                  }
-                });
+                editFeed(selectedFeed.key, newDetails);
               } else {
                 Message.error("Feed URL cannot be empty");
               }
@@ -308,15 +293,15 @@ const FeedList = () => {
               <Input placeholder="Please input feed title" />
             </Form.Item>
             <Form.Item
-              label="Group"
+              label="Category"
               required
-              field="group"
+              field="category"
               rules={[{ required: true }]}
             >
               <Select placeholder="Please select">
-                {groups.map((group) => (
-                  <Select.Option key={group.id} value={group.id}>
-                    {group.title}
+                {categories.map((category) => (
+                  <Select.Option key={category.id} value={category.id}>
+                    {category.title}
                   </Select.Option>
                 ))}
               </Select>

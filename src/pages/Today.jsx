@@ -1,4 +1,3 @@
-import React from "react";
 import { getTodayEntries, updateEntriesStatus } from "../apis";
 import Content from "../components/Content/Content";
 import { ContentProvider } from "../components/Content/ContentContext";

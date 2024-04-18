@@ -18,7 +18,7 @@ apiClient.interceptors.request.use(
     const auth = getAuth();
     const { server, token, username, password } = auth;
     if (!isValidAuth(auth)) {
-      return Promise.reject("Invalid auth");
+      return Promise.reject(new Error("Invalid auth"));
     }
 
     config.baseURL = server;
@@ -28,6 +28,8 @@ apiClient.interceptors.request.use(
     } else {
       config.auth = { username, password };
     }
+
+    // config.metadata = { url: config.url };
 
     return config;
   },
@@ -45,7 +47,7 @@ const handleRetry = async (error) => {
   }
 
   // 设置重试次数的默认值
-  config.__retryCount = config.__retryCount || 0;
+  config.__retryCount = config.__retryCount ?? 0;
 
   // 检查是否已经达到最大重试次数
   if (config.__retryCount >= config.retry) {
@@ -59,7 +61,7 @@ const handleRetry = async (error) => {
   const backoff = new Promise((resolve) => {
     setTimeout(() => {
       resolve();
-    }, config.retryDelay || 1000); // 重试间隔默认为 1 秒
+    }, config.retryDelay ?? 1000); // 重试间隔默认为 1 秒
   });
 
   // 等待再次尝试请求
@@ -69,7 +71,7 @@ const handleRetry = async (error) => {
 
 const handleError = (error) => {
   // 提取错误消息
-  const errorMessage = error.response?.data?.error_message || error.message;
+  const errorMessage = error.response?.data?.error_message ?? error.message;
   // 显示错误消息
   Message.error(errorMessage);
 
@@ -88,6 +90,9 @@ apiClient.interceptors.response.use(
   (response) => {
     // 2xx 范围内的状态码都会触发该函数。
     // 对响应数据做点什么
+
+    // console.trace(response.config.metadata.url);
+
     return response;
   },
   async (error) => {

@@ -21,45 +21,58 @@ import {
   IconSunFill,
   IconUser,
 } from "@arco-design/web-react/icon";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import useStore from "../../Store";
 import { applyColor } from "../../utils/colors";
 import "./Header.css";
 
+import { useAtom, useSetAtom } from "jotai";
+import { authAtom } from "../../atoms/authAtom";
+import { configAtom } from "../../atoms/configAtom";
 import { useConfig } from "../../hooks/useConfig";
+import { defaultConfig } from "../../utils/config";
 
 const Header = () => {
   const navigate = useNavigate();
   const setVisible = useStore((state) => state.setVisible);
   const toggleCollapsed = useStore((state) => state.toggleCollapsed);
-  const feeds = useStore((state) => state.feeds);
-  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
-  const setUnreadTotal = useStore((state) => state.setUnreadTotal);
 
-  const { config, updateConfig } = useConfig();
+  const [config, setConfig] = useAtom(configAtom);
+  const setAuth = useSetAtom(authAtom);
   const { showAllFeeds, theme } = config;
+  const { updateConfig } = useConfig();
+
+  const toggleShowAllFeeds = () => {
+    updateConfig({ showAllFeeds: !showAllFeeds });
+  };
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    updateConfig({ theme: newTheme });
+  };
 
   const handleLogout = () => {
-    localStorage.clear();
+    setAuth({});
+    setConfig(defaultConfig);
     document.body.removeAttribute("arco-theme");
     applyColor("Blue");
     navigate("/login");
-    Message.success("logout");
+    Message.success("Logout successful");
   };
 
-  let themeIcon;
-  switch (theme) {
-    case "dark":
-      themeIcon = <IconMoonFill />;
-      break;
-    case "system":
-      themeIcon = <IconDesktop />;
-      break;
-    default:
-      themeIcon = <IconSunFill />;
-  }
+  const getThemeIcon = (theme) => {
+    switch (theme) {
+      case "dark":
+        return <IconMoonFill />;
+      case "system":
+        return <IconDesktop />;
+      default:
+        return <IconSunFill />;
+    }
+  };
+
+  const themeIcon = getThemeIcon(theme);
 
   return (
     <div className="header">
@@ -92,20 +105,7 @@ const Header = () => {
               shape="circle"
               size="small"
               icon={showAllFeeds ? <IconEye /> : <IconEyeInvisible />}
-              onClick={() => {
-                const newShowAllFeeds = !showAllFeeds;
-                if (newShowAllFeeds) {
-                  setUnreadTotal(() =>
-                    feeds.reduce((acc, feed) => acc + feed.unreadCount, 0),
-                  );
-                } else {
-                  const showedFeedsUnreadCount = feeds
-                    .filter((feed) => !hiddenFeedIds.includes(feed.id))
-                    .reduce((acc, feed) => acc + feed.unreadCount, 0);
-                  setUnreadTotal(() => showedFeedsUnreadCount);
-                }
-                updateConfig({ showAllFeeds: newShowAllFeeds });
-              }}
+              onClick={toggleShowAllFeeds}
             />
           </Tooltip>
           <Button
@@ -140,18 +140,7 @@ const Header = () => {
               icon={themeIcon}
               shape="circle"
               size="small"
-              onClick={() => {
-                switch (theme) {
-                  case "light":
-                    updateConfig({ theme: "dark" });
-                    break;
-                  case "dark":
-                    updateConfig({ theme: "light" });
-                    break;
-                  default:
-                    break;
-                }
-              }}
+              onClick={toggleTheme}
             />
           </Dropdown>
           <Dropdown

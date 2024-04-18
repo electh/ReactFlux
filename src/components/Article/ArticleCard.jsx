@@ -7,12 +7,13 @@ import {
 } from "@arco-design/web-react/icon";
 import { animated, useSpring } from "@react-spring/web";
 import classNames from "classnames";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
 
+import { useAtomValue } from "jotai";
 import useStore from "../../Store";
-import { useConfig } from "../../hooks/useConfig";
+import { configAtom } from "../../atoms/configAtom";
 import useEntryActions from "../../hooks/useEntryActions";
 import { generateRelativeTime } from "../../utils/date";
 import "./ArticleCard.css";
@@ -80,7 +81,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
 
 const ArticleCard = ({ entry, handleEntryClick, mini }) => {
   const activeContent = useStore((state) => state.activeContent);
-  const { config } = useConfig();
+  const config = useAtomValue(configAtom);
   const { markReadOnScroll, showFeedIcon } = config;
 
   const isSelected = activeContent && entry.id === activeContent.id;

@@ -1,5 +1,5 @@
 import { Button, Input, Select, Tooltip } from "@arco-design/web-react";
-import React, { useContext } from "react";
+import { useContext } from "react";
 
 import {
   IconSortAscending,
@@ -9,6 +9,8 @@ import { useConfig } from "../../hooks/useConfig";
 import useFilterEntries from "../../hooks/useFilterEntries";
 import ContentContext from "../Content/ContentContext";
 
+import { useAtomValue } from "jotai";
+import { configAtom } from "../../atoms/configAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./SearchAndSortBar.css";
 
@@ -18,8 +20,14 @@ const SearchAndSortBar = (info) => {
 
   const { setFilterString, setFilterType } = useFilterEntries(info);
 
-  const { config, updateConfig } = useConfig();
+  const config = useAtomValue(configAtom);
+  const { updateConfig } = useConfig();
   const { orderDirection } = config;
+
+  const toggleOrderDirection = () => {
+    const newOrderDirection = orderDirection === "desc" ? "asc" : "desc";
+    updateConfig({ orderDirection: newOrderDirection });
+  };
 
   return (
     <div className="search-and-sort-bar">
@@ -57,11 +65,7 @@ const SearchAndSortBar = (info) => {
               <IconSortAscending />
             )
           }
-          onClick={() => {
-            const newOrderDirection =
-              orderDirection === "desc" ? "asc" : "desc";
-            updateConfig({ orderDirection: newOrderDirection });
-          }}
+          onClick={toggleOrderDirection}
         />
       </Tooltip>
     </div>

@@ -1,14 +1,15 @@
 import { useContext, useState } from "react";
 
-import useStore from "../Store";
+import { useAtomValue } from "jotai";
+import { configAtom } from "../atoms/configAtom";
+import { hiddenFeedIdsAtom } from "../atoms/dataAtom";
 import ContentContext from "../components/Content/ContentContext";
 import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
-import { useConfig } from "./useConfig";
 
 const useLoadMore = () => {
-  const { config } = useConfig();
+  const config = useAtomValue(configAtom);
   const { pageSize, showAllFeeds } = config;
-  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
+  const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
 
   const {
     entries,

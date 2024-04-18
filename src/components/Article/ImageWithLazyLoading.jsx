@@ -1,5 +1,5 @@
 import { Skeleton } from "@arco-design/web-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 import "./ImageWithLazyLoading.css";

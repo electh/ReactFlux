@@ -1,9 +1,8 @@
 import { Button } from "@arco-design/web-react";
 import { IconArrowDown } from "@arco-design/web-react/icon";
-import React, { forwardRef, useContext } from "react";
+import { forwardRef, useContext } from "react";
 import isURL from "validator/es/lib/isURL";
 
-import { useConfig } from "../../hooks/useConfig";
 import useLoadMore from "../../hooks/useLoadMore";
 import { extractProtocolAndHostname } from "../../utils/url";
 import ContentContext from "../Content/ContentContext";
@@ -11,6 +10,8 @@ import ArticleCard from "./ArticleCard";
 import LoadingCards from "./LoadingCards";
 import SearchAndSortBar from "./SearchAndSortBar";
 
+import { useAtomValue } from "jotai";
+import { configAtom } from "../../atoms/configAtom";
 import "./ArticleList.css";
 
 const ArticleList = forwardRef(
@@ -23,7 +24,7 @@ const ArticleList = forwardRef(
     } = useContext(ContentContext);
 
     const { loadingMore, handleLoadMore } = useLoadMore();
-    const { config } = useConfig();
+    const config = useAtomValue(configAtom);
     const { layout } = config;
     const mini = layout === "small";
 

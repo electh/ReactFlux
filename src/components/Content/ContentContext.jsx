@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useRef, useState } from "react";
+import { createContext, useMemo, useRef, useState } from "react";
 import { getConfig } from "../../utils/config";
 
 const ContentContext = createContext(null);

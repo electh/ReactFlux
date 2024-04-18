@@ -6,16 +6,39 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import React from "react";
 
 import { applyColor, colors, getColorValue } from "../../utils/colors";
 import "./Appearance.css";
 
+import { useAtomValue } from "jotai";
+import { configAtom } from "../../atoms/configAtom";
 import { useConfig } from "../../hooks/useConfig";
 
 const Appearance = () => {
-  const { config, updateConfig } = useConfig();
+  const { updateConfig } = useConfig();
+  const config = useAtomValue(configAtom);
   const { articleWidth, fontSize, layout, showFeedIcon, themeColor } = config;
+
+  const handleThemeColorChange = (color) => {
+    updateConfig({ themeColor: color });
+    applyColor(color);
+  };
+
+  const handleLayoutChange = (isCompact) => {
+    updateConfig({ layout: isCompact ? "small" : "large" });
+  };
+
+  const handleShowFeedIconChange = (shouldShow) => {
+    updateConfig({ showFeedIcon: shouldShow });
+  };
+
+  const handleFontSizeChange = (size) => {
+    updateConfig({ fontSize: size });
+  };
+
+  const handleArticleWidthChange = (width) => {
+    updateConfig({ articleWidth: width });
+  };
 
   return (
     <>
@@ -35,26 +58,22 @@ const Appearance = () => {
           </Typography.Text>
         </div>
         <div style={{ display: "flex" }}>
-          {colors.map((c) => (
-            <Tooltip content={c.name} key={c.name}>
+          {colors.map((color) => (
+            <Tooltip content={color.name} key={color.name}>
               <button
                 type="button"
                 className="accent-color-button"
                 style={{
-                  backgroundColor: getColorValue(c.name),
+                  backgroundColor: getColorValue(color.name),
                   outline:
-                    c.name === themeColor
-                      ? `1px solid ${getColorValue(c.name)}`
+                    color.name === themeColor
+                      ? `1px solid ${getColorValue(color.name)}`
                       : "none",
                 }}
-                onClick={() => {
-                  updateConfig({ themeColor: c.name });
-                  applyColor(c.name);
-                }}
+                onClick={() => handleThemeColorChange(color.name)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
-                    updateConfig({ themeColor: c.name });
-                    applyColor(c.name);
+                    handleThemeColorChange(color.name);
                   }
                 }}
               />
@@ -76,9 +95,7 @@ const Appearance = () => {
         <div>
           <Switch
             checked={layout === "small"}
-            onChange={(value) =>
-              updateConfig({ layout: value ? "small" : "large" })
-            }
+            onChange={(value) => handleLayoutChange(value)}
           />
         </div>
       </div>
@@ -95,7 +112,7 @@ const Appearance = () => {
         <div>
           <Switch
             checked={showFeedIcon}
-            onChange={(value) => updateConfig({ showFeedIcon: value })}
+            onChange={(value) => handleShowFeedIconChange(value)}
           />
         </div>
       </div>
@@ -120,7 +137,7 @@ const Appearance = () => {
               step={0.05}
               style={{ width: 200 }}
               value={fontSize}
-              onChange={(value) => updateConfig({ fontSize: value })}
+              onChange={(value) => handleFontSizeChange(value)}
             />
             <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
           </Space>
@@ -147,7 +164,7 @@ const Appearance = () => {
               step={10}
               style={{ width: 200 }}
               value={articleWidth}
-              onChange={(value) => updateConfig({ articleWidth: value })}
+              onChange={(value) => handleArticleWidthChange(value)}
             />
             <Typography.Text>90%</Typography.Text>
           </Space>

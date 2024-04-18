@@ -8,7 +8,7 @@
   width: 84px;
 }
 
-.add-group-tag {
+.add-category-tag {
   background-color: var(--color-fill-2);
   border: 1px dashed var(--color-fill-3);
   cursor: pointer;

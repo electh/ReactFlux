@@ -15,39 +15,51 @@ import {
   IconStar,
   IconUnorderedList,
 } from "@arco-design/web-react/icon";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import isURL from "validator/es/lib/isURL";
 
+import { useAtomValue } from "jotai";
 import useStore from "../../Store";
-import { useConfig } from "../../hooks/useConfig";
+import { configAtom } from "../../atoms/configAtom";
+import {
+  categoriesAtom,
+  feedsAtom,
+  hiddenCategoryIdsAtom,
+  hiddenFeedIdsAtom,
+  historyCountAtom,
+  isAppDataReadyAtom,
+  starredCountAtom,
+  unreadTodayAtom,
+  unreadTotalAtom,
+} from "../../atoms/dataAtom";
 import { extractProtocolAndHostname } from "../../utils/url";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
 const { Sider } = Layout;
 
-const GroupTitle = ({ group, isOpen, feedsGroupedById }) => {
-  const { config } = useConfig();
+const CategoryTitle = ({ category, isOpen, feedsGroupedById }) => {
+  const config = useAtomValue(configAtom);
   const { showAllFeeds } = config;
 
-  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
+  const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
 
-  let { unreadCount } = group;
+  let { unreadCount } = category;
   if (!showAllFeeds && hiddenFeedIds) {
-    unreadCount = feedsGroupedById[group.id]
+    unreadCount = feedsGroupedById[category.id]
       .filter((feed) => !hiddenFeedIds.includes(feed.id))
       .reduce((acc, feed) => acc + feed.unreadCount, 0);
   }
   return (
-    <div className="group-title">
+    <div className="category-title">
       <Typography.Ellipsis
         expandable={false}
         showTooltip={true}
         style={{ width: unreadCount ? "80%" : "100%" }}
       >
         {isOpen ? <IconDown /> : <IconRight />}
-        {group.title}
+        {category.title}
       </Typography.Ellipsis>
       {unreadCount > 0 && (
         <Typography.Ellipsis className="unread-count" expandable={false}>
@@ -62,20 +74,20 @@ const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const collapsed = useStore((state) => state.collapsed);
-  const feeds = useStore((state) => state.feeds);
-  const groups = useStore((state) => state.groups);
-  const loading = useStore((state) => state.loading);
-  const unreadTotal = useStore((state) => state.unreadTotal);
-  const unreadToday = useStore((state) => state.unreadToday);
-  const starredCount = useStore((state) => state.starredCount);
-  const readCount = useStore((state) => state.readCount);
+  const feeds = useAtomValue(feedsAtom);
+  const categories = useAtomValue(categoriesAtom);
+  const isAppDataReady = useAtomValue(isAppDataReadyAtom);
+  const unreadTotal = useAtomValue(unreadTotalAtom);
+  const unreadToday = useAtomValue(unreadTodayAtom);
+  const starredCount = useAtomValue(starredCountAtom);
+  const historyCount = useAtomValue(historyCountAtom);
+  const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
+  const hiddenCategoryIds = useAtomValue(hiddenCategoryIdsAtom);
   const toggleCollapsed = useStore((state) => state.toggleCollapsed);
-  const hiddenFeedIds = useStore((state) => state.hiddenFeedIds);
-  const hiddenGroupIds = useStore((state) => state.hiddenGroupIds);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [openKeys, setOpenKeys] = useState([]);
 
-  const { config } = useConfig();
+  const config = useAtomValue(configAtom);
   const { showAllFeeds, showFeedIcon } = config;
 
   const path = location.pathname;
@@ -93,9 +105,9 @@ const Sidebar = () => {
       feed.site_url = extractProtocolAndHostname(feed.feed_url);
     }
 
-    const { id: groupId } = feed.category;
-    groupedFeeds[groupId] = groupedFeeds[groupId] || [];
-    groupedFeeds[groupId].push(feed);
+    const { id: categoryId } = feed.category;
+    groupedFeeds[categoryId] = groupedFeeds[categoryId] || [];
+    groupedFeeds[categoryId].push(feed);
     return groupedFeeds;
   }, {});
 
@@ -111,10 +123,10 @@ const Sidebar = () => {
   }, [path]);
 
   useEffect(() => {
-    if (!loading) {
+    if (!isAppDataReady) {
       setOpenKeys([]);
     }
-  }, [loading]);
+  }, [isAppDataReady]);
 
   return (
     <Sider
@@ -158,8 +170,12 @@ const Sidebar = () => {
         <Typography.Title className="section-title" heading={6}>
           Articles
         </Typography.Title>
-        <Skeleton loading={loading} animation={true} text={{ rows: 3 }} />
-        {loading ? null : (
+        <Skeleton
+          loading={!isAppDataReady}
+          animation={true}
+          text={{ rows: 3 }}
+        />
+        {isAppDataReady ? (
           <div>
             <MenuItem key={"/all"} onClick={() => navigate("/all")}>
               <div className="custom-menu-item">
@@ -201,52 +217,56 @@ const Sidebar = () => {
                   History
                 </span>
                 <Typography.Ellipsis className="item-count" expandable={false}>
-                  {readCount || ""}
+                  {historyCount || ""}
                 </Typography.Ellipsis>
               </div>
             </MenuItem>
           </div>
-        )}
+        ) : null}
         <Typography.Title className="section-title" heading={6}>
           Feeds
         </Typography.Title>
-        <Skeleton loading={loading} animation={true} text={{ rows: 6 }} />
-        {loading
-          ? null
-          : groups
+        <Skeleton
+          loading={!isAppDataReady}
+          animation={true}
+          text={{ rows: 6 }}
+        />
+        {isAppDataReady
+          ? categories
               .filter(
-                (group) => showAllFeeds || !hiddenGroupIds.includes(group.id),
+                (category) =>
+                  showAllFeeds || !hiddenCategoryIds.includes(category.id),
               )
-              .map((group) => (
+              .map((category) => (
                 <Menu.SubMenu
-                  key={`/group/${group.id}`}
+                  key={`/category/${category.id}`}
                   selectable={true}
                   title={
-                    <GroupTitle
-                      group={group}
-                      isOpen={openKeys.includes(`/group/${group.id}`)}
+                    <CategoryTitle
+                      category={category}
+                      isOpen={openKeys.includes(`/category/${category.id}`)}
                       feedsGroupedById={feedsGroupedById}
                     />
                   }
                   onClick={(e) => {
-                    setSelectedKeys([`/group/${group.id}`]);
+                    setSelectedKeys([`/category/${category.id}`]);
                     if (
                       !(
                         e.target.tagName === "svg" ||
                         e.target.tagName === "path"
                       ) &&
-                      path !== `/group/${group.id}`
+                      path !== `/category/${category.id}`
                     ) {
-                      navigate(`/group/${group.id}`);
+                      navigate(`/category/${category.id}`);
                     }
                   }}
                 >
-                  {feedsGroupedById[group.id]?.map((feed) => (
+                  {feedsGroupedById[category.id]?.map((feed) => (
                     <MenuItem
                       key={`/feed/${feed.id}`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedKeys([`/group/${group.id}`]);
+                        setSelectedKeys([`/category/${category.id}`]);
                         navigate(`/feed/${feed.id}`);
                       }}
                     >
@@ -286,7 +306,8 @@ const Sidebar = () => {
                     </MenuItem>
                   ))}
                 </Menu.SubMenu>
-              ))}
+              ))
+          : null}
       </Menu>
     </Sider>
   );

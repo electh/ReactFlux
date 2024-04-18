@@ -7,14 +7,13 @@ import { configAtom } from "../atoms/configAtom";
 import Content from "../components/Content/Content";
 import { ContentProvider } from "../components/Content/ContentContext";
 
-const Feed = () => {
-  const { id: feedId } = useParams();
+const Category = () => {
+  const { id: categoryId } = useParams();
   const config = useAtomValue(configAtom);
   const { orderBy, pageSize } = config;
-
-  const getFeedEntries = async (offset = 0, status = null) => {
+  const getCategoryEntries = async (offset = 0, status = null) => {
     const baseParams = {
-      baseUrl: `/v1/feeds/${feedId}/entries`,
+      baseUrl: `/v1/categories/${categoryId}/entries`,
       orderField: orderBy,
       offset,
       limit: pageSize,
@@ -25,19 +24,19 @@ const Feed = () => {
     return apiClient.get(url);
   };
 
-  const markFeedAsRead = async () => {
-    return apiClient.put(`/v1/feeds/${feedId}/mark-all-as-read`);
+  const markCategoryAsRead = async () => {
+    return apiClient.put(`/v1/categories/${categoryId}/mark-all-as-read`);
   };
 
   return (
     <ContentProvider>
       <Content
-        info={{ from: "feed", id: feedId }}
-        getEntries={getFeedEntries}
-        markAllAsRead={markFeedAsRead}
+        info={{ from: "category", id: categoryId }}
+        getEntries={getCategoryEntries}
+        markAllAsRead={markCategoryAsRead}
       />
     </ContentProvider>
   );
 };
 
-export default Feed;
+export default Category;

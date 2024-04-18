@@ -5,12 +5,14 @@ import {
   Switch,
   Typography,
 } from "@arco-design/web-react";
-import React from "react";
+import { useAtomValue } from "jotai";
+import { configAtom } from "../../atoms/configAtom";
 import { useConfig } from "../../hooks/useConfig";
 import "./General.css";
 
 const General = () => {
-  const { config, updateConfig } = useConfig();
+  const { updateConfig } = useConfig();
+  const config = useAtomValue(configAtom);
   const { homePage, markReadOnScroll, orderBy, pageSize, showStatus } = config;
 
   return (

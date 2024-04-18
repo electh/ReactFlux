@@ -2,13 +2,14 @@ import { Button, Divider, Tag, Typography } from "@arco-design/web-react";
 import { IconEmpty, IconImage } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
-import React, { forwardRef, useContext, useState } from "react";
+import { forwardRef, useContext, useState } from "react";
 import { PhotoSlider } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import { Link, useNavigate } from "react-router-dom";
 
+import { useAtomValue } from "jotai";
 import useStore from "../../Store";
-import { useConfig } from "../../hooks/useConfig";
+import { configAtom } from "../../atoms/configAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { extractAllImageSrc } from "../../utils/images";
 import contentContext from "../Content/ContentContext";
@@ -96,7 +97,7 @@ const ArticleDetail = forwardRef(
   ) => {
     const navigate = useNavigate();
     const activeContent = useStore((state) => state.activeContent);
-    const { config } = useConfig();
+    const config = useAtomValue(configAtom);
     const { articleWidth, fontSize } = config;
     const { setIsArticleFocused } = useContext(contentContext);
     const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);
@@ -130,8 +131,8 @@ const ArticleDetail = forwardRef(
       activeContent.content,
       htmlParserOptions,
     );
-    const groupId = activeContent.feed.category.id;
-    const groupTitle = activeContent.feed.category.title;
+    const categoryId = activeContent.feed.category.id;
+    const categoryTitle = activeContent.feed.category.title;
 
     return (
       <div
@@ -163,14 +164,14 @@ const ArticleDetail = forwardRef(
                 <Tag
                   size="small"
                   onClick={() => {
-                    navigate(`/group/${groupId}`);
+                    navigate(`/category/${categoryId}`);
                   }}
                   style={{
                     marginLeft: "10px",
                     cursor: "pointer",
                   }}
                 >
-                  {groupTitle}
+                  {categoryTitle}
                 </Tag>
               </Typography.Text>
             </div>

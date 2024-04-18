@@ -1,5 +1,4 @@
 import { Table, Tag } from "@arco-design/web-react";
-import React from "react";
 
 const columns = [
   {

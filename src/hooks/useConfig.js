@@ -1,16 +1,12 @@
-import { useAtom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
-
-import { defaultConfig } from "../utils/config";
-
-export const configAtom = atomWithStorage("config", defaultConfig);
+import { useSetAtom } from "jotai";
+import { configAtom } from "../atoms/configAtom";
 
 export const useConfig = () => {
-  const [config, setConfig] = useAtom(configAtom);
+  const setConfig = useSetAtom(configAtom);
 
-  const updateConfig = (newConfig) => {
-    setConfig((prevConfig) => ({ ...prevConfig, ...newConfig }));
+  const updateConfig = (config) => {
+    setConfig((prev) => ({ ...prev, ...config }));
   };
 
-  return { config, updateConfig };
+  return { updateConfig };
 };

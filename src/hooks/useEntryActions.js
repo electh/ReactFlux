@@ -2,28 +2,29 @@ import { Message } from "@arco-design/web-react";
 import Confetti from "canvas-confetti";
 import { useContext } from "react";
 
+import { useSetAtom } from "jotai";
 import useStore from "../Store";
 import {
-  fetchOriginalArticle,
+  getOriginalContent,
   toggleEntryStarred as toggleEntryStarredApi,
-  updateEntryStatus,
+  updateEntriesStatus,
 } from "../apis";
+import {
+  historyCountAtom,
+  starredCountAtom,
+  unreadInfoAtom,
+  unreadTodayAtom,
+} from "../atoms/dataAtom";
 import ContentContext from "../components/Content/ContentContext";
 import { checkIsInLast24Hours } from "../utils/date";
 
 const useEntryActions = () => {
-  const setUnreadTotal = useStore((state) => state.setUnreadTotal);
-  const setUnreadToday = useStore((state) => state.setUnreadToday);
-  const setReadCount = useStore((state) => state.setReadCount);
-  const setStarredCount = useStore((state) => state.setStarredCount);
+  const setUnreadInfo = useSetAtom(unreadInfoAtom);
+  const setUnreadToday = useSetAtom(unreadTodayAtom);
+  const setHistoryCount = useSetAtom(historyCountAtom);
+  const setStarredCount = useSetAtom(starredCountAtom);
   const activeContent = useStore((state) => state.activeContent);
   const setActiveContent = useStore((state) => state.setActiveContent);
-  const updateFeedUnreadCount = useStore(
-    (state) => state.updateFeedUnreadCount,
-  );
-  const updateGroupUnreadCount = useStore(
-    (state) => state.updateGroupUnreadCount,
-  );
 
   const { setEntries, setFilteredEntries, setUnreadCount, setUnreadEntries } =
     useContext(ContentContext);
@@ -34,26 +35,23 @@ const useEntryActions = () => {
     );
 
   const handleEntryStatusUpdate = (entry, newStatus) => {
-    const {
-      id: feedId,
-      category: { id: groupId },
-    } = entry.feed;
+    const feedId = entry.feed.id;
     const isRecent = checkIsInLast24Hours(entry.published_at);
 
-    updateFeedUnreadCount(feedId, newStatus);
-    updateGroupUnreadCount(groupId, newStatus);
-
     if (newStatus === "read") {
-      setUnreadTotal((prev) => Math.max(0, prev - 1));
+      setUnreadInfo((prev) => ({
+        ...prev,
+        [feedId]: Math.max(0, prev[feedId] - 1),
+      }));
       setUnreadCount((prev) => Math.max(0, prev - 1));
-      setReadCount((prev) => prev + 1);
+      setHistoryCount((prev) => prev + 1);
       if (isRecent) {
         setUnreadToday((prev) => Math.max(0, prev - 1));
       }
     } else {
-      setUnreadTotal((prev) => prev + 1);
+      setUnreadInfo((prev) => ({ ...prev, [feedId]: prev[feedId] + 1 }));
       setUnreadCount((prev) => prev + 1);
-      setReadCount((prev) => Math.max(0, prev - 1));
+      setHistoryCount((prev) => Math.max(0, prev - 1));
       if (isRecent) {
         setUnreadToday((prev) => prev + 1);
       }
@@ -95,7 +93,7 @@ const useEntryActions = () => {
     const newStatus = prevStatus === "read" ? "unread" : "read";
     handleEntryStatusUpdate(entry, newStatus);
 
-    updateEntryStatus(entry.id, newStatus).catch(() => {
+    updateEntriesStatus([entry.id], newStatus).catch(() => {
       Message.error(
         `Failed to mark entry as ${newStatus}, please try again later`,
       );
@@ -118,7 +116,7 @@ const useEntryActions = () => {
   };
 
   const handleFetchContent = async () => {
-    fetchOriginalArticle(activeContent.id)
+    getOriginalContent(activeContent.id)
       .then((response) => {
         Message.success("Fetched content successfully");
         setActiveContent({ ...activeContent, content: response.data.content });

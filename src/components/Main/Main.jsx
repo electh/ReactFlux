@@ -6,17 +6,20 @@ import {
   Select,
   Switch,
 } from "@arco-design/web-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
+import { useAtomValue } from "jotai";
 import useStore from "../../Store";
 import { addFeed } from "../../apis";
+import { categoriesAtom } from "../../atoms/dataAtom";
+import { useLoadData } from "../../hooks/useLoadData";
 import { includesIgnoreCase } from "../../utils/filter";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
 
 const urlRule = [{ required: true }];
-const groupRule = [{ required: true }];
+const categoryRule = [{ required: true }];
 const crawlerRule = [{ type: "boolean" }];
 
 const SettingsModal = () => {
@@ -41,19 +44,20 @@ const SettingsModal = () => {
 };
 
 const AddFeedModal = () => {
-  const groups = useStore((state) => state.groups);
-  const initData = useStore((state) => state.initData);
+  const categories = useAtomValue(categoriesAtom);
   const setVisible = useStore((state) => state.setVisible);
   const visible = useStore((state) => state.visible);
 
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
 
-  const handleAddFeed = async (feed_url, group_id, is_full_text) => {
+  const { loadData } = useLoadData();
+
+  const handleAddFeed = async (url, categoryId, isFullText) => {
     setFeedModalLoading(true);
-    addFeed(feed_url, group_id, is_full_text)
+    addFeed(url, categoryId, isFullText)
       .then(() => {
-        initData();
+        loadData();
         Message.success("Added a feed successfully");
         setVisible("addFeed", false);
         feedForm.resetFields();
@@ -85,7 +89,7 @@ const AddFeedModal = () => {
         onSubmit={(values) => {
           const url = values.url.trim();
           if (url) {
-            handleAddFeed(values.url.trim(), values.group, values.crawler);
+            handleAddFeed(values.url.trim(), values.category, values.crawler);
           } else {
             Message.error("Feed URL cannot be empty");
           }
@@ -94,7 +98,12 @@ const AddFeedModal = () => {
         <Form.Item label="Feed URL" field="url" rules={urlRule}>
           <Input placeholder="Please input a feed URL" />
         </Form.Item>
-        <Form.Item label="Group" required field="group" rules={groupRule}>
+        <Form.Item
+          label="Category"
+          required
+          field="category"
+          rules={categoryRule}
+        >
           <Select
             placeholder="Please select a category"
             showSearch
@@ -102,9 +111,9 @@ const AddFeedModal = () => {
               includesIgnoreCase(option.props.children, inputValue)
             }
           >
-            {groups.map((group) => (
-              <Select.Option key={group.id} value={group.id}>
-                {group.title}
+            {categories.map((category) => (
+              <Select.Option key={category.id} value={category.id}>
+                {category.title}
               </Select.Option>
             ))}
           </Select>

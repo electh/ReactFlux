@@ -1,11 +1,10 @@
-import React from "react";
 import { Navigate, createBrowserRouter } from "react-router-dom";
 
 import App from "./App";
 import All from "./pages/All";
+import Category from "./pages/Category";
 import ErrorPage from "./pages/ErrorPage";
 import Feed from "./pages/Feed";
-import Group from "./pages/Group";
 import History from "./pages/History";
 import Login from "./pages/Login";
 import RouterProtect from "./pages/RouterProtect";
@@ -20,7 +19,7 @@ const children = [
   { path: "/today", element: <Today /> },
   { path: "/starred", element: <Starred /> },
   { path: "/history", element: <History /> },
-  { path: "/group/:id", element: <Group /> },
+  { path: "/category/:id", element: <Category /> },
   { path: "/feed/:id", element: <Feed /> },
 ];
 

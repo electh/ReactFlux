@@ -16,10 +16,11 @@ import {
   IconUser,
 } from "@arco-design/web-react/icon";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useAuth } from "../hooks/useAuth";
+import { useAtom } from "jotai";
+import { authAtom } from "../atoms/authAtom";
 import { isValidAuth } from "../utils/auth";
 import {
   handleEnterKeyToSubmit,
@@ -30,7 +31,7 @@ const Login = () => {
   const [loginForm] = useForm();
   const [loading, setLoading] = useState(false);
   /* token or user */
-  const [auth, setAuth] = useAuth();
+  const [auth, setAuth] = useAtom(authAtom);
   const [method, setMethod] = useState("token");
   const navigate = useNavigate();
 

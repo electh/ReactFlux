@@ -1,23 +1,21 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
+import { useAtomValue } from "jotai";
 import "./App.css";
 import useStore from "./Store";
+import { configAtom } from "./atoms/configAtom";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Sidebar from "./components/Sidebar/Sidebar";
-import { useConfig } from "./hooks/useConfig";
 
 const App = () => {
-  const initData = useStore((state) => state.initData);
-  const { config } = useConfig();
+  const config = useAtomValue(configAtom);
   const { theme } = config;
   const isSysDarkMode = useStore((state) => state.isSysDarkMode);
   const setIsSysDarkMode = useStore((state) => state.setIsSysDarkMode);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    initData();
-
     const handleDarkModeChange = (event) => {
       setIsSysDarkMode(event.matches);
     };

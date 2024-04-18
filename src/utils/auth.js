@@ -1,6 +1,5 @@
 export const getAuth = () => {
-  const auth = JSON.parse(localStorage.getItem("auth"));
-  return auth || {};
+  return JSON.parse(localStorage.getItem("auth")) ?? {};
 };
 
 export const isValidAuth = (auth) => {
