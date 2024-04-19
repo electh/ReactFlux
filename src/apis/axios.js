@@ -41,8 +41,8 @@ apiClient.interceptors.request.use(
 
 const handleRetry = async (error) => {
   const { config } = error;
-  // 检查是否因为超时而失败以及是否配置了重试策略
-  if (error.code !== "ECONNABORTED" || !config?.retry) {
+  // 检查是否配置了重试策略
+  if (!config?.retry) {
     return Promise.reject(error);
   }
 
@@ -99,7 +99,6 @@ apiClient.interceptors.response.use(
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
     try {
-      // 如果是因为超时而失败，则尝试重试
       return await handleRetry(error);
     } catch (retryError) {
       // 重试失败或不满足重试条件时，处理错误
