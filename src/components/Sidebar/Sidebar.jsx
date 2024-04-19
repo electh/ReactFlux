@@ -15,42 +15,34 @@ import {
   IconStar,
   IconUnorderedList,
 } from "@arco-design/web-react/icon";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import isURL from "validator/es/lib/isURL";
 
 import { useAtomValue } from "jotai";
 import useStore from "../../Store";
 import { configAtom } from "../../atoms/configAtom";
 import {
   categoriesAtom,
-  feedsAtom,
+  feedsGroupedByIdAtom,
   hiddenCategoryIdsAtom,
-  hiddenFeedIdsAtom,
   historyCountAtom,
   isAppDataReadyAtom,
   starredCountAtom,
   unreadTodayAtom,
   unreadTotalAtom,
 } from "../../atoms/dataAtom";
-import { extractProtocolAndHostname } from "../../utils/url";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
 const { Sider } = Layout;
 
-const CategoryTitle = ({ category, isOpen, feedsGroupedById }) => {
-  const config = useAtomValue(configAtom);
-  const { showAllFeeds } = config;
+const CategoryTitle = memo(({ category, isOpen }) => {
+  const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
+  const unreadCount = feedsGroupedById[category.id].reduce(
+    (acc, feed) => acc + feed.unreadCount,
+    0,
+  );
 
-  const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
-
-  let { unreadCount } = category;
-  if (!showAllFeeds && hiddenFeedIds) {
-    unreadCount = feedsGroupedById[category.id]
-      .filter((feed) => !hiddenFeedIds.includes(feed.id))
-      .reduce((acc, feed) => acc + feed.unreadCount, 0);
-  }
   return (
     <div className="category-title">
       <Typography.Ellipsis
@@ -68,20 +60,19 @@ const CategoryTitle = ({ category, isOpen, feedsGroupedById }) => {
       )}
     </div>
   );
-};
+});
 
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const collapsed = useStore((state) => state.collapsed);
-  const feeds = useAtomValue(feedsAtom);
   const categories = useAtomValue(categoriesAtom);
   const isAppDataReady = useAtomValue(isAppDataReadyAtom);
   const unreadTotal = useAtomValue(unreadTotalAtom);
   const unreadToday = useAtomValue(unreadTodayAtom);
   const starredCount = useAtomValue(starredCountAtom);
   const historyCount = useAtomValue(historyCountAtom);
-  const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
+  const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
   const hiddenCategoryIds = useAtomValue(hiddenCategoryIdsAtom);
   const toggleCollapsed = useStore((state) => state.toggleCollapsed);
   const [selectedKeys, setSelectedKeys] = useState([]);
@@ -95,21 +86,6 @@ const Sidebar = () => {
   const handleClickSubMenu = (key, currentOpenKeys) => {
     setOpenKeys(currentOpenKeys);
   };
-
-  const feedsGroupedById = feeds.reduce((groupedFeeds, feed) => {
-    if (!showAllFeeds && hiddenFeedIds.includes(feed.id)) {
-      return groupedFeeds;
-    }
-
-    if (!isURL(feed.site_url)) {
-      feed.site_url = extractProtocolAndHostname(feed.feed_url);
-    }
-
-    const { id: categoryId } = feed.category;
-    groupedFeeds[categoryId] = groupedFeeds[categoryId] || [];
-    groupedFeeds[categoryId].push(feed);
-    return groupedFeeds;
-  }, {});
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -245,7 +221,6 @@ const Sidebar = () => {
                     <CategoryTitle
                       category={category}
                       isOpen={openKeys.includes(`/category/${category.id}`)}
-                      feedsGroupedById={feedsGroupedById}
                     />
                   }
                   onClick={(e) => {
