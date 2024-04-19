@@ -1,7 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
 
-import { useEffect } from "react";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
 import {
   getCategories,
   getFeeds,
@@ -26,17 +25,25 @@ import {
   unreadTodayRefreshAtom,
 } from "../atoms/dataAtom";
 
-const createDataSyncHook = (dataAtom, refreshAtom, fetchFunc) => (key) => {
-  const setData = useSetAtom(dataAtom);
+const createDataSyncHook = (dataAtom, refreshAtom, fetchFunc) => () => {
+  const [data, setData] = useState(null);
+  const setAtomData = useSetAtom(dataAtom);
   const triggerRefresh = useSetAtom(refreshAtom);
-  const { data } = useSWR(key, fetchFunc);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetchFunc();
+      setData(response.data);
+    };
+    fetchData();
+  }, [fetchFunc]);
 
   useEffect(() => {
     if (data) {
-      setData(data.data);
+      setAtomData(data);
       triggerRefresh((prev) => prev + 1);
     }
-  }, [data, setData, triggerRefresh]);
+  }, [data, setAtomData, triggerRefresh]);
 
   return data;
 };
@@ -74,29 +81,24 @@ const useCategoriesSync = createDataSyncHook(
 
 export const useLoadData = () => {
   const [isAppDataReady, setIsAppDataReady] = useAtom(isAppDataReadyAtom);
-  const unreadInfoData = useUnreadInfoSync("/v1/feeds/counters");
-  const unreadTodayData = useUnreadTodaySync("/v1/entries?status=unread");
-  const starredData = useStarredSync("/v1/entries?starred=true");
-  const historyData = useHistorySync("/v1/entries?status=read");
-  const feedsData = useFeedsSync("/v1/feeds");
-  const categoriesData = useCategoriesSync("/v1/categories");
-
-  const loadData = () => {
-    setIsAppDataReady(false);
-  };
+  const unreadInfoData = useUnreadInfoSync();
+  const unreadTodayData = useUnreadTodaySync();
+  const starredData = useStarredSync();
+  const historyData = useHistorySync();
+  const feedsData = useFeedsSync();
+  const categoriesData = useCategoriesSync();
 
   useEffect(() => {
-    if (
-      !isAppDataReady &&
-      [
-        unreadInfoData,
-        unreadTodayData,
-        starredData,
-        historyData,
-        feedsData,
-        categoriesData,
-      ].every(Boolean)
-    ) {
+    const allDataLoaded = [
+      unreadInfoData,
+      unreadTodayData,
+      starredData,
+      historyData,
+      feedsData,
+      categoriesData,
+    ].every(Boolean);
+
+    if (allDataLoaded && !isAppDataReady) {
       setIsAppDataReady(true);
     }
   }, [
@@ -109,6 +111,10 @@ export const useLoadData = () => {
     feedsData,
     categoriesData,
   ]);
+
+  const loadData = () => {
+    setIsAppDataReady(false);
+  };
 
   return { loadData };
 };

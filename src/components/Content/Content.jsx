@@ -2,11 +2,17 @@ import { Message } from "@arco-design/web-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import useStore from "../../Store";
 import { updateEntriesStatus } from "../../apis";
 import { configAtom } from "../../atoms/configAtom";
-import { hiddenFeedIdsAtom, isAppDataReadyAtom } from "../../atoms/dataAtom";
+import {
+  hiddenFeedIdsAtom,
+  historyDataAtom,
+  isAppDataReadyAtom,
+  starredDataAtom,
+  unreadTodayDataAtom,
+} from "../../atoms/dataAtom";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { useLoadData } from "../../hooks/useLoadData";
@@ -25,6 +31,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
   const isAppDataReady = useAtomValue(isAppDataReadyAtom);
+
+  const [unreadTodayData, setUnreadTodayData] = useAtom(unreadTodayDataAtom);
+  const [starredData, setStarredData] = useAtom(starredDataAtom);
+  const [historyData, setHistoryData] = useAtom(historyDataAtom);
+
   const { loadData } = useLoadData();
   const config = useAtomValue(configAtom);
   const { orderBy, orderDirection, showAllFeeds } = config;
@@ -160,48 +171,96 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     };
   }, [activeContent, filteredEntries, isArticleFocused]);
 
-  const updateUI = (articles, articlesUnread, responseAll, responseUnread) => {
+  const updateUI = (articles, unreadArticles, total, unreadCount) => {
     setEntries(articles);
-    setUnreadEntries(articlesUnread);
+    setUnreadEntries(unreadArticles);
 
-    if (filterStatus === "all") {
-      setFilteredEntries(
-        filterEntriesByVisibility(articles, info, showAllFeeds, hiddenFeedIds),
-      );
-    } else {
-      setFilteredEntries(
-        filterEntriesByVisibility(
-          articlesUnread,
-          info,
-          showAllFeeds,
-          hiddenFeedIds,
-        ),
-      );
-    }
+    const targetArticles = filterStatus === "all" ? articles : unreadArticles;
+    setFilteredEntries(
+      filterEntriesByVisibility(
+        targetArticles,
+        info,
+        showAllFeeds,
+        hiddenFeedIds,
+      ),
+    );
 
-    setTotal(responseAll.data.total);
-    setLoadMoreVisible(articles.length < responseAll.data.total);
-    setUnreadCount(responseUnread.data.total);
-    setLoadMoreUnreadVisible(articlesUnread.length < responseUnread.data.total);
+    setTotal(total);
+    setLoadMoreVisible(articles.length < total);
+    setUnreadCount(unreadCount);
+    setLoadMoreUnreadVisible(unreadArticles.length < unreadCount);
   };
 
   const handleResponses = (responseAll, responseUnread) => {
-    if (responseAll?.data?.entries && responseUnread?.data?.total >= 0) {
-      const articles = responseAll.data.entries.map(parseFirstImage);
-      const articlesUnread = responseUnread.data.entries.map(parseFirstImage);
-      updateUI(articles, articlesUnread, responseAll, responseUnread);
-    }
+    const articles = responseAll.data.entries.map(parseFirstImage);
+    const unreadArticles = responseUnread.data.entries.map(parseFirstImage);
+    const { total } = responseAll.data;
+    const { total: unreadCount } = responseUnread.data;
+
+    updateUI(articles, unreadArticles, total, unreadCount);
   };
 
-  const getArticleList = async () => {
+  const getArticleList = async (refresh = false) => {
     setLoading(true);
     try {
-      const responseAll = await getEntries();
-      if (info.from === "history") {
-        handleResponses(responseAll, responseAll);
-      } else {
-        const responseUnread = await getEntries(0, "unread");
+      let responseAll;
+      let responseUnread;
+
+      if (refresh) {
+        responseAll = await getEntries();
+        if (info.from === "starred") {
+          setStarredData(responseAll.data);
+        } else if (info.from === "history") {
+          setHistoryData(responseAll.data);
+        }
+        responseUnread =
+          info.from === "history" ? responseAll : await getEntries(0, "unread");
         handleResponses(responseAll, responseUnread);
+      } else {
+        responseUnread = await getEntries(0, "unread");
+      }
+
+      switch (info.from) {
+        case "today": {
+          if (refresh) {
+            setUnreadTodayData(responseUnread.data);
+            responseAll = await getEntries();
+          }
+          const articlesToday = (
+            refresh ? responseAll.data : unreadTodayData
+          ).entries.map(parseFirstImage);
+          const unreadArticlesToday =
+            responseUnread.data.entries.map(parseFirstImage);
+          updateUI(
+            articlesToday,
+            unreadArticlesToday,
+            (refresh ? responseAll.data : unreadTodayData).total,
+            responseUnread.data.total,
+          );
+          break;
+        }
+        case "starred": {
+          const starredArticles = starredData.entries.map(parseFirstImage);
+          const unreadStarredArticles =
+            responseUnread.data.entries.map(parseFirstImage);
+          updateUI(
+            starredArticles,
+            unreadStarredArticles,
+            starredData.total,
+            responseUnread.data.total,
+          );
+          break;
+        }
+        case "history": {
+          const historyArticles = historyData.entries.map(parseFirstImage);
+          updateUI(
+            historyArticles,
+            historyArticles,
+            historyData.total,
+            historyData.total,
+          );
+          break;
+        }
       }
     } catch (error) {
       console.error("Error fetching articles:", error);
@@ -220,7 +279,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       loadData();
       return;
     }
-    await getArticleList();
+    await getArticleList(true);
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
