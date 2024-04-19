@@ -29,7 +29,7 @@ import {
 const createDataSyncHook = (dataAtom, refreshAtom, fetchFunc) => (key) => {
   const setData = useSetAtom(dataAtom);
   const triggerRefresh = useSetAtom(refreshAtom);
-  const { data } = useSWR(key, fetchFunc);
+  const { data } = useSWR(key, fetchFunc, { revalidateOnFocus: false });
 
   useEffect(() => {
     if (data) {
@@ -44,7 +44,7 @@ const createDataSyncHook = (dataAtom, refreshAtom, fetchFunc) => (key) => {
 const useUnreadInfoSync = createDataSyncHook(
   unreadInfoDataAtom,
   unreadInfoRefreshAtom,
-  getUnreadInfo,
+  () => getUnreadInfo(),
 );
 const useUnreadTodaySync = createDataSyncHook(
   unreadTodayDataAtom,
@@ -54,22 +54,20 @@ const useUnreadTodaySync = createDataSyncHook(
 const useStarredSync = createDataSyncHook(
   starredDataAtom,
   starredRefreshAtom,
-  getStarredEntries,
+  () => getStarredEntries(),
 );
 const useHistorySync = createDataSyncHook(
   historyDataAtom,
   historyRefreshAtom,
-  getHistoryEntries,
+  () => getHistoryEntries(),
 );
-const useFeedsSync = createDataSyncHook(
-  feedsDataAtom,
-  feedsRefreshAtom,
-  getFeeds,
+const useFeedsSync = createDataSyncHook(feedsDataAtom, feedsRefreshAtom, () =>
+  getFeeds(),
 );
 const useCategoriesSync = createDataSyncHook(
   categoriesDataAtom,
   categoriesRefreshAtom,
-  getCategories,
+  () => getCategories(),
 );
 
 export const useLoadData = () => {
