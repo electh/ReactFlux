@@ -233,8 +233,13 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (isAppDataReady) {
-      getArticleList().then(() => setIsFirstRenderCompleted(true));
-      setIsArticleFocused(true);
+      try {
+        getArticleList();
+        setIsFirstRenderCompleted(true);
+        setIsArticleFocused(true);
+      } catch (error) {
+        Message.error("Failed to fetch articles, please try again later");
+      }
     }
   }, [isAppDataReady]);
 

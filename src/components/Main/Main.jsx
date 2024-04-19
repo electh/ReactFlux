@@ -55,16 +55,15 @@ const AddFeedModal = () => {
 
   const handleAddFeed = async (url, categoryId, isFullText) => {
     setFeedModalLoading(true);
-    addFeed(url, categoryId, isFullText)
-      .then(() => {
-        loadData();
-        Message.success("Added a feed successfully");
-        setVisible("addFeed", false);
-        feedForm.resetFields();
-      })
-      .catch(() => {
-        Message.error("Failed to add a feed");
-      });
+    try {
+      await addFeed(url, categoryId, isFullText);
+      loadData();
+      Message.success("Added a feed successfully");
+      setVisible("addFeed", false);
+      feedForm.resetFields();
+    } catch (error) {
+      Message.error("Failed to add a feed");
+    }
     setFeedModalLoading(false);
   };
 

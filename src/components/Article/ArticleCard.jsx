@@ -106,17 +106,19 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
         ) * Math.sign(eventData.deltaX);
       setSwipeOffset(newOffset);
     },
-    onSwiped: (eventData) => {
-      if (eventData.deltaX > swipeThreshold) {
-        handleToggleStarred(entry).then(() =>
+    onSwiped: async (eventData) => {
+      try {
+        if (eventData.deltaX > swipeThreshold) {
+          await handleToggleStarred(entry);
           Message.success(
             isStarred ? "Unmarked as starred" : "Marked as starred",
-          ),
-        );
-      } else if (eventData.deltaX < -swipeThreshold) {
-        handleToggleStatus(entry).then(() =>
-          Message.success(isUnread ? "Marked as read" : "Marked as unread"),
-        );
+          );
+        } else if (eventData.deltaX < -swipeThreshold) {
+          await handleToggleStatus(entry);
+          Message.success(isUnread ? "Marked as read" : "Marked as unread");
+        }
+      } catch (error) {
+        Message.error("Failed to update, please try again");
       }
       setSwipeOffset(0);
     },

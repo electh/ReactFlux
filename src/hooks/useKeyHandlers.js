@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 
+import { Message } from "@arco-design/web-react";
 import useStore from "../Store";
 import ContentContext from "../components/Content/ContentContext";
 import { scrollToElement } from "../utils/scroll";
@@ -74,7 +75,7 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
   };
 
   // go to next entry
-  const handleRightKey = (info) => {
+  const handleRightKey = async (info) => {
     if (isLoading) {
       return;
     }
@@ -88,10 +89,15 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
       isLastEntry &&
       ((filterStatus === "all" && loadMoreVisible) || loadMoreUnreadVisible)
     ) {
-      setIsLoading(true);
-      handleLoadMore(info, getEntries)
-        .then(() => setCheckNext(true))
-        .finally(() => setIsLoading(false));
+      try {
+        setIsLoading(true);
+        await handleLoadMore(info, getEntries);
+        setCheckNext(true);
+      } catch (error) {
+        Message.error("Failed to load more articles, please try again later");
+      } finally {
+        setIsLoading(false);
+      }
       return;
     }
 

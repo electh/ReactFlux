@@ -116,14 +116,13 @@ const useEntryActions = () => {
   };
 
   const handleFetchContent = async () => {
-    getOriginalContent(activeContent.id)
-      .then((response) => {
-        Message.success("Fetched content successfully");
-        setActiveContent({ ...activeContent, content: response.data.content });
-      })
-      .catch(() => {
-        Message.error("Failed to fetch content, please try again later");
-      });
+    try {
+      const response = await getOriginalContent(activeContent.id);
+      Message.success("Fetched content successfully");
+      setActiveContent({ ...activeContent, content: response.data.content });
+    } catch (error) {
+      Message.error("Failed to fetch content, please try again later");
+    }
   };
 
   return {

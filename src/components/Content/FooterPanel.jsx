@@ -32,24 +32,23 @@ const FooterPanel = forwardRef(
     const { showStatus } = config;
 
     const handleMarkAllAsRead = async () => {
-      markAllAsRead()
-        .then(() => {
-          Message.success("Marked all as read successfully");
-          loadData();
-          setEntries(entries.map((entry) => ({ ...entry, status: "read" })));
-          setUnreadEntries([]);
-          if (filterStatus === "all") {
-            setFilteredEntries(
-              filteredEntries.map((entry) => ({ ...entry, status: "read" })),
-            );
-          } else {
-            setFilteredEntries([]);
-          }
-          setUnreadCount(0);
-        })
-        .catch(() => {
-          Message.error("Failed to mark all as read");
-        });
+      try {
+        await markAllAsRead();
+        Message.success("Marked all as read successfully");
+        loadData();
+        setEntries(entries.map((entry) => ({ ...entry, status: "read" })));
+        setUnreadEntries([]);
+        if (filterStatus === "all") {
+          setFilteredEntries(
+            filteredEntries.map((entry) => ({ ...entry, status: "read" })),
+          );
+        } else {
+          setFilteredEntries([]);
+        }
+        setUnreadCount(0);
+      } catch (error) {
+        Message.error("Failed to mark all as read");
+      }
     };
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
