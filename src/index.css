@@ -1,30 +1,19 @@
-body {
-  margin: 0;
-  font-family: Inter,
-  -apple-system,
-  BlinkMacSystemFont,
-  "PingFang SC",
-  "Hiragino Sans GB",
-  "noto sans",
-  "Microsoft YaHei",
-  "Helvetica Neue",
-  Helvetica,
-  Arial,
-  sans-serif;
-  -webkit-font-smoothing: antialiased;
+html {
+  font-family:-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,Microsoft YaHei,"\5FAE\8F6F\96C5\9ED1",helvetica neue,helvetica,ubuntu,roboto,noto,segoe ui,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overscroll-behavior: none;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-  monospace;
+::-webkit-input-placeholder {
+  font-family:-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,Microsoft YaHei,"\5FAE\8F6F\96C5\9ED1",helvetica neue,helvetica,ubuntu,roboto,noto,segoe ui,Arial,sans-serif
 }
 
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
+button,
+input,
+textarea {
+  font-family:-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,Microsoft YaHei,"\5FAE\8F6F\96C5\9ED1",helvetica neue,helvetica,ubuntu,roboto,noto,segoe ui,Arial,sans-serif
+}
+
+body {
+  margin: 0 auto;
 }

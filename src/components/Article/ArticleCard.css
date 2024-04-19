@@ -47,20 +47,17 @@
 }
 
 .swipe-actions {
+  align-items: center;
+  background-color: rgb(var(--primary-5));
   display: flex;
+  height: calc(100% - 2px);
+  justify-content: space-between;
+  left: 0;
+  margin: 1px;
   position: absolute;
   top: 0;
-  left: 0;
   width: calc(100% - 2px);
-  height: calc(100% - 2px);
   z-index: 0;
-  background-color: rgb(var(--primary-5));
-}
-
-.swipe-actions {
-  align-items: center;
-  justify-content: space-between;
-  margin: 1px;
 }
 
 .swipe-action {
