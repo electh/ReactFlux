@@ -14,6 +14,9 @@ textarea {
   font-family:-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,Microsoft YaHei,"\5FAE\8F6F\96C5\9ED1",helvetica neue,helvetica,ubuntu,roboto,noto,segoe ui,Arial,sans-serif
 }
 
-body {
-  margin: 0 auto;
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
 }
