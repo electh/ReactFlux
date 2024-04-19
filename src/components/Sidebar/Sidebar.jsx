@@ -38,7 +38,7 @@ const { Sider } = Layout;
 
 const CategoryTitle = memo(({ category, isOpen }) => {
   const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
-  const unreadCount = feedsGroupedById[category.id].reduce(
+  const unreadCount = feedsGroupedById[category.id]?.reduce(
     (acc, feed) => acc + feed.unreadCount,
     0,
   );
