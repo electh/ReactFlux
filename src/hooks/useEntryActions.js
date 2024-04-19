@@ -6,21 +6,21 @@ import { useSetAtom } from "jotai";
 import useStore from "../Store";
 import {
   getOriginalContent,
-  toggleEntryStarred as toggleEntryStarredApi,
+  toggleEntryStarred,
   updateEntriesStatus,
 } from "../apis";
 import {
   historyCountAtom,
   starredCountAtom,
   unreadInfoAtom,
-  unreadTodayAtom,
+  unreadTodayCountAtom,
 } from "../atoms/dataAtom";
 import ContentContext from "../components/Content/ContentContext";
 import { checkIsInLast24Hours } from "../utils/date";
 
 const useEntryActions = () => {
   const setUnreadInfo = useSetAtom(unreadInfoAtom);
-  const setUnreadToday = useSetAtom(unreadTodayAtom);
+  const setUnreadTodayCount = useSetAtom(unreadTodayCountAtom);
   const setHistoryCount = useSetAtom(historyCountAtom);
   const setStarredCount = useSetAtom(starredCountAtom);
   const activeContent = useStore((state) => state.activeContent);
@@ -46,14 +46,14 @@ const useEntryActions = () => {
       setUnreadCount((prev) => Math.max(0, prev - 1));
       setHistoryCount((prev) => prev + 1);
       if (isRecent) {
-        setUnreadToday((prev) => Math.max(0, prev - 1));
+        setUnreadTodayCount((prev) => Math.max(0, prev - 1));
       }
     } else {
       setUnreadInfo((prev) => ({ ...prev, [feedId]: prev[feedId] + 1 }));
       setUnreadCount((prev) => prev + 1);
       setHistoryCount((prev) => Math.max(0, prev - 1));
       if (isRecent) {
-        setUnreadToday((prev) => prev + 1);
+        setUnreadTodayCount((prev) => prev + 1);
       }
     }
 
@@ -105,7 +105,7 @@ const useEntryActions = () => {
     const newStarred = !entry.starred;
     handleEntryStarredUpdate(entry, newStarred);
 
-    toggleEntryStarredApi(entry.id).catch(() => {
+    toggleEntryStarred(entry.id).catch(() => {
       Message.error(
         `Failed to ${
           newStarred ? "star" : "unstar"

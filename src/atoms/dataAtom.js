@@ -16,35 +16,26 @@ export const unreadInfoAtom = atomWithRefreshAndDefault(
   },
 );
 
-export const unreadTodayRefreshAtom = atom(0);
-export const unreadTodayDataAtom = atom({});
-export const unreadTodayAtom = atomWithRefreshAndDefault(
+const createAtomSet = () => {
+  const refreshAtom = atom(0);
+  const dataAtom = atom({});
+  const countAtom = atomWithRefreshAndDefault(refreshAtom, (get) => {
+    const data = get(dataAtom);
+    return data.total ?? 0;
+  });
+
+  return [refreshAtom, dataAtom, countAtom];
+};
+
+export const [
   unreadTodayRefreshAtom,
-  (get) => {
-    const data = get(unreadTodayDataAtom);
-    return data.total ?? 0;
-  },
-);
-
-export const starredRefreshAtom = atom(0);
-export const starredDataAtom = atom({});
-export const starredCountAtom = atomWithRefreshAndDefault(
-  starredRefreshAtom,
-  (get) => {
-    const data = get(starredDataAtom);
-    return data.total ?? 0;
-  },
-);
-
-export const historyRefreshAtom = atom(0);
-export const historyDataAtom = atom({});
-export const historyCountAtom = atomWithRefreshAndDefault(
-  historyRefreshAtom,
-  (get) => {
-    const data = get(historyDataAtom);
-    return data.total ?? 0;
-  },
-);
+  unreadTodayDataAtom,
+  unreadTodayCountAtom,
+] = createAtomSet();
+export const [starredRefreshAtom, starredDataAtom, starredCountAtom] =
+  createAtomSet();
+export const [historyRefreshAtom, historyDataAtom, historyCountAtom] =
+  createAtomSet();
 
 export const feedsRefreshAtom = atom(0);
 export const feedsDataAtom = atom([]);

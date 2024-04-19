@@ -28,7 +28,7 @@ import {
   historyCountAtom,
   isAppDataReadyAtom,
   starredCountAtom,
-  unreadTodayAtom,
+  unreadTodayCountAtom,
   unreadTotalAtom,
 } from "../../atoms/dataAtom";
 import "./Sidebar.css";
@@ -69,7 +69,7 @@ const Sidebar = () => {
   const categories = useAtomValue(categoriesAtom);
   const isAppDataReady = useAtomValue(isAppDataReadyAtom);
   const unreadTotal = useAtomValue(unreadTotalAtom);
-  const unreadToday = useAtomValue(unreadTodayAtom);
+  const unreadTodayCount = useAtomValue(unreadTodayCountAtom);
   const starredCount = useAtomValue(starredCountAtom);
   const historyCount = useAtomValue(historyCountAtom);
   const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
@@ -171,7 +171,7 @@ const Sidebar = () => {
                   Today
                 </span>
                 <Typography.Ellipsis className="item-count" expandable={false}>
-                  {unreadToday || ""}
+                  {unreadTodayCount || ""}
                 </Typography.Ellipsis>
               </div>
             </MenuItem>
