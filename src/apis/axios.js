@@ -1,4 +1,3 @@
-import { Message } from "@arco-design/web-react";
 import axios from "axios";
 
 import router from "../routes";
@@ -73,7 +72,7 @@ const handleError = async (error) => {
   // 提取错误消息
   const errorMessage = error.response?.data?.error_message ?? error.message;
   // 显示错误消息
-  Message.error(errorMessage);
+  console.log(errorMessage);
 
   // 如果是 401 错误，清除认证信息并跳转到登录页面
   if (error.response?.status === 401) {
