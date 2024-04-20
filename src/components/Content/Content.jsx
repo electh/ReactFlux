@@ -67,16 +67,16 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const cardsRef = useRef(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(async () => {
+  useEffect(() => {
     if (!isFirstRenderCompleted || info.from === "history") {
       return;
     }
-    await refreshArticleList();
+    refreshArticleList();
   }, [orderBy]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(async () => {
-    await refreshArticleList();
+  useEffect(() => {
+    refreshArticleList();
   }, [info, orderDirection]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -231,10 +231,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   }, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(async () => {
+  useEffect(() => {
     if (isAppDataReady) {
       try {
-        await getArticleList();
+        getArticleList();
         setIsFirstRenderCompleted(true);
         setIsArticleFocused(true);
       } catch (error) {
