@@ -58,22 +58,22 @@ const Appearance = () => {
           </Typography.Text>
         </div>
         <div style={{ display: "flex" }}>
-          {colors.map((color) => (
-            <Tooltip content={color.name} key={color.name}>
+          {Object.keys(colors).map((colorName) => (
+            <Tooltip content={colorName} key={colorName}>
               <button
                 type="button"
                 className="accent-color-button"
                 style={{
-                  backgroundColor: getColorValue(color.name),
+                  backgroundColor: getColorValue(colorName),
                   outline:
-                    color.name === themeColor
-                      ? `1px solid ${getColorValue(color.name)}`
+                    colorName === themeColor
+                      ? `1px solid ${getColorValue(colorName)}`
                       : "none",
                 }}
-                onClick={() => handleThemeColorChange(color.name)}
+                onClick={() => handleThemeColorChange(colorName)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
-                    handleThemeColorChange(color.name);
+                    handleThemeColorChange(colorName);
                   }
                 }}
               />

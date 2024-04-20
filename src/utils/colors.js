@@ -2,54 +2,31 @@ import { generate, getRgbStr } from "@arco-design/color";
 
 import { getConfig } from "./config";
 
-const colors = [
-  {
-    name: "Red",
-    valueLight: "#F53F3F",
-    valueDark: "#F76965",
-  },
-  {
-    name: "Orange",
-    valueLight: "#F77234",
-    valueDark: "#F9925A",
-  },
-  {
-    name: "Green",
-    valueLight: "#00B42A",
-    valueDark: "#27C346",
-  },
-  {
-    name: "Blue",
-    valueLight: "#165DFF",
-    valueDark: "#3C7EFF",
-  },
-  {
-    name: "Purple",
-    valueLight: "#722ED1",
-    valueDark: "#8E51DA",
-  },
-];
+const colors = {
+  Red: { light: "#F53F3F", dark: "#F76965" },
+  Orange: { light: "#F77234", dark: "#F9925A" },
+  Green: { light: "#00B42A", dark: "#27C346" },
+  Blue: { light: "#165DFF", dark: "#3C7EFF" },
+  Purple: { light: "#722ED1", dark: "#8E51DA" },
+};
 
 const getColorValue = (colorName) => {
   // 查找匹配颜色名称的对象
-  const selectedColor = colors.find((color) => color.name === colorName);
-  const isSysDarkMode = window.matchMedia(
+  const color = colors[colorName] || colors.Blue;
+  const isSystemDark = window.matchMedia(
     "(prefers-color-scheme: dark)",
   ).matches;
   const theme = getConfig("theme");
-  const isDarkMode = theme === "system" ? isSysDarkMode : theme === "dark";
-  if (selectedColor) {
-    return isDarkMode ? selectedColor.valueDark : selectedColor.valueLight;
-  }
-  return "#165DFF";
+  const isDarkMode = theme === "system" ? isSystemDark : theme === "dark";
+  return isDarkMode ? color.dark : color.light;
 };
 
 const applyColor = (colorName) => {
-  const list = generate(getColorValue(colorName), {
-    list: true,
-  }).map((x) => getRgbStr(x));
-  list.forEach((x, i) => {
-    document.body.style.setProperty(`--primary-${i + 1}`, x);
+  const colorPalette = generate(getColorValue(colorName), { list: true }).map(
+    getRgbStr,
+  );
+  colorPalette.forEach((color, index) => {
+    document.body.style.setProperty(`--primary-${index + 1}`, color);
   });
 };
 
