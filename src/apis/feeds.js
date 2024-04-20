@@ -4,6 +4,8 @@ export const getFeeds = async () => apiClient.get("/v1/feeds");
 
 export const getUnreadInfo = async () => apiClient.get("/v1/feeds/counters");
 
+export const getFeedIcon = async (id) => apiClient.get(`/v1/feeds/${id}/icon`);
+
 export const refreshFeed = async (id) =>
   apiClient.put(`/v1/feeds/${id}/refresh`);
 

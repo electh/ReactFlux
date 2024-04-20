@@ -1,7 +1,7 @@
 import { Button } from "@arco-design/web-react";
 import { IconArrowDown } from "@arco-design/web-react/icon";
 import { forwardRef, useContext } from "react";
-import isURL from "validator/es/lib/isURL";
+import isURL from "validator/lib/isURL";
 
 import useLoadMore from "../../hooks/useLoadMore";
 import { extractProtocolAndHostname } from "../../utils/url";

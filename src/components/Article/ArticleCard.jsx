@@ -7,30 +7,51 @@ import {
 } from "@arco-design/web-react/icon";
 import { animated, useSpring } from "@react-spring/web";
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
 
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import useStore from "../../Store";
 import { configAtom } from "../../atoms/configAtom";
+import { feedIconsAtom } from "../../atoms/dataAtom";
 import useEntryActions from "../../hooks/useEntryActions";
+import { useFeedIcon } from "../../hooks/useLoadData";
 import { generateRelativeTime } from "../../utils/date";
 import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 
-const FeedIcon = ({ url, mini }) => (
-  <img
-    className={mini ? "feed-icon-mini" : "feed-icon"}
-    src={`https://icons.duckduckgo.com/ip3/${new URL(url).hostname}.ico`}
-    alt="Feed icon"
-  />
-);
+const FeedIcon = ({ feed, mini }) => {
+  const feedId = feed.id;
+  const [feedIcons, setFeedIcons] = useAtom(feedIconsAtom);
+  const { data } = useFeedIcon(feedId);
+
+  useEffect(() => {
+    if (data && !feedIcons[feedId]) {
+      const iconData = `data:${data.data.data}`;
+      setFeedIcons((prevIcons) => ({ ...prevIcons, [feedId]: iconData }));
+    }
+  }, [data, feedId, feedIcons, setFeedIcons]);
+
+  const iconSrc =
+    feedIcons[feedId] ??
+    `https://icons.duckduckgo.com/ip3/${new URL(feed.site_url).hostname}.ico`;
+
+  return (
+    <img
+      className={mini ? "feed-icon-mini" : "feed-icon"}
+      src={iconSrc}
+      alt="Feed icon"
+    />
+  );
+};
 
 const RenderImage = ({ entry, isThumbnail }) => {
-  const imageSize = isThumbnail
-    ? { width: "100px", height: "100px" }
-    : { width: "100%", height: "160px" };
+  const imageSize = {
+    width: isThumbnail ? "100px" : "100%",
+    height: isThumbnail ? "100px" : "160px",
+  };
+
   if (!entry.imgSrc) {
     return null;
   }
@@ -68,7 +89,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
         </Typography.Text>
         <Typography.Text className="article-info">
           <br />
-          {showFeedIcon && <FeedIcon url={entry.feed.site_url} mini={mini} />}
+          {showFeedIcon && <FeedIcon feed={entry.feed} mini={mini} />}
           {entry.feed.title}
           <br />
           {generateRelativeTime(entry.published_at)}

@@ -1,10 +1,11 @@
 import { atom } from "jotai";
-import isURL from "validator/es/lib/isURL";
+import isURL from "validator/lib/isURL";
 import { atomWithRefreshAndDefault } from "../utils/atom";
 import { extractProtocolAndHostname } from "../utils/url";
 import { configAtom } from "./configAtom";
 
 export const isAppDataReadyAtom = atom(false);
+export const feedIconsAtom = atom({});
 
 export const unreadInfoRefreshAtom = atom(0);
 export const unreadInfoDataAtom = atom({});

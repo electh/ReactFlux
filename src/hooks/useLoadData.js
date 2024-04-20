@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import useSWR from "swr";
 import {
   getCategories,
+  getFeedIcon,
   getFeeds,
   getHistoryEntries,
   getStarredEntries,
@@ -69,6 +70,11 @@ const useCategoriesSync = createDataSyncHook(
   categoriesRefreshAtom,
   () => getCategories(),
 );
+
+export const useFeedIcon = (feedId) =>
+  useSWR(`/v1/feeds/${feedId}/icon`, () => getFeedIcon(feedId), {
+    revalidateOnFocus: false,
+  });
 
 export const useLoadData = () => {
   const [isAppDataReady, setIsAppDataReady] = useAtom(isAppDataReadyAtom);
