@@ -67,8 +67,8 @@ const Login = () => {
     setLoading(false);
   };
 
-  const handleLogin = () => {
-    healthCheck();
+  const handleLogin = async () => {
+    await healthCheck();
   };
 
   return (
@@ -111,9 +111,9 @@ const Login = () => {
               autoComplete="off"
               form={loginForm}
               layout="vertical"
-              onSubmit={() => {
+              onSubmit={async () => {
                 if (validateAndFormatFormFields(loginForm)) {
-                  handleLogin();
+                  await handleLogin();
                 } else {
                   Message.error("Please fill in all required fields");
                 }

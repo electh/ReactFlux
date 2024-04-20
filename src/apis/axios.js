@@ -69,7 +69,7 @@ const handleRetry = async (error) => {
   return apiClient(config); // 返回重新尝试请求的 Promise
 };
 
-const handleError = (error) => {
+const handleError = async (error) => {
   // 提取错误消息
   const errorMessage = error.response?.data?.error_message ?? error.message;
   // 显示错误消息
@@ -78,7 +78,7 @@ const handleError = (error) => {
   // 如果是 401 错误，清除认证信息并跳转到登录页面
   if (error.response?.status === 401) {
     localStorage.removeItem("auth");
-    router.navigate("/login");
+    await router.navigate("/login");
   }
 
   // 返回 Promise 拒绝状态

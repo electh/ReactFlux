@@ -85,10 +85,14 @@ const AddFeedModal = () => {
         labelCol={{ span: 7 }}
         layout="vertical"
         wrapperCol={{ span: 17 }}
-        onSubmit={(values) => {
+        onSubmit={async (values) => {
           const url = values.url.trim();
           if (url) {
-            handleAddFeed(values.url.trim(), values.category, values.crawler);
+            await handleAddFeed(
+              values.url.trim(),
+              values.category,
+              values.crawler,
+            );
           } else {
             Message.error("Feed URL cannot be empty");
           }

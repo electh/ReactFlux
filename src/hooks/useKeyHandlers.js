@@ -40,9 +40,9 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
   }, [activeContent, isMobileView]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
+  useEffect(async () => {
     if (checkNext && !isLoading) {
-      handleRightKey(info);
+      await handleRightKey(info);
       setCheckNext(false);
     }
   }, [isLoading, checkNext]);

@@ -266,7 +266,7 @@ const FeedList = () => {
             labelCol={{ span: 7 }}
             layout="vertical"
             wrapperCol={{ span: 17 }}
-            onSubmit={(values) => {
+            onSubmit={async (values) => {
               const url = values.url.trim();
               const newDetails = {
                 url: values.url,
@@ -276,7 +276,7 @@ const FeedList = () => {
                 hidden: values.hidden,
               };
               if (url) {
-                editFeed(selectedFeed.key, newDetails);
+                await editFeed(selectedFeed.key, newDetails);
               } else {
                 Message.error("Feed URL cannot be empty");
               }

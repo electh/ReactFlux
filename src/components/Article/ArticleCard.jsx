@@ -131,7 +131,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
 
   const { ref } = useInView({
     skip: shouldSkip,
-    onChange: (inView, entry) => {
+    onChange: async (inView, entry) => {
       if (!markReadOnScroll || !isUnread) {
         return;
       }
@@ -140,7 +140,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
       } else if (hasBeenInView) {
         const { top } = entry.boundingClientRect;
         if (top < threshold) {
-          toggleStatus();
+          await toggleStatus();
           setShouldSkip(true);
         }
       }
