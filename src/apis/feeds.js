@@ -7,6 +7,8 @@ export const getUnreadInfo = async () => apiClient.get("/v1/feeds/counters");
 export const refreshFeed = async (id) =>
   apiClient.put(`/v1/feeds/${id}/refresh`);
 
+export const refreshAllFeed = async () => apiClient.put("/v1/feeds/refresh");
+
 export const addFeed = async (url, categoryId, isFullText) =>
   apiClient.post("/v1/feeds", {
     feed_url: url,

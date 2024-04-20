@@ -1,4 +1,5 @@
 import {
+  Button,
   Form,
   Input,
   Message,
@@ -15,7 +16,12 @@ import {
 import { IconDelete, IconEdit, IconRefresh } from "@arco-design/web-react/icon";
 import { useEffect, useState } from "react";
 
-import { deleteFeed, refreshFeed, updateFeed } from "../../apis";
+import {
+  deleteFeed,
+  refreshAllFeed,
+  refreshFeed,
+  updateFeed,
+} from "../../apis";
 import { generateRelativeTime } from "../../utils/date";
 import { includesIgnoreCase } from "../../utils/filter";
 
@@ -75,13 +81,24 @@ const FeedList = () => {
 
   const handleRefreshFeed = async (feed) => {
     try {
-      await refreshFeed(feed.key);
-      Message.success("Refreshed");
-      setFeeds((feeds) =>
-        feeds.map((f) =>
-          f.id === feed.key ? { ...f, parsing_error_count: 0 } : f,
-        ),
-      );
+      const response = await refreshFeed(feed.key);
+      if (response.status === 204) {
+        Message.success("Refreshed");
+        setFeeds((feeds) =>
+          feeds.map((f) =>
+            f.id === feed.key ? { ...f, parsing_error_count: 0 } : f,
+          ),
+        );
+      } else {
+        Message.error("Failed to refresh");
+        setFeeds((feeds) =>
+          feeds.map((f) =>
+            f.id === feed.key
+              ? { ...f, parsing_error_count: f.parsing_error_count + 1 }
+              : f,
+          ),
+        );
+      }
     } catch (error) {
       Message.error("Failed to refresh");
       setFeeds((feeds) =>
@@ -90,6 +107,34 @@ const FeedList = () => {
             ? { ...f, parsing_error_count: f.parsing_error_count + 1 }
             : f,
         ),
+      );
+    }
+  };
+
+  const handleRefreshAllFeeds = async () => {
+    try {
+      const response = await refreshAllFeed();
+      if (response.status === 204) {
+        Message.success("Refreshed");
+        setFeeds((feeds) =>
+          feeds.map((f) => ({ ...f, parsing_error_count: 0 })),
+        );
+      } else {
+        Message.error("Failed to refresh");
+        setFeeds((feeds) =>
+          feeds.map((f) => ({
+            ...f,
+            parsing_error_count: f.parsing_error_count + 1,
+          })),
+        );
+      }
+    } catch (error) {
+      Message.error("Failed to refresh");
+      setFeeds((feeds) =>
+        feeds.map((f) => ({
+          ...f,
+          parsing_error_count: f.parsing_error_count + 1,
+        })),
       );
     }
   };
@@ -224,21 +269,38 @@ const FeedList = () => {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Input.Search
-          className="search-input"
-          placeholder="Search feed title or url"
-          searchButton
-          onChange={(value) =>
-            setFilteredFeeds(
-              sortFeedsByErrorCount(feeds).filter(
-                (feed) =>
-                  includesIgnoreCase(feed.title, value) ||
-                  includesIgnoreCase(feed.feed_url, value),
-              ),
-            )
-          }
-        />
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ display: "flex", flex: 1, justifyContent: "center" }}>
+          <Input.Search
+            className="search-input"
+            placeholder="Search feed title or url"
+            searchButton
+            onChange={(value) =>
+              setFilteredFeeds(
+                sortFeedsByErrorCount(feeds).filter(
+                  (feed) =>
+                    includesIgnoreCase(feed.title, value) ||
+                    includesIgnoreCase(feed.feed_url, value),
+                ),
+              )
+            }
+          />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            paddingBottom: 16,
+          }}
+        >
+          <Popconfirm
+            focusLock
+            title="Refresh all feeds?"
+            onOk={handleRefreshAllFeeds}
+          >
+            <Button icon={<IconRefresh />} shape="circle" />
+          </Popconfirm>
+        </div>
       </div>
       <Table
         borderCell={true}
