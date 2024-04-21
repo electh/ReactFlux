@@ -74,11 +74,12 @@ const Sidebar = () => {
   const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
   const hiddenCategoryIds = useAtomValue(hiddenCategoryIdsAtom);
   const toggleCollapsed = useStore((state) => state.toggleCollapsed);
-  const [selectedKeys, setSelectedKeys] = useState([]);
-  const [openKeys, setOpenKeys] = useState([]);
 
   const config = useAtomValue(configAtom);
-  const { showAllFeeds, showFeedIcon } = config;
+  const { homePage, showAllFeeds, showFeedIcon } = config;
+
+  const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`]);
+  const [openKeys, setOpenKeys] = useState([]);
 
   const path = location.pathname;
 
@@ -125,7 +126,6 @@ const Sidebar = () => {
       <Menu
         autoScrollIntoView={true}
         collapse={collapsed}
-        defaultSelectedKeys={[path]}
         hasCollapseButton
         onClickSubMenu={handleClickSubMenu}
         onCollapseChange={toggleCollapsed}
@@ -154,7 +154,7 @@ const Sidebar = () => {
           animation={true}
           text={{ rows: 3 }}
         />
-        {isAppDataReady ? (
+        {isAppDataReady && (
           <div>
             <MenuItem key={"/all"} onClick={() => handleClickMenuItem("/all")}>
               <div className="custom-menu-item">
@@ -210,7 +210,7 @@ const Sidebar = () => {
               </div>
             </MenuItem>
           </div>
-        ) : null}
+        )}
         <Typography.Title className="section-title" heading={6}>
           Feeds
         </Typography.Title>
