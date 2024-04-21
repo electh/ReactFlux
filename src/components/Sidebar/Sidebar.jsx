@@ -9,7 +9,6 @@ import {
 import {
   IconBook,
   IconCalendar,
-  IconDown,
   IconHistory,
   IconRight,
   IconStar,
@@ -50,7 +49,7 @@ const CategoryTitle = memo(({ category, isOpen }) => {
         showTooltip={true}
         style={{ width: unreadCount ? "80%" : "100%" }}
       >
-        {isOpen ? <IconDown /> : <IconRight />}
+        <IconRight className={isOpen ? "icon-open" : "icon-closed"} />
         {category.title}
       </Typography.Ellipsis>
       {unreadCount > 0 && (
@@ -83,20 +82,24 @@ const Sidebar = () => {
 
   const path = location.pathname;
 
+  const handleClickMenuItem = (key) => {
+    setSelectedKeys([key]);
+    navigate(key);
+  };
+
   const handleClickSubMenu = (key, currentOpenKeys) => {
     setOpenKeys(currentOpenKeys);
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    setSelectedKeys([path]);
     if (!collapsed) {
       const viewportWidth = window.innerWidth;
       if (viewportWidth <= 992) {
         toggleCollapsed(true);
       }
     }
-  }, [path]);
+  }, [selectedKeys]);
 
   useEffect(() => {
     if (!isAppDataReady) {
@@ -153,7 +156,7 @@ const Sidebar = () => {
         />
         {isAppDataReady ? (
           <div>
-            <MenuItem key={"/all"} onClick={() => navigate("/all")}>
+            <MenuItem key={"/all"} onClick={() => handleClickMenuItem("/all")}>
               <div className="custom-menu-item">
                 <span>
                   <IconUnorderedList />
@@ -164,7 +167,10 @@ const Sidebar = () => {
                 </Typography.Ellipsis>
               </div>
             </MenuItem>
-            <MenuItem key={"/today"} onClick={() => navigate("/today")}>
+            <MenuItem
+              key={"/today"}
+              onClick={() => handleClickMenuItem("/today")}
+            >
               <div className="custom-menu-item">
                 <span>
                   <IconCalendar />
@@ -175,7 +181,10 @@ const Sidebar = () => {
                 </Typography.Ellipsis>
               </div>
             </MenuItem>
-            <MenuItem key={"/starred"} onClick={() => navigate("/starred")}>
+            <MenuItem
+              key={"/starred"}
+              onClick={() => handleClickMenuItem("/starred")}
+            >
               <div className="custom-menu-item">
                 <span>
                   <IconStar />
@@ -186,7 +195,10 @@ const Sidebar = () => {
                 </Typography.Ellipsis>
               </div>
             </MenuItem>
-            <MenuItem key={"/history"} onClick={() => navigate("/history")}>
+            <MenuItem
+              key={"/history"}
+              onClick={() => handleClickMenuItem("/history")}
+            >
               <div className="custom-menu-item">
                 <span>
                   <IconHistory />
@@ -241,7 +253,7 @@ const Sidebar = () => {
                       key={`/feed/${feed.id}`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedKeys([`/category/${category.id}`]);
+                        setSelectedKeys([`/feed/${feed.id}`]);
                         navigate(`/feed/${feed.id}`);
                       }}
                     >

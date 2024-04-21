@@ -73,3 +73,11 @@
   align-items: center;
   display: flex;
 }
+
+.icon-open {
+  transform: rotate(90deg);
+}
+
+.icon-closed {
+  transform: rotate(0deg);
+}
