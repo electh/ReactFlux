@@ -55,19 +55,13 @@ const FooterPanel = forwardRef(
       }
     };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
-      if (info.from === "history") {
+      if (["starred", "history"].includes(info.from)) {
         setFilterStatus("all");
-      }
-    }, []);
-
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
-      if (info.from !== "history") {
+      } else {
         setFilterStatus(showStatus);
       }
-    }, [showStatus]);
+    }, [info, setFilterStatus, showStatus]);
 
     const handleRadioChange = (value) => {
       if (ref.current) {
@@ -94,14 +88,14 @@ const FooterPanel = forwardRef(
         )}
         <Radio.Group
           disabled={info.from === "history"}
-          name="lang"
           onChange={(value) => handleRadioChange(value)}
+          options={[
+            { label: "ALL", value: "all" },
+            { label: "UNREAD", value: "unread" },
+          ]}
           type="button"
-          value={info.from === "history" ? "all" : filterStatus}
-        >
-          <Radio value="all">ALL</Radio>
-          <Radio value="unread">UNREAD</Radio>
-        </Radio.Group>
+          value={filterStatus}
+        ></Radio.Group>
 
         <Button
           icon={<IconRefresh />}

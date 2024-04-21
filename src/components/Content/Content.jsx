@@ -167,25 +167,27 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     };
   }, [activeContent, filteredEntries, isArticleFocused]);
 
-  const updateUI = (articles, articlesUnread, responseAll, responseUnread) => {
-    setEntries(articles);
-    setUnreadEntries(articlesUnread);
-
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
     if (filterStatus === "all") {
       setFilteredEntries(
-        filterEntriesByVisibility(articles, info, showAllFeeds, hiddenFeedIds),
+        filterEntriesByVisibility(entries, info, showAllFeeds, hiddenFeedIds),
       );
     } else {
       setFilteredEntries(
         filterEntriesByVisibility(
-          articlesUnread,
+          unreadEntries,
           info,
           showAllFeeds,
           hiddenFeedIds,
         ),
       );
     }
+  }, [filterStatus, entries, unreadEntries]);
 
+  const updateUI = (articles, articlesUnread, responseAll, responseUnread) => {
+    setEntries(articles);
+    setUnreadEntries(articlesUnread);
     setTotal(responseAll.data.total);
     setLoadMoreVisible(articles.length < responseAll.data.total);
     setUnreadCount(responseUnread.data.total);
