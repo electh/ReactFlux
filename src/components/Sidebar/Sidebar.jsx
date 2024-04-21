@@ -224,7 +224,6 @@ const Sidebar = () => {
                     />
                   }
                   onClick={(e) => {
-                    setSelectedKeys([`/category/${category.id}`]);
                     if (
                       !(
                         e.target.tagName === "svg" ||
@@ -232,6 +231,7 @@ const Sidebar = () => {
                       ) &&
                       path !== `/category/${category.id}`
                     ) {
+                      setSelectedKeys([`/category/${category.id}`]);
                       navigate(`/category/${category.id}`);
                     }
                   }}
