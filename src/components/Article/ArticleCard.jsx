@@ -12,12 +12,14 @@ import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
 
 import { useAtom, useAtomValue } from "jotai";
+import isURL from "validator/lib/isURL";
 import { configAtom } from "../../atoms/configAtom";
 import { feedIconsAtom } from "../../atoms/dataAtom";
 import { useActiveContent } from "../../hooks/useActiveContent";
 import useEntryActions from "../../hooks/useEntryActions";
 import { useFeedIcon } from "../../hooks/useLoadData";
 import { generateRelativeTime } from "../../utils/date";
+import { extractProtocolAndHostname } from "../../utils/url";
 import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 
@@ -33,14 +35,21 @@ const FeedIcon = ({ feed, mini }) => {
     }
   }, [data, feedId, feedIcons, setFeedIcons]);
 
-  const iconSrc =
-    feedIcons[feedId] ??
-    `https://icons.duckduckgo.com/ip3/${new URL(feed.site_url).hostname}.ico`;
+  let iconSource;
+  if (feedIcons[feedId]) {
+    iconSource = feedIcons[feedId];
+  } else {
+    const url = isURL(feed.site_url)
+      ? feed.site_url
+      : extractProtocolAndHostname(feed.feed_url);
+    const { hostname } = new URL(url);
+    iconSource = `https://icons.duckduckgo.com/ip3/${hostname}.ico`;
+  }
 
   return (
     <img
       className={mini ? "feed-icon-mini" : "feed-icon"}
-      src={iconSrc}
+      src={iconSource}
       alt="Feed icon"
     />
   );

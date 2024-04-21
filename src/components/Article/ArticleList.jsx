@@ -1,10 +1,8 @@
 import { Button } from "@arco-design/web-react";
 import { IconArrowDown } from "@arco-design/web-react/icon";
 import { forwardRef } from "react";
-import isURL from "validator/lib/isURL";
 
 import useLoadMore from "../../hooks/useLoadMore";
-import { extractProtocolAndHostname } from "../../utils/url";
 import ArticleCard from "./ArticleCard";
 import LoadingCards from "./LoadingCards";
 import SearchAndSortBar from "./SearchAndSortBar";
@@ -39,12 +37,6 @@ const ArticleList = forwardRef(
           {loading ? null : (
             <div ref={cardsRef}>
               {filteredEntries.map((entry) => {
-                if (!isURL(entry.feed.site_url)) {
-                  entry.feed.site_url = extractProtocolAndHostname(
-                    entry.feed.feed_url,
-                  );
-                }
-
                 return (
                   <ArticleCard
                     key={entry.id}

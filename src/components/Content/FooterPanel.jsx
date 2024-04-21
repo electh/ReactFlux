@@ -20,10 +20,10 @@ import "./FooterPanel.css";
 const FooterPanel = forwardRef(
   ({ info, refreshArticleList, markAllAsRead }, ref) => {
     const [entries, setEntries] = useAtom(entriesAtom);
-    const [filteredEntries, setFilteredEntries] = useAtom(filteredEntriesAtom);
     const [unreadEntries, setUnreadEntries] = useAtom(unreadEntriesAtom);
     const filterStatus = useAtomValue(filterStatusAtom);
     const loading = useAtomValue(loadingAtom);
+    const setFilteredEntries = useSetAtom(filteredEntriesAtom);
     const setUnreadCount = useSetAtom(unreadCountAtom);
 
     const { setFilterStatus } = useFilterEntries(info);
@@ -38,11 +38,13 @@ const FooterPanel = forwardRef(
         await markAllAsRead();
         Message.success("Marked all as read successfully");
         loadData();
-        setEntries(entries.map((entry) => ({ ...entry, status: "read" })));
+        setEntries((prev) =>
+          prev.map((entry) => ({ ...entry, status: "read" })),
+        );
         setUnreadEntries([]);
         if (filterStatus === "all") {
-          setFilteredEntries(
-            filteredEntries.map((entry) => ({ ...entry, status: "read" })),
+          setFilteredEntries((prev) =>
+            prev.map((entry) => ({ ...entry, status: "read" })),
           );
         } else {
           setFilteredEntries([]);
