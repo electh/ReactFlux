@@ -17,6 +17,7 @@ import {
 import { memo, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import classNames from "classnames";
 import { useAtomValue } from "jotai";
 import { configAtom } from "../../atoms/configAtom";
 import {
@@ -72,10 +73,18 @@ const CountDisplay = ({ atom }) => {
 };
 
 const CustomMenuItem = ({ path, Icon, label, countAtom }) => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const isSelected = location.pathname === path;
 
   return (
-    <MenuItem key={path} onClick={() => navigate(path)}>
+    <MenuItem
+      key={path}
+      onClick={() => navigate(path)}
+      className={classNames("arco-menu-item", {
+        "arco-menu-selected": isSelected,
+      })}
+    >
       <div className="custom-menu-item">
         <span>
           <Icon />
