@@ -62,15 +62,36 @@ const CategoryTitle = memo(({ category, isOpen }) => {
   );
 });
 
+const CountDisplay = ({ atom }) => {
+  const count = useAtomValue(atom);
+  return (
+    <Typography.Ellipsis className="item-count" expandable={false}>
+      {count || ""}
+    </Typography.Ellipsis>
+  );
+};
+
+const CustomMenuItem = ({ path, Icon, label, countAtom }) => {
+  const navigate = useNavigate();
+
+  return (
+    <MenuItem key={path} onClick={() => navigate(path)}>
+      <div className="custom-menu-item">
+        <span>
+          <Icon />
+          {label}
+        </span>
+        <CountDisplay atom={countAtom} />
+      </div>
+    </MenuItem>
+  );
+};
+
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const categories = useAtomValue(categoriesAtom);
   const isAppDataReady = useAtomValue(isAppDataReadyAtom);
-  const unreadTotal = useAtomValue(unreadTotalAtom);
-  const unreadTodayCount = useAtomValue(unreadTodayCountAtom);
-  const starredCount = useAtomValue(starredCountAtom);
-  const historyCount = useAtomValue(historyCountAtom);
   const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
   const hiddenCategoryIds = useAtomValue(hiddenCategoryIdsAtom);
 
@@ -148,50 +169,30 @@ const Sidebar = () => {
         />
         {isAppDataReady && (
           <div>
-            <MenuItem key={"/all"} onClick={() => navigate("/all")}>
-              <div className="custom-menu-item">
-                <span>
-                  <IconUnorderedList />
-                  All
-                </span>
-                <Typography.Ellipsis className="item-count" expandable={false}>
-                  {unreadTotal || ""}
-                </Typography.Ellipsis>
-              </div>
-            </MenuItem>
-            <MenuItem key={"/today"} onClick={() => navigate("/today")}>
-              <div className="custom-menu-item">
-                <span>
-                  <IconCalendar />
-                  Today
-                </span>
-                <Typography.Ellipsis className="item-count" expandable={false}>
-                  {unreadTodayCount || ""}
-                </Typography.Ellipsis>
-              </div>
-            </MenuItem>
-            <MenuItem key={"/starred"} onClick={() => navigate("/starred")}>
-              <div className="custom-menu-item">
-                <span>
-                  <IconStar />
-                  Starred
-                </span>
-                <Typography.Ellipsis className="item-count" expandable={false}>
-                  {starredCount || ""}
-                </Typography.Ellipsis>
-              </div>
-            </MenuItem>
-            <MenuItem key={"/history"} onClick={() => navigate("/history")}>
-              <div className="custom-menu-item">
-                <span>
-                  <IconHistory />
-                  History
-                </span>
-                <Typography.Ellipsis className="item-count" expandable={false}>
-                  {historyCount || ""}
-                </Typography.Ellipsis>
-              </div>
-            </MenuItem>
+            <CustomMenuItem
+              path="/all"
+              Icon={IconUnorderedList}
+              label="All"
+              countAtom={unreadTotalAtom}
+            />
+            <CustomMenuItem
+              path="/today"
+              Icon={IconCalendar}
+              label="Today"
+              countAtom={unreadTodayCountAtom}
+            />
+            <CustomMenuItem
+              path="/starred"
+              Icon={IconStar}
+              label="Starred"
+              countAtom={starredCountAtom}
+            />
+            <CustomMenuItem
+              path="/history"
+              Icon={IconHistory}
+              label="History"
+              countAtom={historyCountAtom}
+            />
           </div>
         )}
         <Typography.Title className="section-title" heading={6}>
