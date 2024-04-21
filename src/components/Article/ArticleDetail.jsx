@@ -2,12 +2,12 @@ import { Button, Divider, Tag, Typography } from "@arco-design/web-react";
 import { IconEmpty, IconImage } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
+import { useAtomValue } from "jotai";
 import { forwardRef, useContext, useState } from "react";
 import { PhotoSlider } from "react-photo-view";
-import "react-photo-view/dist/react-photo-view.css";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useAtomValue } from "jotai";
+import "react-photo-view/dist/react-photo-view.css";
 import useStore from "../../Store";
 import { configAtom } from "../../atoms/configAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";

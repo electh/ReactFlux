@@ -7,12 +7,12 @@ import {
   Typography,
 } from "@arco-design/web-react";
 
-import { applyColor, colors, getColorValue } from "../../utils/colors";
-import "./Appearance.css";
-
 import { useAtomValue } from "jotai";
+import { applyColor, colors, getColorValue } from "../../utils/colors";
+
 import { configAtom } from "../../atoms/configAtom";
 import { useConfig } from "../../hooks/useConfig";
+import "./Appearance.css";
 
 const Appearance = () => {
   const { updateConfig } = useConfig();

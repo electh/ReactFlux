@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 
 import { useAtomValue } from "jotai";
+import { buildEntriesUrl } from "../apis";
 import { apiClient } from "../apis/axios";
-import { buildEntriesUrl } from "../apis/index";
 import { configAtom } from "../atoms/configAtom";
 import Content from "../components/Content/Content";
 import { ContentProvider } from "../components/Content/ContentContext";
