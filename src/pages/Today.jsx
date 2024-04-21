@@ -1,6 +1,5 @@
 import { getTodayEntries, updateEntriesStatus } from "../apis";
 import Content from "../components/Content/Content";
-import { ContentProvider } from "../components/Content/ContentContext";
 
 const Today = () => {
   const markTodayAsRead = async () => {
@@ -23,13 +22,11 @@ const Today = () => {
   };
 
   return (
-    <ContentProvider>
-      <Content
-        info={{ from: "today", id: "" }}
-        getEntries={getTodayEntries}
-        markAllAsRead={markTodayAsRead}
-      />
-    </ContentProvider>
+    <Content
+      info={{ from: "today", id: "" }}
+      getEntries={getTodayEntries}
+      markAllAsRead={markTodayAsRead}
+    />
   );
 };
 

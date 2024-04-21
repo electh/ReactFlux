@@ -1,7 +1,6 @@
 import { getAllEntries, getCurrentUser } from "../apis";
 import { apiClient } from "../apis/axios";
 import Content from "../components/Content/Content";
-import { ContentProvider } from "../components/Content/ContentContext";
 
 const All = () => {
   const markAllAsRead = async () => {
@@ -10,13 +9,11 @@ const All = () => {
   };
 
   return (
-    <ContentProvider>
-      <Content
-        info={{ from: "all", id: "" }}
-        getEntries={getAllEntries}
-        markAllAsRead={markAllAsRead}
-      />
-    </ContentProvider>
+    <Content
+      info={{ from: "all", id: "" }}
+      getEntries={getAllEntries}
+      markAllAsRead={markAllAsRead}
+    />
   );
 };
 

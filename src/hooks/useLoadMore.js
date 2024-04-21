@@ -1,9 +1,22 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { configAtom } from "../atoms/configAtom";
+import {
+  entriesAtom,
+  filterStatusAtom,
+  filterStringAtom,
+  filterTypeAtom,
+  filteredEntriesAtom,
+  loadMoreUnreadVisibleAtom,
+  loadMoreVisibleAtom,
+  offsetAtom,
+  totalAtom,
+  unreadCountAtom,
+  unreadEntriesAtom,
+  unreadOffsetAtom,
+} from "../atoms/contentAtom";
 import { hiddenFeedIdsAtom } from "../atoms/dataAtom";
-import ContentContext from "../components/Content/ContentContext";
 import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
 
 const useLoadMore = () => {
@@ -11,24 +24,18 @@ const useLoadMore = () => {
   const { pageSize, showAllFeeds } = config;
   const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
 
-  const {
-    entries,
-    filterStatus,
-    filterString,
-    filterType,
-    offset,
-    setEntries,
-    setFilteredEntries,
-    setLoadMoreUnreadVisible,
-    setLoadMoreVisible,
-    setOffset,
-    setUnreadEntries,
-    setUnreadOffset,
-    total,
-    unreadCount,
-    unreadEntries,
-    unreadOffset,
-  } = useContext(ContentContext);
+  const [entries, setEntries] = useAtom(entriesAtom);
+  const [offset, setOffset] = useAtom(offsetAtom);
+  const [unreadEntries, setUnreadEntries] = useAtom(unreadEntriesAtom);
+  const [unreadOffset, setUnreadOffset] = useAtom(unreadOffsetAtom);
+  const filterStatus = useAtomValue(filterStatusAtom);
+  const filterString = useAtomValue(filterStringAtom);
+  const filterType = useAtomValue(filterTypeAtom);
+  const setFilteredEntries = useSetAtom(filteredEntriesAtom);
+  const setLoadMoreUnreadVisible = useSetAtom(loadMoreUnreadVisibleAtom);
+  const setLoadMoreVisible = useSetAtom(loadMoreVisibleAtom);
+  const total = useAtomValue(totalAtom);
+  const unreadCount = useAtomValue(unreadCountAtom);
 
   /* 加载更多 loading*/
   const [loadingMore, setLoadingMore] = useState(false);

@@ -5,7 +5,6 @@ import { buildEntriesUrl } from "../apis";
 import { apiClient } from "../apis/axios";
 import { configAtom } from "../atoms/configAtom";
 import Content from "../components/Content/Content";
-import { ContentProvider } from "../components/Content/ContentContext";
 
 const Category = () => {
   const { id: categoryId } = useParams();
@@ -29,13 +28,11 @@ const Category = () => {
   };
 
   return (
-    <ContentProvider>
-      <Content
-        info={{ from: "category", id: categoryId }}
-        getEntries={getCategoryEntries}
-        markAllAsRead={markCategoryAsRead}
-      />
-    </ContentProvider>
+    <Content
+      info={{ from: "category", id: categoryId }}
+      getEntries={getCategoryEntries}
+      markAllAsRead={markCategoryAsRead}
+    />
   );
 };
 

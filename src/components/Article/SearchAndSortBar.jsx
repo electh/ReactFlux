@@ -1,5 +1,4 @@
 import { Button, Input, Select, Tooltip } from "@arco-design/web-react";
-import { useContext } from "react";
 
 import {
   IconSortAscending,
@@ -7,15 +6,16 @@ import {
 } from "@arco-design/web-react/icon";
 import { useConfig } from "../../hooks/useConfig";
 import useFilterEntries from "../../hooks/useFilterEntries";
-import ContentContext from "../Content/ContentContext";
 
 import { useAtomValue } from "jotai";
 import { configAtom } from "../../atoms/configAtom";
+import { filterStringAtom, filterTypeAtom } from "../../atoms/contentAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = (info) => {
-  const { filterString, filterType } = useContext(ContentContext);
+  const filterString = useAtomValue(filterStringAtom);
+  const filterType = useAtomValue(filterTypeAtom);
   const { isMobileView } = useScreenWidth();
 
   const { setFilterString, setFilterType } = useFilterEntries(info);

@@ -1,28 +1,30 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
-import { forwardRef, useContext, useEffect } from "react";
+import { forwardRef, useEffect } from "react";
 
 import useFilterEntries from "../../hooks/useFilterEntries";
-import ContentContext from "./ContentContext";
 
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { configAtom } from "../../atoms/configAtom";
+import {
+  entriesAtom,
+  filterStatusAtom,
+  filteredEntriesAtom,
+  loadingAtom,
+  unreadCountAtom,
+  unreadEntriesAtom,
+} from "../../atoms/contentAtom";
 import { useLoadData } from "../../hooks/useLoadData";
 import "./FooterPanel.css";
 
 const FooterPanel = forwardRef(
   ({ info, refreshArticleList, markAllAsRead }, ref) => {
-    const {
-      entries,
-      filteredEntries,
-      filterStatus,
-      loading,
-      setEntries,
-      setFilteredEntries,
-      setUnreadCount,
-      setUnreadEntries,
-      unreadEntries,
-    } = useContext(ContentContext);
+    const [entries, setEntries] = useAtom(entriesAtom);
+    const [filteredEntries, setFilteredEntries] = useAtom(filteredEntriesAtom);
+    const [unreadEntries, setUnreadEntries] = useAtom(unreadEntriesAtom);
+    const filterStatus = useAtomValue(filterStatusAtom);
+    const loading = useAtomValue(loadingAtom);
+    const setUnreadCount = useSetAtom(unreadCountAtom);
 
     const { setFilterStatus } = useFilterEntries(info);
 
