@@ -8,8 +8,8 @@ import { PhotoSlider } from "react-photo-view";
 import { Link, useNavigate } from "react-router-dom";
 
 import "react-photo-view/dist/react-photo-view.css";
-import useStore from "../../Store";
 import { configAtom } from "../../atoms/configAtom";
+import { useActiveContent } from "../../hooks/useActiveContent";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { extractAllImageSrc } from "../../utils/images";
 import contentContext from "../Content/ContentContext";
@@ -96,7 +96,7 @@ const ArticleDetail = forwardRef(
     ref,
   ) => {
     const navigate = useNavigate();
-    const activeContent = useStore((state) => state.activeContent);
+    const { activeContent } = useActiveContent();
     const config = useAtomValue(configAtom);
     const { articleWidth, fontSize } = config;
     const { setIsArticleFocused } = useContext(contentContext);

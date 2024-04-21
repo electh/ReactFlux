@@ -23,20 +23,21 @@ import {
 } from "@arco-design/web-react/icon";
 import { useNavigate } from "react-router-dom";
 
-import useStore from "../../Store";
-import { applyColor } from "../../utils/colors";
-import "./Header.css";
-
 import { useAtom, useSetAtom } from "jotai";
+import { applyColor } from "../../utils/colors";
+
 import { authAtom } from "../../atoms/authAtom";
 import { configAtom } from "../../atoms/configAtom";
+import { useCollapsed } from "../../hooks/useCollapsed";
 import { useConfig } from "../../hooks/useConfig";
+import { useModalToggle } from "../../hooks/useModalToggle";
 import { defaultConfig } from "../../utils/config";
+import "./Header.css";
 
 const Header = () => {
   const navigate = useNavigate();
-  const setVisible = useStore((state) => state.setVisible);
-  const toggleCollapsed = useStore((state) => state.toggleCollapsed);
+  const { setAddFeedModalVisible, setSettingsModalVisible } = useModalToggle();
+  const { toggleCollapsed } = useCollapsed();
 
   const [config, setConfig] = useAtom(configAtom);
   const setAuth = useSetAtom(authAtom);
@@ -94,7 +95,7 @@ const Header = () => {
               size="small"
               type="primary"
               icon={<IconPlus />}
-              onClick={() => setVisible("addFeed", true)}
+              onClick={() => setAddFeedModalVisible(true)}
             />
           </Tooltip>
           <Tooltip
@@ -146,7 +147,10 @@ const Header = () => {
           <Dropdown
             droplist={
               <Menu>
-                <Menu.Item key="0" onClick={() => setVisible("settings", true)}>
+                <Menu.Item
+                  key="0"
+                  onClick={() => setSettingsModalVisible(true)}
+                >
                   <IconSettings className="icon-right" />
                   Settings
                 </Menu.Item>

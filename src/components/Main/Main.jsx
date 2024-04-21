@@ -10,10 +10,10 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { useAtomValue } from "jotai";
-import useStore from "../../Store";
 import { addFeed } from "../../apis";
 import { categoriesAtom } from "../../atoms/dataAtom";
 import { useLoadData } from "../../hooks/useLoadData";
+import { useModalToggle } from "../../hooks/useModalToggle";
 import { includesIgnoreCase } from "../../utils/filter";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
@@ -23,18 +23,17 @@ const categoryRule = [{ required: true }];
 const crawlerRule = [{ type: "boolean" }];
 
 const SettingsModal = () => {
-  const setVisible = useStore((state) => state.setVisible);
-  const visible = useStore((state) => state.visible);
+  const { setSettingsModalVisible, settingsModalVisible } = useModalToggle();
 
   return (
     <Modal
       className="settings-modal"
-      visible={visible.settings}
+      visible={settingsModalVisible}
       alignCenter={false}
       title="Settings"
       footer={null}
       unmountOnExit
-      onCancel={() => setVisible("settings", false)}
+      onCancel={() => setSettingsModalVisible(false)}
       autoFocus={false}
       focusLock={true}
     >
@@ -45,8 +44,7 @@ const SettingsModal = () => {
 
 const AddFeedModal = () => {
   const categories = useAtomValue(categoriesAtom);
-  const setVisible = useStore((state) => state.setVisible);
-  const visible = useStore((state) => state.visible);
+  const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle();
 
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
@@ -59,7 +57,7 @@ const AddFeedModal = () => {
       await addFeed(url, categoryId, isFullText);
       loadData();
       Message.success("Added a feed successfully");
-      setVisible("addFeed", false);
+      setAddFeedModalVisible(false);
       feedForm.resetFields();
     } catch (error) {
       Message.error("Failed to add a feed");
@@ -70,13 +68,13 @@ const AddFeedModal = () => {
   return (
     <Modal
       title="Add Feed"
-      visible={visible.addFeed}
+      visible={addFeedModalVisible}
       unmountOnExit
       style={{ width: "400px" }}
       onOk={feedForm.submit}
       confirmLoading={feedModalLoading}
       onCancel={() => {
-        setVisible("addFeed", false);
+        setAddFeedModalVisible(false);
         feedForm.resetFields();
       }}
     >

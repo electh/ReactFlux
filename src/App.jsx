@@ -1,23 +1,21 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useAtomValue } from "jotai";
 import "./App.css";
-import useStore from "./Store";
 import { configAtom } from "./atoms/configAtom";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Sidebar from "./components/Sidebar/Sidebar";
 
 const App = () => {
-  const config = useAtomValue(configAtom);
-  const { theme } = config;
-  const isSysDarkMode = useStore((state) => state.isSysDarkMode);
-  const setIsSysDarkMode = useStore((state) => state.setIsSysDarkMode);
+  const { theme } = useAtomValue(configAtom);
+  const [isSystemDark, setIsSystemDark] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const handleDarkModeChange = (event) => {
-      setIsSysDarkMode(event.matches);
+      setIsSystemDark(event.matches);
     };
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -35,8 +33,12 @@ const App = () => {
       document.body.style.colorScheme = isDarkMode ? "dark" : "light";
     };
 
-    applyTheme(theme === "system" ? isSysDarkMode : theme === "dark");
-  }, [isSysDarkMode, theme]);
+    if (theme === "system") {
+      applyTheme(isSystemDark);
+    } else {
+      applyTheme(theme === "dark");
+    }
+  }, [isSystemDark, theme]);
 
   return (
     <div className="app">

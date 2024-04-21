@@ -28,8 +28,7 @@
     "react-swipeable": "^7.0.1",
     "react-transition-group": "^4.4.5",
     "swr": "^2.2.5",
-    "validator": "^13.11.0",
-    "zustand": "^4.5.2"
+    "validator": "^13.11.0"
   },
   "browserslist": {
     "production": [">0.2%", "not dead", "not op_mini all"],

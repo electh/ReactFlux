@@ -3,10 +3,10 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import { useAtomValue } from "jotai";
-import useStore from "../../Store";
 import { updateEntriesStatus } from "../../apis";
 import { configAtom } from "../../atoms/configAtom";
 import { hiddenFeedIdsAtom, isAppDataReadyAtom } from "../../atoms/dataAtom";
+import { useActiveContent } from "../../hooks/useActiveContent";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { useLoadData } from "../../hooks/useLoadData";
@@ -20,8 +20,7 @@ import FooterPanel from "./FooterPanel";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const activeContent = useStore((state) => state.activeContent);
-  const setActiveContent = useStore((state) => state.setActiveContent);
+  const { activeContent, setActiveContent } = useActiveContent();
 
   const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
   const isAppDataReady = useAtomValue(isAppDataReadyAtom);

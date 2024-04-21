@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 
 import { Message } from "@arco-design/web-react";
-import useStore from "../Store";
 import ContentContext from "../components/Content/ContentContext";
 import { scrollToElement } from "../utils/scroll";
+import { useActiveContent } from "./useActiveContent";
 import useLoadMore from "./useLoadMore";
 import { useScreenWidth } from "./useScreenWidth";
 
@@ -16,8 +16,7 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
     loadMoreVisible,
   } = useContext(ContentContext);
 
-  const activeContent = useStore((state) => state.activeContent);
-  const setActiveContent = useStore((state) => state.setActiveContent);
+  const { activeContent, setActiveContent } = useActiveContent();
 
   const { handleLoadMore } = useLoadMore();
 

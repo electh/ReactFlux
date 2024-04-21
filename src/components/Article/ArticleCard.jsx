@@ -12,9 +12,9 @@ import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
 
 import { useAtom, useAtomValue } from "jotai";
-import useStore from "../../Store";
 import { configAtom } from "../../atoms/configAtom";
 import { feedIconsAtom } from "../../atoms/dataAtom";
+import { useActiveContent } from "../../hooks/useActiveContent";
 import useEntryActions from "../../hooks/useEntryActions";
 import { useFeedIcon } from "../../hooks/useLoadData";
 import { generateRelativeTime } from "../../utils/date";
@@ -101,7 +101,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
 };
 
 const ArticleCard = ({ entry, handleEntryClick, mini }) => {
-  const activeContent = useStore((state) => state.activeContent);
+  const { activeContent } = useActiveContent();
   const config = useAtomValue(configAtom);
   const { markReadOnScroll, showFeedIcon } = config;
 

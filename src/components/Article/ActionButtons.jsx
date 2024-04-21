@@ -10,13 +10,13 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon";
 
-import useStore from "../../Store";
+import { useActiveContent } from "../../hooks/useActiveContent";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import "./ActionButtons.css";
 
 const ActionButtons = ({ info, handleEntryClick, getEntries }) => {
-  const activeContent = useStore((state) => state.activeContent);
+  const { activeContent } = useActiveContent();
   const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
     useEntryActions();
   const { handleLeftKey, handleRightKey, handleEscapeKey } = useKeyHandlers(

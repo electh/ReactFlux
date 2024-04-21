@@ -18,7 +18,6 @@ import { memo, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAtomValue } from "jotai";
-import useStore from "../../Store";
 import { configAtom } from "../../atoms/configAtom";
 import {
   categoriesAtom,
@@ -30,6 +29,8 @@ import {
   unreadTodayCountAtom,
   unreadTotalAtom,
 } from "../../atoms/dataAtom";
+import { useCollapsed } from "../../hooks/useCollapsed";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
@@ -64,7 +65,6 @@ const CategoryTitle = memo(({ category, isOpen }) => {
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const collapsed = useStore((state) => state.collapsed);
   const categories = useAtomValue(categoriesAtom);
   const isAppDataReady = useAtomValue(isAppDataReadyAtom);
   const unreadTotal = useAtomValue(unreadTotalAtom);
@@ -73,10 +73,12 @@ const Sidebar = () => {
   const historyCount = useAtomValue(historyCountAtom);
   const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
   const hiddenCategoryIds = useAtomValue(hiddenCategoryIdsAtom);
-  const toggleCollapsed = useStore((state) => state.toggleCollapsed);
 
   const config = useAtomValue(configAtom);
   const { homePage, showAllFeeds, showFeedIcon } = config;
+
+  const { collapsed, toggleCollapsed } = useCollapsed();
+  const { screenWidth } = useScreenWidth();
 
   const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`]);
   const [openKeys, setOpenKeys] = useState([]);
@@ -93,11 +95,8 @@ const Sidebar = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!collapsed) {
-      const viewportWidth = window.innerWidth;
-      if (viewportWidth <= 992) {
-        toggleCollapsed(true);
-      }
+    if (screenWidth <= 992 && !collapsed) {
+      toggleCollapsed();
     }
   }, [selectedKeys]);
 
