@@ -17,15 +17,11 @@ import {
   categoriesRefreshAtom,
   feedsDataAtom,
   feedsRefreshAtom,
-  historyDataAtom,
-  historyRefreshAtom,
+  historyCountAtom,
   isAppDataReadyAtom,
-  starredDataAtom,
-  starredRefreshAtom,
-  unreadInfoDataAtom,
-  unreadInfoRefreshAtom,
-  unreadTodayDataAtom,
-  unreadTodayRefreshAtom,
+  starredCountAtom,
+  unreadInfoAtom,
+  unreadTodayCountAtom,
 } from "../atoms/dataAtom";
 
 const createDataSyncHook = (dataAtom, refreshAtom, fetchFunc) => (key) => {
@@ -43,26 +39,6 @@ const createDataSyncHook = (dataAtom, refreshAtom, fetchFunc) => (key) => {
   return data;
 };
 
-const useUnreadInfoSync = createDataSyncHook(
-  unreadInfoDataAtom,
-  unreadInfoRefreshAtom,
-  () => getUnreadInfo(),
-);
-const useUnreadTodaySync = createDataSyncHook(
-  unreadTodayDataAtom,
-  unreadTodayRefreshAtom,
-  () => getTodayEntries(0, "unread"),
-);
-const useStarredSync = createDataSyncHook(
-  starredDataAtom,
-  starredRefreshAtom,
-  () => getStarredEntries(),
-);
-const useHistorySync = createDataSyncHook(
-  historyDataAtom,
-  historyRefreshAtom,
-  () => getHistoryEntries(),
-);
 const useFeedsSync = createDataSyncHook(feedsDataAtom, feedsRefreshAtom, () =>
   getFeeds(),
 );
@@ -77,18 +53,36 @@ export const useFeedIcon = (feedId) =>
 
 export const useLoadData = () => {
   const [isAppDataReady, setIsAppDataReady] = useAtom(isAppDataReadyAtom);
-  const unreadInfoData = useUnreadInfoSync("/v1/feeds/counters");
-  const unreadTodayData = useUnreadTodaySync("/v1/entries?status=unread");
-  const starredData = useStarredSync("/v1/entries?starred=true");
-  const historyData = useHistorySync("/v1/entries?status=read");
+  const setUnreadInfo = useSetAtom(unreadInfoAtom);
+  const setUnreadTodayCount = useSetAtom(unreadTodayCountAtom);
+  const setStarredCount = useSetAtom(starredCountAtom);
+  const setHistoryCount = useSetAtom(historyCountAtom);
+
+  const unreadInfoData = useSWR("/v1/feeds/counters", getUnreadInfo).data;
+  const unreadTodayData = useSWR("/v1/entries?status=unread", () =>
+    getTodayEntries(0, "unread"),
+  ).data;
+  const starredData = useSWR(
+    "/v1/entries?starred=true",
+    getStarredEntries,
+  ).data;
+  const historyData = useSWR("/v1/entries?status=read", getHistoryEntries).data;
   const feedsData = useFeedsSync("/v1/feeds");
   const categoriesData = useCategoriesSync("/v1/categories");
 
-  const loadData = () => {
-    setIsAppDataReady(false);
-  };
-
   useEffect(() => {
+    if (unreadInfoData) {
+      setUnreadInfo(unreadInfoData.data.unreads ?? {});
+    }
+    if (unreadTodayData) {
+      setUnreadTodayCount(unreadTodayData.data.total ?? 0);
+    }
+    if (starredData) {
+      setStarredCount(starredData.data.total ?? 0);
+    }
+    if (historyData) {
+      setHistoryCount(historyData.data.total ?? 0);
+    }
     if (
       !isAppDataReady &&
       [
@@ -105,6 +99,10 @@ export const useLoadData = () => {
   }, [
     isAppDataReady,
     setIsAppDataReady,
+    setUnreadInfo,
+    setUnreadTodayCount,
+    setStarredCount,
+    setHistoryCount,
     unreadInfoData,
     unreadTodayData,
     starredData,
@@ -112,6 +110,8 @@ export const useLoadData = () => {
     feedsData,
     categoriesData,
   ]);
+
+  const loadData = () => setIsAppDataReady(false);
 
   return { loadData };
 };

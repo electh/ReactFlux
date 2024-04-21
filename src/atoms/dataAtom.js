@@ -6,37 +6,10 @@ import { configAtom } from "./configAtom";
 
 export const isAppDataReadyAtom = atom(false);
 export const feedIconsAtom = atom({});
-
-export const unreadInfoRefreshAtom = atom(0);
-export const unreadInfoDataAtom = atom({});
-export const unreadInfoAtom = atomWithRefreshAndDefault(
-  unreadInfoRefreshAtom,
-  (get) => {
-    const data = get(unreadInfoDataAtom);
-    return data.unreads ?? {};
-  },
-);
-
-const createAtomSet = () => {
-  const refreshAtom = atom(0);
-  const dataAtom = atom({});
-  const countAtom = atomWithRefreshAndDefault(refreshAtom, (get) => {
-    const data = get(dataAtom);
-    return data.total ?? 0;
-  });
-
-  return [refreshAtom, dataAtom, countAtom];
-};
-
-export const [
-  unreadTodayRefreshAtom,
-  unreadTodayDataAtom,
-  unreadTodayCountAtom,
-] = createAtomSet();
-export const [starredRefreshAtom, starredDataAtom, starredCountAtom] =
-  createAtomSet();
-export const [historyRefreshAtom, historyDataAtom, historyCountAtom] =
-  createAtomSet();
+export const unreadInfoAtom = atom({});
+export const unreadTodayCountAtom = atom(0);
+export const starredCountAtom = atom(0);
+export const historyCountAtom = atom(0);
 
 export const feedsRefreshAtom = atom(0);
 export const feedsDataAtom = atom([]);
