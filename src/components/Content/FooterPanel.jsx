@@ -95,7 +95,7 @@ const FooterPanel = forwardRef(
           ]}
           type="button"
           value={filterStatus}
-        ></Radio.Group>
+        />
 
         <Button
           icon={<IconRefresh />}

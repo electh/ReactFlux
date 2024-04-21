@@ -22,7 +22,7 @@ import {
   refreshFeed,
   updateFeed,
 } from "../../apis";
-import { generateRelativeTime } from "../../utils/date";
+import { generateRelativeTime, getUTCDate } from "../../utils/date";
 import { includesIgnoreCase } from "../../utils/filter";
 
 import { useAtomValue, useSetAtom } from "jotai";
@@ -86,7 +86,9 @@ const FeedList = () => {
         Message.success("Refreshed");
         setFeeds((feeds) =>
           feeds.map((f) =>
-            f.id === feed.key ? { ...f, parsing_error_count: 0 } : f,
+            f.id === feed.key
+              ? { ...f, parsing_error_count: 0, checked_at: getUTCDate() }
+              : f,
           ),
         );
       } else {
@@ -104,7 +106,11 @@ const FeedList = () => {
       setFeeds((feeds) =>
         feeds.map((f) =>
           f.id === feed.key
-            ? { ...f, parsing_error_count: f.parsing_error_count + 1 }
+            ? {
+                ...f,
+                parsing_error_count: f.parsing_error_count + 1,
+                checked_at: getUTCDate(),
+              }
             : f,
         ),
       );
