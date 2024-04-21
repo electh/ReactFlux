@@ -83,14 +83,13 @@ const Sidebar = () => {
 
   const path = location.pathname;
 
-  const handleClickMenuItem = (key) => {
-    setSelectedKeys([key]);
-    navigate(key);
-  };
-
   const handleClickSubMenu = (key, currentOpenKeys) => {
     setOpenKeys(currentOpenKeys);
   };
+
+  useEffect(() => {
+    setSelectedKeys([path]);
+  }, [path]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -101,12 +100,6 @@ const Sidebar = () => {
       }
     }
   }, [selectedKeys]);
-
-  useEffect(() => {
-    if (!isAppDataReady) {
-      setOpenKeys([]);
-    }
-  }, [isAppDataReady]);
 
   return (
     <Sider
@@ -156,7 +149,7 @@ const Sidebar = () => {
         />
         {isAppDataReady && (
           <div>
-            <MenuItem key={"/all"} onClick={() => handleClickMenuItem("/all")}>
+            <MenuItem key={"/all"} onClick={() => navigate("/all")}>
               <div className="custom-menu-item">
                 <span>
                   <IconUnorderedList />
@@ -167,10 +160,7 @@ const Sidebar = () => {
                 </Typography.Ellipsis>
               </div>
             </MenuItem>
-            <MenuItem
-              key={"/today"}
-              onClick={() => handleClickMenuItem("/today")}
-            >
+            <MenuItem key={"/today"} onClick={() => navigate("/today")}>
               <div className="custom-menu-item">
                 <span>
                   <IconCalendar />
@@ -181,10 +171,7 @@ const Sidebar = () => {
                 </Typography.Ellipsis>
               </div>
             </MenuItem>
-            <MenuItem
-              key={"/starred"}
-              onClick={() => handleClickMenuItem("/starred")}
-            >
+            <MenuItem key={"/starred"} onClick={() => navigate("/starred")}>
               <div className="custom-menu-item">
                 <span>
                   <IconStar />
@@ -195,10 +182,7 @@ const Sidebar = () => {
                 </Typography.Ellipsis>
               </div>
             </MenuItem>
-            <MenuItem
-              key={"/history"}
-              onClick={() => handleClickMenuItem("/history")}
-            >
+            <MenuItem key={"/history"} onClick={() => navigate("/history")}>
               <div className="custom-menu-item">
                 <span>
                   <IconHistory />
@@ -243,7 +227,6 @@ const Sidebar = () => {
                       ) &&
                       path !== `/category/${category.id}`
                     ) {
-                      setSelectedKeys([`/category/${category.id}`]);
                       navigate(`/category/${category.id}`);
                     }
                   }}
@@ -253,7 +236,6 @@ const Sidebar = () => {
                       key={`/feed/${feed.id}`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedKeys([`/feed/${feed.id}`]);
                         navigate(`/feed/${feed.id}`);
                       }}
                     >
