@@ -20,9 +20,9 @@ import {
 import { isAppDataReadyAtom } from "../../atoms/dataAtom";
 import { useActiveContent } from "../../hooks/useActiveContent";
 import useEntryActions from "../../hooks/useEntryActions";
+import { useFetchData } from "../../hooks/useFetchData";
 import useFilterEntries from "../../hooks/useFilterEntries";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
-import { useLoadData } from "../../hooks/useLoadData";
 import useLoadMore from "../../hooks/useLoadMore";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
@@ -34,7 +34,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, setActiveContent } = useActiveContent();
 
   const isAppDataReady = useAtomValue(isAppDataReadyAtom);
-  const { loadData } = useLoadData();
+  const { fetchData } = useFetchData();
   const config = useAtomValue(configAtom);
   const { orderBy, orderDirection } = config;
 
@@ -187,7 +187,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setOffset(0);
     setUnreadOffset(0);
     if (!isAppDataReady) {
-      loadData();
+      fetchData();
       return;
     }
     await getArticleList();

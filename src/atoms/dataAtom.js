@@ -5,7 +5,6 @@ import { extractProtocolAndHostname } from "../utils/url";
 import { configAtom } from "./configAtom";
 
 export const isAppDataReadyAtom = atom(false);
-export const feedIconsAtom = atom({});
 export const unreadInfoAtom = atom({});
 export const unreadTodayCountAtom = atom(0);
 export const starredCountAtom = atom(0);

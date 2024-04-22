@@ -7,44 +7,26 @@ import {
 } from "@arco-design/web-react/icon";
 import { animated, useSpring } from "@react-spring/web";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
 
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import isURL from "validator/lib/isURL";
 import { configAtom } from "../../atoms/configAtom";
-import { feedIconsAtom } from "../../atoms/dataAtom";
 import { useActiveContent } from "../../hooks/useActiveContent";
 import useEntryActions from "../../hooks/useEntryActions";
-import { useFeedIcon } from "../../hooks/useLoadData";
 import { generateRelativeTime } from "../../utils/date";
 import { extractProtocolAndHostname } from "../../utils/url";
 import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 
 const FeedIcon = ({ feed, mini }) => {
-  const feedId = feed.id;
-  const [feedIcons, setFeedIcons] = useAtom(feedIconsAtom);
-  const { data } = useFeedIcon(feedId);
-
-  useEffect(() => {
-    if (data && !feedIcons[feedId]) {
-      const iconData = `data:${data.data.data}`;
-      setFeedIcons((prevIcons) => ({ ...prevIcons, [feedId]: iconData }));
-    }
-  }, [data, feedId, feedIcons, setFeedIcons]);
-
-  let iconSource;
-  if (feedIcons[feedId]) {
-    iconSource = feedIcons[feedId];
-  } else {
-    const url = isURL(feed.site_url)
-      ? feed.site_url
-      : extractProtocolAndHostname(feed.feed_url);
-    const { hostname } = new URL(url);
-    iconSource = `https://icons.duckduckgo.com/ip3/${hostname}.ico`;
-  }
+  const url = isURL(feed.site_url)
+    ? feed.site_url
+    : extractProtocolAndHostname(feed.feed_url);
+  const { hostname } = new URL(url);
+  const iconSource = `https://icons.duckduckgo.com/ip3/${hostname}.ico`;
 
   return (
     <img

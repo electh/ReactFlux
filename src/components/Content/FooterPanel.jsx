@@ -13,7 +13,7 @@ import {
   unreadCountAtom,
   unreadEntriesAtom,
 } from "../../atoms/contentAtom";
-import { useLoadData } from "../../hooks/useLoadData";
+import { useFetchData } from "../../hooks/useFetchData";
 import "./FooterPanel.css";
 
 const FooterPanel = forwardRef(
@@ -28,14 +28,14 @@ const FooterPanel = forwardRef(
 
     /*menu 数据初始化函数 */
     const config = useAtomValue(configAtom);
-    const { loadData } = useLoadData();
+    const { fetchData } = useFetchData();
     const { showStatus } = config;
 
     const handleMarkAllAsRead = async () => {
       try {
         await markAllAsRead();
         Message.success("Marked all as read successfully");
-        loadData();
+        fetchData();
         setEntries((prev) =>
           prev.map((entry) => ({ ...entry, status: "read" })),
         );

@@ -12,7 +12,7 @@ import { Outlet } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import { addFeed } from "../../apis";
 import { categoriesAtom } from "../../atoms/dataAtom";
-import { useLoadData } from "../../hooks/useLoadData";
+import { useFetchData } from "../../hooks/useFetchData";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { includesIgnoreCase } from "../../utils/filter";
 import SettingsTabs from "../Settings/SettingsTabs";
@@ -49,13 +49,13 @@ const AddFeedModal = () => {
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
 
-  const { loadData } = useLoadData();
+  const { fetchData } = useFetchData();
 
   const handleAddFeed = async (url, categoryId, isFullText) => {
     setFeedModalLoading(true);
     try {
       await addFeed(url, categoryId, isFullText);
-      loadData();
+      fetchData();
       Message.success("Added a feed successfully");
       setAddFeedModalVisible(false);
       feedForm.resetFields();
