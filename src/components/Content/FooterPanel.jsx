@@ -8,7 +8,6 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { configAtom } from "../../atoms/configAtom";
 import {
   entriesAtom,
-  filterStatusAtom,
   filteredEntriesAtom,
   loadingAtom,
   unreadCountAtom,
@@ -21,12 +20,11 @@ const FooterPanel = forwardRef(
   ({ info, refreshArticleList, markAllAsRead }, ref) => {
     const [entries, setEntries] = useAtom(entriesAtom);
     const [unreadEntries, setUnreadEntries] = useAtom(unreadEntriesAtom);
-    const filterStatus = useAtomValue(filterStatusAtom);
     const loading = useAtomValue(loadingAtom);
     const setFilteredEntries = useSetAtom(filteredEntriesAtom);
     const setUnreadCount = useSetAtom(unreadCountAtom);
 
-    const { setFilterStatus } = useFilterEntries(info);
+    const { filterStatus, setFilterStatus } = useFilterEntries(info);
 
     /*menu 数据初始化函数 */
     const config = useAtomValue(configAtom);

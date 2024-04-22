@@ -29,7 +29,7 @@ export const buildEntriesUrl = (baseParams, extraParams = {}) => {
     queryParams.append("status", status);
   }
 
-  return `${baseUrl}?${queryParams.toString()}`;
+  return `${baseUrl}?${queryParams}`;
 };
 
 export const getAllEntries = async (offset = 0, status = null) => {

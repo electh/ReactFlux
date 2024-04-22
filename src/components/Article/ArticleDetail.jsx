@@ -85,16 +85,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 });
 
 const ArticleDetail = forwardRef(
-  (
-    {
-      info,
-      handleEntryClick,
-      getEntries,
-      isFilteredEntriesUpdated,
-      setIsFilteredEntriesUpdated,
-    },
-    ref,
-  ) => {
+  ({ info, handleEntryClick, getEntries }, ref) => {
     const navigate = useNavigate();
     const { activeContent } = useActiveContent();
     const config = useAtomValue(configAtom);
@@ -204,8 +195,6 @@ const ArticleDetail = forwardRef(
           info={info}
           handleEntryClick={handleEntryClick}
           getEntries={getEntries}
-          isFilteredEntriesUpdated={isFilteredEntriesUpdated}
-          setIsFilteredEntriesUpdated={setIsFilteredEntriesUpdated}
         />
       </div>
     );

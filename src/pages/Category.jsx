@@ -10,6 +10,7 @@ const Category = () => {
   const { id: categoryId } = useParams();
   const config = useAtomValue(configAtom);
   const { orderBy, pageSize } = config;
+
   const getCategoryEntries = async (offset = 0, status = null) => {
     const baseParams = {
       baseUrl: `/v1/categories/${categoryId}/entries`,
