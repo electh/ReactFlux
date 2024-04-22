@@ -166,11 +166,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const getArticleList = async () => {
     setLoading(true);
     try {
-      const responseAll = await getEntries();
       if (info.from === "history") {
+        const responseAll = await getEntries();
         handleResponses(responseAll, responseAll);
       } else {
-        const responseUnread = await getEntries(0, "unread");
+        const [responseAll, responseUnread] = await Promise.all([
+          getEntries(),
+          getEntries(0, "unread"),
+        ]);
         handleResponses(responseAll, responseUnread);
       }
     } catch (error) {
