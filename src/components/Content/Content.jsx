@@ -7,6 +7,8 @@ import { updateEntriesStatus } from "../../apis";
 import { configAtom } from "../../atoms/configAtom";
 import {
   entriesAtom,
+  filteredEntriesAtom,
+  infoFromAtom,
   isArticleFocusedAtom,
   loadMoreUnreadVisibleAtom,
   loadMoreVisibleAtom,
@@ -21,7 +23,6 @@ import { isAppDataReadyAtom } from "../../atoms/dataAtom";
 import { useActiveContent } from "../../hooks/useActiveContent";
 import useEntryActions from "../../hooks/useEntryActions";
 import { useFetchData } from "../../hooks/useFetchData";
-import useFilterEntries from "../../hooks/useFilterEntries";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import useLoadMore from "../../hooks/useLoadMore";
 import ArticleDetail from "../Article/ArticleDetail";
@@ -48,8 +49,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const setUnreadCount = useSetAtom(unreadCountAtom);
   const setUnreadEntries = useSetAtom(unreadEntriesAtom);
   const setUnreadOffset = useSetAtom(unreadOffsetAtom);
-
-  const { filteredEntries } = useFilterEntries(info);
+  const filteredEntries = useAtomValue(filteredEntriesAtom);
+  const setInfoFrom = useSetAtom(infoFromAtom);
 
   const {
     handleFetchContent,
@@ -78,6 +79,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    setInfoFrom(info.from);
     refreshArticleList();
   }, [info, orderDirection]);
 
@@ -252,6 +254,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           info={info}
           handleEntryClick={handleEntryClick}
           getEntries={getEntries}
+          entryListRef={entryListRef}
           ref={entryDetailRef}
         />
       </CSSTransition>

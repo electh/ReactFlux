@@ -1,6 +1,9 @@
 import { atom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
+import { atomWithRefreshAndDefault } from "../utils/atom";
+import { filterEntries } from "../utils/filter";
 import { configAtom } from "./configAtom";
+import { hiddenFeedIdsAtom } from "./dataAtom";
 
 // 接口返回文章总数原始值，不受接口返回数据长度限制
 export const totalAtom = atom(0);
@@ -18,11 +21,50 @@ export const loadMoreUnreadVisibleAtom = atom(false);
 export const entriesAtom = atom([]);
 // 接口返回的未读文章
 export const unreadEntriesAtom = atom([]);
-// 页面显示的文章
-export const filteredEntriesAtom = atom([]);
+export const infoFromAtom = atomWithDefault((get) => get(configAtom).homePage);
 // all | unread
-export const filterStatusAtom = atomWithDefault(
-  (get) => get(configAtom).showStatus,
+export const filterStatusAtom = atomWithDefault((get) => {
+  const infoFrom = get(infoFromAtom);
+  if (["starred", "history"].includes(infoFrom)) {
+    return "all";
+  }
+  return get(configAtom).showStatus;
+});
+export const currentEntriesAtom = atom((get) => {
+  const filterStatus = get(filterStatusAtom);
+  if (filterStatus === "all") {
+    return get(entriesAtom);
+  }
+  return get(unreadEntriesAtom);
+});
+export const filteredEntriesRefreshAtom = atom(0);
+// 页面显示的文章
+export const filteredEntriesAtom = atomWithRefreshAndDefault(
+  filteredEntriesRefreshAtom,
+  (get) => {
+    const entries = get(currentEntriesAtom);
+    const filterType = get(filterTypeAtom);
+    const filterStatus = get(filterStatusAtom);
+    const filterString = get(filterStringAtom);
+    const filteredEntries = filterEntries(
+      entries,
+      filterType,
+      filterStatus,
+      filterString,
+    );
+
+    const infoFrom = get(infoFromAtom);
+    const { showAllFeeds } = get(configAtom);
+    const hiddenFeedIds = get(hiddenFeedIdsAtom);
+
+    if (["all", "today", "category"].includes(infoFrom) && !showAllFeeds) {
+      return filteredEntries.filter(
+        (entry) => !hiddenFeedIds.includes(entry.feed.id),
+      );
+    }
+
+    return filteredEntries;
+  },
 );
 // 0: title | 1: content
 export const filterTypeAtom = atom("0");

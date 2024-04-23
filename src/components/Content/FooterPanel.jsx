@@ -1,13 +1,11 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
-import { forwardRef, useEffect } from "react";
-
-import useFilterEntries from "../../hooks/useFilterEntries";
+import { forwardRef } from "react";
 
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { configAtom } from "../../atoms/configAtom";
 import {
   entriesAtom,
+  filterStatusAtom,
   filteredEntriesAtom,
   loadingAtom,
   unreadCountAtom,
@@ -23,13 +21,10 @@ const FooterPanel = forwardRef(
     const loading = useAtomValue(loadingAtom);
     const setFilteredEntries = useSetAtom(filteredEntriesAtom);
     const setUnreadCount = useSetAtom(unreadCountAtom);
-
-    const { filterStatus, setFilterStatus } = useFilterEntries(info);
+    const [filterStatus, setFilterStatus] = useAtom(filterStatusAtom);
 
     /*menu 数据初始化函数 */
-    const config = useAtomValue(configAtom);
     const { fetchData } = useFetchData();
-    const { showStatus } = config;
 
     const handleMarkAllAsRead = async () => {
       try {
@@ -52,14 +47,6 @@ const FooterPanel = forwardRef(
         Message.error("Failed to mark all as read");
       }
     };
-
-    useEffect(() => {
-      if (["starred", "history"].includes(info.from)) {
-        setFilterStatus("all");
-      } else {
-        setFilterStatus(showStatus);
-      }
-    }, [info, setFilterStatus, showStatus]);
 
     const handleRadioChange = (value) => {
       if (ref.current) {

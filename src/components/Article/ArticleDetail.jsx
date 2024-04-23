@@ -85,7 +85,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 });
 
 const ArticleDetail = forwardRef(
-  ({ info, handleEntryClick, getEntries }, ref) => {
+  ({ info, handleEntryClick, getEntries, entryListRef }, ref) => {
     const navigate = useNavigate();
     const { activeContent } = useActiveContent();
     const config = useAtomValue(configAtom);
@@ -195,6 +195,8 @@ const ArticleDetail = forwardRef(
           info={info}
           handleEntryClick={handleEntryClick}
           getEntries={getEntries}
+          entryListRef={entryListRef}
+          entryDetailRef={ref}
         />
       </div>
     );

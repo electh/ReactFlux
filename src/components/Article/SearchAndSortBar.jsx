@@ -5,20 +5,21 @@ import {
 } from "@arco-design/web-react/icon";
 import { useConfig } from "../../hooks/useConfig";
 
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { configAtom } from "../../atoms/configAtom";
-import useFilterEntries from "../../hooks/useFilterEntries";
+import { filterStringAtom, filterTypeAtom } from "../../atoms/contentAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./SearchAndSortBar.css";
 
-const SearchAndSortBar = (info) => {
+const SearchAndSortBar = () => {
   const { isMobileView } = useScreenWidth();
-  const { filterString, filterType, setFilterString, setFilterType } =
-    useFilterEntries(info);
 
   const config = useAtomValue(configAtom);
   const { updateConfig } = useConfig();
   const { orderDirection } = config;
+
+  const [filterString, setFilterString] = useAtom(filterStringAtom);
+  const [filterType, setFilterType] = useAtom(filterTypeAtom);
 
   const toggleOrderDirection = () => {
     const newOrderDirection = orderDirection === "desc" ? "asc" : "desc";

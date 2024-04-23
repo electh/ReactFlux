@@ -15,7 +15,13 @@ import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import "./ActionButtons.css";
 
-const ActionButtons = ({ info, handleEntryClick, getEntries }) => {
+const ActionButtons = ({
+  info,
+  handleEntryClick,
+  getEntries,
+  entryListRef,
+  entryDetailRef,
+}) => {
   const { activeContent } = useActiveContent();
   const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
     useEntryActions();
@@ -36,7 +42,7 @@ const ActionButtons = ({ info, handleEntryClick, getEntries }) => {
     <Button.Group className="action-buttons">
       <Button
         icon={<IconClose />}
-        onClick={handleEscapeKey}
+        onClick={() => handleEscapeKey(entryListRef, entryDetailRef)}
         shape="round"
         type="primary"
       />
