@@ -52,8 +52,6 @@ const ActionButtons = ({
         type="primary"
       />
       <Button
-        onClick={() => handleToggleStarred(activeContent)}
-        type="primary"
         icon={
           isStarred ? (
             <IconStarFill style={{ color: "#ffcd00" }} />
@@ -61,6 +59,8 @@ const ActionButtons = ({
             <IconStar />
           )
         }
+        onClick={() => handleToggleStarred(activeContent)}
+        type="primary"
       />
       <Button icon={<IconArrowLeft />} onClick={handleLeftKey} type="primary" />
       <Button

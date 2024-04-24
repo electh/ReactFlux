@@ -8,6 +8,7 @@ import {
   filterStringAtom,
   filterTypeAtom,
   filteredEntriesAtom,
+  infoFromAtom,
   loadMoreUnreadVisibleAtom,
   loadMoreVisibleAtom,
   offsetAtom,
@@ -20,8 +21,7 @@ import { hiddenFeedIdsAtom } from "../atoms/dataAtom";
 import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
 
 const useLoadMore = () => {
-  const config = useAtomValue(configAtom);
-  const { pageSize, showAllFeeds } = config;
+  const { pageSize, showAllFeeds } = useAtomValue(configAtom);
   const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
 
   const [entries, setEntries] = useAtom(entriesAtom);
@@ -31,6 +31,7 @@ const useLoadMore = () => {
   const filterStatus = useAtomValue(filterStatusAtom);
   const filterString = useAtomValue(filterStringAtom);
   const filterType = useAtomValue(filterTypeAtom);
+  const infoFrom = useAtomValue(infoFromAtom);
   const setFilteredEntries = useSetAtom(filteredEntriesAtom);
   const setLoadMoreUnreadVisible = useSetAtom(loadMoreUnreadVisibleAtom);
   const setLoadMoreVisible = useSetAtom(loadMoreVisibleAtom);
@@ -56,11 +57,9 @@ const useLoadMore = () => {
   };
 
   const updateEntries = (newEntries) => {
+    const currentEntries = filterStatus === "all" ? entries : unreadEntries;
     const updatedEntries = new Map([
-      ...(filterStatus === "all" ? entries : unreadEntries).map((e) => [
-        e.id,
-        e,
-      ]),
+      ...currentEntries.map((e) => [e.id, e]),
       ...newEntries.map((e) => [e.id, e]),
     ]);
     const result = Array.from(updatedEntries.values());
@@ -75,14 +74,14 @@ const useLoadMore = () => {
     return result;
   };
 
-  const applyFilters = (updatedEntries, info) => {
+  const applyFilters = (updatedEntries) => {
     const filteredEntries = filterString
       ? filterEntries(updatedEntries, filterType, filterStatus, filterString)
       : updatedEntries;
 
     return filterEntriesByVisibility(
       filteredEntries,
-      info,
+      infoFrom,
       showAllFeeds,
       hiddenFeedIds,
     );
@@ -102,14 +101,14 @@ const useLoadMore = () => {
         updateOffset();
         const newEntries = response.data.entries.map(parseFirstImage);
         const updatedEntries = updateEntries(newEntries);
-        const filteredEntries = applyFilters(updatedEntries, info);
+        const filteredEntries = applyFilters(updatedEntries);
         setFilteredEntries(filteredEntries);
       }
     } catch (error) {
       console.error("Error fetching more articles:", error);
+    } finally {
+      setLoadingMore(false);
     }
-
-    setLoadingMore(false);
   };
 
   return { parseFirstImage, handleLoadMore, loadingMore };

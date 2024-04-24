@@ -12,8 +12,8 @@ import "./General.css";
 
 const General = () => {
   const { updateConfig } = useConfig();
-  const config = useAtomValue(configAtom);
-  const { homePage, markReadOnScroll, orderBy, pageSize, showStatus } = config;
+  const { homePage, markReadOnScroll, orderBy, pageSize, showStatus } =
+    useAtomValue(configAtom);
 
   return (
     <>
@@ -28,7 +28,7 @@ const General = () => {
         </div>
         <div>
           <Select
-            className="select-style"
+            className="input-select"
             placeholder="Select status"
             value={showStatus}
             onChange={(value) => updateConfig({ showStatus: value })}
@@ -50,9 +50,9 @@ const General = () => {
         </div>
         <div>
           <Select
+            className="input-select"
             onChange={(value) => updateConfig({ homePage: value })}
             placeholder="Select page"
-            style={{ width: 128, marginLeft: 16 }}
             value={homePage}
           >
             <Select.Option value="all">All</Select.Option>
@@ -74,9 +74,9 @@ const General = () => {
         </div>
         <div>
           <Select
+            className="input-select"
             onChange={(value) => updateConfig({ orderBy: value })}
             placeholder="Select order"
-            style={{ width: 128, marginLeft: 16 }}
             value={orderBy}
           >
             <Select.Option value="published_at">Published at</Select.Option>
@@ -96,12 +96,12 @@ const General = () => {
         </div>
         <div>
           <InputNumber
+            className="input-select"
             defaultValue={pageSize}
             min={1}
             mode="button"
             onChange={(value) => updateConfig({ pageSize: value })}
             size="small"
-            style={{ width: 128, marginLeft: 16 }}
           />
         </div>
       </div>

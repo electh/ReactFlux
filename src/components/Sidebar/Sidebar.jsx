@@ -19,7 +19,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import classNames from "classnames";
 import { useAtomValue } from "jotai";
-import isURL from "validator/lib/isURL";
 import { configAtom } from "../../atoms/configAtom";
 import {
   categoriesAtom,
@@ -33,7 +32,7 @@ import {
 } from "../../atoms/dataAtom";
 import { useCollapsed } from "../../hooks/useCollapsed";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
-import { extractProtocolAndHostname } from "../../utils/url";
+import FeedIcon from "../ui/FeedIcon";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
@@ -95,27 +94,6 @@ const CustomMenuItem = ({ path, Icon, label, countAtom }) => {
         <CountDisplay atom={countAtom} />
       </div>
     </MenuItem>
-  );
-};
-
-const FeedIcon = ({ feed }) => {
-  const url = isURL(feed.site_url)
-    ? feed.site_url
-    : extractProtocolAndHostname(feed.feed_url);
-  const { hostname } = new URL(url);
-  const iconSource = `https://icons.duckduckgo.com/ip3/${hostname}.ico`;
-
-  return (
-    <img
-      src={iconSource}
-      alt="Feed icon"
-      style={{
-        marginRight: "8px",
-        width: "16px",
-        height: "16px",
-        verticalAlign: "-2px",
-      }}
-    />
   );
 };
 
@@ -279,7 +257,12 @@ const Sidebar = () => {
                             width: feed.unreadCount !== 0 ? "80%" : "100%",
                           }}
                         >
-                          {showFeedIcon && <FeedIcon feed={feed} />}
+                          {showFeedIcon && (
+                            <FeedIcon
+                              feed={feed}
+                              className={"feed-icon-sidebar"}
+                            />
+                          )}
                           {feed.title}
                         </Typography.Ellipsis>
                         {feed.unreadCount !== 0 && (

@@ -1,42 +1,36 @@
-const includesIgnoreCase = (text, searchText) => {
+export const includesIgnoreCase = (text, searchText) => {
   return text.toLowerCase().includes(searchText.toLowerCase());
 };
 
-const filterEntries = (entries, filterType, filterStatus, filterString) => {
+export const filterEntries = (
+  entries,
+  filterType,
+  filterStatus,
+  filterString,
+) => {
   if (!filterString) {
     return entries;
   }
 
-  // 0: title 1: content
-  if (filterType === "0") {
-    return filterStatus === "all"
-      ? entries.filter((entry) => includesIgnoreCase(entry.title, filterString))
-      : entries.filter(
-          (entry) =>
-            includesIgnoreCase(entry.title, filterString) &&
-            entry.status === filterStatus,
-        );
-  }
-  return filterStatus === "all"
-    ? entries.filter((entry) => includesIgnoreCase(entry.content, filterString))
-    : entries.filter(
-        (entry) =>
-          includesIgnoreCase(entry.content, filterString) &&
-          entry.status === filterStatus,
-      );
+  const isRelevantEntry = (entry) => {
+    const textToCheck = filterType === "0" ? entry.title : entry.content;
+    return (
+      includesIgnoreCase(textToCheck, filterString) &&
+      (filterStatus === "all" || entry.status === filterStatus)
+    );
+  };
+
+  return entries.filter(isRelevantEntry);
 };
 
-const filterEntriesByVisibility = (
+export const filterEntriesByVisibility = (
   entries,
-  info,
+  infoFrom,
   showAllFeeds,
   hiddenFeedIds,
 ) => {
   const isVisible = (entry) =>
     showAllFeeds || !hiddenFeedIds.includes(entry.feed.id);
-  return ["all", "today", "category"].includes(info.from)
-    ? entries.filter(isVisible)
-    : entries;
+  const isValidFilter = ["all", "today", "category"].includes(infoFrom);
+  return isValidFilter ? entries.filter(isVisible) : entries;
 };
-
-export { includesIgnoreCase, filterEntries, filterEntriesByVisibility };

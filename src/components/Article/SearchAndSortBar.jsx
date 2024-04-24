@@ -30,7 +30,9 @@ const SearchAndSortBar = () => {
     <div className="search-and-sort-bar">
       <Input.Search
         allowClear
+        onChange={setFilterString}
         placeholder="Search..."
+        style={{ width: isMobileView ? "100%" : 278, marginLeft: 8 }}
         value={filterString}
         addBefore={
           <Select
@@ -43,8 +45,6 @@ const SearchAndSortBar = () => {
             <Select.Option value="1">Content</Select.Option>
           </Select>
         }
-        onChange={setFilterString}
-        style={{ width: isMobileView ? "100%" : 278, marginLeft: 8 }}
       />
       <Tooltip
         mini

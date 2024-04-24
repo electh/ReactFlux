@@ -5,21 +5,18 @@ import utc from "dayjs/plugin/utc";
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
 
-export const checkIsInLast24Hours = (dateStr) => {
-  const givenDate = dayjs(dateStr);
-  const now = dayjs();
-  return givenDate.isAfter(now.subtract(24, "hour"));
+export const checkIsInLast24Hours = (dateString) => {
+  const targetDate = dayjs(dateString);
+  return targetDate.isAfter(dayjs().subtract(24, "hour"));
 };
 
 export const get24HoursAgoTimestamp = () => {
-  const now = dayjs();
-  const twentyFourHoursAgo = now.subtract(24, "hour");
-  return twentyFourHoursAgo.unix();
+  return dayjs().subtract(24, "hour").unix();
 };
 
-export const generateRelativeTime = (dateStr) => {
-  const result = dayjs(dateStr).fromNow();
-  return result === "a few seconds ago" ? "just now" : result;
+export const generateRelativeTime = (dateString) => {
+  const relativeTime = dayjs(dateString).fromNow();
+  return relativeTime === "a few seconds ago" ? "just now" : relativeTime;
 };
 
 export const getUTCDate = () => {

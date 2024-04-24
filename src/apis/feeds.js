@@ -29,3 +29,6 @@ export const updateFeed = async (id, newDetails) => {
     hide_globally: hidden,
   });
 };
+
+export const markFeedAsRead = async (id) =>
+  apiClient.put(`/v1/feeds/${id}/mark-all-as-read`);

@@ -16,11 +16,5 @@ export const defaultConfig = {
 
 export const getConfig = (name) => {
   const config = JSON.parse(localStorage.getItem("config")) ?? {};
-  if (Object.hasOwn(config, name)) {
-    return config[name];
-  }
-  if (Object.hasOwn(defaultConfig, name)) {
-    return defaultConfig[name];
-  }
-  return null;
+  return config[name] ?? defaultConfig[name];
 };

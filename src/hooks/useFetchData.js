@@ -58,9 +58,9 @@ export const useFetchData = () => {
   const setHistoryCount = useSetAtom(historyCountAtom);
 
   const setFeedsData = useSetAtom(feedsDataAtom);
-  const feedsTriggerRefresh = useSetAtom(feedsRefreshAtom);
+  const triggerFeedsRefresh = useSetAtom(feedsRefreshAtom);
   const setCategoriesData = useSetAtom(categoriesDataAtom);
-  const categoriesTriggerRefresh = useSetAtom(categoriesRefreshAtom);
+  const triggerCategoriesRefresh = useSetAtom(categoriesRefreshAtom);
 
   const fetchData = () => {
     setIsAppDataReady(false);
@@ -77,9 +77,9 @@ export const useFetchData = () => {
     setStarredCount(starredCount);
     setHistoryCount(historyCount);
     setFeedsData(feedsData);
-    feedsTriggerRefresh((prev) => prev + 1);
+    triggerFeedsRefresh((prev) => prev + 1);
     setCategoriesData(categoriesData);
-    categoriesTriggerRefresh((prev) => prev + 1);
+    triggerCategoriesRefresh((prev) => prev + 1);
     setIsAppDataReady(true);
   };
 

@@ -27,15 +27,15 @@ const SettingsModal = () => {
 
   return (
     <Modal
-      className="settings-modal"
-      visible={settingsModalVisible}
       alignCenter={false}
-      title="Settings"
-      footer={null}
-      unmountOnExit
-      onCancel={() => setSettingsModalVisible(false)}
       autoFocus={false}
-      focusLock={true}
+      className="settings-modal"
+      focusLock
+      footer={null}
+      onCancel={() => setSettingsModalVisible(false)}
+      title="Settings"
+      unmountOnExit
+      visible={settingsModalVisible}
     >
       <SettingsTabs />
     </Modal>
@@ -61,8 +61,9 @@ const AddFeedModal = () => {
       feedForm.resetFields();
     } catch (error) {
       Message.error("Failed to add a feed");
+    } finally {
+      setFeedModalLoading(false);
     }
-    setFeedModalLoading(false);
   };
 
   return (
@@ -86,11 +87,7 @@ const AddFeedModal = () => {
         onSubmit={async (values) => {
           const url = values.url.trim();
           if (url) {
-            await handleAddFeed(
-              values.url.trim(),
-              values.category,
-              values.crawler,
-            );
+            await handleAddFeed(url, values.category, values.crawler);
           } else {
             Message.error("Feed URL cannot be empty");
           }
@@ -100,9 +97,9 @@ const AddFeedModal = () => {
           <Input placeholder="Please input a feed URL" />
         </Form.Item>
         <Form.Item
+          field="category"
           label="Category"
           required
-          field="category"
           rules={categoryRule}
         >
           <Select
@@ -120,12 +117,12 @@ const AddFeedModal = () => {
           </Select>
         </Form.Item>
         <Form.Item
-          label="Fetch original content"
-          initialValue={false}
           field="crawler"
+          initialValue={false}
+          label="Fetch original content"
+          rules={crawlerRule}
           style={{ marginBottom: 0 }}
           triggerPropName="checked"
-          rules={crawlerRule}
         >
           <Switch />
         </Form.Item>

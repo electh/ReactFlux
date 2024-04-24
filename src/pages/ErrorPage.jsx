@@ -6,17 +6,15 @@ const ErrorPage = () => {
 
   return (
     <div id="error-page" style={{ top: "30%", position: "relative" }}>
-      <div>
-        <Result
-          status="404"
-          subTitle="Whoops, that page is gone. "
-          extra={[
-            <Button key="back" type="primary" onClick={() => navigate("/")}>
-              Back to Home
-            </Button>,
-          ]}
-        />
-      </div>
+      <Result
+        status="404"
+        subTitle="Whoops, that page is gone. "
+        extra={[
+          <Button key="back" type="primary" onClick={() => navigate("/")}>
+            Back to Home
+          </Button>,
+        ]}
+      />
     </div>
   );
 };

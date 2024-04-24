@@ -1,6 +1,4 @@
-const extractProtocolAndHostname = (url) => {
-  const urlObj = new URL(url);
-  return `${urlObj.protocol}//${urlObj.hostname}`;
+export const getBaseUrl = (fullUrl) => {
+  const parsedUrl = new URL(fullUrl);
+  return `${parsedUrl.protocol}//${parsedUrl.hostname}`;
 };
-
-export { extractProtocolAndHostname };

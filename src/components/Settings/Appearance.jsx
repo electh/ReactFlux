@@ -16,28 +16,14 @@ import "./Appearance.css";
 
 const Appearance = () => {
   const { updateConfig } = useConfig();
-  const config = useAtomValue(configAtom);
-  const { articleWidth, fontSize, layout, showFeedIcon, themeColor } = config;
+  const { articleWidth, fontSize, layout, showFeedIcon, themeColor } =
+    useAtomValue(configAtom);
 
-  const handleThemeColorChange = (color) => {
-    updateConfig({ themeColor: color });
-    applyColor(color);
-  };
-
-  const handleLayoutChange = (isCompact) => {
-    updateConfig({ layout: isCompact ? "small" : "large" });
-  };
-
-  const handleShowFeedIconChange = (shouldShow) => {
-    updateConfig({ showFeedIcon: shouldShow });
-  };
-
-  const handleFontSizeChange = (size) => {
-    updateConfig({ fontSize: size });
-  };
-
-  const handleArticleWidthChange = (width) => {
-    updateConfig({ articleWidth: width });
+  const handleConfigChange = (configChanges) => {
+    updateConfig(configChanges);
+    if (configChanges.themeColor) {
+      applyColor(configChanges.themeColor);
+    }
   };
 
   return (
@@ -70,10 +56,10 @@ const Appearance = () => {
                       ? `1px solid ${getColorValue(colorName)}`
                       : "none",
                 }}
-                onClick={() => handleThemeColorChange(colorName)}
+                onClick={() => handleConfigChange({ themeColor: colorName })}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
-                    handleThemeColorChange(colorName);
+                    handleConfigChange({ themeColor: colorName });
                   }
                 }}
               />
@@ -95,7 +81,9 @@ const Appearance = () => {
         <div>
           <Switch
             checked={layout === "small"}
-            onChange={(value) => handleLayoutChange(value)}
+            onChange={(value) =>
+              handleConfigChange({ layout: value ? "small" : "large" })
+            }
           />
         </div>
       </div>
@@ -112,7 +100,7 @@ const Appearance = () => {
         <div>
           <Switch
             checked={showFeedIcon}
-            onChange={(value) => handleShowFeedIconChange(value)}
+            onChange={(value) => handleConfigChange({ showFeedIcon: value })}
           />
         </div>
       </div>
@@ -137,7 +125,7 @@ const Appearance = () => {
               step={0.05}
               style={{ width: 200 }}
               value={fontSize}
-              onChange={(value) => handleFontSizeChange(value)}
+              onChange={(value) => handleConfigChange({ fontSize: value })}
             />
             <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
           </Space>
@@ -164,7 +152,7 @@ const Appearance = () => {
               step={10}
               style={{ width: 200 }}
               value={articleWidth}
-              onChange={(value) => handleArticleWidthChange(value)}
+              onChange={(value) => handleConfigChange({ articleWidth: value })}
             />
             <Typography.Text>90%</Typography.Text>
           </Space>

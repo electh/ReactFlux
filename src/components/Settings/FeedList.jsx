@@ -34,11 +34,8 @@ import {
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./FeedList.css";
 
-const sortFeedsByErrorCount = (feeds) => {
-  return feeds
-    .slice()
-    .sort((a, b) => b.parsing_error_count - a.parsing_error_count);
-};
+const sortFeedsByErrorCount = (feeds) =>
+  feeds.slice().sort((a, b) => b.parsing_error_count - a.parsing_error_count);
 
 const FeedList = () => {
   const [feedModalVisible, setFeedModalVisible] = useState(false);
@@ -79,70 +76,46 @@ const FeedList = () => {
     });
   };
 
-  const handleRefreshFeed = async (feed) => {
+  const handleRefresh = async (refresh, updateFeeds) => {
     try {
-      const response = await refreshFeed(feed.key);
-      if (response.status === 204) {
-        Message.success("Refreshed");
-        setFeeds((feeds) =>
-          feeds.map((f) =>
-            f.id === feed.key
-              ? { ...f, parsing_error_count: 0, checked_at: getUTCDate() }
-              : f,
-          ),
-        );
+      const response = await refresh();
+      const isSuccessful = response.status === 204;
+      const message = isSuccessful ? "Refreshed" : "Failed to refresh";
+
+      if (isSuccessful) {
+        Message.success(message);
       } else {
-        Message.error("Failed to refresh");
-        setFeeds((feeds) =>
-          feeds.map((f) =>
-            f.id === feed.key
-              ? { ...f, parsing_error_count: f.parsing_error_count + 1 }
-              : f,
-          ),
-        );
+        Message.error(message);
       }
+
+      setFeeds((feeds) => feeds.map((f) => updateFeeds(f, isSuccessful)));
     } catch (error) {
       Message.error("Failed to refresh");
-      setFeeds((feeds) =>
-        feeds.map((f) =>
-          f.id === feed.key
-            ? {
-                ...f,
-                parsing_error_count: f.parsing_error_count + 1,
-                checked_at: getUTCDate(),
-              }
-            : f,
-        ),
-      );
+      setFeeds((feeds) => feeds.map((f) => updateFeeds(f, false)));
     }
   };
 
-  const handleRefreshAllFeeds = async () => {
-    try {
-      const response = await refreshAllFeed();
-      if (response.status === 204) {
-        Message.success("Refreshed");
-        setFeeds((feeds) =>
-          feeds.map((f) => ({ ...f, parsing_error_count: 0 })),
-        );
-      } else {
-        Message.error("Failed to refresh");
-        setFeeds((feeds) =>
-          feeds.map((f) => ({
+  const handleRefreshFeed = async (feed) => {
+    const updateFeeds = (f, isSuccessful) =>
+      f.id === feed.key
+        ? {
             ...f,
-            parsing_error_count: f.parsing_error_count + 1,
-          })),
-        );
-      }
-    } catch (error) {
-      Message.error("Failed to refresh");
-      setFeeds((feeds) =>
-        feeds.map((f) => ({
-          ...f,
-          parsing_error_count: f.parsing_error_count + 1,
-        })),
-      );
-    }
+            parsing_error_count: isSuccessful ? 0 : f.parsing_error_count + 1,
+            checked_at: getUTCDate(),
+          }
+        : f;
+
+    await handleRefresh(refreshFeed.bind(null, feed.key), updateFeeds);
+  };
+
+  const handleRefreshAllFeeds = async () => {
+    const updateFeeds = (f, isSuccessful) => ({
+      ...f,
+      parsing_error_count: isSuccessful ? 0 : f.parsing_error_count + 1,
+      checked_at: getUTCDate(),
+    });
+
+    await handleRefresh(refreshAllFeed, updateFeeds);
   };
 
   const removeFeed = async (feed) => {
@@ -243,12 +216,10 @@ const FeedList = () => {
             <IconRefresh />
           </button>
           <Popconfirm
-            position="left"
             focusLock
+            position="left"
             title="Unfollow？"
-            onOk={async () => {
-              await removeFeed(record);
-            }}
+            onOk={() => removeFeed(record)}
           >
             <span className="list-item-action">
               <IconDelete />

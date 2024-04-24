@@ -11,7 +11,6 @@ import {
 import { scrollToElement } from "../utils/scroll";
 import { useActiveContent } from "./useActiveContent";
 import useLoadMore from "./useLoadMore";
-import { useScreenWidth } from "./useScreenWidth";
 
 const useKeyHandlers = (info, handleEntryClick, getEntries) => {
   const filteredEntries = useAtomValue(filteredEntriesAtom);
@@ -25,21 +24,6 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [checkNext, setCheckNext] = useState(false);
-
-  const { isMobileView } = useScreenWidth();
-
-  useEffect(() => {
-    const entryList = document.querySelector(".entry-list");
-    if (!entryList || !isMobileView) {
-      return;
-    }
-
-    if (activeContent) {
-      entryList.style.visibility = "hidden";
-    } else {
-      entryList.style.visibility = "visible";
-    }
-  }, [activeContent, isMobileView]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {

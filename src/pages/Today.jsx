@@ -3,20 +3,22 @@ import Content from "../components/Content/Content";
 
 const Today = () => {
   const markTodayAsRead = async () => {
-    const response = await getTodayEntries(0, "unread");
-    const unreadEntryIds = response.data.entries.map((entry) => entry.id);
+    const initialResponse = await getTodayEntries(0, "unread");
+    let unreadEntryIds = initialResponse.data.entries.map((entry) => entry.id);
 
-    if (response.data.total > unreadEntryIds.length) {
-      const remaining = response.data.total - unreadEntryIds.length;
-      const batchSize = Math.ceil(remaining / 100) * 100;
-      const additionalResponse = await getTodayEntries(
+    const totalUnread = initialResponse.data.total;
+    if (totalUnread > unreadEntryIds.length) {
+      const remainingUnread = totalUnread - unreadEntryIds.length;
+      const additionalEntries = await getTodayEntries(
         unreadEntryIds.length,
         "unread",
-        batchSize,
+        Math.ceil(remainingUnread / 100) * 100,
       );
-      unreadEntryIds.push(
-        ...additionalResponse.data.entries.map((entry) => entry.id),
-      );
+
+      unreadEntryIds = [
+        ...unreadEntryIds,
+        ...additionalEntries.data.entries.map((entry) => entry.id),
+      ];
     }
     return updateEntriesStatus(unreadEntryIds, "read");
   };

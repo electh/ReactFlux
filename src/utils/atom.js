@@ -1,27 +1,24 @@
 import { atom } from "jotai";
 
-export const atomWithLocalStorage = (key, initialValue) => {
-  const getInitialValue = () => {
+export const atomWithLocalStorage = (key, defaultValue) => {
+  const getStoredValue = () => {
     const item = localStorage.getItem(key);
-    if (item !== null) {
-      return JSON.parse(item);
-    }
-    return initialValue;
+    return item !== null ? JSON.parse(item) : defaultValue;
   };
-  const baseAtom = atom(getInitialValue());
+  const baseAtom = atom(getStoredValue());
 
   return atom(
     (get) => get(baseAtom),
     (get, set, update) => {
-      const nextValue =
+      const newValue =
         typeof update === "function" ? update(get(baseAtom)) : update;
-      set(baseAtom, nextValue);
-      localStorage.setItem(key, JSON.stringify(nextValue));
+      set(baseAtom, newValue);
+      localStorage.setItem(key, JSON.stringify(newValue));
     },
   );
 };
 
-export const atomWithRefreshAndDefault = (refreshAtom, getDefault) => {
+export const atomWithRefreshAndDefault = (refreshAtom, getDefaultValue) => {
   const stateAtom = atom({ refresh: null, value: null });
 
   return atom(
@@ -32,7 +29,7 @@ export const atomWithRefreshAndDefault = (refreshAtom, getDefault) => {
       if (value !== null && refresh === currentRefresh) {
         return value;
       }
-      return getDefault(get);
+      return getDefaultValue(get);
     },
     (get, set, update) => {
       let newValue;
@@ -41,7 +38,7 @@ export const atomWithRefreshAndDefault = (refreshAtom, getDefault) => {
       const isCurrent = value !== null && refresh === currentRefresh;
 
       if (typeof update === "function") {
-        newValue = update(isCurrent ? value : getDefault(get));
+        newValue = update(isCurrent ? value : getDefaultValue(get));
       } else {
         newValue = update;
       }

@@ -43,8 +43,7 @@ export const getAllEntries = async (offset = 0, status = null) => {
     status,
   };
 
-  const url = buildEntriesUrl(baseParams);
-  return apiClient.get(url);
+  return apiClient.get(buildEntriesUrl(baseParams));
 };
 
 export const getTodayEntries = async (
@@ -64,8 +63,7 @@ export const getTodayEntries = async (
   };
   const extraParams = { published_after: timestamp };
 
-  const url = buildEntriesUrl(baseParams, extraParams);
-  return apiClient.get(url);
+  return apiClient.get(buildEntriesUrl(baseParams, extraParams));
 };
 
 export const getStarredEntries = async (offset = 0, status = null) => {
@@ -79,8 +77,7 @@ export const getStarredEntries = async (offset = 0, status = null) => {
   };
   const extraParams = { starred: "true" };
 
-  const url = buildEntriesUrl(baseParams, extraParams);
-  return apiClient.get(url);
+  return apiClient.get(buildEntriesUrl(baseParams, extraParams));
 };
 
 export const getHistoryEntries = async (offset = 0) => {
@@ -93,6 +90,5 @@ export const getHistoryEntries = async (offset = 0) => {
     status: "read",
   };
 
-  const url = buildEntriesUrl(baseParams);
-  return apiClient.get(url);
+  return apiClient.get(buildEntriesUrl(baseParams));
 };

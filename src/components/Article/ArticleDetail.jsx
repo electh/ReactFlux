@@ -12,31 +12,30 @@ import { configAtom } from "../../atoms/configAtom";
 import { isArticleFocusedAtom } from "../../atoms/contentAtom";
 import { useActiveContent } from "../../hooks/useActiveContent";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
-import { extractAllImageSrc } from "../../utils/images";
+import { extractImageSources } from "../../utils/images";
 import ActionButtons from "./ActionButtons";
 import "./ArticleDetail.css";
 
 const CustomLink = ({ url, text }) => {
-  const [hover, setHover] = useState(false);
-  const handleMouseEnter = () => setHover(true);
-  const handleMouseLeave = () => setHover(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const toggleHover = () => setIsHovering(!isHovering);
 
   return (
     <Link
       to={url}
       style={{
         color: "inherit",
-        textDecoration: hover ? "underline" : "none",
+        textDecoration: isHovering ? "underline" : "none",
       }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={toggleHover}
+      onMouseLeave={toggleHover}
     >
       {text}
     </Link>
   );
 };
 
-const ImageWithButton = ({ node, index, togglePhotoSlider }) => {
+const ImageOverlayButton = ({ node, index, togglePhotoSlider }) => {
   const [isHovering, setIsHovering] = useState(false);
   const { isMobileView } = useScreenWidth();
 
@@ -73,7 +72,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
     if (node.type === "tag" && node.name === "img") {
       const index = imageSources.findIndex((src) => src === node.attribs.src);
       return (
-        <ImageWithButton
+        <ImageOverlayButton
           node={node}
           index={index}
           togglePhotoSlider={togglePhotoSlider}
@@ -113,7 +112,7 @@ const ArticleDetail = forwardRef(
       );
     }
 
-    const imageSources = extractAllImageSrc(activeContent.content);
+    const imageSources = extractImageSources(activeContent.content);
     const htmlParserOptions = getHtmlParserOptions(
       imageSources,
       togglePhotoSlider,

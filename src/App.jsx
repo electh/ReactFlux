@@ -22,15 +22,14 @@ const App = () => {
     mediaQuery.addEventListener("change", handleDarkModeChange);
 
     // 在组件卸载时清除监听器
-    return () => {
-      mediaQuery.removeEventListener("change", handleDarkModeChange);
-    };
+    return () => mediaQuery.removeEventListener("change", handleDarkModeChange);
   }, []);
 
   useEffect(() => {
     const applyTheme = (isDarkMode) => {
-      document.body.setAttribute("arco-theme", isDarkMode ? "dark" : "light");
-      document.body.style.colorScheme = isDarkMode ? "dark" : "light";
+      const themeValue = isDarkMode ? "dark" : "light";
+      document.body.setAttribute("arco-theme", themeValue);
+      document.body.style.colorScheme = themeValue;
     };
 
     if (theme === "system") {

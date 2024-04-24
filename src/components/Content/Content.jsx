@@ -207,7 +207,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (isAppDataReady) {
+    if (!isAppDataReady) {
       try {
         getArticleList();
         setIsFirstRenderCompleted(true);
@@ -244,7 +244,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         />
       </div>
       <CSSTransition
-        in={activeContent != null}
+        in={activeContent !== null}
         timeout={200}
         nodeRef={entryDetailRef}
         classNames="fade"

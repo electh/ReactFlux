@@ -23,7 +23,7 @@ const ArticleList = forwardRef(
   ({ info, loading, getEntries, handleEntryClick, cardsRef }, ref) => {
     const currentEntries = useAtomValue(currentEntriesAtom);
     const filteredEntries = useAtomValue(filteredEntriesAtom);
-    const filteredEntriesTriggerRefresh = useSetAtom(
+    const triggerRefreshFilteredEntries = useSetAtom(
       filteredEntriesRefreshAtom,
     );
     const filterStatus = useAtomValue(filterStatusAtom);
@@ -31,13 +31,12 @@ const ArticleList = forwardRef(
     const loadMoreVisible = useAtomValue(loadMoreVisibleAtom);
 
     const { loadingMore, handleLoadMore } = useLoadMore();
-    const config = useAtomValue(configAtom);
-    const { layout } = config;
-    const mini = layout === "small";
+    const { layout } = useAtomValue(configAtom);
+    const isCompactLayout = layout === "small";
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
-      filteredEntriesTriggerRefresh((prev) => prev + 1);
+      triggerRefreshFilteredEntries((prev) => prev + 1);
     }, [currentEntries]);
 
     return (
@@ -47,16 +46,14 @@ const ArticleList = forwardRef(
           <LoadingCards loading={loading} />
           {loading ? null : (
             <div ref={cardsRef}>
-              {filteredEntries.map((entry) => {
-                return (
-                  <ArticleCard
-                    key={entry.id}
-                    entry={entry}
-                    handleEntryClick={handleEntryClick}
-                    mini={mini}
-                  />
-                );
-              })}
+              {filteredEntries.map((entry) => (
+                <ArticleCard
+                  key={entry.id}
+                  entry={entry}
+                  handleEntryClick={handleEntryClick}
+                  mini={isCompactLayout}
+                />
+              ))}
             </div>
           )}
           {!loading &&

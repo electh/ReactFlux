@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 import { atomWithRefreshAndDefault } from "../utils/atom";
-import { filterEntries } from "../utils/filter";
+import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
 import { configAtom } from "./configAtom";
 import { hiddenFeedIdsAtom } from "./dataAtom";
 
@@ -32,10 +32,7 @@ export const filterStatusAtom = atomWithDefault((get) => {
 });
 export const currentEntriesAtom = atom((get) => {
   const filterStatus = get(filterStatusAtom);
-  if (filterStatus === "all") {
-    return get(entriesAtom);
-  }
-  return get(unreadEntriesAtom);
+  return filterStatus === "all" ? get(entriesAtom) : get(unreadEntriesAtom);
 });
 export const filteredEntriesRefreshAtom = atom(0);
 // 页面显示的文章
@@ -57,13 +54,12 @@ export const filteredEntriesAtom = atomWithRefreshAndDefault(
     const { showAllFeeds } = get(configAtom);
     const hiddenFeedIds = get(hiddenFeedIdsAtom);
 
-    if (["all", "today", "category"].includes(infoFrom) && !showAllFeeds) {
-      return filteredEntries.filter(
-        (entry) => !hiddenFeedIds.includes(entry.feed.id),
-      );
-    }
-
-    return filteredEntries;
+    return filterEntriesByVisibility(
+      filteredEntries,
+      infoFrom,
+      showAllFeeds,
+      hiddenFeedIds,
+    );
   },
 );
 // 0: title | 1: content

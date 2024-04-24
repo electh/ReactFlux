@@ -81,3 +81,10 @@
 .icon-closed {
   transform: rotate(0deg);
 }
+
+.feed-icon-sidebar {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  vertical-align: -2px;
+}

@@ -32,7 +32,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   /* token or user */
   const [auth, setAuth] = useAtom(authAtom);
-  const [method, setMethod] = useState("token");
+  const [authMethod, setAuthMethod] = useState("token");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,23 +41,21 @@ const Login = () => {
     }
   }, [auth, navigate]);
 
-  const healthCheck = async () => {
+  const performHealthCheck = async () => {
     setLoading(true);
+    const { server, token, username, password } = loginForm.getFieldsValue();
     try {
       const response = await axios({
         url: "/v1/me",
         method: "get",
-        baseURL: loginForm.getFieldsValue().server,
-        headers: { "X-Auth-Token": loginForm.getFieldsValue().token },
-        auth: {
-          username: loginForm.getFieldsValue().username,
-          password: loginForm.getFieldsValue().password,
-        },
+        baseURL: server,
+        headers: { "X-Auth-Token": token },
+        auth: { username, password },
         timeout: 5000,
       });
       if (response.status === 200) {
         Message.success("Success");
-        setAuth(loginForm.getFieldsValue());
+        setAuth({ server, token, username, password });
         navigate("/");
       }
     } catch (error) {
@@ -68,7 +66,7 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
-    await healthCheck();
+    await performHealthCheck();
   };
 
   return (
@@ -133,7 +131,7 @@ const Login = () => {
                   prefix={<IconHome />}
                 />
               </Form.Item>
-              {method === "token" && (
+              {authMethod === "token" && (
                 <Form.Item
                   field="token"
                   label="API Token"
@@ -149,7 +147,7 @@ const Login = () => {
                   />
                 </Form.Item>
               )}
-              {method === "user" && (
+              {authMethod === "user" && (
                 <>
                   <Form.Item
                     field="username"
@@ -195,10 +193,12 @@ const Login = () => {
             <Button
               type="secondary"
               long={true}
-              onClick={() => setMethod(method === "token" ? "user" : "token")}
+              onClick={() =>
+                setAuthMethod(authMethod === "token" ? "user" : "token")
+              }
               style={{ marginTop: "20px" }}
             >
-              {method === "token" ? "Username and password" : "API Token"}
+              {authMethod === "token" ? "Username and password" : "API Token"}
             </Button>
           </Card>
           <div style={{ display: "flex", marginTop: "40px" }}>

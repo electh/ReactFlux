@@ -26,13 +26,16 @@ const CategoryList = () => {
   const [selectedCategory, setSelectedCategory] = useState({});
 
   const addNewCategory = async () => {
-    if (!inputAddValue) {
+    if (!inputAddValue.trim()) {
       return;
     }
 
     try {
       const { data } = await addCategory(inputAddValue);
-      setCategories((categories) => [...categories, { ...data, feedCount: 0 }]);
+      setCategories((prevCategories) => [
+        ...prevCategories,
+        { ...data, feedCount: 0 },
+      ]);
       Message.success("Category added successfully");
     } catch {
       Message.error("Failed to add category");
@@ -44,15 +47,15 @@ const CategoryList = () => {
   const editCategory = async (categoryId, newTitle, hidden) => {
     try {
       const { data } = await updateCategory(categoryId, newTitle, hidden);
-      setFeeds((feeds) =>
-        feeds.map((feed) =>
+      setFeeds((prevFeeds) =>
+        prevFeeds.map((feed) =>
           feed.category.id === categoryId
             ? { ...feed, category: { ...feed.category, title: newTitle } }
             : feed,
         ),
       );
-      setCategories((categories) =>
-        categories.map((category) =>
+      setCategories((prevCategories) =>
+        prevCategories.map((category) =>
           category.id === categoryId ? { ...category, ...data } : category,
         ),
       );
@@ -69,8 +72,8 @@ const CategoryList = () => {
     try {
       const response = await deleteCategory(categoryId);
       if (response.status === 204) {
-        setCategories((categories) =>
-          categories.filter((category) => category.id !== categoryId),
+        setCategories((prevCategories) =>
+          prevCategories.filter((category) => category.id !== categoryId),
         );
         Message.success("Category deleted successfully");
       } else {
