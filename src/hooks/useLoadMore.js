@@ -5,10 +5,7 @@ import { configAtom } from "../atoms/configAtom";
 import {
   entriesAtom,
   filterStatusAtom,
-  filterStringAtom,
-  filterTypeAtom,
-  filteredEntriesAtom,
-  infoFromAtom,
+  filteredEntriesRefreshAtom,
   loadMoreUnreadVisibleAtom,
   loadMoreVisibleAtom,
   offsetAtom,
@@ -17,26 +14,20 @@ import {
   unreadEntriesAtom,
   unreadOffsetAtom,
 } from "../atoms/contentAtom";
-import { hiddenFeedIdsAtom } from "../atoms/dataAtom";
-import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
 
 const useLoadMore = () => {
-  const { pageSize, showAllFeeds } = useAtomValue(configAtom);
-  const hiddenFeedIds = useAtomValue(hiddenFeedIdsAtom);
+  const { pageSize } = useAtomValue(configAtom);
 
   const [entries, setEntries] = useAtom(entriesAtom);
   const [offset, setOffset] = useAtom(offsetAtom);
   const [unreadEntries, setUnreadEntries] = useAtom(unreadEntriesAtom);
   const [unreadOffset, setUnreadOffset] = useAtom(unreadOffsetAtom);
   const filterStatus = useAtomValue(filterStatusAtom);
-  const filterString = useAtomValue(filterStringAtom);
-  const filterType = useAtomValue(filterTypeAtom);
-  const infoFrom = useAtomValue(infoFromAtom);
-  const setFilteredEntries = useSetAtom(filteredEntriesAtom);
   const setLoadMoreUnreadVisible = useSetAtom(loadMoreUnreadVisibleAtom);
   const setLoadMoreVisible = useSetAtom(loadMoreVisibleAtom);
   const total = useAtomValue(totalAtom);
   const unreadCount = useAtomValue(unreadCountAtom);
+  const triggerFilteredEntriesRefresh = useSetAtom(filteredEntriesRefreshAtom);
 
   /* 加载更多 loading*/
   const [loadingMore, setLoadingMore] = useState(false);
@@ -74,19 +65,6 @@ const useLoadMore = () => {
     return result;
   };
 
-  const applyFilters = (updatedEntries) => {
-    const filteredEntries = filterString
-      ? filterEntries(updatedEntries, filterType, filterStatus, filterString)
-      : updatedEntries;
-
-    return filterEntriesByVisibility(
-      filteredEntries,
-      infoFrom,
-      showAllFeeds,
-      hiddenFeedIds,
-    );
-  };
-
   const handleLoadMore = async (info, getEntries) => {
     setLoadingMore(true);
 
@@ -100,9 +78,8 @@ const useLoadMore = () => {
       if (response?.data?.entries) {
         updateOffset();
         const newEntries = response.data.entries.map(parseFirstImage);
-        const updatedEntries = updateEntries(newEntries);
-        const filteredEntries = applyFilters(updatedEntries);
-        setFilteredEntries(filteredEntries);
+        updateEntries(newEntries);
+        triggerFilteredEntriesRefresh((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Error fetching more articles:", error);
