@@ -24,7 +24,7 @@ import { useActiveContent } from "../../hooks/useActiveContent";
 import useEntryActions from "../../hooks/useEntryActions";
 import { useFetchData } from "../../hooks/useFetchData";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
-import useLoadMore from "../../hooks/useLoadMore";
+import { parseFirstImage } from "../../utils/images";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
 import "./Content.css";
@@ -58,8 +58,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleToggleStatus,
     handleEntryStatusUpdate,
   } = useEntryActions();
-
-  const { parseFirstImage } = useLoadMore(info);
 
   const [isFirstRenderCompleted, setIsFirstRenderCompleted] = useState(false);
 

@@ -14,6 +14,7 @@ import {
   unreadEntriesAtom,
   unreadOffsetAtom,
 } from "../atoms/contentAtom";
+import { parseFirstImage } from "../utils/images";
 
 const useLoadMore = () => {
   const { pageSize } = useAtomValue(configAtom);
@@ -31,13 +32,6 @@ const useLoadMore = () => {
 
   /* 加载更多 loading*/
   const [loadingMore, setLoadingMore] = useState(false);
-
-  const parseFirstImage = (entry) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(entry.content, "text/html");
-    const imgSrc = doc.querySelector("img")?.getAttribute("src");
-    return { ...entry, imgSrc };
-  };
 
   const updateOffset = () => {
     if (filterStatus === "all") {
@@ -88,7 +82,7 @@ const useLoadMore = () => {
     }
   };
 
-  return { parseFirstImage, handleLoadMore, loadingMore };
+  return { handleLoadMore, loadingMore };
 };
 
 export default useLoadMore;
