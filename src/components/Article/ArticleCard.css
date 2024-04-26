@@ -27,7 +27,7 @@
 
 .card-custom-selected-style {
   /*border: 1px solid var(--color-border-2);*/
-  background-color: var(--color-fill-3);
+  background-color: var(--color-neutral-3);
 }
 
 .cover-image {
