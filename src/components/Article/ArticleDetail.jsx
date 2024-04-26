@@ -3,7 +3,7 @@ import { IconEmpty, IconImage } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
 import { useAtomValue, useSetAtom } from "jotai";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { PhotoSlider } from "react-photo-view";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -98,6 +98,16 @@ const ArticleDetail = forwardRef(
       setSelectedIndex(index);
       setIsPhotoSliderVisible((prev) => !prev);
     };
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+      const scrollContainer = ref.current?.querySelector(".scroll-container");
+      if (scrollContainer) {
+        scrollContainer.setAttribute("tabIndex", "-1");
+        scrollContainer.focus();
+        scrollContainer.scrollTo(0, 0);
+      }
+    }, [activeContent?.id]);
 
     if (!activeContent) {
       return (

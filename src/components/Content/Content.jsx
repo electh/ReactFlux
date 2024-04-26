@@ -98,12 +98,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         handleEntryStatusUpdate(entry, "unread");
       });
     }
-
-    if (entryDetailRef.current) {
-      entryDetailRef.current.setAttribute("tabIndex", "-1");
-      entryDetailRef.current.focus();
-      entryDetailRef.current.scrollTo(0, 0);
-    }
   };
 
   const {
