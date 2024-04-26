@@ -34,7 +34,7 @@ const RenderImage = ({ entry, isThumbnail }) => {
     <div className={isThumbnail ? "thumbnail" : "cover-image"}>
       <ImageWithLazyLoading
         alt={entry.id}
-        borderRadius={isThumbnail ? "4px" : undefined}
+        borderRadius={isThumbnail ? "2px" : undefined}
         src={entry.imgSrc}
         status={entry.status}
         width={imageSize.width}
@@ -51,8 +51,11 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
   });
 
   return (
-    <div className={contentClass} style={{ width: "calc(100% - 32px)" }}>
-      <div style={{ padding: mini ? "0 8px 0 0" : "0 0 8px 0" }}>
+    <div
+      className={contentClass}
+      style={{ width: "100%", boxSizing: "border-box" }}
+    >
+      <div style={{ padding: mini ? "0 10px 0 0" : "0 0 10px 0" }}>
         <RenderImage entry={entry} isThumbnail={mini} />
       </div>
       <div className={mini ? "article-card-mini-content-text" : ""}>

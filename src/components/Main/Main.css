@@ -4,7 +4,7 @@
   transition: padding-left 0.1s linear,
   width 0.1s linear;
   grid-area: main;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .settings-modal {

@@ -2,15 +2,18 @@
 .card-custom-style {
   cursor: pointer;
   width: 100%;
+  border-radius: 2px;
+  text-align: justify;
 }
 
 .card-custom-hover-style {
-  transition-property: transform, box-shadow;
+  transition-property: transform, box-shadow, background-color;
 }
 
 .card-custom-hover-style .arco-card-body {
   padding: 10px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .card-custom-hover-style img {
@@ -23,11 +26,13 @@
 }
 
 .card-custom-selected-style {
-  border: 1px solid var(--color-border-2);
+  /*border: 1px solid var(--color-border-2);*/
+  background-color: var(--color-fill-3);
 }
 
 .cover-image {
-  border-bottom: 1px solid var(--color-border-1);
+  border-radius: 2px;
+  /*border: 1px solid var(--color-border-2);*/
   height: 160px;
   overflow: hidden;
 }
@@ -93,7 +98,6 @@
 
 .article-card-mini-content-text {
   flex: 1;
-  margin-right: 10px;
 }
 
 .title-unread {
@@ -135,7 +139,7 @@
 }
 
 .thumbnail {
-  border-radius: 4px;
+  border-radius: 2px;
   height: 100px;
   overflow: hidden;
   width: 100px;

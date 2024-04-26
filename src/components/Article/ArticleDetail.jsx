@@ -53,6 +53,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider }) => {
             position: "absolute",
             top: 30,
             right: 10,
+            color: "white",
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             opacity: isMobileView || isHovering ? 1 : 0,
             transition: "opacity 0.3s",
