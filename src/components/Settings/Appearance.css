@@ -46,7 +46,7 @@ input[name="card-radio-group"]:focus-visible + .custom-radio-card {
 }
 
 .accent-color-button {
-  border-radius: 50%;
+  border-radius: 500px;
   border: 3px solid var(--color-bg-3);
   cursor: pointer;
   height: 18px;

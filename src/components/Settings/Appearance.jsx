@@ -28,12 +28,12 @@ const Appearance = () => {
 
   return (
     <>
-      <Typography.Title heading={6} style={{ marginTop: 0 }}>
-        Theme
-      </Typography.Title>
-      <Typography.Text type="secondary">
-        Customize your UI theme
-      </Typography.Text>
+      {/*<Typography.Title heading={6} style={{ marginTop: 0 }}>*/}
+      {/*  Theme*/}
+      {/*</Typography.Title>*/}
+      {/*<Typography.Text type="secondary">*/}
+      {/*  Customize your UI theme*/}
+      {/*</Typography.Text>*/}
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
@@ -150,7 +150,7 @@ const Appearance = () => {
               min={60}
               showTicks
               step={10}
-              style={{ width: 200 }}
+              style={{ width: 160 }}
               value={articleWidth}
               onChange={(value) => handleConfigChange({ articleWidth: value })}
             />
