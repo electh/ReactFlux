@@ -104,8 +104,9 @@ const ArticleDetail = forwardRef(
       const scrollContainer = ref.current?.querySelector(".scroll-container");
       if (scrollContainer) {
         scrollContainer.setAttribute("tabIndex", "-1");
-        scrollContainer.focus();
-        scrollContainer.scrollTo(0, 0);
+        setTimeout(() => {
+          scrollContainer.focus();
+        }, 200);
       }
     }, [activeContent?.id]);
 
