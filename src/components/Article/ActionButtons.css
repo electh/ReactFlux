@@ -2,6 +2,10 @@
   padding: 8px 10px;
   z-index: 2;
   margin: 0 auto;
+  position: absolute;
+  transform: translateX(-50%);
+  left: 50%;
+  bottom: 10px;
 }
 
 .button-read-unread {
