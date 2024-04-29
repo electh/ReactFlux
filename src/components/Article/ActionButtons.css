@@ -1,7 +1,6 @@
 .action-buttons {
-  padding: 8px 10px;
+  display: flex;
   z-index: 2;
-  margin: 0 auto;
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
