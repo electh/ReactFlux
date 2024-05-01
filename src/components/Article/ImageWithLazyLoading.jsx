@@ -13,7 +13,7 @@ const ImageWithLazyLoading = ({
   width,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const { ref, inView } = useInView();
+  const { ref, inView, entry } = useInView();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -21,10 +21,7 @@ const ImageWithLazyLoading = ({
       const image = new Image();
       image.onload = () => setIsLoaded(true);
       image.onerror = () => {
-        const imageContainer = ref.current?.parentElement;
-        if (imageContainer) {
-          imageContainer.style.display = "none";
-        }
+        entry.target.style.display = "none";
       };
       image.src = src;
     }

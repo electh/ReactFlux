@@ -28,12 +28,6 @@ const Appearance = () => {
 
   return (
     <>
-      {/*<Typography.Title heading={6} style={{ marginTop: 0 }}>*/}
-      {/*  Theme*/}
-      {/*</Typography.Title>*/}
-      {/*<Typography.Text type="secondary">*/}
-      {/*  Customize your UI theme*/}
-      {/*</Typography.Text>*/}
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
