@@ -1,0 +1,101 @@
+body {
+  --border-radius-small: 8px !important;
+  --border-radius-medium: 8px !important;
+}
+
+.arco-input-group-addbefore .arco-select .arco-select-view {
+  border-radius: var(--border-radius-small) !important;
+}
+
+.card-custom-hover-style {
+  transition-property: box-shadow !important;
+}
+
+.card-custom-hover-style .arco-card-body {
+  padding: 10px !important;
+}
+
+.card-custom-hover-style .card-cover {
+  transition: scale 0.15s ease-in-out; /* 添加过渡效果 */
+}
+
+.article-card, .arco-card-bordered {
+  border: none !important;
+  overflow: hidden !important;
+  border-radius: var(--border-radius-small) !important;
+  box-shadow:
+    0 0 5px 0 rgba(0, 0, 0, 0.02),
+    0 2px 10px 0 rgba(0, 0, 0, 0.06),
+    0 0 1px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+body[arco-theme="dark"] .article-card, body[arco-theme="dark"] .arco-card-bordered {
+  border: none !important;
+  overflow: hidden !important;
+  border-radius: var(--border-radius-small) !important;
+  box-shadow:
+    0 0 5px 0 rgba(0, 0, 0, 0.05),
+    0 2px 10px 0 rgba(0, 0, 0, 0.2),
+    inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15) !important;
+}
+
+@media screen and (min-width: 769px) {
+  .app {
+    background-color: var(--color-neutral-2) !important;
+  }
+
+  .header {
+    background-color: var(--color-neutral-2) !important;
+    border: none !important;
+  }
+
+  .main {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    margin: 0 8px 8px 0 !important;
+    background-color: var(--color-bg-1) !important;
+    border: 1px solid var(--color-border-2) !important;
+  }
+
+  .entry-list {
+    background-color: var(--color-bg-1) !important;
+  }
+
+  .entry-detail-container {
+    background-color: var(--color-bg-1) !important;
+  }
+
+  .side-drawer .arco-drawer-inner {
+    background-color: var(--color-neutral-2) !important;
+  }
+}
+
+@media screen and (min-width: 993px) {
+  .arco-layout-sider {
+    border: none !important;
+  }
+
+  .arco-layout-sider-light {
+    box-shadow: none !important;
+    background-color: var(--color-neutral-2) !important;
+  }
+
+  .arco-layout-sider .arco-menu-light,
+  .arco-layout-sider .arco-menu-light .arco-menu-item,
+  .arco-layout-sider .arco-menu-light .arco-menu-group-title,
+  .arco-layout-sider .arco-menu-light .arco-menu-pop-header,
+  .arco-layout-sider .arco-menu-light .arco-menu-inline-header {
+    background-color: var(--color-neutral-2) !important;
+  }
+
+  .arco-layout-sider .arco-menu-light .arco-menu-item.arco-menu-selected {
+    background-color: var(--color-neutral-3) !important;
+  }
+
+  .arco-layout-sider .arco-menu-light .arco-menu-item:hover,
+  .arco-layout-sider .arco-menu-light .arco-menu-group-title:hover,
+  .arco-layout-sider .arco-menu-light .arco-menu-pop-header:hover,
+  .arco-layout-sider .arco-menu-light .arco-menu-inline-header:hover {
+    background-color: var(--color-neutral-3) !important;
+  }
+}

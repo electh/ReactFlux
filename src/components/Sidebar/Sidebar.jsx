@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Divider,
   Layout,
   Menu,
   Skeleton,
@@ -168,7 +167,6 @@ const Sidebar = () => {
             ReactFlux
           </Typography.Title>
         </div>
-        <Divider className="divider" />
         <Typography.Title className="section-title" heading={6}>
           Articles
         </Typography.Title>

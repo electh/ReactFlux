@@ -6,6 +6,7 @@ import { RouterProvider } from "react-router-dom";
 
 import "./index.css";
 import router from "./routes";
+import "./theme.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <ConfigProvider locale={enUS}>
