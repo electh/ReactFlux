@@ -13,8 +13,8 @@ Reactflux 是 [Miniflux](https://github.com/miniflux/miniflux) 的第三方 Web 
 
 ### 截图
 
-![large](images/large.png)
-![medium](images/medium.png)
+![login](images/login.png)
+![layout](images/layout.png)
 ![settings](images/settings.png)
 
 ### 演示
@@ -55,7 +55,7 @@ docker run -p 2000:2000 electh/reactflux
 main 分支提供了最多的功能，新功能一般会最先出现在本分支上，可能适合绝大多数的桌面设备用户。
 
 next 分支最初是为了提高对移动设备的兼容性而创建的，因此为移动设备提供了更好的体验和性能，当然也支持桌面设备的显示，
-但目前缺乏键盘快捷键、订阅源管理等功能，对于 main 分支的后续功能会进行选择性迁移。
+但目前缺乏键盘快捷键、等功能，对于 main 分支的后续功能会进行选择性迁移。
 
 如果您想快速体验 next 分支，这里有一个 [实例](https://arcoflux.pages.dev/login)
 
@@ -66,19 +66,23 @@ next 分支最初是为了提高对移动设备的兼容性而创建的，因此
 <table>
 <tr>
     <td>
-        <a href="https://github.com/electh">
-            <img src="https://avatars.githubusercontent.com/u/83588235?v=4" width="90;" alt="electh" style="border-radius: 4px"/>
-            <br />
-            <sub><b>electh</b></sub>
-        </a>
-    </td>
-    <td>
         <a href="https://github.com/NekoAria">
             <img src="https://avatars.githubusercontent.com/u/23137034?v=4" width="90;" alt="NekoAria" style="border-radius: 4px"/>
             <br />
             <sub><b>NekoAria</b></sub>
+            <br />
+            <sub><b>主要贡献者</b></sub>
         </a>
     </td>
+    <td>
+            <a href="https://github.com/electh">
+                <img src="https://avatars.githubusercontent.com/u/83588235?v=4" width="90;" alt="electh" style="border-radius: 4px"/>
+                <br />
+                <sub><b>electh</b></sub>
+                <br />
+                <sub><b>项目发起人</b></sub>
+            </a>
+        </td>
 </tr>
 </table>
 
