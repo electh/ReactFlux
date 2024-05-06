@@ -8,6 +8,9 @@ export const colors = {
   Green: { light: "#00B42A", dark: "#27C346" },
   Blue: { light: "#165DFF", dark: "#3C7EFF" },
   Purple: { light: "#722ED1", dark: "#8E51DA" },
+  Gold: { light: "#F7BA1E", dark: "#F9CC44" },
+  Cyan: { light: "#14C9C9", dark: "#3FD4CF" },
+  Magenta: { light: "#F5319D", dark: "#F756A9" },
 };
 
 export const getColorValue = (colorName) => {

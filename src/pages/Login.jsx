@@ -1,6 +1,5 @@
 import {
   Button,
-  Card,
   Divider,
   Form,
   Input,
@@ -9,15 +8,11 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import useForm from "@arco-design/web-react/es/Form/useForm";
-import {
-  IconBook,
-  IconHome,
-  IconLock,
-  IconUser,
-} from "@arco-design/web-react/icon";
+import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import background from "../imgs/background.jpg";
 
 import { useAtom } from "jotai";
 import { authAtom } from "../atoms/authAtom";
@@ -70,56 +65,57 @@ const Login = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "var(--color-bg-1)", height: "100%" }}>
+    <div className="page-layout" style={{ height: "100%", display: "flex" }}>
       <div
+        className="form-panel"
         style={{
-          backgroundColor: "var(--color-fill-1)",
+          backgroundColor: "var(--color-bg-1)",
+          width: "50%",
           height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          overflowY: "auto",
+          zIndex: 2,
         }}
       >
         <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            overflowY: "auto",
-          }}
+          className="login-form"
+          style={{ width: "340px", padding: "10% 0" }}
         >
-          <IconBook
-            style={{
-              fontSize: 48,
-              color: "rgb(var(--primary-6))",
-              marginTop: "20px",
-            }}
-          />
           <Typography.Title heading={3}>
             Connect to your server
           </Typography.Title>
-          <Card
-            style={{
-              boxShadow: "0 4px 10px rgb(var(--color-bg-3))",
-              padding: "20px",
-              width: "380px",
-              marginTop: "20px",
+          <Form
+            autoComplete="off"
+            form={loginForm}
+            layout="vertical"
+            onSubmit={async () => {
+              if (validateAndFormatFormFields(loginForm)) {
+                await handleLogin();
+              } else {
+                Message.error("Please fill in all required fields");
+              }
             }}
           >
-            <Form
-              autoComplete="off"
-              form={loginForm}
-              layout="vertical"
-              onSubmit={async () => {
-                if (validateAndFormatFormFields(loginForm)) {
-                  await handleLogin();
-                } else {
-                  Message.error("Please fill in all required fields");
-                }
+            <Form.Item
+              field="server"
+              label="Server address"
+              rules={[{ required: true }]}
+              onKeyDown={(event) => {
+                handleEnterKeyToSubmit(event, loginForm);
               }}
             >
+              <Input
+                disabled={loading}
+                placeholder="Please input server address"
+                prefix={<IconHome />}
+              />
+            </Form.Item>
+            {authMethod === "token" && (
               <Form.Item
-                field="server"
-                label="Server address"
+                field="token"
+                label="API Token"
                 rules={[{ required: true }]}
                 onKeyDown={(event) => {
                   handleEnterKeyToSubmit(event, loginForm);
@@ -127,14 +123,16 @@ const Login = () => {
               >
                 <Input
                   disabled={loading}
-                  placeholder="Please input server address"
-                  prefix={<IconHome />}
+                  placeholder="Please input api token"
+                  prefix={<IconLock />}
                 />
               </Form.Item>
-              {authMethod === "token" && (
+            )}
+            {authMethod === "user" && (
+              <>
                 <Form.Item
-                  field="token"
-                  label="API Token"
+                  field="username"
+                  label="Username"
                   rules={[{ required: true }]}
                   onKeyDown={(event) => {
                     handleEnterKeyToSubmit(event, loginForm);
@@ -142,67 +140,49 @@ const Login = () => {
                 >
                   <Input
                     disabled={loading}
-                    placeholder="Please input api token"
-                    prefix={<IconLock />}
+                    prefix={<IconUser />}
+                    placeholder="Please input username"
                   />
                 </Form.Item>
-              )}
-              {authMethod === "user" && (
-                <>
-                  <Form.Item
-                    field="username"
-                    label="Username"
-                    rules={[{ required: true }]}
-                    onKeyDown={(event) => {
-                      handleEnterKeyToSubmit(event, loginForm);
-                    }}
-                  >
-                    <Input
-                      disabled={loading}
-                      prefix={<IconUser />}
-                      placeholder="Please input username"
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    field="password"
-                    label="Password"
-                    rules={[{ required: true }]}
-                    onKeyDown={(event) => {
-                      handleEnterKeyToSubmit(event, loginForm);
-                    }}
-                  >
-                    <Input.Password
-                      disabled={loading}
-                      prefix={<IconLock />}
-                      placeholder="Please input password"
-                    />
-                  </Form.Item>
-                </>
-              )}
-            </Form>
-            <Button
-              loading={loading}
-              type="primary"
-              long={true}
-              onClick={handleLogin}
-              style={{ marginTop: "20px" }}
-            >
-              Connect
-            </Button>
-            <Divider orientation="center">Or connect with</Divider>
-            <Button
-              type="secondary"
-              long={true}
-              onClick={() =>
-                setAuthMethod(authMethod === "token" ? "user" : "token")
-              }
-              style={{ marginTop: "20px" }}
-            >
-              {authMethod === "token" ? "Username and password" : "API Token"}
-            </Button>
-          </Card>
+                <Form.Item
+                  field="password"
+                  label="Password"
+                  rules={[{ required: true }]}
+                  onKeyDown={(event) => {
+                    handleEnterKeyToSubmit(event, loginForm);
+                  }}
+                >
+                  <Input.Password
+                    disabled={loading}
+                    prefix={<IconLock />}
+                    placeholder="Please input password"
+                  />
+                </Form.Item>
+              </>
+            )}
+          </Form>
+          <Button
+            loading={loading}
+            type="primary"
+            long={true}
+            onClick={handleLogin}
+            style={{ marginTop: "20px" }}
+          >
+            Connect
+          </Button>
+          <Divider orientation="center">Or connect with</Divider>
+          <Button
+            type="secondary"
+            long={true}
+            onClick={() =>
+              setAuthMethod(authMethod === "token" ? "user" : "token")
+            }
+            style={{ marginTop: "20px" }}
+          >
+            {authMethod === "token" ? "Username and password" : "API Token"}
+          </Button>
           <div style={{ display: "flex", marginTop: "40px" }}>
-            <Typography.Text disabled>Need more information?</Typography.Text>
+            <Typography.Text disabled>Need more info?</Typography.Text>
             <Link
               href={"https://miniflux.app/docs/api.html#authentication"}
               style={{ fontWeight: "500" }}
@@ -212,6 +192,17 @@ const Login = () => {
           </div>
         </div>
       </div>
+      <div
+        className="background"
+        style={{
+          backgroundImage: `url(${background})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          width: "50%",
+          height: "100%",
+        }}
+      />
     </div>
   );
 };

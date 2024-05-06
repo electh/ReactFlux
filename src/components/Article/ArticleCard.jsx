@@ -184,13 +184,17 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
         <div className="swipe-actions">
           <div className="swipe-action left">
             {isStarred ? (
-              <IconStarFill style={{ color: "#ffcd00" }} />
+              <IconStarFill style={{ color: "#ffcd00", fontSize: "24px" }} />
             ) : (
-              <IconStar />
+              <IconStar style={{ color: "#ffffff", fontSize: "24px" }} />
             )}
           </div>
           <div className="swipe-action right">
-            {isUnread ? <IconMinusCircle /> : <IconRecord />}
+            {isUnread ? (
+              <IconMinusCircle style={{ color: "#ffffff", fontSize: "24px" }} />
+            ) : (
+              <IconRecord style={{ color: "#ffffff", fontSize: "24px" }} />
+            )}
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Button, Divider, Tag, Typography } from "@arco-design/web-react";
-import { IconEmpty, IconImage } from "@arco-design/web-react/icon";
+import { IconEmpty, IconFullscreen } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -48,7 +48,8 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider }) => {
       >
         <img {...node.attribs} alt={node.attribs.alt} />
         <Button
-          icon={<IconImage />}
+          icon={<IconFullscreen />}
+          shape="circle"
           style={{
             position: "absolute",
             top: 30,
@@ -145,7 +146,7 @@ const ArticleDetail = forwardRef(
       >
         <div className="scroll-container">
           <div className="article-header" style={{ width: `${articleWidth}%` }}>
-            <Typography.Title className="article-title" heading={5}>
+            <Typography.Title className="article-title" heading={3}>
               <a
                 href={activeContent.url}
                 target="_blank"

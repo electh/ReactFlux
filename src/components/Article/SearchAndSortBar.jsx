@@ -48,7 +48,6 @@ const SearchAndSortBar = () => {
       />
       <Tooltip
         mini
-        position="left"
         content={orderDirection === "desc" ? "Newest first" : "Oldest first"}
       >
         <Button

@@ -40,11 +40,15 @@ const Appearance = () => {
         <div style={{ display: "flex" }}>
           {Object.keys(colors).map((colorName) => (
             <Tooltip content={colorName} key={colorName}>
-              <button
-                type="button"
-                className="accent-color-button"
+              <div
                 style={{
+                  width: "18px",
+                  height: "18px",
+                  borderRadius: "50%",
+                  margin: "2px",
                   backgroundColor: getColorValue(colorName),
+                  cursor: "pointer",
+                  border: "3px solid var(--color-bg-3)",
                   outline:
                     colorName === themeColor
                       ? `1px solid ${getColorValue(colorName)}`

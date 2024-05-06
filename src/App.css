@@ -79,6 +79,23 @@
   .entry-panel {
     padding: 10px !important;
   }
+
+  .page-layout {
+    display: block !important;
+  }
+
+  .form-panel {
+    width: 100% !important;
+    position: absolute !important;
+    z-index: 2 !important;
+  }
+
+  .background {
+    width: 100% !important;
+    position: absolute !important;
+    top:0 !important;
+    left:0!important;
+  }
 }
 
 ::-webkit-scrollbar {

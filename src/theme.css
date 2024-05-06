@@ -8,7 +8,7 @@ body {
 }
 
 .card-custom-hover-style {
-  transition-property: box-shadow !important;
+  transition-property: box-shadow, background-color !important;
 }
 
 .card-custom-hover-style .arco-card-body {
@@ -30,7 +30,7 @@ body {
 }
 
 body[arco-theme="dark"] .article-card, body[arco-theme="dark"] .arco-card-bordered {
-  border: none !important;
+  border: 1px solid var(--color-border-1) !important;
   overflow: hidden !important;
   border-radius: var(--border-radius-small) !important;
   box-shadow:
