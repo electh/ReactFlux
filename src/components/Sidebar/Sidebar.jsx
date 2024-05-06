@@ -167,7 +167,11 @@ const Sidebar = () => {
             ReactFlux
           </Typography.Title>
         </div>
-        <Typography.Title className="section-title" heading={6}>
+        <Typography.Title
+          className="section-title"
+          heading={6}
+          style={{ paddingLeft: "12px" }}
+        >
           Articles
         </Typography.Title>
         <Skeleton
@@ -203,7 +207,11 @@ const Sidebar = () => {
             />
           </div>
         )}
-        <Typography.Title className="section-title" heading={6}>
+        <Typography.Title
+          className="section-title"
+          heading={6}
+          style={{ paddingLeft: "12px" }}
+        >
           Feeds
         </Typography.Title>
         <Skeleton
