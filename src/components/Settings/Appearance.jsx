@@ -40,10 +40,11 @@ const Appearance = () => {
         <div style={{ display: "flex" }}>
           {Object.keys(colors).map((colorName) => (
             <Tooltip content={colorName} key={colorName}>
-              <div
+              <button
+                type="button"
                 style={{
-                  width: "18px",
-                  height: "18px",
+                  width: "24px",
+                  height: "24px",
                   borderRadius: "50%",
                   margin: "2px",
                   backgroundColor: getColorValue(colorName),
@@ -60,6 +61,7 @@ const Appearance = () => {
                     handleConfigChange({ themeColor: colorName });
                   }
                 }}
+                aria-label={`Change theme color to ${colorName}`}
               />
             </Tooltip>
           ))}

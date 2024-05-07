@@ -10,11 +10,11 @@ import {
 import useForm from "@arco-design/web-react/es/Form/useForm";
 import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import background from "../imgs/background.jpg";
 
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { authAtom } from "../atoms/authAtom";
 import { isValidAuth } from "../utils/auth";
 import {
@@ -25,16 +25,10 @@ import {
 const Login = () => {
   const [loginForm] = useForm();
   const [loading, setLoading] = useState(false);
-  /* token or user */
-  const [auth, setAuth] = useAtom(authAtom);
   const [authMethod, setAuthMethod] = useState("token");
+  /* token or user */
+  const setAuth = useSetAtom(authAtom);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isValidAuth(auth)) {
-      navigate("/");
-    }
-  }, [auth, navigate]);
 
   const performHealthCheck = async () => {
     setLoading(true);
@@ -61,6 +55,11 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
+    const auth = loginForm.getFieldsValue();
+    if (!isValidAuth(auth)) {
+      Message.error("Please check your server address and credentials");
+      return;
+    }
     await performHealthCheck();
   };
 
