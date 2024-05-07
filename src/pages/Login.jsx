@@ -165,7 +165,7 @@ const Login = () => {
             loading={loading}
             type="primary"
             long={true}
-            onClick={handleLogin}
+            onClick={() => loginForm.submit()}
             style={{ marginTop: "20px" }}
           >
             Connect
