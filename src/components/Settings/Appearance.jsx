@@ -40,11 +40,10 @@ const Appearance = () => {
         <div style={{ display: "flex" }}>
           {Object.keys(colors).map((colorName) => (
             <Tooltip content={colorName} key={colorName}>
-              <button
-                type="button"
+              <div
                 style={{
-                  width: "24px",
-                  height: "24px",
+                  width: "18px",
+                  height: "18px",
                   borderRadius: "50%",
                   margin: "2px",
                   backgroundColor: getColorValue(colorName),
