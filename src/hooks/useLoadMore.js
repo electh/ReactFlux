@@ -5,7 +5,6 @@ import { configAtom } from "../atoms/configAtom";
 import {
   entriesAtom,
   filterStatusAtom,
-  filteredEntriesRefreshAtom,
   loadMoreUnreadVisibleAtom,
   loadMoreVisibleAtom,
   offsetAtom,
@@ -28,7 +27,6 @@ const useLoadMore = () => {
   const setLoadMoreVisible = useSetAtom(loadMoreVisibleAtom);
   const total = useAtomValue(totalAtom);
   const unreadCount = useAtomValue(unreadCountAtom);
-  const triggerFilteredEntriesRefresh = useSetAtom(filteredEntriesRefreshAtom);
 
   /* 加载更多 loading*/
   const [loadingMore, setLoadingMore] = useState(false);
@@ -45,7 +43,9 @@ const useLoadMore = () => {
     const currentEntries = filterStatus === "all" ? entries : unreadEntries;
     const updatedEntries = new Map([
       ...currentEntries.map((e) => [e.id, e]),
-      ...newEntries.map((e) => [e.id, e]),
+      ...newEntries
+        .filter((e) => !currentEntries.find((c) => c.id === e.id))
+        .map((e) => [e.id, e]),
     ]);
     const result = Array.from(updatedEntries.values());
 
@@ -73,7 +73,6 @@ const useLoadMore = () => {
         updateOffset();
         const newEntries = response.data.entries.map(parseFirstImage);
         updateEntries(newEntries);
-        triggerFilteredEntriesRefresh((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Error fetching more articles:", error);

@@ -9,7 +9,6 @@ import {
 } from "../apis";
 import {
   entriesAtom,
-  filteredEntriesAtom,
   unreadCountAtom,
   unreadEntriesAtom,
 } from "../atoms/contentAtom";
@@ -30,7 +29,6 @@ const useEntryActions = () => {
   const { activeContent, setActiveContent } = useActiveContent();
 
   const setEntries = useSetAtom(entriesAtom);
-  const setFilteredEntries = useSetAtom(filteredEntriesAtom);
   const setUnreadCount = useSetAtom(unreadCountAtom);
   const setUnreadEntries = useSetAtom(unreadEntriesAtom);
 
@@ -68,7 +66,6 @@ const useEntryActions = () => {
     }
     setEntries((prev) => updateEntries(prev, updatedEntry));
     setUnreadEntries((prev) => updateEntries(prev, updatedEntry));
-    setFilteredEntries((prev) => updateEntries(prev, updatedEntry));
   };
 
   const handleEntryStarredUpdate = (entry, newStarred) => {
@@ -90,7 +87,6 @@ const useEntryActions = () => {
     }
     setEntries((prev) => updateEntries(prev, updatedEntry));
     setUnreadEntries((prev) => updateEntries(prev, updatedEntry));
-    setFilteredEntries((prev) => updateEntries(prev, updatedEntry));
   };
 
   const handleToggleStatus = async (entry) => {

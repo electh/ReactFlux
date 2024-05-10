@@ -6,6 +6,7 @@ import {
 import { useConfig } from "../../hooks/useConfig";
 
 import { useAtom, useAtomValue } from "jotai";
+import { useEffect } from "react";
 import { configAtom } from "../../atoms/configAtom";
 import { filterStringAtom, filterTypeAtom } from "../../atoms/contentAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
@@ -26,6 +27,12 @@ const SearchAndSortBar = () => {
     updateConfig({ orderDirection: newOrderDirection });
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setFilterType("0");
+    setFilterString("");
+  }, []);
+
   return (
     <div className="search-and-sort-bar">
       <Input.Search
@@ -43,6 +50,7 @@ const SearchAndSortBar = () => {
           >
             <Select.Option value="0">Title</Select.Option>
             <Select.Option value="1">Content</Select.Option>
+            <Select.Option value="2">Author</Select.Option>
           </Select>
         }
       />

@@ -1,6 +1,5 @@
 import { atom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
-import { atomWithRefreshAndDefault } from "../utils/atom";
 import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
 import { configAtom } from "./configAtom";
 import { hiddenFeedIdsAtom } from "./dataAtom";
@@ -34,38 +33,28 @@ export const currentEntriesAtom = atom((get) => {
   const filterStatus = get(filterStatusAtom);
   return filterStatus === "all" ? get(entriesAtom) : get(unreadEntriesAtom);
 });
-export const filteredEntriesRefreshAtom = atom(0);
-// 页面显示的文章
-export const filteredEntriesAtom = atomWithRefreshAndDefault(
-  filteredEntriesRefreshAtom,
-  (get) => {
-    const entries = get(currentEntriesAtom);
-    const filterType = get(filterTypeAtom);
-    const filterStatus = get(filterStatusAtom);
-    const filterString = get(filterStringAtom);
-    const filteredEntries = filterEntries(
-      entries,
-      filterType,
-      filterStatus,
-      filterString,
-    );
-
-    const infoFrom = get(infoFromAtom);
-    const { showAllFeeds } = get(configAtom);
-    const hiddenFeedIds = get(hiddenFeedIdsAtom);
-
-    return filterEntriesByVisibility(
-      filteredEntries,
-      infoFrom,
-      showAllFeeds,
-      hiddenFeedIds,
-    );
-  },
-);
 // 0: title | 1: content
 export const filterTypeAtom = atom("0");
 // 搜索文本
 export const filterStringAtom = atom("");
+// 页面显示的文章
+export const filteredEntriesAtom = atom((get) => {
+  const entries = get(currentEntriesAtom);
+  const filterType = get(filterTypeAtom);
+  const filterString = get(filterStringAtom);
+  const filteredEntries = filterEntries(entries, filterType, filterString);
+
+  const infoFrom = get(infoFromAtom);
+  const { showAllFeeds } = get(configAtom);
+  const hiddenFeedIds = get(hiddenFeedIdsAtom);
+
+  return filterEntriesByVisibility(
+    filteredEntries,
+    infoFrom,
+    showAllFeeds,
+    hiddenFeedIds,
+  );
+});
 // 初始 loading
 export const loadingAtom = atom(true);
 // 文章是否被聚焦

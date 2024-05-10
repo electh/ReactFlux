@@ -80,7 +80,7 @@ const Login = () => {
       >
         <div
           className="login-form"
-          style={{ width: "340px", padding: "10% 0" }}
+          style={{ width: "340px", paddingTop: "12%" }}
         >
           <Typography.Title heading={3}>
             Connect to your server

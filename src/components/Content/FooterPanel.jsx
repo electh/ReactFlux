@@ -1,12 +1,13 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   entriesAtom,
   filterStatusAtom,
-  filteredEntriesAtom,
+  filterStringAtom,
+  filterTypeAtom,
   loadingAtom,
   unreadCountAtom,
   unreadEntriesAtom,
@@ -16,10 +17,11 @@ import "./FooterPanel.css";
 
 const FooterPanel = forwardRef(
   ({ info, refreshArticleList, markAllAsRead }, ref) => {
-    const [entries, setEntries] = useAtom(entriesAtom);
-    const [unreadEntries, setUnreadEntries] = useAtom(unreadEntriesAtom);
     const loading = useAtomValue(loadingAtom);
-    const setFilteredEntries = useSetAtom(filteredEntriesAtom);
+    const setEntries = useSetAtom(entriesAtom);
+    const setUnreadEntries = useSetAtom(unreadEntriesAtom);
+    const setFilterString = useSetAtom(filterStringAtom);
+    const setFilterType = useSetAtom(filterTypeAtom);
     const setUnreadCount = useSetAtom(unreadCountAtom);
     const [filterStatus, setFilterStatus] = useAtom(filterStatusAtom);
 
@@ -36,11 +38,11 @@ const FooterPanel = forwardRef(
         );
         setUnreadEntries([]);
         if (filterStatus === "all") {
-          setFilteredEntries((prev) =>
+          setEntries((prev) =>
             prev.map((entry) => ({ ...entry, status: "read" })),
           );
         } else {
-          setFilteredEntries([]);
+          setUnreadEntries([]);
         }
         setUnreadCount(0);
       } catch (error) {
@@ -53,12 +55,13 @@ const FooterPanel = forwardRef(
         ref.current.scrollTo(0, 0);
       }
       setFilterStatus(value);
-      if (value === "all") {
-        setFilteredEntries(entries);
-      } else {
-        setFilteredEntries(unreadEntries);
-      }
     };
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+      setFilterType("0");
+      setFilterString("");
+    }, [filterStatus]);
 
     return (
       <div className="entry-panel">
