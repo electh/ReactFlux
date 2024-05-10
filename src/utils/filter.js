@@ -14,6 +14,9 @@ export const filterEntries = (entries, filterType, filterString) => {
     if (filterType === "1") {
       return entry.content;
     }
+    if (filterType === "2") {
+      return entry.author;
+    }
   };
 
   const isRelevantEntry = (entry) =>
