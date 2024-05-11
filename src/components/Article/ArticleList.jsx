@@ -15,6 +15,7 @@ import {
   loadMoreUnreadVisibleAtom,
   loadMoreVisibleAtom,
 } from "../../atoms/contentAtom";
+import Ripple from "../ui/Ripple.jsx";
 import "./ArticleList.css";
 
 const ArticleList = forwardRef(
@@ -41,7 +42,9 @@ const ArticleList = forwardRef(
                   entry={entry}
                   handleEntryClick={handleEntryClick}
                   mini={isCompactLayout}
-                />
+                >
+                  <Ripple color="var(--color-text-4)" duration={1000} />
+                </ArticleCard>
               ))}
             </div>
           )}

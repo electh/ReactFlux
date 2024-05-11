@@ -44,7 +44,7 @@ const RenderImage = ({ entry, isThumbnail }) => {
   );
 };
 
-const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
+const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
   const contentClass = classNames({
     "article-card-mini-content": mini,
     "article-card-mini-content-padding": mini && showFeedIcon,
@@ -78,11 +78,12 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini }) => {
         </Typography.Text>
         {entry.starred && <IconStarFill className="icon-starred" />}
       </div>
+      <div>{children}</div>
     </div>
   );
 };
 
-const ArticleCard = ({ entry, handleEntryClick, mini }) => {
+const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
   const { activeContent } = useActiveContent();
   const config = useAtomValue(configAtom);
   const { markReadOnScroll, showFeedIcon } = config;
@@ -176,7 +177,9 @@ const ArticleCard = ({ entry, handleEntryClick, mini }) => {
                   entry={entry}
                   showFeedIcon={showFeedIcon}
                   mini={mini}
-                />
+                >
+                  {children}
+                </ArticleCardContent>
               }
             />
           </Card>

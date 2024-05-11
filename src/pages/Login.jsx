@@ -74,6 +74,7 @@ const Login = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "center",
           overflowY: "auto",
           zIndex: 2,
         }}

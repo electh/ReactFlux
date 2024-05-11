@@ -32,6 +32,7 @@ import {
 import { useCollapsed } from "../../hooks/useCollapsed";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import FeedIcon from "../ui/FeedIcon";
+import Ripple from "../ui/Ripple.jsx";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
@@ -92,6 +93,7 @@ const CustomMenuItem = ({ path, Icon, label, countAtom }) => {
         </span>
         <CountDisplay atom={countAtom} />
       </div>
+      <Ripple color="var(--color-text-4)" duration={1000} />
     </MenuItem>
   );
 };
@@ -229,6 +231,7 @@ const Sidebar = () => {
                 <Menu.SubMenu
                   key={`/category/${category.id}`}
                   selectable={true}
+                  style={{ position: "relative", overflow: "hidden" }}
                   title={
                     <CategoryTitle
                       category={category}
@@ -250,6 +253,7 @@ const Sidebar = () => {
                   {feedsGroupedById[category.id]?.map((feed) => (
                     <MenuItem
                       key={`/feed/${feed.id}`}
+                      style={{ position: "relative", overflow: "hidden" }}
                       onClick={(e) => {
                         e.stopPropagation();
                         navigate(`/feed/${feed.id}`);
@@ -280,6 +284,7 @@ const Sidebar = () => {
                           </Typography.Ellipsis>
                         )}
                       </div>
+                      <Ripple color="var(--color-text-4)" duration={1000} />
                     </MenuItem>
                   ))}
                 </Menu.SubMenu>
