@@ -79,10 +79,7 @@ const Login = () => {
           zIndex: 2,
         }}
       >
-        <div
-          className="login-form"
-          style={{ width: "340px", paddingTop: "12%" }}
-        >
+        <div className="login-form" style={{ width: "340px" }}>
           <Typography.Title heading={3}>
             Connect to your server
           </Typography.Title>
