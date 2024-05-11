@@ -1,5 +1,6 @@
 import { useLayoutEffect, useState } from "react";
-import { RippleContainer } from "./Ripple.styled";
+
+import "./Ripple.css";
 
 const useDebouncedRippleCleanUp = (rippleCount, duration, cleanUpFunction) => {
   useLayoutEffect(() => {
@@ -36,28 +37,32 @@ const Ripple = ({ duration, color }) => {
       x,
       y,
       size,
+      id: `${new Date().getTime()}-${x}-${y}`,
     };
 
     setRippleArray([...rippleArray, newRipple]);
   };
 
   return (
-    <RippleContainer duration={duration} color={color} onMouseDown={addRipple}>
+    <div className="ripple-container" onMouseDown={addRipple}>
       {rippleArray.length > 0 &&
-        rippleArray.map((ripple, index) => {
+        rippleArray.map((ripple) => {
           return (
             <span
-              key={"span".concat(index.toString())}
+              key={ripple.id}
+              className="ripple-span"
               style={{
                 top: ripple.y,
                 left: ripple.x,
                 width: ripple.size,
                 height: ripple.size,
+                backgroundColor: color,
+                animationDuration: `${duration}ms`,
               }}
             />
           );
         })}
-    </RippleContainer>
+    </div>
   );
 };
 
