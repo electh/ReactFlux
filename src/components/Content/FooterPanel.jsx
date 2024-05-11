@@ -59,7 +59,7 @@ const FooterPanel = forwardRef(
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
-      setFilterType("0");
+      setFilterType("title");
       setFilterString("");
     }, [filterStatus]);
 

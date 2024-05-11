@@ -29,7 +29,7 @@ const SearchAndSortBar = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    setFilterType("0");
+    setFilterType("title");
     setFilterString("");
   }, []);
 
@@ -48,9 +48,9 @@ const SearchAndSortBar = () => {
             style={{ width: 100 }}
             value={filterType}
           >
-            <Select.Option value="0">Title</Select.Option>
-            <Select.Option value="1">Content</Select.Option>
-            <Select.Option value="2">Author</Select.Option>
+            <Select.Option value="title">Title</Select.Option>
+            <Select.Option value="content">Content</Select.Option>
+            <Select.Option value="author">Author</Select.Option>
           </Select>
         }
       />
