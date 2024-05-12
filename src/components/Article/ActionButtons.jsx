@@ -18,7 +18,6 @@ import "./ActionButtons.css";
 const ActionButtons = ({
   info,
   handleEntryClick,
-  getEntries,
   entryListRef,
   entryDetailRef,
 }) => {
@@ -28,7 +27,6 @@ const ActionButtons = ({
   const { handleLeftKey, handleRightKey, handleEscapeKey } = useKeyHandlers(
     info,
     handleEntryClick,
-    getEntries,
   );
 
   if (!activeContent) {

@@ -1,5 +1,5 @@
 import { Skeleton } from "@arco-design/web-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 import "./ImageWithLazyLoading.css";
@@ -13,19 +13,19 @@ const ImageWithLazyLoading = ({
   width,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const { ref, inView, entry } = useInView();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (inView && !isLoaded) {
-      const image = new Image();
-      image.onload = () => setIsLoaded(true);
-      image.onerror = () => {
-        entry.target.style.display = "none";
-      };
-      image.src = src;
-    }
-  }, [inView, isLoaded, src]);
+  const { ref } = useInView({
+    onChange: (inView, entry) => {
+      if (inView && !isLoaded) {
+        const image = new Image();
+        image.onload = () => setIsLoaded(true);
+        image.onerror = () => {
+          entry.target.style.display = "none";
+        };
+        image.src = src;
+      }
+    },
+  });
 
   return (
     <div className="image-container" ref={ref}>

@@ -6,7 +6,12 @@
   width: 310px;
 }
 
-.load-more-button {
-  display: block;
+.load-more-container {
+  align-items: center;
+  background-color: var(--color-bg-2);
+  border-radius: var(--border-radius-small);
+  color: var(--color-text-2);
+  display: flex;
+  justify-content: center;
   margin: 10px auto;
 }

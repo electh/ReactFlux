@@ -91,7 +91,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 });
 
 const ArticleDetail = forwardRef(
-  ({ info, handleEntryClick, getEntries, entryListRef }, ref) => {
+  ({ info, handleEntryClick, entryListRef }, ref) => {
     const navigate = useNavigate();
     const { activeContent } = useActiveContent();
     const config = useAtomValue(configAtom);
@@ -103,11 +103,7 @@ const ArticleDetail = forwardRef(
     const setFilterString = useSetAtom(filterStringAtom);
     const setFilterType = useSetAtom(filterTypeAtom);
 
-    const { handleEscapeKey } = useKeyHandlers(
-      info,
-      handleEntryClick,
-      getEntries,
-    );
+    const { handleEscapeKey } = useKeyHandlers(info, handleEntryClick);
 
     const filterByAuthor = () => {
       setFilterType("author");
@@ -231,7 +227,6 @@ const ArticleDetail = forwardRef(
         <ActionButtons
           info={info}
           handleEntryClick={handleEntryClick}
-          getEntries={getEntries}
           entryListRef={entryListRef}
           entryDetailRef={ref}
         />

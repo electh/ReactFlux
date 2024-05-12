@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { Message } from "@arco-design/web-react";
 import { useAtomValue } from "jotai";
 import {
   filterStatusAtom,
@@ -12,7 +11,7 @@ import { scrollToElement } from "../utils/scroll";
 import { useActiveContent } from "./useActiveContent";
 import useLoadMore from "./useLoadMore";
 
-const useKeyHandlers = (info, handleEntryClick, getEntries) => {
+const useKeyHandlers = (info, handleEntryClick) => {
   const filteredEntries = useAtomValue(filteredEntriesAtom);
   const filterStatus = useAtomValue(filterStatusAtom);
   const loadMoreUnreadVisible = useAtomValue(loadMoreUnreadVisibleAtom);
@@ -20,18 +19,18 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
 
   const { activeContent, setActiveContent } = useActiveContent();
 
-  const { handleLoadMore } = useLoadMore();
+  const { loadingMore } = useLoadMore();
 
   const [isLoading, setIsLoading] = useState(false);
   const [checkNext, setCheckNext] = useState(false);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (checkNext && !isLoading) {
-      handleRightKey(info);
+    if (checkNext && !loadingMore) {
+      setIsLoading(false);
       setCheckNext(false);
+      handleRightKey();
     }
-  }, [isLoading, checkNext]);
+  }, [checkNext, loadingMore]);
 
   // go back to entry list
   const handleEscapeKey = (entryListRef, entryDetailRef) => {
@@ -53,6 +52,7 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
     const currentIndex = filteredEntries.findIndex(
       (entry) => entry.id === activeContent?.id,
     );
+
     if (currentIndex > 0) {
       const prevEntry = filteredEntries[currentIndex - 1];
       handleEntryClick(prevEntry);
@@ -61,7 +61,7 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
   };
 
   // go to next entry
-  const handleRightKey = async (info) => {
+  const handleRightKey = () => {
     if (isLoading) {
       return;
     }
@@ -75,15 +75,8 @@ const useKeyHandlers = (info, handleEntryClick, getEntries) => {
       isLastEntry &&
       ((filterStatus === "all" && loadMoreVisible) || loadMoreUnreadVisible)
     ) {
-      try {
-        setIsLoading(true);
-        await handleLoadMore(info, getEntries);
-        setCheckNext(true);
-      } catch (error) {
-        Message.error("Failed to load more articles, please try again later");
-      } finally {
-        setIsLoading(false);
-      }
+      setIsLoading(true);
+      setCheckNext(true);
       return;
     }
 

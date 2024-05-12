@@ -112,14 +112,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleMKey,
     handleRightKey,
     handleSKey,
-  } = useKeyHandlers(info, handleEntryClick, getEntries);
+  } = useKeyHandlers(info, handleEntryClick);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const keyMap = {
       27: () => handleEscapeKey(entryListRef, entryDetailRef),
       37: () => handleLeftKey(),
-      39: () => handleRightKey(info),
+      39: () => handleRightKey(),
       66: () => handleBKey(),
       68: () => handleDKey(handleFetchContent),
       77: () => handleMKey(() => handleToggleStatus(activeContent)),
@@ -249,7 +249,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         <ArticleDetail
           info={info}
           handleEntryClick={handleEntryClick}
-          getEntries={getEntries}
           entryListRef={entryListRef}
           ref={entryDetailRef}
         />

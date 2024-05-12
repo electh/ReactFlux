@@ -1,5 +1,4 @@
-import { Button } from "@arco-design/web-react";
-import { IconArrowDown } from "@arco-design/web-react/icon";
+import { Spin } from "@arco-design/web-react";
 import { forwardRef } from "react";
 
 import useLoadMore from "../../hooks/useLoadMore";
@@ -8,6 +7,7 @@ import LoadingCards from "./LoadingCards";
 import SearchAndSortBar from "./SearchAndSortBar";
 
 import { useAtomValue } from "jotai";
+import { useInView } from "react-intersection-observer";
 import { configAtom } from "../../atoms/configAtom";
 import {
   filterStatusAtom,
@@ -28,6 +28,20 @@ const ArticleList = forwardRef(
     const { loadingMore, handleLoadMore } = useLoadMore();
     const { layout } = useAtomValue(configAtom);
     const isCompactLayout = layout === "small";
+
+    const { ref: loadMoreRef } = useInView({
+      skip: !loadMoreVisible && !loadMoreUnreadVisible,
+      onChange: async (inView) => {
+        if (
+          inView &&
+          !loading &&
+          !loadingMore &&
+          (loadMoreVisible || loadMoreUnreadVisible)
+        ) {
+          await handleLoadMore(info, getEntries);
+        }
+      },
+    });
 
     return (
       <>
@@ -52,14 +66,10 @@ const ArticleList = forwardRef(
             (filterStatus === "all"
               ? loadMoreVisible
               : loadMoreUnreadVisible) && (
-              <Button
-                className="load-more-button"
-                loading={loadingMore}
-                long={true}
-                onClick={() => handleLoadMore(info, getEntries)}
-              >
-                {!loadingMore && <IconArrowDown />}Load more
-              </Button>
+              <div className="load-more-container" ref={loadMoreRef}>
+                <Spin loading={loadingMore} style={{ paddingRight: "10px" }} />
+                Loading more ...
+              </div>
             )}
         </div>
       </>
