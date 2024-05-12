@@ -1,5 +1,5 @@
 import { Spin } from "@arco-design/web-react";
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 
 import useLoadMore from "../../hooks/useLoadMore";
 import ArticleCard from "./ArticleCard";
@@ -29,19 +29,44 @@ const ArticleList = forwardRef(
     const { layout } = useAtomValue(configAtom);
     const isCompactLayout = layout === "small";
 
-    const { ref: loadMoreRef } = useInView({
+    const { ref: loadMoreRef, inView } = useInView({
       skip: !loadMoreVisible && !loadMoreUnreadVisible,
-      onChange: async (inView) => {
-        if (
-          inView &&
-          !loading &&
-          !loadingMore &&
-          (loadMoreVisible || loadMoreUnreadVisible)
-        ) {
-          await handleLoadMore(info, getEntries);
-        }
-      },
     });
+
+    useEffect(() => {
+      let interval;
+      if (
+        inView &&
+        !loading &&
+        !loadingMore &&
+        (loadMoreVisible || loadMoreUnreadVisible)
+      ) {
+        const executeLoadMore = async () => {
+          await handleLoadMore(info, getEntries);
+        };
+
+        executeLoadMore();
+
+        interval = setInterval(executeLoadMore, 1000);
+      } else if (interval) {
+        clearInterval(interval);
+      }
+
+      return () => {
+        if (interval) {
+          clearInterval(interval);
+        }
+      };
+    }, [
+      inView,
+      loading,
+      loadingMore,
+      loadMoreVisible,
+      loadMoreUnreadVisible,
+      handleLoadMore,
+      info,
+      getEntries,
+    ]);
 
     return (
       <>

@@ -1,6 +1,4 @@
-import { useState } from "react";
-
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { configAtom } from "../atoms/configAtom";
 import {
   entriesAtom,
@@ -14,6 +12,8 @@ import {
   unreadOffsetAtom,
 } from "../atoms/contentAtom";
 import { parseFirstImage } from "../utils/images";
+
+const loadingMoreAtom = atom(false);
 
 const useLoadMore = () => {
   const { pageSize } = useAtomValue(configAtom);
@@ -29,7 +29,7 @@ const useLoadMore = () => {
   const unreadCount = useAtomValue(unreadCountAtom);
 
   /* 加载更多 loading*/
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useAtom(loadingMoreAtom);
 
   const updateOffset = () => {
     if (filterStatus === "all") {
