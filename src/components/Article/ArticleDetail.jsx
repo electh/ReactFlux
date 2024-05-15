@@ -41,8 +41,33 @@ const CustomLink = ({ url, text }) => {
 };
 
 const ImageOverlayButton = ({ node, index, togglePhotoSlider }) => {
+  const config = useAtomValue(configAtom);
+  const { fontSize } = config;
+
   const [isHovering, setIsHovering] = useState(false);
+  const [isIcon, setIsIcon] = useState(false);
   const { isMobileView } = useScreenWidth();
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    const img = new Image();
+    img.src = node.attribs.src;
+    img.onload = () => {
+      if (img.width <= 64 && img.height <= 64) {
+        setIsIcon(true);
+      }
+    };
+  }, []);
+
+  if (isIcon) {
+    return (
+      <img
+        {...node.attribs}
+        alt={node.attribs.alt}
+        style={{ display: "inline-block", height: `${fontSize}rem`, margin: 0 }}
+      />
+    );
+  }
 
   return (
     <div style={{ textAlign: "center", position: "relative" }}>
