@@ -16,8 +16,14 @@ import "./Appearance.css";
 
 const Appearance = () => {
   const { updateConfig } = useConfig();
-  const { articleWidth, fontSize, layout, showFeedIcon, themeColor } =
-    useAtomValue(configAtom);
+  const {
+    articleWidth,
+    fontSize,
+    layout,
+    showDetailedRelativeTime,
+    showFeedIcon,
+    themeColor,
+  } = useAtomValue(configAtom);
 
   const handleConfigChange = (configChanges) => {
     updateConfig(configChanges);
@@ -82,6 +88,25 @@ const Appearance = () => {
             checked={layout === "small"}
             onChange={(value) =>
               handleConfigChange({ layout: value ? "small" : "large" })
+            }
+          />
+        </div>
+      </div>
+      <Divider />
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Show detailed relative time
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Show detailed relative time in article list
+          </Typography.Text>
+        </div>
+        <div>
+          <Switch
+            checked={showDetailedRelativeTime}
+            onChange={(value) =>
+              handleConfigChange({ showDetailedRelativeTime: value })
             }
           />
         </div>

@@ -8,6 +8,7 @@ export const defaultConfig = {
   orderDirection: "desc",
   pageSize: 100,
   showAllFeeds: false,
+  showDetailedRelativeTime: false,
   showFeedIcon: true,
   showStatus: "all",
   theme: "light",
