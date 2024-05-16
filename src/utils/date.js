@@ -29,11 +29,19 @@ export const generateRelativeTime = (dateString) => {
   const diff = target.diff(now);
   const diffDuration = dayjs.duration(Math.abs(diff));
 
+  const years = diffDuration.years();
+  const months = diffDuration.months();
   const days = diffDuration.days();
   const hours = diffDuration.hours();
   const minutes = diffDuration.minutes();
 
   const timeUnits = [];
+  if (years > 0) {
+    timeUnits.push(`${years} year${years > 1 ? "s" : ""}`);
+  }
+  if (months > 0) {
+    timeUnits.push(`${months} month${months > 1 ? "s" : ""}`);
+  }
   if (days > 0) {
     timeUnits.push(`${days} day${days > 1 ? "s" : ""}`);
   }
