@@ -11,6 +11,7 @@ import {
   entriesAtom,
   unreadCountAtom,
   unreadEntriesAtom,
+  unreadOffsetAtom,
 } from "../atoms/contentAtom";
 import {
   historyCountAtom,
@@ -31,6 +32,7 @@ const useEntryActions = () => {
   const setEntries = useSetAtom(entriesAtom);
   const setUnreadCount = useSetAtom(unreadCountAtom);
   const setUnreadEntries = useSetAtom(unreadEntriesAtom);
+  const setUnreadOffset = useSetAtom(unreadOffsetAtom);
 
   const updateEntries = (entries, updatedEntry) =>
     entries.map((entry) =>
@@ -47,6 +49,7 @@ const useEntryActions = () => {
         [feedId]: Math.max(0, prev[feedId] - 1),
       }));
       setUnreadCount((prev) => Math.max(0, prev - 1));
+      setUnreadOffset((prev) => Math.max(0, prev - 1));
       setHistoryCount((prev) => prev + 1);
       if (isRecent) {
         setUnreadTodayCount((prev) => Math.max(0, prev - 1));
@@ -54,6 +57,7 @@ const useEntryActions = () => {
     } else {
       setUnreadInfo((prev) => ({ ...prev, [feedId]: prev[feedId] + 1 }));
       setUnreadCount((prev) => prev + 1);
+      setUnreadOffset((prev) => prev + 1);
       setHistoryCount((prev) => Math.max(0, prev - 1));
       if (isRecent) {
         setUnreadTodayCount((prev) => prev + 1);

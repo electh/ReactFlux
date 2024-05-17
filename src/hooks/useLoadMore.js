@@ -31,14 +31,6 @@ const useLoadMore = () => {
   /* 加载更多 loading*/
   const [loadingMore, setLoadingMore] = useAtom(loadingMoreAtom);
 
-  const updateOffset = () => {
-    if (filterStatus === "all") {
-      setOffset((prev) => prev + pageSize);
-    } else {
-      setUnreadOffset((prev) => prev + pageSize);
-    }
-  };
-
   const updateEntries = (newEntries) => {
     const currentEntries = filterStatus === "all" ? entries : unreadEntries;
     const updatedEntries = new Map([
@@ -67,12 +59,18 @@ const useLoadMore = () => {
       if (filterStatus === "all") {
         response = await getEntries(offset + pageSize);
       } else {
-        response = await getEntries(unreadOffset + pageSize, filterStatus);
+        response = await getEntries(unreadOffset, filterStatus);
       }
       if (response?.data?.entries) {
-        updateOffset();
         const newEntries = response.data.entries.map(parseFirstImage);
         updateEntries(newEntries);
+        if (filterStatus === "all") {
+          setOffset(offset + pageSize);
+        } else {
+          setUnreadOffset(
+            newEntries.filter((entry) => entry.status === "unread").length,
+          );
+        }
       }
     } catch (error) {
       console.error("Error fetching more articles:", error);
