@@ -10,13 +10,13 @@ const Feed = () => {
   const { id: feedId } = useParams();
   const { orderBy, pageSize } = useAtomValue(configAtom);
 
-  const getFeedEntries = async (offset = 0, status = null) => {
+  const getFeedEntries = async (status = null, afterId = null) => {
     const baseParams = {
       baseUrl: `/v1/feeds/${feedId}/entries`,
       orderField: orderBy,
-      offset,
       limit: pageSize,
       status,
+      afterId,
     };
 
     return apiClient.get(buildEntriesUrl(baseParams));

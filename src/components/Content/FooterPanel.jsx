@@ -9,7 +9,6 @@ import {
   filterStringAtom,
   filterTypeAtom,
   loadingAtom,
-  unreadCountAtom,
   unreadEntriesAtom,
 } from "../../atoms/contentAtom";
 import { useFetchData } from "../../hooks/useFetchData";
@@ -22,7 +21,6 @@ const FooterPanel = forwardRef(
     const setUnreadEntries = useSetAtom(unreadEntriesAtom);
     const setFilterString = useSetAtom(filterStringAtom);
     const setFilterType = useSetAtom(filterTypeAtom);
-    const setUnreadCount = useSetAtom(unreadCountAtom);
     const [filterStatus, setFilterStatus] = useAtom(filterStatusAtom);
 
     /*menu 数据初始化函数 */
@@ -44,7 +42,6 @@ const FooterPanel = forwardRef(
         } else {
           setUnreadEntries([]);
         }
-        setUnreadCount(0);
       } catch (error) {
         Message.error("Failed to mark all as read");
       }
