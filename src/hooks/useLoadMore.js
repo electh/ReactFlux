@@ -44,14 +44,16 @@ const useLoadMore = () => {
     if (filterStatus === "all") {
       setEntries(result);
       setLoadMoreVisible(result.length < total);
+      setOffset((prev) => prev + pageSize);
     } else {
       setUnreadEntries(result);
       setLoadMoreUnreadVisible(result.length < unreadCount);
+      setUnreadOffset((prev) => prev + pageSize);
     }
     return result;
   };
 
-  const handleLoadMore = async (info, getEntries) => {
+  const handleLoadMore = async (getEntries) => {
     setLoadingMore(true);
 
     try {
@@ -64,13 +66,6 @@ const useLoadMore = () => {
       if (response?.data?.entries) {
         const newEntries = response.data.entries.map(parseFirstImage);
         updateEntries(newEntries);
-        if (filterStatus === "all") {
-          setOffset(offset + pageSize);
-        } else {
-          setUnreadOffset(
-            newEntries.filter((entry) => entry.status === "unread").length,
-          );
-        }
       }
     } catch (error) {
       console.error("Error fetching more articles:", error);

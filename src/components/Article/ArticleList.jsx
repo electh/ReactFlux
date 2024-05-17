@@ -19,7 +19,7 @@ import Ripple from "../ui/Ripple.jsx";
 import "./ArticleList.css";
 
 const ArticleList = forwardRef(
-  ({ info, loading, getEntries, handleEntryClick, cardsRef }, ref) => {
+  ({ loading, getEntries, handleEntryClick, cardsRef }, ref) => {
     const filteredEntries = useAtomValue(filteredEntriesAtom);
     const filterStatus = useAtomValue(filterStatusAtom);
     const loadMoreUnreadVisible = useAtomValue(loadMoreUnreadVisibleAtom);
@@ -42,7 +42,7 @@ const ArticleList = forwardRef(
         (loadMoreVisible || loadMoreUnreadVisible)
       ) {
         const executeLoadMore = async () => {
-          await handleLoadMore(info, getEntries);
+          await handleLoadMore(getEntries);
         };
 
         executeLoadMore();
@@ -64,7 +64,6 @@ const ArticleList = forwardRef(
       loadMoreVisible,
       loadMoreUnreadVisible,
       handleLoadMore,
-      info,
       getEntries,
     ]);
 

@@ -163,17 +163,18 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const getArticleList = async () => {
     setLoading(true);
+    let responseAll;
+    let responseUnread;
     try {
       if (info.from === "history") {
-        const responseAll = await getEntries();
-        handleResponses(responseAll, responseAll);
+        responseAll = responseUnread = await getEntries();
       } else {
-        const [responseAll, responseUnread] = await Promise.all([
+        [responseAll, responseUnread] = await Promise.all([
           getEntries(),
           getEntries(0, "unread"),
         ]);
-        handleResponses(responseAll, responseUnread);
       }
+      handleResponses(responseAll, responseUnread);
     } catch (error) {
       console.error("Error fetching articles:", error);
     } finally {
@@ -224,7 +225,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           classNames="fade"
         >
           <ArticleList
-            info={info}
             cardsRef={cardsRef}
             loading={loading}
             getEntries={getEntries}
