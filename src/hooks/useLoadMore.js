@@ -5,7 +5,11 @@ import {
   filterStatusAtom,
   loadMoreUnreadVisibleAtom,
   loadMoreVisibleAtom,
+  offsetAtom,
+  totalAtom,
+  unreadCountAtom,
   unreadEntriesAtom,
+  unreadOffsetAtom,
 } from "../atoms/contentAtom";
 import { parseFirstImage } from "../utils/images";
 
@@ -15,26 +19,44 @@ const useLoadMore = () => {
   const { pageSize } = useAtomValue(configAtom);
 
   const [entries, setEntries] = useAtom(entriesAtom);
+  const [offset, setOffset] = useAtom(offsetAtom);
   const [unreadEntries, setUnreadEntries] = useAtom(unreadEntriesAtom);
+  const [unreadOffset, setUnreadOffset] = useAtom(unreadOffsetAtom);
   const filterStatus = useAtomValue(filterStatusAtom);
   const setLoadMoreUnreadVisible = useSetAtom(loadMoreUnreadVisibleAtom);
   const setLoadMoreVisible = useSetAtom(loadMoreVisibleAtom);
+  const total = useAtomValue(totalAtom);
+  const unreadCount = useAtomValue(unreadCountAtom);
 
   /* 加载更多 loading*/
   const [loadingMore, setLoadingMore] = useAtom(loadingMoreAtom);
 
+  const updateOffset = () => {
+    if (filterStatus === "all") {
+      setOffset((prev) => prev + pageSize);
+    } else {
+      setUnreadOffset((prev) => prev + pageSize);
+    }
+  };
+
   const updateEntries = (newEntries) => {
     const currentEntries = filterStatus === "all" ? entries : unreadEntries;
-    const updatedEntries = [...currentEntries, ...newEntries];
+    const updatedEntries = new Map([
+      ...currentEntries.map((e) => [e.id, e]),
+      ...newEntries
+        .filter((e) => !currentEntries.find((c) => c.id === e.id))
+        .map((e) => [e.id, e]),
+    ]);
+    const result = Array.from(updatedEntries.values());
 
     if (filterStatus === "all") {
-      setEntries(updatedEntries);
-      setLoadMoreVisible(newEntries.length === pageSize);
+      setEntries(result);
+      setLoadMoreVisible(result.length < total);
     } else {
-      setUnreadEntries(updatedEntries);
-      setLoadMoreUnreadVisible(newEntries.length === pageSize);
+      setUnreadEntries(result);
+      setLoadMoreUnreadVisible(result.length < unreadCount);
     }
-    return updatedEntries;
+    return result;
   };
 
   const handleLoadMore = async (info, getEntries) => {
@@ -43,14 +65,12 @@ const useLoadMore = () => {
     try {
       let response;
       if (filterStatus === "all") {
-        response = await getEntries(null, entries[entries.length - 1].id);
+        response = await getEntries(offset + pageSize);
       } else {
-        response = await getEntries(
-          "unread",
-          unreadEntries[unreadEntries.length - 1].id,
-        );
+        response = await getEntries(unreadOffset + pageSize, filterStatus);
       }
       if (response?.data?.entries) {
+        updateOffset();
         const newEntries = response.data.entries.map(parseFirstImage);
         updateEntries(newEntries);
       }

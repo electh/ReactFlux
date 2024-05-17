@@ -15,11 +15,12 @@ export const getOriginalContent = async (entryId) =>
   apiClient.get(`/v1/entries/${entryId}/fetch-content`);
 
 export const buildEntriesUrl = (baseParams, extraParams = {}) => {
-  const { baseUrl, orderField, limit, status, afterId } = baseParams;
+  const { baseUrl, orderField, offset, limit, status } = baseParams;
   const orderDirection = getConfig("orderDirection");
   const queryParams = new URLSearchParams({
     order: orderField,
     direction: orderDirection,
+    offset,
     limit,
     ...extraParams,
   });
@@ -28,30 +29,26 @@ export const buildEntriesUrl = (baseParams, extraParams = {}) => {
     queryParams.append("status", status);
   }
 
-  if (afterId) {
-    queryParams.append("after_entry_id", afterId);
-  }
-
   return `${baseUrl}?${queryParams}`;
 };
 
-export const getAllEntries = async (status = null, afterId = null) => {
+export const getAllEntries = async (offset = 0, status = null) => {
   const orderBy = getConfig("orderBy");
   const pageSize = getConfig("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: orderBy,
+    offset,
     limit: pageSize,
     status,
-    afterId,
   };
 
   return apiClient.get(buildEntriesUrl(baseParams));
 };
 
 export const getTodayEntries = async (
+  offset = 0,
   status = null,
-  afterId = null,
   limit = null,
 ) => {
   const orderBy = getConfig("orderBy");
@@ -60,37 +57,37 @@ export const getTodayEntries = async (
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: orderBy,
+    offset,
     limit: pageSize,
     status,
-    afterId,
   };
   const extraParams = { published_after: timestamp };
 
   return apiClient.get(buildEntriesUrl(baseParams, extraParams));
 };
 
-export const getStarredEntries = async (status = null, afterId = null) => {
+export const getStarredEntries = async (offset = 0, status = null) => {
   const pageSize = getConfig("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: "changed_at",
+    offset,
     limit: pageSize,
     status,
-    afterId,
   };
   const extraParams = { starred: "true" };
 
   return apiClient.get(buildEntriesUrl(baseParams, extraParams));
 };
 
-export const getHistoryEntries = async (status = "read", afterId = null) => {
+export const getHistoryEntries = async (offset = 0) => {
   const pageSize = getConfig("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: "changed_at",
+    offset,
     limit: pageSize,
-    status,
-    afterId,
+    status: "read",
   };
 
   return apiClient.get(buildEntriesUrl(baseParams));

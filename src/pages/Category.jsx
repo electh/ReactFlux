@@ -10,13 +10,13 @@ const Category = () => {
   const { id: categoryId } = useParams();
   const { orderBy, pageSize } = useAtomValue(configAtom);
 
-  const getCategoryEntries = async (status = null, afterId = null) => {
+  const getCategoryEntries = async (offset = 0, status = null) => {
     const baseParams = {
       baseUrl: `/v1/categories/${categoryId}/entries`,
       orderField: orderBy,
+      offset,
       limit: pageSize,
       status,
-      afterId,
     };
 
     return apiClient.get(buildEntriesUrl(baseParams));

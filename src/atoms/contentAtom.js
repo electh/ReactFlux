@@ -4,6 +4,14 @@ import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
 import { configAtom } from "./configAtom";
 import { hiddenFeedIdsAtom } from "./dataAtom";
 
+// 接口返回文章总数原始值，不受接口返回数据长度限制
+export const totalAtom = atom(0);
+// 接口返回未读文章数原始值，不受接口返回数据长度限制
+export const unreadCountAtom = atom(0);
+// 所有文章分页参数
+export const offsetAtom = atom(0);
+// 未读文章分页参数
+export const unreadOffsetAtom = atom(0);
 // all 页签加载更多按钮可见性
 export const loadMoreVisibleAtom = atom(false);
 // unread 页签加载更多按钮可见性

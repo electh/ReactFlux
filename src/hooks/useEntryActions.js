@@ -7,7 +7,11 @@ import {
   toggleEntryStarred,
   updateEntriesStatus,
 } from "../apis";
-import { entriesAtom, unreadEntriesAtom } from "../atoms/contentAtom";
+import {
+  entriesAtom,
+  unreadCountAtom,
+  unreadEntriesAtom,
+} from "../atoms/contentAtom";
 import {
   historyCountAtom,
   starredCountAtom,
@@ -25,6 +29,7 @@ const useEntryActions = () => {
   const { activeContent, setActiveContent } = useActiveContent();
 
   const setEntries = useSetAtom(entriesAtom);
+  const setUnreadCount = useSetAtom(unreadCountAtom);
   const setUnreadEntries = useSetAtom(unreadEntriesAtom);
 
   const updateEntries = (entries, updatedEntry) =>
@@ -41,12 +46,14 @@ const useEntryActions = () => {
         ...prev,
         [feedId]: Math.max(0, prev[feedId] - 1),
       }));
+      setUnreadCount((prev) => Math.max(0, prev - 1));
       setHistoryCount((prev) => prev + 1);
       if (isRecent) {
         setUnreadTodayCount((prev) => Math.max(0, prev - 1));
       }
     } else {
       setUnreadInfo((prev) => ({ ...prev, [feedId]: prev[feedId] + 1 }));
+      setUnreadCount((prev) => prev + 1);
       setHistoryCount((prev) => Math.max(0, prev - 1));
       if (isRecent) {
         setUnreadTodayCount((prev) => prev + 1);

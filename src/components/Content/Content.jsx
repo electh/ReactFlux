@@ -13,7 +13,11 @@ import {
   loadMoreUnreadVisibleAtom,
   loadMoreVisibleAtom,
   loadingAtom,
+  offsetAtom,
+  totalAtom,
+  unreadCountAtom,
   unreadEntriesAtom,
+  unreadOffsetAtom,
 } from "../../atoms/contentAtom";
 import { isAppDataReadyAtom } from "../../atoms/dataAtom";
 import { useActiveContent } from "../../hooks/useActiveContent";
@@ -40,7 +44,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const setEntries = useSetAtom(entriesAtom);
   const setLoadMoreUnreadVisible = useSetAtom(loadMoreUnreadVisibleAtom);
   const setLoadMoreVisible = useSetAtom(loadMoreVisibleAtom);
+  const setOffset = useSetAtom(offsetAtom);
+  const setTotal = useSetAtom(totalAtom);
+  const setUnreadCount = useSetAtom(unreadCountAtom);
   const setUnreadEntries = useSetAtom(unreadEntriesAtom);
+  const setUnreadOffset = useSetAtom(unreadOffsetAtom);
   const filteredEntries = useAtomValue(filteredEntriesAtom);
   const setInfoFrom = useSetAtom(infoFromAtom);
 
@@ -139,7 +147,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const updateUI = (articles, articlesUnread, responseAll, responseUnread) => {
     setEntries(articles);
     setUnreadEntries(articlesUnread);
+    setTotal(responseAll.data.total);
     setLoadMoreVisible(articles.length < responseAll.data.total);
+    setUnreadCount(responseUnread.data.total);
     setLoadMoreUnreadVisible(articlesUnread.length < responseUnread.data.total);
   };
 
@@ -175,6 +185,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     if (entryListRef.current) {
       entryListRef.current.scrollTo(0, 0);
     }
+    setOffset(0);
+    setUnreadOffset(0);
     if (!isAppDataReady) {
       fetchData();
       return;
