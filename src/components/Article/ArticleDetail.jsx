@@ -64,7 +64,12 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider }) => {
       <img
         {...node.attribs}
         alt={node.attribs.alt}
-        style={{ display: "inline-block", height: `${fontSize}rem`, margin: 0 }}
+        style={{
+          display: "inline-block",
+          width: "auto",
+          height: `${fontSize}rem`,
+          margin: 0,
+        }}
       />
     );
   }
