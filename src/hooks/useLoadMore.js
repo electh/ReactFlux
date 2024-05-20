@@ -32,25 +32,24 @@ const useLoadMore = () => {
   const [loadingMore, setLoadingMore] = useAtom(loadingMoreAtom);
 
   const updateEntries = (newEntries) => {
-    const currentEntries = filterStatus === "all" ? entries : unreadEntries;
-    const updatedEntries = new Map([
-      ...currentEntries.map((e) => [e.id, e]),
-      ...newEntries
-        .filter((e) => !currentEntries.find((c) => c.id === e.id))
-        .map((e) => [e.id, e]),
-    ]);
-    const result = Array.from(updatedEntries.values());
+    const uniqueNewEntries = (existingEntries, entriesToAdd) =>
+      entriesToAdd.filter(
+        (entry) =>
+          !existingEntries.some((existing) => existing.id === entry.id),
+      );
 
     if (filterStatus === "all") {
-      setEntries(result);
-      setLoadMoreVisible(result.length < total);
+      setEntries((prev) => [...prev, ...uniqueNewEntries(prev, newEntries)]);
+      setLoadMoreVisible(entries.length < total);
       setOffset((prev) => prev + pageSize);
     } else {
-      setUnreadEntries(result);
-      setLoadMoreUnreadVisible(result.length < unreadCount);
+      setUnreadEntries((prev) => [
+        ...prev,
+        ...uniqueNewEntries(prev, newEntries),
+      ]);
+      setLoadMoreUnreadVisible(unreadEntries.length < unreadCount);
       setUnreadOffset((prev) => prev + pageSize);
     }
-    return result;
   };
 
   const handleLoadMore = async (getEntries) => {
