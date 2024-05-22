@@ -26,7 +26,7 @@ const Feed = () => {
     <Content
       info={{ from: "feed", id: feedId }}
       getEntries={getFeedEntries}
-      markAllAsRead={markFeedAsRead}
+      markAllAsRead={() => markFeedAsRead(feedId)}
     />
   );
 };

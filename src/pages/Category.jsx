@@ -26,7 +26,7 @@ const Category = () => {
     <Content
       info={{ from: "category", id: categoryId }}
       getEntries={getCategoryEntries}
-      markAllAsRead={markCategoryAsRead}
+      markAllAsRead={() => markCategoryAsRead(categoryId)}
     />
   );
 };
