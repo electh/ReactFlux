@@ -1,4 +1,5 @@
 import { Spin } from "@arco-design/web-react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { forwardRef, useEffect } from "react";
 
 import useLoadMore from "../../hooks/useLoadMore";
@@ -32,6 +33,14 @@ const ArticleList = forwardRef(
     const { ref: loadMoreRef, inView } = useInView({
       skip: !loadMoreVisible && !loadMoreUnreadVisible,
     });
+
+    const virtualizer = useVirtualizer({
+      count: filteredEntries.length,
+      getScrollElement: () => cardsRef.current,
+      estimateSize: () => (isCompactLayout ? 120 : 280),
+    });
+
+    const items = virtualizer.getVirtualItems();
 
     useEffect(() => {
       let interval;
@@ -72,18 +81,38 @@ const ArticleList = forwardRef(
         <SearchAndSortBar />
         <div className="entry-list" ref={ref}>
           <LoadingCards loading={loading} />
-          {loading ? null : (
+          {!loading && (
             <div ref={cardsRef}>
-              {filteredEntries.map((entry) => (
-                <ArticleCard
-                  key={entry.id}
-                  entry={entry}
-                  handleEntryClick={handleEntryClick}
-                  mini={isCompactLayout}
-                >
-                  <Ripple color="var(--color-text-4)" duration={1000} />
-                </ArticleCard>
-              ))}
+              <div
+                style={{
+                  height: virtualizer.getTotalSize(),
+                  width: "100%",
+                  position: "relative",
+                }}
+              >
+                {items.map((virtualItem) => (
+                  <div
+                    key={virtualItem.key}
+                    data-index={virtualItem.index}
+                    ref={virtualizer.measureElement}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      transform: `translateY(${virtualItem.start}px)`,
+                    }}
+                  >
+                    <ArticleCard
+                      entry={filteredEntries[virtualItem.index]}
+                      handleEntryClick={handleEntryClick}
+                      mini={isCompactLayout}
+                    >
+                      <Ripple color="var(--color-text-4)" duration={1000} />
+                    </ArticleCard>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           {!loading &&
