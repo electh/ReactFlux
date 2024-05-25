@@ -25,44 +25,68 @@ import {
 import { generateRelativeTime, getUTCDate } from "../../utils/date";
 import { includesIgnoreCase } from "../../utils/filter";
 
-import { useAtomValue, useSetAtom } from "jotai";
-import {
-  categoriesAtom,
-  feedsAtom,
-  feedsWithUnreadAtom,
-} from "../../atoms/dataAtom";
+import { atom, useAtomValue, useSetAtom } from "jotai";
+import { categoriesAtom, feedsWithUnreadAtom } from "../../atoms/dataAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./FeedList.css";
 
-const sortFeedsByErrorCount = (feeds) =>
-  feeds.slice().sort((a, b) => b.parsing_error_count - a.parsing_error_count);
+const { Paragraph } = Typography;
 
-const FeedList = () => {
-  const [feedModalVisible, setFeedModalVisible] = useState(false);
-  const [selectedFeed, setSelectedFeed] = useState({});
-  const [feedForm] = Form.useForm();
-  const feeds = useAtomValue(feedsAtom);
-  const setFeeds = useSetAtom(feedsWithUnreadAtom);
-  const [filteredFeeds, setFilteredFeeds] = useState(
-    sortFeedsByErrorCount(feeds),
-  );
-  const categories = useAtomValue(categoriesAtom);
-  const { isMobileView } = useScreenWidth();
+const filterStringAtom = atom("");
 
-  const tableData = filteredFeeds.map((feed) => ({
+const filteredFeedsAtom = atom((get) => {
+  const feeds = get(feedsWithUnreadAtom);
+  const filterString = get(filterStringAtom);
+  return [...feeds]
+    .sort((a, b) => {
+      if (a.disabled && !b.disabled) {
+        return 1;
+      }
+      if (!a.disabled && b.disabled) {
+        return -1;
+      }
+      return 0;
+    })
+    .sort((a, b) => b.parsing_error_count - a.parsing_error_count)
+    .filter(
+      (feed) =>
+        includesIgnoreCase(feed.title, filterString) ||
+        includesIgnoreCase(feed.feed_url, filterString),
+    );
+});
+
+const tableDataAtom = atom((get) => {
+  const feeds = get(filteredFeedsAtom);
+  return feeds.map((feed) => ({
     category: feed.category,
     checked_at: feed.checked_at,
     crawler: feed.crawler,
+    disabled: feed.disabled,
     feed_url: feed.feed_url,
     key: feed.id,
     parsing_error_count: feed.parsing_error_count,
     title: feed.title,
     hidden: feed.hide_globally,
   }));
+});
+
+const FeedList = () => {
+  const [bulkUpdateModalVisible, setBulkUpdateModalVisible] = useState(false);
+  const [feedForm] = Form.useForm();
+  const [feedModalVisible, setFeedModalVisible] = useState(false);
+  const [newHost, setNewHost] = useState("");
+  const [selectedFeed, setSelectedFeed] = useState({});
+
+  const categories = useAtomValue(categoriesAtom);
+  const filteredFeeds = useAtomValue(filteredFeedsAtom);
+  const setFeeds = useSetAtom(feedsWithUnreadAtom);
+  const setFilterString = useSetAtom(filterStringAtom);
+  const tableData = useAtomValue(tableDataAtom);
+  const { isMobileView } = useScreenWidth();
 
   useEffect(() => {
-    setFilteredFeeds(sortFeedsByErrorCount(feeds));
-  }, [feeds]);
+    setFilterString("");
+  }, [setFilterString]);
 
   const handleSelectFeed = (feed) => {
     setSelectedFeed(feed);
@@ -73,12 +97,13 @@ const FeedList = () => {
       title: feed.title,
       url: feed.feed_url,
       hidden: feed.hidden,
+      disabled: feed.disabled,
     });
   };
 
-  const handleRefresh = async (refresh, updateFeeds) => {
+  const handleRefresh = async (refreshFunc, updateFeeds) => {
     try {
-      const response = await refresh();
+      const response = await refreshFunc();
       const isSuccessful = response.status === 204;
       const message = isSuccessful ? "Refreshed" : "Failed to refresh";
 
@@ -105,7 +130,24 @@ const FeedList = () => {
           }
         : f;
 
-    await handleRefresh(refreshFeed.bind(null, feed.key), updateFeeds);
+    await handleRefresh(() => refreshFeed(feed.key), updateFeeds);
+  };
+
+  const handleBulkUpdateHosts = async () => {
+    try {
+      for (const feed of filteredFeeds) {
+        const oldHost = new URL(feed.feed_url).hostname;
+        const newURL = feed.feed_url.replace(oldHost, newHost);
+        const response = await updateFeed(feed.id, { url: newURL });
+        setFeeds((feeds) =>
+          feeds.map((f) => (f.id === feed.id ? { ...f, ...response.data } : f)),
+        );
+      }
+      Message.success("Successfully bulk updated");
+      setBulkUpdateModalVisible(false);
+    } catch (error) {
+      Message.error("Failed to bulk update, please try again");
+    }
   };
 
   const handleRefreshAllFeeds = async () => {
@@ -135,7 +177,12 @@ const FeedList = () => {
       sorter: (a, b) => a.title.localeCompare(b.title, "en"),
       render: (title, feed) => {
         const parsingErrorCount = feed.parsing_error_count;
-        const displayText = parsingErrorCount ? `⚠️ ${title}` : title;
+        let displayText = title;
+        if (feed.disabled) {
+          displayText = `🚫 ${title}`;
+        } else if (parsingErrorCount > 0) {
+          displayText = `⚠️ ${title}`;
+        }
 
         const tooltipContent = (
           <div>
@@ -252,16 +299,41 @@ const FeedList = () => {
             className="search-input"
             placeholder="Search feed title or url"
             searchButton
-            onChange={(value) =>
-              setFilteredFeeds(
-                sortFeedsByErrorCount(feeds).filter(
-                  (feed) =>
-                    includesIgnoreCase(feed.title, value) ||
-                    includesIgnoreCase(feed.feed_url, value),
-                ),
-              )
-            }
+            onChange={setFilterString}
           />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            paddingRight: 16,
+            paddingBottom: 16,
+          }}
+        >
+          <Button
+            icon={<IconEdit />}
+            onClick={() => setBulkUpdateModalVisible(true)}
+            shape="circle"
+          />
+          <Modal
+            onOk={handleBulkUpdateHosts}
+            title="Bulk Update Hosts"
+            visible={bulkUpdateModalVisible}
+            onCancel={() => {
+              setBulkUpdateModalVisible(false);
+              setNewHost("");
+            }}
+          >
+            <Paragraph>
+              This will bulk update filtered feeds' hosts.
+              <br />
+              Only recommended for RssHub.
+            </Paragraph>
+            <Input
+              placeholder="rsshub.app"
+              value={newHost}
+              onChange={(value) => setNewHost(value)}
+            />
+          </Modal>
         </div>
         <div
           style={{
@@ -308,11 +380,12 @@ const FeedList = () => {
             onSubmit={async (values) => {
               const url = values.url.trim();
               const newDetails = {
-                url: values.url,
+                url,
                 title: values.title,
                 categoryId: values.category,
-                isFullText: values.crawler,
                 hidden: values.hidden,
+                disabled: values.disabled,
+                isFullText: values.crawler,
               };
               if (url) {
                 await editFeed(selectedFeed.key, newDetails);
@@ -348,7 +421,16 @@ const FeedList = () => {
             <Form.Item
               label="Hidden"
               field="hidden"
-              initialValue={selectedFeed.hide_globally}
+              initialValue={selectedFeed.hidden}
+              triggerPropName="checked"
+              rules={[{ type: "boolean" }]}
+            >
+              <Switch />
+            </Form.Item>
+            <Form.Item
+              label="Disabled"
+              field="disabled"
+              initialValue={selectedFeed.disabled}
               triggerPropName="checked"
               rules={[{ type: "boolean" }]}
             >
@@ -358,7 +440,6 @@ const FeedList = () => {
               label="Fetch original content"
               field="crawler"
               tooltip={<div>Only affects newly retrieved articles</div>}
-              style={{ marginBottom: 0 }}
               triggerPropName="checked"
               rules={[{ type: "boolean" }]}
             >

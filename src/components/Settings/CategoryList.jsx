@@ -11,19 +11,25 @@ import { useState } from "react";
 
 import { addCategory, deleteCategory, updateCategory } from "../../apis";
 
-import { categoriesAtom, feedsWithUnreadAtom } from "../../atoms/dataAtom";
+import {
+  categoriesAtom,
+  categoriesWithUnreadAtom,
+  feedsWithUnreadAtom,
+} from "../../atoms/dataAtom";
 
-import { useAtom, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import "./CategoryList.css";
 
 const CategoryList = () => {
-  const setFeeds = useSetAtom(feedsWithUnreadAtom);
-  const [categories, setCategories] = useAtom(categoriesAtom);
-  const [showAddInput, setShowAddInput] = useState(false);
-  const [inputAddValue, setInputAddValue] = useState("");
-  const [categoryModalVisible, setCategoryModalVisible] = useState(false);
   const [categoryForm] = Form.useForm();
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+  const [inputAddValue, setInputAddValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState({});
+  const [showAddInput, setShowAddInput] = useState(false);
+
+  const categories = useAtomValue(categoriesAtom);
+  const setCategories = useSetAtom(categoriesWithUnreadAtom);
+  const setFeeds = useSetAtom(feedsWithUnreadAtom);
 
   const addNewCategory = async () => {
     if (!inputAddValue.trim()) {
