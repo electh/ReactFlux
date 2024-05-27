@@ -29,34 +29,46 @@ const ImageWithLazyLoading = ({
 
   return (
     <div className="image-container" ref={ref}>
-      {isLoaded ? (
-        <img
-          className={status === "unread" ? "" : "read"}
-          src={src}
-          alt={alt}
-          style={{
-            width,
-            height,
-            objectFit: "cover",
-            borderRadius,
-          }}
-        />
-      ) : (
-        <div className="skeleton-container">
-          <Skeleton
-            text={{ rows: 0 }}
-            image={{
-              style: {
-                width,
-                height,
-                margin: "0",
-                borderRadius,
-              },
+      <div
+        className="img-placeholder"
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "var(--color-fill-2)",
+          position: "absolute",
+          left: 0,
+          top: 0,
+        }}
+      >
+        {isLoaded ? (
+          <img
+            className={status === "unread" ? "" : "read"}
+            src={src}
+            alt={alt}
+            style={{
+              width,
+              height,
+              objectFit: "cover",
+              borderRadius,
             }}
-            animation
           />
-        </div>
-      )}
+        ) : (
+          <div className="skeleton-container">
+            <Skeleton
+              text={{ rows: 0 }}
+              image={{
+                style: {
+                  width,
+                  height,
+                  margin: "0",
+                  borderRadius,
+                },
+              }}
+              animation
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

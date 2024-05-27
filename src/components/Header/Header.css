@@ -8,7 +8,6 @@
   justify-content: space-between;
   position: fixed;
   right: 0;
-  transition: width 0.1s linear;
   width: calc(100% - 240px);
   z-index: 999;
   grid-area: header;

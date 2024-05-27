@@ -39,63 +39,75 @@ body[arco-theme="dark"] .article-card, body[arco-theme="dark"] .arco-card-border
     inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15) !important;
 }
 
-@media screen and (min-width: 769px) {
-  .app {
-    background-color: var(--color-neutral-2) !important;
+.app {
+  background-color: var(--color-neutral-2) !important;
+}
+
+.header {
+  background-color: var(--color-neutral-2) !important;
+  border: none !important;
+}
+
+.main {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  margin: 0 8px 8px 0 !important;
+  background-color: var(--color-bg-1) !important;
+  border: 1px solid var(--color-border-2) !important;
+}
+
+.entry-list {
+  background-color: var(--color-bg-1) !important;
+}
+
+.entry-detail-container {
+  background-color: var(--color-bg-1) !important;
+}
+
+.side-drawer .arco-drawer-inner {
+  background-color: var(--color-neutral-2) !important;
+}
+
+.arco-layout-sider {
+  border: none !important;
+}
+
+.arco-layout-sider-light {
+  box-shadow: none !important;
+  background-color: var(--color-neutral-2) !important;
+}
+
+.arco-layout-sider .arco-menu-light,
+.arco-layout-sider .arco-menu-light .arco-menu-item,
+.arco-layout-sider .arco-menu-light .arco-menu-group-title,
+.arco-layout-sider .arco-menu-light .arco-menu-pop-header,
+.arco-layout-sider .arco-menu-light .arco-menu-inline-header {
+  background-color: var(--color-neutral-2) !important;
+}
+
+.arco-layout-sider .arco-menu-light .arco-menu-item.arco-menu-selected {
+  background-color: var(--color-neutral-3) !important;
+}
+
+.arco-layout-sider .arco-menu-light .arco-menu-item:hover,
+.arco-layout-sider .arco-menu-light .arco-menu-group-title:hover,
+.arco-layout-sider .arco-menu-light .arco-menu-pop-header:hover,
+.arco-layout-sider .arco-menu-light .arco-menu-inline-header:hover {
+  background-color: var(--color-neutral-3) !important;
+}
+
+@media screen and (max-width: 992px) {
+  .main {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
   }
 
   .header {
-    background-color: var(--color-neutral-2) !important;
-    border: none !important;
+    border-bottom: 1px solid var(--color-border-2) !important;
   }
 
-  .main {
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    margin: 0 8px 8px 0 !important;
-    background-color: var(--color-bg-1) !important;
-    border: 1px solid var(--color-border-2) !important;
-  }
-
-  .entry-list {
-    background-color: var(--color-bg-1) !important;
-  }
-
-  .entry-detail-container {
-    background-color: var(--color-bg-1) !important;
-  }
-
-  .side-drawer .arco-drawer-inner {
-    background-color: var(--color-neutral-2) !important;
-  }
-}
-
-@media screen and (min-width: 993px) {
   .arco-layout-sider {
-    border: none !important;
-  }
-
-  .arco-layout-sider-light {
-    box-shadow: none !important;
-    background-color: var(--color-neutral-2) !important;
-  }
-
-  .arco-layout-sider .arco-menu-light,
-  .arco-layout-sider .arco-menu-light .arco-menu-item,
-  .arco-layout-sider .arco-menu-light .arco-menu-group-title,
-  .arco-layout-sider .arco-menu-light .arco-menu-pop-header,
-  .arco-layout-sider .arco-menu-light .arco-menu-inline-header {
-    background-color: var(--color-neutral-2) !important;
-  }
-
-  .arco-layout-sider .arco-menu-light .arco-menu-item.arco-menu-selected {
-    background-color: var(--color-neutral-3) !important;
-  }
-
-  .arco-layout-sider .arco-menu-light .arco-menu-item:hover,
-  .arco-layout-sider .arco-menu-light .arco-menu-group-title:hover,
-  .arco-layout-sider .arco-menu-light .arco-menu-pop-header:hover,
-  .arco-layout-sider .arco-menu-light .arco-menu-inline-header:hover {
-    background-color: var(--color-neutral-3) !important;
+    border-right: 1px solid var(--color-border-2) !important;
   }
 }
