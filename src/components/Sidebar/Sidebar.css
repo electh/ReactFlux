@@ -72,14 +72,10 @@
 .category-title {
   align-items: center;
   display: flex;
-}
-
-.icon-open {
-  transform: rotate(90deg);
-}
-
-.icon-closed {
-  transform: rotate(0deg);
+  margin-left: -32px;
+  margin-right: -12px;
+  border-radius: 8px;
+  padding: 8px 12px 8px 32px
 }
 
 .feed-icon-sidebar {
@@ -87,4 +83,39 @@
   width: 16px;
   height: 16px;
   vertical-align: -2px;
+}
+
+.arco-collapse-item-header-title {
+  width: 100%;
+}
+
+.arco-collapse {
+  border-radius: 0 !important;
+}
+
+.arco-collapse-item-header {
+  background-color: transparent;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.arco-collapse-item {
+  border-color: transparent;
+}
+
+.arco-collapse-item-content-box {
+  padding: 4px 0 0 0;
+}
+
+.arco-collapse-item-content {
+  background-color: transparent;
+}
+
+.arco-collapse-item-active > .arco-collapse-item-header {
+  background-color: var(--color-neutral-2);
+  border-color: var(--color-neutral-2);
+}
+
+.category-title:hover {
+  background-color: var(--color-neutral-3);
 }

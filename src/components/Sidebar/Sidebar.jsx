@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Collapse,
   Layout,
   Menu,
   Skeleton,
@@ -38,7 +39,8 @@ import "./Sidebar.css";
 const MenuItem = Menu.Item;
 const { Sider } = Layout;
 
-const CategoryTitle = memo(({ category, isOpen }) => {
+const CategoryTitle = memo(({ category }) => {
+  const navigate = useNavigate();
   const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
   const unreadCount = feedsGroupedById[category.id]?.reduce(
     (acc, feed) => acc + feed.unreadCount,
@@ -46,17 +48,29 @@ const CategoryTitle = memo(({ category, isOpen }) => {
   );
 
   return (
-    <div className="category-title">
+    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+    <div
+      className="category-title"
+      onClick={() => navigate(`/category/${category.id}`)}
+      style={{ cursor: "pointer" }}
+    >
       <Typography.Ellipsis
         expandable={false}
         showTooltip={true}
-        style={{ width: unreadCount ? "80%" : "100%" }}
+        style={{
+          width: unreadCount ? "80%" : "100%",
+          fontWeight: 500,
+          color: "var(--color-text-2)",
+        }}
       >
-        <IconRight className={isOpen ? "icon-open" : "icon-closed"} />
         {category.title}
       </Typography.Ellipsis>
       {unreadCount > 0 && (
-        <Typography.Ellipsis className="unread-count" expandable={false}>
+        <Typography.Ellipsis
+          className="unread-count"
+          expandable={false}
+          style={{ fontWeight: 500 }}
+        >
           {unreadCount}
         </Typography.Ellipsis>
       )}
@@ -221,34 +235,24 @@ const Sidebar = () => {
           animation={true}
           text={{ rows: 6 }}
         />
-        {isAppDataReady
-          ? categories
+        {isAppDataReady ? (
+          <Collapse triggerRegion="icon" bordered={false}>
+            {categories
               .filter(
                 (category) =>
                   showAllFeeds || !hiddenCategoryIds.includes(category.id),
               )
               .map((category) => (
-                <Menu.SubMenu
-                  key={`/category/${category.id}`}
-                  selectable={true}
+                <Collapse.Item
+                  name={`/category/${category.id}`}
                   style={{ position: "relative", overflow: "hidden" }}
-                  title={
+                  header={
                     <CategoryTitle
                       category={category}
                       isOpen={openKeys.includes(`/category/${category.id}`)}
                     />
                   }
-                  onClick={(e) => {
-                    if (
-                      !(
-                        e.target.tagName === "svg" ||
-                        e.target.tagName === "path"
-                      ) &&
-                      path !== `/category/${category.id}`
-                    ) {
-                      navigate(`/category/${category.id}`);
-                    }
-                  }}
+                  expandIcon={<IconRight />}
                 >
                   {feedsGroupedById[category.id]?.map((feed) => (
                     <MenuItem
@@ -265,6 +269,7 @@ const Sidebar = () => {
                           showTooltip={true}
                           style={{
                             width: feed.unreadCount !== 0 ? "80%" : "100%",
+                            paddingLeft: "20px",
                           }}
                         >
                           {showFeedIcon && (
@@ -287,9 +292,10 @@ const Sidebar = () => {
                       <Ripple color="var(--color-text-4)" duration={1000} />
                     </MenuItem>
                   ))}
-                </Menu.SubMenu>
-              ))
-          : null}
+                </Collapse.Item>
+              ))}
+          </Collapse>
+        ) : null}
       </Menu>
     </Sider>
   );
