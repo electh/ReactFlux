@@ -129,6 +129,10 @@
   color: rgb(var(--primary-6)) !important;
 }
 
+.inactive-subMenu {
+  color: var(--color-text-2);
+}
+
 .sidebar .arco-btn-secondary:not(.arco-btn-disabled) {
   background-color: transparent;
 }
