@@ -138,8 +138,8 @@
 }
 
 .thumbnail {
-  border-radius: 2px;
-  height: 100px;
+  border-radius:6px;
+  height: 80px;
   overflow: hidden;
-  width: 100px;
+  width: 80px;
 }

@@ -22,8 +22,8 @@ import ImageWithLazyLoading from "./ImageWithLazyLoading";
 
 const RenderImage = ({ entry, isThumbnail }) => {
   const imageSize = {
-    width: isThumbnail ? "100px" : "100%",
-    height: isThumbnail ? "100px" : "160px",
+    width: isThumbnail ? "80px" : "100%",
+    height: isThumbnail ? "80px" : "160px",
   };
 
   if (!entry.imgSrc) {
@@ -55,7 +55,11 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
       className={contentClass}
       style={{ width: "100%", boxSizing: "border-box" }}
     >
-      <div style={{ padding: mini ? "0 10px 0 0" : "0 0 10px 0" }}>
+      <div
+        style={{
+          padding: !entry.imgSrc ? "0" : mini ? "0 10px 0 0" : "0 0 10px 0",
+        }}
+      >
         <RenderImage entry={entry} isThumbnail={mini} />
       </div>
       <div className={mini ? "article-card-mini-content-text" : ""}>

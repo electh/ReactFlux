@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Button,
   Collapse,
   Layout,
   Menu,
@@ -39,7 +40,7 @@ import "./Sidebar.css";
 const MenuItem = Menu.Item;
 const { Sider } = Layout;
 
-const CategoryTitle = memo(({ category }) => {
+const CategoryTitle = memo(({ category, path }) => {
   const navigate = useNavigate();
   const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
   const unreadCount = feedsGroupedById[category.id]?.reduce(
@@ -50,7 +51,11 @@ const CategoryTitle = memo(({ category }) => {
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
-      className="category-title"
+      className={
+        path === `/category/${category.id}`
+          ? "category-title" + " active-subMenu"
+          : "category-title" + " inactive-subMenu"
+      }
       onClick={() => navigate(`/category/${category.id}`)}
       style={{ cursor: "pointer" }}
     >
@@ -60,7 +65,6 @@ const CategoryTitle = memo(({ category }) => {
         style={{
           width: unreadCount ? "80%" : "100%",
           fontWeight: 500,
-          color: "var(--color-text-2)",
         }}
       >
         {category.title}
@@ -245,14 +249,18 @@ const Sidebar = () => {
               .map((category) => (
                 <Collapse.Item
                   name={`/category/${category.id}`}
+                  key={category.id}
                   style={{ position: "relative", overflow: "hidden" }}
                   header={
                     <CategoryTitle
                       category={category}
                       isOpen={openKeys.includes(`/category/${category.id}`)}
+                      path={path}
                     />
                   }
-                  expandIcon={<IconRight />}
+                  expandIcon={
+                    <Button icon={<IconRight />} shape="circle" iconOnly />
+                  }
                 >
                   {feedsGroupedById[category.id]?.map((feed) => (
                     <MenuItem
@@ -270,6 +278,7 @@ const Sidebar = () => {
                           style={{
                             width: feed.unreadCount !== 0 ? "80%" : "100%",
                             paddingLeft: "20px",
+                            boxSizing: "border-box",
                           }}
                         >
                           {showFeedIcon && (
