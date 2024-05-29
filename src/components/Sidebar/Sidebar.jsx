@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Button,
   Collapse,
   Layout,
   Menu,
@@ -258,9 +257,7 @@ const Sidebar = () => {
                       path={path}
                     />
                   }
-                  expandIcon={
-                    <Button icon={<IconRight />} shape="circle" iconOnly />
-                  }
+                  expandIcon={<IconRight />}
                 >
                   {feedsGroupedById[category.id]?.map((feed) => (
                     <MenuItem

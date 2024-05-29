@@ -120,10 +120,6 @@
   background-color: var(--color-neutral-3);
 }
 
-.arco-collapse-item .arco-collapse-item-icon-hover {
-  left: 4px;
-}
-
 .active-subMenu {
   background-color: var(--color-neutral-3);
   color: rgb(var(--primary-6)) !important;
@@ -135,4 +131,9 @@
 
 .sidebar .arco-btn-secondary:not(.arco-btn-disabled) {
   background-color: transparent;
+}
+
+.arco-icon-hover.arco-collapse-item-icon-hover::before {
+  width: 32px;
+  height: 32px;
 }
