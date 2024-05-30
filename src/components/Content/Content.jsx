@@ -117,17 +117,17 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const keyMap = {
-      27: () => handleEscapeKey(entryListRef, entryDetailRef),
-      37: () => handleLeftKey(),
-      39: () => handleRightKey(),
-      66: () => handleBKey(),
-      68: () => handleDKey(handleFetchContent),
-      77: () => handleMKey(() => handleToggleStatus(activeContent)),
-      83: () => handleSKey(() => handleToggleStarred(activeContent)),
+      Escape: () => handleEscapeKey(entryListRef, entryDetailRef),
+      ArrowLeft: () => handleLeftKey(),
+      ArrowRight: () => handleRightKey(),
+      b: () => handleBKey(),
+      d: () => handleDKey(handleFetchContent),
+      m: () => handleMKey(() => handleToggleStatus(activeContent)),
+      s: () => handleSKey(() => handleToggleStarred(activeContent)),
     };
 
     const handleKeyDown = (event) => {
-      const handler = keyMap[event.keyCode];
+      const handler = keyMap[event.key];
       if (handler) {
         handler();
       }
