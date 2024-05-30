@@ -15,7 +15,6 @@ import {
   isArticleFocusedAtom,
 } from "../../atoms/contentAtom";
 import { useActiveContent } from "../../hooks/useActiveContent";
-import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { extractImageSources } from "../../utils/images";
 import ActionButtons from "./ActionButtons";
@@ -133,12 +132,9 @@ const ArticleDetail = forwardRef(
     const setFilterString = useSetAtom(filterStringAtom);
     const setFilterType = useSetAtom(filterTypeAtom);
 
-    const { handleEscapeKey } = useKeyHandlers(info, handleEntryClick);
-
     const filterByAuthor = () => {
       setFilterType("author");
       setFilterString(activeContent.author);
-      handleEscapeKey(entryListRef, ref);
     };
 
     const togglePhotoSlider = (index) => {
