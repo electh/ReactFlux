@@ -37,13 +37,6 @@ const FooterPanel = forwardRef(
           prev.map((entry) => ({ ...entry, status: "read" })),
         );
         setUnreadEntries([]);
-        if (filterStatus === "all") {
-          setEntries((prev) =>
-            prev.map((entry) => ({ ...entry, status: "read" })),
-          );
-        } else {
-          setUnreadEntries([]);
-        }
         setUnreadCount(0);
       } catch (error) {
         Message.error("Failed to mark all as read");
