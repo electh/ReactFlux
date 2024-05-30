@@ -30,9 +30,9 @@ import { applyColor } from "../../utils/colors";
 import { useEffect, useState } from "react";
 import { authAtom } from "../../atoms/authAtom";
 import { configAtom } from "../../atoms/configAtom";
-import { useCollapsed } from "../../hooks/useCollapsed";
 import { useConfig } from "../../hooks/useConfig";
 import { useModalToggle } from "../../hooks/useModalToggle";
+import { useScreenWidth } from "../../hooks/useScreenWidth.js";
 import { defaultConfig } from "../../utils/config";
 import Sidebar from "../Sidebar/Sidebar.jsx";
 import "./Header.css";
@@ -40,7 +40,6 @@ import "./Header.css";
 const Header = () => {
   const navigate = useNavigate();
   const { setAddFeedModalVisible, setSettingsModalVisible } = useModalToggle();
-  const { collapsed, isLg } = useCollapsed();
 
   const [config, setConfig] = useAtom(configAtom);
   const setAuth = useSetAtom(authAtom);
@@ -75,13 +74,13 @@ const Header = () => {
         return <IconSunFill />;
     }
   };
-
+  const { isCollapsed } = useScreenWidth();
   const themeIcon = getThemeIcon(theme);
-  const [visible, setVisible] = useState(!isLg);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    !collapsed && setVisible(collapsed);
-  }, [collapsed]);
+    !isCollapsed && setVisible(false);
+  }, [isCollapsed]);
 
   return (
     <div className="header">
