@@ -7,14 +7,14 @@ import { configAtom } from "./atoms/configAtom";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Sidebar from "./components/Sidebar/Sidebar";
-import { useCollapsed } from "./hooks/useCollapsed.js";
+import { useScreenWidth } from "./hooks/useScreenWidth";
 
 const App = () => {
   const { theme } = useAtomValue(configAtom);
   const [isSystemDark, setIsSystemDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
-  const { collapsed, toggleCollapsed, isLg } = useCollapsed();
+  const { isCollapsed } = useScreenWidth();
 
   useEffect(() => {
     const handleDarkModeChange = (event) => {
@@ -44,20 +44,13 @@ const App = () => {
 
   return (
     <div className="app">
-      {isLg ? (
+      {!isCollapsed ? (
         <Layout.Sider
           breakpoint="lg"
           className="sidebar"
-          collapsed={collapsed}
-          collapsedWidth={0}
-          collapsible
-          onCollapse={toggleCollapsed}
+          collapsible={false}
           trigger={null}
           width={240}
-          style={{
-            borderRight: collapsed ? "none" : "1px solid var(--color-border-2)",
-            display: collapsed ? "none" : "block",
-          }}
         >
           <Sidebar />
         </Layout.Sider>
