@@ -15,6 +15,7 @@ const ImageWithLazyLoading = ({
   const [isLoaded, setIsLoaded] = useState(false);
 
   const { ref } = useInView({
+    triggerOnce: true,
     onChange: (inView, entry) => {
       if (inView && !isLoaded) {
         const image = new Image();

@@ -82,7 +82,7 @@ const FeedList = () => {
   const setFeeds = useSetAtom(feedsWithUnreadAtom);
   const setFilterString = useSetAtom(filterStringAtom);
   const tableData = useAtomValue(tableDataAtom);
-  const { isMobileView } = useScreenWidth();
+  const { belowMd } = useScreenWidth();
 
   useEffect(() => {
     setFilterString("");
@@ -206,7 +206,7 @@ const FeedList = () => {
       },
     },
 
-    !isMobileView && {
+    !belowMd && {
       title: "Url",
       dataIndex: "feed_url",
       sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
@@ -228,7 +228,7 @@ const FeedList = () => {
       ),
     },
 
-    !isMobileView && {
+    !belowMd && {
       title: "Checked at",
       dataIndex: "checked_at",
       sorter: (a, b) => a.checked_at.localeCompare(b.checked_at, "en"),

@@ -21,14 +21,13 @@ import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 
 const RenderImage = ({ entry, isThumbnail }) => {
-  const imageSize = {
-    width: isThumbnail ? "80px" : "100%",
-    height: isThumbnail ? "80px" : "160px",
-  };
-
   if (!entry.imgSrc) {
     return null;
   }
+
+  const imageSize = isThumbnail
+    ? { width: "80px", height: "80px" }
+    : { width: "100%", height: "160px" };
 
   return (
     <div className={isThumbnail ? "thumbnail" : "cover-image"}>

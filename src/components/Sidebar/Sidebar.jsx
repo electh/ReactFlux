@@ -13,7 +13,7 @@ import {
   IconStar,
   IconUnorderedList,
 } from "@arco-design/web-react/icon";
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import classNames from "classnames";
@@ -35,7 +35,7 @@ import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
 
-const CategoryTitle = memo(({ category, path }) => {
+const CategoryTitle = ({ category, path }) => {
   const navigate = useNavigate();
   const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
   const unreadCount = feedsGroupedById[category.id]?.reduce(
@@ -44,18 +44,25 @@ const CategoryTitle = memo(({ category, path }) => {
   );
   const { setActiveContent } = useActiveContent();
 
+  const handleNavigation = () => {
+    navigate(`/category/${category.id}`);
+    setActiveContent(null);
+  };
+
   return (
-    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
-      className={
-        path === `/category/${category.id}`
-          ? "category-title" + " active-subMenu"
-          : "category-title" + " inactive-subMenu"
-      }
-      onClick={() => {
-        navigate(`/category/${category.id}`);
-        setActiveContent(null);
+      className={classNames("category-title", {
+        "active-subMenu": path === `/category/${category.id}`,
+        "inactive-subMenu": path !== `/category/${category.id}`,
+      })}
+      onClick={handleNavigation}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          handleNavigation();
+        }
       }}
+      tabIndex={0}
+      role="button"
       style={{ cursor: "pointer" }}
     >
       <Typography.Ellipsis
@@ -79,7 +86,7 @@ const CategoryTitle = memo(({ category, path }) => {
       )}
     </div>
   );
-});
+};
 
 const CountDisplay = ({ atom }) => {
   const count = useAtomValue(atom);
@@ -96,13 +103,15 @@ const CustomMenuItem = ({ path, Icon, label, countAtom }) => {
   const isSelected = location.pathname === path;
   const { setActiveContent } = useActiveContent();
 
+  const handleNavigation = () => {
+    navigate(path);
+    setActiveContent(null);
+  };
+
   return (
     <MenuItem
       key={path}
-      onClick={() => {
-        navigate(path);
-        setActiveContent(null);
-      }}
+      onClick={handleNavigation}
       className={classNames("arco-menu-item", {
         "arco-menu-selected": isSelected,
       })}
@@ -131,13 +140,8 @@ const Sidebar = () => {
   const { homePage, showAllFeeds, showFeedIcon } = config;
 
   const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`]);
-  const [openKeys, setOpenKeys] = useState([]);
 
   const path = location.pathname;
-
-  const handleClickSubMenu = (key, currentOpenKeys) => {
-    setOpenKeys(currentOpenKeys);
-  };
 
   useEffect(() => {
     setSelectedKeys([path]);
@@ -147,7 +151,6 @@ const Sidebar = () => {
     <Menu
       autoScrollIntoView={true}
       hasCollapseButton={false}
-      onClickSubMenu={handleClickSubMenu}
       selectedKeys={selectedKeys}
       style={{ width: "240px", height: "100%" }}
     >
@@ -203,7 +206,7 @@ const Sidebar = () => {
         Feeds
       </Typography.Title>
       <Skeleton loading={!isAppDataReady} animation={true} text={{ rows: 6 }} />
-      {isAppDataReady ? (
+      {isAppDataReady && (
         <Collapse triggerRegion="icon" bordered={false}>
           {categories
             .filter(
@@ -215,13 +218,7 @@ const Sidebar = () => {
                 name={`/category/${category.id}`}
                 key={category.id}
                 style={{ position: "relative", overflow: "hidden" }}
-                header={
-                  <CategoryTitle
-                    category={category}
-                    isOpen={openKeys.includes(`/category/${category.id}`)}
-                    path={path}
-                  />
-                }
+                header={<CategoryTitle category={category} path={path} />}
                 expandIcon={<IconRight />}
               >
                 {feedsGroupedById[category.id]?.map((feed) => (
@@ -266,7 +263,7 @@ const Sidebar = () => {
               </Collapse.Item>
             ))}
         </Collapse>
-      ) : null}
+      )}
     </Menu>
   );
 };

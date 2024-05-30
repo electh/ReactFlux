@@ -45,7 +45,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider }) => {
 
   const [isHovering, setIsHovering] = useState(false);
   const [isIcon, setIsIcon] = useState(false);
-  const { isMobileView } = useScreenWidth();
+  const { belowMd } = useScreenWidth();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -90,7 +90,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider }) => {
             right: 10,
             color: "white",
             backgroundColor: "rgba(0, 0, 0, 0.5)",
-            opacity: isMobileView || isHovering ? 1 : 0,
+            opacity: belowMd || isHovering ? 1 : 0,
             transition: "opacity 0.3s",
           }}
           onClick={(event) => {

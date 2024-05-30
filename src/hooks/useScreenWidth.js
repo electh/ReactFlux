@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 export const useScreenWidth = () => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const isMobileView = screenWidth <= 768;
-  const isCollapsed = screenWidth <= 992;
+  const belowMd = screenWidth <= 768;
+  const belowLg = screenWidth <= 992;
 
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
@@ -13,5 +13,5 @@ export const useScreenWidth = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return { screenWidth, isMobileView, isCollapsed };
+  return { screenWidth, belowMd, belowLg };
 };

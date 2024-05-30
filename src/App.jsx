@@ -14,7 +14,7 @@ const App = () => {
   const [isSystemDark, setIsSystemDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
-  const { isCollapsed } = useScreenWidth();
+  const { belowLg } = useScreenWidth();
 
   useEffect(() => {
     const handleDarkModeChange = (event) => {
@@ -44,7 +44,7 @@ const App = () => {
 
   return (
     <div className="app">
-      {!isCollapsed ? (
+      {!belowLg ? (
         <Layout.Sider
           breakpoint="lg"
           className="sidebar"

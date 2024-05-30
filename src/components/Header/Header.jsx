@@ -32,9 +32,9 @@ import { authAtom } from "../../atoms/authAtom";
 import { configAtom } from "../../atoms/configAtom";
 import { useConfig } from "../../hooks/useConfig";
 import { useModalToggle } from "../../hooks/useModalToggle";
-import { useScreenWidth } from "../../hooks/useScreenWidth.js";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { defaultConfig } from "../../utils/config";
-import Sidebar from "../Sidebar/Sidebar.jsx";
+import Sidebar from "../Sidebar/Sidebar";
 import "./Header.css";
 
 const Header = () => {
@@ -45,6 +45,14 @@ const Header = () => {
   const setAuth = useSetAtom(authAtom);
   const { showAllFeeds, theme } = config;
   const { updateConfig } = useConfig();
+  const { belowLg } = useScreenWidth();
+  const [sideVisible, setSideVisible] = useState(false);
+
+  useEffect(() => {
+    if (!belowLg) {
+      setSideVisible(false);
+    }
+  }, [belowLg]);
 
   const toggleShowAllFeeds = () => {
     updateConfig({ showAllFeeds: !showAllFeeds });
@@ -74,33 +82,26 @@ const Header = () => {
         return <IconSunFill />;
     }
   };
-  const { isCollapsed } = useScreenWidth();
-  const themeIcon = getThemeIcon(theme);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    !isCollapsed && setVisible(false);
-  }, [isCollapsed]);
 
   return (
     <div className="header">
       <div className="brand">
         <Button
           className="trigger"
-          onClick={() => (visible ? setVisible(false) : setVisible(true))}
+          onClick={() => setSideVisible(!sideVisible)}
           shape="circle"
           size="small"
         >
-          {<IconMenu />}
+          <IconMenu />
         </Button>
       </div>
       <Drawer
         className="sidebar-drawer"
-        visible={visible}
+        visible={sideVisible}
         title={null}
         footer={null}
         closable={false}
-        onCancel={() => setVisible(false)}
+        onCancel={() => setSideVisible(false)}
         placement="left"
         width={240}
       >
@@ -157,7 +158,7 @@ const Header = () => {
             position="bottom"
           >
             <Button
-              icon={themeIcon}
+              icon={getThemeIcon(theme)}
               shape="circle"
               size="small"
               onClick={toggleTheme}

@@ -13,7 +13,7 @@ import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = ({ entryListRef }) => {
-  const { isMobileView } = useScreenWidth();
+  const { belowMd } = useScreenWidth();
 
   const config = useAtomValue(configAtom);
   const { updateConfig } = useConfig();
@@ -49,7 +49,7 @@ const SearchAndSortBar = ({ entryListRef }) => {
         allowClear
         onChange={setFilterString}
         placeholder="Search..."
-        style={{ width: isMobileView ? "100%" : 278, marginLeft: 8 }}
+        style={{ width: belowMd ? "100%" : 278, marginLeft: 8 }}
         value={filterString}
         addBefore={
           <Select
