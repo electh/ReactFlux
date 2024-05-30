@@ -15,19 +15,12 @@ import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import "./ActionButtons.css";
 
-const ActionButtons = ({
-  info,
-  handleEntryClick,
-  entryListRef,
-  entryDetailRef,
-}) => {
+const ActionButtons = ({ handleEntryClick, entryListRef, entryDetailRef }) => {
   const { activeContent } = useActiveContent();
   const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
     useEntryActions();
-  const { handleLeftKey, handleRightKey, handleEscapeKey } = useKeyHandlers(
-    info,
-    handleEntryClick,
-  );
+  const { handleLeftKey, handleRightKey, handleEscapeKey } =
+    useKeyHandlers(handleEntryClick);
 
   if (!activeContent) {
     return null;

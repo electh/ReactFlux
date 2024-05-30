@@ -11,7 +11,7 @@ import { scrollToElement } from "../utils/scroll";
 import { useActiveContent } from "./useActiveContent";
 import useLoadMore from "./useLoadMore";
 
-const useKeyHandlers = (info, handleEntryClick) => {
+const useKeyHandlers = (handleEntryClick) => {
   const filteredEntries = useAtomValue(filteredEntriesAtom);
   const filterStatus = useAtomValue(filterStatusAtom);
   const loadMoreUnreadVisible = useAtomValue(loadMoreUnreadVisibleAtom);

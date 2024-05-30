@@ -112,7 +112,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleMKey,
     handleRightKey,
     handleSKey,
-  } = useKeyHandlers(info, handleEntryClick);
+  } = useKeyHandlers(handleEntryClick);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -247,7 +247,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         unmountOnExit
       >
         <ArticleDetail
-          info={info}
           handleEntryClick={handleEntryClick}
           entryListRef={entryListRef}
           ref={entryDetailRef}

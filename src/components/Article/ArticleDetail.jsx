@@ -119,146 +119,140 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
   },
 });
 
-const ArticleDetail = forwardRef(
-  ({ info, handleEntryClick, entryListRef }, ref) => {
-    const navigate = useNavigate();
-    const { activeContent } = useActiveContent();
-    const config = useAtomValue(configAtom);
-    const { articleWidth, fontSize } = config;
-    const setIsArticleFocused = useSetAtom(isArticleFocusedAtom);
-    const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(0);
+const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
+  const navigate = useNavigate();
+  const { activeContent } = useActiveContent();
+  const config = useAtomValue(configAtom);
+  const { articleWidth, fontSize } = config;
+  const setIsArticleFocused = useSetAtom(isArticleFocusedAtom);
+  const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-    const setFilterString = useSetAtom(filterStringAtom);
-    const setFilterType = useSetAtom(filterTypeAtom);
+  const setFilterString = useSetAtom(filterStringAtom);
+  const setFilterType = useSetAtom(filterTypeAtom);
 
-    const filterByAuthor = () => {
-      setFilterType("author");
-      setFilterString(activeContent.author);
-    };
+  const filterByAuthor = () => {
+    setFilterType("author");
+    setFilterString(activeContent.author);
+  };
 
-    const togglePhotoSlider = (index) => {
-      setSelectedIndex(index);
-      setIsPhotoSliderVisible((prev) => !prev);
-    };
+  const togglePhotoSlider = (index) => {
+    setSelectedIndex(index);
+    setIsPhotoSliderVisible((prev) => !prev);
+  };
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
-      const scrollContainer = ref.current?.querySelector(".scroll-container");
-      if (scrollContainer) {
-        scrollContainer.setAttribute("tabIndex", "-1");
-        setTimeout(() => {
-          scrollContainer.focus();
-        }, 200);
-      }
-    }, [activeContent?.id]);
-
-    if (!activeContent) {
-      return (
-        <div ref={ref} className="content-empty">
-          <IconEmpty style={{ fontSize: "64px" }} />
-          <Typography.Title
-            heading={6}
-            style={{ color: "var(--color-text-3)", marginTop: "10px" }}
-          >
-            ReactFlux
-          </Typography.Title>
-        </div>
-      );
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    const scrollContainer = ref.current?.querySelector(".scroll-container");
+    if (scrollContainer) {
+      scrollContainer.setAttribute("tabIndex", "-1");
+      setTimeout(() => {
+        scrollContainer.focus();
+      }, 200);
     }
+  }, [activeContent?.id]);
 
-    const imageSources = extractImageSources(activeContent.content);
-    const htmlParserOptions = getHtmlParserOptions(
-      imageSources,
-      togglePhotoSlider,
-    );
-    const parsedHtml = ReactHtmlParser(
-      activeContent.content,
-      htmlParserOptions,
-    );
-    const categoryId = activeContent.feed.category.id;
-    const categoryTitle = activeContent.feed.category.title;
-
+  if (!activeContent) {
     return (
-      <div
-        className="article-content"
-        onBlur={() => setIsArticleFocused(false)}
-        onFocus={() => setIsArticleFocused(true)}
-        ref={ref}
-      >
-        <div className="scroll-container">
-          <div className="article-header" style={{ width: `${articleWidth}%` }}>
-            <Typography.Title className="article-title" heading={3}>
-              <a
-                href={activeContent.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {activeContent.title}
-              </a>
-            </Typography.Title>
-            <div className="article-meta">
-              <Typography.Text>
-                <CustomLink
-                  url={`/feed/${activeContent.feed.id}`}
-                  text={activeContent.feed.title}
-                />
-              </Typography.Text>
-              <Typography.Text
-                onClick={filterByAuthor}
-                style={{ cursor: "pointer" }}
-              >
-                {` - ${activeContent.author}`}
-              </Typography.Text>
-              <Typography.Text>
-                <Tag
-                  size="small"
-                  onClick={() => {
-                    navigate(`/category/${categoryId}`);
-                  }}
-                  style={{
-                    marginLeft: "10px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {categoryTitle}
-                </Tag>
-              </Typography.Text>
-            </div>
-            <Typography.Text className="article-date">
-              {dayjs(activeContent.published_at).format(
-                "dddd, MMMM D, YYYY [at] h:mm A",
-              )}
-            </Typography.Text>
-            <Divider />
-          </div>
-          <div
-            className="article-body"
-            key={activeContent.id}
-            style={{ fontSize: `${fontSize}rem`, width: `${articleWidth}%` }}
-          >
-            {parsedHtml}
-            <PhotoSlider
-              images={imageSources.map((item) => ({ src: item, key: item }))}
-              visible={isPhotoSliderVisible}
-              onClose={() => {
-                setIsPhotoSliderVisible(false);
-                setIsArticleFocused(true);
-              }}
-              index={selectedIndex}
-              onIndexChange={setSelectedIndex}
-            />
-          </div>
-        </div>
-        <ActionButtons
-          info={info}
-          handleEntryClick={handleEntryClick}
-          entryListRef={entryListRef}
-          entryDetailRef={ref}
-        />
+      <div ref={ref} className="content-empty">
+        <IconEmpty style={{ fontSize: "64px" }} />
+        <Typography.Title
+          heading={6}
+          style={{ color: "var(--color-text-3)", marginTop: "10px" }}
+        >
+          ReactFlux
+        </Typography.Title>
       </div>
     );
-  },
-);
+  }
+
+  const imageSources = extractImageSources(activeContent.content);
+  const htmlParserOptions = getHtmlParserOptions(
+    imageSources,
+    togglePhotoSlider,
+  );
+  const parsedHtml = ReactHtmlParser(activeContent.content, htmlParserOptions);
+  const categoryId = activeContent.feed.category.id;
+  const categoryTitle = activeContent.feed.category.title;
+
+  return (
+    <div
+      className="article-content"
+      onBlur={() => setIsArticleFocused(false)}
+      onFocus={() => setIsArticleFocused(true)}
+      ref={ref}
+    >
+      <div className="scroll-container">
+        <div className="article-header" style={{ width: `${articleWidth}%` }}>
+          <Typography.Title className="article-title" heading={3}>
+            <a
+              href={activeContent.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {activeContent.title}
+            </a>
+          </Typography.Title>
+          <div className="article-meta">
+            <Typography.Text>
+              <CustomLink
+                url={`/feed/${activeContent.feed.id}`}
+                text={activeContent.feed.title}
+              />
+            </Typography.Text>
+            <Typography.Text
+              onClick={filterByAuthor}
+              style={{ cursor: "pointer" }}
+            >
+              {` - ${activeContent.author}`}
+            </Typography.Text>
+            <Typography.Text>
+              <Tag
+                size="small"
+                onClick={() => {
+                  navigate(`/category/${categoryId}`);
+                }}
+                style={{
+                  marginLeft: "10px",
+                  cursor: "pointer",
+                }}
+              >
+                {categoryTitle}
+              </Tag>
+            </Typography.Text>
+          </div>
+          <Typography.Text className="article-date">
+            {dayjs(activeContent.published_at).format(
+              "dddd, MMMM D, YYYY [at] h:mm A",
+            )}
+          </Typography.Text>
+          <Divider />
+        </div>
+        <div
+          className="article-body"
+          key={activeContent.id}
+          style={{ fontSize: `${fontSize}rem`, width: `${articleWidth}%` }}
+        >
+          {parsedHtml}
+          <PhotoSlider
+            images={imageSources.map((item) => ({ src: item, key: item }))}
+            visible={isPhotoSliderVisible}
+            onClose={() => {
+              setIsPhotoSliderVisible(false);
+              setIsArticleFocused(true);
+            }}
+            index={selectedIndex}
+            onIndexChange={setSelectedIndex}
+          />
+        </div>
+      </div>
+      <ActionButtons
+        handleEntryClick={handleEntryClick}
+        entryListRef={entryListRef}
+        entryDetailRef={ref}
+      />
+    </div>
+  );
+});
 
 export default ArticleDetail;
