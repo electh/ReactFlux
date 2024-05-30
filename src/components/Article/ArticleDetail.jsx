@@ -39,7 +39,12 @@ const CustomLink = ({ url, text }) => {
   );
 };
 
-const ImageOverlayButton = ({ node, index, togglePhotoSlider }) => {
+const ImageOverlayButton = ({
+  node,
+  index,
+  togglePhotoSlider,
+  isLinkWrapper = false,
+}) => {
   const config = useAtomValue(configAtom);
   const { fontSize } = config;
 
@@ -47,40 +52,60 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider }) => {
   const [isIcon, setIsIcon] = useState(false);
   const { belowMd } = useScreenWidth();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    const imgSrc = isLinkWrapper
+      ? node.children[0].attribs.src
+      : node.attribs.src;
     const img = new Image();
-    img.src = node.attribs.src;
-    img.onload = () => {
-      if (img.width <= 64 && img.height <= 64) {
-        setIsIcon(true);
+    img.src = imgSrc;
+    img.onload = () => setIsIcon(img.width <= 64 && img.height <= 64);
+  }, [node, isLinkWrapper]);
+
+  const imgNode = isLinkWrapper ? node.children[0] : node;
+
+  const renderImage = () => (
+    <img
+      {...imgNode.attribs}
+      alt={imgNode.attribs.alt}
+      style={
+        isIcon
+          ? {
+              display: "inline-block",
+              width: "auto",
+              height: `${fontSize}rem`,
+              margin: 0,
+            }
+          : {}
       }
-    };
-  }, []);
+    />
+  );
 
   if (isIcon) {
-    return (
-      <img
-        {...node.attribs}
-        alt={node.attribs.alt}
-        style={{
-          display: "inline-block",
-          width: "auto",
-          height: `${fontSize}rem`,
-          margin: 0,
-        }}
-      />
+    return isLinkWrapper ? (
+      <a {...node.attribs}>
+        {renderImage()}
+        {node.children[1]?.data}
+      </a>
+    ) : (
+      renderImage()
     );
   }
+
+  const handleMouseEnter = () => setIsHovering(true);
+  const handleMouseLeave = () => setIsHovering(false);
 
   return (
     <div style={{ textAlign: "center", position: "relative" }}>
       <div
         style={{ display: "inline-block", position: "relative" }}
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <img {...node.attribs} alt={node.attribs.alt} />
+        {isLinkWrapper ? (
+          <a {...node.attribs}>{renderImage()}</a>
+        ) : (
+          renderImage()
+        )}
         <Button
           icon={<IconFullscreen />}
           shape="circle"
@@ -105,7 +130,25 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider }) => {
 
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
   replace: (node) => {
-    if (node.type === "tag" && node.name === "img") {
+    if (node.type === "tag" && node.name === "a") {
+      if (
+        node.children.length > 0 &&
+        node.children[0].type === "tag" &&
+        node.children[0].name === "img"
+      ) {
+        const index = imageSources.findIndex(
+          (src) => src === node.children[0].attribs.src,
+        );
+        return (
+          <ImageOverlayButton
+            node={node}
+            index={index}
+            togglePhotoSlider={togglePhotoSlider}
+            isLinkWrapper={true}
+          />
+        );
+      }
+    } else if (node.type === "tag" && node.name === "img") {
       const index = imageSources.findIndex((src) => src === node.attribs.src);
       return (
         <ImageOverlayButton
