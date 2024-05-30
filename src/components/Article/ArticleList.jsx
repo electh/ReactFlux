@@ -78,7 +78,7 @@ const ArticleList = forwardRef(
 
     return (
       <>
-        <SearchAndSortBar />
+        <SearchAndSortBar entryListRef={ref} />
         <div className="entry-list" ref={ref}>
           <LoadingCards loading={loading} />
           {!loading && (
