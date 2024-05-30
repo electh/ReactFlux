@@ -28,7 +28,7 @@
   .fade-enter-active {
     opacity: 1;
     transform: translateX(0);
-    transition: opacity 200ms, transform 200ms;
+    transition: opacity 300ms, transform 300ms;
   }
 
   .fade-exit {

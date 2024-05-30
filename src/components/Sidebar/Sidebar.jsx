@@ -29,10 +29,8 @@ import {
   unreadTodayCountAtom,
   unreadTotalAtom,
 } from "../../atoms/dataAtom";
-import { useCollapsed } from "../../hooks/useCollapsed";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
+import { useActiveContent } from "../../hooks/useActiveContent.js";
 import FeedIcon from "../ui/FeedIcon";
-import Ripple from "../ui/Ripple.jsx";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
@@ -44,6 +42,7 @@ const CategoryTitle = memo(({ category, path }) => {
     (acc, feed) => acc + feed.unreadCount,
     0,
   );
+  const { setActiveContent } = useActiveContent();
 
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
@@ -53,7 +52,10 @@ const CategoryTitle = memo(({ category, path }) => {
           ? "category-title" + " active-subMenu"
           : "category-title" + " inactive-subMenu"
       }
-      onClick={() => navigate(`/category/${category.id}`)}
+      onClick={() => {
+        navigate(`/category/${category.id}`);
+        setActiveContent(null);
+      }}
       style={{ cursor: "pointer" }}
     >
       <Typography.Ellipsis
@@ -92,11 +94,15 @@ const CustomMenuItem = ({ path, Icon, label, countAtom }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isSelected = location.pathname === path;
+  const { setActiveContent } = useActiveContent();
 
   return (
     <MenuItem
       key={path}
-      onClick={() => navigate(path)}
+      onClick={() => {
+        navigate(path);
+        setActiveContent(null);
+      }}
       className={classNames("arco-menu-item", {
         "arco-menu-selected": isSelected,
       })}
@@ -108,7 +114,6 @@ const CustomMenuItem = ({ path, Icon, label, countAtom }) => {
         </span>
         <CountDisplay atom={countAtom} />
       </div>
-      <Ripple color="var(--color-text-4)" duration={1000} />
     </MenuItem>
   );
 };
@@ -120,12 +125,10 @@ const Sidebar = () => {
   const isAppDataReady = useAtomValue(isAppDataReadyAtom);
   const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
   const hiddenCategoryIds = useAtomValue(hiddenCategoryIdsAtom);
+  const { setActiveContent } = useActiveContent();
 
   const config = useAtomValue(configAtom);
   const { homePage, showAllFeeds, showFeedIcon } = config;
-
-  const { collapsed, toggleCollapsed } = useCollapsed();
-  const { screenWidth } = useScreenWidth();
 
   const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`]);
   const [openKeys, setOpenKeys] = useState([]);
@@ -139,13 +142,6 @@ const Sidebar = () => {
   useEffect(() => {
     setSelectedKeys([path]);
   }, [path]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (screenWidth <= 992 && !collapsed) {
-      toggleCollapsed();
-    }
-  }, [selectedKeys]);
 
   return (
     <Menu
@@ -235,6 +231,7 @@ const Sidebar = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate(`/feed/${feed.id}`);
+                      setActiveContent(null);
                     }}
                   >
                     <div className="custom-menu-item">
@@ -264,7 +261,6 @@ const Sidebar = () => {
                         </Typography.Ellipsis>
                       )}
                     </div>
-                    <Ripple color="var(--color-text-4)" duration={1000} />
                   </MenuItem>
                 ))}
               </Collapse.Item>

@@ -85,7 +85,19 @@ body[arco-theme="dark"] .article-card, body[arco-theme="dark"] .arco-card-border
   background-color: var(--color-neutral-2) !important;
 }
 
+.sidebar-drawer .arco-menu-light,
+.sidebar-drawer .arco-menu-light .arco-menu-item,
+.sidebar-drawer .arco-menu-light .arco-menu-group-title,
+.sidebar-drawer .arco-menu-light .arco-menu-pop-header,
+.sidebar-drawer .arco-menu-light .arco-menu-inline-header {
+  background-color: var(--color-neutral-2) !important;
+}
+
 .arco-layout-sider .arco-menu-light .arco-menu-item.arco-menu-selected {
+  background-color: var(--color-neutral-3) !important;
+}
+
+.sidebar-drawer .arco-menu-light .arco-menu-item.arco-menu-selected {
   background-color: var(--color-neutral-3) !important;
 }
 
@@ -93,6 +105,13 @@ body[arco-theme="dark"] .article-card, body[arco-theme="dark"] .arco-card-border
 .arco-layout-sider .arco-menu-light .arco-menu-group-title:hover,
 .arco-layout-sider .arco-menu-light .arco-menu-pop-header:hover,
 .arco-layout-sider .arco-menu-light .arco-menu-inline-header:hover {
+  background-color: var(--color-neutral-3) !important;
+}
+
+.sidebar-drawer .arco-menu-light .arco-menu-item:hover,
+.sidebar-drawer .arco-menu-light .arco-menu-group-title:hover,
+.sidebar-drawer .arco-menu-light .arco-menu-pop-header:hover,
+.sidebar-drawer .arco-menu-light .arco-menu-inline-header:hover {
   background-color: var(--color-neutral-3) !important;
 }
 

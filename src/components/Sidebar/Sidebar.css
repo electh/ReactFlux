@@ -112,8 +112,8 @@
 }
 
 .arco-collapse-item-active > .arco-collapse-item-header {
-  background-color: transparent;
-  border-color: transparent;
+  background-color: var(--color-neutral-2);
+  border-color: var(--color-neutral-2);
 }
 
 .category-title:hover {
