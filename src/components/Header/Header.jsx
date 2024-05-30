@@ -1,6 +1,7 @@
 import {
   Avatar,
   Button,
+  Drawer,
   Dropdown,
   Menu,
   Message,
@@ -26,18 +27,20 @@ import { useNavigate } from "react-router-dom";
 import { useAtom, useSetAtom } from "jotai";
 import { applyColor } from "../../utils/colors";
 
+import { useEffect, useState } from "react";
 import { authAtom } from "../../atoms/authAtom";
 import { configAtom } from "../../atoms/configAtom";
 import { useCollapsed } from "../../hooks/useCollapsed";
 import { useConfig } from "../../hooks/useConfig";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { defaultConfig } from "../../utils/config";
+import Sidebar from "../Sidebar/Sidebar.jsx";
 import "./Header.css";
 
 const Header = () => {
   const navigate = useNavigate();
   const { setAddFeedModalVisible, setSettingsModalVisible } = useModalToggle();
-  const { toggleCollapsed } = useCollapsed();
+  const { collapsed, isLg } = useCollapsed();
 
   const [config, setConfig] = useAtom(configAtom);
   const setAuth = useSetAtom(authAtom);
@@ -74,19 +77,36 @@ const Header = () => {
   };
 
   const themeIcon = getThemeIcon(theme);
+  const [visible, setVisible] = useState(!isLg);
+
+  useEffect(() => {
+    !collapsed && setVisible(collapsed);
+  }, [collapsed]);
 
   return (
     <div className="header">
       <div className="brand">
         <Button
           className="trigger"
-          onClick={toggleCollapsed}
+          onClick={() => (visible ? setVisible(false) : setVisible(true))}
           shape="circle"
           size="small"
         >
           {<IconMenu />}
         </Button>
       </div>
+      <Drawer
+        className="sidebar-drawer"
+        visible={visible}
+        title={null}
+        footer={null}
+        closable={false}
+        onCancel={() => setVisible(false)}
+        placement="left"
+        width={240}
+      >
+        <Sidebar />
+      </Drawer>
       <div className="button-group">
         <Space size={16}>
           <Tooltip content="Add a feed" mini>

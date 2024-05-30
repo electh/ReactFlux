@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 
+import { Layout } from "@arco-design/web-react";
 import { useAtomValue } from "jotai";
 import "./App.css";
 import { configAtom } from "./atoms/configAtom";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Sidebar from "./components/Sidebar/Sidebar";
+import { useCollapsed } from "./hooks/useCollapsed.js";
 
 const App = () => {
   const { theme } = useAtomValue(configAtom);
   const [isSystemDark, setIsSystemDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
+  const { collapsed, toggleCollapsed, isLg } = useCollapsed();
 
   useEffect(() => {
     const handleDarkModeChange = (event) => {
@@ -41,7 +44,24 @@ const App = () => {
 
   return (
     <div className="app">
-      <Sidebar />
+      {isLg ? (
+        <Layout.Sider
+          breakpoint="lg"
+          className="sidebar"
+          collapsed={collapsed}
+          collapsedWidth={0}
+          collapsible
+          onCollapse={toggleCollapsed}
+          trigger={null}
+          width={240}
+          style={{
+            borderRight: collapsed ? "none" : "1px solid var(--color-border-2)",
+            display: collapsed ? "none" : "block",
+          }}
+        >
+          <Sidebar />
+        </Layout.Sider>
+      ) : null}
       <Header />
       <Main />
     </div>

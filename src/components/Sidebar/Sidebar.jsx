@@ -1,7 +1,6 @@
 import {
   Avatar,
   Collapse,
-  Layout,
   Menu,
   Skeleton,
   Typography,
@@ -37,7 +36,6 @@ import Ripple from "../ui/Ripple.jsx";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
-const { Sider } = Layout;
 
 const CategoryTitle = memo(({ category, path }) => {
   const navigate = useNavigate();
@@ -150,160 +148,130 @@ const Sidebar = () => {
   }, [selectedKeys]);
 
   return (
-    <Sider
-      breakpoint="lg"
-      className="sidebar"
-      collapsed={collapsed}
-      collapsedWidth={0}
-      collapsible
-      onCollapse={toggleCollapsed}
-      trigger={null}
-      width={240}
-      style={{
-        borderRight: collapsed ? "none" : "1px solid var(--color-border-2)",
-        display: collapsed ? "none" : "block",
-      }}
+    <Menu
+      autoScrollIntoView={true}
+      hasCollapseButton={false}
+      onClickSubMenu={handleClickSubMenu}
+      selectedKeys={selectedKeys}
+      style={{ width: "240px", height: "100%" }}
     >
-      <Menu
-        autoScrollIntoView={true}
-        collapse={collapsed}
-        hasCollapseButton
-        onClickSubMenu={handleClickSubMenu}
-        onCollapseChange={toggleCollapsed}
-        selectedKeys={selectedKeys}
-        style={{ width: "240px", height: "100%" }}
+      <div className="menu-header">
+        <Avatar className="avatar" size={32}>
+          <IconBook style={{ color: "var(--color-bg-1)" }} />
+        </Avatar>
+        <Typography.Title heading={6} style={{ margin: "0" }}>
+          ReactFlux
+        </Typography.Title>
+      </div>
+      <Typography.Title
+        className="section-title"
+        heading={6}
+        style={{ paddingLeft: "12px" }}
       >
-        <div
-          className="menu-header"
-          style={{
-            visibility: collapsed ? "hidden" : "visible",
-          }}
-        >
-          <Avatar className="avatar" size={32}>
-            <IconBook style={{ color: "var(--color-bg-1)" }} />
-          </Avatar>
-          <Typography.Title heading={6} style={{ margin: "0" }}>
-            ReactFlux
-          </Typography.Title>
+        Articles
+      </Typography.Title>
+      <Skeleton loading={!isAppDataReady} animation={true} text={{ rows: 3 }} />
+      {isAppDataReady && (
+        <div>
+          <CustomMenuItem
+            path="/all"
+            Icon={IconUnorderedList}
+            label="All"
+            countAtom={unreadTotalAtom}
+          />
+          <CustomMenuItem
+            path="/today"
+            Icon={IconCalendar}
+            label="Today"
+            countAtom={unreadTodayCountAtom}
+          />
+          <CustomMenuItem
+            path="/starred"
+            Icon={IconStar}
+            label="Starred"
+            countAtom={starredCountAtom}
+          />
+          <CustomMenuItem
+            path="/history"
+            Icon={IconHistory}
+            label="History"
+            countAtom={historyCountAtom}
+          />
         </div>
-        <Typography.Title
-          className="section-title"
-          heading={6}
-          style={{ paddingLeft: "12px" }}
-        >
-          Articles
-        </Typography.Title>
-        <Skeleton
-          loading={!isAppDataReady}
-          animation={true}
-          text={{ rows: 3 }}
-        />
-        {isAppDataReady && (
-          <div>
-            <CustomMenuItem
-              path="/all"
-              Icon={IconUnorderedList}
-              label="All"
-              countAtom={unreadTotalAtom}
-            />
-            <CustomMenuItem
-              path="/today"
-              Icon={IconCalendar}
-              label="Today"
-              countAtom={unreadTodayCountAtom}
-            />
-            <CustomMenuItem
-              path="/starred"
-              Icon={IconStar}
-              label="Starred"
-              countAtom={starredCountAtom}
-            />
-            <CustomMenuItem
-              path="/history"
-              Icon={IconHistory}
-              label="History"
-              countAtom={historyCountAtom}
-            />
-          </div>
-        )}
-        <Typography.Title
-          className="section-title"
-          heading={6}
-          style={{ paddingLeft: "12px" }}
-        >
-          Feeds
-        </Typography.Title>
-        <Skeleton
-          loading={!isAppDataReady}
-          animation={true}
-          text={{ rows: 6 }}
-        />
-        {isAppDataReady ? (
-          <Collapse triggerRegion="icon" bordered={false}>
-            {categories
-              .filter(
-                (category) =>
-                  showAllFeeds || !hiddenCategoryIds.includes(category.id),
-              )
-              .map((category) => (
-                <Collapse.Item
-                  name={`/category/${category.id}`}
-                  key={category.id}
-                  style={{ position: "relative", overflow: "hidden" }}
-                  header={
-                    <CategoryTitle
-                      category={category}
-                      isOpen={openKeys.includes(`/category/${category.id}`)}
-                      path={path}
-                    />
-                  }
-                  expandIcon={<IconRight />}
-                >
-                  {feedsGroupedById[category.id]?.map((feed) => (
-                    <MenuItem
-                      key={`/feed/${feed.id}`}
-                      style={{ position: "relative", overflow: "hidden" }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/feed/${feed.id}`);
-                      }}
-                    >
-                      <div className="custom-menu-item">
-                        <Typography.Ellipsis
-                          expandable={false}
-                          showTooltip={true}
-                          style={{
-                            width: feed.unreadCount !== 0 ? "80%" : "100%",
-                            paddingLeft: "20px",
-                            boxSizing: "border-box",
-                          }}
-                        >
-                          {showFeedIcon && (
-                            <FeedIcon
-                              feed={feed}
-                              className={"feed-icon-sidebar"}
-                            />
-                          )}
-                          {feed.title}
-                        </Typography.Ellipsis>
-                        {feed.unreadCount !== 0 && (
-                          <Typography.Ellipsis
-                            className="item-count"
-                            expandable={false}
-                          >
-                            {feed.unreadCount}
-                          </Typography.Ellipsis>
+      )}
+      <Typography.Title
+        className="section-title"
+        heading={6}
+        style={{ paddingLeft: "12px" }}
+      >
+        Feeds
+      </Typography.Title>
+      <Skeleton loading={!isAppDataReady} animation={true} text={{ rows: 6 }} />
+      {isAppDataReady ? (
+        <Collapse triggerRegion="icon" bordered={false}>
+          {categories
+            .filter(
+              (category) =>
+                showAllFeeds || !hiddenCategoryIds.includes(category.id),
+            )
+            .map((category) => (
+              <Collapse.Item
+                name={`/category/${category.id}`}
+                key={category.id}
+                style={{ position: "relative", overflow: "hidden" }}
+                header={
+                  <CategoryTitle
+                    category={category}
+                    isOpen={openKeys.includes(`/category/${category.id}`)}
+                    path={path}
+                  />
+                }
+                expandIcon={<IconRight />}
+              >
+                {feedsGroupedById[category.id]?.map((feed) => (
+                  <MenuItem
+                    key={`/feed/${feed.id}`}
+                    style={{ position: "relative", overflow: "hidden" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/feed/${feed.id}`);
+                    }}
+                  >
+                    <div className="custom-menu-item">
+                      <Typography.Ellipsis
+                        expandable={false}
+                        showTooltip={true}
+                        style={{
+                          width: feed.unreadCount !== 0 ? "80%" : "100%",
+                          paddingLeft: "20px",
+                          boxSizing: "border-box",
+                        }}
+                      >
+                        {showFeedIcon && (
+                          <FeedIcon
+                            feed={feed}
+                            className={"feed-icon-sidebar"}
+                          />
                         )}
-                      </div>
-                      <Ripple color="var(--color-text-4)" duration={1000} />
-                    </MenuItem>
-                  ))}
-                </Collapse.Item>
-              ))}
-          </Collapse>
-        ) : null}
-      </Menu>
-    </Sider>
+                        {feed.title}
+                      </Typography.Ellipsis>
+                      {feed.unreadCount !== 0 && (
+                        <Typography.Ellipsis
+                          className="item-count"
+                          expandable={false}
+                        >
+                          {feed.unreadCount}
+                        </Typography.Ellipsis>
+                      )}
+                    </div>
+                    <Ripple color="var(--color-text-4)" duration={1000} />
+                  </MenuItem>
+                ))}
+              </Collapse.Item>
+            ))}
+        </Collapse>
+      ) : null}
+    </Menu>
   );
 };
 

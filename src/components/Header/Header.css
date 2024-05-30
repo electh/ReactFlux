@@ -40,3 +40,7 @@
   margin-right: 8px;
   transform: translateY(1px);
 }
+
+.sidebar-drawer .arco-drawer-content {
+  padding: 0;
+}
