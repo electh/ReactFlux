@@ -22,7 +22,7 @@ import {
   IconSunFill,
   IconUser,
 } from "@arco-design/web-react/icon";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAtom, useSetAtom } from "jotai";
 import { applyColor } from "../../utils/colors";
@@ -39,6 +39,7 @@ import "./Header.css";
 
 const Header = () => {
   const navigate = useNavigate();
+  const path = useLocation().pathname;
   const { setAddFeedModalVisible, setSettingsModalVisible } = useModalToggle();
 
   const [config, setConfig] = useAtom(configAtom);
@@ -53,6 +54,10 @@ const Header = () => {
       setSideVisible(false);
     }
   }, [belowLg]);
+
+  useEffect(() => {
+    path && setSideVisible(false);
+  }, [path]);
 
   const toggleShowAllFeeds = () => {
     updateConfig({ showAllFeeds: !showAllFeeds });
