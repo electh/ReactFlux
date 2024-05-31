@@ -8,5 +8,11 @@
 }
 
 .edit-modal {
-  width: 400px;
+  width: 520px;
+}
+
+@media screen and (max-width: 768px) {
+  .edit-modal {
+    width: 100%;
+  }
 }

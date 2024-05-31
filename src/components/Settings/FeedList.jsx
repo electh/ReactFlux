@@ -28,6 +28,7 @@ import { includesIgnoreCase } from "../../utils/filter";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { categoriesAtom, feedsWithUnreadAtom } from "../../atoms/dataAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
+import { sleep } from "../../utils/time";
 import "./FeedList.css";
 
 const { Paragraph } = Typography;
@@ -121,16 +122,22 @@ const FeedList = () => {
   };
 
   const handleRefreshFeed = async (feed) => {
-    const updateFeeds = (f, isSuccessful) =>
-      f.id === feed.key
-        ? {
-            ...f,
-            parsing_error_count: isSuccessful ? 0 : f.parsing_error_count + 1,
-            checked_at: getUTCDate(),
-          }
-        : f;
+    const feedId = feed.id || feed.key;
 
-    await handleRefresh(() => refreshFeed(feed.key), updateFeeds);
+    const updateFeeds = (currentFeed, isSuccessful) => {
+      if (currentFeed.id === feedId) {
+        return {
+          ...currentFeed,
+          parsing_error_count: isSuccessful
+            ? 0
+            : currentFeed.parsing_error_count + 1,
+          checked_at: getUTCDate(),
+        };
+      }
+      return currentFeed;
+    };
+
+    await handleRefresh(() => refreshFeed(feedId), updateFeeds);
   };
 
   const handleBulkUpdateHosts = async () => {
@@ -150,14 +157,61 @@ const FeedList = () => {
     }
   };
 
-  const handleRefreshAllFeeds = async () => {
+  const RefreshModal = () => {
+    const [visible, setVisible] = useState(false);
+
     const updateFeeds = (f, isSuccessful) => ({
       ...f,
       parsing_error_count: isSuccessful ? 0 : f.parsing_error_count + 1,
       checked_at: getUTCDate(),
     });
 
-    await handleRefresh(refreshAllFeed, updateFeeds);
+    const handleRefreshAllFeeds = async () => {
+      setVisible(false);
+      await handleRefresh(refreshAllFeed, updateFeeds);
+    };
+
+    const handleRefreshErrorFeeds = async () => {
+      setVisible(false);
+      const errorFeeds = filteredFeeds.filter((f) => f.parsing_error_count > 0);
+      for (const feed of errorFeeds) {
+        await handleRefreshFeed(feed);
+        await sleep(500);
+      }
+    };
+
+    const handleCancel = () => setVisible(false);
+
+    const showModal = () => setVisible(true);
+
+    return (
+      <>
+        <Button icon={<IconRefresh />} shape="circle" onClick={showModal} />
+        <Modal
+          className="edit-modal"
+          onCancel={handleCancel}
+          title="Refresh Feeds"
+          visible={visible}
+          footer={[
+            <Button key="cancel" onClick={handleCancel}>
+              Cancel
+            </Button>,
+            <Button
+              key="error"
+              onClick={handleRefreshErrorFeeds}
+              type="outline"
+            >
+              Error Feeds
+            </Button>,
+            <Button key="all" onClick={handleRefreshAllFeeds} type="primary">
+              All Feeds
+            </Button>,
+          ]}
+        >
+          <p>Do you want to refresh all feeds or just the ones with errors?</p>
+        </Modal>
+      </>
+    );
   };
 
   const removeFeed = async (feed) => {
@@ -293,8 +347,21 @@ const FeedList = () => {
 
   return (
     <>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <div style={{ display: "flex", flex: 1, justifyContent: "center" }}>
+      <div
+        style={{
+          alignItems: "center",
+          display: "flex",
+          width: "100%",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            justifyContent: "center",
+            minWidth: 0,
+          }}
+        >
           <Input.Search
             className="search-input"
             placeholder="Search feed title or url"
@@ -305,8 +372,9 @@ const FeedList = () => {
         <div
           style={{
             display: "flex",
-            paddingRight: 16,
+            gap: 16,
             paddingBottom: 16,
+            paddingLeft: 16,
           }}
         >
           <Button
@@ -315,6 +383,7 @@ const FeedList = () => {
             shape="circle"
           />
           <Modal
+            className="edit-modal"
             onOk={handleBulkUpdateHosts}
             title="Bulk Update Hosts"
             visible={bulkUpdateModalVisible}
@@ -334,21 +403,7 @@ const FeedList = () => {
               onChange={(value) => setNewHost(value)}
             />
           </Modal>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            paddingBottom: 16,
-          }}
-        >
-          <Popconfirm
-            focusLock
-            title="Refresh all feeds?"
-            onOk={handleRefreshAllFeeds}
-          >
-            <Button icon={<IconRefresh />} shape="circle" />
-          </Popconfirm>
+          <RefreshModal />
         </div>
       </div>
       <Table
