@@ -112,6 +112,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleMKey,
     handleRightKey,
     handleSKey,
+    handleVKey,
   } = useKeyHandlers(handleEntryClick);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -124,6 +125,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       d: () => handleDKey(handleFetchContent),
       m: () => handleMKey(() => handleToggleStatus(activeContent)),
       s: () => handleSKey(() => handleToggleStarred(activeContent)),
+      v: () => handleVKey(),
     };
 
     const handleKeyDown = (event) => {

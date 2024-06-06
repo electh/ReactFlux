@@ -15,6 +15,7 @@ import {
   isArticleFocusedAtom,
 } from "../../atoms/contentAtom";
 import { useActiveContent } from "../../hooks/useActiveContent";
+import { usePhotoSlider } from "../../hooks/usePhotoSlider";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { extractImageSources } from "../../utils/images";
 import ActionButtons from "./ActionButtons";
@@ -165,11 +166,16 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
   const navigate = useNavigate();
   const { activeContent } = useActiveContent();
+  const {
+    isPhotoSliderVisible,
+    setIsPhotoSliderVisible,
+    selectedIndex,
+    setSelectedIndex,
+  } = usePhotoSlider();
+
   const config = useAtomValue(configAtom);
   const { articleWidth, fontSize } = config;
   const setIsArticleFocused = useSetAtom(isArticleFocusedAtom);
-  const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const setFilterString = useSetAtom(filterStringAtom);
   const setFilterType = useSetAtom(filterTypeAtom);
@@ -182,6 +188,7 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
   const togglePhotoSlider = (index) => {
     setSelectedIndex(index);
     setIsPhotoSliderVisible((prev) => !prev);
+    setIsArticleFocused((prev) => !prev);
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -279,6 +286,7 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
           {parsedHtml}
           <PhotoSlider
             images={imageSources.map((item) => ({ src: item, key: item }))}
+            loop={false}
             visible={isPhotoSliderVisible}
             onClose={() => {
               setIsPhotoSliderVisible(false);

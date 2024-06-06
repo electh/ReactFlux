@@ -47,6 +47,11 @@ const hotkeysData = [
     keyName: "S",
     description: "Star / Unstar",
   },
+  {
+    key: "8",
+    keyName: "V",
+    description: "Open photo slider",
+  },
 ];
 
 const Hotkeys = () => (

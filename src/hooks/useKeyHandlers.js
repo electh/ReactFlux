@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
   filterStatusAtom,
   filteredEntriesAtom,
+  isArticleFocusedAtom,
   loadMoreUnreadVisibleAtom,
   loadMoreVisibleAtom,
 } from "../atoms/contentAtom";
+import { extractImageSources } from "../utils/images";
 import { scrollToElement } from "../utils/scroll";
 import { useActiveContent } from "./useActiveContent";
 import useLoadMore from "./useLoadMore";
+import { usePhotoSlider } from "./usePhotoSlider";
 
 const useKeyHandlers = (handleEntryClick) => {
   const filteredEntries = useAtomValue(filteredEntriesAtom);
@@ -17,7 +20,11 @@ const useKeyHandlers = (handleEntryClick) => {
   const loadMoreUnreadVisible = useAtomValue(loadMoreUnreadVisibleAtom);
   const loadMoreVisible = useAtomValue(loadMoreVisibleAtom);
 
+  const setIsArticleFocused = useSetAtom(isArticleFocusedAtom);
+
   const { activeContent, setActiveContent } = useActiveContent();
+  const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
+    usePhotoSlider();
 
   const { loadingMore } = useLoadMore();
 
@@ -123,6 +130,21 @@ const useKeyHandlers = (handleEntryClick) => {
     }
   };
 
+  // open photo slider
+  const handleVKey = () => {
+    if (activeContent) {
+      const imageSources = extractImageSources(activeContent.content);
+      if (imageSources.length === 0) {
+        return;
+      }
+      if (!isPhotoSliderVisible) {
+        setSelectedIndex(0);
+        setIsPhotoSliderVisible(true);
+        setIsArticleFocused(false);
+      }
+    }
+  };
+
   return {
     handleEscapeKey,
     handleLeftKey,
@@ -131,6 +153,7 @@ const useKeyHandlers = (handleEntryClick) => {
     handleDKey,
     handleMKey,
     handleSKey,
+    handleVKey,
   };
 };
 
