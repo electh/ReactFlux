@@ -11,6 +11,7 @@
   width: calc(100% - 240px);
   z-index: 999;
   grid-area: header;
+  padding-top: env(safe-area-inset-top);
 }
 
 .brand {

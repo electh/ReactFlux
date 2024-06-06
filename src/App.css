@@ -27,7 +27,7 @@
   .app {
     grid-template-areas: "header" "main";
     grid-template-columns: 1fr;
-    grid-template-rows: 48px 1fr;
+    grid-template-rows: calc(48px + env(safe-area-inset-top)) 1fr;
   }
 
   .sidebar {
@@ -77,7 +77,7 @@
   }
 
   .entry-panel {
-    padding: 10px !important;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
   }
 
   .page-layout {
@@ -95,6 +95,10 @@
     position: absolute !important;
     top:0 !important;
     left:0!important;
+  }
+
+  .arco-menu-light {
+    padding-top: env(safe-area-inset-top);
   }
 }
 
