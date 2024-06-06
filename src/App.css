@@ -20,6 +20,7 @@
   }
   .header {
     box-sizing: border-box;
+    height: calc(48px + env(safe-area-inset-top)) !important;
     padding-left: env(safe-area-inset-left) !important;
     padding-right: env(safe-area-inset-right);
   }
