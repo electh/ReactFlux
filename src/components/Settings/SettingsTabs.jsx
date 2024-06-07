@@ -14,64 +14,74 @@ import General from "./General";
 import Hotkeys from "./Hotkeys";
 import "./SettingsTabs.css";
 
-const SettingsTabs = () => (
-  <Tabs className="custom-tabs" defaultActiveTab="1" tabPosition="top">
-    <Tabs.TabPane
-      key="1"
-      title={
-        <span>
-          <IconFile style={{ marginRight: 6 }} />
-          Feeds
-        </span>
-      }
-    >
-      <FeedList />
-    </Tabs.TabPane>
-    <Tabs.TabPane
-      key="2"
-      title={
-        <span>
-          <IconFolder style={{ marginRight: 6 }} />
-          Categories
-        </span>
-      }
-    >
-      <CategoryList />
-    </Tabs.TabPane>
-    <Tabs.TabPane
-      key="3"
-      title={
-        <span>
-          <IconStorage style={{ marginRight: 6 }} />
-          General
-        </span>
-      }
-    >
-      <General />
-    </Tabs.TabPane>
-    <Tabs.TabPane
-      key="4"
-      title={
-        <span>
-          <IconSkin style={{ marginRight: 6 }} />
-          Appearance
-        </span>
-      }
-    >
-      <Appearance />
-    </Tabs.TabPane>
-    <Tabs.TabPane
-      key="5"
-      title={
-        <span>
-          <IconCommand style={{ marginRight: 6 }} />
-          Hotkeys
-        </span>
-      }
-    >
-      <Hotkeys />
-    </Tabs.TabPane>
-  </Tabs>
-);
+export default function SettingsTabs() {
+  const CustomTabTitle = (icon, title) => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {icon}
+        <div style={{ fontSize: "12px" }}>{title}</div>
+      </div>
+    );
+  };
 
-export default SettingsTabs;
+  return (
+    <Tabs
+      className="custom-tabs"
+      defaultActiveTab="1"
+      tabPosition="top"
+      animation
+    >
+      <Tabs.TabPane
+        key="1"
+        title={CustomTabTitle(
+          <IconFile style={{ fontSize: "20px" }} />,
+          "Feeds",
+        )}
+      >
+        <FeedList />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        key="2"
+        title={CustomTabTitle(
+          <IconFolder style={{ fontSize: "20px" }} />,
+          "Categories",
+        )}
+      >
+        <CategoryList />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        key="3"
+        title={CustomTabTitle(
+          <IconStorage style={{ fontSize: "20px" }} />,
+          "General",
+        )}
+      >
+        <General />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        key="4"
+        title={CustomTabTitle(
+          <IconSkin style={{ fontSize: "20px" }} />,
+          "Appearance",
+        )}
+      >
+        <Appearance />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        key="5"
+        title={CustomTabTitle(
+          <IconCommand style={{ fontSize: "20px" }} />,
+          "Hotkeys",
+        )}
+      >
+        <Hotkeys />
+      </Tabs.TabPane>
+    </Tabs>
+  );
+}

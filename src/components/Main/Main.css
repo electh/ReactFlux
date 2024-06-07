@@ -19,6 +19,6 @@
   }
 
   .arco-modal {
-    max-width: 100% !important;
+    max-width: calc(100% - 20px) !important;
   }
 }

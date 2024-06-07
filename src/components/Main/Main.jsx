@@ -33,7 +33,7 @@ const SettingsModal = () => {
       focusLock
       footer={null}
       onCancel={() => setSettingsModalVisible(false)}
-      title="Settings"
+      title={null}
       unmountOnExit
       visible={settingsModalVisible}
     >
