@@ -14,7 +14,7 @@ import General from "./General";
 import Hotkeys from "./Hotkeys";
 import "./SettingsTabs.css";
 
-export default function SettingsTabs() {
+const SettingsTabs = () => {
   const CustomTabTitle = (icon, title) => {
     return (
       <div
@@ -84,4 +84,6 @@ export default function SettingsTabs() {
       </Tabs.TabPane>
     </Tabs>
   );
-}
+};
+
+export default SettingsTabs;

@@ -8,9 +8,10 @@ import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Sidebar from "./components/Sidebar/Sidebar";
 import { useScreenWidth } from "./hooks/useScreenWidth";
+import { applyColor } from "./utils/colors";
 
 const App = () => {
-  const { theme } = useAtomValue(configAtom);
+  const { theme, themeColor } = useAtomValue(configAtom);
   const [isSystemDark, setIsSystemDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
@@ -29,6 +30,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    applyColor(themeColor);
     const applyTheme = (isDarkMode) => {
       const themeValue = isDarkMode ? "dark" : "light";
       document.body.setAttribute("arco-theme", themeValue);
@@ -40,11 +42,11 @@ const App = () => {
     } else {
       applyTheme(theme === "dark");
     }
-  }, [isSystemDark, theme]);
+  }, [isSystemDark, theme, themeColor]);
 
   return (
     <div className="app">
-      {!belowLg ? (
+      {belowLg ? null : (
         <Layout.Sider
           breakpoint="lg"
           className="sidebar"
@@ -54,7 +56,7 @@ const App = () => {
         >
           <Sidebar />
         </Layout.Sider>
-      ) : null}
+      )}
       <Header />
       <Main />
     </div>
