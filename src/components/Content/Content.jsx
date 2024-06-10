@@ -105,33 +105,39 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   };
 
   const {
-    handleBKey,
-    handleDKey,
-    handleEscapeKey,
-    handleLeftKey,
-    handleMKey,
-    handleRightKey,
-    handleSKey,
-    handleVKey,
+    exitDetailView,
+    fetchOriginalArticle,
+    navigateToNextArticle,
+    navigateToPreviousArticle,
+    openLinkExternally,
+    openPhotoSlider,
+    toggleReadStatus,
+    toggleStarStatus,
   } = useKeyHandlers(handleEntryClick);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const keyMap = {
-      Escape: () => handleEscapeKey(entryListRef, entryDetailRef),
-      ArrowLeft: () => handleLeftKey(),
-      ArrowRight: () => handleRightKey(),
-      b: () => handleBKey(),
-      d: () => handleDKey(handleFetchContent),
-      m: () => handleMKey(() => handleToggleStatus(activeContent)),
-      s: () => handleSKey(() => handleToggleStarred(activeContent)),
-      v: () => handleVKey(),
+      Escape: () => exitDetailView(entryListRef, entryDetailRef),
+      ArrowLeft: () => navigateToPreviousArticle(),
+      ArrowRight: () => navigateToNextArticle(),
+      b: () => openLinkExternally(),
+      d: () => fetchOriginalArticle(handleFetchContent),
+      m: () => toggleReadStatus(() => handleToggleStatus(activeContent)),
+      s: () => toggleStarStatus(() => handleToggleStarred(activeContent)),
+      v: () => openPhotoSlider(),
     };
 
     const handleKeyDown = (event) => {
       const handler = keyMap[event.key];
       if (handler) {
-        handler();
+        if (event.key === "ArrowLeft") {
+          navigateToPreviousArticle(event.ctrlKey);
+        } else if (event.key === "ArrowRight") {
+          navigateToNextArticle(event.ctrlKey);
+        } else {
+          handler();
+        }
       }
     };
 

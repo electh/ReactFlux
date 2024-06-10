@@ -35,12 +35,11 @@ const useKeyHandlers = (handleEntryClick) => {
     if (checkNext && !loadingMore) {
       setIsLoading(false);
       setCheckNext(false);
-      handleRightKey();
+      navigateToNextArticle();
     }
   }, [checkNext, loadingMore]);
 
-  // go back to entry list
-  const handleEscapeKey = (entryListRef, entryDetailRef) => {
+  const exitDetailView = (entryListRef, entryDetailRef) => {
     if (!activeContent) {
       return;
     }
@@ -54,21 +53,29 @@ const useKeyHandlers = (handleEntryClick) => {
     }
   };
 
-  // go to previous entry
-  const handleLeftKey = () => {
+  const navigateToPreviousArticle = (unread = false) => {
     const currentIndex = filteredEntries.findIndex(
       (entry) => entry.id === activeContent?.id,
     );
 
     if (currentIndex > 0) {
-      const prevEntry = filteredEntries[currentIndex - 1];
-      handleEntryClick(prevEntry);
-      scrollToElement(".card-custom-selected-style", "end");
+      let prevEntry;
+      if (unread) {
+        prevEntry = filteredEntries
+          .slice(0, currentIndex)
+          .toReversed()
+          .find((entry) => entry.status === "unread");
+      } else {
+        prevEntry = filteredEntries[currentIndex - 1];
+      }
+      if (prevEntry) {
+        handleEntryClick(prevEntry);
+        scrollToElement(".card-custom-selected-style", "end");
+      }
     }
   };
 
-  // go to next entry
-  const handleRightKey = () => {
+  const navigateToNextArticle = (unread = false) => {
     if (isLoading) {
       return;
     }
@@ -95,43 +102,47 @@ const useKeyHandlers = (handleEntryClick) => {
     }
 
     if (currentIndex < filteredEntries.length - 1) {
-      const nextEntry = filteredEntries[currentIndex + 1];
-      handleEntryClick(nextEntry);
-      setCheckNext(false);
-      scrollToElement(".card-custom-selected-style");
+      let nextEntry;
+      if (unread) {
+        nextEntry = filteredEntries
+          .slice(currentIndex + 1)
+          .find((entry) => entry.status === "unread");
+      } else {
+        nextEntry = filteredEntries[currentIndex + 1];
+      }
+      if (nextEntry) {
+        handleEntryClick(nextEntry);
+        setCheckNext(false);
+        scrollToElement(".card-custom-selected-style");
+      }
     }
   };
 
-  // open link externally
-  const handleBKey = () => {
+  const openLinkExternally = () => {
     if (activeContent) {
       window.open(activeContent.url, "_blank");
     }
   };
 
-  // fetch original article
-  const handleDKey = (handleFetchContent) => {
+  const fetchOriginalArticle = (handleFetchContent) => {
     if (activeContent) {
       handleFetchContent();
     }
   };
 
-  // mark as read or unread
-  const handleMKey = (handleUpdateEntry) => {
+  const toggleReadStatus = (handleUpdateEntry) => {
     if (activeContent) {
       handleUpdateEntry();
     }
   };
 
-  // star or unstar
-  const handleSKey = (handleStarEntry) => {
+  const toggleStarStatus = (handleStarEntry) => {
     if (activeContent) {
       handleStarEntry();
     }
   };
 
-  // open photo slider
-  const handleVKey = () => {
+  const openPhotoSlider = () => {
     if (activeContent) {
       const imageSources = extractImageSources(activeContent.content);
       if (imageSources.length === 0) {
@@ -146,14 +157,14 @@ const useKeyHandlers = (handleEntryClick) => {
   };
 
   return {
-    handleEscapeKey,
-    handleLeftKey,
-    handleRightKey,
-    handleBKey,
-    handleDKey,
-    handleMKey,
-    handleSKey,
-    handleVKey,
+    exitDetailView,
+    fetchOriginalArticle,
+    navigateToNextArticle,
+    navigateToPreviousArticle,
+    openLinkExternally,
+    openPhotoSlider,
+    toggleReadStatus,
+    toggleStarStatus,
   };
 };
 

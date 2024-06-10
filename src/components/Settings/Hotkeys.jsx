@@ -15,42 +15,54 @@ const hotkeysData = [
   {
     key: "1",
     keyName: "Esc",
-    description: "Dismiss article",
+    description: "Exit the article view and return to the list.",
   },
   {
     key: "2",
     keyName: "←",
-    description: "Previous article",
+    description: "Navigate to the previous article in the list.",
   },
   {
     key: "3",
-    keyName: "→",
-    description: "Next article",
+    keyName: "Ctrl + ←",
+    description: "Navigate to the previous unread article in the list.",
   },
   {
     key: "4",
-    keyName: "B",
-    description: "Open link externally",
+    keyName: "→",
+    description: "Navigate to the next article in the list.",
   },
   {
     key: "5",
-    keyName: "D",
-    description: "Fetch original article",
+    keyName: "Ctrl + →",
+    description: "Navigate to the next unread article in the list.",
   },
   {
     key: "6",
-    keyName: "M",
-    description: "Mark as read / unread",
+    keyName: "B",
+    description: "Open the current article's link in a new browser tab.",
   },
   {
     key: "7",
-    keyName: "S",
-    description: "Star / Unstar",
+    keyName: "D",
+    description:
+      "Fetch and display the original content of the current article.",
   },
   {
     key: "8",
+    keyName: "M",
+    description: "Toggle the read status of the current article.",
+  },
+  {
+    key: "9",
+    keyName: "S",
+    description: "Toggle the star status (bookmark) of the current article.",
+  },
+  {
+    key: "10",
     keyName: "V",
-    description: "Open photo slider",
+    description:
+      "Open the photo slider for viewing all images in the current article.",
   },
 ];
 
@@ -61,7 +73,7 @@ const Hotkeys = () => (
     data={hotkeysData}
     pagination={false}
     size="small"
-    style={{ margin: "0 auto", width: "80%" }}
+    style={{ margin: "0 auto", width: "90%" }}
   />
 );
 
