@@ -195,6 +195,7 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
   useEffect(() => {
     const scrollContainer = ref.current?.querySelector(".scroll-container");
     if (scrollContainer) {
+      scrollContainer.scrollTo(0, 0);
       scrollContainer.setAttribute("tabIndex", "-1");
       setTimeout(() => {
         scrollContainer.focus();

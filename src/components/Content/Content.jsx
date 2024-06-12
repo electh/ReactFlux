@@ -98,10 +98,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         handleEntryStatusUpdate(entry, "unread");
       });
     }
-
-    if (entryDetailRef.current) {
-      entryDetailRef.current.scrollTo(0, 0);
-    }
   };
 
   const {
@@ -118,9 +114,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const keyMap = {
-      Escape: () => exitDetailView(entryListRef, entryDetailRef),
       ArrowLeft: () => navigateToPreviousArticle(),
       ArrowRight: () => navigateToNextArticle(),
+      Escape: () => exitDetailView(entryListRef, entryDetailRef),
       b: () => openLinkExternally(),
       d: () => fetchOriginalArticle(handleFetchContent),
       m: () => toggleReadStatus(() => handleToggleStatus(activeContent)),
