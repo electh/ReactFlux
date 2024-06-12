@@ -19,7 +19,7 @@ export const feedsWithUnreadAtom = atomWithRefreshAndDefault(
     const feeds = get(feedsDataAtom);
     return feeds.map((feed) => ({
       ...feed,
-      unreadCount: unreadInfo[feed.id] ?? 0,
+      unreadCount: unreadInfo[feed.id],
     }));
   },
 );

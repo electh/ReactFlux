@@ -18,38 +18,50 @@ import {
   unreadInfoAtom,
   unreadTodayCountAtom,
 } from "../atoms/dataAtom";
+import { atomWithRefreshAndDefault } from "../utils/atom";
 
-const fetchDataAtom = atom(async () => {
-  const responses = await Promise.all([
-    getUnreadInfo(),
-    getTodayEntries(0, "unread"),
-    getStarredEntries(),
-    getHistoryEntries(),
-    getFeeds(),
-    getCategories(),
-  ]);
+const fetchDataRefreshAtom = atom(0);
 
-  const [
-    unreadInfoData,
-    unreadTodayData,
-    starredData,
-    historyData,
-    feedsData,
-    categoriesData,
-  ] = responses.map((res) => res.data);
+const fetchDataAtom = atomWithRefreshAndDefault(
+  fetchDataRefreshAtom,
+  async () => {
+    const responses = await Promise.all([
+      getUnreadInfo(),
+      getTodayEntries(0, "unread"),
+      getStarredEntries(),
+      getHistoryEntries(),
+      getFeeds(),
+      getCategories(),
+    ]);
 
-  return {
-    unreadInfo: unreadInfoData.unreads ?? {},
-    unreadTodayCount: unreadTodayData.total ?? 0,
-    starredCount: starredData.total ?? 0,
-    historyCount: historyData.total ?? 0,
-    feedsData,
-    categoriesData,
-  };
-});
+    const [
+      unreadInfoData,
+      unreadTodayData,
+      starredData,
+      historyData,
+      feedsData,
+      categoriesData,
+    ] = responses.map((res) => res.data);
+
+    const unreadInfo = feedsData.reduce((acc, feed) => {
+      acc[feed.id] = unreadInfoData.unreads[feed.id] ?? 0;
+      return acc;
+    }, {});
+
+    return {
+      unreadInfo,
+      unreadTodayCount: unreadTodayData.total ?? 0,
+      starredCount: starredData.total ?? 0,
+      historyCount: historyData.total ?? 0,
+      feedsData,
+      categoriesData,
+    };
+  },
+);
 
 export const useFetchData = () => {
   const setIsAppDataReady = useSetAtom(isAppDataReadyAtom);
+  const triggerDataRefresh = useSetAtom(fetchDataRefreshAtom);
   const fetchedData = useAtomValue(fetchDataAtom);
 
   const setUnreadInfo = useSetAtom(unreadInfoAtom);
@@ -64,6 +76,7 @@ export const useFetchData = () => {
 
   const fetchData = () => {
     setIsAppDataReady(false);
+    triggerDataRefresh((prev) => prev + 1);
     const {
       unreadInfo,
       unreadTodayCount,
