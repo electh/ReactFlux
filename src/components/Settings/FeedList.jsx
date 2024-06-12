@@ -102,26 +102,36 @@ const FeedList = () => {
     });
   };
 
-  const handleRefresh = async (refreshFunc, updateFeeds) => {
+  const handleRefresh = async (
+    refreshFunc,
+    updateFeeds,
+    showMessage = true,
+  ) => {
     try {
       const response = await refreshFunc();
       const isSuccessful = response.status === 204;
       const message = isSuccessful ? "Refreshed" : "Failed to refresh";
 
-      if (isSuccessful) {
-        Message.success(message);
-      } else {
-        Message.error(message);
+      if (showMessage) {
+        if (isSuccessful) {
+          Message.success(message);
+        } else {
+          Message.error(message);
+        }
       }
 
       setFeeds((feeds) => feeds.map((f) => updateFeeds(f, isSuccessful)));
+      return isSuccessful;
     } catch (error) {
-      Message.error("Failed to refresh");
+      if (showMessage) {
+        Message.error("Failed to refresh");
+      }
       setFeeds((feeds) => feeds.map((f) => updateFeeds(f, false)));
+      return false;
     }
   };
 
-  const handleRefreshFeed = async (feed) => {
+  const handleRefreshFeed = async (feed, showMessage = true) => {
     const feedId = feed.id || feed.key;
 
     const updateFeeds = (currentFeed, isSuccessful) => {
@@ -137,7 +147,11 @@ const FeedList = () => {
       return currentFeed;
     };
 
-    await handleRefresh(() => refreshFeed(feedId), updateFeeds);
+    return await handleRefresh(
+      () => refreshFeed(feedId),
+      updateFeeds,
+      showMessage,
+    );
   };
 
   const handleBulkUpdateHosts = async () => {
@@ -174,10 +188,24 @@ const FeedList = () => {
     const handleRefreshErrorFeeds = async () => {
       setVisible(false);
       const errorFeeds = filteredFeeds.filter((f) => f.parsing_error_count > 0);
+      Message.success("Starting refresh of error feeds, please wait");
+
+      let successCount = 0;
+      let failureCount = 0;
+
       for (const feed of errorFeeds) {
-        await handleRefreshFeed(feed);
+        const isSuccessful = await handleRefreshFeed(feed, false);
+        if (isSuccessful) {
+          successCount++;
+        } else {
+          failureCount++;
+        }
         await sleep(500);
       }
+
+      Message.success(
+        `Feeds refreshed. Success: ${successCount}, Failure: ${failureCount}`,
+      );
     };
 
     const handleCancel = () => setVisible(false);
