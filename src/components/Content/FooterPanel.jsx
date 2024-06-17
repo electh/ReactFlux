@@ -31,13 +31,15 @@ const FooterPanel = forwardRef(
     const handleMarkAllAsRead = async () => {
       try {
         await markAllAsRead();
-        Message.success("Marked all as read successfully");
         fetchData();
         setEntries((prev) =>
           prev.map((entry) => ({ ...entry, status: "read" })),
         );
-        setUnreadEntries([]);
+        setUnreadEntries((prev) =>
+          prev.map((entry) => ({ ...entry, status: "read" })),
+        );
         setUnreadCount(0);
+        Message.success("Marked all as read successfully");
       } catch (error) {
         Message.error("Failed to mark all as read");
       }
