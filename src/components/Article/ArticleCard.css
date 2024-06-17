@@ -99,12 +99,12 @@
   flex: 1;
 }
 
-.article-title {
+.article-card-title {
   color: var(--color-text-2);
   font-weight: 500;
 }
 
-.article-info {
+.article-card-info {
   color: var(--color-text-3);
   font-size: 13px;
 }

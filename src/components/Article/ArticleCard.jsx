@@ -66,10 +66,10 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
         <RenderImage entry={entry} isThumbnail={mini} />
       </div>
       <div className={mini ? "article-card-mini-content-text" : ""}>
-        <Typography.Text className="article-title">
+        <Typography.Text className="article-card-title">
           {entry.title}
         </Typography.Text>
-        <Typography.Text className="article-info">
+        <Typography.Text className="article-card-info">
           <br />
           {showFeedIcon && (
             <FeedIcon
