@@ -33,8 +33,8 @@ export const currentEntriesAtom = atom((get) => {
   const filterStatus = get(filterStatusAtom);
   return filterStatus === "all" ? get(entriesAtom) : get(unreadEntriesAtom);
 });
-// 0: title | 1: content | 2: author
-export const filterTypeAtom = atom("0");
+// title | content | author
+export const filterTypeAtom = atom("Title");
 // 搜索文本
 export const filterStringAtom = atom("");
 // 页面显示的文章
