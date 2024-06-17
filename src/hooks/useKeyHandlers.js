@@ -9,7 +9,6 @@ import {
   loadMoreVisibleAtom,
 } from "../atoms/contentAtom";
 import { extractImageSources } from "../utils/images";
-import { scrollToElement } from "../utils/scroll";
 import { useActiveContent } from "./useActiveContent";
 import useLoadMore from "./useLoadMore";
 import { usePhotoSlider } from "./usePhotoSlider";
@@ -70,7 +69,6 @@ const useKeyHandlers = (handleEntryClick) => {
       }
       if (prevEntry) {
         handleEntryClick(prevEntry);
-        scrollToElement(".card-custom-selected-style", "end");
       }
     }
   };
@@ -113,7 +111,6 @@ const useKeyHandlers = (handleEntryClick) => {
       if (nextEntry) {
         handleEntryClick(nextEntry);
         setCheckNext(false);
-        scrollToElement(".card-custom-selected-style");
       }
     }
   };
