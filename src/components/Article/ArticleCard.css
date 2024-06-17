@@ -99,13 +99,8 @@
   flex: 1;
 }
 
-.title-unread {
+.article-title {
   color: var(--color-text-2);
-  font-weight: 500;
-}
-
-.title-read {
-  color: var(--color-text-3);
   font-weight: 500;
 }
 

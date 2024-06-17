@@ -52,7 +52,11 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
   return (
     <div
       className={contentClass}
-      style={{ width: "100%", boxSizing: "border-box" }}
+      style={{
+        width: "100%",
+        boxSizing: "border-box",
+        opacity: entry.status === "unread" ? 1 : 0.5,
+      }}
     >
       <div
         style={{
@@ -62,9 +66,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
         <RenderImage entry={entry} isThumbnail={mini} />
       </div>
       <div className={mini ? "article-card-mini-content-text" : ""}>
-        <Typography.Text
-          className={entry.status === "unread" ? "title-unread" : "title-read"}
-        >
+        <Typography.Text className="article-title">
           {entry.title}
         </Typography.Text>
         <Typography.Text className="article-info">
