@@ -12,7 +12,7 @@ import { filterStringAtom, filterTypeAtom } from "../../atoms/contentAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./SearchAndSortBar.css";
 
-const SearchAndSortBar = ({ entryListRef }) => {
+const SearchAndSortBar = () => {
   const { belowMd } = useScreenWidth();
 
   const config = useAtomValue(configAtom);
@@ -32,16 +32,6 @@ const SearchAndSortBar = ({ entryListRef }) => {
     setFilterType("title");
     setFilterString("");
   }, []);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    const element = document.querySelector(".card-custom-selected-style");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    } else if (entryListRef.current) {
-      entryListRef.current.scrollTo(0, 0);
-    }
-  }, [filterType, filterString]);
 
   return (
     <div className="search-and-sort-bar">
