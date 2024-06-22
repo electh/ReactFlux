@@ -162,7 +162,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
     if (activeContent) {
       const element = document.querySelector(".card-custom-selected-style");
       if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        element.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
     }
   }, [activeContent]);

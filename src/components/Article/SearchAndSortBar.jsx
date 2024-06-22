@@ -37,7 +37,7 @@ const SearchAndSortBar = ({ entryListRef }) => {
   useEffect(() => {
     const element = document.querySelector(".card-custom-selected-style");
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      element.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } else if (entryListRef.current) {
       entryListRef.current.scrollTo(0, 0);
     }
