@@ -65,7 +65,7 @@ const useEntryActions = () => {
     }
 
     const updatedEntry = { ...entry, status: newStatus };
-    if (activeContent) {
+    if (activeContent && activeContent.id === updatedEntry.id) {
       setActiveContent(updatedEntry);
     }
     setEntries((prev) => updateEntries(prev, updatedEntry));
