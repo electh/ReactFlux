@@ -52,6 +52,7 @@ const filteredFeedsAtom = atom((get) => {
     .filter(
       (feed) =>
         includesIgnoreCase(feed.title, filterString) ||
+        includesIgnoreCase(feed.site_url, filterString) ||
         includesIgnoreCase(feed.feed_url, filterString),
     );
 });
@@ -64,10 +65,11 @@ const tableDataAtom = atom((get) => {
     crawler: feed.crawler,
     disabled: feed.disabled,
     feed_url: feed.feed_url,
+    hidden: feed.hide_globally,
     key: feed.id,
     parsing_error_count: feed.parsing_error_count,
+    site_url: feed.site_url,
     title: feed.title,
-    hidden: feed.hide_globally,
   }));
 });
 
@@ -94,11 +96,12 @@ const FeedList = () => {
     setFeedModalVisible(true);
     feedForm.setFieldsValue({
       category: feed.category.id,
-      crawler: feed.crawler,
       title: feed.title,
-      url: feed.feed_url,
+      siteUrl: feed.site_url,
+      feedUrl: feed.feed_url,
       hidden: feed.hidden,
       disabled: feed.disabled,
+      crawler: feed.crawler,
     });
   };
 
@@ -289,7 +292,7 @@ const FeedList = () => {
     },
 
     !belowMd && {
-      title: "Url",
+      title: "Feed URL",
       dataIndex: "feed_url",
       sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
       render: (feedUrl) => (
@@ -392,7 +395,7 @@ const FeedList = () => {
         >
           <Input.Search
             className="search-input"
-            placeholder="Search feed title or url"
+            placeholder="Search title or site URL or feed URL"
             searchButton
             onChange={setFilterString}
           />
@@ -461,32 +464,22 @@ const FeedList = () => {
             layout="vertical"
             wrapperCol={{ span: 17 }}
             onSubmit={async (values) => {
-              const url = values.url.trim();
               const newDetails = {
-                url,
-                title: values.title,
                 categoryId: values.category,
+                title: values.title,
+                siteUrl: values.siteUrl.trim(),
+                feedUrl: values.feedUrl.trim(),
                 hidden: values.hidden,
                 disabled: values.disabled,
                 isFullText: values.crawler,
               };
-              if (url) {
+              if (newDetails.feedUrl) {
                 await editFeed(selectedFeed.key, newDetails);
               } else {
                 Message.error("Feed URL cannot be empty");
               }
             }}
           >
-            <Form.Item
-              label="Feed URL"
-              field="url"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Please input feed URL" />
-            </Form.Item>
-            <Form.Item label="Title" field="title" rules={[{ required: true }]}>
-              <Input placeholder="Please input feed title" />
-            </Form.Item>
             <Form.Item
               label="Category"
               required
@@ -500,6 +493,23 @@ const FeedList = () => {
                   </Select.Option>
                 ))}
               </Select>
+            </Form.Item>
+            <Form.Item label="Title" field="title" rules={[{ required: true }]}>
+              <Input placeholder="Please input feed title" />
+            </Form.Item>
+            <Form.Item
+              label="Site URL"
+              field="siteUrl"
+              rules={[{ required: true }]}
+            >
+              <Input placeholder="Please input site URL" />
+            </Form.Item>
+            <Form.Item
+              label="Feed URL"
+              field="feedUrl"
+              rules={[{ required: true }]}
+            >
+              <Input placeholder="Please input feed URL" />
             </Form.Item>
             <Form.Item
               label="Hidden"

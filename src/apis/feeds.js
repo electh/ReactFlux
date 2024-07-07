@@ -19,12 +19,14 @@ export const addFeed = async (url, categoryId, isFullText) =>
 export const deleteFeed = async (id) => apiClient.delete(`/v1/feeds/${id}`);
 
 export const updateFeed = async (id, newDetails) => {
-  const { url, title, categoryId, hidden, disabled, isFullText } = newDetails;
+  const { categoryId, title, siteUrl, feedUrl, hidden, disabled, isFullText } =
+    newDetails;
 
   return apiClient.put(`/v1/feeds/${id}`, {
-    feed_url: url,
-    title,
     category_id: categoryId,
+    title,
+    site_url: siteUrl,
+    feed_url: feedUrl,
     hide_globally: hidden,
     disabled,
     crawler: isFullText,
