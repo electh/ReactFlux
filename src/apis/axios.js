@@ -5,7 +5,7 @@ import { getAuth, isValidAuth } from "../utils/auth";
 
 // 创建 axios 实例并设置默认配置
 const apiClient = axios.create({
-  timeout: 3000,
+  timeout: 5000,
   retry: 3, // 默认重试次数
   retryDelay: 1000, // 默认重试间隔
 });
@@ -15,13 +15,12 @@ apiClient.interceptors.request.use(
   (config) => {
     // 在发送请求之前做些什么
     const auth = getAuth();
-    const { server, token, username, password } = auth;
     if (!isValidAuth(auth)) {
       return Promise.reject(new Error("Invalid auth"));
     }
 
+    const { server, token, username, password } = auth;
     config.baseURL = server;
-
     if (token) {
       config.headers["X-Auth-Token"] = token;
     } else {
@@ -29,7 +28,6 @@ apiClient.interceptors.request.use(
     }
 
     // config.metadata = { url: config.url };
-
     return config;
   },
   (error) => {
@@ -38,34 +36,35 @@ apiClient.interceptors.request.use(
   },
 );
 
-const handleRetry = async (error) => {
+// 判断是否需要重试
+const shouldRetry = (error) => {
+  const status = error.response?.status;
+  return error.code === "ECONNABORTED" || (status >= 500 && status <= 599);
+};
+
+// 错误处理和重试
+const onError = async (error) => {
+  if (!shouldRetry(error)) {
+    return Promise.reject(error);
+  }
+
   const { config } = error;
-  // 检查是否配置了重试策略
-  if (!config?.retry) {
+  config.retryCount = config.retryCount || 0;
+  if (config.retryCount >= config.retry) {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("auth");
+      await router.navigate("/login");
+    }
     return Promise.reject(error);
   }
 
-  // 设置重试次数的默认值
-  config.__retryCount = config.__retryCount ?? 0;
-
-  // 检查是否已经达到最大重试次数
-  if (config.__retryCount >= config.retry) {
-    return Promise.reject(error);
-  }
-
-  // 增加重试次数
-  config.__retryCount += 1;
-
-  // 创建一个新的 Promise 来处理重试延时
-  const backoff = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, config.retryDelay ?? 1000); // 重试间隔默认为 1 秒
-  });
-
-  // 等待再次尝试请求
-  await backoff;
-  return apiClient(config); // 返回重新尝试请求的 Promise
+  config.retryCount += 1;
+  const delay = config.retryDelay * 2 ** config.retryCount;
+  console.log(
+    `Retrying request, attempt ${config.retryCount}: waiting for ${delay}ms`,
+  );
+  await new Promise((resolve) => setTimeout(resolve, delay));
+  return apiClient(config);
 };
 
 const handleError = async (error) => {
@@ -98,7 +97,7 @@ apiClient.interceptors.response.use(
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
     try {
-      return await handleRetry(error);
+      return await onError(error);
     } catch (retryError) {
       // 重试失败或不满足重试条件时，处理错误
       return handleError(retryError);
