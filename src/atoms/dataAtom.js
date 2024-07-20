@@ -1,7 +1,5 @@
 import { atom } from "jotai";
-import isURL from "validator/lib/isURL";
 import { atomWithRefreshAndDefault } from "../utils/atom";
-import { getBaseUrl } from "../utils/url";
 import { configAtom } from "./configAtom";
 
 export const isAppDataReadyAtom = atom(false);
@@ -90,9 +88,6 @@ export const filteredFeedsAtom = atom((get) => {
 export const feedsGroupedByIdAtom = atom((get) => {
   const feeds = get(filteredFeedsAtom);
   return feeds.reduce((groupedFeeds, feed) => {
-    if (!isURL(feed.site_url)) {
-      feed.site_url = getBaseUrl(feed.feed_url);
-    }
     const { id } = feed.category;
     if (!groupedFeeds[id]) {
       groupedFeeds[id] = [];
