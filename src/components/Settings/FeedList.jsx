@@ -162,7 +162,7 @@ const FeedList = () => {
       for (const feed of filteredFeeds) {
         const oldHost = new URL(feed.feed_url).hostname;
         const newURL = feed.feed_url.replace(oldHost, newHost);
-        const response = await updateFeed(feed.id, { url: newURL });
+        const response = await updateFeed(feed.id, { feedUrl: newURL });
         setFeeds((feeds) =>
           feeds.map((f) => (f.id === feed.id ? { ...f, ...response.data } : f)),
         );
