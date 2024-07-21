@@ -12,8 +12,14 @@ import "./General.css";
 
 const General = () => {
   const { updateConfig } = useConfig();
-  const { homePage, markReadOnScroll, orderBy, pageSize, showStatus } =
-    useAtomValue(configAtom);
+  const {
+    homePage,
+    markReadOnScroll,
+    orderBy,
+    pageSize,
+    removeDuplicates,
+    showStatus,
+  } = useAtomValue(configAtom);
 
   return (
     <>
@@ -103,6 +109,29 @@ const General = () => {
             onChange={(value) => updateConfig({ pageSize: value })}
             size="small"
           />
+        </div>
+      </div>
+      <Divider />
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            Remove duplicate articles
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            Automatically remove duplicate articles based on:
+          </Typography.Text>
+        </div>
+        <div>
+          <Select
+            className="input-select"
+            onChange={(value) => updateConfig({ removeDuplicates: value })}
+            placeholder="Select option"
+            value={removeDuplicates}
+          >
+            <Select.Option value="none">None</Select.Option>
+            <Select.Option value="title">Title</Select.Option>
+            <Select.Option value="url">URL</Select.Option>
+          </Select>
         </div>
       </div>
       <Divider />

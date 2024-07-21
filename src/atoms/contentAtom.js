@@ -1,6 +1,10 @@
 import { atom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
-import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
+import {
+  filterEntries,
+  filterEntriesByVisibility,
+  removeDuplicateEntries,
+} from "../utils/filter";
 import { configAtom } from "./configAtom";
 import { hiddenFeedIdsAtom } from "./dataAtom";
 
@@ -45,15 +49,16 @@ export const filteredEntriesAtom = atom((get) => {
   const filteredEntries = filterEntries(entries, filterType, filterString);
 
   const infoFrom = get(infoFromAtom);
-  const { showAllFeeds } = get(configAtom);
+  const { removeDuplicates, showAllFeeds } = get(configAtom);
   const hiddenFeedIds = get(hiddenFeedIdsAtom);
 
-  return filterEntriesByVisibility(
+  const visibleEntries = filterEntriesByVisibility(
     filteredEntries,
     infoFrom,
     showAllFeeds,
     hiddenFeedIds,
   );
+  return removeDuplicateEntries(visibleEntries, removeDuplicates);
 });
 // 初始 loading
 export const loadingAtom = atom(true);

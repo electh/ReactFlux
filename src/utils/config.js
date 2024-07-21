@@ -7,6 +7,7 @@ export const defaultConfig = {
   orderBy: "created_at",
   orderDirection: "desc",
   pageSize: 100,
+  removeDuplicates: "none",
   showAllFeeds: false,
   showDetailedRelativeTime: false,
   showFeedIcon: true,
