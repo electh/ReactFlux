@@ -1,3 +1,5 @@
+import { filterByQuery } from "./kmp";
+
 export const includesIgnoreCase = (text, searchText) => {
   return text.toLowerCase().includes(searchText.toLowerCase());
 };
@@ -7,10 +9,7 @@ export const filterEntries = (entries, filterType, filterString) => {
     return entries;
   }
 
-  const isRelevantEntry = (entry) =>
-    includesIgnoreCase(entry[filterType], filterString);
-
-  return entries.filter(isRelevantEntry);
+  return filterByQuery(entries, filterString, [filterType]);
 };
 
 export const filterEntriesByVisibility = (
