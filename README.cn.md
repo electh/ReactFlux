@@ -1,6 +1,6 @@
 # ReactFlux
 
-Read this in other languages: [English](README.md), [中文](README.cn.md)
+阅读其他语言版本： [English](README.md), [中文](README.cn.md)
 
 ## 概述
 
@@ -96,4 +96,4 @@ docker run -p 2000:2000 electh/reactflux
 
 ## 星标历史
 
-[![ 星标历史](https://starchart.cc/electh/ReactFlux.svg)](https://starchart.cc/electh/ReactFlux)
+[![星标历史](https://starchart.cc/electh/ReactFlux.svg)](https://starchart.cc/electh/ReactFlux)
