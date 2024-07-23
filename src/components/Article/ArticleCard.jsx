@@ -7,7 +7,7 @@ import {
 } from "@arco-design/web-react/icon";
 import { animated, useSpring } from "@react-spring/web";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
 
@@ -157,15 +157,6 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
   });
 
   const styles = useSpring({ x: swipeOffset });
-
-  useEffect(() => {
-    if (activeContent) {
-      const element = document.querySelector(".card-custom-selected-style");
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }
-    }
-  }, [activeContent]);
 
   return (
     <div {...handlers} className="article-card" key={entry.id}>

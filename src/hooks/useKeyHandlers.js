@@ -29,6 +29,7 @@ const useKeyHandlers = (handleEntryClick) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [checkNext, setCheckNext] = useState(false);
+  const [scrollToCard, setScrollToCard] = useState(false);
 
   useEffect(() => {
     if (checkNext && !loadingMore) {
@@ -37,6 +38,16 @@ const useKeyHandlers = (handleEntryClick) => {
       navigateToNextArticle();
     }
   }, [checkNext, loadingMore]);
+
+  useEffect(() => {
+    if (scrollToCard) {
+      const card = document.querySelector(".card-custom-selected-style");
+      if (card) {
+        card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      setScrollToCard(false);
+    }
+  }, [scrollToCard]);
 
   const exitDetailView = (entryListRef, entryDetailRef) => {
     if (!activeContent) {
@@ -68,7 +79,9 @@ const useKeyHandlers = (handleEntryClick) => {
         prevEntry = filteredEntries[currentIndex - 1];
       }
       if (prevEntry) {
-        handleEntryClick(prevEntry);
+        handleEntryClick(prevEntry).then(() => {
+          setScrollToCard(true);
+        });
       }
     }
   };
@@ -109,7 +122,9 @@ const useKeyHandlers = (handleEntryClick) => {
         nextEntry = filteredEntries[currentIndex + 1];
       }
       if (nextEntry) {
-        handleEntryClick(nextEntry);
+        handleEntryClick(nextEntry).then(() => {
+          setScrollToCard(true);
+        });
         setCheckNext(false);
       }
     }

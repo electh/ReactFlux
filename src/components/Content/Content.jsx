@@ -81,23 +81,32 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     refreshArticleList();
   }, [info, orderDirection]);
 
-  const handleEntryClick = async (entry) => {
-    setActiveContent(null);
+  const handleEntryClick = (entry) => {
+    return new Promise((resolve, reject) => {
+      setActiveContent(null);
 
-    setTimeout(() => {
-      setActiveContent({ ...entry, status: "read" });
-    }, 200);
+      if (entry.status !== "unread") {
+        setTimeout(() => {
+          setActiveContent({ ...entry, status: "read" });
+          resolve();
+        }, 200);
+        return;
+      }
 
-    if (entry.status === "unread") {
       setTimeout(() => {
+        setActiveContent({ ...entry, status: "read" });
         handleEntryStatusUpdate(entry, "read");
+        updateEntriesStatus([entry.id], "read")
+          .then(resolve)
+          .catch((error) => {
+            Message.error(
+              "Failed to mark entry as read, please try again later",
+            );
+            handleEntryStatusUpdate(entry, "unread");
+            reject(error);
+          });
       }, 200);
-
-      updateEntriesStatus([entry.id], "read").catch(() => {
-        Message.error("Failed to mark entry as read, please try again later");
-        handleEntryStatusUpdate(entry, "unread");
-      });
-    }
+    });
   };
 
   const {
