@@ -31,6 +31,11 @@ export const removeDuplicateEntries = (entries, option) => {
     return entries;
   }
 
+  const originalOrder = entries.map((entry, index) => ({
+    id: entry.id,
+    index,
+  }));
+
   const seenTitles = new Set();
   const seenURLs = new Set();
   const duplicates = [];
@@ -39,22 +44,23 @@ export const removeDuplicateEntries = (entries, option) => {
     .filter((entry) => entry.status === "unread")
     .map((entry) => entry.id);
 
-  const uniqueEntries = entries.filter((entry) => {
-    const { title, url, id } = entry;
-    if (option === "title" && seenTitles.has(title)) {
-      duplicates.push(id);
-      return false;
-    }
+  const uniqueEntries = entries
+    .slice()
+    .sort((a, b) => a.id - b.id)
+    .filter((entry) => {
+      const { title, url, id } = entry;
+      if (
+        (option === "title" && seenTitles.has(title)) ||
+        (option === "url" && seenURLs.has(url))
+      ) {
+        duplicates.push(id);
+        return false;
+      }
 
-    if (option === "url" && seenURLs.has(url)) {
-      duplicates.push(id);
-      return false;
-    }
-
-    seenTitles.add(title);
-    seenURLs.add(url);
-    return true;
-  });
+      seenTitles.add(title);
+      seenURLs.add(url);
+      return true;
+    });
 
   const unreadDuplicates = duplicates.filter((id) =>
     unreadEntryIds.includes(id),
@@ -65,5 +71,9 @@ export const removeDuplicateEntries = (entries, option) => {
     });
   }
 
-  return uniqueEntries;
+  return uniqueEntries.sort((a, b) => {
+    const indexA = originalOrder.find((order) => order.id === a.id).index;
+    const indexB = originalOrder.find((order) => order.id === b.id).index;
+    return indexA - indexB;
+  });
 };
