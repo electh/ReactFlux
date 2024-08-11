@@ -34,42 +34,76 @@ const useEntryActions = () => {
   const setUnreadEntries = useSetAtom(unreadEntriesAtom);
   const setUnreadOffset = useSetAtom(unreadOffsetAtom);
 
-  const updateEntries = (entries, updatedEntry) =>
-    entries.map((entry) =>
-      entry.id === updatedEntry.id ? updatedEntry : entry,
-    );
+  const updateEntries = (entries, updatedEntries) => {
+    const updatedEntryIds = updatedEntries.map((entry) => entry.id);
+    return entries.map((entry) => {
+      if (updatedEntryIds.includes(entry.id)) {
+        const updatedEntry = updatedEntries.find((e) => e.id === entry.id);
+        return updatedEntry || entry;
+      }
+      return entry;
+    });
+  };
 
   const handleEntryStatusUpdate = (entry, newStatus) => {
-    const feedId = entry.feed.id;
-    const isRecent = checkIsInLast24Hours(entry.published_at);
+    handleEntriesStatusUpdate([entry], newStatus);
+  };
+
+  const handleEntriesStatusUpdate = (entries, newStatus) => {
+    const feedCountChanges = {};
+    let unreadTodayCountChange = 0;
 
     if (newStatus === "read") {
-      setUnreadInfo((prev) => ({
-        ...prev,
-        [feedId]: Math.max(0, prev[feedId] - 1),
-      }));
-      setUnreadCount((prev) => Math.max(0, prev - 1));
-      setUnreadOffset((prev) => Math.max(0, prev - 1));
-      setHistoryCount((prev) => prev + 1);
-      if (isRecent) {
-        setUnreadTodayCount((prev) => Math.max(0, prev - 1));
-      }
+      setUnreadCount((prev) => Math.max(0, prev - entries.length));
+      setUnreadOffset((prev) => Math.max(0, prev - entries.length));
+      setHistoryCount((prev) => prev + entries.length);
     } else {
-      setUnreadInfo((prev) => ({ ...prev, [feedId]: prev[feedId] + 1 }));
-      setUnreadCount((prev) => prev + 1);
-      setUnreadOffset((prev) => prev + 1);
-      setHistoryCount((prev) => Math.max(0, prev - 1));
-      if (isRecent) {
-        setUnreadTodayCount((prev) => prev + 1);
+      setUnreadCount((prev) => prev + entries.length);
+      setUnreadOffset((prev) => prev + entries.length);
+      setHistoryCount((prev) => Math.max(0, prev - entries.length));
+    }
+
+    for (const entry of entries) {
+      const feedId = entry.feed.id;
+      const isRecent = checkIsInLast24Hours(entry.published_at);
+
+      if (newStatus === "read") {
+        feedCountChanges[feedId] = (feedCountChanges[feedId] || 0) - 1;
+        if (isRecent) {
+          unreadTodayCountChange -= 1;
+        }
+      } else {
+        feedCountChanges[feedId] = (feedCountChanges[feedId] || 0) + 1;
+        if (isRecent) {
+          unreadTodayCountChange += 1;
+        }
       }
     }
 
-    const updatedEntry = { ...entry, status: newStatus };
-    if (activeContent?.id === updatedEntry.id) {
-      setActiveContent(updatedEntry);
+    setUnreadInfo((prev) => {
+      const updatedInfo = { ...prev };
+      for (const [feedId, change] of Object.entries(feedCountChanges)) {
+        updatedInfo[feedId] = Math.max(0, (updatedInfo[feedId] || 0) + change);
+      }
+      return updatedInfo;
+    });
+
+    setUnreadTodayCount((prev) => Math.max(0, prev + unreadTodayCountChange));
+
+    const updatedEntries = entries.map((entry) => ({
+      ...entry,
+      status: newStatus,
+    }));
+
+    const activeEntry = updatedEntries.find(
+      (entry) => entry.id === activeContent?.id,
+    );
+    if (activeEntry) {
+      setActiveContent(activeEntry);
     }
-    setEntries((prev) => updateEntries(prev, updatedEntry));
-    setUnreadEntries((prev) => updateEntries(prev, updatedEntry));
+
+    setEntries((prev) => updateEntries(prev, updatedEntries));
+    setUnreadEntries((prev) => updateEntries(prev, updatedEntries));
   };
 
   const handleEntryStarredUpdate = (entry, newStarred) => {
@@ -89,8 +123,8 @@ const useEntryActions = () => {
     if (activeContent) {
       setActiveContent(updatedEntry);
     }
-    setEntries((prev) => updateEntries(prev, updatedEntry));
-    setUnreadEntries((prev) => updateEntries(prev, updatedEntry));
+    setEntries((prev) => updateEntries(prev, [updatedEntry]));
+    setUnreadEntries((prev) => updateEntries(prev, [updatedEntry]));
   };
 
   const handleToggleStatus = async (entry) => {
