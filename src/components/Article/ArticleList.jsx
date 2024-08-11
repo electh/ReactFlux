@@ -43,7 +43,7 @@ const ArticleList = forwardRef(
     const items = virtualizer.getVirtualItems();
 
     useEffect(() => {
-      let interval;
+      let timeout;
       if (
         inView &&
         !loading &&
@@ -54,16 +54,12 @@ const ArticleList = forwardRef(
           await handleLoadMore(getEntries);
         };
 
-        executeLoadMore();
-
-        interval = setInterval(executeLoadMore, 1000);
-      } else if (interval) {
-        clearInterval(interval);
+        timeout = setTimeout(executeLoadMore, 500);
       }
 
       return () => {
-        if (interval) {
-          clearInterval(interval);
+        if (timeout) {
+          clearTimeout(timeout);
         }
       };
     }, [
