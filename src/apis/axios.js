@@ -38,8 +38,10 @@ apiClient.interceptors.request.use(
 
 // 判断是否需要重试
 const shouldRetry = (error) => {
-  const status = error.response?.status;
-  return error.code === "ECONNABORTED" || (status >= 500 && status <= 599);
+  const statusCode = error.response?.status;
+  return (
+    error.code === "ECONNABORTED" || (statusCode >= 500 && statusCode < 600)
+  );
 };
 
 // 错误处理和重试
@@ -64,11 +66,14 @@ const onError = async (error) => {
   }
 
   config.retryCount += 1;
-  const delay = config.retryDelay * 2 ** config.retryCount;
-  console.log(
-    `Retrying request, attempt ${config.retryCount}: waiting for ${delay}ms`,
-  );
-  await new Promise((resolve) => setTimeout(resolve, delay));
+  const statusCode = error.response?.status;
+  if (statusCode >= 500 && statusCode < 600) {
+    const delay = config.retryDelay * 2 ** config.retryCount;
+    console.log(`Retry attempt ${config.retryCount}: waiting for ${delay}ms`);
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  } else {
+    console.log(`Retry attempt ${config.retryCount}`);
+  }
   return apiClient(config);
 };
 
