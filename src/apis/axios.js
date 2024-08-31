@@ -49,6 +49,11 @@ const onError = async (error) => {
   }
 
   const { config } = error;
+
+  if (error.code === "ECONNABORTED") {
+    config.timeout *= 2;
+  }
+
   config.retryCount = config.retryCount || 0;
   if (config.retryCount >= config.retry) {
     if (error.response?.status === 401) {
