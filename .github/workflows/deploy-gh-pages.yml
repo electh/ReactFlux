@@ -17,11 +17,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Install and Build
         run: |
-          npm install
-          npm ci
-          npm run build
+          pnpm install --frozen-lockfile
+          pnpm run build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4

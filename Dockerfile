@@ -2,25 +2,27 @@
 # Specify the version to ensure consistent builds
 FROM node:21-alpine AS build
 
+# Install pnpm globally
+RUN npm install -g pnpm
+
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the package.json files
-COPY package*.json ./
+# Copy the package.json and pnpm-lock.yaml files
+COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the code
 COPY . .
 
 # Build the project
-RUN npm run build
+RUN pnpm run build
 
 # Stage 2: Run the server using Caddy
 # Specify the version for consistency
 FROM caddy:2-alpine
-
 
 # Copy built assets from the builder stage
 COPY --from=build /app/build /srv
