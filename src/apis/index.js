@@ -1,4 +1,4 @@
-import { apiClient } from "./axios";
+import { apiClient } from "./ofetch";
 
 export * from "./categories";
 export * from "./entries";

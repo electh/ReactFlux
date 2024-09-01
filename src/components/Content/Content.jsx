@@ -160,16 +160,16 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const updateUI = (articles, articlesUnread, responseAll, responseUnread) => {
     setEntries(articles);
     setUnreadEntries(articlesUnread);
-    setTotal(responseAll.data.total);
-    setLoadMoreVisible(articles.length < responseAll.data.total);
-    setUnreadCount(responseUnread.data.total);
-    setLoadMoreUnreadVisible(articlesUnread.length < responseUnread.data.total);
+    setTotal(responseAll.total);
+    setLoadMoreVisible(articles.length < responseAll.total);
+    setUnreadCount(responseUnread.total);
+    setLoadMoreUnreadVisible(articlesUnread.length < responseUnread.total);
   };
 
   const handleResponses = (responseAll, responseUnread) => {
-    if (responseAll?.data?.entries && responseUnread?.data?.total >= 0) {
-      const articles = responseAll.data.entries.map(parseFirstImage);
-      const articlesUnread = responseUnread.data.entries.map(parseFirstImage);
+    if (responseAll?.entries && responseUnread?.total >= 0) {
+      const articles = responseAll.entries.map(parseFirstImage);
+      const articlesUnread = responseUnread.entries.map(parseFirstImage);
       updateUI(articles, articlesUnread, responseAll, responseUnread);
     }
   };

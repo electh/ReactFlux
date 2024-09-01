@@ -62,8 +62,8 @@ const useLoadMore = () => {
       } else {
         response = await getEntries(unreadOffset, filterStatus);
       }
-      if (response?.data?.entries) {
-        const newEntries = response.data.entries.map(parseFirstImage);
+      if (response?.entries) {
+        const newEntries = response.entries.map(parseFirstImage);
         updateEntries(newEntries);
       }
     } catch (error) {

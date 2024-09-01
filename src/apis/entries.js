@@ -1,6 +1,6 @@
 import { getConfig } from "../utils/config";
 import { get24HoursAgoTimestamp } from "../utils/date";
-import { apiClient } from "./axios";
+import { apiClient } from "./ofetch";
 
 export const updateEntriesStatus = async (entryIds, newStatus) =>
   apiClient.put("/v1/entries", {

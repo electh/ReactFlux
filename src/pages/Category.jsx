@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 
 import { useAtomValue } from "jotai";
 import { buildEntriesUrl, markCategoryAsRead } from "../apis";
-import { apiClient } from "../apis/axios";
+import { apiClient } from "../apis/ofetch";
 import { configAtom } from "../atoms/configAtom";
 import Content from "../components/Content/Content";
 

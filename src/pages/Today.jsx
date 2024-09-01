@@ -4,12 +4,12 @@ import Content from "../components/Content/Content";
 const Today = () => {
   const markTodayAsRead = async () => {
     const unreadTodayResponse = await getTodayEntries(0, "unread");
-    const unreadTodayCount = unreadTodayResponse.data.total;
-    let unreadEntries = unreadTodayResponse.data.entries;
+    const unreadTodayCount = unreadTodayResponse.total;
+    let unreadEntries = unreadTodayResponse.entries;
 
     if (unreadTodayCount > unreadEntries.length) {
       unreadEntries = getTodayEntries(0, "unread", unreadTodayCount).then(
-        (response) => response.data.entries,
+        (response) => response.entries,
       );
     }
 

@@ -164,7 +164,7 @@ const FeedList = () => {
         const newURL = feed.feed_url.replace(oldHost, newHost);
         const response = await updateFeed(feed.id, { feedUrl: newURL });
         setFeeds((feeds) =>
-          feeds.map((f) => (f.id === feed.id ? { ...f, ...response.data } : f)),
+          feeds.map((f) => (f.id === feed.id ? { ...f, ...response } : f)),
         );
       }
       Message.success("Successfully bulk updated");
@@ -366,7 +366,7 @@ const FeedList = () => {
     try {
       const response = await updateFeed(feedId, newDetails);
       setFeeds((feeds) =>
-        feeds.map((f) => (f.id === feedId ? { ...f, ...response.data } : f)),
+        feeds.map((f) => (f.id === feedId ? { ...f, ...response } : f)),
       );
       Message.success("Feed updated successfully");
       setFeedModalVisible(false);

@@ -158,7 +158,7 @@ const useEntryActions = () => {
     try {
       const response = await getOriginalContent(activeContent.id);
       Message.success("Fetched content successfully");
-      setActiveContent({ ...activeContent, content: response.data.content });
+      setActiveContent({ ...activeContent, content: response.content });
     } catch (error) {
       Message.error("Failed to fetch content, please try again later");
     }

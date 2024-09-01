@@ -41,7 +41,7 @@ const fetchDataAtom = atomWithRefreshAndDefault(
       historyData,
       feedsData,
       categoriesData,
-    ] = responses.map((res) => res.data);
+    ] = responses;
 
     const unreadInfo = feedsData.reduce((acc, feed) => {
       acc[feed.id] = unreadInfoData.unreads[feed.id] ?? 0;

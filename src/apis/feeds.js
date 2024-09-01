@@ -1,4 +1,4 @@
-import { apiClient } from "./axios";
+import { apiClient } from "./ofetch";
 
 export const getFeeds = async () => apiClient.get("/v1/feeds");
 
