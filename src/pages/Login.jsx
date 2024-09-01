@@ -9,7 +9,7 @@ import {
 } from "@arco-design/web-react";
 import useForm from "@arco-design/web-react/es/Form/useForm";
 import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon";
-import axios from "axios";
+import { fetch } from "ofetch";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import background from "../imgs/background.jpg";
@@ -34,13 +34,11 @@ const Login = () => {
     setLoading(true);
     const { server, token, username, password } = loginForm.getFieldsValue();
     try {
-      const response = await axios({
+      const response = await fetch({
         url: "/v1/me",
-        method: "get",
         baseURL: server,
         headers: { "X-Auth-Token": token },
         auth: { username, password },
-        timeout: 5000,
       });
       if (response.status === 200) {
         Message.success("Success");
