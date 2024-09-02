@@ -34,11 +34,11 @@ const Login = () => {
     setLoading(true);
     const { server, token, username, password } = loginForm.getFieldsValue();
     try {
-      const response = await fetch({
-        url: "/v1/me",
+      const response = await fetch("v1/me", {
         baseURL: server,
-        headers: { "X-Auth-Token": token },
-        auth: { username, password },
+        headers: token
+          ? { "X-Auth-Token": token }
+          : { Authorization: `Basic ${btoa(`${username}:${password}`)}` },
       });
       if (response.status === 200) {
         Message.success("Success");

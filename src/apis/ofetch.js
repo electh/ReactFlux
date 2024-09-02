@@ -14,12 +14,9 @@ const createApiClient = () => {
       }
       const { server, token, username, password } = auth;
       options.baseURL = server;
-      if (token) {
-        options.headers = options.headers || {};
-        options.headers["X-Auth-Token"] = token;
-      } else {
-        options.auth = { username, password };
-      }
+      options.headers = token
+        ? { "X-Auth-Token": token }
+        : { Authorization: `Basic ${btoa(`${username}:${password}`)}` };
     },
     onRequestError({ request, options, error }) {
       // 处理请求错误
