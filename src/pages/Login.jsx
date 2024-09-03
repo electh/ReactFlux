@@ -9,7 +9,7 @@ import {
 } from "@arco-design/web-react";
 import useForm from "@arco-design/web-react/es/Form/useForm";
 import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon";
-import { fetch } from "ofetch";
+import { ofetch } from "ofetch";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import background from "../imgs/background.jpg";
@@ -34,7 +34,7 @@ const Login = () => {
     setLoading(true);
     const { server, token, username, password } = loginForm.getFieldsValue();
     try {
-      const response = await fetch("v1/me", {
+      const response = await ofetch.raw("v1/me", {
         baseURL: server,
         headers: token
           ? { "X-Auth-Token": token }
