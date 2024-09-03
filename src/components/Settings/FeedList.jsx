@@ -26,7 +26,7 @@ import { generateRelativeTime, getUTCDate } from "../../utils/date";
 import { includesIgnoreCase } from "../../utils/filter";
 
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import { categoriesAtom, feedsWithUnreadAtom } from "../../atoms/dataAtom";
+import { categoriesAtom, feedsDataAtom } from "../../atoms/dataAtom";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { sleep } from "../../utils/time";
 import "./FeedList.css";
@@ -36,7 +36,7 @@ const { Paragraph } = Typography;
 const filterStringAtom = atom("");
 
 const filteredFeedsAtom = atom((get) => {
-  const feeds = get(feedsWithUnreadAtom);
+  const feeds = get(feedsDataAtom);
   const filterString = get(filterStringAtom);
   return [...feeds]
     .sort((a, b) => {
@@ -73,6 +73,17 @@ const tableDataAtom = atom((get) => {
   }));
 });
 
+const updateFeedStatus = (feed, isSuccessful, targetFeedId = null) => {
+  if (targetFeedId === null || targetFeedId === feed.id) {
+    return {
+      ...feed,
+      parsing_error_count: isSuccessful ? 0 : feed.parsing_error_count + 1,
+      checked_at: getUTCDate(),
+    };
+  }
+  return feed;
+};
+
 const FeedList = () => {
   const [bulkUpdateModalVisible, setBulkUpdateModalVisible] = useState(false);
   const [feedForm] = Form.useForm();
@@ -82,7 +93,7 @@ const FeedList = () => {
 
   const categories = useAtomValue(categoriesAtom);
   const filteredFeeds = useAtomValue(filteredFeedsAtom);
-  const setFeeds = useSetAtom(feedsWithUnreadAtom);
+  const setFeeds = useSetAtom(feedsDataAtom);
   const setFilterString = useSetAtom(filterStringAtom);
   const tableData = useAtomValue(tableDataAtom);
   const { belowMd } = useScreenWidth();
@@ -105,69 +116,51 @@ const FeedList = () => {
     });
   };
 
-  const handleRefresh = async (
+  const handleFeedRefresh = async (
     refreshFunc,
-    updateFeeds,
-    showMessage = true,
+    feedUpdater,
+    displayMessage = true,
   ) => {
     try {
       const response = await refreshFunc();
       const isSuccessful = response.status === 204;
       const message = isSuccessful ? "Refreshed" : "Failed to refresh";
 
-      if (showMessage) {
-        if (isSuccessful) {
-          Message.success(message);
-        } else {
-          Message.error(message);
-        }
+      if (displayMessage) {
+        isSuccessful ? Message.success(message) : Message.error(message);
       }
 
-      setFeeds((feeds) => feeds.map((f) => updateFeeds(f, isSuccessful)));
+      setFeeds((feeds) => feeds.map((feed) => feedUpdater(feed, isSuccessful)));
       return isSuccessful;
     } catch (error) {
-      if (showMessage) {
+      if (displayMessage) {
         Message.error("Failed to refresh");
       }
-      setFeeds((feeds) => feeds.map((f) => updateFeeds(f, false)));
+      setFeeds((feeds) => feeds.map((feed) => feedUpdater(feed, false)));
       return false;
     }
   };
 
-  const handleRefreshFeed = async (feed, showMessage = true) => {
+  const refreshSingleFeed = async (feed, displayMessage = true) => {
     const feedId = feed.id || feed.key;
-
-    const updateFeeds = (currentFeed, isSuccessful) => {
-      if (currentFeed.id === feedId) {
-        return {
-          ...currentFeed,
-          parsing_error_count: isSuccessful
-            ? 0
-            : currentFeed.parsing_error_count + 1,
-          checked_at: getUTCDate(),
-        };
-      }
-      return currentFeed;
-    };
-
-    return await handleRefresh(
+    return await handleFeedRefresh(
       () => refreshFeed(feedId),
-      updateFeeds,
-      showMessage,
+      (feed, isSuccessful) => updateFeedStatus(feed, isSuccessful, feedId),
+      displayMessage,
     );
   };
 
-  const handleBulkUpdateHosts = async () => {
+  const bulkUpdateFeedHosts = async () => {
     try {
       for (const feed of filteredFeeds) {
         const oldHost = new URL(feed.feed_url).hostname;
         const newURL = feed.feed_url.replace(oldHost, newHost);
-        const response = await updateFeed(feed.id, { feedUrl: newURL });
+        const data = await updateFeed(feed.id, { feedUrl: newURL });
         setFeeds((feeds) =>
-          feeds.map((f) => (f.id === feed.id ? { ...f, ...response } : f)),
+          feeds.map((f) => (f.id === feed.id ? { ...f, ...data } : f)),
         );
       }
-      Message.success("Successfully bulk updated");
+      Message.success("Bulk update successfully");
       setBulkUpdateModalVisible(false);
     } catch (error) {
       Message.error("Failed to bulk update, please try again");
@@ -177,27 +170,23 @@ const FeedList = () => {
   const RefreshModal = () => {
     const [visible, setVisible] = useState(false);
 
-    const updateFeeds = (f, isSuccessful) => ({
-      ...f,
-      parsing_error_count: isSuccessful ? 0 : f.parsing_error_count + 1,
-      checked_at: getUTCDate(),
-    });
-
-    const handleRefreshAllFeeds = async () => {
+    const refreshAllFeeds = async () => {
       setVisible(false);
-      await handleRefresh(refreshAllFeed, updateFeeds);
+      await handleFeedRefresh(refreshAllFeed, updateFeedStatus);
     };
 
     const handleRefreshErrorFeeds = async () => {
       setVisible(false);
-      const errorFeeds = filteredFeeds.filter((f) => f.parsing_error_count > 0);
+      const errorFeeds = filteredFeeds.filter(
+        (feed) => feed.parsing_error_count > 0,
+      );
       Message.success("Starting refresh of error feeds, please wait");
 
       let successCount = 0;
       let failureCount = 0;
 
       for (const feed of errorFeeds) {
-        const isSuccessful = await handleRefreshFeed(feed, false);
+        const isSuccessful = await refreshSingleFeed(feed, false);
         if (isSuccessful) {
           successCount++;
         } else {
@@ -234,7 +223,7 @@ const FeedList = () => {
             >
               Error Feeds
             </Button>,
-            <Button key="all" onClick={handleRefreshAllFeeds} type="primary">
+            <Button key="all" onClick={refreshAllFeeds} type="primary">
               All Feeds
             </Button>,
           ]}
@@ -347,7 +336,7 @@ const FeedList = () => {
           <button
             aria-label="Refresh this feed"
             className="list-item-action"
-            onClick={() => handleRefreshFeed(record)}
+            onClick={() => refreshSingleFeed(record)}
             type="button"
           >
             <IconRefresh />
@@ -369,9 +358,9 @@ const FeedList = () => {
 
   const editFeed = async (feedId, newDetails) => {
     try {
-      const response = await updateFeed(feedId, newDetails);
+      const data = await updateFeed(feedId, newDetails);
       setFeeds((feeds) =>
-        feeds.map((f) => (f.id === feedId ? { ...f, ...response } : f)),
+        feeds.map((feed) => (feed.id === feedId ? { ...feed, ...data } : feed)),
       );
       Message.success("Feed updated successfully");
       setFeedModalVisible(false);
@@ -420,7 +409,7 @@ const FeedList = () => {
           />
           <Modal
             className="edit-modal"
-            onOk={handleBulkUpdateHosts}
+            onOk={bulkUpdateFeedHosts}
             title="Bulk Update Hosts"
             visible={bulkUpdateModalVisible}
             onCancel={() => {

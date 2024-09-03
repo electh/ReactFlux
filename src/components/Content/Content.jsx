@@ -202,7 +202,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setOffset(0);
     setUnreadOffset(0);
     if (!isAppDataReady) {
-      fetchData();
+      await fetchData();
       return;
     }
     await getArticleList();

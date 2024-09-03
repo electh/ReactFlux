@@ -17,33 +17,3 @@ export const atomWithLocalStorage = (key, defaultValue) => {
     },
   );
 };
-
-export const atomWithRefreshAndDefault = (refreshAtom, getDefaultValue) => {
-  const stateAtom = atom({ refresh: null, value: null });
-
-  return atom(
-    (get) => {
-      const { refresh, value } = get(stateAtom);
-      const currentRefresh = get(refreshAtom);
-
-      if (value !== null && refresh === currentRefresh) {
-        return value;
-      }
-      return getDefaultValue(get);
-    },
-    (get, set, update) => {
-      let newValue;
-      const { refresh, value } = get(stateAtom);
-      const currentRefresh = get(refreshAtom);
-      const isCurrent = value !== null && refresh === currentRefresh;
-
-      if (typeof update === "function") {
-        newValue = update(isCurrent ? value : getDefaultValue(get));
-      } else {
-        newValue = update;
-      }
-
-      set(stateAtom, { refresh: currentRefresh, value: newValue });
-    },
-  );
-};

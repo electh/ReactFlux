@@ -55,7 +55,7 @@ const AddFeedModal = () => {
     setFeedModalLoading(true);
     try {
       await addFeed(url, categoryId, isFullText);
-      fetchData();
+      await fetchData();
       Message.success("Added a feed successfully");
       setAddFeedModalVisible(false);
       feedForm.resetFields();

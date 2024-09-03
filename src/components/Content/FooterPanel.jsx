@@ -31,7 +31,7 @@ const FooterPanel = forwardRef(
     const handleMarkAllAsRead = async () => {
       try {
         await markAllAsRead();
-        fetchData();
+        await fetchData();
         setEntries((prev) =>
           prev.map((entry) => ({ ...entry, status: "read" })),
         );

@@ -1,6 +1,5 @@
 import { atom } from "jotai";
 import { proxy } from "valtio";
-import { atomWithRefreshAndDefault } from "../utils/atom";
 import { atomWithProxy } from "../utils/atomWithProxy";
 import { configAtom } from "./configAtom";
 
@@ -20,47 +19,39 @@ export const unreadTodayCountAtom = atomWithProxy(
 export const starredCountAtom = atomWithProxy(dataState, "starredCount");
 export const historyCountAtom = atomWithProxy(dataState, "historyCount");
 
-export const feedsRefreshAtom = atom(0);
 export const feedsDataAtom = atom([]);
-export const feedsWithUnreadAtom = atomWithRefreshAndDefault(
-  feedsRefreshAtom,
-  (get) => {
-    const unreadInfo = get(unreadInfoAtom);
-    const feeds = get(feedsDataAtom);
-    return feeds.map((feed) => ({
-      ...feed,
-      unreadCount: unreadInfo[feed.id],
-    }));
-  },
-);
+export const feedsWithUnreadAtom = atom((get) => {
+  const unreadInfo = get(unreadInfoAtom);
+  const feeds = get(feedsDataAtom);
+  return feeds.map((feed) => ({
+    ...feed,
+    unreadCount: unreadInfo[feed.id],
+  }));
+});
 
 export const feedsAtom = atom((get) => {
   const feedsWithUnread = get(feedsWithUnreadAtom);
   return feedsWithUnread.sort((a, b) => a.title.localeCompare(b.title, "en"));
 });
 
-export const categoriesRefreshAtom = atom(0);
 export const categoriesDataAtom = atom([]);
-export const categoriesWithUnreadAtom = atomWithRefreshAndDefault(
-  categoriesRefreshAtom,
-  (get) => {
-    const feedsWithUnread = get(feedsWithUnreadAtom);
-    const categories = get(categoriesDataAtom);
-    return categories.map((category) => {
-      const feedsInCategory = feedsWithUnread.filter(
-        (feed) => feed.category.id === category.id,
-      );
-      return {
-        ...category,
-        unreadCount: feedsInCategory.reduce(
-          (acc, feed) => acc + feed.unreadCount,
-          0,
-        ),
-        feedCount: feedsInCategory.length,
-      };
-    });
-  },
-);
+export const categoriesWithUnreadAtom = atom((get) => {
+  const feedsWithUnread = get(feedsWithUnreadAtom);
+  const categories = get(categoriesDataAtom);
+  return categories.map((category) => {
+    const feedsInCategory = feedsWithUnread.filter(
+      (feed) => feed.category.id === category.id,
+    );
+    return {
+      ...category,
+      unreadCount: feedsInCategory.reduce(
+        (acc, feed) => acc + feed.unreadCount,
+        0,
+      ),
+      feedCount: feedsInCategory.length,
+    };
+  });
+});
 
 export const categoriesAtom = atom((get) => {
   const categoriesWithUnread = get(categoriesWithUnreadAtom);

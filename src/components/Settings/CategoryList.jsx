@@ -13,8 +13,8 @@ import { addCategory, deleteCategory, updateCategory } from "../../apis";
 
 import {
   categoriesAtom,
-  categoriesWithUnreadAtom,
-  feedsWithUnreadAtom,
+  categoriesDataAtom,
+  feedsDataAtom,
 } from "../../atoms/dataAtom";
 
 import { useAtomValue, useSetAtom } from "jotai";
@@ -28,8 +28,8 @@ const CategoryList = () => {
   const [showAddInput, setShowAddInput] = useState(false);
 
   const categories = useAtomValue(categoriesAtom);
-  const setCategories = useSetAtom(categoriesWithUnreadAtom);
-  const setFeeds = useSetAtom(feedsWithUnreadAtom);
+  const setCategories = useSetAtom(categoriesDataAtom);
+  const setFeeds = useSetAtom(feedsDataAtom);
 
   const addNewCategory = async () => {
     if (!inputAddValue.trim()) {
@@ -38,10 +38,7 @@ const CategoryList = () => {
 
     try {
       const data = await addCategory(inputAddValue);
-      setCategories((prevCategories) => [
-        ...prevCategories,
-        { ...data, feedCount: 0 },
-      ]);
+      setCategories((prevCategories) => [...prevCategories, { ...data }]);
       Message.success("Category added successfully");
     } catch (error) {
       console.error("Failed to add category: ", error);
@@ -53,11 +50,18 @@ const CategoryList = () => {
 
   const editCategory = async (categoryId, newTitle, hidden) => {
     try {
-      const { data } = await updateCategory(categoryId, newTitle, hidden);
+      const data = await updateCategory(categoryId, newTitle, hidden);
       setFeeds((prevFeeds) =>
         prevFeeds.map((feed) =>
           feed.category.id === categoryId
-            ? { ...feed, category: { ...feed.category, title: newTitle } }
+            ? {
+                ...feed,
+                category: {
+                  ...feed.category,
+                  title: newTitle,
+                  hide_globally: hidden,
+                },
+              }
             : feed,
         ),
       );
