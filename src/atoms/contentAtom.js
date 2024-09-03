@@ -70,6 +70,9 @@ export const filteredEntriesAtom = atom((get) => {
     showAllFeeds,
     hiddenFeedIds,
   );
+  if (["starred", "history"].includes(infoFrom)) {
+    return visibleEntries;
+  }
   return removeDuplicateEntries(visibleEntries, removeDuplicates);
 });
 // 初始 loading
