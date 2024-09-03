@@ -1,5 +1,6 @@
 import { Message } from "@arco-design/web-react";
 import { updateEntriesStatus } from "../apis";
+import { handleEntriesStatusUpdate } from "../hooks/useEntryActions";
 import { filterByQuery } from "./kmp";
 
 export const includesIgnoreCase = (text, searchText) => {
@@ -38,7 +39,7 @@ export const removeDuplicateEntries = (entries, option) => {
 
   const seenTitles = new Set();
   const seenURLs = new Set();
-  const duplicates = [];
+  const duplicateEntries = [];
 
   const unreadEntryIds = entries
     .filter((entry) => entry.status === "unread")
@@ -48,12 +49,12 @@ export const removeDuplicateEntries = (entries, option) => {
     .slice()
     .sort((a, b) => a.id - b.id)
     .filter((entry) => {
-      const { title, url, id } = entry;
+      const { title, url } = entry;
       if (
         (option === "title" && seenTitles.has(title)) ||
         (option === "url" && seenURLs.has(url))
       ) {
-        duplicates.push(id);
+        duplicateEntries.push(entry);
         return false;
       }
 
@@ -62,12 +63,15 @@ export const removeDuplicateEntries = (entries, option) => {
       return true;
     });
 
-  const unreadDuplicates = duplicates.filter((id) =>
-    unreadEntryIds.includes(id),
+  const unreadDuplicates = duplicateEntries.filter((entry) =>
+    unreadEntryIds.includes(entry.id),
   );
+  const unreadDuplicateIds = unreadDuplicates.map((entry) => entry.id);
   if (unreadDuplicates.length > 0) {
-    updateEntriesStatus(unreadDuplicates, "read").catch(() => {
+    handleEntriesStatusUpdate(unreadDuplicates, "read");
+    updateEntriesStatus(unreadDuplicateIds, "read").catch(() => {
       Message.error("Failed to mark duplicate entries as read");
+      handleEntriesStatusUpdate(unreadDuplicates, "unread");
     });
   }
 

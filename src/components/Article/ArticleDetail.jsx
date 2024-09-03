@@ -10,11 +10,11 @@ import { Link, useNavigate } from "react-router-dom";
 import "react-photo-view/dist/react-photo-view.css";
 import { configAtom } from "../../atoms/configAtom";
 import {
+  activeContentAtom,
   filterStringAtom,
   filterTypeAtom,
   isArticleFocusedAtom,
 } from "../../atoms/contentAtom";
-import { useActiveContent } from "../../hooks/useActiveContent";
 import { usePhotoSlider } from "../../hooks/usePhotoSlider";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { extractImageSources } from "../../utils/images";
@@ -165,7 +165,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 
 const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
   const navigate = useNavigate();
-  const { activeContent } = useActiveContent();
+  const activeContent = useAtomValue(activeContentAtom);
   const {
     isPhotoSliderVisible,
     setIsPhotoSliderVisible,

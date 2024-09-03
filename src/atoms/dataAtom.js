@@ -1,12 +1,24 @@
 import { atom } from "jotai";
+import { proxy } from "valtio";
 import { atomWithRefreshAndDefault } from "../utils/atom";
+import { atomWithProxy } from "../utils/atomWithProxy";
 import { configAtom } from "./configAtom";
 
+export const dataState = proxy({
+  historyCount: 0,
+  starredCount: 0,
+  unreadInfo: {},
+  unreadTodayCount: 0,
+});
+
 export const isAppDataReadyAtom = atom(false);
-export const unreadInfoAtom = atom({});
-export const unreadTodayCountAtom = atom(0);
-export const starredCountAtom = atom(0);
-export const historyCountAtom = atom(0);
+export const unreadInfoAtom = atomWithProxy(dataState, "unreadInfo");
+export const unreadTodayCountAtom = atomWithProxy(
+  dataState,
+  "unreadTodayCount",
+);
+export const starredCountAtom = atomWithProxy(dataState, "starredCount");
+export const historyCountAtom = atomWithProxy(dataState, "historyCount");
 
 export const feedsRefreshAtom = atom(0);
 export const feedsDataAtom = atom([]);

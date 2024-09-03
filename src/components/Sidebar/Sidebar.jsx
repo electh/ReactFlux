@@ -17,8 +17,9 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import classNames from "classnames";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { configAtom } from "../../atoms/configAtom";
+import { activeContentAtom } from "../../atoms/contentAtom";
 import {
   categoriesAtom,
   feedsGroupedByIdAtom,
@@ -29,7 +30,6 @@ import {
   unreadTodayCountAtom,
   unreadTotalAtom,
 } from "../../atoms/dataAtom";
-import { useActiveContent } from "../../hooks/useActiveContent.js";
 import FeedIcon from "../ui/FeedIcon";
 import "./Sidebar.css";
 
@@ -42,7 +42,7 @@ const CategoryTitle = ({ category, path }) => {
     (acc, feed) => acc + feed.unreadCount,
     0,
   );
-  const { setActiveContent } = useActiveContent();
+  const setActiveContent = useSetAtom(activeContentAtom);
 
   const handleNavigation = () => {
     navigate(`/category/${category.id}`);
@@ -101,7 +101,7 @@ const CustomMenuItem = ({ path, Icon, label, countAtom }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isSelected = location.pathname === path;
-  const { setActiveContent } = useActiveContent();
+  const setActiveContent = useSetAtom(activeContentAtom);
 
   const handleNavigation = () => {
     navigate(path);
@@ -134,7 +134,7 @@ const Sidebar = () => {
   const isAppDataReady = useAtomValue(isAppDataReadyAtom);
   const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
   const hiddenCategoryIds = useAtomValue(hiddenCategoryIdsAtom);
-  const { setActiveContent } = useActiveContent();
+  const setActiveContent = useSetAtom(activeContentAtom);
 
   const config = useAtomValue(configAtom);
   const { homePage, showAllFeeds, showFeedIcon } = config;

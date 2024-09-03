@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
+  activeContentAtom,
   filterStatusAtom,
   filteredEntriesAtom,
   isArticleFocusedAtom,
@@ -9,7 +10,6 @@ import {
   loadMoreVisibleAtom,
 } from "../atoms/contentAtom";
 import { extractImageSources } from "../utils/images";
-import { useActiveContent } from "./useActiveContent";
 import useLoadMore from "./useLoadMore";
 import { usePhotoSlider } from "./usePhotoSlider";
 
@@ -21,7 +21,7 @@ const useKeyHandlers = (handleEntryClick) => {
 
   const setIsArticleFocused = useSetAtom(isArticleFocusedAtom);
 
-  const { activeContent, setActiveContent } = useActiveContent();
+  const [activeContent, setActiveContent] = useAtom(activeContentAtom);
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
     usePhotoSlider();
 

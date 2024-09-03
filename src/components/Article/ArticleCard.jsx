@@ -13,7 +13,7 @@ import { useSwipeable } from "react-swipeable";
 
 import { useAtomValue } from "jotai";
 import { configAtom } from "../../atoms/configAtom";
-import { useActiveContent } from "../../hooks/useActiveContent";
+import { activeContentAtom } from "../../atoms/contentAtom";
 import useEntryActions from "../../hooks/useEntryActions";
 import { generateRelativeTime } from "../../utils/date";
 import FeedIcon from "../ui/FeedIcon";
@@ -89,7 +89,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
 };
 
 const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
-  const { activeContent } = useActiveContent();
+  const activeContent = useAtomValue(activeContentAtom);
   const config = useAtomValue(configAtom);
   const { markReadOnScroll, showFeedIcon } = config;
 
