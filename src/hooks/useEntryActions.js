@@ -27,51 +27,49 @@ const updateEntries = (entries, updatedEntries) => {
   });
 };
 
-export const handleEntriesStatusUpdate = (entryList, newStatus) => {
+export const handleEntriesStatusUpdate = (entries, newStatus) => {
   const feedCountChanges = {};
   let unreadTodayCountChange = 0;
-  const { activeContent, entries, unreadEntries, unreadCount, unreadOffset } =
-    contentState;
+  const {
+    activeContent,
+    entries: allEntries,
+    unreadEntries,
+    unreadCount,
+    unreadOffset,
+  } = contentState;
   const { historyCount, unreadInfo, unreadTodayCount } = dataState;
 
   if (newStatus === "read") {
-    contentState.unreadCount = Math.max(0, unreadCount - entryList.length);
-    contentState.unreadOffset = Math.max(0, unreadOffset - entryList.length);
-    dataState.historyCount += entryList.length;
+    contentState.unreadCount = Math.max(0, unreadCount - entries.length);
+    contentState.unreadOffset = Math.max(0, unreadOffset - entries.length);
+    dataState.historyCount += entries.length;
   } else {
-    contentState.unreadCount += entryList.length;
-    contentState.unreadEntries += entryList.length;
-    dataState.historyCount = Math.max(0, historyCount - entryList.length);
+    contentState.unreadCount += entries.length;
+    contentState.unreadEntries += entries.length;
+    dataState.historyCount = Math.max(0, historyCount - entries.length);
   }
 
-  for (const entry of entryList) {
+  for (const entry of entries) {
     const feedId = entry.feed.id;
     const isRecent = checkIsInLast24Hours(entry.published_at);
+    const statusDelta = newStatus === "read" ? -1 : 1;
 
-    if (newStatus === "read") {
-      feedCountChanges[feedId] = (feedCountChanges[feedId] || 0) - 1;
-      if (isRecent) {
-        unreadTodayCountChange -= 1;
-      }
-    } else {
-      feedCountChanges[feedId] = (feedCountChanges[feedId] || 0) + 1;
-      if (isRecent) {
-        unreadTodayCountChange += 1;
-      }
-    }
+    feedCountChanges[feedId] = (feedCountChanges[feedId] || 0) + statusDelta;
+    unreadTodayCountChange += isRecent ? statusDelta : 0;
   }
+
   dataState.unreadTodayCount = Math.max(
     0,
     unreadTodayCount + unreadTodayCountChange,
   );
 
-  const updatedInfo = unreadInfo;
+  const updatedInfo = { ...unreadInfo };
   for (const [feedId, change] of Object.entries(feedCountChanges)) {
     updatedInfo[feedId] = Math.max(0, (updatedInfo[feedId] || 0) + change);
   }
   dataState.unreadInfo = updatedInfo;
 
-  const updatedEntries = entryList.map((entry) => ({
+  const updatedEntries = entries.map((entry) => ({
     ...entry,
     status: newStatus,
   }));
@@ -83,7 +81,7 @@ export const handleEntriesStatusUpdate = (entryList, newStatus) => {
     contentState.activeContent = activeEntry;
   }
 
-  contentState.entries = updateEntries(entries, updatedEntries);
+  contentState.entries = updateEntries(allEntries, updatedEntries);
   contentState.unreadEntries = updateEntries(unreadEntries, updatedEntries);
 };
 
