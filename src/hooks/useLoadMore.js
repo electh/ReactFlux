@@ -67,7 +67,7 @@ const useLoadMore = () => {
         updateEntries(newEntries);
       }
     } catch (error) {
-      console.error("Error fetching more articles:", error);
+      console.error("Error fetching more articles: ", error);
     } finally {
       setLoadingMore(false);
     }

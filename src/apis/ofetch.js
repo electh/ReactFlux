@@ -20,7 +20,7 @@ const createApiClient = () => {
     },
     onRequestError({ request, options, error }) {
       // 处理请求错误
-      console.error("Request error:", error);
+      console.error("Request error: ", error);
     },
     async onResponseError({ request, response, options }) {
       const statusCode = response.status;
@@ -29,8 +29,8 @@ const createApiClient = () => {
         await router.navigate("/login");
       }
       // 处理响应错误
-      console.error("Response error:", response.statusText);
       const errorMessage = response._data?.error_message ?? response.statusText;
+      console.error("Response error: ", errorMessage);
       throw new Error(errorMessage);
     },
   });
@@ -40,6 +40,5 @@ const apiClient = createApiClient();
 apiClient.get = (url) => apiClient(url, { method: "GET" });
 apiClient.post = (url, body) => apiClient(url, { method: "POST", body });
 apiClient.put = (url, body) => apiClient(url, { method: "PUT", body });
-apiClient.delete = (url) => apiClient(url, { method: "DELETE" });
 
 export { apiClient };

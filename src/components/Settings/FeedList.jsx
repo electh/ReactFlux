@@ -247,11 +247,16 @@ const FeedList = () => {
 
   const removeFeed = async (feed) => {
     try {
-      await deleteFeed(feed.key);
-      Message.success("Unfollowed");
-      setFeeds((feeds) => feeds.filter((f) => f.id !== feed.key));
+      const response = await deleteFeed(feed.key);
+      if (response.status === 204) {
+        setFeeds((feeds) => feeds.filter((f) => f.id !== feed.key));
+        Message.success(`Unfollowed feed: ${feed.title}`);
+      } else {
+        Message.error(`Failed to unfollow feed: ${feed.title}`);
+      }
     } catch (error) {
-      Message.error("Failed to unfollow");
+      console.error(`Failed to unfollow feed: ${feed.title}`, error);
+      Message.error(`Failed to unfollow feed: ${feed.title}`);
     }
   };
 

@@ -189,7 +189,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       }
       handleResponses(responseAll, responseUnread);
     } catch (error) {
-      console.error("Error fetching articles:", error);
+      console.error("Error fetching articles: ", error);
     } finally {
       setLoading(false);
     }

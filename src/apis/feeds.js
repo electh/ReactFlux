@@ -5,9 +5,10 @@ export const getFeeds = async () => apiClient.get("/v1/feeds");
 export const getUnreadInfo = async () => apiClient.get("/v1/feeds/counters");
 
 export const refreshFeed = async (id) =>
-  apiClient.put(`/v1/feeds/${id}/refresh`);
+  apiClient.raw(`/v1/feeds/${id}/refresh`, { method: "PUT" });
 
-export const refreshAllFeed = async () => apiClient.put("/v1/feeds/refresh");
+export const refreshAllFeed = async () =>
+  apiClient.raw("/v1/feeds/refresh", { method: "PUT" });
 
 export const addFeed = async (url, categoryId, isFullText) =>
   apiClient.post("/v1/feeds", {
@@ -16,7 +17,8 @@ export const addFeed = async (url, categoryId, isFullText) =>
     crawler: isFullText,
   });
 
-export const deleteFeed = async (id) => apiClient.delete(`/v1/feeds/${id}`);
+export const deleteFeed = async (id) =>
+  apiClient.raw(`/v1/feeds/${id}`, { method: "DELETE" });
 
 export const updateFeed = async (id, newDetails) => {
   const { categoryId, title, siteUrl, feedUrl, hidden, disabled, isFullText } =

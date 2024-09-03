@@ -37,13 +37,14 @@ const CategoryList = () => {
     }
 
     try {
-      const { data } = await addCategory(inputAddValue);
+      const data = await addCategory(inputAddValue);
       setCategories((prevCategories) => [
         ...prevCategories,
         { ...data, feedCount: 0 },
       ]);
       Message.success("Category added successfully");
-    } catch {
+    } catch (error) {
+      console.error("Failed to add category: ", error);
       Message.error("Failed to add category");
     }
     setInputAddValue("");
@@ -74,19 +75,20 @@ const CategoryList = () => {
     categoryForm.resetFields();
   };
 
-  const removeCategory = async (categoryId) => {
+  const removeCategory = async (category) => {
     try {
-      const response = await deleteCategory(categoryId);
+      const response = await deleteCategory(category.id);
       if (response.status === 204) {
         setCategories((prevCategories) =>
-          prevCategories.filter((category) => category.id !== categoryId),
+          prevCategories.filter((c) => c.id !== category.id),
         );
-        Message.success("Category deleted successfully");
+        Message.success(`Deleted category: ${category.title}`);
       } else {
-        Message.error("Failed to delete category");
+        Message.error(`Failed to delete category: ${category.title}`);
       }
-    } catch {
-      Message.error("Failed to delete category");
+    } catch (error) {
+      console.error(`Failed to delete category: ${category.title}`, error);
+      Message.error(`Failed to delete category: ${category.title}`);
     }
   };
 
@@ -108,7 +110,7 @@ const CategoryList = () => {
             }}
             onClose={async (event) => {
               event.stopPropagation();
-              await removeCategory(category.id);
+              await removeCategory(category);
             }}
           >
             {category.title}
