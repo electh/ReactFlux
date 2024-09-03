@@ -5,6 +5,7 @@ import {
   Dropdown,
   Menu,
   Message,
+  Modal,
   Space,
   Tooltip,
 } from "@arco-design/web-react";
@@ -18,6 +19,7 @@ import {
   IconMoonFill,
   IconPlus,
   IconPoweroff,
+  IconRefresh,
   IconSettings,
   IconSunFill,
   IconUser,
@@ -25,11 +27,10 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAtom, useSetAtom } from "jotai";
-import { applyColor } from "../../utils/colors";
-
 import { useEffect, useState } from "react";
 import { authAtom } from "../../atoms/authAtom";
 import { configAtom } from "../../atoms/configAtom";
+import { isAppDataReadyAtom } from "../../atoms/dataAtom";
 import { useConfig } from "../../hooks/useConfig";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
@@ -44,10 +45,14 @@ const Header = () => {
 
   const [config, setConfig] = useAtom(configAtom);
   const setAuth = useSetAtom(authAtom);
+  const setIsAppDataReady = useSetAtom(isAppDataReadyAtom);
   const { showAllFeeds, theme } = config;
   const { updateConfig } = useConfig();
   const { belowLg } = useScreenWidth();
+
   const [sideVisible, setSideVisible] = useState(false);
+  const [resetModalVisible, setResetModalVisible] = useState(false);
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
   useEffect(() => {
     if (!belowLg) {
@@ -68,13 +73,16 @@ const Header = () => {
     updateConfig({ theme: newTheme });
   };
 
+  const handleResetSettings = () => {
+    setConfig(defaultConfig);
+    setResetModalVisible(false);
+  };
+
   const handleLogout = () => {
     setAuth({});
-    setConfig(defaultConfig);
-    document.body.removeAttribute("arco-theme");
-    applyColor("Blue");
+    setIsAppDataReady(false);
     navigate("/login");
-    Message.success("Logout successful");
+    Message.success("Logout");
   };
 
   const getThemeIcon = (theme) => {
@@ -179,7 +187,11 @@ const Header = () => {
                   <IconSettings className="icon-right" />
                   Settings
                 </Menu.Item>
-                <Menu.Item key="1" onClick={handleLogout}>
+                <Menu.Item key="1" onClick={() => setResetModalVisible(true)}>
+                  <IconRefresh className="icon-right" />
+                  Reset Settings
+                </Menu.Item>
+                <Menu.Item key="2" onClick={() => setLogoutModalVisible(true)}>
                   <IconPoweroff className="icon-right" />
                   Logout
                 </Menu.Item>
@@ -194,6 +206,27 @@ const Header = () => {
           </Dropdown>
         </Space>
       </div>
+
+      <Modal
+        title="Confirm Reset"
+        visible={resetModalVisible}
+        onOk={handleResetSettings}
+        onCancel={() => setResetModalVisible(false)}
+      >
+        <p>
+          Are you sure you want to reset your settings? This action cannot be
+          undone.
+        </p>
+      </Modal>
+
+      <Modal
+        title="Confirm Logout"
+        visible={logoutModalVisible}
+        onOk={handleLogout}
+        onCancel={() => setLogoutModalVisible(false)}
+      >
+        <p>Are you sure you want to logout?</p>
+      </Modal>
     </div>
   );
 };

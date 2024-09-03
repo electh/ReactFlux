@@ -41,7 +41,7 @@ const Login = () => {
           : { Authorization: `Basic ${btoa(`${username}:${password}`)}` },
       });
       if (response.status === 200) {
-        Message.success("Success");
+        Message.success("Login successfully");
         setAuth({ server, token, username, password });
         navigate("/");
       }
