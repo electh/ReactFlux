@@ -16,6 +16,7 @@ import background from "../imgs/background.jpg";
 
 import { useSetAtom } from "jotai";
 import { authAtom } from "../atoms/authAtom";
+import useTheme from "../hooks/useTheme";
 import { isValidAuth } from "../utils/auth";
 import {
   handleEnterKeyToSubmit,
@@ -23,6 +24,7 @@ import {
 } from "../utils/form";
 
 const Login = () => {
+  useTheme();
   const [loginForm] = useForm();
   const [loading, setLoading] = useState(false);
   const [authMethod, setAuthMethod] = useState("token");
