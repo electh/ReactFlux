@@ -12,7 +12,7 @@ import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon";
 import { ofetch } from "ofetch";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import background from "../imgs/background.jpg";
+import background from "./images/background.jpg";
 
 import { useSetAtom } from "jotai";
 import { authAtom } from "../atoms/authAtom";
@@ -118,9 +118,9 @@ const Login = () => {
                   handleEnterKeyToSubmit(event, loginForm);
                 }}
               >
-                <Input
+                <Input.Password
                   disabled={loading}
-                  placeholder="Please input api token"
+                  placeholder="Please input API token"
                   prefix={<IconLock />}
                 />
               </Form.Item>
@@ -137,8 +137,8 @@ const Login = () => {
                 >
                   <Input
                     disabled={loading}
-                    prefix={<IconUser />}
                     placeholder="Please input username"
+                    prefix={<IconUser />}
                   />
                 </Form.Item>
                 <Form.Item
@@ -151,8 +151,8 @@ const Login = () => {
                 >
                   <Input.Password
                     disabled={loading}
-                    prefix={<IconLock />}
                     placeholder="Please input password"
+                    prefix={<IconLock />}
                   />
                 </Form.Item>
               </>
