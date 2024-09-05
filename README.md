@@ -17,7 +17,7 @@ Key features include:
 - Automatically mark articles as read when scrolling
 - Batch update the host of filtered subscription URLs (useful for replacing RSSHub instances)
 - Batch refresh recently errored subscriptions
-- De-duplicate articles by title or URL when loading the list
+- De-duplicate articles by hash, title, or URL when loading the list
 - Other features waiting for you to discover...
 
 ## Screenshots
