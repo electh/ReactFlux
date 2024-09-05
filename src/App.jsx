@@ -8,11 +8,11 @@ import useTheme from "./hooks/useTheme";
 
 const App = () => {
   useTheme();
-  const { belowLg } = useScreenWidth();
+  const { isBelowLarge } = useScreenWidth();
 
   return (
     <div className="app">
-      {belowLg ? null : (
+      {isBelowLarge ? null : (
         <Layout.Sider
           breakpoint="lg"
           className="sidebar"

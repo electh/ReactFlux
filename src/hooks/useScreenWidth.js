@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 
 export const useScreenWidth = () => {
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const belowMd = screenWidth <= 768;
-  const belowLg = screenWidth <= 992;
+  const [width, setWidth] = useState(window.innerWidth);
+  const isBelowMedium = width <= 768;
+  const isBelowLarge = width <= 992;
 
   useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth);
+    const handleResize = () => setWidth(window.innerWidth);
 
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return { screenWidth, belowMd, belowLg };
+  return { width, isBelowMedium, isBelowLarge };
 };

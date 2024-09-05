@@ -19,7 +19,7 @@ const SearchAndSortBar = () => {
   const { orderDirection } = useSnapshot(configState);
   const { filterString, filterType } = useSnapshot(contentState);
 
-  const { belowMd } = useScreenWidth();
+  const { isBelowMedium } = useScreenWidth();
 
   const toggleOrderDirection = () => {
     const newOrderDirection = orderDirection === "desc" ? "asc" : "desc";
@@ -37,7 +37,7 @@ const SearchAndSortBar = () => {
         allowClear
         onChange={setFilterString}
         placeholder="Search..."
-        style={{ width: belowMd ? "100%" : 278, marginLeft: 8 }}
+        style={{ width: isBelowMedium ? "100%" : 278, marginLeft: 8 }}
         value={filterString}
         addBefore={
           <Select

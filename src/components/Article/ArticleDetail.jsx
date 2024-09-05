@@ -50,12 +50,11 @@ const ImageOverlayButton = ({
 
   const [isHovering, setIsHovering] = useState(false);
   const [isIcon, setIsIcon] = useState(false);
-  const { belowMd } = useScreenWidth();
+  const { isBelowMedium } = useScreenWidth();
 
   useEffect(() => {
-    const imgSrc = isLinkWrapper
-      ? node.children[0].attribs.src
-      : node.attribs.src;
+    const imgNode = isLinkWrapper ? node.children[0] : node;
+    const imgSrc = imgNode.attribs.src;
     const img = new Image();
     img.src = imgSrc;
     img.onload = () => setIsIcon(img.width <= 64 && img.height <= 64);
@@ -66,7 +65,7 @@ const ImageOverlayButton = ({
   const renderImage = () => (
     <img
       {...imgNode.attribs}
-      alt={imgNode.attribs.alt}
+      alt={imgNode.attribs.alt ?? "image"}
       style={
         isIcon
           ? {
@@ -115,7 +114,7 @@ const ImageOverlayButton = ({
             right: 10,
             color: "white",
             backgroundColor: "rgba(0, 0, 0, 0.5)",
-            opacity: belowMd || isHovering ? 1 : 0,
+            opacity: isBelowMedium || isHovering ? 1 : 0,
             transition: "opacity 0.3s",
           }}
           onClick={(event) => {
@@ -130,14 +129,11 @@ const ImageOverlayButton = ({
 
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
   replace: (node) => {
-    if (node.type === "tag" && node.name === "a") {
-      if (
-        node.children.length > 0 &&
-        node.children[0].type === "tag" &&
-        node.children[0].name === "img"
-      ) {
+    if (node.type === "tag" && node.name === "a" && node.children.length > 0) {
+      const imgNode = node.children[0];
+      if (imgNode.type === "tag" && imgNode.name === "img") {
         const index = imageSources.findIndex(
-          (src) => src === node.children[0].attribs.src,
+          (src) => src === imgNode.attribs.src,
         );
         return (
           <ImageOverlayButton
@@ -174,7 +170,7 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
     setSelectedIndex,
   } = usePhotoSlider();
 
-  const filterByAuthor = () => {
+  const handleAuthorFilter = () => {
     setFilterType("author");
     setFilterString(activeContent.author);
   };
@@ -217,8 +213,7 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
     togglePhotoSlider,
   );
   const parsedHtml = ReactHtmlParser(activeContent.content, htmlParserOptions);
-  const categoryId = activeContent.feed.category.id;
-  const categoryTitle = activeContent.feed.category.title;
+  const { id: categoryId, title: categoryTitle } = activeContent.feed.category;
 
   return (
     <div
@@ -246,7 +241,7 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
               />
             </Typography.Text>
             <Typography.Text
-              onClick={filterByAuthor}
+              onClick={handleAuthorFilter}
               style={{ cursor: "pointer" }}
             >
               {` - ${activeContent.author}`}
@@ -254,13 +249,8 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
             <Typography.Text>
               <Tag
                 size="small"
-                onClick={() => {
-                  navigate(`/category/${categoryId}`);
-                }}
-                style={{
-                  marginLeft: "10px",
-                  cursor: "pointer",
-                }}
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                onClick={() => navigate(`/category/${categoryId}`)}
               >
                 {categoryTitle}
               </Tag>

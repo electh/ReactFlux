@@ -29,7 +29,7 @@ const ArticleList = forwardRef(
     const { loadingMore, handleLoadMore } = useLoadMore();
 
     const { ref: loadMoreRef, inView } = useInView({
-      skip: !loadMoreVisible && !loadMoreUnreadVisible,
+      skip: !(loadMoreVisible || loadMoreUnreadVisible),
     });
 
     const virtualizer = useVirtualizer({
@@ -38,28 +38,18 @@ const ArticleList = forwardRef(
       estimateSize: () => (isCompactLayout ? 120 : 280),
     });
 
-    const items = virtualizer.getVirtualItems();
+    const virtualItems = virtualizer.getVirtualItems();
 
     useEffect(() => {
-      let timeout;
       if (
         inView &&
         !loading &&
         !loadingMore &&
         (loadMoreVisible || loadMoreUnreadVisible)
       ) {
-        const executeLoadMore = async () => {
-          await handleLoadMore(getEntries);
-        };
-
-        timeout = setTimeout(executeLoadMore, 500);
+        const timeoutId = setTimeout(() => handleLoadMore(getEntries), 500);
+        return () => clearTimeout(timeoutId);
       }
-
-      return () => {
-        if (timeout) {
-          clearTimeout(timeout);
-        }
-      };
     }, [
       inView,
       loading,
@@ -84,21 +74,21 @@ const ArticleList = forwardRef(
                   position: "relative",
                 }}
               >
-                {items.map((virtualItem) => (
+                {virtualItems.map((item) => (
                   <div
-                    key={virtualItem.key}
-                    data-index={virtualItem.index}
+                    key={item.key}
+                    data-index={item.index}
                     ref={virtualizer.measureElement}
                     style={{
                       position: "absolute",
                       top: 0,
                       left: 0,
                       width: "100%",
-                      transform: `translateY(${virtualItem.start}px)`,
+                      transform: `translateY(${item.start}px)`,
                     }}
                   >
                     <ArticleCard
-                      entry={filteredEntries[virtualItem.index]}
+                      entry={filteredEntries[item.index]}
                       handleEntryClick={handleEntryClick}
                       mini={isCompactLayout}
                     >

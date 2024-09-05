@@ -43,7 +43,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleEntryStatusUpdate,
   } = useEntryActions();
 
-  const [isFirstRenderCompleted, setIsFirstRenderCompleted] = useState(false);
+  const [isInitialRenderComplete, setIsInitialRenderComplete] = useState(false);
 
   const entryListRef = useRef(null);
   const cardsRef = useRef(null);
@@ -53,7 +53,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!isFirstRenderCompleted || info.from === "history") {
+    if (!isInitialRenderComplete || info.from === "history") {
       return;
     }
     refreshArticleList();
@@ -65,32 +65,26 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     refreshArticleList();
   }, [info, orderDirection]);
 
-  const handleEntryClick = (entry) => {
-    return new Promise((resolve, reject) => {
-      setActiveContent(null);
+  const handleEntryClick = async (entry) => {
+    setActiveContent(null);
 
-      if (entry.status !== "unread") {
-        setTimeout(() => {
-          setActiveContent({ ...entry, status: "read" });
-          resolve();
-        }, 200);
-        return;
-      }
+    if (entry.status !== "unread") {
+      setTimeout(() => {
+        setActiveContent({ ...entry, status: "read" });
+      }, 200);
+      return;
+    }
 
+    try {
       setTimeout(() => {
         setActiveContent({ ...entry, status: "read" });
         handleEntryStatusUpdate(entry, "read");
-        updateEntriesStatus([entry.id], "read")
-          .then(resolve)
-          .catch((error) => {
-            Message.error(
-              "Failed to mark entry as read, please try again later",
-            );
-            handleEntryStatusUpdate(entry, "unread");
-            reject(error);
-          });
       }, 200);
-    });
+      await updateEntriesStatus([entry.id], "read");
+    } catch {
+      Message.error("Failed to mark entry as read, please try again later");
+      handleEntryStatusUpdate(entry, "unread");
+    }
   };
 
   const {
@@ -110,11 +104,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       ArrowLeft: () => navigateToPreviousArticle(),
       ArrowRight: () => navigateToNextArticle(),
       Escape: () => exitDetailView(entryListRef, entryDetailRef),
-      b: () => openLinkExternally(),
+      b: openLinkExternally,
       d: () => fetchOriginalArticle(handleFetchContent),
       m: () => toggleReadStatus(() => handleToggleStatus(activeContent)),
       s: () => toggleStarStatus(() => handleToggleStarred(activeContent)),
-      v: () => openPhotoSlider(),
+      v: openPhotoSlider,
     };
 
     const handleKeyDown = (event) => {
@@ -141,36 +135,29 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     };
   }, [activeContent, filteredEntries, isArticleFocused]);
 
-  const updateUI = (articles, articlesUnread, responseAll, responseUnread) => {
+  const updateUI = (articles, unreadArticles, responseAll, responseUnread) => {
     setEntries(articles);
-    setUnreadEntries(articlesUnread);
+    setUnreadEntries(unreadArticles);
     setTotal(responseAll.total);
     setLoadMoreVisible(articles.length < responseAll.total);
     setUnreadCount(responseUnread.total);
-    setLoadMoreUnreadVisible(articlesUnread.length < responseUnread.total);
+    setLoadMoreUnreadVisible(unreadArticles.length < responseUnread.total);
   };
 
   const handleResponses = (responseAll, responseUnread) => {
     if (responseAll?.entries && responseUnread?.total >= 0) {
       const articles = responseAll.entries.map(parseFirstImage);
-      const articlesUnread = responseUnread.entries.map(parseFirstImage);
-      updateUI(articles, articlesUnread, responseAll, responseUnread);
+      const unreadArticles = responseUnread.entries.map(parseFirstImage);
+      updateUI(articles, unreadArticles, responseAll, responseUnread);
     }
   };
 
-  const getArticleList = async () => {
+  const fetchArticleList = async () => {
     setLoading(true);
-    let responseAll;
-    let responseUnread;
     try {
-      if (info.from === "history") {
-        responseAll = responseUnread = await getEntries();
-      } else {
-        [responseAll, responseUnread] = await Promise.all([
-          getEntries(),
-          getEntries(0, "unread"),
-        ]);
-      }
+      const responseAll = await getEntries();
+      const responseUnread =
+        info.from === "history" ? responseAll : await getEntries(0, "unread");
       handleResponses(responseAll, responseUnread);
     } catch (error) {
       console.error("Error fetching articles: ", error);
@@ -180,16 +167,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   };
 
   const refreshArticleList = async () => {
-    if (entryListRef.current) {
-      entryListRef.current.scrollTo(0, 0);
-    }
+    entryListRef.current?.scrollTo(0, 0);
     setOffset(0);
     setUnreadOffset(0);
     if (!isAppDataReady) {
       await fetchData();
       return;
     }
-    await getArticleList();
+    await fetchArticleList();
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -203,8 +188,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   useEffect(() => {
     if (!isAppDataReady) {
       try {
-        getArticleList();
-        setIsFirstRenderCompleted(true);
+        fetchArticleList();
+        setIsInitialRenderComplete(true);
         setIsArticleFocused(true);
       } catch (error) {
         Message.error("Failed to fetch articles, please try again later");
