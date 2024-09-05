@@ -129,6 +129,7 @@ const General = () => {
             value={removeDuplicates}
           >
             <Select.Option value="none">None</Select.Option>
+            <Select.Option value="hash">Hash</Select.Option>
             <Select.Option value="title">Title</Select.Option>
             <Select.Option value="url">URL</Select.Option>
           </Select>
