@@ -44,6 +44,7 @@ const RenderImage = ({ entry, isThumbnail }) => {
 };
 
 const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
+  const { showDetailedRelativeTime } = useSnapshot(configState);
   const contentClass = classNames({
     "article-card-mini-content": mini,
     "article-card-mini-content-padding": mini && showFeedIcon,
@@ -79,7 +80,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
           )}
           {entry.feed.title}
           <br />
-          {generateRelativeTime(entry.published_at)}
+          {generateRelativeTime(entry.published_at, showDetailedRelativeTime)}
         </Typography.Text>
         {entry.starred && <IconStarFill className="icon-starred" />}
       </div>

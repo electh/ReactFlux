@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
-import { getConfig } from "../store/configState";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -17,8 +16,7 @@ export const get24HoursAgoTimestamp = () => {
   return dayjs().subtract(24, "hour").unix();
 };
 
-export const generateRelativeTime = (dateString) => {
-  const showDetailed = getConfig("showDetailedRelativeTime");
+export const generateRelativeTime = (dateString, showDetailed) => {
   if (!showDetailed) {
     const relativeTime = dayjs(dateString).fromNow();
     return relativeTime === "a few seconds ago" ? "just now" : relativeTime;

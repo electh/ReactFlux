@@ -27,6 +27,7 @@ import { includesIgnoreCase } from "../../utils/filter";
 
 import { proxy, snapshot, useSnapshot } from "valtio";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
+import { configState } from "../../store/configState";
 import { dataState, setFeedsData } from "../../store/dataState";
 import { sleep } from "../../utils/time";
 import { createSetter } from "../../utils/valtio";
@@ -88,6 +89,7 @@ const updateFeedStatus = (feed, isSuccessful, targetFeedId = null) => {
 };
 
 const FeedList = () => {
+  const { showDetailedRelativeTime } = useSnapshot(configState);
   const { categories } = useSnapshot(dataState);
   const { filteredFeeds, tableData } = useSnapshot(state);
 
@@ -316,7 +318,7 @@ const FeedList = () => {
       sorter: (a, b) => a.checked_at.localeCompare(b.checked_at, "en"),
       render: (col) => (
         <Typography.Ellipsis expandable={false}>
-          {generateRelativeTime(col)}
+          {generateRelativeTime(col, showDetailedRelativeTime)}
         </Typography.Ellipsis>
       ),
     },
