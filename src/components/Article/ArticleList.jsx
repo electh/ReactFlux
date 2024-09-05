@@ -7,28 +7,26 @@ import ArticleCard from "./ArticleCard";
 import LoadingCards from "./LoadingCards";
 import SearchAndSortBar from "./SearchAndSortBar";
 
-import { useAtomValue } from "jotai";
 import { useInView } from "react-intersection-observer";
-import { configAtom } from "../../atoms/configAtom";
-import {
-  filterStatusAtom,
-  filteredEntriesAtom,
-  loadMoreUnreadVisibleAtom,
-  loadMoreVisibleAtom,
-} from "../../atoms/contentAtom";
+import { useSnapshot } from "valtio";
+import { configState } from "../../store/configState";
+import { contentState } from "../../store/contentState";
 import Ripple from "../ui/Ripple.jsx";
 import "./ArticleList.css";
 
 const ArticleList = forwardRef(
   ({ loading, getEntries, handleEntryClick, cardsRef }, ref) => {
-    const filteredEntries = useAtomValue(filteredEntriesAtom);
-    const filterStatus = useAtomValue(filterStatusAtom);
-    const loadMoreUnreadVisible = useAtomValue(loadMoreUnreadVisibleAtom);
-    const loadMoreVisible = useAtomValue(loadMoreVisibleAtom);
+    const { layout } = useSnapshot(configState);
+    const isCompactLayout = layout === "small";
+
+    const {
+      filteredEntries,
+      filterStatus,
+      loadMoreUnreadVisible,
+      loadMoreVisible,
+    } = useSnapshot(contentState);
 
     const { loadingMore, handleLoadMore } = useLoadMore();
-    const { layout } = useAtomValue(configAtom);
-    const isCompactLayout = layout === "small";
 
     const { ref: loadMoreRef, inView } = useInView({
       skip: !loadMoreVisible && !loadMoreUnreadVisible,

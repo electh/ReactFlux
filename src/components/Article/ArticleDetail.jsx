@@ -2,21 +2,21 @@ import { Button, Divider, Tag, Typography } from "@arco-design/web-react";
 import { IconEmpty, IconFullscreen } from "@arco-design/web-react/icon";
 import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
-import { useAtomValue, useSetAtom } from "jotai";
 import { forwardRef, useEffect, useState } from "react";
 import { PhotoSlider } from "react-photo-view";
 import { Link, useNavigate } from "react-router-dom";
 
 import "react-photo-view/dist/react-photo-view.css";
-import { configAtom } from "../../atoms/configAtom";
-import {
-  activeContentAtom,
-  filterStringAtom,
-  filterTypeAtom,
-  isArticleFocusedAtom,
-} from "../../atoms/contentAtom";
+import { useSnapshot } from "valtio";
 import { usePhotoSlider } from "../../hooks/usePhotoSlider";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
+import { configState } from "../../store/configState";
+import {
+  contentState,
+  setFilterString,
+  setFilterType,
+  setIsArticleFocused,
+} from "../../store/contentState";
 import { extractImageSources } from "../../utils/images";
 import ActionButtons from "./ActionButtons";
 import "./ArticleDetail.css";
@@ -46,8 +46,7 @@ const ImageOverlayButton = ({
   togglePhotoSlider,
   isLinkWrapper = false,
 }) => {
-  const config = useAtomValue(configAtom);
-  const { fontSize } = config;
+  const { fontSize } = useSnapshot(configState);
 
   const [isHovering, setIsHovering] = useState(false);
   const [isIcon, setIsIcon] = useState(false);
@@ -165,20 +164,15 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 
 const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
   const navigate = useNavigate();
-  const activeContent = useAtomValue(activeContentAtom);
+  const { articleWidth, fontSize } = useSnapshot(configState);
+  const { activeContent } = useSnapshot(contentState);
+
   const {
     isPhotoSliderVisible,
     setIsPhotoSliderVisible,
     selectedIndex,
     setSelectedIndex,
   } = usePhotoSlider();
-
-  const config = useAtomValue(configAtom);
-  const { articleWidth, fontSize } = config;
-  const setIsArticleFocused = useSetAtom(isArticleFocusedAtom);
-
-  const setFilterString = useSetAtom(filterStringAtom);
-  const setFilterType = useSetAtom(filterTypeAtom);
 
   const filterByAuthor = () => {
     setFilterType("author");

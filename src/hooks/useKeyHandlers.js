@@ -1,27 +1,24 @@
 import { useEffect, useState } from "react";
 
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useSnapshot } from "valtio";
 import {
-  activeContentAtom,
-  filterStatusAtom,
-  filteredEntriesAtom,
-  isArticleFocusedAtom,
-  loadMoreUnreadVisibleAtom,
-  loadMoreVisibleAtom,
-} from "../atoms/contentAtom";
+  contentState,
+  setActiveContent,
+  setIsArticleFocused,
+} from "../store/contentState";
 import { extractImageSources } from "../utils/images";
 import useLoadMore from "./useLoadMore";
 import { usePhotoSlider } from "./usePhotoSlider";
 
 const useKeyHandlers = (handleEntryClick) => {
-  const filteredEntries = useAtomValue(filteredEntriesAtom);
-  const filterStatus = useAtomValue(filterStatusAtom);
-  const loadMoreUnreadVisible = useAtomValue(loadMoreUnreadVisibleAtom);
-  const loadMoreVisible = useAtomValue(loadMoreVisibleAtom);
+  const {
+    activeContent,
+    filteredEntries,
+    filterStatus,
+    loadMoreUnreadVisible,
+    loadMoreVisible,
+  } = useSnapshot(contentState);
 
-  const setIsArticleFocused = useSetAtom(isArticleFocusedAtom);
-
-  const [activeContent, setActiveContent] = useAtom(activeContentAtom);
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
     usePhotoSlider();
 

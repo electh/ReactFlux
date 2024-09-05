@@ -1,4 +1,4 @@
-import { getConfig } from "../utils/config";
+import { getConfig } from "../store/configState";
 import { get24HoursAgoTimestamp } from "../utils/date";
 import { apiClient } from "./ofetch";
 

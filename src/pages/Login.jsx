@@ -14,9 +14,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import background from "./images/background.jpg";
 
-import { useSetAtom } from "jotai";
-import { authAtom } from "../atoms/authAtom";
 import useTheme from "../hooks/useTheme";
+import { setAuth } from "../store/authState";
 import { isValidAuth } from "../utils/auth";
 import {
   handleEnterKeyToSubmit,
@@ -29,7 +28,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [authMethod, setAuthMethod] = useState("token");
   /* token or user */
-  const setAuth = useSetAtom(authAtom);
   const navigate = useNavigate();
 
   const performHealthCheck = async () => {

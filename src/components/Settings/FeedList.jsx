@@ -25,53 +25,56 @@ import {
 import { generateRelativeTime, getUTCDate } from "../../utils/date";
 import { includesIgnoreCase } from "../../utils/filter";
 
-import { atom, useAtomValue, useSetAtom } from "jotai";
-import { categoriesAtom, feedsDataAtom } from "../../atoms/dataAtom";
+import { proxy, snapshot, useSnapshot } from "valtio";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
+import { dataState, setFeedsData } from "../../store/dataState";
 import { sleep } from "../../utils/time";
+import { createSetter } from "../../utils/valtio";
 import "./FeedList.css";
 
 const { Paragraph } = Typography;
 
-const filterStringAtom = atom("");
-
-const filteredFeedsAtom = atom((get) => {
-  const feeds = get(feedsDataAtom);
-  const filterString = get(filterStringAtom);
-  return [...feeds]
-    .sort((a, b) => {
-      if (a.disabled && !b.disabled) {
-        return 1;
-      }
-      if (!a.disabled && b.disabled) {
-        return -1;
-      }
-      return 0;
-    })
-    .sort((a, b) => b.parsing_error_count - a.parsing_error_count)
-    .filter(
-      (feed) =>
-        includesIgnoreCase(feed.title, filterString) ||
-        includesIgnoreCase(feed.site_url, filterString) ||
-        includesIgnoreCase(feed.feed_url, filterString),
-    );
+const state = proxy({
+  filterString: "",
+  get filteredFeeds() {
+    const { feedsData } = snapshot(dataState);
+    const { filterString } = this;
+    return [...feedsData]
+      .sort((a, b) => {
+        if (a.disabled && !b.disabled) {
+          return 1;
+        }
+        if (!a.disabled && b.disabled) {
+          return -1;
+        }
+        return 0;
+      })
+      .sort((a, b) => b.parsing_error_count - a.parsing_error_count)
+      .filter(
+        (feed) =>
+          includesIgnoreCase(feed.title, filterString) ||
+          includesIgnoreCase(feed.site_url, filterString) ||
+          includesIgnoreCase(feed.feed_url, filterString),
+      );
+  },
+  get tableData() {
+    const { filteredFeeds } = this;
+    return filteredFeeds.map((feed) => ({
+      category: feed.category,
+      checked_at: feed.checked_at,
+      crawler: feed.crawler,
+      disabled: feed.disabled,
+      feed_url: feed.feed_url,
+      hidden: feed.hide_globally,
+      key: feed.id,
+      parsing_error_count: feed.parsing_error_count,
+      site_url: feed.site_url,
+      title: feed.title,
+    }));
+  },
 });
 
-const tableDataAtom = atom((get) => {
-  const feeds = get(filteredFeedsAtom);
-  return feeds.map((feed) => ({
-    category: feed.category,
-    checked_at: feed.checked_at,
-    crawler: feed.crawler,
-    disabled: feed.disabled,
-    feed_url: feed.feed_url,
-    hidden: feed.hide_globally,
-    key: feed.id,
-    parsing_error_count: feed.parsing_error_count,
-    site_url: feed.site_url,
-    title: feed.title,
-  }));
-});
+const setFilterString = createSetter(state, "filterString");
 
 const updateFeedStatus = (feed, isSuccessful, targetFeedId = null) => {
   if (targetFeedId === null || targetFeedId === feed.id) {
@@ -85,22 +88,20 @@ const updateFeedStatus = (feed, isSuccessful, targetFeedId = null) => {
 };
 
 const FeedList = () => {
+  const { categories } = useSnapshot(dataState);
+  const { filteredFeeds, tableData } = useSnapshot(state);
+
   const [bulkUpdateModalVisible, setBulkUpdateModalVisible] = useState(false);
   const [feedForm] = Form.useForm();
   const [feedModalVisible, setFeedModalVisible] = useState(false);
   const [newHost, setNewHost] = useState("");
   const [selectedFeed, setSelectedFeed] = useState({});
 
-  const categories = useAtomValue(categoriesAtom);
-  const filteredFeeds = useAtomValue(filteredFeedsAtom);
-  const setFeeds = useSetAtom(feedsDataAtom);
-  const setFilterString = useSetAtom(filterStringAtom);
-  const tableData = useAtomValue(tableDataAtom);
   const { belowMd } = useScreenWidth();
 
   useEffect(() => {
     setFilterString("");
-  }, [setFilterString]);
+  }, []);
 
   const handleSelectFeed = (feed) => {
     setSelectedFeed(feed);
@@ -130,13 +131,15 @@ const FeedList = () => {
         isSuccessful ? Message.success(message) : Message.error(message);
       }
 
-      setFeeds((feeds) => feeds.map((feed) => feedUpdater(feed, isSuccessful)));
+      setFeedsData((feeds) =>
+        feeds.map((feed) => feedUpdater(feed, isSuccessful)),
+      );
       return isSuccessful;
     } catch (error) {
       if (displayMessage) {
         Message.error("Failed to refresh");
       }
-      setFeeds((feeds) => feeds.map((feed) => feedUpdater(feed, false)));
+      setFeedsData((feeds) => feeds.map((feed) => feedUpdater(feed, false)));
       return false;
     }
   };
@@ -156,7 +159,7 @@ const FeedList = () => {
         const oldHost = new URL(feed.feed_url).hostname;
         const newURL = feed.feed_url.replace(oldHost, newHost);
         const data = await updateFeed(feed.id, { feedUrl: newURL });
-        setFeeds((feeds) =>
+        setFeedsData((feeds) =>
           feeds.map((f) => (f.id === feed.id ? { ...f, ...data } : f)),
         );
       }
@@ -238,7 +241,7 @@ const FeedList = () => {
     try {
       const response = await deleteFeed(feed.key);
       if (response.status === 204) {
-        setFeeds((feeds) => feeds.filter((f) => f.id !== feed.key));
+        setFeedsData((feeds) => feeds.filter((f) => f.id !== feed.key));
         Message.success(`Unfollowed feed: ${feed.title}`);
       } else {
         Message.error(`Failed to unfollow feed: ${feed.title}`);
@@ -359,7 +362,7 @@ const FeedList = () => {
   const editFeed = async (feedId, newDetails) => {
     try {
       const data = await updateFeed(feedId, newDetails);
-      setFeeds((feeds) =>
+      setFeedsData((feeds) =>
         feeds.map((feed) => (feed.id === feedId ? { ...feed, ...data } : feed)),
       );
       Message.success("Feed updated successfully");

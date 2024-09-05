@@ -1,10 +1,10 @@
-import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
-import { configAtom } from "../atoms/configAtom";
+import { useSnapshot } from "valtio";
+import { configState } from "../store/configState";
 import { applyColor } from "../utils/colors";
 
 const useTheme = () => {
-  const { theme, themeColor } = useAtomValue(configAtom);
+  const { theme, themeColor } = useSnapshot(configState);
   const [isSystemDark, setIsSystemDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );

@@ -1,35 +1,34 @@
-import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
-import { configAtom } from "../atoms/configAtom";
+import { proxy, useSnapshot } from "valtio";
+import { configState } from "../store/configState";
 import {
-  entriesAtom,
-  filterStatusAtom,
-  loadMoreUnreadVisibleAtom,
-  loadMoreVisibleAtom,
-  offsetAtom,
-  totalAtom,
-  unreadCountAtom,
-  unreadEntriesAtom,
-  unreadOffsetAtom,
-} from "../atoms/contentAtom";
+  contentState,
+  setEntries,
+  setLoadMoreUnreadVisible,
+  setLoadMoreVisible,
+  setOffset,
+  setUnreadEntries,
+  setUnreadOffset,
+} from "../store/contentState";
 import { parseFirstImage } from "../utils/images";
+import { createSetter } from "../utils/valtio";
 
-const loadingMoreAtom = atom(false);
+const state = proxy({ loadingMore: false });
+const setLoadingMore = createSetter(state, "loadingMore");
 
 const useLoadMore = () => {
-  const { pageSize } = useAtomValue(configAtom);
-
-  const [entries, setEntries] = useAtom(entriesAtom);
-  const [offset, setOffset] = useAtom(offsetAtom);
-  const [unreadEntries, setUnreadEntries] = useAtom(unreadEntriesAtom);
-  const [unreadOffset, setUnreadOffset] = useAtom(unreadOffsetAtom);
-  const filterStatus = useAtomValue(filterStatusAtom);
-  const setLoadMoreUnreadVisible = useSetAtom(loadMoreUnreadVisibleAtom);
-  const setLoadMoreVisible = useSetAtom(loadMoreVisibleAtom);
-  const total = useAtomValue(totalAtom);
-  const unreadCount = useAtomValue(unreadCountAtom);
+  const { pageSize } = useSnapshot(configState);
+  const {
+    entries,
+    filterStatus,
+    offset,
+    total,
+    unreadCount,
+    unreadEntries,
+    unreadOffset,
+  } = contentState;
 
   /* 加载更多 loading*/
-  const [loadingMore, setLoadingMore] = useAtom(loadingMoreAtom);
+  const { loadingMore } = useSnapshot(state);
 
   const updateEntries = (newEntries) => {
     const uniqueNewEntries = (existingEntries, entriesToAdd) =>

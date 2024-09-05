@@ -1,14 +1,16 @@
 import { ofetch } from "ofetch";
 
+import { snapshot } from "valtio";
 import router from "../routes";
-import { getAuth, isValidAuth } from "../utils/auth";
+import { authState } from "../store/authState";
+import { isValidAuth } from "../utils/auth";
 
 // 创建 ofetch 实例并设置默认配置
 const createApiClient = () => {
   return ofetch.create({
     retry: 3, // 默认重试次数
     onRequest({ request, options }) {
-      const auth = getAuth();
+      const auth = snapshot(authState);
       if (!isValidAuth(auth)) {
         throw new Error("Invalid auth");
       }

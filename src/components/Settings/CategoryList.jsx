@@ -11,25 +11,22 @@ import { useState } from "react";
 
 import { addCategory, deleteCategory, updateCategory } from "../../apis";
 
+import { useSnapshot } from "valtio";
 import {
-  categoriesAtom,
-  categoriesDataAtom,
-  feedsDataAtom,
-} from "../../atoms/dataAtom";
-
-import { useAtomValue, useSetAtom } from "jotai";
+  dataState,
+  setCategoriesData,
+  setFeedsData,
+} from "../../store/dataState";
 import "./CategoryList.css";
 
 const CategoryList = () => {
+  const { categories } = useSnapshot(dataState);
+
   const [categoryForm] = Form.useForm();
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
   const [inputAddValue, setInputAddValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState({});
   const [showAddInput, setShowAddInput] = useState(false);
-
-  const categories = useAtomValue(categoriesAtom);
-  const setCategories = useSetAtom(categoriesDataAtom);
-  const setFeeds = useSetAtom(feedsDataAtom);
 
   const addNewCategory = async () => {
     if (!inputAddValue.trim()) {
@@ -38,7 +35,7 @@ const CategoryList = () => {
 
     try {
       const data = await addCategory(inputAddValue);
-      setCategories((prevCategories) => [...prevCategories, { ...data }]);
+      setCategoriesData((prevCategories) => [...prevCategories, { ...data }]);
       Message.success("Category added successfully");
     } catch (error) {
       console.error("Failed to add category: ", error);
@@ -51,7 +48,7 @@ const CategoryList = () => {
   const editCategory = async (categoryId, newTitle, hidden) => {
     try {
       const data = await updateCategory(categoryId, newTitle, hidden);
-      setFeeds((prevFeeds) =>
+      setFeedsData((prevFeeds) =>
         prevFeeds.map((feed) =>
           feed.category.id === categoryId
             ? {
@@ -65,7 +62,7 @@ const CategoryList = () => {
             : feed,
         ),
       );
-      setCategories((prevCategories) =>
+      setCategoriesData((prevCategories) =>
         prevCategories.map((category) =>
           category.id === categoryId ? { ...category, ...data } : category,
         ),
@@ -83,7 +80,7 @@ const CategoryList = () => {
     try {
       const response = await deleteCategory(category.id);
       if (response.status === 204) {
-        setCategories((prevCategories) =>
+        setCategoriesData((prevCategories) =>
           prevCategories.filter((c) => c.id !== category.id),
         );
         Message.success(`Deleted category: ${category.title}`);

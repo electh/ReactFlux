@@ -2,28 +2,27 @@ import { Message } from "@arco-design/web-react";
 import { useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useSnapshot } from "valtio";
 import { updateEntriesStatus } from "../../apis";
-import { configAtom } from "../../atoms/configAtom";
-import {
-  activeContentAtom,
-  entriesAtom,
-  filteredEntriesAtom,
-  infoFromAtom,
-  isArticleFocusedAtom,
-  loadMoreUnreadVisibleAtom,
-  loadMoreVisibleAtom,
-  loadingAtom,
-  offsetAtom,
-  totalAtom,
-  unreadCountAtom,
-  unreadEntriesAtom,
-  unreadOffsetAtom,
-} from "../../atoms/contentAtom";
-import { isAppDataReadyAtom } from "../../atoms/dataAtom";
 import useEntryActions from "../../hooks/useEntryActions";
-import { useFetchData } from "../../hooks/useFetchData";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
+import { configState } from "../../store/configState";
+import {
+  contentState,
+  setActiveContent,
+  setEntries,
+  setInfoFrom,
+  setIsArticleFocused,
+  setLoadMoreUnreadVisible,
+  setLoadMoreVisible,
+  setLoading,
+  setOffset,
+  setTotal,
+  setUnreadCount,
+  setUnreadEntries,
+  setUnreadOffset,
+} from "../../store/contentState";
+import { dataState, fetchData } from "../../store/dataState";
 import { parseFirstImage } from "../../utils/images";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
@@ -32,25 +31,10 @@ import FooterPanel from "./FooterPanel";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const [activeContent, setActiveContent] = useAtom(activeContentAtom);
-
-  const isAppDataReady = useAtomValue(isAppDataReadyAtom);
-  const { fetchData } = useFetchData();
-  const config = useAtomValue(configAtom);
-  const { orderBy, orderDirection } = config;
-
-  const [isArticleFocused, setIsArticleFocused] = useAtom(isArticleFocusedAtom);
-  const [loading, setLoading] = useAtom(loadingAtom);
-  const setEntries = useSetAtom(entriesAtom);
-  const setLoadMoreUnreadVisible = useSetAtom(loadMoreUnreadVisibleAtom);
-  const setLoadMoreVisible = useSetAtom(loadMoreVisibleAtom);
-  const setOffset = useSetAtom(offsetAtom);
-  const setTotal = useSetAtom(totalAtom);
-  const setUnreadCount = useSetAtom(unreadCountAtom);
-  const setUnreadEntries = useSetAtom(unreadEntriesAtom);
-  const setUnreadOffset = useSetAtom(unreadOffsetAtom);
-  const filteredEntries = useAtomValue(filteredEntriesAtom);
-  const setInfoFrom = useSetAtom(infoFromAtom);
+  const { orderBy, orderDirection } = useSnapshot(configState);
+  const { activeContent, filteredEntries, isArticleFocused, loading } =
+    useSnapshot(contentState);
+  const { isAppDataReady } = useSnapshot(dataState);
 
   const {
     handleFetchContent,

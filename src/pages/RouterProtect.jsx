@@ -1,11 +1,11 @@
 import { Navigate } from "react-router-dom";
-import { authAtom } from "../atoms/authAtom";
 
-import { useAtomValue } from "jotai";
+import { useSnapshot } from "valtio";
+import { authState } from "../store/authState";
 import { isValidAuth } from "../utils/auth";
 
 const RouterProtect = ({ children }) => {
-  const auth = useAtomValue(authAtom);
+  const auth = useSnapshot(authState);
 
   if (isValidAuth(auth)) {
     return <>{children}</>;

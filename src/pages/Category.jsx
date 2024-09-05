@@ -1,14 +1,14 @@
 import { useParams } from "react-router-dom";
 
-import { useAtomValue } from "jotai";
+import { useSnapshot } from "valtio";
 import { buildEntriesUrl, markCategoryAsRead } from "../apis";
 import { apiClient } from "../apis/ofetch";
-import { configAtom } from "../atoms/configAtom";
 import Content from "../components/Content/Content";
+import { configState } from "../store/configState";
 
 const Category = () => {
   const { id: categoryId } = useParams();
-  const { orderBy, pageSize } = useAtomValue(configAtom);
+  const { orderBy, pageSize } = useSnapshot(configState);
 
   const getCategoryEntries = async (offset = 0, status = null) => {
     const baseParams = {

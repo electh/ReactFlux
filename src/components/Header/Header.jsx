@@ -26,28 +26,26 @@ import {
 } from "@arco-design/web-react/icon";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { authAtom } from "../../atoms/authAtom";
-import { configAtom } from "../../atoms/configAtom";
-import { isAppDataReadyAtom } from "../../atoms/dataAtom";
-import { useConfig } from "../../hooks/useConfig";
+import { useSnapshot } from "valtio";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
-import { defaultConfig } from "../../utils/config";
+import { resetAuth } from "../../store/authState";
+import {
+  configState,
+  resetConfig,
+  updateConfig,
+} from "../../store/configState";
+import { setIsAppDataReady } from "../../store/dataState";
 import Sidebar from "../Sidebar/Sidebar";
 import "./Header.css";
 
 const Header = () => {
+  const { showAllFeeds, theme } = useSnapshot(configState);
+
   const navigate = useNavigate();
   const path = useLocation().pathname;
   const { setAddFeedModalVisible, setSettingsModalVisible } = useModalToggle();
-
-  const [config, setConfig] = useAtom(configAtom);
-  const setAuth = useSetAtom(authAtom);
-  const setIsAppDataReady = useSetAtom(isAppDataReadyAtom);
-  const { showAllFeeds, theme } = config;
-  const { updateConfig } = useConfig();
   const { belowLg } = useScreenWidth();
 
   const [sideVisible, setSideVisible] = useState(false);
@@ -74,12 +72,12 @@ const Header = () => {
   };
 
   const handleResetSettings = () => {
-    setConfig(defaultConfig);
+    resetConfig();
     setResetModalVisible(false);
   };
 
   const handleLogout = () => {
-    setAuth({});
+    resetAuth();
     setIsAppDataReady(false);
     navigate("/login");
     Message.success("Logout");

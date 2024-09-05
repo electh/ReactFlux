@@ -17,32 +17,23 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import classNames from "classnames";
-import { useAtomValue, useSetAtom } from "jotai";
-import { configAtom } from "../../atoms/configAtom";
-import { activeContentAtom } from "../../atoms/contentAtom";
-import {
-  categoriesAtom,
-  feedsGroupedByIdAtom,
-  hiddenCategoryIdsAtom,
-  historyCountAtom,
-  isAppDataReadyAtom,
-  starredCountAtom,
-  unreadTodayCountAtom,
-  unreadTotalAtom,
-} from "../../atoms/dataAtom";
+import { useSnapshot } from "valtio";
+import { configState } from "../../store/configState";
+import { setActiveContent } from "../../store/contentState";
+import { dataState } from "../../store/dataState";
 import FeedIcon from "../ui/FeedIcon";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
 
 const CategoryTitle = ({ category, path }) => {
-  const navigate = useNavigate();
-  const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
+  const { feedsGroupedById } = useSnapshot(dataState);
   const unreadCount = feedsGroupedById[category.id]?.reduce(
     (acc, feed) => acc + feed.unreadCount,
     0,
   );
-  const setActiveContent = useSetAtom(activeContentAtom);
+
+  const navigate = useNavigate();
 
   const handleNavigation = () => {
     navigate(`/category/${category.id}`);
@@ -88,8 +79,7 @@ const CategoryTitle = ({ category, path }) => {
   );
 };
 
-const CountDisplay = ({ atom }) => {
-  const count = useAtomValue(atom);
+const CountDisplay = ({ count }) => {
   return (
     <Typography.Ellipsis className="item-count" expandable={false}>
       {count || ""}
@@ -97,11 +87,10 @@ const CountDisplay = ({ atom }) => {
   );
 };
 
-const CustomMenuItem = ({ path, Icon, label, countAtom }) => {
+const CustomMenuItem = ({ path, Icon, label, count }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isSelected = location.pathname === path;
-  const setActiveContent = useSetAtom(activeContentAtom);
 
   const handleNavigation = () => {
     navigate(path);
@@ -121,23 +110,27 @@ const CustomMenuItem = ({ path, Icon, label, countAtom }) => {
           <Icon />
           {label}
         </span>
-        <CountDisplay atom={countAtom} />
+        <CountDisplay count={count} />
       </div>
     </MenuItem>
   );
 };
 
 const Sidebar = () => {
+  const { homePage, showAllFeeds, showFeedIcon } = useSnapshot(configState);
+  const {
+    categories,
+    feedsGroupedById,
+    hiddenCategoryIds,
+    historyCount,
+    isAppDataReady,
+    starredCount,
+    unreadTodayCount,
+    unreadTotal,
+  } = useSnapshot(dataState);
+
   const location = useLocation();
   const navigate = useNavigate();
-  const categories = useAtomValue(categoriesAtom);
-  const isAppDataReady = useAtomValue(isAppDataReadyAtom);
-  const feedsGroupedById = useAtomValue(feedsGroupedByIdAtom);
-  const hiddenCategoryIds = useAtomValue(hiddenCategoryIdsAtom);
-  const setActiveContent = useSetAtom(activeContentAtom);
-
-  const config = useAtomValue(configAtom);
-  const { homePage, showAllFeeds, showFeedIcon } = config;
 
   const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`]);
 
@@ -176,25 +169,25 @@ const Sidebar = () => {
             path="/all"
             Icon={IconUnorderedList}
             label="All"
-            countAtom={unreadTotalAtom}
+            count={unreadTotal}
           />
           <CustomMenuItem
             path="/today"
             Icon={IconCalendar}
             label="Today"
-            countAtom={unreadTodayCountAtom}
+            count={unreadTodayCount}
           />
           <CustomMenuItem
             path="/starred"
             Icon={IconStar}
             label="Starred"
-            countAtom={starredCountAtom}
+            count={starredCount}
           />
           <CustomMenuItem
             path="/history"
             Icon={IconHistory}
             label="History"
-            countAtom={historyCountAtom}
+            count={historyCount}
           />
         </div>
       )}

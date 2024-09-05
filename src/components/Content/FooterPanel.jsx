@@ -2,31 +2,22 @@ import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
 import { forwardRef, useEffect } from "react";
 
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useSnapshot } from "valtio";
 import {
-  entriesAtom,
-  filterStatusAtom,
-  filterStringAtom,
-  filterTypeAtom,
-  loadingAtom,
-  unreadCountAtom,
-  unreadEntriesAtom,
-} from "../../atoms/contentAtom";
-import { useFetchData } from "../../hooks/useFetchData";
+  contentState,
+  setEntries,
+  setFilterStatus,
+  setFilterString,
+  setFilterType,
+  setUnreadCount,
+  setUnreadEntries,
+} from "../../store/contentState";
+import { fetchData } from "../../store/dataState";
 import "./FooterPanel.css";
 
 const FooterPanel = forwardRef(
   ({ info, refreshArticleList, markAllAsRead }, ref) => {
-    const loading = useAtomValue(loadingAtom);
-    const setEntries = useSetAtom(entriesAtom);
-    const setUnreadEntries = useSetAtom(unreadEntriesAtom);
-    const setFilterString = useSetAtom(filterStringAtom);
-    const setFilterType = useSetAtom(filterTypeAtom);
-    const setUnreadCount = useSetAtom(unreadCountAtom);
-    const [filterStatus, setFilterStatus] = useAtom(filterStatusAtom);
-
-    /*menu 数据初始化函数 */
-    const { fetchData } = useFetchData();
+    const { filterStatus, loading } = useSnapshot(contentState);
 
     const handleMarkAllAsRead = async () => {
       try {

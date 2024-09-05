@@ -3,31 +3,29 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@arco-design/web-react/icon";
-import { useConfig } from "../../hooks/useConfig";
 
-import { useAtom, useAtomValue } from "jotai";
 import { useEffect } from "react";
-import { configAtom } from "../../atoms/configAtom";
-import { filterStringAtom, filterTypeAtom } from "../../atoms/contentAtom";
+import { useSnapshot } from "valtio";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
+import { configState, updateConfig } from "../../store/configState";
+import {
+  contentState,
+  setFilterString,
+  setFilterType,
+} from "../../store/contentState";
 import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = () => {
+  const { orderDirection } = useSnapshot(configState);
+  const { filterString, filterType } = useSnapshot(contentState);
+
   const { belowMd } = useScreenWidth();
-
-  const config = useAtomValue(configAtom);
-  const { updateConfig } = useConfig();
-  const { orderDirection } = config;
-
-  const [filterString, setFilterString] = useAtom(filterStringAtom);
-  const [filterType, setFilterType] = useAtom(filterTypeAtom);
 
   const toggleOrderDirection = () => {
     const newOrderDirection = orderDirection === "desc" ? "asc" : "desc";
     updateConfig({ orderDirection: newOrderDirection });
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setFilterType("title");
     setFilterString("");

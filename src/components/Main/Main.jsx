@@ -9,11 +9,10 @@ import {
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import { useAtomValue } from "jotai";
+import { useSnapshot } from "valtio";
 import { addFeed } from "../../apis";
-import { categoriesAtom } from "../../atoms/dataAtom";
-import { useFetchData } from "../../hooks/useFetchData";
 import { useModalToggle } from "../../hooks/useModalToggle";
+import { dataState, fetchData } from "../../store/dataState";
 import { includesIgnoreCase } from "../../utils/filter";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
@@ -43,13 +42,12 @@ const SettingsModal = () => {
 };
 
 const AddFeedModal = () => {
-  const categories = useAtomValue(categoriesAtom);
+  const { categories } = useSnapshot(dataState);
+
   const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle();
 
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
-
-  const { fetchData } = useFetchData();
 
   const handleAddFeed = async (url, categoryId, isFullText) => {
     setFeedModalLoading(true);

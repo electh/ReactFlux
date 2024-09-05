@@ -10,14 +10,14 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon";
 
-import { useAtomValue } from "jotai";
-import { activeContentAtom } from "../../atoms/contentAtom";
+import { useSnapshot } from "valtio";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
+import { contentState } from "../../store/contentState";
 import "./ActionButtons.css";
 
 const ActionButtons = ({ handleEntryClick, entryListRef, entryDetailRef }) => {
-  const activeContent = useAtomValue(activeContentAtom);
+  const { activeContent } = useSnapshot(contentState);
   const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
     useEntryActions();
   const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } =

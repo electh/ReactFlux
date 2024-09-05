@@ -1,6 +1,5 @@
 import { generate, getRgbStr } from "@arco-design/color";
-
-import { getConfig } from "./config";
+import { getConfig } from "../store/configState";
 
 export const colors = {
   Red: { light: "#F53F3F", dark: "#F76965" },

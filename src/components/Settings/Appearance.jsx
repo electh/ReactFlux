@@ -7,15 +7,13 @@ import {
   Typography,
 } from "@arco-design/web-react";
 
-import { useAtomValue } from "jotai";
 import { applyColor, colors, getColorValue } from "../../utils/colors";
 
-import { configAtom } from "../../atoms/configAtom";
-import { useConfig } from "../../hooks/useConfig";
+import { useSnapshot } from "valtio";
+import { configState, updateConfig } from "../../store/configState";
 import "./Appearance.css";
 
 const Appearance = () => {
-  const { updateConfig } = useConfig();
   const {
     articleWidth,
     fontSize,
@@ -23,7 +21,7 @@ const Appearance = () => {
     showDetailedRelativeTime,
     showFeedIcon,
     themeColor,
-  } = useAtomValue(configAtom);
+  } = useSnapshot(configState);
 
   const handleConfigChange = (configChanges) => {
     updateConfig(configChanges);

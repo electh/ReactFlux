@@ -1,15 +1,16 @@
-import { atom, useAtom } from "jotai";
+import { proxy, useSnapshot } from "valtio";
+import { createSetter } from "../utils/valtio";
 
-const addFeedModalVisibleAtom = atom(false);
-const settingsModalVisibleAtom = atom(false);
+const state = proxy({
+  addFeedModalVisible: false,
+  settingsModalVisible: false,
+});
+
+const setAddFeedModalVisible = createSetter(state, "addFeedModalVisible");
+const setSettingsModalVisible = createSetter(state, "settingsModalVisible");
 
 export const useModalToggle = () => {
-  const [addFeedModalVisible, setAddFeedModalVisible] = useAtom(
-    addFeedModalVisibleAtom,
-  );
-  const [settingsModalVisible, setSettingsModalVisible] = useAtom(
-    settingsModalVisibleAtom,
-  );
+  const { addFeedModalVisible, settingsModalVisible } = useSnapshot(state);
 
   return {
     addFeedModalVisible,

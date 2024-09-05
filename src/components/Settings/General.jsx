@@ -5,13 +5,11 @@ import {
   Switch,
   Typography,
 } from "@arco-design/web-react";
-import { useAtomValue } from "jotai";
-import { configAtom } from "../../atoms/configAtom";
-import { useConfig } from "../../hooks/useConfig";
+import { useSnapshot } from "valtio";
+import { configState, updateConfig } from "../../store/configState";
 import "./General.css";
 
 const General = () => {
-  const { updateConfig } = useConfig();
   const {
     homePage,
     markReadOnScroll,
@@ -19,7 +17,7 @@ const General = () => {
     pageSize,
     removeDuplicates,
     showStatus,
-  } = useAtomValue(configAtom);
+  } = useSnapshot(configState);
 
   return (
     <>

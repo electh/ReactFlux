@@ -1,13 +1,13 @@
-import { atom, useAtom } from "jotai";
+import { proxy, useSnapshot } from "valtio";
+import { createSetter } from "../utils/valtio";
 
-const isPhotoSliderVisibleAtom = atom(false);
-const selectedIndexAtom = atom(0);
+const state = proxy({ isPhotoSliderVisible: false, selectedIndex: 0 });
+
+const setIsPhotoSliderVisible = createSetter(state, "isPhotoSliderVisible");
+const setSelectedIndex = createSetter(state, "selectedIndex");
 
 export const usePhotoSlider = () => {
-  const [isPhotoSliderVisible, setIsPhotoSliderVisible] = useAtom(
-    isPhotoSliderVisibleAtom,
-  );
-  const [selectedIndex, setSelectedIndex] = useAtom(selectedIndexAtom);
+  const { isPhotoSliderVisible, selectedIndex } = useSnapshot(state);
 
   return {
     isPhotoSliderVisible,
