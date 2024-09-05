@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '.github/**'
+      - '.husky/**'
+      - '.editorconfig'
+      - '.gitignore'
+      - 'biome.json'
+      - 'Caddyfile'
+      - 'Dockerfile'
+      - 'README*.md'
+
+  workflow_dispatch:
 
 permissions:
   contents: write
