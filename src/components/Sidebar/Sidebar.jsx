@@ -197,7 +197,7 @@ const Sidebar = () => {
             )}
             {feed.title}
           </Typography.Ellipsis>
-          {feed.unreadCount && (
+          {feed.unreadCount !== 0 && (
             <Typography.Ellipsis className="item-count" expandable={false}>
               {feed.unreadCount}
             </Typography.Ellipsis>
