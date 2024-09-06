@@ -26,7 +26,6 @@ const useKeyHandlers = (handleEntryClick) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [shouldLoadNext, setShouldLoadNext] = useState(false);
-  const [shouldScrollToCard, setShouldScrollToCard] = useState(false);
 
   useEffect(() => {
     if (shouldLoadNext && !loadingMore) {
@@ -37,14 +36,13 @@ const useKeyHandlers = (handleEntryClick) => {
   }, [shouldLoadNext, loadingMore]);
 
   useEffect(() => {
-    if (shouldScrollToCard) {
+    if (activeContent) {
       const card = document.querySelector(".card-custom-selected-style");
       if (card) {
         card.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
-      setShouldScrollToCard(false);
     }
-  }, [shouldScrollToCard]);
+  }, [activeContent]);
 
   const exitDetailView = (entryListRef, entryDetailRef) => {
     if (!activeContent) {
@@ -72,7 +70,7 @@ const useKeyHandlers = (handleEntryClick) => {
         : filteredEntries[currentIndex - 1];
 
       if (prevEntry) {
-        handleEntryClick(prevEntry).then(() => setShouldScrollToCard(true));
+        handleEntryClick(prevEntry);
       }
     }
   };
@@ -108,7 +106,7 @@ const useKeyHandlers = (handleEntryClick) => {
       : filteredEntries[currentIndex + 1];
 
     if (nextEntry) {
-      handleEntryClick(nextEntry).then(() => setShouldScrollToCard(true));
+      handleEntryClick(nextEntry);
       setShouldLoadNext(false);
     }
   };
