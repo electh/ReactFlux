@@ -33,18 +33,15 @@ export const loadMoreVisibleState = computed(contentState, (content) => {
   return entries.length < total;
 });
 
+export const currentEntriesState = computed(contentState, (content) => {
+  const { entries, filterStatus, unreadEntries } = content;
+  return filterStatus === "all" ? entries : unreadEntries;
+});
+
 export const filteredEntriesState = computed(
-  [contentState, hiddenFeedIdsState, settingsState],
-  (content, hiddenFeedIds, settings) => {
-    const {
-      entries,
-      filterStatus,
-      filterString,
-      filterType,
-      infoFrom,
-      unreadEntries,
-    } = content;
-    const currentEntries = filterStatus === "all" ? entries : unreadEntries;
+  [contentState, currentEntriesState, hiddenFeedIdsState, settingsState],
+  (content, currentEntries, hiddenFeedIds, settings) => {
+    const { filterString, filterType, infoFrom } = content;
     const filteredEntries = filterEntries(
       currentEntries,
       filterType,

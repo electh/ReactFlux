@@ -1,11 +1,13 @@
 import { Card, Skeleton } from "@arco-design/web-react";
 
 import { useStore } from "@nanostores/react";
+import { contentState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import "./LoadingCards.css";
 
-const LoadingCards = ({ loading }) => {
+const LoadingCards = () => {
   const { layout } = useStore(settingsState);
+  const { loading } = useStore(contentState);
   const cardCount = layout === "large" ? 2 : 4;
 
   const renderCard = (index) => (
