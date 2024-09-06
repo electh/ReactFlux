@@ -4,6 +4,8 @@ import { useStore } from "@nanostores/react";
 import {
   contentState,
   filteredEntriesState,
+  loadMoreUnreadVisibleState,
+  loadMoreVisibleState,
   setActiveContent,
   setIsArticleFocused,
 } from "../store/contentState";
@@ -12,13 +14,10 @@ import useLoadMore from "./useLoadMore";
 import { usePhotoSlider } from "./usePhotoSlider";
 
 const useKeyHandlers = (handleEntryClick) => {
-  const {
-    activeContent,
-    filterStatus,
-    loadMoreUnreadVisible,
-    loadMoreVisible,
-  } = useStore(contentState);
+  const { activeContent, filterStatus } = useStore(contentState);
   const filteredEntries = useStore(filteredEntriesState);
+  const loadMoreUnreadVisible = useStore(loadMoreUnreadVisibleState);
+  const loadMoreVisible = useStore(loadMoreVisibleState);
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
     usePhotoSlider();

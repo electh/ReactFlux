@@ -14,13 +14,23 @@ export const contentState = map({
   infoFrom: getSettings("homePage"), // all | today | starred | history
   isArticleFocused: false, // 文章是否被聚焦
   loading: true, // 初始 loading
-  loadMoreUnreadVisible: false, // unread 页签加载更多按钮可见性
-  loadMoreVisible: false, // all 页签加载更多按钮可见性
   offset: 0, // 所有文章分页参数
   total: 0, // 接口返回文章总数原始值，不受接口返回数据长度限制
   unreadCount: 0, // 接口返回未读文章数原始值，不受接口返回数据长度限制
   unreadEntries: [], // 接口返回的未读文章
   unreadOffset: 0, // 未读文章分页参数
+});
+
+// unread 页签加载更多按钮可见性
+export const loadMoreUnreadVisibleState = computed(contentState, (content) => {
+  const { unreadEntries, unreadCount } = content;
+  return unreadEntries.length < unreadCount;
+});
+
+// all 页签加载更多按钮可见性
+export const loadMoreVisibleState = computed(contentState, (content) => {
+  const { entries, total } = content;
+  return entries.length < total;
 });
 
 export const filteredEntriesState = computed(
@@ -70,11 +80,6 @@ export const setIsArticleFocused = createSetter(
   "isArticleFocused",
 );
 export const setLoading = createSetter(contentState, "loading");
-export const setLoadMoreUnreadVisible = createSetter(
-  contentState,
-  "loadMoreUnreadVisible",
-);
-export const setLoadMoreVisible = createSetter(contentState, "loadMoreVisible");
 export const setOffset = createSetter(contentState, "offset");
 export const setTotal = createSetter(contentState, "total");
 export const setUnreadCount = createSetter(contentState, "unreadCount");

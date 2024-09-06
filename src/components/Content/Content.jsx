@@ -14,8 +14,6 @@ import {
   setFilterStatus,
   setInfoFrom,
   setIsArticleFocused,
-  setLoadMoreUnreadVisible,
-  setLoadMoreVisible,
   setLoading,
   setOffset,
   setTotal,
@@ -149,9 +147,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setEntries(articles);
     setUnreadEntries(unreadArticles);
     setTotal(responseAll.total);
-    setLoadMoreVisible(articles.length < responseAll.total);
     setUnreadCount(responseUnread.total);
-    setLoadMoreUnreadVisible(unreadArticles.length < responseUnread.total);
   };
 
   const handleResponses = (responseAll, responseUnread) => {

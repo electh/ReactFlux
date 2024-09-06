@@ -9,7 +9,12 @@ import SearchAndSortBar from "./SearchAndSortBar";
 
 import { useStore } from "@nanostores/react";
 import { useInView } from "react-intersection-observer";
-import { contentState, filteredEntriesState } from "../../store/contentState";
+import {
+  contentState,
+  filteredEntriesState,
+  loadMoreUnreadVisibleState,
+  loadMoreVisibleState,
+} from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import Ripple from "../ui/Ripple.jsx";
 import "./ArticleList.css";
@@ -19,9 +24,10 @@ const ArticleList = forwardRef(
     const { layout } = useStore(settingsState);
     const isCompactLayout = layout === "small";
 
-    const { filterStatus, loadMoreUnreadVisible, loadMoreVisible } =
-      useStore(contentState);
+    const { filterStatus } = useStore(contentState);
     const filteredEntries = useStore(filteredEntriesState);
+    const loadMoreUnreadVisible = useStore(loadMoreUnreadVisibleState);
+    const loadMoreVisible = useStore(loadMoreVisibleState);
 
     const { loadingMore, handleLoadMore } = useLoadMore();
 

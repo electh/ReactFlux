@@ -3,8 +3,6 @@ import { atom } from "nanostores";
 import {
   contentState,
   setEntries,
-  setLoadMoreUnreadVisible,
-  setLoadMoreVisible,
   setOffset,
   setUnreadEntries,
   setUnreadOffset,
@@ -17,15 +15,7 @@ const loadingMoreState = atom(false);
 const setLoadingMore = createSetter(loadingMoreState);
 
 const useLoadMore = () => {
-  const {
-    entries,
-    filterStatus,
-    offset,
-    total,
-    unreadCount,
-    unreadEntries,
-    unreadOffset,
-  } = useStore(contentState);
+  const { filterStatus, offset, unreadOffset } = useStore(contentState);
   const { pageSize } = useStore(settingsState);
 
   /* 加载更多 loading*/
@@ -40,14 +30,12 @@ const useLoadMore = () => {
 
     if (filterStatus === "all") {
       setEntries((prev) => [...prev, ...uniqueNewEntries(prev, newEntries)]);
-      setLoadMoreVisible(entries.length < total);
       setOffset((prev) => prev + pageSize);
     } else {
       setUnreadEntries((prev) => [
         ...prev,
         ...uniqueNewEntries(prev, newEntries),
       ]);
-      setLoadMoreUnreadVisible(unreadEntries.length < unreadCount);
       setUnreadOffset((prev) => prev + pageSize);
     }
   };
