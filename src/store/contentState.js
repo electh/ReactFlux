@@ -50,7 +50,6 @@ export const filteredEntriesState = computed(
       : entries;
 
     if (
-      filterStatus === "all" ||
       removeDuplicates === "none" ||
       ["starred", "history"].includes(infoFrom)
     ) {
