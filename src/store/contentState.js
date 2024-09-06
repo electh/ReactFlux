@@ -1,45 +1,39 @@
 import { computed, map } from "nanostores";
 import { removeDuplicateEntries } from "../utils/deduplicate";
-import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
+import { filterEntries } from "../utils/filter";
 import { createSetter } from "../utils/nanostores";
 import { hiddenFeedIdsState } from "./dataState";
 import { getSettings, settingsState } from "./settingsState";
 
 export const contentState = map({
+  activeContent: null, // 当前打开的文章
+  entries: [], // 接口返回的所有文章
+  filterStatus: getSettings("showStatus"), // all | unread
+  filterString: "", // 搜索文本
+  filterType: "Title", // title | content | author
+  infoFrom: getSettings("homePage"), // all | today | starred | history
+  isArticleFocused: false, // 文章是否被聚焦
+  loading: true, // 初始 loading
+  loadMoreUnreadVisible: false, // unread 页签加载更多按钮可见性
+  loadMoreVisible: false, // all 页签加载更多按钮可见性
+  offset: 0, // 所有文章分页参数
   total: 0, // 接口返回文章总数原始值，不受接口返回数据长度限制
   unreadCount: 0, // 接口返回未读文章数原始值，不受接口返回数据长度限制
-  offset: 0, // 所有文章分页参数
-  unreadOffset: 0, // 未读文章分页参数
-  loadMoreVisible: false, // all 页签加载更多按钮可见性
-  loadMoreUnreadVisible: false, // unread 页签加载更多按钮可见性
-  entries: [], // 接口返回的所有文章
   unreadEntries: [], // 接口返回的未读文章
-  infoFrom: getSettings("homePage"), // all | today | starred | history
-  filterType: "Title", // title | content | author
-  filterString: "", // 搜索文本
-  loading: true, // 初始 loading
-  isArticleFocused: false, // 文章是否被聚焦
-  activeContent: null, // 当前打开的文章
+  unreadOffset: 0, // 未读文章分页参数
 });
 
-// all | unread
-export const filterStatusState = computed(
-  [contentState, settingsState],
-  (content, settings) => {
-    const { infoFrom } = content;
-    const { showStatus } = settings;
-    if (["starred", "history"].includes(infoFrom)) {
-      return "all";
-    }
-    return showStatus;
-  },
-);
-
 export const filteredEntriesState = computed(
-  [contentState, filterStatusState, hiddenFeedIdsState, settingsState],
-  (content, filterStatus, hiddenFeedIds, settings) => {
-    const { entries, filterString, filterType, infoFrom, unreadEntries } =
-      content;
+  [contentState, hiddenFeedIdsState, settingsState],
+  (content, hiddenFeedIds, settings) => {
+    const {
+      entries,
+      filterStatus,
+      filterString,
+      filterType,
+      infoFrom,
+      unreadEntries,
+    } = content;
     const currentEntries = filterStatus === "all" ? entries : unreadEntries;
     const filteredEntries = filterEntries(
       currentEntries,
@@ -48,12 +42,12 @@ export const filteredEntriesState = computed(
     );
 
     const { removeDuplicates, showAllFeeds } = settings;
-    const visibleEntries = filterEntriesByVisibility(
-      filteredEntries,
-      infoFrom,
-      showAllFeeds,
-      hiddenFeedIds,
-    );
+    const isValidFilter = ["all", "today", "category"].includes(infoFrom);
+    const isVisible = (entry) =>
+      showAllFeeds || !hiddenFeedIds.includes(entry.feed.id);
+    const visibleEntries = isValidFilter
+      ? filteredEntries.filter(isVisible)
+      : entries;
 
     if (
       filterStatus === "all" ||

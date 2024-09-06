@@ -2,7 +2,6 @@ import { useStore } from "@nanostores/react";
 import { map } from "nanostores";
 import {
   contentState,
-  filterStatusState,
   setEntries,
   setLoadMoreUnreadVisible,
   setLoadMoreVisible,
@@ -18,10 +17,16 @@ const state = map({ loadingMore: false });
 const setLoadingMore = createSetter(state, "loadingMore");
 
 const useLoadMore = () => {
-  const { entries, offset, total, unreadCount, unreadEntries, unreadOffset } =
-    useStore(contentState);
+  const {
+    entries,
+    filterStatus,
+    offset,
+    total,
+    unreadCount,
+    unreadEntries,
+    unreadOffset,
+  } = useStore(contentState);
   const { pageSize } = useStore(settingsState);
-  const filterStatus = useStore(filterStatusState);
 
   /* 加载更多 loading*/
   const { loadingMore } = useStore(state);

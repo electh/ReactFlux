@@ -6,10 +6,12 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
+import { contentState, setFilterStatus } from "../../store/contentState";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import "./General.css";
 
 const General = () => {
+  const { infoFrom } = useStore(contentState);
   const {
     homePage,
     markReadOnScroll,
@@ -35,7 +37,10 @@ const General = () => {
             className="input-select"
             placeholder="Select status"
             value={showStatus}
-            onChange={(value) => updateSettings({ showStatus: value })}
+            onChange={(value) => {
+              updateSettings({ showStatus: value });
+              setFilterStatus(value);
+            }}
           >
             <Select.Option value="all">All</Select.Option>
             <Select.Option value="unread">Unread</Select.Option>

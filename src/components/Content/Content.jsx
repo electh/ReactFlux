@@ -11,6 +11,7 @@ import {
   filteredEntriesState,
   setActiveContent,
   setEntries,
+  setFilterStatus,
   setInfoFrom,
   setIsArticleFocused,
   setLoadMoreUnreadVisible,
@@ -34,7 +35,7 @@ import "./Transition.css";
 const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, isArticleFocused, loading } = useStore(contentState);
   const { isAppDataReady } = useStore(dataState);
-  const { orderBy, orderDirection } = useStore(settingsState);
+  const { orderBy, orderDirection, showStatus } = useStore(settingsState);
   const filteredEntries = useStore(filteredEntriesState);
 
   const {
@@ -62,6 +63,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    if (["starred", "history"].includes(info.from)) {
+      setFilterStatus("all");
+    } else {
+      setFilterStatus(showStatus);
+    }
     setInfoFrom(info.from);
     refreshArticleList();
   }, [info, orderDirection]);

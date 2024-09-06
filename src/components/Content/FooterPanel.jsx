@@ -5,7 +5,6 @@ import { forwardRef, useEffect } from "react";
 import { useStore } from "@nanostores/react";
 import {
   contentState,
-  filterStatusState,
   setEntries,
   setFilterStatus,
   setFilterString,
@@ -29,8 +28,7 @@ const updateAllEntriesAsRead = () => {
 
 const FooterPanel = forwardRef(
   ({ info, refreshArticleList, markAllAsRead }, ref) => {
-    const { loading } = useStore(contentState);
-    const filterStatus = useStore(filterStatusState);
+    const { filterStatus, loading } = useStore(contentState);
 
     const handleMarkAllAsRead = async () => {
       try {
