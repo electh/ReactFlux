@@ -56,12 +56,12 @@ const ActionButtons = ({ handleEntryClick, entryListRef, entryDetailRef }) => {
       />
       <Button
         icon={<IconArrowLeft />}
-        onClick={navigateToPreviousArticle}
+        onClick={() => navigateToPreviousArticle()}
         type="primary"
       />
       <Button
         icon={<IconArrowRight />}
-        onClick={navigateToNextArticle}
+        onClick={() => navigateToNextArticle()}
         type="primary"
       />
       <Button
