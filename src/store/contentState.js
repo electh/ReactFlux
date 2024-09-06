@@ -42,7 +42,7 @@ export const filteredEntriesState = computed(
     );
 
     const { removeDuplicates, showAllFeeds } = settings;
-    const isValidFilter = ["all", "today", "category"].includes(infoFrom);
+    const isValidFilter = !["starred", "history"].includes(infoFrom);
     const isVisible = (entry) =>
       showAllFeeds || !hiddenFeedIds.includes(entry.feed.id);
     const visibleEntries = isValidFilter

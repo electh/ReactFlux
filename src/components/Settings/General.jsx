@@ -6,12 +6,11 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
-import { contentState, setFilterStatus } from "../../store/contentState";
+import { setFilterStatus } from "../../store/contentState";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import "./General.css";
 
 const General = () => {
-  const { infoFrom } = useStore(contentState);
   const {
     homePage,
     markReadOnScroll,
