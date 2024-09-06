@@ -55,7 +55,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!isInitialRenderComplete || info.from === "history") {
+    if (
+      !isInitialRenderComplete ||
+      ["starred", "history"].includes(info.from)
+    ) {
       return;
     }
     refreshArticleList();
