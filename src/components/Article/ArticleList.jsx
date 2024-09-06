@@ -7,24 +7,25 @@ import ArticleCard from "./ArticleCard";
 import LoadingCards from "./LoadingCards";
 import SearchAndSortBar from "./SearchAndSortBar";
 
+import { useStore } from "@nanostores/react";
 import { useInView } from "react-intersection-observer";
-import { useSnapshot } from "valtio";
-import { configState } from "../../store/configState";
-import { contentState } from "../../store/contentState";
+import {
+  contentState,
+  filterStatusState,
+  filteredEntriesState,
+} from "../../store/contentState";
+import { settingsState } from "../../store/settingsState";
 import Ripple from "../ui/Ripple.jsx";
 import "./ArticleList.css";
 
 const ArticleList = forwardRef(
   ({ loading, getEntries, handleEntryClick, cardsRef }, ref) => {
-    const { layout } = useSnapshot(configState);
+    const { layout } = useStore(settingsState);
     const isCompactLayout = layout === "small";
 
-    const {
-      filteredEntries,
-      filterStatus,
-      loadMoreUnreadVisible,
-      loadMoreVisible,
-    } = useSnapshot(contentState);
+    const { loadMoreUnreadVisible, loadMoreVisible } = useStore(contentState);
+    const filteredEntries = useStore(filteredEntriesState);
+    const filterStatus = useStore(filterStatusState);
 
     const { loadingMore, handleLoadMore } = useLoadMore();
 

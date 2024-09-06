@@ -6,17 +6,17 @@ import { forwardRef, useEffect, useState } from "react";
 import { PhotoSlider } from "react-photo-view";
 import { Link, useNavigate } from "react-router-dom";
 
+import { useStore } from "@nanostores/react";
 import "react-photo-view/dist/react-photo-view.css";
-import { useSnapshot } from "valtio";
 import { usePhotoSlider } from "../../hooks/usePhotoSlider";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
-import { configState } from "../../store/configState";
 import {
   contentState,
   setFilterString,
   setFilterType,
   setIsArticleFocused,
 } from "../../store/contentState";
+import { settingsState } from "../../store/settingsState";
 import { extractImageSources } from "../../utils/images";
 import ActionButtons from "./ActionButtons";
 import "./ArticleDetail.css";
@@ -46,7 +46,7 @@ const ImageOverlayButton = ({
   togglePhotoSlider,
   isLinkWrapper = false,
 }) => {
-  const { fontSize } = useSnapshot(configState);
+  const { fontSize } = useStore(settingsState);
 
   const [isHovering, setIsHovering] = useState(false);
   const [isIcon, setIsIcon] = useState(false);
@@ -160,8 +160,8 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 
 const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
   const navigate = useNavigate();
-  const { articleWidth, fontSize } = useSnapshot(configState);
-  const { activeContent } = useSnapshot(contentState);
+  const { activeContent } = useStore(contentState);
+  const { articleWidth, fontSize } = useStore(settingsState);
 
   const {
     isPhotoSliderVisible,

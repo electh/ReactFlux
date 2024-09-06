@@ -1,11 +1,11 @@
-import { proxy, snapshot } from "valtio";
+import { computed, map } from "nanostores";
 import { removeDuplicateEntries } from "../utils/deduplicate";
 import { filterEntries, filterEntriesByVisibility } from "../utils/filter";
-import { createSetter } from "../utils/valtio";
-import { configState } from "./configState";
-import { dataState } from "./dataState";
+import { createSetter } from "../utils/nanostores";
+import { hiddenFeedIdsState } from "./dataState";
+import { getSettings, settingsState } from "./settingsState";
 
-export const contentState = proxy({
+export const contentState = map({
   total: 0, // 接口返回文章总数原始值，不受接口返回数据长度限制
   unreadCount: 0, // 接口返回未读文章数原始值，不受接口返回数据长度限制
   offset: 0, // 所有文章分页参数
@@ -14,46 +14,47 @@ export const contentState = proxy({
   loadMoreUnreadVisible: false, // unread 页签加载更多按钮可见性
   entries: [], // 接口返回的所有文章
   unreadEntries: [], // 接口返回的未读文章
-  infoFrom: configState.homePage, // all | today | starred | history
+  infoFrom: getSettings("homePage"), // all | today | starred | history
   filterType: "Title", // title | content | author
   filterString: "", // 搜索文本
   loading: true, // 初始 loading
   isArticleFocused: false, // 文章是否被聚焦
   activeContent: null, // 当前打开的文章
+});
 
-  // all | unread
-  get filterStatus() {
-    const { showStatus } = snapshot(configState);
-    const { infoFrom } = this;
+// all | unread
+export const filterStatusState = computed(
+  [contentState, settingsState],
+  (content, settings) => {
+    const { infoFrom } = content;
+    const { showStatus } = settings;
     if (["starred", "history"].includes(infoFrom)) {
       return "all";
     }
     return showStatus;
   },
+);
 
-  get currentEntries() {
-    const { filterStatus, entries, unreadEntries } = this;
-    return filterStatus === "all" ? entries : unreadEntries;
-  },
-
-  get filteredEntries() {
-    const { currentEntries, filterType, filterStatus, filterString, infoFrom } =
-      this;
+export const filteredEntriesState = computed(
+  [contentState, filterStatusState, hiddenFeedIdsState, settingsState],
+  (content, filterStatus, hiddenFeedIds, settings) => {
+    const { entries, filterString, filterType, infoFrom, unreadEntries } =
+      content;
+    const currentEntries = filterStatus === "all" ? entries : unreadEntries;
     const filteredEntries = filterEntries(
       currentEntries,
       filterType,
       filterString,
     );
 
-    const { removeDuplicates, showAllFeeds } = snapshot(configState);
-    const { hiddenFeedIds } = snapshot(dataState);
-
+    const { removeDuplicates, showAllFeeds } = settings;
     const visibleEntries = filterEntriesByVisibility(
       filteredEntries,
       infoFrom,
       showAllFeeds,
       hiddenFeedIds,
     );
+
     if (
       filterStatus === "all" ||
       removeDuplicates === "none" ||
@@ -63,7 +64,7 @@ export const contentState = proxy({
     }
     return removeDuplicateEntries(visibleEntries, removeDuplicates);
   },
-});
+);
 
 export const setActiveContent = createSetter(contentState, "activeContent");
 export const setEntries = createSetter(contentState, "entries");

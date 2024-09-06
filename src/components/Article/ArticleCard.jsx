@@ -11,10 +11,10 @@ import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSwipeable } from "react-swipeable";
 
-import { useSnapshot } from "valtio";
+import { useStore } from "@nanostores/react";
 import useEntryActions from "../../hooks/useEntryActions";
-import { configState } from "../../store/configState";
 import { contentState } from "../../store/contentState";
+import { settingsState } from "../../store/settingsState";
 import { generateRelativeTime } from "../../utils/date";
 import FeedIcon from "../ui/FeedIcon";
 import "./ArticleCard.css";
@@ -44,7 +44,7 @@ const RenderImage = ({ entry, isThumbnail }) => {
 };
 
 const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
-  const { showDetailedRelativeTime } = useSnapshot(configState);
+  const { showDetailedRelativeTime } = useStore(settingsState);
   const contentClass = classNames({
     "article-card-mini-content": mini,
     "article-card-mini-content-padding": mini && showFeedIcon,
@@ -90,8 +90,8 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
 };
 
 const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
-  const { markReadOnScroll, showFeedIcon } = useSnapshot(configState);
-  const { activeContent } = useSnapshot(contentState);
+  const { markReadOnScroll, showFeedIcon } = useStore(settingsState);
+  const { activeContent } = useStore(contentState);
 
   const isSelected = activeContent && entry.id === activeContent.id;
 

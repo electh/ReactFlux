@@ -10,14 +10,14 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon";
 
-import { useSnapshot } from "valtio";
+import { useStore } from "@nanostores/react";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { contentState } from "../../store/contentState";
 import "./ActionButtons.css";
 
 const ActionButtons = ({ handleEntryClick, entryListRef, entryDetailRef }) => {
-  const { activeContent } = useSnapshot(contentState);
+  const { activeContent } = useStore(contentState);
   const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
     useEntryActions();
   const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } =

@@ -1,4 +1,4 @@
-import { proxy, snapshot } from "valtio";
+import { computed, map } from "nanostores";
 import {
   getCategories,
   getFeeds,
@@ -7,10 +7,10 @@ import {
   getTodayEntries,
   getUnreadInfo,
 } from "../apis";
-import { createSetter } from "../utils/valtio";
-import { configState } from "./configState";
+import { createSetter } from "../utils/nanostores";
+import { settingsState } from "./settingsState";
 
-export const dataState = proxy({
+export const dataState = map({
   isAppDataReady: false,
   unreadInfo: {},
   unreadTodayCount: 0,
@@ -18,24 +18,24 @@ export const dataState = proxy({
   historyCount: 0,
   feedsData: [],
   categoriesData: [],
+});
 
-  get feedsWithUnread() {
-    const { unreadInfo, feedsData } = this;
-    return feedsData.map((feed) => ({
-      ...feed,
-      unreadCount: unreadInfo[feed.id] ?? 0,
-    }));
-  },
+export const feedsState = computed(dataState, (data) => {
+  const { unreadInfo, feedsData } = data;
+  const feedsWithUnread = feedsData.map((feed) => ({
+    ...feed,
+    unreadCount: unreadInfo[feed.id] ?? 0,
+  }));
 
-  get feeds() {
-    const { feedsWithUnread } = this;
-    return feedsWithUnread.sort((a, b) => a.title.localeCompare(b.title, "en"));
-  },
+  return feedsWithUnread.sort((a, b) => a.title.localeCompare(b.title, "en"));
+});
 
-  get categoriesWithUnread() {
-    const { categoriesData, feedsWithUnread } = this;
-    return categoriesData.map((category) => {
-      const feedsInCategory = feedsWithUnread.filter(
+export const categoriesState = computed(
+  [dataState, feedsState],
+  (data, feeds) => {
+    const { categoriesData } = data;
+    const categoriesWithUnread = categoriesData.map((category) => {
+      const feedsInCategory = feeds.filter(
         (feed) => feed.category.id === category.id,
       );
       return {
@@ -47,24 +47,25 @@ export const dataState = proxy({
         feedCount: feedsInCategory.length,
       };
     });
-  },
 
-  get categories() {
-    const { categoriesWithUnread } = this;
     return categoriesWithUnread.sort((a, b) =>
       a.title.localeCompare(b.title, "en"),
     );
   },
+);
 
-  get hiddenCategoryIds() {
-    const { categories } = this;
+export const hiddenCategoryIdsState = computed(
+  categoriesState,
+  (categories) => {
     return categories
       .filter((category) => category.hide_globally)
       .map((category) => category.id);
   },
+);
 
-  get hiddenFeedIds() {
-    const { feeds, hiddenCategoryIds } = this;
+export const hiddenFeedIdsState = computed(
+  [feedsState, hiddenCategoryIdsState],
+  (feeds, hiddenCategoryIds) => {
     return feeds
       .filter(
         (feed) =>
@@ -72,17 +73,21 @@ export const dataState = proxy({
       )
       .map((feed) => feed.id);
   },
+);
 
-  get filteredFeeds() {
-    const { feeds, hiddenFeedIds } = this;
-    const { showAllFeeds } = snapshot(configState);
+export const filteredFeedsState = computed(
+  [feedsState, hiddenFeedIdsState, settingsState],
+  (feeds, hiddenFeedIds, settings) => {
+    const { showAllFeeds } = settings;
     return feeds.filter(
       (feed) => showAllFeeds || !hiddenFeedIds.includes(feed.id),
     );
   },
+);
 
-  get feedsGroupedById() {
-    const { filteredFeeds } = this;
+export const feedsGroupedByIdState = computed(
+  filteredFeedsState,
+  (filteredFeeds) => {
     return filteredFeeds.reduce((groupedFeeds, feed) => {
       const { id } = feed.category;
       if (!groupedFeeds[id]) {
@@ -92,9 +97,12 @@ export const dataState = proxy({
       return groupedFeeds;
     }, {});
   },
+);
 
-  get unreadTotal() {
-    const { filteredFeeds, unreadInfo } = this;
+export const unreadTotalState = computed(
+  [dataState, filteredFeedsState],
+  (data, filteredFeeds) => {
+    const { unreadInfo } = data;
     return Object.entries(unreadInfo).reduce((acc, [id, count]) => {
       if (filteredFeeds.some((feed) => feed.id === Number(id))) {
         return acc + count;
@@ -102,7 +110,7 @@ export const dataState = proxy({
       return acc;
     }, 0);
   },
-});
+);
 
 export const setCategoriesData = createSetter(dataState, "categoriesData");
 export const setFeedsData = createSetter(dataState, "feedsData");

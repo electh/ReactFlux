@@ -26,22 +26,22 @@ import {
 } from "@arco-design/web-react/icon";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { useStore } from "@nanostores/react";
 import { useEffect, useState } from "react";
-import { useSnapshot } from "valtio";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { resetAuth } from "../../store/authState";
-import {
-  configState,
-  resetConfig,
-  updateConfig,
-} from "../../store/configState";
 import { setIsAppDataReady } from "../../store/dataState";
+import {
+  resetSettings,
+  settingsState,
+  updateSettings,
+} from "../../store/settingsState";
 import Sidebar from "../Sidebar/Sidebar";
 import "./Header.css";
 
 const Header = () => {
-  const { showAllFeeds, theme } = useSnapshot(configState);
+  const { showAllFeeds, theme } = useStore(settingsState);
 
   const navigate = useNavigate();
   const currentPath = useLocation().pathname;
@@ -65,16 +65,16 @@ const Header = () => {
   }, [currentPath]);
 
   const handleToggleFeedsVisibility = () => {
-    updateConfig({ showAllFeeds: !showAllFeeds });
+    updateSettings({ showAllFeeds: !showAllFeeds });
   };
 
   const handleToggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
-    updateConfig({ theme: newTheme });
+    updateSettings({ theme: newTheme });
   };
 
   const handleResetSettings = () => {
-    resetConfig();
+    resetSettings();
     setResetModalVisible(false);
   };
 
@@ -86,8 +86,12 @@ const Header = () => {
   };
 
   const getThemeIcon = () => {
-    if (theme === "dark") return <IconMoonFill />;
-    if (theme === "system") return <IconDesktop />;
+    if (theme === "dark") {
+      return <IconMoonFill />;
+    }
+    if (theme === "system") {
+      return <IconDesktop />;
+    }
     return <IconSunFill />;
   };
 
@@ -152,7 +156,7 @@ const Header = () => {
                   <Menu.Item
                     className="theme-menu-item"
                     key={themeOption}
-                    onClick={() => updateConfig({ theme: themeOption })}
+                    onClick={() => updateSettings({ theme: themeOption })}
                   >
                     {themeOption.charAt(0).toUpperCase() + themeOption.slice(1)}
                     {theme === themeOption && (

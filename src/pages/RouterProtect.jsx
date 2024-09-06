@@ -1,11 +1,11 @@
 import { Navigate } from "react-router-dom";
 
-import { useSnapshot } from "valtio";
+import { useStore } from "@nanostores/react";
 import { authState } from "../store/authState";
 import { isValidAuth } from "../utils/auth";
 
 const RouterProtect = ({ children }) => {
-  const auth = useSnapshot(authState);
+  const auth = useStore(authState);
 
   if (isValidAuth(auth)) {
     return <>{children}</>;

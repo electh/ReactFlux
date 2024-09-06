@@ -1,7 +1,8 @@
-import { proxy, useSnapshot } from "valtio";
-import { createSetter } from "../utils/valtio";
+import { useStore } from "@nanostores/react";
+import { map } from "nanostores";
+import { createSetter } from "../utils/nanostores";
 
-const state = proxy({
+const state = map({
   addFeedModalVisible: false,
   settingsModalVisible: false,
 });
@@ -10,7 +11,7 @@ const setAddFeedModalVisible = createSetter(state, "addFeedModalVisible");
 const setSettingsModalVisible = createSetter(state, "settingsModalVisible");
 
 export const useModalToggle = () => {
-  const { addFeedModalVisible, settingsModalVisible } = useSnapshot(state);
+  const { addFeedModalVisible, settingsModalVisible } = useStore(state);
 
   return {
     addFeedModalVisible,

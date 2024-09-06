@@ -1,4 +1,4 @@
-import { getConfig } from "../store/configState";
+import { getSettings } from "../store/settingsState";
 import { get24HoursAgoTimestamp } from "../utils/date";
 import { apiClient } from "./ofetch";
 
@@ -16,7 +16,7 @@ export const getOriginalContent = async (entryId) =>
 
 export const buildEntriesUrl = (baseParams, extraParams = {}) => {
   const { baseUrl, orderField, offset, limit, status } = baseParams;
-  const orderDirection = getConfig("orderDirection");
+  const orderDirection = getSettings("orderDirection");
   const queryParams = new URLSearchParams({
     order: orderField,
     direction: orderDirection,
@@ -33,8 +33,8 @@ export const buildEntriesUrl = (baseParams, extraParams = {}) => {
 };
 
 export const getAllEntries = async (offset = 0, status = null) => {
-  const orderBy = getConfig("orderBy");
-  const pageSize = getConfig("pageSize");
+  const orderBy = getSettings("orderBy");
+  const pageSize = getSettings("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: orderBy,
@@ -51,8 +51,8 @@ export const getTodayEntries = async (
   status = null,
   limit = null,
 ) => {
-  const orderBy = getConfig("orderBy");
-  const pageSize = limit ?? getConfig("pageSize");
+  const orderBy = getSettings("orderBy");
+  const pageSize = limit ?? getSettings("pageSize");
   const timestamp = get24HoursAgoTimestamp();
   const baseParams = {
     baseUrl: "/v1/entries",
@@ -67,7 +67,7 @@ export const getTodayEntries = async (
 };
 
 export const getStarredEntries = async (offset = 0, status = null) => {
-  const pageSize = getConfig("pageSize");
+  const pageSize = getSettings("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: "changed_at",
@@ -81,7 +81,7 @@ export const getStarredEntries = async (offset = 0, status = null) => {
 };
 
 export const getHistoryEntries = async (offset = 0) => {
-  const pageSize = getConfig("pageSize");
+  const pageSize = getSettings("pageSize");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: "changed_at",

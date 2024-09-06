@@ -1,5 +1,5 @@
 import { generate, getRgbStr } from "@arco-design/color";
-import { getConfig } from "../store/configState";
+import { getSettings } from "../store/settingsState";
 
 export const colors = {
   Red: { light: "#F53F3F", dark: "#F76965" },
@@ -18,7 +18,7 @@ export const getColorValue = (colorName) => {
   const isSystemDark = window.matchMedia(
     "(prefers-color-scheme: dark)",
   ).matches;
-  const theme = getConfig("theme");
+  const theme = getSettings("theme");
   const isDarkMode = theme === "system" ? isSystemDark : theme === "dark";
   return isDarkMode ? color.dark : color.light;
 };

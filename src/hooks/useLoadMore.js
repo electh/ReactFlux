@@ -1,7 +1,8 @@
-import { proxy, useSnapshot } from "valtio";
-import { configState } from "../store/configState";
+import { useStore } from "@nanostores/react";
+import { map } from "nanostores";
 import {
   contentState,
+  filterStatusState,
   setEntries,
   setLoadMoreUnreadVisible,
   setLoadMoreVisible,
@@ -9,26 +10,21 @@ import {
   setUnreadEntries,
   setUnreadOffset,
 } from "../store/contentState";
+import { settingsState } from "../store/settingsState";
 import { parseFirstImage } from "../utils/images";
-import { createSetter } from "../utils/valtio";
+import { createSetter } from "../utils/nanostores";
 
-const state = proxy({ loadingMore: false });
+const state = map({ loadingMore: false });
 const setLoadingMore = createSetter(state, "loadingMore");
 
 const useLoadMore = () => {
-  const { pageSize } = useSnapshot(configState);
-  const {
-    entries,
-    filterStatus,
-    offset,
-    total,
-    unreadCount,
-    unreadEntries,
-    unreadOffset,
-  } = contentState;
+  const { entries, offset, total, unreadCount, unreadEntries, unreadOffset } =
+    useStore(contentState);
+  const { pageSize } = useStore(settingsState);
+  const filterStatus = useStore(filterStatusState);
 
   /* 加载更多 loading*/
-  const { loadingMore } = useSnapshot(state);
+  const { loadingMore } = useStore(state);
 
   const updateEntries = (newEntries) => {
     const uniqueNewEntries = (existingEntries, entriesToAdd) =>

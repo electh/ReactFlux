@@ -1,10 +1,10 @@
+import { useStore } from "@nanostores/react";
 import { useEffect, useState } from "react";
-import { useSnapshot } from "valtio";
-import { configState } from "../store/configState";
+import { settingsState } from "../store/settingsState";
 import { applyColor } from "../utils/colors";
 
 const useTheme = () => {
-  const { theme, themeColor } = useSnapshot(configState);
+  const { theme, themeColor } = useStore(settingsState);
   const [isSystemDark, setIsSystemDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );

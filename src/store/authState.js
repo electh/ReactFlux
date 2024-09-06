@@ -1,4 +1,4 @@
-import { proxy, subscribe } from "valtio";
+import { persistentAtom } from "@nanostores/persistent";
 
 const defaultAuth = {
   server: "",
@@ -7,16 +7,11 @@ const defaultAuth = {
   password: "",
 };
 
-export const authState = proxy(
-  JSON.parse(localStorage.getItem("auth")) || defaultAuth,
-);
+export const authState = persistentAtom("auth", defaultAuth, {
+  encode: JSON.stringify,
+  decode: JSON.parse,
+});
 
-export const setAuth = (authChanges) => {
-  Object.assign(authState, authChanges);
-};
+export const setAuth = (authChanges) => authState.set(authChanges);
 
 export const resetAuth = () => setAuth(defaultAuth);
-
-subscribe(authState, () => {
-  localStorage.setItem("auth", JSON.stringify(authState));
-});

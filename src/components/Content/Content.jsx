@@ -2,13 +2,13 @@ import { Message } from "@arco-design/web-react";
 import { useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
-import { useSnapshot } from "valtio";
+import { useStore } from "@nanostores/react";
 import { updateEntriesStatus } from "../../apis";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
-import { configState } from "../../store/configState";
 import {
   contentState,
+  filteredEntriesState,
   setActiveContent,
   setEntries,
   setInfoFrom,
@@ -23,6 +23,7 @@ import {
   setUnreadOffset,
 } from "../../store/contentState";
 import { dataState, fetchData } from "../../store/dataState";
+import { settingsState } from "../../store/settingsState";
 import { parseFirstImage } from "../../utils/images";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
@@ -31,10 +32,10 @@ import FooterPanel from "./FooterPanel";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const { orderBy, orderDirection } = useSnapshot(configState);
-  const { activeContent, filteredEntries, isArticleFocused, loading } =
-    useSnapshot(contentState);
-  const { isAppDataReady } = useSnapshot(dataState);
+  const { activeContent, isArticleFocused, loading } = useStore(contentState);
+  const { isAppDataReady } = useStore(dataState);
+  const { orderBy, orderDirection } = useStore(settingsState);
+  const filteredEntries = useStore(filteredEntriesState);
 
   const {
     handleFetchContent,

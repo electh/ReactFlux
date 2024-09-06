@@ -9,8 +9,8 @@ import {
 
 import { applyColor, colors, getColorValue } from "../../utils/colors";
 
-import { useSnapshot } from "valtio";
-import { configState, updateConfig } from "../../store/configState";
+import { useStore } from "@nanostores/react";
+import { settingsState, updateSettings } from "../../store/settingsState";
 import "./Appearance.css";
 
 const Appearance = () => {
@@ -21,12 +21,12 @@ const Appearance = () => {
     showDetailedRelativeTime,
     showFeedIcon,
     themeColor,
-  } = useSnapshot(configState);
+  } = useStore(settingsState);
 
-  const handleConfigChange = (configChanges) => {
-    updateConfig(configChanges);
-    if (configChanges.themeColor) {
-      applyColor(configChanges.themeColor);
+  const handleConfigChange = (settingsChanges) => {
+    updateSettings(settingsChanges);
+    if (settingsChanges.themeColor) {
+      applyColor(settingsChanges.themeColor);
     }
   };
 

@@ -1,6 +1,5 @@
 import { ofetch } from "ofetch";
 
-import { snapshot } from "valtio";
 import router from "../routes";
 import { authState } from "../store/authState";
 import { isValidAuth } from "../utils/auth";
@@ -9,8 +8,8 @@ import { isValidAuth } from "../utils/auth";
 const createApiClient = () => {
   return ofetch.create({
     retry: 3, // 默认重试次数
-    onRequest({ request, options }) {
-      const auth = snapshot(authState);
+    onRequest({ _request, options }) {
+      const auth = authState.get();
       if (!isValidAuth(auth)) {
         throw new Error("Invalid auth");
       }
@@ -20,11 +19,11 @@ const createApiClient = () => {
         ? { "X-Auth-Token": token }
         : { Authorization: `Basic ${btoa(`${username}:${password}`)}` };
     },
-    onRequestError({ request, options, error }) {
+    onRequestError({ _request, _options, error }) {
       // 处理请求错误
       console.error("Request error: ", error);
     },
-    async onResponseError({ request, response, options }) {
+    async onResponseError({ _request, response, _options }) {
       const statusCode = response.status;
       if (statusCode === 401) {
         localStorage.removeItem("auth");

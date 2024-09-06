@@ -11,16 +11,16 @@ import { useState } from "react";
 
 import { addCategory, deleteCategory, updateCategory } from "../../apis";
 
-import { useSnapshot } from "valtio";
+import { useStore } from "@nanostores/react";
 import {
-  dataState,
+  categoriesState,
   setCategoriesData,
   setFeedsData,
 } from "../../store/dataState";
 import "./CategoryList.css";
 
 const CategoryList = () => {
-  const { categories } = useSnapshot(dataState);
+  const categories = useStore(categoriesState);
 
   const [categoryForm] = Form.useForm();
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);

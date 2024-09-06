@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
-import { useSnapshot } from "valtio";
+import { useStore } from "@nanostores/react";
 import {
   contentState,
+  filterStatusState,
+  filteredEntriesState,
   setActiveContent,
   setIsArticleFocused,
 } from "../store/contentState";
@@ -11,13 +13,10 @@ import useLoadMore from "./useLoadMore";
 import { usePhotoSlider } from "./usePhotoSlider";
 
 const useKeyHandlers = (handleEntryClick) => {
-  const {
-    activeContent,
-    filteredEntries,
-    filterStatus,
-    loadMoreUnreadVisible,
-    loadMoreVisible,
-  } = useSnapshot(contentState);
+  const { activeContent, loadMoreUnreadVisible, loadMoreVisible } =
+    useStore(contentState);
+  const filteredEntries = useStore(filteredEntriesState);
+  const filterStatus = useStore(filterStatusState);
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
     usePhotoSlider();

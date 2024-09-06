@@ -4,26 +4,26 @@ import {
   IconSortDescending,
 } from "@arco-design/web-react/icon";
 
+import { useStore } from "@nanostores/react";
 import { useEffect } from "react";
-import { useSnapshot } from "valtio";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
-import { configState, updateConfig } from "../../store/configState";
 import {
   contentState,
   setFilterString,
   setFilterType,
 } from "../../store/contentState";
+import { settingsState, updateSettings } from "../../store/settingsState";
 import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = () => {
-  const { orderDirection } = useSnapshot(configState);
-  const { filterString, filterType } = useSnapshot(contentState);
+  const { orderDirection } = useStore(settingsState);
+  const { filterString, filterType } = useStore(contentState);
 
   const { isBelowMedium } = useScreenWidth();
 
   const toggleOrderDirection = () => {
     const newOrderDirection = orderDirection === "desc" ? "asc" : "desc";
-    updateConfig({ orderDirection: newOrderDirection });
+    updateSettings({ orderDirection: newOrderDirection });
   };
 
   useEffect(() => {

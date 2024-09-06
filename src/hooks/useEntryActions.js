@@ -1,7 +1,7 @@
 import { Message } from "@arco-design/web-react";
 import Confetti from "canvas-confetti";
 
-import { snapshot, useSnapshot } from "valtio";
+import { useStore } from "@nanostores/react";
 import {
   getOriginalContent,
   toggleEntryStarred,
@@ -76,7 +76,7 @@ export const handleEntriesStatusUpdate = (entries, newStatus) => {
     status: newStatus,
   }));
 
-  const { activeContent } = snapshot(contentState);
+  const { activeContent } = contentState.get();
   const activeEntry = updatedEntries.find(
     (entry) => entry.id === activeContent?.id,
   );
@@ -89,7 +89,7 @@ export const handleEntriesStatusUpdate = (entries, newStatus) => {
 };
 
 const useEntryActions = () => {
-  const { activeContent } = useSnapshot(contentState);
+  const { activeContent } = useStore(contentState);
 
   const handleEntryStatusUpdate = (entry, newStatus) => {
     handleEntriesStatusUpdate([entry], newStatus);

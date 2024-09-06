@@ -16,18 +16,24 @@ import {
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { useStore } from "@nanostores/react";
 import classNames from "classnames";
-import { useSnapshot } from "valtio";
-import { configState } from "../../store/configState";
 import { setActiveContent } from "../../store/contentState";
-import { dataState } from "../../store/dataState";
+import {
+  categoriesState,
+  dataState,
+  feedsGroupedByIdState,
+  hiddenCategoryIdsState,
+  unreadTotalState,
+} from "../../store/dataState";
+import { settingsState } from "../../store/settingsState";
 import FeedIcon from "../ui/FeedIcon";
 import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
 
 const CategoryTitle = ({ category, path }) => {
-  const { feedsGroupedById } = useSnapshot(dataState);
+  const feedsGroupedById = useStore(feedsGroupedByIdState);
   const unreadCount = feedsGroupedById[category.id]?.reduce(
     (acc, feed) => acc + feed.unreadCount,
     0,
@@ -117,17 +123,13 @@ const CustomMenuItem = ({ path, Icon, label, count }) => {
 };
 
 const Sidebar = () => {
-  const { homePage, showAllFeeds, showFeedIcon } = useSnapshot(configState);
-  const {
-    categories,
-    feedsGroupedById,
-    hiddenCategoryIds,
-    historyCount,
-    isAppDataReady,
-    starredCount,
-    unreadTodayCount,
-    unreadTotal,
-  } = useSnapshot(dataState);
+  const { homePage, showAllFeeds, showFeedIcon } = useStore(settingsState);
+  const { historyCount, isAppDataReady, starredCount, unreadTodayCount } =
+    useStore(dataState);
+  const categories = useStore(categoriesState);
+  const feedsGroupedById = useStore(feedsGroupedByIdState);
+  const hiddenCategoryIds = useStore(hiddenCategoryIdsState);
+  const unreadTotal = useStore(unreadTotalState);
 
   const location = useLocation();
   const navigate = useNavigate();

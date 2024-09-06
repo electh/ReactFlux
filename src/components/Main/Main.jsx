@@ -9,10 +9,10 @@ import {
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import { useSnapshot } from "valtio";
+import { useStore } from "@nanostores/react";
 import { addFeed } from "../../apis";
 import { useModalToggle } from "../../hooks/useModalToggle";
-import { dataState, fetchData } from "../../store/dataState";
+import { categoriesState, fetchData } from "../../store/dataState";
 import { includesIgnoreCase } from "../../utils/filter";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
@@ -42,7 +42,7 @@ const SettingsModal = () => {
 };
 
 const AddFeedModal = () => {
-  const { categories } = useSnapshot(dataState);
+  const categories = useStore(categoriesState);
 
   const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle();
 

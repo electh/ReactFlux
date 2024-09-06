@@ -1,11 +1,11 @@
 import { Card, Skeleton } from "@arco-design/web-react";
 
-import { useSnapshot } from "valtio";
-import { configState } from "../../store/configState";
+import { useStore } from "@nanostores/react";
+import { settingsState } from "../../store/settingsState";
 import "./LoadingCards.css";
 
 const LoadingCards = ({ loading }) => {
-  const { layout } = useSnapshot(configState);
+  const { layout } = useStore(settingsState);
   const cardCount = layout === "large" ? 2 : 4;
 
   const renderCard = (index) => (

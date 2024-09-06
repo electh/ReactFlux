@@ -10,9 +10,9 @@ import Login from "./pages/Login";
 import RouterProtect from "./pages/RouterProtect";
 import Starred from "./pages/Starred";
 import Today from "./pages/Today";
-import { getConfig } from "./store/configState";
+import { getSettings } from "./store/settingsState";
 
-const homePage = getConfig("homePage");
+const homePage = getSettings("homePage");
 
 const children = [
   { path: "/all", element: <All /> },

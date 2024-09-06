@@ -1,13 +1,14 @@
-import { proxy, useSnapshot } from "valtio";
-import { createSetter } from "../utils/valtio";
+import { useStore } from "@nanostores/react";
+import { map } from "nanostores";
+import { createSetter } from "../utils/nanostores";
 
-const state = proxy({ isPhotoSliderVisible: false, selectedIndex: 0 });
+const state = map({ isPhotoSliderVisible: false, selectedIndex: 0 });
 
 const setIsPhotoSliderVisible = createSetter(state, "isPhotoSliderVisible");
 const setSelectedIndex = createSetter(state, "selectedIndex");
 
 export const usePhotoSlider = () => {
-  const { isPhotoSliderVisible, selectedIndex } = useSnapshot(state);
+  const { isPhotoSliderVisible, selectedIndex } = useStore(state);
 
   return {
     isPhotoSliderVisible,
