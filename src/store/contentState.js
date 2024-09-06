@@ -47,7 +47,7 @@ export const filteredEntriesState = computed(
       showAllFeeds || !hiddenFeedIds.includes(entry.feed.id);
     const visibleEntries = isValidFilter
       ? filteredEntries.filter(isVisible)
-      : entries;
+      : filteredEntries;
 
     if (
       removeDuplicates === "none" ||
