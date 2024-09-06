@@ -26,7 +26,7 @@ import { generateRelativeTime, getUTCDate } from "../../utils/date";
 import { includesIgnoreCase } from "../../utils/filter";
 
 import { useStore } from "@nanostores/react";
-import { computed, map } from "nanostores";
+import { atom, computed } from "nanostores";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
   categoriesState,
@@ -40,29 +40,32 @@ import "./FeedList.css";
 
 const { Paragraph } = Typography;
 
-const state = map({ filterString: "" });
+const filterStringState = atom("");
+const setFilterString = createSetter(filterStringState);
 
-const filteredFeedsState = computed([dataState, state], (data, state) => {
-  const { feedsData } = data;
-  const { filterString } = state;
-  return [...feedsData]
-    .sort((a, b) => {
-      if (a.disabled && !b.disabled) {
-        return 1;
-      }
-      if (!a.disabled && b.disabled) {
-        return -1;
-      }
-      return 0;
-    })
-    .sort((a, b) => b.parsing_error_count - a.parsing_error_count)
-    .filter(
-      (feed) =>
-        includesIgnoreCase(feed.title, filterString) ||
-        includesIgnoreCase(feed.site_url, filterString) ||
-        includesIgnoreCase(feed.feed_url, filterString),
-    );
-});
+const filteredFeedsState = computed(
+  [dataState, filterStringState],
+  (data, filterString) => {
+    const { feedsData } = data;
+    return [...feedsData]
+      .sort((a, b) => {
+        if (a.disabled && !b.disabled) {
+          return 1;
+        }
+        if (!a.disabled && b.disabled) {
+          return -1;
+        }
+        return 0;
+      })
+      .sort((a, b) => b.parsing_error_count - a.parsing_error_count)
+      .filter(
+        (feed) =>
+          includesIgnoreCase(feed.title, filterString) ||
+          includesIgnoreCase(feed.site_url, filterString) ||
+          includesIgnoreCase(feed.feed_url, filterString),
+      );
+  },
+);
 
 const tableDataState = computed(filteredFeedsState, (filteredFeeds) => {
   return filteredFeeds.map((feed) => ({
@@ -78,8 +81,6 @@ const tableDataState = computed(filteredFeedsState, (filteredFeeds) => {
     title: feed.title,
   }));
 });
-
-const setFilterString = createSetter(state, "filterString");
 
 const updateFeedStatus = (feed, isSuccessful, targetFeedId = null) => {
   if (targetFeedId === null || targetFeedId === feed.id) {

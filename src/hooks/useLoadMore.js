@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-import { map } from "nanostores";
+import { atom } from "nanostores";
 import {
   contentState,
   setEntries,
@@ -13,8 +13,8 @@ import { settingsState } from "../store/settingsState";
 import { parseFirstImage } from "../utils/images";
 import { createSetter } from "../utils/nanostores";
 
-const state = map({ loadingMore: false });
-const setLoadingMore = createSetter(state, "loadingMore");
+const loadingMoreState = atom(false);
+const setLoadingMore = createSetter(loadingMoreState);
 
 const useLoadMore = () => {
   const {
@@ -29,7 +29,7 @@ const useLoadMore = () => {
   const { pageSize } = useStore(settingsState);
 
   /* 加载更多 loading*/
-  const { loadingMore } = useStore(state);
+  const loadingMore = useStore(loadingMoreState);
 
   const updateEntries = (newEntries) => {
     const uniqueNewEntries = (existingEntries, entriesToAdd) =>
