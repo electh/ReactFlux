@@ -33,8 +33,7 @@ import "./Transition.css";
 const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, isArticleFocused, loading } = useStore(contentState);
   const { isAppDataReady } = useStore(dataState);
-  const { orderBy, orderDirection, pageSize, showStatus } =
-    useStore(settingsState);
+  const { orderBy, orderDirection, showStatus } = useStore(settingsState);
   const filteredEntries = useStore(filteredEntriesState);
 
   const {
@@ -149,8 +148,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setUnreadEntries(unreadArticles);
     setTotal(responseAll.total);
     setUnreadCount(responseUnread.total);
-    setOffset(pageSize);
-    setUnreadOffset(pageSize);
   };
 
   const handleResponses = (responseAll, responseUnread) => {
