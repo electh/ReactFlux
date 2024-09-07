@@ -1,6 +1,6 @@
 import { Spin } from "@arco-design/web-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { forwardRef } from "react";
+import { forwardRef, useCallback } from "react";
 
 import useLoadMore from "../../hooks/useLoadMore";
 import ArticleCard from "./ArticleCard";
@@ -80,6 +80,16 @@ const ArticleList = forwardRef(
     });
     const virtualItems = virtualizer.getVirtualItems();
 
+    const getItemRef = useCallback(
+      (index) => {
+        if (index === lastPercent20StartIndex) {
+          return mergeRefs(virtualizer.measureElement, loadMoreRef);
+        }
+        return virtualizer.measureElement;
+      },
+      [lastPercent20StartIndex, virtualizer.measureElement, loadMoreRef],
+    );
+
     return (
       <>
         <SearchAndSortBar />
@@ -98,12 +108,7 @@ const ArticleList = forwardRef(
                   <div
                     key={item.key}
                     data-index={item.index}
-                    ref={mergeRefs(
-                      virtualizer.measureElement,
-                      item.index === lastPercent20StartIndex
-                        ? loadMoreRef
-                        : null,
-                    )}
+                    ref={getItemRef(item.index)}
                     style={{
                       position: "absolute",
                       top: 0,
