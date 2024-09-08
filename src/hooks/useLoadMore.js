@@ -48,7 +48,7 @@ const useLoadMore = () => {
       if (filterStatus === "all") {
         response = await getEntries(offset + pageSize);
       } else {
-        response = await getEntries(unreadOffset, filterStatus);
+        response = await getEntries(unreadOffset + pageSize, filterStatus);
       }
       if (response?.entries) {
         const newEntries = response.entries.map(parseFirstImage);
