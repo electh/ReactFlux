@@ -57,7 +57,7 @@ const ImageOverlayButton = ({
     const imgSrc = imgNode.attribs.src;
     const img = new Image();
     img.src = imgSrc;
-    img.onload = () => setIsIcon(img.width <= 64 && img.height <= 64);
+    img.onload = () => setIsIcon(img.width <= 100 && img.height <= 100);
   }, [node, isLinkWrapper]);
 
   const imgNode = isLinkWrapper ? node.children[0] : node;
