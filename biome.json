@@ -15,6 +15,7 @@
     "enabled": true,
     "rules": {
       "recommended": true
-    }
+    },
+    "ignore": ["build/*.js"]
   }
 }
