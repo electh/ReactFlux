@@ -11,9 +11,6 @@ import {
   contentState,
   setActiveContent,
   setEntries,
-  setUnreadCount,
-  setUnreadEntries,
-  setUnreadOffset,
 } from "../store/contentState";
 import {
   setHistoryCount,
@@ -43,12 +40,8 @@ export const handleEntriesStatusUpdate = (entries, newStatus) => {
   }
 
   if (newStatus === "read") {
-    setUnreadCount((prev) => Math.max(0, prev - filteredEntries.length));
-    setUnreadOffset((prev) => Math.max(0, prev - filteredEntries.length));
     setHistoryCount((prev) => prev + filteredEntries.length);
   } else {
-    setUnreadCount((prev) => prev + filteredEntries.length);
-    setUnreadOffset((prev) => prev + filteredEntries.length);
     setHistoryCount((prev) => Math.max(0, prev - filteredEntries.length));
   }
 
@@ -85,7 +78,6 @@ export const handleEntriesStatusUpdate = (entries, newStatus) => {
   }
 
   setEntries((prev) => updateEntries(prev, updatedEntries));
-  setUnreadEntries((prev) => updateEntries(prev, updatedEntries));
 };
 
 const useEntryActions = () => {
@@ -113,7 +105,6 @@ const useEntryActions = () => {
       setActiveContent(updatedEntry);
     }
     setEntries((prev) => updateEntries(prev, [updatedEntry]));
-    setUnreadEntries((prev) => updateEntries(prev, [updatedEntry]));
   };
 
   const handleToggleStatus = async (entry) => {

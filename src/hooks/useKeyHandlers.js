@@ -4,7 +4,6 @@ import { useStore } from "@nanostores/react";
 import {
   contentState,
   filteredEntriesState,
-  loadMoreUnreadVisibleState,
   loadMoreVisibleState,
   setActiveContent,
   setIsArticleFocused,
@@ -14,9 +13,8 @@ import useLoadMore from "./useLoadMore";
 import { usePhotoSlider } from "./usePhotoSlider";
 
 const useKeyHandlers = (handleEntryClick) => {
-  const { activeContent, filterStatus } = useStore(contentState);
+  const { activeContent } = useStore(contentState);
   const filteredEntries = useStore(filteredEntriesState);
-  const loadMoreUnreadVisible = useStore(loadMoreUnreadVisibleState);
   const loadMoreVisible = useStore(loadMoreVisibleState);
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
@@ -85,10 +83,7 @@ const useKeyHandlers = (handleEntryClick) => {
     );
     const isLastEntry = currentIndex === filteredEntries.length - 1;
 
-    if (
-      isLastEntry &&
-      ((filterStatus === "all" && loadMoreVisible) || loadMoreUnreadVisible)
-    ) {
+    if (isLastEntry && loadMoreVisible) {
       setIsLoading(true);
       setShouldLoadNext(true);
       return;

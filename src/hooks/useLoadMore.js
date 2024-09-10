@@ -1,12 +1,6 @@
 import { useStore } from "@nanostores/react";
 import { atom } from "nanostores";
-import {
-  contentState,
-  setEntries,
-  setOffset,
-  setUnreadEntries,
-  setUnreadOffset,
-} from "../store/contentState";
+import { contentState, setEntries, setOffset } from "../store/contentState";
 import { settingsState } from "../store/settingsState";
 import { parseFirstImage } from "../utils/images";
 import { createSetter } from "../utils/nanostores";
@@ -15,7 +9,7 @@ const loadingMoreState = atom(false);
 const setLoadingMore = createSetter(loadingMoreState);
 
 const useLoadMore = () => {
-  const { filterStatus, offset, unreadOffset } = useStore(contentState);
+  const { offset } = useStore(contentState);
   const { pageSize } = useStore(settingsState);
 
   /* 加载更多 loading*/
@@ -28,28 +22,15 @@ const useLoadMore = () => {
           !existingEntries.some((existing) => existing.id === entry.id),
       );
 
-    if (filterStatus === "all") {
-      setEntries((prev) => [...prev, ...uniqueNewEntries(prev, newEntries)]);
-      setOffset((prev) => prev + pageSize);
-    } else {
-      setUnreadEntries((prev) => [
-        ...prev,
-        ...uniqueNewEntries(prev, newEntries),
-      ]);
-      setUnreadOffset((prev) => prev + pageSize);
-    }
+    setEntries((prev) => [...prev, ...uniqueNewEntries(prev, newEntries)]);
+    setOffset((prev) => prev + pageSize);
   };
 
   const handleLoadMore = async (getEntries) => {
     setLoadingMore(true);
 
     try {
-      let response;
-      if (filterStatus === "all") {
-        response = await getEntries(offset + pageSize);
-      } else {
-        response = await getEntries(unreadOffset + pageSize, filterStatus);
-      }
+      const response = await getEntries(offset + pageSize);
       if (response?.entries) {
         const newEntries = response.entries.map(parseFirstImage);
         updateEntries(newEntries);

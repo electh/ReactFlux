@@ -12,7 +12,6 @@ import { useInView } from "react-intersection-observer";
 import {
   contentState,
   filteredEntriesState,
-  loadMoreUnreadVisibleState,
   loadMoreVisibleState,
 } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
@@ -21,14 +20,13 @@ import Ripple from "../ui/Ripple.jsx";
 import "./ArticleList.css";
 
 const LoadMoreComponent = ({ getEntries }) => {
-  const { filterStatus, loading } = useStore(contentState);
-  const loadMoreUnreadVisible = useStore(loadMoreUnreadVisibleState);
+  const { loading } = useStore(contentState);
   const loadMoreVisible = useStore(loadMoreVisibleState);
 
   const { loadingMore, handleLoadMore } = useLoadMore();
 
   const { ref: loadMoreRef } = useInView({
-    skip: !(loadMoreVisible || loadMoreUnreadVisible),
+    skip: !loadMoreVisible,
     onChange: async (inView) => {
       if (!inView || loading || loadingMore) {
         return;
@@ -39,7 +37,7 @@ const LoadMoreComponent = ({ getEntries }) => {
 
   return (
     !loading &&
-    (filterStatus === "all" ? loadMoreVisible : loadMoreUnreadVisible) && (
+    loadMoreVisible && (
       <div className="load-more-container" ref={loadMoreRef}>
         <Spin loading={loadingMore} style={{ paddingRight: "10px" }} />
         Loading more ...
@@ -58,13 +56,12 @@ const ArticleList = forwardRef(
     const lastPercent20StartIndex =
       filteredEntries.length - Math.ceil(pageSize * 0.2) - 1;
 
-    const loadMoreUnreadVisible = useStore(loadMoreUnreadVisibleState);
     const loadMoreVisible = useStore(loadMoreVisibleState);
 
     const { loadingMore, handleLoadMore } = useLoadMore();
 
     const { ref: loadMoreRef } = useInView({
-      skip: !(loadMoreVisible || loadMoreUnreadVisible),
+      skip: !loadMoreVisible,
       onChange: async (inView) => {
         if (!inView || loading || loadingMore) {
           return;

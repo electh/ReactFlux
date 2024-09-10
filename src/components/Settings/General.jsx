@@ -6,47 +6,15 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
-import { setFilterStatus } from "../../store/contentState";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import "./General.css";
 
 const General = () => {
-  const {
-    homePage,
-    markReadOnScroll,
-    orderBy,
-    pageSize,
-    removeDuplicates,
-    showStatus,
-  } = useStore(settingsState);
+  const { homePage, markReadOnScroll, orderBy, pageSize, removeDuplicates } =
+    useStore(settingsState);
 
   return (
     <>
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Default show status
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            Which status to show by default:
-          </Typography.Text>
-        </div>
-        <div>
-          <Select
-            className="input-select"
-            placeholder="Select status"
-            value={showStatus}
-            onChange={(value) => {
-              updateSettings({ showStatus: value });
-              setFilterStatus(value);
-            }}
-          >
-            <Select.Option value="all">All</Select.Option>
-            <Select.Option value="unread">Unread</Select.Option>
-          </Select>
-        </div>
-      </div>
-      <Divider />
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>

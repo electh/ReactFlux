@@ -11,15 +11,11 @@ import {
   filteredEntriesState,
   setActiveContent,
   setEntries,
-  setFilterStatus,
   setInfoFrom,
   setIsArticleFocused,
   setLoading,
   setOffset,
   setTotal,
-  setUnreadCount,
-  setUnreadEntries,
-  setUnreadOffset,
 } from "../../store/contentState";
 import { dataState, fetchData } from "../../store/dataState";
 import { settingsState } from "../../store/settingsState";
@@ -62,16 +58,15 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     refreshArticleList();
   }, [orderBy]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (["starred", "history"].includes(info.from)) {
-      setFilterStatus("all");
-    } else {
-      setFilterStatus(showStatus);
-    }
     setInfoFrom(info.from);
     refreshArticleList();
-  }, [info, orderDirection]);
+  }, [info]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    refreshArticleList();
+  }, [orderDirection, showStatus]);
 
   const handleEntryClick = async (entry) => {
     setActiveContent(null);
@@ -143,28 +138,22 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     };
   }, [activeContent, filteredEntries, isArticleFocused]);
 
-  const updateUI = (articles, unreadArticles, responseAll, responseUnread) => {
-    setEntries(articles);
-    setUnreadEntries(unreadArticles);
-    setTotal(responseAll.total);
-    setUnreadCount(responseUnread.total);
-  };
-
-  const handleResponses = (responseAll, responseUnread) => {
-    if (responseAll?.entries && responseUnread?.total >= 0) {
-      const articles = responseAll.entries.map(parseFirstImage);
-      const unreadArticles = responseUnread.entries.map(parseFirstImage);
-      updateUI(articles, unreadArticles, responseAll, responseUnread);
+  const handleResponses = (response) => {
+    if (response?.total >= 0) {
+      const articles = response.entries.map(parseFirstImage);
+      setEntries(articles);
+      setTotal(response.total);
     }
   };
 
   const fetchArticleList = async () => {
     setLoading(true);
     try {
-      const responseAll = await getEntries();
-      const responseUnread =
-        info.from === "history" ? responseAll : await getEntries(0, "unread");
-      handleResponses(responseAll, responseUnread);
+      const response =
+        showStatus === "unread"
+          ? await getEntries(0, "unread")
+          : await getEntries();
+      handleResponses(response);
     } catch (error) {
       console.error("Error fetching articles: ", error);
     } finally {
@@ -175,7 +164,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const refreshArticleList = async () => {
     entryListRef.current?.scrollTo(0, 0);
     setOffset(0);
-    setUnreadOffset(0);
     if (!isAppDataReady) {
       await fetchData();
       return;

@@ -6,29 +6,21 @@ import { useStore } from "@nanostores/react";
 import {
   contentState,
   setEntries,
-  setFilterStatus,
   setFilterString,
   setFilterType,
-  setUnreadCount,
-  setUnreadEntries,
 } from "../../store/contentState";
 import { fetchData } from "../../store/dataState";
+import { settingsState, updateSettings } from "../../store/settingsState";
 import "./FooterPanel.css";
 
 const updateAllEntriesAsRead = () => {
   setEntries((prev) => prev.map((entry) => ({ ...entry, status: "read" })));
-  setUnreadEntries((prev) =>
-    prev.map((entry) => ({
-      ...entry,
-      status: "read",
-    })),
-  );
-  setUnreadCount(0);
 };
 
 const FooterPanel = forwardRef(
   ({ info, refreshArticleList, markAllAsRead }, ref) => {
-    const { filterStatus, loading } = useStore(contentState);
+    const { loading } = useStore(contentState);
+    const { showStatus } = useStore(settingsState);
 
     const handleMarkAllAsRead = async () => {
       try {
@@ -45,14 +37,14 @@ const FooterPanel = forwardRef(
       if (ref.current) {
         ref.current.scrollTo(0, 0);
       }
-      setFilterStatus(value);
+      updateSettings({ showStatus: value });
     };
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
       setFilterType("title");
       setFilterString("");
-    }, [filterStatus]);
+    }, [showStatus]);
 
     return (
       <div className="entry-panel">
@@ -73,7 +65,7 @@ const FooterPanel = forwardRef(
             { label: "UNREAD", value: "unread" },
           ]}
           type="button"
-          value={filterStatus}
+          value={info.from === "history" ? "all" : showStatus}
         />
         <Button
           icon={<IconRefresh />}
