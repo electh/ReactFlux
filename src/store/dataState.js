@@ -20,7 +20,7 @@ export const dataState = map({
   historyCount: 0,
   feedsData: [],
   categoriesData: [],
-  versionNewerThan2_2_0: false,
+  isVersionAtLeast2_2_0: false,
 });
 
 export const feedsState = computed(dataState, (data) => {
@@ -122,9 +122,9 @@ export const setIsAppDataReady = createSetter(dataState, "isAppDataReady");
 export const setStarredCount = createSetter(dataState, "starredCount");
 export const setUnreadInfo = createSetter(dataState, "unreadInfo");
 export const setUnreadTodayCount = createSetter(dataState, "unreadTodayCount");
-export const setVersionNewerThan2_2_0 = createSetter(
+export const setIsVersionAtLeast2_2_0 = createSetter(
   dataState,
-  "versionNewerThan2_2_0",
+  "isVersionAtLeast2_2_0",
 );
 
 export const fetchData = async () => {
@@ -161,5 +161,5 @@ export const fetchData = async () => {
   setFeedsData(feedsData);
   setCategoriesData(categoriesData);
   setIsAppDataReady(true);
-  setVersionNewerThan2_2_0(compareVersions(versionData.version, "2.2.0") >= 0);
+  setIsVersionAtLeast2_2_0(compareVersions(versionData.version, "2.2.0") >= 0);
 };
