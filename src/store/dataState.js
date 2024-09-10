@@ -160,6 +160,6 @@ export const fetchData = async () => {
   setHistoryCount(historyData.total ?? 0);
   setFeedsData(feedsData);
   setCategoriesData(categoriesData);
-  setIsAppDataReady(true);
   setIsVersionAtLeast2_2_0(compareVersions(versionData.version, "2.2.0") >= 0);
+  setIsAppDataReady(true);
 };
