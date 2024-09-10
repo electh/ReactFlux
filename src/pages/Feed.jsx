@@ -1,14 +1,14 @@
 import { useParams } from "react-router-dom";
 
-import { useStore } from "@nanostores/react";
 import { buildEntriesUrl, markFeedAsRead } from "../apis";
 import { apiClient } from "../apis/ofetch";
 import Content from "../components/Content/Content";
-import { settingsState } from "../store/settingsState";
+import { getSettings } from "../store/settingsState";
 
 const Feed = () => {
   const { id: feedId } = useParams();
-  const { orderBy, pageSize } = useStore(settingsState);
+  const orderBy = getSettings("orderBy");
+  const pageSize = getSettings("pageSize");
 
   const getFeedEntries = async (offset = 0, status = null) => {
     const baseParams = {

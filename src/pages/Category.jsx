@@ -1,14 +1,15 @@
 import { useParams } from "react-router-dom";
 
-import { useStore } from "@nanostores/react";
 import { buildEntriesUrl, markCategoryAsRead } from "../apis";
 import { apiClient } from "../apis/ofetch";
 import Content from "../components/Content/Content";
-import { settingsState } from "../store/settingsState";
+import { getSettings } from "../store/settingsState";
 
 const Category = () => {
   const { id: categoryId } = useParams();
-  const { orderBy, pageSize, showAllFeeds } = useStore(settingsState);
+  const orderBy = getSettings("orderBy");
+  const pageSize = getSettings("pageSize");
+  const showAllFeeds = getSettings("showAllFeeds");
 
   const getCategoryEntries = async (offset = 0, status = null) => {
     const baseParams = {
