@@ -6,6 +6,8 @@ export * from "./feeds";
 
 export const getCurrentUser = async () => apiClient.get("/v1/me");
 
+export const getVersion = async () => apiClient.get("/v1/version");
+
 export const markAllAsRead = async () => {
   const currentUser = await getCurrentUser();
   return apiClient.put(`/v1/users/${currentUser.data.id}/mark-all-as-read`);

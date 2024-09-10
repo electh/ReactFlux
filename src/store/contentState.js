@@ -2,7 +2,7 @@ import { computed, map } from "nanostores";
 import { removeDuplicateEntries } from "../utils/deduplicate";
 import { filterEntries } from "../utils/filter";
 import { createSetter } from "../utils/nanostores";
-import { hiddenFeedIdsState } from "./dataState";
+import { dataState, hiddenFeedIdsState } from "./dataState";
 import { getSettings, settingsState } from "./settingsState";
 
 export const contentState = map({
@@ -39,8 +39,14 @@ export const currentEntriesState = computed(contentState, (content) => {
 });
 
 export const filteredEntriesState = computed(
-  [contentState, currentEntriesState, hiddenFeedIdsState, settingsState],
-  (content, currentEntries, hiddenFeedIds, settings) => {
+  [
+    contentState,
+    currentEntriesState,
+    dataState,
+    hiddenFeedIdsState,
+    settingsState,
+  ],
+  (content, currentEntries, data, hiddenFeedIds, settings) => {
     const { filterString, filterType, infoFrom } = content;
     const filteredEntries = filterEntries(
       currentEntries,
@@ -48,10 +54,13 @@ export const filteredEntriesState = computed(
       filterString,
     );
 
+    const { versionNewerThan2_2_0 } = data;
     const { removeDuplicates, showAllFeeds } = settings;
     const isValidFilter = !["starred", "history"].includes(infoFrom);
     const isVisible = (entry) =>
-      showAllFeeds || !hiddenFeedIds.includes(entry.feed.id);
+      versionNewerThan2_2_0 ||
+      showAllFeeds ||
+      !hiddenFeedIds.includes(entry.feed.id);
     const visibleEntries = isValidFilter
       ? filteredEntries.filter(isVisible)
       : filteredEntries;

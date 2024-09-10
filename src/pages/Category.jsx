@@ -8,7 +8,7 @@ import { settingsState } from "../store/settingsState";
 
 const Category = () => {
   const { id: categoryId } = useParams();
-  const { orderBy, pageSize } = useStore(settingsState);
+  const { orderBy, pageSize, showAllFeeds } = useStore(settingsState);
 
   const getCategoryEntries = async (offset = 0, status = null) => {
     const baseParams = {
@@ -19,7 +19,9 @@ const Category = () => {
       status,
     };
 
-    return apiClient.get(buildEntriesUrl(baseParams));
+    const extraParams = { globally_visible: !showAllFeeds };
+
+    return apiClient.get(buildEntriesUrl(baseParams, extraParams));
   };
 
   return (

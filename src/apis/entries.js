@@ -35,6 +35,7 @@ export const buildEntriesUrl = (baseParams, extraParams = {}) => {
 export const getAllEntries = async (offset = 0, status = null) => {
   const orderBy = getSettings("orderBy");
   const pageSize = getSettings("pageSize");
+  const showAllFeeds = getSettings("showAllFeeds");
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: orderBy,
@@ -43,7 +44,9 @@ export const getAllEntries = async (offset = 0, status = null) => {
     status,
   };
 
-  return apiClient.get(buildEntriesUrl(baseParams));
+  const extraParams = { globally_visible: !showAllFeeds };
+
+  return apiClient.get(buildEntriesUrl(baseParams, extraParams));
 };
 
 export const getTodayEntries = async (
@@ -53,6 +56,7 @@ export const getTodayEntries = async (
 ) => {
   const orderBy = getSettings("orderBy");
   const pageSize = limit ?? getSettings("pageSize");
+  const showAllFeeds = getSettings("showAllFeeds");
   const timestamp = get24HoursAgoTimestamp();
   const baseParams = {
     baseUrl: "/v1/entries",
@@ -61,7 +65,10 @@ export const getTodayEntries = async (
     limit: pageSize,
     status,
   };
-  const extraParams = { published_after: timestamp };
+  const extraParams = {
+    globally_visible: !showAllFeeds,
+    published_after: timestamp,
+  };
 
   return apiClient.get(buildEntriesUrl(baseParams, extraParams));
 };
