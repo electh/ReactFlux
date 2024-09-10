@@ -20,7 +20,7 @@ import Ripple from "../ui/Ripple.jsx";
 import "./ArticleList.css";
 
 const LoadMoreComponent = ({ getEntries }) => {
-  const { loading } = useStore(contentState);
+  const { isArticleListReady } = useStore(contentState);
   const loadMoreVisible = useStore(loadMoreVisibleState);
 
   const { loadingMore, handleLoadMore } = useLoadMore();
@@ -28,7 +28,7 @@ const LoadMoreComponent = ({ getEntries }) => {
   const { ref: loadMoreRef } = useInView({
     skip: !loadMoreVisible,
     onChange: async (inView) => {
-      if (!inView || loading || loadingMore) {
+      if (!inView || !isArticleListReady || loadingMore) {
         return;
       }
       await handleLoadMore(getEntries);
@@ -36,7 +36,7 @@ const LoadMoreComponent = ({ getEntries }) => {
   });
 
   return (
-    !loading &&
+    isArticleListReady &&
     loadMoreVisible && (
       <div className="load-more-container" ref={loadMoreRef}>
         <Spin loading={loadingMore} style={{ paddingRight: "10px" }} />
@@ -51,7 +51,7 @@ const ArticleList = forwardRef(
     const { layout, pageSize } = useStore(settingsState);
     const isCompactLayout = layout === "small";
 
-    const { loading } = useStore(contentState);
+    const { isArticleListReady } = useStore(contentState);
     const filteredEntries = useStore(filteredEntriesState);
     const lastPercent20StartIndex =
       filteredEntries.length - Math.ceil(pageSize * 0.2) - 1;
@@ -63,7 +63,7 @@ const ArticleList = forwardRef(
     const { ref: loadMoreRef } = useInView({
       skip: !loadMoreVisible,
       onChange: async (inView) => {
-        if (!inView || loading || loadingMore) {
+        if (!inView || !isArticleListReady || loadingMore) {
           return;
         }
         await handleLoadMore(getEntries);
@@ -92,7 +92,7 @@ const ArticleList = forwardRef(
         <SearchAndSortBar />
         <div className="entry-list" ref={ref}>
           <LoadingCards />
-          {!loading && (
+          {isArticleListReady && (
             <div ref={cardsRef}>
               <div
                 style={{

@@ -7,7 +7,7 @@ import "./LoadingCards.css";
 
 const LoadingCards = () => {
   const { layout } = useStore(settingsState);
-  const { loading } = useStore(contentState);
+  const { isArticleListReady } = useStore(contentState);
   const cardCount = layout === "large" ? 2 : 4;
 
   const renderCard = (index) => (
@@ -19,7 +19,7 @@ const LoadingCards = () => {
       <Card.Meta
         description={
           <Skeleton
-            loading={loading}
+            loading={!isArticleListReady}
             animation={true}
             text={{ rows: 3, width: 150 }}
           />
@@ -28,9 +28,10 @@ const LoadingCards = () => {
     </Card>
   );
 
-  return loading
-    ? Array.from({ length: cardCount }, (_, i) => renderCard(i))
-    : null;
+  return (
+    !isArticleListReady &&
+    Array.from({ length: cardCount }, (_, i) => renderCard(i))
+  );
 };
 
 export default LoadingCards;

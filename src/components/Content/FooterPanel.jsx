@@ -19,7 +19,7 @@ const updateAllEntriesAsRead = () => {
 
 const FooterPanel = forwardRef(
   ({ info, refreshArticleList, markAllAsRead }, ref) => {
-    const { loading } = useStore(contentState);
+    const { isArticleListReady } = useStore(contentState);
     const { showStatus } = useStore(settingsState);
 
     const handleMarkAllAsRead = async () => {
@@ -69,7 +69,7 @@ const FooterPanel = forwardRef(
         />
         <Button
           icon={<IconRefresh />}
-          loading={loading}
+          loading={!isArticleListReady}
           shape="circle"
           onClick={refreshArticleList}
         />

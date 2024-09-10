@@ -13,7 +13,7 @@ import {
   setEntries,
   setInfoFrom,
   setIsArticleFocused,
-  setLoading,
+  setIsArticleListReady,
   setOffset,
   setTotal,
 } from "../../store/contentState";
@@ -27,7 +27,8 @@ import FooterPanel from "./FooterPanel";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const { activeContent, isArticleFocused, loading } = useStore(contentState);
+  const { activeContent, isArticleFocused, isArticleListReady } =
+    useStore(contentState);
   const { isAppDataReady } = useStore(dataState);
   const { orderBy, orderDirection, showStatus } = useStore(settingsState);
   const filteredEntries = useStore(filteredEntriesState);
@@ -147,7 +148,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   };
 
   const fetchArticleList = async () => {
-    setLoading(true);
+    setIsArticleListReady(false);
     try {
       const response =
         showStatus === "unread"
@@ -157,7 +158,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     } catch (error) {
       console.error("Error fetching articles: ", error);
     } finally {
-      setLoading(false);
+      setIsArticleListReady(true);
     }
   };
 
@@ -195,7 +196,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     <>
       <div className="entry-col">
         <CSSTransition
-          in={!loading}
+          in={isArticleListReady}
           timeout={200}
           nodeRef={cardsRef}
           classNames="fade"

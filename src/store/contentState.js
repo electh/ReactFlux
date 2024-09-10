@@ -12,7 +12,7 @@ export const contentState = map({
   filterType: "Title", // title | content | author
   infoFrom: getSettings("homePage"), // all | today | starred | history
   isArticleFocused: false, // 文章是否被聚焦
-  loading: true, // 初始 loading
+  isArticleListReady: false, // 文章列表是否加载完成
   offset: 0, // 文章分页参数
   total: 0, // 接口返回文章总数原始值，不受接口返回数据长度限制
 });
@@ -59,6 +59,9 @@ export const setIsArticleFocused = createSetter(
   contentState,
   "isArticleFocused",
 );
-export const setLoading = createSetter(contentState, "loading");
+export const setIsArticleListReady = createSetter(
+  contentState,
+  "isArticleListReady",
+);
 export const setOffset = createSetter(contentState, "offset");
 export const setTotal = createSetter(contentState, "total");
