@@ -95,6 +95,7 @@ const updateFeedStatus = (feed, isSuccessful, targetFeedId = null) => {
 
 const FeedList = () => {
   const categories = useStore(categoriesState);
+  const { isAppDataReady } = useStore(dataState);
   const { showDetailedRelativeTime } = useStore(settingsState);
   const filteredFeeds = useStore(filteredFeedsState);
   const tableData = useStore(tableDataState);
@@ -199,15 +200,18 @@ const FeedList = () => {
       );
       Message.success("Starting refresh of error feeds, please wait");
 
-      const results = await Promise.all(
-        errorFeeds.map(async (feed) => {
-          const isSuccessful = await refreshSingleFeed(feed, false);
-          await sleep(500);
-          return isSuccessful;
-        }),
-      );
-      const successCount = results.filter(Boolean).length;
-      const failureCount = results.length - successCount;
+      let successCount = 0;
+      let failureCount = 0;
+
+      for (const feed of errorFeeds) {
+        const isSuccessful = await refreshSingleFeed(feed, false);
+        if (isSuccessful) {
+          successCount++;
+        } else {
+          failureCount++;
+        }
+        await sleep(500);
+      }
 
       Message.success(
         `Feeds refreshed. Success: ${successCount}, Failure: ${failureCount}`,
@@ -446,6 +450,7 @@ const FeedList = () => {
         className="feed-table"
         columns={columns}
         data={tableData}
+        loading={!isAppDataReady}
         pagePosition="bottomCenter"
         scroll={{ x: true }}
         size="small"
