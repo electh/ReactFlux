@@ -35,10 +35,10 @@ const useKeyHandlers = (handleEntryClick) => {
 
   useEffect(() => {
     if (activeContent) {
-      const card = document.querySelector(".card-custom-selected-style");
-      if (card) {
-        card.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }
+      document.querySelector(".card-custom-selected-style")?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
     }
   }, [activeContent]);
 

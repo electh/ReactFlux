@@ -1,5 +1,5 @@
 import { Message } from "@arco-design/web-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import { useStore } from "@nanostores/react";
@@ -30,7 +30,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, isArticleFocused, isArticleListReady } =
     useStore(contentState);
   const { isAppDataReady } = useStore(dataState);
-  const { orderBy, orderDirection, showStatus } = useStore(settingsState);
+  const { orderBy, orderDirection, showAllFeeds, showStatus } =
+    useStore(settingsState);
   const filteredEntries = useStore(filteredEntriesState);
 
   const {
@@ -40,8 +41,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleEntryStatusUpdate,
   } = useEntryActions();
 
-  const [isInitialRenderComplete, setIsInitialRenderComplete] = useState(false);
-
   const entryListRef = useRef(null);
   const cardsRef = useRef(null);
 
@@ -50,14 +49,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (
-      !isInitialRenderComplete ||
-      ["starred", "history"].includes(info.from)
-    ) {
+    if (["starred", "history"].includes(info.from)) {
       return;
     }
     refreshArticleList();
-  }, [orderBy]);
+  }, [orderBy, showAllFeeds]);
 
   useEffect(() => {
     setInfoFrom(info.from);
@@ -184,7 +180,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     if (!isAppDataReady) {
       try {
         fetchArticleList();
-        setIsInitialRenderComplete(true);
         setIsArticleFocused(true);
       } catch (error) {
         Message.error("Failed to fetch articles, please try again later");
