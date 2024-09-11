@@ -47,6 +47,28 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   // 文章详情页的引用
   const entryDetailRef = useRef(null);
 
+  // 是否正在刷新文章列表
+  const isRefreshing = useRef(false);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setInfoFrom(info.from);
+    if (activeContent) {
+      setActiveContent(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isAppDataReady) {
+      try {
+        fetchArticleList();
+        setIsArticleFocused(true);
+      } catch (error) {
+        Message.error("Failed to fetch articles, please try again later");
+      }
+    }
+  }, [isAppDataReady]);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (["starred", "history"].includes(info.from)) {
@@ -54,11 +76,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
     refreshArticleList();
   }, [orderBy, showAllFeeds]);
-
-  useEffect(() => {
-    setInfoFrom(info.from);
-    refreshArticleList();
-  }, [info]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -159,33 +176,21 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   };
 
   const refreshArticleList = async () => {
-    entryListRef.current?.scrollY(0);
+    if (isRefreshing.current) {
+      return;
+    }
+
+    isRefreshing.current = true;
     setOffset(0);
     if (!isAppDataReady) {
       await fetchData();
+      isRefreshing.current = false;
       return;
     }
+
     await fetchArticleList();
+    isRefreshing.current = false;
   };
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (activeContent) {
-      setActiveContent(null);
-    }
-  }, []);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (!isAppDataReady) {
-      try {
-        fetchArticleList();
-        setIsArticleFocused(true);
-      } catch (error) {
-        Message.error("Failed to fetch articles, please try again later");
-      }
-    }
-  }, [isAppDataReady]);
 
   return (
     <>
