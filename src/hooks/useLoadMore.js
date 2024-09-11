@@ -10,7 +10,7 @@ const setLoadingMore = createSetter(loadingMoreState);
 
 const useLoadMore = () => {
   const { offset } = useStore(contentState);
-  const { pageSize } = useStore(settingsState);
+  const { pageSize, showStatus } = useStore(settingsState);
 
   /* 加载更多 loading*/
   const loadingMore = useStore(loadingMoreState);
@@ -30,7 +30,10 @@ const useLoadMore = () => {
     setLoadingMore(true);
 
     try {
-      const response = await getEntries(offset + pageSize);
+      const response =
+        showStatus === "unread"
+          ? await getEntries(offset + pageSize, "unread")
+          : await getEntries(offset + pageSize);
       if (response?.entries) {
         const newEntries = response.entries.map(parseFirstImage);
         updateEntries(newEntries);
