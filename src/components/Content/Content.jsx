@@ -47,8 +47,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   // 文章详情页的引用
   const entryDetailRef = useRef(null);
 
-  // 是否正在刷新文章列表
-  const isRefreshing = useRef(false);
+  // 是否正在获取文章列表
+  const isFetchingArticleList = useRef(false);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -56,18 +56,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     if (activeContent) {
       setActiveContent(null);
     }
-  }, []);
-
-  useEffect(() => {
-    if (!isAppDataReady) {
-      try {
-        fetchArticleList();
-        setIsArticleFocused(true);
-      } catch (error) {
-        Message.error("Failed to fetch articles, please try again later");
-      }
-    }
-  }, [isAppDataReady]);
+    fetchArticleList();
+    setIsArticleFocused(true);
+  }, [info]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -161,35 +152,32 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   };
 
   const fetchArticleList = async () => {
+    if (isFetchingArticleList.current) {
+      return;
+    }
+
+    isFetchingArticleList.current = true;
     setIsArticleListReady(false);
     try {
       const response =
         showStatus === "unread"
           ? await getEntries(0, "unread")
           : await getEntries();
+      setIsArticleListReady(true);
       handleResponses(response);
     } catch (error) {
       console.error("Error fetching articles: ", error);
     } finally {
-      setIsArticleListReady(true);
+      isFetchingArticleList.current = false;
     }
   };
 
   const refreshArticleList = async () => {
-    if (isRefreshing.current) {
-      return;
-    }
-
-    isRefreshing.current = true;
     setOffset(0);
     if (!isAppDataReady) {
       await fetchData();
-      isRefreshing.current = false;
-      return;
     }
-
     await fetchArticleList();
-    isRefreshing.current = false;
   };
 
   return (
