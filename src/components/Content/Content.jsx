@@ -96,14 +96,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     openPhotoSlider,
     toggleReadStatus,
     toggleStarStatus,
-  } = useKeyHandlers(handleEntryClick);
+  } = useKeyHandlers(handleEntryClick, entryListRef);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const keyMap = {
       ArrowLeft: () => navigateToPreviousArticle(),
-      ArrowRight: () => navigateToNextArticle(),
-      Escape: () => exitDetailView(entryListRef, entryDetailRef),
+      ArrowRight: () => navigateToNextArticle(entryListRef),
+      Escape: () => exitDetailView(entryDetailRef),
       b: openLinkExternally,
       d: () => fetchOriginalArticle(handleFetchContent),
       m: () => toggleReadStatus(() => handleToggleStatus(activeContent)),
@@ -117,7 +117,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         if (event.key === "ArrowLeft") {
           navigateToPreviousArticle(event.ctrlKey);
         } else if (event.key === "ArrowRight") {
-          navigateToNextArticle(event.ctrlKey);
+          navigateToNextArticle(entryListRef, event.ctrlKey);
         } else {
           handler();
         }
@@ -159,7 +159,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   };
 
   const refreshArticleList = async () => {
-    entryListRef.current?.scrollX(0);
+    entryListRef.current?.scrollY(0);
     setOffset(0);
     if (!isAppDataReady) {
       await fetchData();

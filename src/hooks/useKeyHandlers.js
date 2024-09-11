@@ -12,7 +12,7 @@ import { extractImageSources } from "../utils/images";
 import useLoadMore from "./useLoadMore";
 import { usePhotoSlider } from "./usePhotoSlider";
 
-const useKeyHandlers = (handleEntryClick) => {
+const useKeyHandlers = (handleEntryClick, entryListRef) => {
   const { activeContent } = useStore(contentState);
   const filteredEntries = useStore(filteredEntriesState);
   const loadMoreVisible = useStore(loadMoreVisibleState);
@@ -31,7 +31,7 @@ const useKeyHandlers = (handleEntryClick) => {
       setShouldLoadNext(false);
       navigateToNextArticle();
     }
-  }, [shouldLoadNext, loadingMore]);
+  }, [loadingMore, shouldLoadNext]);
 
   useEffect(() => {
     if (activeContent) {
@@ -42,7 +42,7 @@ const useKeyHandlers = (handleEntryClick) => {
     }
   }, [activeContent]);
 
-  const exitDetailView = (entryListRef, entryDetailRef) => {
+  const exitDetailView = (entryDetailRef) => {
     if (!activeContent) {
       return;
     }
@@ -90,7 +90,7 @@ const useKeyHandlers = (handleEntryClick) => {
     }
 
     if (currentIndex === -1) {
-      document.querySelector(".entry-list")?.scrollTo(0, 0);
+      entryListRef.current?.scrollY(0);
       return;
     }
 

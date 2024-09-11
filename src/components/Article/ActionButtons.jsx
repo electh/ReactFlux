@@ -21,7 +21,7 @@ const ActionButtons = ({ handleEntryClick, entryListRef, entryDetailRef }) => {
   const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
     useEntryActions();
   const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } =
-    useKeyHandlers(handleEntryClick);
+    useKeyHandlers(handleEntryClick, entryListRef);
 
   if (!activeContent) {
     return null;
@@ -34,7 +34,7 @@ const ActionButtons = ({ handleEntryClick, entryListRef, entryDetailRef }) => {
     <Button.Group className="action-buttons">
       <Button
         icon={<IconClose />}
-        onClick={() => exitDetailView(entryListRef, entryDetailRef)}
+        onClick={() => exitDetailView(entryDetailRef)}
         shape="round"
         type="primary"
       />
@@ -61,7 +61,7 @@ const ActionButtons = ({ handleEntryClick, entryListRef, entryDetailRef }) => {
       />
       <Button
         icon={<IconArrowRight />}
-        onClick={() => navigateToNextArticle()}
+        onClick={() => navigateToNextArticle(entryListRef)}
         type="primary"
       />
       <Button
