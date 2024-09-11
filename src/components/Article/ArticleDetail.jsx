@@ -182,18 +182,6 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
     setIsArticleFocused((prev) => !prev);
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    const scrollContainer = ref.current?.querySelector(".scroll-container");
-    if (scrollContainer) {
-      scrollContainer.scrollTo(0, 0);
-      scrollContainer.setAttribute("tabIndex", "-1");
-      setTimeout(() => {
-        scrollContainer.focus();
-      }, 200);
-    }
-  }, [activeContent?.id]);
-
   if (!activeContent) {
     return (
       <div ref={ref} className="content-empty">
@@ -286,7 +274,6 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
       <ActionButtons
         handleEntryClick={handleEntryClick}
         entryListRef={entryListRef}
-        entryDetailRef={ref}
       />
     </div>
   );

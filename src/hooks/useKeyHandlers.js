@@ -42,16 +42,14 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
     }
   }, [activeContent]);
 
-  const exitDetailView = (entryDetailRef) => {
+  const exitDetailView = () => {
     if (!activeContent) {
       return;
     }
     setActiveContent(null);
     if (entryListRef.current) {
-      entryListRef.current.setAttribute("tabIndex", "-1");
-      entryListRef.current.focus();
+      entryListRef.current.contentWrapperEl.focus();
     }
-    entryDetailRef.current?.scrollTo(0, 0);
   };
 
   const navigateToPreviousArticle = (unread = false) => {
@@ -90,7 +88,11 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
     }
 
     if (currentIndex === -1) {
-      entryListRef.current?.scrollY(0);
+      entryListRef.current.contentWrapperEl.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
       return;
     }
 

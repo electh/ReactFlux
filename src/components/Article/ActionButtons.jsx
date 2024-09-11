@@ -16,7 +16,7 @@ import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { contentState } from "../../store/contentState";
 import "./ActionButtons.css";
 
-const ActionButtons = ({ handleEntryClick, entryListRef, entryDetailRef }) => {
+const ActionButtons = ({ handleEntryClick, entryListRef }) => {
   const { activeContent } = useStore(contentState);
   const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
     useEntryActions();
@@ -34,7 +34,7 @@ const ActionButtons = ({ handleEntryClick, entryListRef, entryDetailRef }) => {
     <Button.Group className="action-buttons">
       <Button
         icon={<IconClose />}
-        onClick={() => exitDetailView(entryDetailRef)}
+        onClick={() => exitDetailView()}
         shape="round"
         type="primary"
       />
@@ -61,7 +61,7 @@ const ActionButtons = ({ handleEntryClick, entryListRef, entryDetailRef }) => {
       />
       <Button
         icon={<IconArrowRight />}
-        onClick={() => navigateToNextArticle(entryListRef)}
+        onClick={() => navigateToNextArticle()}
         type="primary"
       />
       <Button

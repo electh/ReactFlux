@@ -102,8 +102,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   useEffect(() => {
     const keyMap = {
       ArrowLeft: () => navigateToPreviousArticle(),
-      ArrowRight: () => navigateToNextArticle(entryListRef),
-      Escape: () => exitDetailView(entryDetailRef),
+      ArrowRight: () => navigateToNextArticle(),
+      Escape: () => exitDetailView(),
       b: openLinkExternally,
       d: () => fetchOriginalArticle(handleFetchContent),
       m: () => toggleReadStatus(() => handleToggleStatus(activeContent)),
@@ -117,7 +117,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         if (event.key === "ArrowLeft") {
           navigateToPreviousArticle(event.ctrlKey);
         } else if (event.key === "ArrowRight") {
-          navigateToNextArticle(entryListRef, event.ctrlKey);
+          navigateToNextArticle(event.ctrlKey);
         } else {
           handler();
         }
