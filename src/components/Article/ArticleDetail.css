@@ -75,7 +75,10 @@ p {
   border-radius: 4px;
 }
 
-.article-body img, .article-body video, .article-body iframe {
+.article-body audio,
+.article-body iframe,
+.article-body img,
+.article-body video {
   display: block;
   margin: 20px auto;
 }
