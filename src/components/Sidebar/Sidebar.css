@@ -26,14 +26,6 @@
   width: 50%;
 }
 
-.sidebar {
-  height: 100%;
-  position: fixed;
-  top: 0;
-  z-index: 999;
-  grid-area: sidebar;
-}
-
 .menu-header {
   align-items: center;
   display: flex;
@@ -136,4 +128,15 @@
 .arco-icon-hover.arco-collapse-item-icon-hover::before {
   width: 32px;
   height: 32px;
+}
+
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: hidden;
+}
+
+.feeds-menu-wrapper {
+  overflow-y: hidden;
 }

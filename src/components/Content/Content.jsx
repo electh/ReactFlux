@@ -159,7 +159,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   };
 
   const refreshArticleList = async () => {
-    entryListRef.current?.scrollTo(0, 0);
+    entryListRef.current?.scrollX(0);
     setOffset(0);
     if (!isAppDataReady) {
       await fetchData();

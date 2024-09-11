@@ -9,6 +9,7 @@ import SearchAndSortBar from "./SearchAndSortBar";
 
 import { useStore } from "@nanostores/react";
 import { useInView } from "react-intersection-observer";
+import SimpleBar from "simplebar-react";
 import {
   contentState,
   filteredEntriesState,
@@ -90,7 +91,7 @@ const ArticleList = forwardRef(
     return (
       <>
         <SearchAndSortBar />
-        <div className="entry-list" ref={ref}>
+        <SimpleBar className="entry-list" ref={ref}>
           <LoadingCards />
           {isArticleListReady && (
             <div ref={cardsRef}>
@@ -127,7 +128,7 @@ const ArticleList = forwardRef(
             </div>
           )}
           <LoadMoreComponent getEntries={getEntries} />
-        </div>
+        </SimpleBar>
       </>
     );
   },

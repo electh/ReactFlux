@@ -1,11 +1,12 @@
 .entry-list {
   background-color: var(--color-fill-1);
+  contain: strict;
   flex: 1;
-  overflow-y: auto;
+  height: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
   padding: 10px 10px 0 10px;
   width: 310px;
-  contain: strict;
-  overscroll-behavior-y: contain;
 }
 
 .load-more-container {

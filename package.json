@@ -30,6 +30,7 @@
     "react-router-dom": "^6.26.2",
     "react-swipeable": "^7.0.1",
     "react-transition-group": "^4.4.5",
+    "simplebar-react": "^3.2.6",
     "validator": "^13.12.0"
   },
   "browserslist": {

@@ -12,7 +12,6 @@ import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon";
 import { ofetch } from "ofetch";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import background from "./images/background.jpg";
 
 import useTheme from "../hooks/useTheme";
 import { setAuth } from "../store/authState";
@@ -21,6 +20,7 @@ import {
   handleEnterKeyToSubmit,
   validateAndFormatFormFields,
 } from "../utils/form";
+import "./Login.css";
 
 const Login = () => {
   useTheme();
@@ -62,22 +62,9 @@ const Login = () => {
   };
 
   return (
-    <div className="page-layout" style={{ height: "100%", display: "flex" }}>
-      <div
-        className="form-panel"
-        style={{
-          backgroundColor: "var(--color-bg-1)",
-          width: "50%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          overflowY: "auto",
-          zIndex: 2,
-        }}
-      >
-        <div className="login-form" style={{ width: "340px" }}>
+    <div className="page-layout">
+      <div className="form-panel">
+        <div className="login-form">
           <Typography.Title heading={3}>
             Connect to your server
           </Typography.Title>
@@ -187,17 +174,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <div
-        className="background"
-        style={{
-          backgroundImage: `url(${background})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          width: "50%",
-          height: "100%",
-        }}
-      />
+      <div className="background" />
     </div>
   );
 };

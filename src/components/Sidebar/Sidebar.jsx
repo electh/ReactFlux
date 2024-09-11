@@ -15,6 +15,7 @@ import {
 } from "@arco-design/web-react/icon";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import SimpleBar from "simplebar-react";
 
 import { useStore } from "@nanostores/react";
 import classNames from "classnames";
@@ -224,43 +225,58 @@ const Sidebar = () => {
       ));
 
   return (
-    <Menu
-      autoScrollIntoView={true}
-      hasCollapseButton={false}
-      selectedKeys={selectedKeys}
-      style={{ width: "240px", height: "100%" }}
-    >
-      <div className="menu-header">
-        <Avatar className="avatar" size={32}>
-          <IconBook style={{ color: "var(--color-bg-1)" }} />
-        </Avatar>
-        <Typography.Title heading={6} style={{ margin: 0 }}>
-          ReactFlux
+    <div className="sidebar-container">
+      <Menu hasCollapseButton={false} selectedKeys={selectedKeys}>
+        <div className="menu-header">
+          <Avatar className="avatar" size={32}>
+            <IconBook style={{ color: "var(--color-bg-1)" }} />
+          </Avatar>
+          <Typography.Title heading={6} style={{ margin: 0 }}>
+            ReactFlux
+          </Typography.Title>
+        </div>
+        <Typography.Title
+          className="section-title"
+          heading={6}
+          style={{ paddingLeft: "12px" }}
+        >
+          Articles
         </Typography.Title>
+        <Skeleton
+          loading={!isAppDataReady}
+          animation={true}
+          text={{ rows: 3 }}
+        />
+        {isAppDataReady && renderMenuItems()}
+        <Typography.Title
+          className="section-title"
+          heading={6}
+          style={{ paddingLeft: "12px" }}
+        >
+          Feeds
+        </Typography.Title>
+      </Menu>
+      <div className="feeds-menu-wrapper">
+        <SimpleBar style={{ maxHeight: "100%" }} autoHide={true}>
+          <Menu
+            autoScrollIntoView={true}
+            hasCollapseButton={false}
+            selectedKeys={selectedKeys}
+          >
+            <Skeleton
+              loading={!isAppDataReady}
+              animation={true}
+              text={{ rows: 6 }}
+            />
+            {isAppDataReady && (
+              <Collapse triggerRegion="icon" bordered={false}>
+                {renderCategoryItems()}
+              </Collapse>
+            )}
+          </Menu>
+        </SimpleBar>
       </div>
-      <Typography.Title
-        className="section-title"
-        heading={6}
-        style={{ paddingLeft: "12px" }}
-      >
-        Articles
-      </Typography.Title>
-      <Skeleton loading={!isAppDataReady} animation={true} text={{ rows: 3 }} />
-      {isAppDataReady && renderMenuItems()}
-      <Typography.Title
-        className="section-title"
-        heading={6}
-        style={{ paddingLeft: "12px" }}
-      >
-        Feeds
-      </Typography.Title>
-      <Skeleton loading={!isAppDataReady} animation={true} text={{ rows: 6 }} />
-      {isAppDataReady && (
-        <Collapse triggerRegion="icon" bordered={false}>
-          {renderCategoryItems()}
-        </Collapse>
-      )}
-    </Menu>
+    </div>
   );
 };
 
