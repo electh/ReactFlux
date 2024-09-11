@@ -31,6 +31,7 @@ import { useEffect, useState } from "react";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { resetAuth } from "../../store/authState";
+import { setIsArticleListReady } from "../../store/contentState";
 import { setIsAppDataReady } from "../../store/dataState";
 import {
   resetSettings,
@@ -81,6 +82,7 @@ const Header = () => {
   const handleLogout = () => {
     resetAuth();
     setIsAppDataReady(false);
+    setIsArticleListReady(false);
     navigate("/login");
     Message.success("Successfully logged out");
   };

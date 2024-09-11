@@ -1,15 +1,5 @@
 import { computed, map } from "nanostores";
-import {
-  getCategories,
-  getFeeds,
-  getHistoryEntries,
-  getStarredEntries,
-  getTodayEntries,
-  getUnreadInfo,
-  getVersion,
-} from "../apis";
 import { createSetter } from "../utils/nanostores";
-import { compareVersions } from "../utils/version";
 import { settingsState } from "./settingsState";
 
 export const dataState = map({
@@ -126,40 +116,3 @@ export const setIsVersionAtLeast2_2_0 = createSetter(
   dataState,
   "isVersionAtLeast2_2_0",
 );
-
-export const fetchData = async () => {
-  setIsAppDataReady(false);
-  const responses = await Promise.all([
-    getUnreadInfo(),
-    getTodayEntries(0, "unread"),
-    getStarredEntries(),
-    getHistoryEntries(),
-    getFeeds(),
-    getCategories(),
-    getVersion(),
-  ]);
-
-  const [
-    unreadInfoData,
-    unreadTodayData,
-    starredData,
-    historyData,
-    feedsData,
-    categoriesData,
-    versionData,
-  ] = responses;
-
-  const unreadInfo = feedsData.reduce((acc, feed) => {
-    acc[feed.id] = unreadInfoData.unreads[feed.id] ?? 0;
-    return acc;
-  }, {});
-
-  setUnreadInfo(unreadInfo);
-  setUnreadTodayCount(unreadTodayData.total ?? 0);
-  setStarredCount(starredData.total ?? 0);
-  setHistoryCount(historyData.total ?? 0);
-  setFeedsData(feedsData);
-  setCategoriesData(categoriesData);
-  setIsVersionAtLeast2_2_0(compareVersions(versionData.version, "2.2.0") >= 0);
-  setIsAppDataReady(true);
-};

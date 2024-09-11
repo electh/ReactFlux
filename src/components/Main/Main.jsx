@@ -11,8 +11,9 @@ import { Outlet } from "react-router-dom";
 
 import { useStore } from "@nanostores/react";
 import { addFeed } from "../../apis";
+import useAppData from "../../hooks/useAppData";
 import { useModalToggle } from "../../hooks/useModalToggle";
-import { categoriesState, fetchData } from "../../store/dataState";
+import { categoriesState } from "../../store/dataState";
 import { includesIgnoreCase } from "../../utils/filter";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
@@ -49,11 +50,13 @@ const AddFeedModal = () => {
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
 
+  const { fetchAppData } = useAppData();
+
   const handleAddFeed = async (url, categoryId, isFullText) => {
     setFeedModalLoading(true);
     try {
       await addFeed(url, categoryId, isFullText);
-      await fetchData();
+      await fetchAppData();
       Message.success("Added a feed successfully");
       setAddFeedModalVisible(false);
       feedForm.resetFields();
