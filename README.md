@@ -1,6 +1,6 @@
 # ReactFlux
 
-Read in other languages: [English](README.md), [中文](README.cn.md), [Español](README.es.md)
+Read in other languages: [Español](README.es.md), [简体中文](README.cn.md)
 
 ## Overview
 

@@ -15,7 +15,7 @@ import {
   setInfoFrom,
   setOffset,
 } from "../../store/contentState";
-import { dataState } from "../../store/dataState";
+import { dataState, hiddenFeedIdsState } from "../../store/dataState";
 import { settingsState } from "../../store/settingsState";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
@@ -30,6 +30,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const { orderBy, orderDirection, showAllFeeds, showStatus } =
     useStore(settingsState);
   const filteredEntries = useStore(filteredEntriesState);
+  const hiddenFeedIds = useStore(hiddenFeedIdsState);
 
   const {
     handleFetchContent,
@@ -62,7 +63,18 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       return;
     }
     refreshArticleList(getEntries);
-  }, [orderBy, showAllFeeds]);
+  }, [orderBy]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (
+      hiddenFeedIds.length === 0 ||
+      ["starred", "history"].includes(info.from)
+    ) {
+      return;
+    }
+    refreshArticleList(getEntries);
+  }, [showAllFeeds]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
