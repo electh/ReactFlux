@@ -12,6 +12,7 @@ import "./General.css";
 
 const languageOptions = [
   { label: "English", value: "en-US" },
+  { label: "Español", value: "es-ES" },
   { label: "简体中文", value: "zh-CN" },
 ];
 
