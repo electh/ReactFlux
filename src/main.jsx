@@ -10,13 +10,14 @@ import "simplebar-react/dist/simplebar.min.css";
 import "./index.css";
 import router from "./routes";
 import "./theme.css";
+import { getPreferredLanguage } from "./utils/locales";
 
 const localMap = {
   "zh-CN": zhCN,
   "es-ES": esES,
 };
 
-const getLocale = () => localMap[navigator.language] || enUS;
+const getLocale = () => localMap[getPreferredLanguage()] || enUS;
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <ConfigProvider locale={getLocale()}>

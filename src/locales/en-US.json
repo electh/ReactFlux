@@ -162,5 +162,20 @@
     "m": "Toggle the read status of the current article",
     "s": "Toggle the star status (bookmark) of the current article",
     "v": "Open the photo slider for viewing all images in the current article"
+  },
+  "date": {
+    "just_now": "just now",
+    "year": "%{count} year",
+    "years": "%{count} years",
+    "month": "%{count} month",
+    "months": "%{count} months",
+    "day": "%{count} day",
+    "days": "%{count} days",
+    "hour": "%{count} hour",
+    "hours": "%{count} hours",
+    "minute": "%{count} minute",
+    "minutes": "%{count} minutes",
+    "in_time": "in %{time}",
+    "time_ago": "%{time} ago"
   }
 }

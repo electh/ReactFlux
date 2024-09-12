@@ -1,4 +1,8 @@
 import { useStore } from "@nanostores/react";
+import dayjs from "dayjs";
+import "dayjs/locale/en";
+import "dayjs/locale/es";
+import "dayjs/locale/zh-cn";
 import { map } from "nanostores";
 import Polyglot from "node-polyglot";
 import { useEffect } from "react";
@@ -39,6 +43,14 @@ const useLanguage = () => {
       updateSettings({ language: navigator.language });
     } else {
       loadLanguage(language);
+
+      if (language === "zh-CN") {
+        dayjs.locale("zh-cn");
+      } else if (language === "es" || language.startsWith("es-")) {
+        dayjs.locale("es");
+      } else {
+        dayjs.locale("en");
+      }
     }
   }, [language]);
 };

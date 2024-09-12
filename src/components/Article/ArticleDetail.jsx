@@ -1,6 +1,5 @@
 import { Button, Divider, Tag, Typography } from "@arco-design/web-react";
 import { IconEmpty, IconFullscreen } from "@arco-design/web-react/icon";
-import dayjs from "dayjs";
 import ReactHtmlParser from "html-react-parser";
 import { forwardRef, useEffect, useState } from "react";
 import { PhotoSlider } from "react-photo-view";
@@ -18,6 +17,7 @@ import {
   setIsArticleFocused,
 } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
+import { generateReadableDate } from "../../utils/date";
 import { extractImageSources } from "../../utils/images";
 import ActionButtons from "./ActionButtons";
 import "./ArticleDetail.css";
@@ -246,9 +246,7 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
             </Typography.Text>
           </div>
           <Typography.Text className="article-date">
-            {dayjs(activeContent.published_at).format(
-              "dddd, MMMM D, YYYY [at] h:mm A",
-            )}
+            {generateReadableDate(activeContent.published_at)}
           </Typography.Text>
           <Divider />
         </div>

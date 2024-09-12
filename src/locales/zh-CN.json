@@ -162,5 +162,20 @@
     "m": "切换当前文章的阅读状态 (已读/未读)",
     "s": "切换当前文章的星标状态 (收藏)",
     "v": "打开当前文章的图片浏览器，查看所有图片"
+  },
+  "date": {
+    "just_now": "刚刚",
+    "year": "%{count} 年",
+    "years": "%{count} 年",
+    "month": "%{count} 个月",
+    "months": "%{count} 个月",
+    "day": "%{count} 天",
+    "days": "%{count} 天",
+    "hour": "%{count} 小时",
+    "hours": "%{count} 小时",
+    "minute": "%{count} 分钟",
+    "minutes": "%{count} 分钟",
+    "in_time": "%{time}内",
+    "time_ago": "%{time}前"
   }
 }
