@@ -4,11 +4,11 @@ import { getSettings } from "../store/settingsState";
 export const colors = {
   Red: { light: "#F53F3F", dark: "#F76965" },
   Orange: { light: "#F77234", dark: "#F9925A" },
+  Gold: { light: "#F7BA1E", dark: "#F9CC44" },
   Green: { light: "#00B42A", dark: "#27C346" },
+  Cyan: { light: "#14C9C9", dark: "#3FD4CF" },
   Blue: { light: "#165DFF", dark: "#3C7EFF" },
   Purple: { light: "#722ED1", dark: "#8E51DA" },
-  Gold: { light: "#F7BA1E", dark: "#F9CC44" },
-  Cyan: { light: "#14C9C9", dark: "#3FD4CF" },
   Magenta: { light: "#F5319D", dark: "#F756A9" },
 };
 
