@@ -185,7 +185,7 @@ const Login = () => {
               href={"https://miniflux.app/docs/api.html#authentication"}
               style={{ fontWeight: "500" }}
             >
-              {polyglot.t("login.miniflux_offical_website")}
+              {polyglot.t("login.miniflux_official_website")}
             </Link>
           </div>
         </div>
