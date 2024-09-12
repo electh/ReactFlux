@@ -1,6 +1,6 @@
 # ReactFlux
 
-Lee este texto en otros idiomas: [English](README.md), [中文](README.cn.md)
+Lea este texto en otros idiomas: [English](README.md), [中文](README.cn.md)
 
 ## Descripción general
 
@@ -12,7 +12,7 @@ Las funcionalidades clave incluyen:
 - Diseño adaptable a todos los dispositivos (responsivo)
 - Admite modo oscuro y temas personalizados
 - Búsqueda de artículos con una sintaxis similar a Google
-- Gestión de feed t de grupos de feeds
+- Gestión de feed y de grupos de feeds
 - Atajos de teclado
 - Marca automáticamente los artículos como leidos al desplazarlos al hacer scroll
 - Actualización por lotes del host de URL de suscripción filtradas (útil para reemplazar instancias de RSSHub)
@@ -81,7 +81,7 @@ Si quiere experimentar rápidamente la rama `next`, esta es una [instancia en l�
         <br />
         <sub><b>NekoAria</b></sub>
         <br />
-        <sub><b> Main Contributor </b></sub>
+        <sub><b> Colaborador principal </b></sub>
     </td>
     <td align="center">
         <a href="https://github.com/electh">
@@ -90,7 +90,7 @@ Si quiere experimentar rápidamente la rama `next`, esta es una [instancia en l�
         <br />
         <sub><b>electh</b></sub>
         <br />
-        <sub><b> Project Initiator </b></sub>
+        <sub><b> Creador del proyecto </b></sub>
     </td>
 </tr>
 </table>
