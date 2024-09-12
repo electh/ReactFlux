@@ -20,7 +20,7 @@
   },
   "sidebar": {
     "all": "Todo",
-    "today": "hoy",
+    "today": "Hoy",
     "starred": "Favoritos",
     "history": "Historial",
     "articles": "Artículos",
@@ -122,7 +122,7 @@
     "entries_order_option_published_at": "Publicado en",
     "entries_order_option_created_at": "Actualizado en",
     "entries_per_page_label": "Entradas por página",
-    "entries_per_page_description": "SMostrar cuantas entradas por página:",
+    "entries_per_page_description": "Cuantas entradas mostrar por página:",
     "remove_duplicates_label": "Eliminar artículos duplicados",
     "remove_duplicates_description": "Eliminar automáticamente los artículos duplicados basados en:",
     "remove_duplicates_option_none": "Ninguno",
