@@ -1,6 +1,5 @@
 import {
   Divider,
-  Select,
   Slider,
   Space,
   Switch,
@@ -14,16 +13,10 @@ import { useStore } from "@nanostores/react";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import "./Appearance.css";
 
-const languageOptions = [
-  { label: "English", value: "en-US" },
-  { label: "简体中文", value: "zh-CN" },
-];
-
 const Appearance = () => {
   const {
     articleWidth,
     fontSize,
-    language,
     layout,
     showDetailedRelativeTime,
     showFeedIcon,
@@ -132,30 +125,6 @@ const Appearance = () => {
             checked={showFeedIcon}
             onChange={(value) => handleConfigChange({ showFeedIcon: value })}
           />
-        </div>
-      </div>
-      <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("appearance.language_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("appearance.language_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Select
-            className="input-select"
-            onChange={(value) => handleConfigChange({ language: value })}
-            value={language}
-          >
-            {languageOptions.map(({ label, value }) => (
-              <Select.Option key={value} value={value}>
-                {label}
-              </Select.Option>
-            ))}
-          </Select>
         </div>
       </div>
       <Divider />

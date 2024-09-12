@@ -10,13 +10,48 @@ import { polyglotState } from "../../hooks/useLanguage";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import "./General.css";
 
+const languageOptions = [
+  { label: "English", value: "en-US" },
+  { label: "简体中文", value: "zh-CN" },
+];
+
 const General = () => {
-  const { homePage, markReadOnScroll, orderBy, pageSize, removeDuplicates } =
-    useStore(settingsState);
+  const {
+    homePage,
+    language,
+    markReadOnScroll,
+    orderBy,
+    pageSize,
+    removeDuplicates,
+  } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
 
   return (
     <>
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            {polyglot.t("appearance.language_label")}
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            {polyglot.t("appearance.language_description")}
+          </Typography.Text>
+        </div>
+        <div>
+          <Select
+            className="input-select"
+            onChange={(value) => updateSettings({ language: value })}
+            value={language}
+          >
+            {languageOptions.map(({ label, value }) => (
+              <Select.Option key={value} value={value}>
+                {label}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      </div>
+      <Divider />
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
