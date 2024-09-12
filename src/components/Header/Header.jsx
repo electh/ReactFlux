@@ -28,6 +28,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { useStore } from "@nanostores/react";
 import { useEffect, useState } from "react";
+import { polyglotState } from "../../hooks/useLanguage";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { resetAuth } from "../../store/authState";
@@ -43,6 +44,13 @@ import "./Header.css";
 
 const Header = () => {
   const { showAllFeeds, theme } = useStore(settingsState);
+  const { polyglot } = useStore(polyglotState);
+
+  const themeOptions = [
+    { label: polyglot.t("header.theme_option_light"), value: "light" },
+    { label: polyglot.t("header.theme_option_dark"), value: "dark" },
+    { label: polyglot.t("header.theme_option_system"), value: "system" },
+  ];
 
   const navigate = useNavigate();
   const currentPath = useLocation().pathname;
@@ -84,7 +92,7 @@ const Header = () => {
     setIsAppDataReady(false);
     setIsArticleListReady(false);
     navigate("/login");
-    Message.success("Successfully logged out");
+    Message.success(polyglot.t("header.logout_success"));
   };
 
   const getThemeIcon = () => {
@@ -123,7 +131,7 @@ const Header = () => {
       </Drawer>
       <div className="button-group">
         <Space size={16}>
-          <Tooltip content="Add a feed" mini>
+          <Tooltip content={polyglot.t("header.add_feed")} mini>
             <Button
               shape="circle"
               size="small"
@@ -133,7 +141,11 @@ const Header = () => {
             />
           </Tooltip>
           <Tooltip
-            content={showAllFeeds ? "Hide some feeds" : "Show all feeds"}
+            content={
+              showAllFeeds
+                ? polyglot.t("header.hide_some_feeds")
+                : polyglot.t("header.show_all_feeds")
+            }
             mini
           >
             <Button
@@ -154,16 +166,14 @@ const Header = () => {
           <Dropdown
             droplist={
               <Menu defaultSelectedKeys={[theme]} className="theme-menu">
-                {["light", "dark", "system"].map((themeOption) => (
+                {themeOptions.map(({ label, value }) => (
                   <Menu.Item
                     className="theme-menu-item"
-                    key={themeOption}
-                    onClick={() => updateSettings({ theme: themeOption })}
+                    key={value}
+                    onClick={() => updateSettings({ theme: value })}
                   >
-                    {themeOption.charAt(0).toUpperCase() + themeOption.slice(1)}
-                    {theme === themeOption && (
-                      <IconCheck style={{ marginLeft: 8 }} />
-                    )}
+                    {label}
+                    {theme === value && <IconCheck style={{ marginLeft: 8 }} />}
                   </Menu.Item>
                 ))}
               </Menu>
@@ -186,15 +196,15 @@ const Header = () => {
                   onClick={() => setSettingsModalVisible(true)}
                 >
                   <IconSettings className="icon-right" />
-                  Settings
+                  {polyglot.t("header.settings")}
                 </Menu.Item>
                 <Menu.Item key="1" onClick={() => setResetModalVisible(true)}>
                   <IconRefresh className="icon-right" />
-                  Reset Settings
+                  {polyglot.t("header.reset_settings")}
                 </Menu.Item>
                 <Menu.Item key="2" onClick={() => setLogoutModalVisible(true)}>
                   <IconPoweroff className="icon-right" />
-                  Logout
+                  {polyglot.t("header.logout")}
                 </Menu.Item>
               </Menu>
             }
@@ -209,24 +219,21 @@ const Header = () => {
       </div>
 
       <Modal
-        title="Confirm Reset"
+        title={polyglot.t("header.settings_reset_confirm")}
         visible={resetModalVisible}
         onOk={handleResetSettings}
         onCancel={() => setResetModalVisible(false)}
       >
-        <p>
-          Are you sure you want to reset your settings? This action cannot be
-          undone.
-        </p>
+        <p>{polyglot.t("header.settings_reset_description")}</p>
       </Modal>
 
       <Modal
-        title="Confirm Logout"
+        title={polyglot.t("header.logout_confirm")}
         visible={logoutModalVisible}
         onOk={handleLogout}
         onCancel={() => setLogoutModalVisible(false)}
       >
-        <p>Are you sure you want to logout?</p>
+        <p>{polyglot.t("header.logout_description")}</p>
       </Modal>
     </div>
   );

@@ -12,6 +12,7 @@ import { Outlet } from "react-router-dom";
 import { useStore } from "@nanostores/react";
 import { addFeed } from "../../apis";
 import useAppData from "../../hooks/useAppData";
+import { polyglotState } from "../../hooks/useLanguage";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { categoriesState } from "../../store/dataState";
 import { includesIgnoreCase } from "../../utils/filter";
@@ -44,6 +45,7 @@ const SettingsModal = () => {
 
 const AddFeedModal = () => {
   const categories = useStore(categoriesState);
+  const { polyglot } = useStore(polyglotState);
 
   const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle();
 
@@ -69,7 +71,7 @@ const AddFeedModal = () => {
 
   return (
     <Modal
-      title="Add Feed"
+      title={polyglot.t("main.add_feed_modal_title")}
       visible={addFeedModalVisible}
       unmountOnExit
       style={{ width: "400px" }}
@@ -94,17 +96,23 @@ const AddFeedModal = () => {
           }
         }}
       >
-        <Form.Item label="Feed URL" field="url" rules={urlRule}>
-          <Input placeholder="Please input a feed URL" />
+        <Form.Item
+          label={polyglot.t("main.add_feed_modal_feed_url_label")}
+          field="url"
+          rules={urlRule}
+        >
+          <Input
+            placeholder={polyglot.t("main.add_feed_modal_feed_url_placeholder")}
+          />
         </Form.Item>
         <Form.Item
           field="category"
-          label="Category"
+          label={polyglot.t("main.add_feed_modal_category_label")}
           required
           rules={categoryRule}
         >
           <Select
-            placeholder="Please select a category"
+            placeholder={polyglot.t("main.add_feed_modal_category_placeholder")}
             showSearch
             filterOption={(inputValue, option) =>
               includesIgnoreCase(option.props.children, inputValue)
@@ -120,7 +128,7 @@ const AddFeedModal = () => {
         <Form.Item
           field="crawler"
           initialValue={false}
-          label="Fetch original content"
+          label={polyglot.t("main.add_feed_modal_crawler_label")}
           rules={crawlerRule}
           style={{ marginBottom: 0 }}
           triggerPropName="checked"

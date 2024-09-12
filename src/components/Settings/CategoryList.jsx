@@ -134,9 +134,7 @@ const CategoryList = () => {
             onClick={() => setShowAddInput(true)}
             size="medium"
             tabIndex={0}
-          >
-            Add
-          </Tag>
+          />
         )}
       </div>
       {selectedCategory && (

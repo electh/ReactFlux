@@ -12,7 +12,7 @@
   background-color: var(--color-fill-2);
   border: 1px dashed var(--color-fill-3);
   cursor: pointer;
-  width: 84px;
+  width: 32px;
 }
 
 .modal-style {

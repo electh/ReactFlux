@@ -19,6 +19,7 @@ import SimpleBar from "simplebar-react";
 
 import { useStore } from "@nanostores/react";
 import classNames from "classnames";
+import { polyglotState } from "../../hooks/useLanguage";
 import { setActiveContent } from "../../store/contentState";
 import {
   categoriesState,
@@ -131,6 +132,7 @@ const Sidebar = () => {
   const feedsGroupedById = useStore(feedsGroupedByIdState);
   const hiddenCategoryIds = useStore(hiddenCategoryIdsState);
   const unreadTotal = useStore(unreadTotalState);
+  const { polyglot } = useStore(polyglotState);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -148,25 +150,25 @@ const Sidebar = () => {
       <CustomMenuItem
         path="/all"
         Icon={IconUnorderedList}
-        label="All"
+        label={polyglot.t("sidebar.all")}
         count={unreadTotal}
       />
       <CustomMenuItem
         path="/today"
         Icon={IconCalendar}
-        label="Today"
+        label={polyglot.t("sidebar.today")}
         count={unreadTodayCount}
       />
       <CustomMenuItem
         path="/starred"
         Icon={IconStar}
-        label="Starred"
+        label={polyglot.t("sidebar.starred")}
         count={starredCount}
       />
       <CustomMenuItem
         path="/history"
         Icon={IconHistory}
-        label="History"
+        label={polyglot.t("sidebar.history")}
         count={historyCount}
       />
     </>
@@ -240,7 +242,7 @@ const Sidebar = () => {
           heading={6}
           style={{ paddingLeft: "12px" }}
         >
-          Articles
+          {polyglot.t("sidebar.articles")}
         </Typography.Title>
         <Skeleton
           loading={!isAppDataReady}
@@ -253,7 +255,7 @@ const Sidebar = () => {
           heading={6}
           style={{ paddingLeft: "12px" }}
         >
-          Feeds
+          {polyglot.t("sidebar.feeds")}
         </Typography.Title>
       </Menu>
       <div className="feeds-menu-wrapper">

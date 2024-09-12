@@ -4,6 +4,7 @@ export const defaultSettings = {
   articleWidth: 90,
   fontSize: 1.05,
   homePage: "all",
+  language: navigator.language,
   layout: "large",
   markReadOnScroll: false,
   orderBy: "created_at",

@@ -6,35 +6,44 @@ import {
   Typography,
 } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
+import { polyglotState } from "../../hooks/useLanguage";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import "./General.css";
 
 const General = () => {
   const { homePage, markReadOnScroll, orderBy, pageSize, removeDuplicates } =
     useStore(settingsState);
+  const { polyglot } = useStore(polyglotState);
 
   return (
     <>
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Default home page
+            {polyglot.t("settings.default_home_page_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            Which page to show by default:
+            {polyglot.t("settings.default_home_page_description")}
           </Typography.Text>
         </div>
         <div>
           <Select
             className="input-select"
             onChange={(value) => updateSettings({ homePage: value })}
-            placeholder="Select page"
             value={homePage}
           >
-            <Select.Option value="all">All</Select.Option>
-            <Select.Option value="today">Today</Select.Option>
-            <Select.Option value="starred">Starred</Select.Option>
-            <Select.Option value="history">History</Select.Option>
+            <Select.Option value="all">
+              {polyglot.t("settings.default_home_page_option_all")}
+            </Select.Option>
+            <Select.Option value="today">
+              {polyglot.t("settings.default_home_page_option_today")}
+            </Select.Option>
+            <Select.Option value="starred">
+              {polyglot.t("settings.default_home_page_option_starred")}
+            </Select.Option>
+            <Select.Option value="history">
+              {polyglot.t("settings.default_home_page_option_history")}
+            </Select.Option>
           </Select>
         </div>
       </div>
@@ -42,21 +51,24 @@ const General = () => {
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Entries order
+            {polyglot.t("settings.entries_order_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            What order to show entries:
+            {polyglot.t("settings.entries_order_description")}
           </Typography.Text>
         </div>
         <div>
           <Select
             className="input-select"
             onChange={(value) => updateSettings({ orderBy: value })}
-            placeholder="Select order"
             value={orderBy}
           >
-            <Select.Option value="published_at">Published at</Select.Option>
-            <Select.Option value="created_at">Created at</Select.Option>
+            <Select.Option value="published_at">
+              {polyglot.t("settings.entries_order_option_published_at")}
+            </Select.Option>
+            <Select.Option value="created_at">
+              {polyglot.t("settings.entries_order_option_created_at")}
+            </Select.Option>
           </Select>
         </div>
       </div>
@@ -64,10 +76,10 @@ const General = () => {
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Entries per page
+            {polyglot.t("settings.entries_per_page_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            Show how many entries per page:
+            {polyglot.t("settings.entries_per_page_description")}
           </Typography.Text>
         </div>
         <div>
@@ -85,23 +97,30 @@ const General = () => {
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Remove duplicate articles
+            {polyglot.t("settings.remove_duplicates_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            Automatically remove duplicate articles based on:
+            {polyglot.t("settings.remove_duplicates_description")}
           </Typography.Text>
         </div>
         <div>
           <Select
             className="input-select"
             onChange={(value) => updateSettings({ removeDuplicates: value })}
-            placeholder="Select option"
             value={removeDuplicates}
           >
-            <Select.Option value="none">None</Select.Option>
-            <Select.Option value="hash">Hash</Select.Option>
-            <Select.Option value="title">Title</Select.Option>
-            <Select.Option value="url">URL</Select.Option>
+            <Select.Option value="none">
+              {polyglot.t("settings.remove_duplicates_option_none")}
+            </Select.Option>
+            <Select.Option value="hash">
+              {polyglot.t("settings.remove_duplicates_option_hash")}
+            </Select.Option>
+            <Select.Option value="title">
+              {polyglot.t("settings.remove_duplicates_option_title")}
+            </Select.Option>
+            <Select.Option value="url">
+              {polyglot.t("settings.remove_duplicates_option_url")}
+            </Select.Option>
           </Select>
         </div>
       </div>
@@ -109,11 +128,10 @@ const General = () => {
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Mark articles as read when scrolled off screen
+            {polyglot.t("settings.mark_read_on_scroll_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            Automatically mark articles as read when they are scrolled out of
-            the visible screen area
+            {polyglot.t("settings.mark_read_on_scroll_description")}
           </Typography.Text>
         </div>
         <div>

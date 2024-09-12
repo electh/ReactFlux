@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { useStore } from "@nanostores/react";
 import useAppData from "../../hooks/useAppData";
+import { polyglotState } from "../../hooks/useLanguage";
 import {
   contentState,
   setEntries,
@@ -20,6 +21,7 @@ const updateAllEntriesAsRead = () => {
 const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const { isArticleListReady } = useStore(contentState);
   const { showStatus } = useStore(settingsState);
+  const { polyglot } = useStore(polyglotState);
 
   const { fetchAppData } = useAppData();
 
@@ -28,9 +30,9 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       await markAllAsRead();
       updateAllEntriesAsRead();
       await fetchAppData();
-      Message.success("All articles marked as read");
+      Message.success(polyglot.t("article_list.mark_all_as_read_success"));
     } catch (error) {
-      Message.error("Failed to mark all as read");
+      Message.error(polyglot.t("article_list.mark_all_as_read_error"));
     }
   };
 
@@ -49,7 +51,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       {!["starred", "history"].includes(info.from) && (
         <Popconfirm
           focusLock
-          title="Mark All As Read?"
+          title={polyglot.t("article_list.mark_all_as_read_confirm")}
           onOk={handleMarkAllAsRead}
         >
           <Button icon={<IconCheck />} shape="circle" />
@@ -59,8 +61,11 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
         disabled={info.from === "history"}
         onChange={handleFilterChange}
         options={[
-          { label: "ALL", value: "all" },
-          { label: "UNREAD", value: "unread" },
+          { label: polyglot.t("article_list.filter_status_all"), value: "all" },
+          {
+            label: polyglot.t("article_list.filter_status_unread"),
+            value: "unread",
+          },
         ]}
         type="button"
         value={info.from === "history" ? "all" : showStatus}

@@ -6,6 +6,7 @@ import {
 
 import { useStore } from "@nanostores/react";
 import { useEffect } from "react";
+import { polyglotState } from "../../hooks/useLanguage";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
   contentState,
@@ -18,6 +19,7 @@ import "./SearchAndSortBar.css";
 const SearchAndSortBar = () => {
   const { orderDirection } = useStore(settingsState);
   const { filterString, filterType } = useStore(contentState);
+  const { polyglot } = useStore(polyglotState);
 
   const { isBelowMedium } = useScreenWidth();
 
@@ -36,25 +38,34 @@ const SearchAndSortBar = () => {
       <Input.Search
         allowClear
         onChange={setFilterString}
-        placeholder="Search..."
+        placeholder={polyglot.t("article_list.search_placeholder")}
         style={{ width: isBelowMedium ? "100%" : 278, marginLeft: 8 }}
         value={filterString}
         addBefore={
           <Select
-            placeholder="Select type"
             onChange={setFilterType}
             style={{ width: 100 }}
             value={filterType}
           >
-            <Select.Option value="title">Title</Select.Option>
-            <Select.Option value="content">Content</Select.Option>
-            <Select.Option value="author">Author</Select.Option>
+            <Select.Option value="title">
+              {polyglot.t("article_list.search_type_title")}
+            </Select.Option>
+            <Select.Option value="content">
+              {polyglot.t("article_list.search_type_content")}
+            </Select.Option>
+            <Select.Option value="author">
+              {polyglot.t("article_list.search_type_author")}
+            </Select.Option>
           </Select>
         }
       />
       <Tooltip
         mini
-        content={orderDirection === "desc" ? "Newest first" : "Oldest first"}
+        content={
+          orderDirection === "desc"
+            ? polyglot.t("article_list.sort_direction_desc")
+            : polyglot.t("article_list.sort_direction_asc")
+        }
       >
         <Button
           shape="circle"

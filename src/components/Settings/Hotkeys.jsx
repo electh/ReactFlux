@@ -1,80 +1,85 @@
 import { Table, Tag } from "@arco-design/web-react";
+import { useStore } from "@nanostores/react";
+import { polyglotState } from "../../hooks/useLanguage";
 
-const columns = [
-  {
-    title: "Key",
-    dataIndex: "keyName",
-    render: (keyName) => <Tag>{keyName}</Tag>,
-  },
-  {
-    title: "Function",
-    dataIndex: "description",
-  },
-];
-const hotkeysData = [
-  {
-    key: "1",
-    keyName: "Esc",
-    description: "Exit the article view and return to the list.",
-  },
-  {
-    key: "2",
-    keyName: "←",
-    description: "Navigate to the previous article in the list.",
-  },
-  {
-    key: "3",
-    keyName: "Ctrl + ←",
-    description: "Navigate to the previous unread article in the list.",
-  },
-  {
-    key: "4",
-    keyName: "→",
-    description: "Navigate to the next article in the list.",
-  },
-  {
-    key: "5",
-    keyName: "Ctrl + →",
-    description: "Navigate to the next unread article in the list.",
-  },
-  {
-    key: "6",
-    keyName: "B",
-    description: "Open the current article's link in a new browser tab.",
-  },
-  {
-    key: "7",
-    keyName: "D",
-    description:
-      "Fetch and display the original content of the current article.",
-  },
-  {
-    key: "8",
-    keyName: "M",
-    description: "Toggle the read status of the current article.",
-  },
-  {
-    key: "9",
-    keyName: "S",
-    description: "Toggle the star status (bookmark) of the current article.",
-  },
-  {
-    key: "10",
-    keyName: "V",
-    description:
-      "Open the photo slider for viewing all images in the current article.",
-  },
-];
+const Hotkeys = () => {
+  const { polyglot } = useStore(polyglotState);
 
-const Hotkeys = () => (
-  <Table
-    borderCell={true}
-    columns={columns}
-    data={hotkeysData}
-    pagination={false}
-    size="small"
-    style={{ margin: "0 auto", width: "90%" }}
-  />
-);
+  const columns = [
+    {
+      title: polyglot.t("hotkeys.key"),
+      dataIndex: "keyName",
+      render: (keyName) => <Tag>{keyName}</Tag>,
+    },
+    {
+      title: polyglot.t("hotkeys.function"),
+      dataIndex: "description",
+    },
+  ];
+
+  const hotkeysData = [
+    {
+      key: "1",
+      keyName: "Esc",
+      description: polyglot.t("hotkeys.esc"),
+    },
+    {
+      key: "2",
+      keyName: "←",
+      description: polyglot.t("hotkeys.left"),
+    },
+    {
+      key: "3",
+      keyName: "Ctrl + ←",
+      description: polyglot.t("hotkeys.ctrl_left"),
+    },
+    {
+      key: "4",
+      keyName: "→",
+      description: polyglot.t("hotkeys.right"),
+    },
+    {
+      key: "5",
+      keyName: "Ctrl + →",
+      description: polyglot.t("hotkeys.ctrl_right"),
+    },
+    {
+      key: "6",
+      keyName: "B",
+      description: polyglot.t("hotkeys.b"),
+    },
+    {
+      key: "7",
+      keyName: "D",
+      description: polyglot.t("hotkeys.d"),
+    },
+    {
+      key: "8",
+      keyName: "M",
+      description: polyglot.t("hotkeys.m"),
+    },
+    {
+      key: "9",
+      keyName: "S",
+      description: polyglot.t("hotkeys.s"),
+    },
+    {
+      key: "10",
+      keyName: "V",
+      description: polyglot.t("hotkeys.v"),
+    },
+  ];
+
+  return (
+    <Table
+      borderCell={true}
+      columns={columns}
+      data={hotkeysData}
+      pagination={false}
+      size="small"
+      style={{ margin: "0 auto", width: "90%" }}
+    />
+  );
+};
 
 export default Hotkeys;

@@ -13,6 +13,8 @@ import { ofetch } from "ofetch";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useStore } from "@nanostores/react";
+import useLanguage, { polyglotState } from "../hooks/useLanguage";
 import useTheme from "../hooks/useTheme";
 import { setAuth } from "../store/authState";
 import { isValidAuth } from "../utils/auth";
@@ -23,7 +25,11 @@ import {
 import "./Login.css";
 
 const Login = () => {
+  useLanguage();
   useTheme();
+
+  const { polyglot } = useStore(polyglotState);
+
   const [loginForm] = useForm();
   const [loading, setLoading] = useState(false);
   const [authMethod, setAuthMethod] = useState("token");
@@ -41,7 +47,7 @@ const Login = () => {
           : { Authorization: `Basic ${btoa(`${username}:${password}`)}` },
       });
       if (response.status === 200) {
-        Message.success("Login successfully");
+        Message.success(polyglot.t("login.success"));
         setAuth({ server, token, username, password });
         navigate("/");
       }
@@ -55,18 +61,22 @@ const Login = () => {
   const handleLogin = async () => {
     const auth = loginForm.getFieldsValue();
     if (!isValidAuth(auth)) {
-      Message.error("Please check your server address and credentials");
+      Message.error(polyglot.t("login.auth_error"));
       return;
     }
     await performHealthCheck();
   };
+
+  if (!polyglot) {
+    return null;
+  }
 
   return (
     <div className="page-layout">
       <div className="form-panel">
         <div className="login-form">
           <Typography.Title heading={3}>
-            Connect to your server
+            {polyglot.t("login.login_to_your_server")}
           </Typography.Title>
           <Form
             autoComplete="off"
@@ -76,13 +86,13 @@ const Login = () => {
               if (validateAndFormatFormFields(loginForm)) {
                 await handleLogin();
               } else {
-                Message.error("Please fill in all required fields");
+                Message.error(polyglot.t("login.submit_error"));
               }
             }}
           >
             <Form.Item
               field="server"
-              label="Server address"
+              label={polyglot.t("login.server_label")}
               rules={[{ required: true }]}
               onKeyDown={(event) => {
                 handleEnterKeyToSubmit(event, loginForm);
@@ -90,14 +100,14 @@ const Login = () => {
             >
               <Input
                 disabled={loading}
-                placeholder="Please input server address"
+                placeholder={polyglot.t("login.server_placeholder")}
                 prefix={<IconHome />}
               />
             </Form.Item>
             {authMethod === "token" && (
               <Form.Item
                 field="token"
-                label="API Token"
+                label={polyglot.t("login.token_label")}
                 rules={[{ required: true }]}
                 onKeyDown={(event) => {
                   handleEnterKeyToSubmit(event, loginForm);
@@ -105,7 +115,7 @@ const Login = () => {
               >
                 <Input.Password
                   disabled={loading}
-                  placeholder="Please input API token"
+                  placeholder={polyglot.t("login.token_placeholder")}
                   prefix={<IconLock />}
                 />
               </Form.Item>
@@ -114,7 +124,7 @@ const Login = () => {
               <>
                 <Form.Item
                   field="username"
-                  label="Username"
+                  label={polyglot.t("login.username_label")}
                   rules={[{ required: true }]}
                   onKeyDown={(event) => {
                     handleEnterKeyToSubmit(event, loginForm);
@@ -122,13 +132,13 @@ const Login = () => {
                 >
                   <Input
                     disabled={loading}
-                    placeholder="Please input username"
+                    placeholder={polyglot.t("login.username_placeholder")}
                     prefix={<IconUser />}
                   />
                 </Form.Item>
                 <Form.Item
                   field="password"
-                  label="Password"
+                  label={polyglot.t("login.password_label")}
                   rules={[{ required: true }]}
                   onKeyDown={(event) => {
                     handleEnterKeyToSubmit(event, loginForm);
@@ -136,7 +146,7 @@ const Login = () => {
                 >
                   <Input.Password
                     disabled={loading}
-                    placeholder="Please input password"
+                    placeholder={polyglot.t("login.password_placeholder")}
                     prefix={<IconLock />}
                   />
                 </Form.Item>
@@ -150,9 +160,11 @@ const Login = () => {
             onClick={() => loginForm.submit()}
             style={{ marginTop: "20px" }}
           >
-            Connect
+            {polyglot.t("login.login_button")}
           </Button>
-          <Divider orientation="center">Or connect with</Divider>
+          <Divider orientation="center">
+            {polyglot.t("login.another_login_method")}
+          </Divider>
           <Button
             type="secondary"
             long={true}
@@ -161,15 +173,19 @@ const Login = () => {
             }
             style={{ marginTop: "20px" }}
           >
-            {authMethod === "token" ? "Username and password" : "API Token"}
+            {authMethod === "token"
+              ? polyglot.t("login.another_login_button")
+              : polyglot.t("login.token_label")}
           </Button>
           <div style={{ display: "flex", marginTop: "40px" }}>
-            <Typography.Text disabled>Need more info?</Typography.Text>
+            <Typography.Text disabled>
+              {polyglot.t("login.need_help")}
+            </Typography.Text>
             <Link
               href={"https://miniflux.app/docs/api.html#authentication"}
               style={{ fontWeight: "500" }}
             >
-              Go to Miniflux official website
+              {polyglot.t("login.miniflux_offical_website")}
             </Link>
           </div>
         </div>

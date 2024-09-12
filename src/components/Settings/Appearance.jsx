@@ -1,27 +1,35 @@
 import {
   Divider,
+  Select,
   Slider,
   Space,
   Switch,
-  Tooltip,
   Typography,
 } from "@arco-design/web-react";
 
+import { polyglotState } from "../../hooks/useLanguage";
 import { applyColor, colors, getColorValue } from "../../utils/colors";
 
 import { useStore } from "@nanostores/react";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import "./Appearance.css";
 
+const languageOptions = [
+  { label: "English", value: "en-US" },
+  { label: "简体中文", value: "zh-CN" },
+];
+
 const Appearance = () => {
   const {
     articleWidth,
     fontSize,
+    language,
     layout,
     showDetailedRelativeTime,
     showFeedIcon,
     themeColor,
   } = useStore(settingsState);
+  const { polyglot } = useStore(polyglotState);
 
   const handleConfigChange = (settingsChanges) => {
     updateSettings(settingsChanges);
@@ -35,38 +43,38 @@ const Appearance = () => {
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Accent color
+            {polyglot.t("appearance.theme_color_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            Choose your accent color
+            {polyglot.t("appearance.theme_color_description")}
           </Typography.Text>
         </div>
         <div style={{ display: "flex" }}>
           {Object.keys(colors).map((colorName) => (
-            <Tooltip content={colorName} key={colorName}>
-              <div
-                style={{
-                  width: "18px",
-                  height: "18px",
-                  borderRadius: "50%",
-                  margin: "2px",
-                  backgroundColor: getColorValue(colorName),
-                  cursor: "pointer",
-                  border: "3px solid var(--color-bg-3)",
-                  outline:
-                    colorName === themeColor
-                      ? `1px solid ${getColorValue(colorName)}`
-                      : "none",
-                }}
-                onClick={() => handleConfigChange({ themeColor: colorName })}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    handleConfigChange({ themeColor: colorName });
-                  }
-                }}
-                aria-label={`Change theme color to ${colorName}`}
-              />
-            </Tooltip>
+            <div
+              style={{
+                width: "18px",
+                height: "18px",
+                borderRadius: "50%",
+                margin: "2px",
+                backgroundColor: getColorValue(colorName),
+                cursor: "pointer",
+                border: "3px solid var(--color-bg-3)",
+                outline:
+                  colorName === themeColor
+                    ? `1px solid ${getColorValue(colorName)}`
+                    : "none",
+              }}
+              onClick={() => handleConfigChange({ themeColor: colorName })}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  handleConfigChange({ themeColor: colorName });
+                }
+              }}
+              aria-label={polyglot.t("appearance.theme_color_aria_label", {
+                color: colorName,
+              })}
+            />
           ))}
         </div>
       </div>
@@ -75,10 +83,10 @@ const Appearance = () => {
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Compact article list
+            {polyglot.t("appearance.compact_article_list_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            Use small thumbnail in article list
+            {polyglot.t("appearance.compact_article_list_description")}
           </Typography.Text>
         </div>
         <div>
@@ -94,10 +102,10 @@ const Appearance = () => {
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Show detailed relative time
+            {polyglot.t("appearance.show_detailed_relative_time_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            Show detailed relative time in article list
+            {polyglot.t("appearance.show_detailed_relative_time_description")}
           </Typography.Text>
         </div>
         <div>
@@ -113,10 +121,10 @@ const Appearance = () => {
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Show feed icon
+            {polyglot.t("appearance.show_feed_icon_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            Show feed icon in feed list and article list
+            {polyglot.t("appearance.show_feed_icon_description")}
           </Typography.Text>
         </div>
         <div>
@@ -130,10 +138,34 @@ const Appearance = () => {
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Font size
+            {polyglot.t("appearance.language_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            Adjust article text size
+            {polyglot.t("appearance.language_description")}
+          </Typography.Text>
+        </div>
+        <div>
+          <Select
+            className="input-select"
+            onChange={(value) => handleConfigChange({ language: value })}
+            value={language}
+          >
+            {languageOptions.map(({ label, value }) => (
+              <Select.Option key={value} value={value}>
+                {label}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      </div>
+      <Divider />
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            {polyglot.t("appearance.font_size_label")}
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            {polyglot.t("appearance.font_size_description")}
           </Typography.Text>
         </div>
         <div>
@@ -157,10 +189,10 @@ const Appearance = () => {
       <div className="setting-row">
         <div>
           <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            Article width
+            {polyglot.t("appearance.article_width_label")}
           </Typography.Title>
           <Typography.Text type="secondary">
-            Adjust article width
+            {polyglot.t("appearance.article_width_description")}
           </Typography.Text>
         </div>
         <div>

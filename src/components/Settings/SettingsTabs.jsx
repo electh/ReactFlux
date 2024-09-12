@@ -7,6 +7,8 @@ import {
   IconStorage,
 } from "@arco-design/web-react/icon";
 
+import { useStore } from "@nanostores/react";
+import { polyglotState } from "../../hooks/useLanguage";
 import Appearance from "./Appearance";
 import CategoryList from "./CategoryList";
 import FeedList from "./FeedList";
@@ -15,6 +17,8 @@ import Hotkeys from "./Hotkeys";
 import "./SettingsTabs.css";
 
 const SettingsTabs = () => {
+  const { polyglot } = useStore(polyglotState);
+
   const CustomTabTitle = (icon, title) => {
     return (
       <div
@@ -41,7 +45,7 @@ const SettingsTabs = () => {
         key="1"
         title={CustomTabTitle(
           <IconFile style={{ fontSize: "20px" }} />,
-          "Feeds",
+          polyglot.t("settings.feeds"),
         )}
       >
         <FeedList />
@@ -50,7 +54,7 @@ const SettingsTabs = () => {
         key="2"
         title={CustomTabTitle(
           <IconFolder style={{ fontSize: "20px" }} />,
-          "Categories",
+          polyglot.t("settings.categories"),
         )}
       >
         <CategoryList />
@@ -59,7 +63,7 @@ const SettingsTabs = () => {
         key="3"
         title={CustomTabTitle(
           <IconStorage style={{ fontSize: "20px" }} />,
-          "General",
+          polyglot.t("settings.general"),
         )}
       >
         <General />
@@ -68,7 +72,7 @@ const SettingsTabs = () => {
         key="4"
         title={CustomTabTitle(
           <IconSkin style={{ fontSize: "20px" }} />,
-          "Appearance",
+          polyglot.t("settings.appearance"),
         )}
       >
         <Appearance />
@@ -77,7 +81,7 @@ const SettingsTabs = () => {
         key="5"
         title={CustomTabTitle(
           <IconCommand style={{ fontSize: "20px" }} />,
-          "Hotkeys",
+          polyglot.t("settings.hotkeys"),
         )}
       >
         <Hotkeys />
