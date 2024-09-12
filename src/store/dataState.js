@@ -2,7 +2,7 @@ import { computed, map } from "nanostores";
 import { createSetter } from "../utils/nanostores";
 import { settingsState } from "./settingsState";
 
-export const dataState = map({
+const defaultValue = {
   isAppDataReady: false,
   unreadInfo: {},
   unreadTodayCount: 0,
@@ -11,7 +11,9 @@ export const dataState = map({
   feedsData: [],
   categoriesData: [],
   isVersionAtLeast2_2_0: false,
-});
+};
+
+export const dataState = map(defaultValue);
 
 export const feedsState = computed(dataState, (data) => {
   const { unreadInfo, feedsData } = data;
@@ -116,3 +118,4 @@ export const setIsVersionAtLeast2_2_0 = createSetter(
   dataState,
   "isVersionAtLeast2_2_0",
 );
+export const resetData = () => dataState.set(defaultValue);

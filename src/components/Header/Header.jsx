@@ -32,8 +32,8 @@ import { polyglotState } from "../../hooks/useLanguage";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { resetAuth } from "../../store/authState";
-import { setIsArticleListReady } from "../../store/contentState";
-import { setIsAppDataReady } from "../../store/dataState";
+import { resetContent } from "../../store/contentState";
+import { resetData } from "../../store/dataState";
 import {
   resetSettings,
   settingsState,
@@ -89,8 +89,8 @@ const Header = () => {
 
   const handleLogout = () => {
     resetAuth();
-    setIsAppDataReady(false);
-    setIsArticleListReady(false);
+    resetContent();
+    resetData();
     navigate("/login");
     Message.success(polyglot.t("header.logout_success"));
   };

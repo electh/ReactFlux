@@ -1,6 +1,6 @@
 import { persistentAtom } from "@nanostores/persistent";
 
-export const defaultSettings = {
+const defaultValue = {
   articleWidth: 90,
   fontSize: 1.05,
   homePage: "all",
@@ -19,7 +19,7 @@ export const defaultSettings = {
   themeColor: "Blue",
 };
 
-export const settingsState = persistentAtom("settings", defaultSettings, {
+export const settingsState = persistentAtom("settings", defaultValue, {
   encode: JSON.stringify,
   decode: JSON.parse,
 });
@@ -29,4 +29,4 @@ export const getSettings = (key) => settingsState.get()[key];
 export const updateSettings = (settingsChanges) =>
   settingsState.set({ ...settingsState.get(), ...settingsChanges });
 
-export const resetSettings = () => settingsState.set(defaultSettings);
+export const resetSettings = () => settingsState.set(defaultValue);
