@@ -1,0 +1,52 @@
+/*Copyright - 2024 satyamchaudharydev (satyam)*/
+
+/*Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:*/
+
+/*The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.*/
+
+/*THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
+
+.spinner {
+  --gap: 5px;
+  --clr: #165dff;
+  --height: 23px;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinner span {
+  background: var(--clr);
+  width: 6px;
+  height: var(--height);
+  animation: grow 1s ease-in-out infinite;
+}
+
+.spinner span:nth-child(2) {
+  animation: grow 1s ease-in-out 0.15s infinite;
+}
+
+.spinner span:nth-child(3) {
+  animation: grow 1s ease-in-out 0.3s infinite;
+}
+
+.spinner span:nth-child(4) {
+  animation: grow 1s ease-in-out 0.475s infinite;
+}
+
+@keyframes grow {
+  0%,100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(1.8);
+  }
+}
