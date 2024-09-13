@@ -26,15 +26,6 @@ input[name="card-radio-group"]:focus-visible + .custom-radio-card {
   background-color: var(--color-primary-light-1);
 }
 
-.theme-preview {
-  border-left: 1px solid var(--color-border-2);
-  border-radius: 4px 4px 0 0;
-  border-right: 1px solid var(--color-border-2);
-  border-top: 1px solid var(--color-border-2);
-  height: 100%;
-  object-fit: cover;
-}
-
 .setting-row {
   align-items: center;
   display: flex;
@@ -43,15 +34,6 @@ input[name="card-radio-group"]:focus-visible + .custom-radio-card {
 
 .theme-selector {
   margin-top: 16px;
-}
-
-.accent-color-button {
-  border-radius: 500px;
-  border: 3px solid var(--color-bg-3);
-  cursor: pointer;
-  height: 18px;
-  margin: 2px;
-  width: 18px;
 }
 
 .input-select {
