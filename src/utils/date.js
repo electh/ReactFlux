@@ -32,8 +32,8 @@ export const generateRelativeTime = (dateString, showDetailed) => {
     const now = dayjs();
     const target = dayjs(dateString);
     const relativeTime = target.from(now);
-    const diffInSeconds = target.diff(now, "second");
-    if (diffInSeconds < 60) {
+    const diffInSeconds = dayjs.duration(now.diff(target)).asSeconds();
+    if (diffInSeconds >= 0 && diffInSeconds < 60) {
       return polyglot.t("date.just_now");
     }
     return relativeTime;
