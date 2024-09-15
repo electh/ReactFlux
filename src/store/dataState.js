@@ -80,6 +80,16 @@ export const filteredFeedsState = computed(
   },
 );
 
+export const filteredCategoriesState = computed(
+  [categoriesState, hiddenCategoryIdsState, settingsState],
+  (categories, hiddenCategoryIds, settings) => {
+    const { showAllFeeds } = settings;
+    return categories.filter(
+      (category) => showAllFeeds || !hiddenCategoryIds.includes(category.id),
+    );
+  },
+);
+
 export const feedsGroupedByIdState = computed(
   filteredFeedsState,
   (filteredFeeds) => {

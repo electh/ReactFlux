@@ -22,10 +22,9 @@ import classNames from "classnames";
 import { polyglotState } from "../../hooks/useLanguage";
 import { setActiveContent } from "../../store/contentState";
 import {
-  categoriesState,
   dataState,
   feedsGroupedByIdState,
-  hiddenCategoryIdsState,
+  filteredCategoriesState,
   unreadTotalState,
 } from "../../store/dataState";
 import { settingsState } from "../../store/settingsState";
@@ -125,12 +124,11 @@ const CustomMenuItem = ({ path, Icon, label, count }) => {
 };
 
 const Sidebar = () => {
-  const { homePage, showAllFeeds, showFeedIcon } = useStore(settingsState);
+  const { homePage, showFeedIcon } = useStore(settingsState);
   const { historyCount, isAppDataReady, starredCount, unreadTodayCount } =
     useStore(dataState);
-  const categories = useStore(categoriesState);
   const feedsGroupedById = useStore(feedsGroupedByIdState);
-  const hiddenCategoryIds = useStore(hiddenCategoryIdsState);
+  const filteredCategories = useStore(filteredCategoriesState);
   const unreadTotal = useStore(unreadTotalState);
   const { polyglot } = useStore(polyglotState);
 
@@ -210,21 +208,17 @@ const Sidebar = () => {
     ));
 
   const renderCategoryItems = () =>
-    categories
-      .filter(
-        (category) => showAllFeeds || !hiddenCategoryIds.includes(category.id),
-      )
-      .map((category) => (
-        <Collapse.Item
-          name={`/category/${category.id}`}
-          key={category.id}
-          style={{ position: "relative", overflow: "hidden" }}
-          header={<CategoryTitle category={category} path={currentPath} />}
-          expandIcon={<IconRight />}
-        >
-          {renderFeedItems(category.id)}
-        </Collapse.Item>
-      ));
+    filteredCategories.map((category) => (
+      <Collapse.Item
+        name={`/category/${category.id}`}
+        key={category.id}
+        style={{ position: "relative", overflow: "hidden" }}
+        header={<CategoryTitle category={category} path={currentPath} />}
+        expandIcon={<IconRight />}
+      >
+        {renderFeedItems(category.id)}
+      </Collapse.Item>
+    ));
 
   return (
     <div className="sidebar-container">

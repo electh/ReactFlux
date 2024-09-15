@@ -1,10 +1,11 @@
 import { persistentAtom } from "@nanostores/persistent";
+import { getBrowserLanguage } from "../utils/locales";
 
 const defaultValue = {
   articleWidth: 90,
   fontSize: 1.05,
   homePage: "all",
-  language: navigator.language,
+  language: getBrowserLanguage(),
   layout: "large",
   markReadOnScroll: false,
   orderBy: "created_at",
