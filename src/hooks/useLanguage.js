@@ -8,7 +8,7 @@ import Polyglot from "node-polyglot";
 import { useEffect } from "react";
 import { settingsState } from "../store/settingsState";
 import { updateSettings } from "../store/settingsState";
-import { getPreferredLanguage } from "../utils/locales";
+import { getBrowserLanguage } from "../utils/locales";
 import { createSetter } from "../utils/nanostores";
 
 export const polyglotState = map({
@@ -45,7 +45,7 @@ const useLanguage = () => {
 
   useEffect(() => {
     if (!language) {
-      updateSettings({ language: getPreferredLanguage() });
+      updateSettings({ language: getBrowserLanguage() });
     } else {
       loadLanguage(language);
 
