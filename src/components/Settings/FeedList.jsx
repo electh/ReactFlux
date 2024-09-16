@@ -168,6 +168,10 @@ const FeedList = () => {
       const updatedFeeds = await Promise.all(
         filteredFeeds.map(async (feed) => {
           const oldHost = new URL(feed.feed_url).hostname;
+          if (oldHost === newHost) {
+            return feed;
+          }
+
           const newURL = feed.feed_url.replace(oldHost, newHost);
           const data = await updateFeed(feed.id, { feedUrl: newURL });
           return { ...feed, ...data };
