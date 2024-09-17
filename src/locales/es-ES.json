@@ -12,7 +12,7 @@
     "username_placeholder": "Por favor, introduzca el nombre de usuario",
     "password_label": "Contraseña",
     "password_placeholder": "Por favor, introduzca la contraseña",
-    "login_button": "Accesder",
+    "login_button": "Acceder",
     "another_login_method": "O inicie sesión con",
     "another_login_button": "Nombre de usuario y contraseña",
     "need_help": "¿Necesita más información?",
@@ -40,7 +40,7 @@
     "mark_all_as_read_confirm": "¿Marcar todo como leído?"
   },
   "main": {
-    "add_feed_modal_title": "Añadir Feed",
+    "add_feed_modal_title": "Añadir feed",
     "add_feed_modal_feed_url_label": "URL del feed",
     "add_feed_modal_feed_url_placeholder": "Por favor, introduzca una URL del feed",
     "add_feed_modal_category_label": "Categoría",
