@@ -16,6 +16,6 @@
     "rules": {
       "recommended": true
     },
-    "ignore": ["build/*.js"]
+    "ignore": ["build/**"]
   }
 }

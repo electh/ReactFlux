@@ -60,6 +60,7 @@ const CategoryTitle = ({ category, path }) => {
         }
       }}
       tabIndex={0}
+      // biome-ignore lint/a11y/useSemanticElements: <explanation>
       role="button"
       style={{ cursor: "pointer" }}
     >

@@ -1,5 +1,5 @@
 html {
-  font-family:-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,Microsoft YaHei,"\5FAE\8F6F\96C5\9ED1",helvetica neue,helvetica,ubuntu,roboto,noto,segoe ui,Arial,sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,Microsoft YaHei,"\5FAE\8F6F\96C5\9ED1",helvetica neue,ubuntu,roboto,noto,segoe ui,Arial,sans-serif;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -8,7 +8,7 @@ html {
 button,
 input,
 textarea {
-  font-family: -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", helvetica neue, ubuntu, roboto, noto, segoe ui, Arial, sans-serif;
 }
 
 html,

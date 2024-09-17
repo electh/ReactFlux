@@ -45,6 +45,7 @@ const Appearance = () => {
         <div style={{ display: "flex" }}>
           {Object.keys(colors).map((colorName) => (
             <div
+              key={colorName}
               style={{
                 width: "18px",
                 height: "18px",
