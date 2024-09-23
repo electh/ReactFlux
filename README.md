@@ -18,7 +18,8 @@ Key features include:
 - Batch update the host of filtered subscription URLs (useful for replacing RSSHub instances)
 - Batch refresh recently errored subscriptions
 - De-duplicate articles by hash, title, or URL when loading the list
-- i18n supports (include: English / Español / 简体中文)
+- I18n supports (include: English / Español / 简体中文)
+- Save article to third-party services
 - Other features waiting for you to discover...
 
 ## Screenshots

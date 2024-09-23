@@ -6,6 +6,7 @@ import {
   IconCloudDownload,
   IconMinusCircle,
   IconRecord,
+  IconSave,
   IconStar,
   IconStarFill,
 } from "@arco-design/web-react/icon";
@@ -18,8 +19,12 @@ import "./ActionButtons.css";
 
 const ActionButtons = ({ handleEntryClick, entryListRef }) => {
   const { activeContent } = useStore(contentState);
-  const { handleFetchContent, handleToggleStarred, handleToggleStatus } =
-    useEntryActions();
+  const {
+    handleFetchContent,
+    handleSaveToThirdPartyServices,
+    handleToggleStarred,
+    handleToggleStatus,
+  } = useEntryActions();
   const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } =
     useKeyHandlers(handleEntryClick, entryListRef);
 
@@ -52,6 +57,11 @@ const ActionButtons = ({ handleEntryClick, entryListRef }) => {
           )
         }
         onClick={() => handleToggleStarred(activeContent)}
+        type="primary"
+      />
+      <Button
+        icon={<IconSave />}
+        onClick={handleSaveToThirdPartyServices}
         type="primary"
       />
       <Button

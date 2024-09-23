@@ -45,26 +45,31 @@ const Hotkeys = () => {
     },
     {
       key: "6",
+      keyName: "A",
+      description: polyglot.t("hotkeys.a"),
+    },
+    {
+      key: "7",
       keyName: "B",
       description: polyglot.t("hotkeys.b"),
     },
     {
-      key: "7",
+      key: "8",
       keyName: "D",
       description: polyglot.t("hotkeys.d"),
     },
     {
-      key: "8",
+      key: "9",
       keyName: "M",
       description: polyglot.t("hotkeys.m"),
     },
     {
-      key: "9",
+      key: "10",
       keyName: "S",
       description: polyglot.t("hotkeys.s"),
     },
     {
-      key: "10",
+      key: "11",
       keyName: "V",
       description: polyglot.t("hotkeys.v"),
     },

@@ -19,6 +19,7 @@ Las funcionalidades clave incluyen:
 - Elimina artículos duplicados por hash, título o URL al cargar la lista
 - De-duplicate articles by hash, title, or URL when loading the list
 - Disponible en varios idiomasç (incluye: Inglés / Español / 简体中文)
+- Guardar artículo en servicios de terceros
 - Otras características esperando que las descubras...
 
 ## Capturas de pantalla

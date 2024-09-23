@@ -4,6 +4,7 @@ import Confetti from "canvas-confetti";
 import { useStore } from "@nanostores/react";
 import {
   getOriginalContent,
+  saveToThirdPartyServices,
   toggleEntryStarred,
   updateEntriesStatus,
 } from "../apis";
@@ -144,9 +145,21 @@ const useEntryActions = () => {
     }
   };
 
+  const handleSaveToThirdPartyServices = async () => {
+    const response = await saveToThirdPartyServices(activeContent.id);
+    if (response.status === 202) {
+      Message.success("Saved to third-party services successfully");
+    } else {
+      Message.error(
+        "Failed to save to third-party services, please try again later, or check your integration settings",
+      );
+    }
+  };
+
   return {
     handleEntryStatusUpdate,
     handleFetchContent,
+    handleSaveToThirdPartyServices,
     handleToggleStarred,
     handleToggleStatus,
   };

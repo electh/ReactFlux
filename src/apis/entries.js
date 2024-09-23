@@ -14,6 +14,9 @@ export const toggleEntryStarred = async (entryId) =>
 export const getOriginalContent = async (entryId) =>
   apiClient.get(`/v1/entries/${entryId}/fetch-content`);
 
+export const saveToThirdPartyServices = async (entryId) =>
+  apiClient.raw(`/v1/entries/${entryId}/save`, { method: "POST" });
+
 export const buildEntriesUrl = (baseParams, extraParams = {}) => {
   const { baseUrl, orderField, offset, limit, status } = baseParams;
   const orderDirection = getSettings("orderDirection");

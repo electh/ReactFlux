@@ -120,6 +120,12 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
     }
   };
 
+  const saveToThirdPartyServices = (handleSaveToThirdPartyServices) => {
+    if (activeContent) {
+      handleSaveToThirdPartyServices();
+    }
+  };
+
   const toggleReadStatus = (handleUpdateEntry) => {
     if (activeContent) {
       handleUpdateEntry();
@@ -154,6 +160,7 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
     navigateToPreviousArticle,
     openLinkExternally,
     openPhotoSlider,
+    saveToThirdPartyServices,
     toggleReadStatus,
     toggleStarStatus,
   };

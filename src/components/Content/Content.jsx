@@ -34,6 +34,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const {
     handleFetchContent,
+    handleSaveToThirdPartyServices,
     handleToggleStarred,
     handleToggleStatus,
     handleEntryStatusUpdate,
@@ -110,6 +111,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     navigateToPreviousArticle,
     openLinkExternally,
     openPhotoSlider,
+    saveToThirdPartyServices,
     toggleReadStatus,
     toggleStarStatus,
   } = useKeyHandlers(handleEntryClick, entryListRef);
@@ -120,6 +122,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       ArrowLeft: () => navigateToPreviousArticle(),
       ArrowRight: () => navigateToNextArticle(),
       Escape: () => exitDetailView(),
+      a: () => saveToThirdPartyServices(handleSaveToThirdPartyServices),
       b: openLinkExternally,
       d: () => fetchOriginalArticle(handleFetchContent),
       m: () => toggleReadStatus(() => handleToggleStatus(activeContent)),
