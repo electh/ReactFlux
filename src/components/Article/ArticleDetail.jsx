@@ -205,7 +205,7 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category;
 
   return (
-    <div
+    <article
       className="article-content"
       onBlur={() => setIsArticleFocused(false)}
       onFocus={() => setIsArticleFocused(true)}
@@ -273,7 +273,7 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
         handleEntryClick={handleEntryClick}
         entryListRef={entryListRef}
       />
-    </div>
+    </article>
   );
 });
 
