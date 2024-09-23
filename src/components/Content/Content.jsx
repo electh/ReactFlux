@@ -8,6 +8,7 @@ import useAppData from "../../hooks/useAppData";
 import useArticleList from "../../hooks/useArticleList";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
+import { polyglotState } from "../../hooks/useLanguage";
 import {
   contentState,
   filteredEntriesState,
@@ -31,6 +32,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     useStore(settingsState);
   const filteredEntries = useStore(filteredEntriesState);
   const hiddenFeedIds = useStore(hiddenFeedIdsState);
+  const { polyglot } = useStore(polyglotState);
 
   const {
     handleFetchContent,
@@ -99,7 +101,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       }, 200);
       await updateEntriesStatus([entry.id], "read");
     } catch {
-      Message.error("Failed to mark entry as read, please try again later");
+      Message.error(polyglot.t("content.mark_as_read_error"));
       handleEntryStatusUpdate(entry, "unread");
     }
   };

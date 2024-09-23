@@ -26,6 +26,23 @@
     "articles": "文章",
     "feeds": "订阅源"
   },
+  "actions": {
+    "mark_as_read_error": "标记为已读失败，请稍后再试",
+    "mark_as_unread_error": "标记为未读失败，请稍后再试",
+    "star_error": "收藏失败，请稍后再试",
+    "unstar_error": "取消收藏失败，请稍后再试",
+    "fetched_content_success": "内容获取成功",
+    "fetched_content_error": "内容获取失败，请稍后再试",
+    "saved_to_third-party_services_success": "成功保存到第三方服务",
+    "saved_to_third-party_services_error": "保存到第三方服务失败，请稍后再试，或检查您的集成设置"
+  },
+  "article_card": {
+    "marked_as_starred": "已标记为收藏",
+    "unmarked_as_starred": "已取消收藏",
+    "marked_as_read": "已标记为已读",
+    "marked_as_unread": "已标记为未读",
+    "update_failed": "更新失败，请重试"
+  },
   "article_list": {
     "search_placeholder": "搜索...",
     "search_type_title": "标题",
@@ -39,7 +56,16 @@
     "mark_all_as_read_error": "无法标记所有文章为已读",
     "mark_all_as_read_confirm": "标记所有文章为已读？"
   },
+  "content": {
+    "mark_as_read_error": "标记为已读失败，请稍后再试"
+  },
+  "deduplicate": {
+    "mark_as_read_error": "标记重复文章为已读失败"
+  },
   "main": {
+    "add_feed_success": "添加订阅源成功",
+    "add_feed_error": "添加订阅源失败",
+    "add_feed_url_empty": "订阅源 URL 不能为空",
     "add_feed_modal_title": "添加订阅源",
     "add_feed_modal_feed_url_label": "订阅源 URL",
     "add_feed_modal_feed_url_placeholder": "请输入订阅源 URL",
@@ -70,14 +96,14 @@
     "bulk_update_success": "批量更新成功",
     "bulk_update_error": "批量更新失败，请重试",
     "bulk_refresh_error_feeds_message": "正在刷新错误订阅源，请稍候",
-    "bulk_refresh_error_feeds_result": "订阅源已刷新。成功: %{success}, 失败: %{failure}",
+    "bulk_refresh_error_feeds_result": "订阅源已刷新。成功： %{success}, 失败： %{failure}",
     "refresh_feeds_title": "刷新订阅源",
     "refresh_feeds_cancel": "取消",
     "refresh_feeds_error": "错误订阅源",
     "refresh_feeds_all": "所有订阅源",
     "refresh_feeds_description": "您要刷新所有订阅源还是仅刷新有错误的订阅源？",
-    "remove_feed_success": "取消关注订阅源: %{title}",
-    "remove_feed_error": "取消关注订阅源失败: %{title}",
+    "remove_feed_success": "取消关注订阅源： %{title}",
+    "remove_feed_error": "取消关注订阅源失败： %{title}",
     "table_title": "标题",
     "table_url": "URL",
     "table_category": "分类",
@@ -104,6 +130,14 @@
     "modal_edit_feed_disabled_label": "禁用",
     "modal_edit_feed_crawler_label": "获取原文",
     "modal_edit_feed_crawler_tooltip": "仅影响新获取的文章"
+  },
+  "category_list": {
+    "add_category_success": "分类添加成功",
+    "add_category_error": "添加分类失败",
+    "update_category_success": "分类更新成功",
+    "update_category_error": "更新分类失败",
+    "remove_category_success": "删除分类成功： %{title}",
+    "remove_category_error": "删除分类失败： %{title}"
   },
   "settings": {
     "feeds": "订阅源",

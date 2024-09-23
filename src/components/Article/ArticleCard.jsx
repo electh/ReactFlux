@@ -13,6 +13,7 @@ import { useSwipeable } from "react-swipeable";
 
 import { useStore } from "@nanostores/react";
 import useEntryActions from "../../hooks/useEntryActions";
+import { polyglotState } from "../../hooks/useLanguage";
 import { contentState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import { generateRelativeTime } from "../../utils/date";
@@ -92,6 +93,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
 const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
   const { markReadOnScroll, showFeedIcon } = useStore(settingsState);
   const { activeContent } = useStore(contentState);
+  const { polyglot } = useStore(polyglotState);
 
   const isSelected = activeContent && entry.id === activeContent.id;
 
@@ -120,14 +122,20 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
         if (eventData.deltaX > swipeThreshold) {
           await handleToggleStarred(entry);
           Message.success(
-            isStarred ? "Unmarked as starred" : "Marked as starred",
+            isStarred
+              ? polyglot.t("article_card.unmarked_as_starred")
+              : polyglot.t("article_card.marked_as_starred"),
           );
         } else if (eventData.deltaX < -swipeThreshold) {
           await handleToggleStatus(entry);
-          Message.success(isUnread ? "Marked as read" : "Marked as unread");
+          Message.success(
+            isUnread
+              ? polyglot.t("article_card.marked_as_read")
+              : polyglot.t("article_card.marked_as_unread"),
+          );
         }
       } catch (error) {
-        Message.error("Failed to update, please try again");
+        Message.error(polyglot.t("article_card.update_failed"));
       }
       setSwipeOffset(0);
     },

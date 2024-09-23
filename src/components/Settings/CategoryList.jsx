@@ -12,6 +12,7 @@ import { useState } from "react";
 import { addCategory, deleteCategory, updateCategory } from "../../apis";
 
 import { useStore } from "@nanostores/react";
+import { polyglotState } from "../../hooks/useLanguage";
 import {
   categoriesState,
   setCategoriesData,
@@ -21,6 +22,7 @@ import "./CategoryList.css";
 
 const CategoryList = () => {
   const categories = useStore(categoriesState);
+  const { polyglot } = useStore(polyglotState);
 
   const [categoryForm] = Form.useForm();
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
@@ -36,10 +38,13 @@ const CategoryList = () => {
     try {
       const data = await addCategory(inputAddValue);
       setCategoriesData((prevCategories) => [...prevCategories, { ...data }]);
-      Message.success("Category added successfully");
+      Message.success(polyglot.t("category_list.add_category_success"));
     } catch (error) {
-      console.error("Failed to add category: ", error);
-      Message.error("Failed to add category");
+      console.error(
+        `${polyglot.t("category_list.add_category_error")}: `,
+        error,
+      );
+      Message.error(polyglot.t("category_list.add_category_error"));
     }
     setInputAddValue("");
     setShowAddInput(false);
@@ -67,9 +72,9 @@ const CategoryList = () => {
           category.id === categoryId ? { ...category, ...data } : category,
         ),
       );
-      Message.success("Category updated successfully");
+      Message.success(polyglot.t("category_list.update_category_success"));
     } catch {
-      Message.error("Failed to update category");
+      Message.error(polyglot.t("category_list.update_category_error"));
     }
 
     setCategoryModalVisible(false);
@@ -83,13 +88,30 @@ const CategoryList = () => {
         setCategoriesData((prevCategories) =>
           prevCategories.filter((c) => c.id !== category.id),
         );
-        Message.success(`Deleted category: ${category.title}`);
+        Message.success(
+          polyglot.t("category_list.remove_category_success", {
+            title: category.title,
+          }),
+        );
       } else {
-        Message.error(`Failed to delete category: ${category.title}`);
+        Message.error(
+          polyglot.t("category_list.remove_category_error", {
+            title: category.title,
+          }),
+        );
       }
     } catch (error) {
-      console.error(`Failed to delete category: ${category.title}`, error);
-      Message.error(`Failed to delete category: ${category.title}`);
+      console.error(
+        polyglot.t("category_list.remove_category_error", {
+          title: category.title,
+        }),
+        error,
+      );
+      Message.error(
+        polyglot.t("category_list.remove_category_error", {
+          title: category.title,
+        }),
+      );
     }
   };
 

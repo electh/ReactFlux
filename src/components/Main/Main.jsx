@@ -59,11 +59,11 @@ const AddFeedModal = () => {
     try {
       await addFeed(url, categoryId, isFullText);
       await fetchAppData();
-      Message.success("Added a feed successfully");
+      Message.success(polyglot.t("main.add_feed_success"));
       setAddFeedModalVisible(false);
       feedForm.resetFields();
     } catch (error) {
-      Message.error("Failed to add a feed");
+      Message.error(polyglot.t("main.add_feed_error"));
     } finally {
       setFeedModalLoading(false);
     }
@@ -92,7 +92,7 @@ const AddFeedModal = () => {
           if (url) {
             await handleAddFeed(url, values.category, values.crawler);
           } else {
-            Message.error("Feed URL cannot be empty");
+            Message.error(polyglot.t("main.add_feed_url_empty"));
           }
         }}
       >

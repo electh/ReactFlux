@@ -20,6 +20,7 @@ import {
   setUnreadTodayCount,
 } from "../store/dataState";
 import { checkIsInLast24Hours } from "../utils/date";
+import { polyglotState } from "./useLanguage";
 
 const updateEntries = (entries, updatedEntries) => {
   const updatedEntryIds = updatedEntries.map((entry) => entry.id);
@@ -83,6 +84,7 @@ export const handleEntriesStatusUpdate = (entries, newStatus) => {
 
 const useEntryActions = () => {
   const { activeContent } = useStore(contentState);
+  const { polyglot } = useStore(polyglotState);
 
   const handleEntryStatusUpdate = (entry, newStatus) => {
     handleEntriesStatusUpdate([entry], newStatus);
@@ -115,7 +117,9 @@ const useEntryActions = () => {
 
     updateEntriesStatus([entry.id], newStatus).catch(() => {
       Message.error(
-        `Failed to mark entry as ${newStatus}, please try again later`,
+        newStatus === "read"
+          ? polyglot.t("actions.mark_as_read_error")
+          : polyglot.t("actions.mark_as_unread_error"),
       );
       handleEntryStatusUpdate(entry, prevStatus);
     });
@@ -127,9 +131,9 @@ const useEntryActions = () => {
 
     toggleEntryStarred(entry.id).catch(() => {
       Message.error(
-        `Failed to ${
-          newStarred ? "star" : "unstar"
-        } entry, please try again later`,
+        newStarred
+          ? polyglot.t("actions.star_error")
+          : polyglot.t("actions.unstar_error"),
       );
       handleEntryStarredUpdate(entry, !newStarred);
     });
@@ -138,21 +142,21 @@ const useEntryActions = () => {
   const handleFetchContent = async () => {
     try {
       const response = await getOriginalContent(activeContent.id);
-      Message.success("Fetched content successfully");
+      Message.success(polyglot.t("actions.fetched_content_success"));
       setActiveContent({ ...activeContent, content: response.content });
     } catch (error) {
-      Message.error("Failed to fetch content, please try again later");
+      Message.error(polyglot.t("actions.fetched_content_error"));
     }
   };
 
   const handleSaveToThirdPartyServices = async () => {
     const response = await saveToThirdPartyServices(activeContent.id);
     if (response.status === 202) {
-      Message.success("Saved to third-party services successfully");
-    } else {
-      Message.error(
-        "Failed to save to third-party services, please try again later, or check your integration settings",
+      Message.success(
+        polyglot.t("actions.saved_to_third-party_services_success"),
       );
+    } else {
+      Message.error(polyglot.t("actions.saved_to_third-party_services_error"));
     }
   };
 

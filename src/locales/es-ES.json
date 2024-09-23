@@ -26,6 +26,23 @@
     "articles": "Artículos",
     "feeds": "Feeds"
   },
+  "actions": {
+    "mark_as_read_error": "Error al marcar como leído, por favor intente de nuevo más tarde",
+    "mark_as_unread_error": "Error al marcar como no leído, por favor intente de nuevo más tarde",
+    "star_error": "Error al marcar como favorito, por favor intente de nuevo más tarde",
+    "unstar_error": "Error al desmarcar como favorito, por favor intente de nuevo más tarde",
+    "fetched_content_success": "Contenido obtenido con éxito",
+    "fetched_content_error": "Error al obtener el contenido, por favor intente de nuevo más tarde",
+    "saved_to_third-party_services_success": "Guardado en servicios de terceros con éxito",
+    "saved_to_third-party_services_error": "Error al guardar en servicios de terceros, por favor intente de nuevo más tarde, o verifique la configuración de integración"
+  },
+  "article_card": {
+    "marked_as_starred": "Marcado como favorito",
+    "unmarked_as_starred": "Desmarcado como favorito",
+    "marked_as_read": "Marcado como leído",
+    "marked_as_unread": "Marcado como no leído",
+    "update_failed": "Error al actualizar, por favor intente de nuevo"
+  },
   "article_list": {
     "search_placeholder": "Buscar...",
     "search_type_title": "Título",
@@ -39,7 +56,16 @@
     "mark_all_as_read_error": "No se pudo marcar todo como leído",
     "mark_all_as_read_confirm": "¿Marcar todo como leído?"
   },
+  "content": {
+    "mark_as_read_error": "No se pudo marcar como leído, por favor intente de nuevo más tarde"
+  },
+  "deduplicate": {
+    "mark_as_read_error": "No se pudo marcar los artículos duplicados como leídos"
+  },
   "main": {
+    "add_feed_success": "Feed añadido con éxito",
+    "add_feed_error": "No se pudo añadir el feed",
+    "add_feed_url_empty": "La URL del feed no puede estar vacía",
     "add_feed_modal_title": "Añadir feed",
     "add_feed_modal_feed_url_label": "URL del feed",
     "add_feed_modal_feed_url_placeholder": "Por favor, introduzca una URL del feed",
@@ -104,6 +130,14 @@
     "modal_edit_feed_disabled_label": "Desactivado",
     "modal_edit_feed_crawler_label": "Obtener contenido original",
     "modal_edit_feed_crawler_tooltip": "Sólo afecta a los artículos recién recuperados"
+  },
+  "category_list": {
+    "add_category_success": "Categoría añadida con éxito",
+    "add_category_error": "Error al añadir la categoría",
+    "update_category_success": "Categoría actualizada con éxito",
+    "update_category_error": "Error al actualizar la categoría",
+    "remove_category_success": "Categoría eliminada: %{title}",
+    "remove_category_error": "Error al eliminar la categoría: %{title}"
   },
   "settings": {
     "feeds": "Feeds",

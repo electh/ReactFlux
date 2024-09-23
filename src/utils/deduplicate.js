@@ -1,8 +1,11 @@
 import { Message } from "@arco-design/web-react";
 import { updateEntriesStatus } from "../apis";
 import { handleEntriesStatusUpdate } from "../hooks/useEntryActions";
+import { polyglotState } from "../hooks/useLanguage";
 
 export const removeDuplicateEntries = (entries, option) => {
+  const { polyglot } = polyglotState.get();
+
   if (entries.length === 0 || option === "none") {
     return entries;
   }
@@ -57,7 +60,7 @@ export const removeDuplicateEntries = (entries, option) => {
   if (unreadDuplicateIds.length > 0) {
     handleEntriesStatusUpdate(duplicateEntries, "read");
     updateEntriesStatus(unreadDuplicateIds, "read").catch(() => {
-      Message.error("Failed to mark duplicate entries as read");
+      Message.error(polyglot.t("deduplicate.mark_as_read_error"));
       handleEntriesStatusUpdate(duplicateEntries, "unread");
     });
   }
