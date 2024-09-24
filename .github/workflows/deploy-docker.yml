@@ -31,12 +31,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: electh/reactflux
+          tags: |
+            type=raw,value=latest,enable=true
+            type=raw,value={{date 'YYYY-MM-DD'}},enable=true
+            type=sha,format=long,prefix=,enable=true
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: |
-            electh/reactflux:latest
-            electh/reactflux:${{ github.sha }}
+          tags: ${{ steps.meta.outputs.tags }}
           platforms: linux/amd64,linux/arm64
