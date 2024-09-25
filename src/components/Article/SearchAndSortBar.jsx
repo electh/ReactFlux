@@ -12,6 +12,7 @@ import {
   contentState,
   setFilterString,
   setFilterType,
+  setIsArticleFocused,
 } from "../../store/contentState";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import "./SearchAndSortBar.css";
@@ -37,6 +38,8 @@ const SearchAndSortBar = () => {
     <div className="search-and-sort-bar">
       <Input.Search
         allowClear
+        onBlur={() => setIsArticleFocused(true)}
+        onFocus={() => setIsArticleFocused(false)}
         onChange={setFilterString}
         placeholder={polyglot.t("article_list.search_placeholder")}
         style={{ width: isBelowMedium ? "100%" : 278, marginLeft: 8 }}
