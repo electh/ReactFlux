@@ -64,7 +64,6 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
         />
       </Popconfirm>
       <Radio.Group
-        disabled={info.from === "history"}
         onChange={handleFilterChange}
         options={[
           { label: polyglot.t("article_list.filter_status_all"), value: "all" },
@@ -73,8 +72,9 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
             value: "unread",
           },
         ]}
+        style={{ visibility: info.from === "history" ? "hidden" : "visible" }}
         type="button"
-        value={info.from === "history" ? "all" : showStatus}
+        value={showStatus}
       />
       <Button
         icon={<IconRefresh />}
