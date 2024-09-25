@@ -1,11 +1,12 @@
 import { Button, Input, Select, Tooltip } from "@arco-design/web-react";
 import {
+  IconQuestionCircle,
   IconSortAscending,
   IconSortDescending,
 } from "@arco-design/web-react/icon";
 
 import { useStore } from "@nanostores/react";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { polyglotState } from "../../hooks/useLanguage";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
@@ -42,7 +43,7 @@ const SearchAndSortBar = () => {
         onFocus={() => setIsArticleFocused(false)}
         onChange={setFilterString}
         placeholder={polyglot.t("article_list.search_placeholder")}
-        style={{ width: isBelowMedium ? "100%" : 278, marginLeft: 8 }}
+        style={{ width: isBelowMedium ? "100%" : 242, marginLeft: 8 }}
         value={filterString}
         addBefore={
           <Select
@@ -62,28 +63,55 @@ const SearchAndSortBar = () => {
           </Select>
         }
       />
-      <Tooltip
-        mini
-        content={
-          orderDirection === "desc"
-            ? polyglot.t("article_list.sort_direction_desc")
-            : polyglot.t("article_list.sort_direction_asc")
-        }
-      >
-        <Button
-          shape="circle"
-          size="small"
-          style={{ margin: "0 8px", flexShrink: 0 }}
-          icon={
-            orderDirection === "desc" ? (
-              <IconSortDescending />
-            ) : (
-              <IconSortAscending />
-            )
+      <div className="button-group">
+        <Tooltip
+          mini
+          content={
+            <div>
+              {polyglot
+                .t("article_list.search_tooltip")
+                .split("\n")
+                .map((line, index) => (
+                  <Fragment key={`line-${index}-${line.length}`}>
+                    {line}
+                    {index <
+                      polyglot.t("article_list.search_tooltip").split("\n")
+                        .length -
+                        1 && <br />}
+                  </Fragment>
+                ))}
+            </div>
           }
-          onClick={toggleOrderDirection}
-        />
-      </Tooltip>
+        >
+          <Button
+            shape="circle"
+            size="small"
+            icon={<IconQuestionCircle />}
+            onClick={() => setIsArticleFocused(false)}
+          />
+        </Tooltip>
+        <Tooltip
+          mini
+          content={
+            orderDirection === "desc"
+              ? polyglot.t("article_list.sort_direction_desc")
+              : polyglot.t("article_list.sort_direction_asc")
+          }
+        >
+          <Button
+            shape="circle"
+            size="small"
+            icon={
+              orderDirection === "desc" ? (
+                <IconSortDescending />
+              ) : (
+                <IconSortAscending />
+              )
+            }
+            onClick={toggleOrderDirection}
+          />
+        </Tooltip>
+      </div>
     </div>
   );
 };

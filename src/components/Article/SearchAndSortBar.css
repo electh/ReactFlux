@@ -8,3 +8,10 @@
   background-color: var(--color-bg-2);
   border-bottom: 1px solid var(--color-border-2);
 }
+
+.button-group {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+  margin: 0 8px;
+}

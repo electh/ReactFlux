@@ -45,6 +45,7 @@
   },
   "article_list": {
     "search_placeholder": "Search...",
+    "search_tooltip": "Search syntax:\n• Text: apple banana\n• Exact text: \"red apple\"\n• Exclude: -text or -\"text\"\n• Must include: +text or +\"text\"\n• OR search: text1|text2\nExample: \"red apple\" +fresh -rotten banana|orange",
     "search_type_title": "Title",
     "search_type_content": "Content",
     "search_type_author": "Author",

@@ -45,6 +45,7 @@
   },
   "article_list": {
     "search_placeholder": "Buscar...",
+    "search_tooltip": "Sintaxis de búsqueda:\n• Texto: manzana plátano\n• Texto exacto: \"manzana roja\"\n• Excluir: -texto o -\"texto\"\n• Debe incluir: +texto o +\"texto\"\n• Búsqueda OR: texto1|texto2\nEjemplo: \"manzana roja\" +fresca -podrida plátano|naranja",
     "search_type_title": "Título",
     "search_type_content": "Contenido",
     "search_type_author": "Autor",

@@ -45,6 +45,7 @@
   },
   "article_list": {
     "search_placeholder": "搜索...",
+    "search_tooltip": "搜索语法：\n• 文本：苹果 香蕉\n• 精确文本：\"红苹果\"\n• 排除：-文本 或 -\"文本\"\n• 必须包含：+文本 或 +\"文本\"\n• OR 搜索：文本 1|文本 2\n示例：\"红苹果\" +新鲜 -腐烂 香蕉|橙子",
     "search_type_title": "标题",
     "search_type_content": "正文",
     "search_type_author": "作者",
