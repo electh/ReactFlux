@@ -43,7 +43,7 @@ const SearchAndSortBar = () => {
         onFocus={() => setIsArticleFocused(false)}
         onChange={setFilterString}
         placeholder={polyglot.t("article_list.search_placeholder")}
-        style={{ width: isBelowMedium ? "100%" : 242, marginLeft: 8 }}
+        style={{ width: isBelowMedium ? "100%" : 272, marginLeft: 8 }}
         value={filterString}
         addBefore={
           <Select
