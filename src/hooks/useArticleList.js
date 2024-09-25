@@ -4,6 +4,7 @@ import {
   setEntries,
   setIsArticleFocused,
   setIsArticleListReady,
+  setLoadMoreVisible,
   setTotal,
 } from "../store/contentState";
 import { dataState } from "../store/dataState";
@@ -15,6 +16,7 @@ const handleResponses = (response) => {
     const articles = response.entries.map(parseFirstImage);
     setEntries(articles);
     setTotal(response.total);
+    setLoadMoreVisible(articles.length < response.total);
   }
 };
 

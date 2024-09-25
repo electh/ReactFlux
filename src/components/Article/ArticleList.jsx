@@ -1,6 +1,6 @@
 import { Spin } from "@arco-design/web-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { forwardRef, useCallback } from "react";
+import { forwardRef, useCallback, useEffect } from "react";
 
 import useLoadMore from "../../hooks/useLoadMore";
 import ArticleCard from "./ArticleCard";
@@ -10,19 +10,14 @@ import SearchAndSortBar from "./SearchAndSortBar";
 import { useStore } from "@nanostores/react";
 import { useInView } from "react-intersection-observer";
 import SimpleBar from "simplebar-react";
-import {
-  contentState,
-  filteredEntriesState,
-  loadMoreVisibleState,
-} from "../../store/contentState";
+import { contentState, filteredEntriesState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import { mergeRefs } from "../../utils/refs";
 import Ripple from "../ui/Ripple.jsx";
 import "./ArticleList.css";
 
 const LoadMoreComponent = ({ getEntries }) => {
-  const { isArticleListReady } = useStore(contentState);
-  const loadMoreVisible = useStore(loadMoreVisibleState);
+  const { isArticleListReady, loadMoreVisible } = useStore(contentState);
 
   const { loadingMore, handleLoadMore } = useLoadMore();
 
@@ -52,12 +47,10 @@ const ArticleList = forwardRef(
     const { layout, pageSize } = useStore(settingsState);
     const isCompactLayout = layout === "small";
 
-    const { isArticleListReady } = useStore(contentState);
+    const { isArticleListReady, loadMoreVisible } = useStore(contentState);
     const filteredEntries = useStore(filteredEntriesState);
     const lastPercent20StartIndex =
       filteredEntries.length - Math.ceil(pageSize * 0.2) - 1;
-
-    const loadMoreVisible = useStore(loadMoreVisibleState);
 
     const { loadingMore, handleLoadMore } = useLoadMore();
 
@@ -87,6 +80,17 @@ const ArticleList = forwardRef(
       },
       [lastPercent20StartIndex, virtualizer.measureElement, loadMoreRef],
     );
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+      if (filteredEntries.length >= pageSize) {
+        return;
+      }
+
+      if (!loadingMore && loadMoreVisible) {
+        handleLoadMore(getEntries);
+      }
+    }, [filteredEntries]);
 
     return (
       <>

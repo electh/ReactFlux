@@ -13,17 +13,12 @@ const defaultValue = {
   infoFrom: getSettings("homePage"), // all | today | starred | history
   isArticleFocused: false, // 文章是否被聚焦
   isArticleListReady: false, // 文章列表是否加载完成
+  loadMoreVisible: false, // 加载更多元素可见性
   offset: 0, // 文章分页参数
   total: 0, // 接口返回文章总数原始值，不受接口返回数据长度限制
 };
 
 export const contentState = map(defaultValue);
-
-// 加载更多元素可见性
-export const loadMoreVisibleState = computed(contentState, (content) => {
-  const { entries, total } = content;
-  return entries.length < total;
-});
 
 export const filteredEntriesState = computed(
   [contentState, dataState, hiddenFeedIdsState, settingsState],
@@ -65,6 +60,7 @@ export const setIsArticleListReady = createSetter(
   contentState,
   "isArticleListReady",
 );
+export const setLoadMoreVisible = createSetter(contentState, "loadMoreVisible");
 export const setOffset = createSetter(contentState, "offset");
 export const setTotal = createSetter(contentState, "total");
 export const resetContent = () => contentState.set(defaultValue);

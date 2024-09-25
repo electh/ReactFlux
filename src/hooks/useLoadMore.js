@@ -1,6 +1,11 @@
 import { useStore } from "@nanostores/react";
 import { atom } from "nanostores";
-import { contentState, setEntries, setOffset } from "../store/contentState";
+import {
+  contentState,
+  setEntries,
+  setLoadMoreVisible,
+  setOffset,
+} from "../store/contentState";
 import { settingsState } from "../store/settingsState";
 import { parseFirstImage } from "../utils/images";
 import { createSetter } from "../utils/nanostores";
@@ -34,9 +39,11 @@ const useLoadMore = () => {
         showStatus === "unread"
           ? await getEntries(offset + pageSize, "unread")
           : await getEntries(offset + pageSize);
-      if (response?.entries) {
+      if (response?.entries?.length > 0) {
         const newEntries = response.entries.map(parseFirstImage);
         updateEntries(newEntries);
+      } else {
+        setLoadMoreVisible(false);
       }
     } catch (error) {
       console.error("Error fetching more articles: ", error);
