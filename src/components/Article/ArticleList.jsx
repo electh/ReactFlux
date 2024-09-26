@@ -21,15 +21,26 @@ const LoadMoreComponent = ({ getEntries }) => {
 
   const { loadingMore, handleLoadMore } = useLoadMore();
 
-  const { ref: loadMoreRef } = useInView({
-    skip: !loadMoreVisible,
-    onChange: async (inView) => {
-      if (!inView || !isArticleListReady || loadingMore) {
-        return;
-      }
+  const { ref: loadMoreRef, inView } = useInView();
+
+  const loadMoreEntries = useCallback(async () => {
+    if (loadMoreVisible && inView && isArticleListReady && !loadingMore) {
       await handleLoadMore(getEntries);
-    },
-  });
+    }
+  }, [
+    loadMoreVisible,
+    inView,
+    isArticleListReady,
+    loadingMore,
+    handleLoadMore,
+    getEntries,
+  ]);
+
+  useEffect(() => {
+    const intervalId = setInterval(loadMoreEntries, 500);
+
+    return () => clearInterval(intervalId);
+  }, [loadMoreEntries]);
 
   return (
     isArticleListReady &&
@@ -67,7 +78,11 @@ const ArticleList = forwardRef(
     const virtualizer = useVirtualizer({
       count: filteredEntries.length,
       getScrollElement: () => cardsRef.current,
-      estimateSize: () => (isCompactLayout ? 120 : 280),
+      estimateSize: useCallback(
+        () => (isCompactLayout ? 120 : 280),
+        [isCompactLayout],
+      ),
+      overscan: 5,
     });
     const virtualItems = virtualizer.getVirtualItems();
 
@@ -80,17 +95,6 @@ const ArticleList = forwardRef(
       },
       [lastPercent20StartIndex, virtualizer.measureElement, loadMoreRef],
     );
-
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
-      if (filteredEntries.length >= pageSize) {
-        return;
-      }
-
-      if (!loadingMore && loadMoreVisible) {
-        handleLoadMore(getEntries);
-      }
-    }, [filteredEntries]);
 
     return (
       <>
