@@ -6,7 +6,7 @@ import {
 } from "@arco-design/web-react/icon";
 
 import { useStore } from "@nanostores/react";
-import { Fragment, useEffect } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { polyglotState } from "../../hooks/useLanguage";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
@@ -16,12 +16,20 @@ import {
   setIsArticleFocused,
 } from "../../store/contentState";
 import { settingsState, updateSettings } from "../../store/settingsState";
+import { debounce } from "../../utils/time";
 import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = () => {
   const { orderDirection } = useStore(settingsState);
-  const { filterString, filterType } = useStore(contentState);
+  const { filterType } = useStore(contentState);
   const { polyglot } = useStore(polyglotState);
+
+  const [currentFilterString, setCurrentFilterString] = useState("");
+
+  const debouncedSetFilterString = useCallback(
+    debounce((value) => setFilterString(value), 500),
+    [],
+  );
 
   const { isBelowMedium } = useScreenWidth();
 
@@ -35,16 +43,24 @@ const SearchAndSortBar = () => {
     setFilterString("");
   }, []);
 
+  useEffect(() => {
+    if (currentFilterString === "") {
+      setFilterString(currentFilterString);
+    } else {
+      debouncedSetFilterString(currentFilterString);
+    }
+  }, [currentFilterString, debouncedSetFilterString]);
+
   return (
     <div className="search-and-sort-bar">
       <Input.Search
         allowClear
         onBlur={() => setIsArticleFocused(true)}
         onFocus={() => setIsArticleFocused(false)}
-        onChange={setFilterString}
+        onChange={setCurrentFilterString}
         placeholder={polyglot.t("article_list.search_placeholder")}
         style={{ width: isBelowMedium ? "100%" : 272, marginLeft: 8 }}
-        value={filterString}
+        value={currentFilterString}
         addBefore={
           <Select
             onChange={setFilterType}
