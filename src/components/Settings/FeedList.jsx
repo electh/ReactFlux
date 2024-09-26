@@ -411,13 +411,7 @@ const FeedList = () => {
 
   return (
     <>
-      <div
-        style={{
-          alignItems: "center",
-          display: "flex",
-          width: "100%",
-        }}
-      >
+      <div className="feed-table-action-bar">
         <div
           style={{
             display: "flex",
