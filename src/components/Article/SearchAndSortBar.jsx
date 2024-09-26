@@ -23,6 +23,7 @@ const SearchAndSortBar = () => {
   const { orderDirection } = useStore(settingsState);
   const { filterType } = useStore(contentState);
   const { polyglot } = useStore(polyglotState);
+  const tooltipLines = polyglot.t("search.tooltip").split("\n");
 
   const [currentFilterString, setCurrentFilterString] = useState("");
 
@@ -40,7 +41,6 @@ const SearchAndSortBar = () => {
 
   useEffect(() => {
     setFilterType("title");
-    setFilterString("");
   }, []);
 
   useEffect(() => {
@@ -58,9 +58,8 @@ const SearchAndSortBar = () => {
         onBlur={() => setIsArticleFocused(true)}
         onFocus={() => setIsArticleFocused(false)}
         onChange={setCurrentFilterString}
-        placeholder={polyglot.t("article_list.search_placeholder")}
+        placeholder={polyglot.t("search.placeholder")}
         style={{ width: isBelowMedium ? "100%" : 272, marginLeft: 8 }}
-        value={currentFilterString}
         addBefore={
           <Select
             onChange={setFilterType}
@@ -68,13 +67,13 @@ const SearchAndSortBar = () => {
             value={filterType}
           >
             <Select.Option value="title">
-              {polyglot.t("article_list.search_type_title")}
+              {polyglot.t("search.type_title")}
             </Select.Option>
             <Select.Option value="content">
-              {polyglot.t("article_list.search_type_content")}
+              {polyglot.t("search.type_content")}
             </Select.Option>
             <Select.Option value="author">
-              {polyglot.t("article_list.search_type_author")}
+              {polyglot.t("search.type_author")}
             </Select.Option>
           </Select>
         }
@@ -84,18 +83,12 @@ const SearchAndSortBar = () => {
           mini
           content={
             <div>
-              {polyglot
-                .t("article_list.search_tooltip")
-                .split("\n")
-                .map((line, index) => (
-                  <Fragment key={`line-${index}-${line.length}`}>
-                    {line}
-                    {index <
-                      polyglot.t("article_list.search_tooltip").split("\n")
-                        .length -
-                        1 && <br />}
-                  </Fragment>
-                ))}
+              {tooltipLines.map((line, index) => (
+                <Fragment key={`line-${index}-${line.length}`}>
+                  {line}
+                  {index < tooltipLines.length - 1 && <br />}
+                </Fragment>
+              ))}
             </div>
           }
         >

@@ -44,11 +44,6 @@
     "update_failed": "更新失败，请重试"
   },
   "article_list": {
-    "search_placeholder": "搜索...",
-    "search_tooltip": "搜索语法：\n• 文本：苹果 香蕉\n• 精确文本：\"红苹果\"\n• 排除：-文本 或 -\"文本\"\n• 必须包含：+文本 或 +\"文本\"\n• OR 搜索：文本 1|文本 2\n示例：\"红苹果\" +新鲜 -腐烂 香蕉|橙子",
-    "search_type_title": "标题",
-    "search_type_content": "正文",
-    "search_type_author": "作者",
     "sort_direction_desc": "最新优先",
     "sort_direction_asc": "最旧优先",
     "filter_status_all": "全部",
@@ -62,6 +57,15 @@
   },
   "deduplicate": {
     "mark_as_read_error": "标记重复文章为已读失败"
+  },
+  "search": {
+    "placeholder": "搜索...",
+    "tooltip": "搜索语法：\n• 文本：苹果 香蕉\n• 精确文本：\"红苹果\"\n• 排除：-文本 或 -\"文本\"\n• 必须包含：+文本 或 +\"文本\"\n• OR 搜索：文本 1|文本 2\n示例：\"红苹果\" +新鲜 -腐烂 香蕉|橙子",
+    "type_title": "标题",
+    "type_content": "正文",
+    "type_author": "作者",
+    "type_feed_url": "订阅源 URL",
+    "type_site_url": "网站 URL"
   },
   "main": {
     "add_feed_success": "添加订阅源成功",
@@ -115,7 +119,6 @@
     "table_feed_remove_confirm": "取消关注此订阅源？",
     "update_feed_success": "订阅源更新成功",
     "update_feed_error": "订阅源更新失败",
-    "search_placeholder": "搜索标题、网站 URL 或订阅源 URL",
     "modal_bulk_update_title": "批量更新域名",
     "modal_bulk_update_description": "这将批量更新已筛选订阅源的域名。仅推荐用于 RssHub。",
     "modal_edit_feed_title": "编辑订阅源",

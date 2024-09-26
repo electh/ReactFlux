@@ -44,11 +44,6 @@
     "update_failed": "Failed to update, please try again"
   },
   "article_list": {
-    "search_placeholder": "Search...",
-    "search_tooltip": "Search syntax:\n• Text: apple banana\n• Exact text: \"red apple\"\n• Exclude: -text or -\"text\"\n• Must include: +text or +\"text\"\n• OR search: text1|text2\nExample: \"red apple\" +fresh -rotten banana|orange",
-    "search_type_title": "Title",
-    "search_type_content": "Content",
-    "search_type_author": "Author",
     "sort_direction_desc": "Newest first",
     "sort_direction_asc": "Oldest first",
     "filter_status_all": "All",
@@ -62,6 +57,15 @@
   },
   "deduplicate": {
     "mark_as_read_error": "Failed to mark duplicate articles as read"
+  },
+  "search": {
+    "placeholder": "Search...",
+    "tooltip": "Search syntax:\n• Text: apple banana\n• Exact text: \"red apple\"\n• Exclude: -text or -\"text\"\n• Must include: +text or +\"text\"\n• OR search: text1|text2\nExample: \"red apple\" +fresh -rotten banana|orange",
+    "type_title": "Title",
+    "type_content": "Content",
+    "type_author": "Author",
+    "type_feed_url": "Feed URL",
+    "type_site_url": "Site URL"
   },
   "main": {
     "add_feed_success": "Added a feed successfully",
@@ -115,7 +119,6 @@
     "table_feed_remove_confirm": "Unfollow this feed?",
     "update_feed_success": "Feed updated successfully",
     "update_feed_error": "Failed to update feed",
-    "search_placeholder": "Search title or site URL or feed URL",
     "modal_bulk_update_title": "Bulk Update Hosts",
     "modal_bulk_update_description": "This will bulk update filtered feeds' hosts. Only recommended for RssHub.",
     "modal_edit_feed_title": "Edit Feed",

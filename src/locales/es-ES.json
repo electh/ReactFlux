@@ -44,11 +44,6 @@
     "update_failed": "Error al actualizar, por favor intente de nuevo"
   },
   "article_list": {
-    "search_placeholder": "Buscar...",
-    "search_tooltip": "Sintaxis de búsqueda:\n• Texto: manzana plátano\n• Texto exacto: \"manzana roja\"\n• Excluir: -texto o -\"texto\"\n• Debe incluir: +texto o +\"texto\"\n• Búsqueda OR: texto1|texto2\nEjemplo: \"manzana roja\" +fresca -podrida plátano|naranja",
-    "search_type_title": "Título",
-    "search_type_content": "Contenido",
-    "search_type_author": "Autor",
     "sort_direction_desc": "Las más recientes primero",
     "sort_direction_asc": "Las más antiguas primero",
     "filter_status_all": "Todo",
@@ -62,6 +57,15 @@
   },
   "deduplicate": {
     "mark_as_read_error": "No se pudo marcar los artículos duplicados como leídos"
+  },
+  "search": {
+    "placeholder": "Buscar...",
+    "tooltip": "Sintaxis de búsqueda:\n• Texto: manzana plátano\n• Texto exacto: \"manzana roja\"\n• Excluir: -texto o -\"texto\"\n• Debe incluir: +texto o +\"texto\"\n• Búsqueda OR: texto1|texto2\nEjemplo: \"manzana roja\" +fresca -podrida plátano|naranja",
+    "type_title": "Título",
+    "type_content": "Contenido",
+    "type_author": "Autor",
+    "type_feed_url": "URL del feed",
+    "type_site_url": "URL del sitio"
   },
   "main": {
     "add_feed_success": "Feed añadido con éxito",
@@ -115,7 +119,6 @@
     "table_feed_remove_confirm": "¿Dejar de seguir este feed?",
     "update_feed_success": "Feed actualizado con éxito",
     "update_feed_error": "No se pudo actualizar el feed",
-    "search_placeholder": "Buscar título o URL del sitio o URL del feed",
     "modal_bulk_update_title": "Actualización masiva de hosts",
     "modal_bulk_update_description": "Esta función actualizará en masa los hosts de las fuentes filtradas. Se recomienda únicamente para RssHub.",
     "modal_edit_feed_title": "Editar feed",

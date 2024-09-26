@@ -13,8 +13,13 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react";
-import { IconDelete, IconEdit, IconRefresh } from "@arco-design/web-react/icon";
-import { useEffect, useState } from "react";
+import {
+  IconDelete,
+  IconEdit,
+  IconQuestionCircle,
+  IconRefresh,
+} from "@arco-design/web-react/icon";
+import { Fragment, useEffect, useState } from "react";
 
 import {
   deleteFeed,
@@ -23,7 +28,6 @@ import {
   updateFeed,
 } from "../../apis";
 import { generateRelativeTime, getUTCDate } from "../../utils/date";
-import { includesIgnoreCase } from "../../utils/filter";
 
 import { useStore } from "@nanostores/react";
 import { atom, computed } from "nanostores";
@@ -35,6 +39,7 @@ import {
   setFeedsData,
 } from "../../store/dataState";
 import { settingsState } from "../../store/settingsState";
+import { filterByQuery } from "../../utils/kmp";
 import { createSetter } from "../../utils/nanostores";
 import { sleep } from "../../utils/time";
 import "./FeedList.css";
@@ -42,11 +47,14 @@ import "./FeedList.css";
 const filterStringState = atom("");
 const setFilterString = createSetter(filterStringState);
 
+const filterTypeState = atom("title");
+const setFilterType = createSetter(filterTypeState);
+
 const filteredFeedsState = computed(
-  [dataState, filterStringState],
-  (data, filterString) => {
+  [dataState, filterStringState, filterTypeState],
+  (data, filterString, filterType) => {
     const { feedsData } = data;
-    return [...feedsData]
+    const feeds = [...feedsData]
       .sort((a, b) => {
         if (a.disabled && !b.disabled) {
           return 1;
@@ -56,13 +64,12 @@ const filteredFeedsState = computed(
         }
         return 0;
       })
-      .sort((a, b) => b.parsing_error_count - a.parsing_error_count)
-      .filter(
-        (feed) =>
-          includesIgnoreCase(feed.title, filterString) ||
-          includesIgnoreCase(feed.site_url, filterString) ||
-          includesIgnoreCase(feed.feed_url, filterString),
-      );
+      .sort((a, b) => b.parsing_error_count - a.parsing_error_count);
+
+    if (!filterString) {
+      return feeds;
+    }
+    return filterByQuery(feeds, filterString, [filterType]);
   },
 );
 
@@ -97,8 +104,10 @@ const FeedList = () => {
   const { isAppDataReady } = useStore(dataState);
   const { showDetailedRelativeTime } = useStore(settingsState);
   const filteredFeeds = useStore(filteredFeedsState);
+  const filterType = useStore(filterTypeState);
   const tableData = useStore(tableDataState);
   const { polyglot } = useStore(polyglotState);
+  const tooltipLines = polyglot.t("search.tooltip").split("\n");
 
   const [bulkUpdateModalVisible, setBulkUpdateModalVisible] = useState(false);
   const [feedForm] = Form.useForm();
@@ -234,6 +243,7 @@ const FeedList = () => {
         <Button
           icon={<IconRefresh />}
           shape="circle"
+          size="small"
           onClick={() => setVisible(true)}
         />
         <Modal
@@ -417,23 +427,50 @@ const FeedList = () => {
           }}
         >
           <Input.Search
+            allowClear
             className="search-input"
-            placeholder={polyglot.t("feed_table.search_placeholder")}
-            searchButton
             onChange={setFilterString}
+            placeholder={polyglot.t("search.placeholder")}
+            addBefore={
+              <Select
+                onChange={setFilterType}
+                style={{ width: 126 }}
+                value={filterType}
+              >
+                <Select.Option value="title">
+                  {polyglot.t("search.type_title")}
+                </Select.Option>
+                <Select.Option value="feed_url">
+                  {polyglot.t("search.type_feed_url")}
+                </Select.Option>
+                <Select.Option value="site_url">
+                  {polyglot.t("search.type_site_url")}
+                </Select.Option>
+              </Select>
+            }
           />
         </div>
-        <div
-          style={{
-            display: "flex",
-            gap: 16,
-            paddingBottom: 16,
-            paddingLeft: 16,
-          }}
-        >
+        <div className="button-group">
+          <Tooltip
+            mini
+            position="bottom"
+            content={
+              <div>
+                {tooltipLines.map((line, index) => (
+                  <Fragment key={`line-${index}-${line.length}`}>
+                    {line}
+                    {index < tooltipLines.length - 1 && <br />}
+                  </Fragment>
+                ))}
+              </div>
+            }
+          >
+            <Button shape="circle" size="small" icon={<IconQuestionCircle />} />
+          </Tooltip>
           <Button
             icon={<IconEdit />}
             shape="circle"
+            size="small"
             onClick={() => setBulkUpdateModalVisible(true)}
           />
           <Modal
