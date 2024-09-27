@@ -210,6 +210,7 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
       onBlur={() => setIsArticleFocused(false)}
       onFocus={() => setIsArticleFocused(true)}
       ref={ref}
+      tabIndex={-1}
     >
       <SimpleBar className="scroll-container">
         <div className="article-header" style={{ width: `${articleWidth}%` }}>

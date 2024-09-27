@@ -13,7 +13,6 @@ import {
   contentState,
   setFilterString,
   setFilterType,
-  setIsArticleFocused,
 } from "../../store/contentState";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import { debounce } from "../../utils/time";
@@ -55,8 +54,6 @@ const SearchAndSortBar = () => {
     <div className="search-and-sort-bar">
       <Input.Search
         allowClear
-        onBlur={() => setIsArticleFocused(true)}
-        onFocus={() => setIsArticleFocused(false)}
         onChange={setCurrentFilterString}
         placeholder={polyglot.t("search.placeholder")}
         style={{ width: isBelowMedium ? "100%" : 272, marginLeft: 8 }}
@@ -92,12 +89,7 @@ const SearchAndSortBar = () => {
             </div>
           }
         >
-          <Button
-            shape="circle"
-            size="small"
-            icon={<IconQuestionCircle />}
-            onClick={() => setIsArticleFocused(false)}
-          />
+          <Button shape="circle" size="small" icon={<IconQuestionCircle />} />
         </Tooltip>
         <Tooltip
           mini

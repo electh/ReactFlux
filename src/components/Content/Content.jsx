@@ -90,6 +90,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     if (entry.status !== "unread") {
       setTimeout(() => {
         setActiveContent({ ...entry, status: "read" });
+        setTimeout(() => {
+          entryDetailRef.current?.focus();
+        }, 200);
       }, 200);
       return;
     }
@@ -97,6 +100,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     try {
       setTimeout(() => {
         setActiveContent({ ...entry, status: "read" });
+        setTimeout(() => {
+          entryDetailRef.current?.focus();
+        }, 200);
         handleEntryStatusUpdate(entry, "read");
       }, 200);
       await updateEntriesStatus([entry.id], "read");
@@ -147,13 +153,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
     if (isArticleFocused) {
       document.addEventListener("keydown", handleKeyDown);
-    } else {
-      document.removeEventListener("keydown", handleKeyDown);
-    }
 
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+      };
+    }
   }, [activeContent, filteredEntries, isArticleFocused]);
 
   const refreshArticleList = async (getEntries) => {
