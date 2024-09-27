@@ -150,12 +150,18 @@ const useEntryActions = () => {
   };
 
   const handleSaveToThirdPartyServices = async () => {
-    const response = await saveToThirdPartyServices(activeContent.id);
-    if (response.status === 202) {
-      Message.success(
-        polyglot.t("actions.saved_to_third-party_services_success"),
-      );
-    } else {
+    try {
+      const response = await saveToThirdPartyServices(activeContent.id);
+      if (response.status === 202) {
+        Message.success(
+          polyglot.t("actions.saved_to_third-party_services_success"),
+        );
+      } else {
+        Message.error(
+          polyglot.t("actions.saved_to_third-party_services_error"),
+        );
+      }
+    } catch (error) {
       Message.error(polyglot.t("actions.saved_to_third-party_services_error"));
     }
   };
