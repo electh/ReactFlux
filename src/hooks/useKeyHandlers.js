@@ -40,15 +40,20 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
     }
   }, [activeContent]);
 
-  const exitDetailView = () => {
-    if (!activeContent) {
-      return;
-    }
+  const withActiveContent =
+    (fn) =>
+    (...args) => {
+      if (activeContent) {
+        return fn(...args);
+      }
+    };
+
+  const exitDetailView = withActiveContent(() => {
     setActiveContent(null);
     if (entryListRef.current) {
       entryListRef.current.contentWrapperEl.focus();
     }
-  };
+  });
 
   const navigateToPreviousArticle = (unread = false) => {
     const currentIndex = filteredEntries.findIndex(
@@ -106,41 +111,29 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
     }
   };
 
-  const openLinkExternally = () => {
-    if (activeContent) {
-      window.open(activeContent.url, "_blank");
-    }
-  };
+  const openLinkExternally = withActiveContent(() => {
+    window.open(activeContent.url, "_blank");
+  });
 
-  const fetchOriginalArticle = (handleFetchContent) => {
-    if (activeContent) {
-      handleFetchContent();
-    }
-  };
+  const fetchOriginalArticle = withActiveContent((handleFetchContent) => {
+    handleFetchContent();
+  });
 
-  const saveToThirdPartyServices = (handleSaveToThirdPartyServices) => {
-    if (activeContent) {
+  const saveToThirdPartyServices = withActiveContent(
+    (handleSaveToThirdPartyServices) => {
       handleSaveToThirdPartyServices();
-    }
-  };
+    },
+  );
 
-  const toggleReadStatus = (handleUpdateEntry) => {
-    if (activeContent) {
-      handleUpdateEntry();
-    }
-  };
+  const toggleReadStatus = withActiveContent((handleUpdateEntry) => {
+    handleUpdateEntry();
+  });
 
-  const toggleStarStatus = (handleStarEntry) => {
-    if (activeContent) {
-      handleStarEntry();
-    }
-  };
+  const toggleStarStatus = withActiveContent((handleStarEntry) => {
+    handleStarEntry();
+  });
 
-  const openPhotoSlider = () => {
-    if (!activeContent) {
-      return;
-    }
-
+  const openPhotoSlider = withActiveContent(() => {
     const imageSources = extractImageSources(activeContent.content);
     if (!imageSources.length || isPhotoSliderVisible) {
       return;
@@ -149,7 +142,7 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
     setSelectedIndex(0);
     setIsPhotoSliderVisible(true);
     setIsArticleFocused(false);
-  };
+  });
 
   return {
     exitDetailView,
