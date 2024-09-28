@@ -205,16 +205,11 @@
   },
   "date": {
     "just_now": "hace poco",
-    "year": "%{count} año",
-    "years": "%{count} años",
-    "month": "%{count} mes",
-    "months": "%{count} meses",
-    "day": "%{count} día",
-    "days": "%{count} días",
-    "hour": "%{count} hora",
-    "hours": "%{count} horas",
-    "minute": "%{count} minuto",
-    "minutes": "%{count} minutos",
+    "years": "%{smart_count} año |||| %{smart_count} años",
+    "months": "%{smart_count} mes |||| %{smart_count} meses",
+    "days": "%{smart_count} día |||| %{smart_count} día",
+    "hours": "%{smart_count} hora |||| %{smart_count} horas",
+    "minutes": "%{smart_count} minuto |||| %{smart_count} minutos",
     "in_time": "en %{time}",
     "time_ago": "hace %{time}"
   }

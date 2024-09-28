@@ -205,16 +205,11 @@
   },
   "date": {
     "just_now": "just now",
-    "year": "%{count} year",
-    "years": "%{count} years",
-    "month": "%{count} month",
-    "months": "%{count} months",
-    "day": "%{count} day",
-    "days": "%{count} days",
-    "hour": "%{count} hour",
-    "hours": "%{count} hours",
-    "minute": "%{count} minute",
-    "minutes": "%{count} minutes",
+    "years": "%{smart_count} year |||| %{smart_count} years",
+    "months": "%{smart_count} month |||| %{smart_count} months",
+    "days": "%{smart_count} day |||| %{smart_count} days",
+    "hours": "%{smart_count} hour |||| %{smart_count} hours",
+    "minutes": "%{smart_count} minute |||| %{smart_count} minutes",
     "in_time": "in %{time}",
     "time_ago": "%{time} ago"
   }

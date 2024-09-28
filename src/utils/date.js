@@ -52,31 +52,19 @@ export const generateRelativeTime = (dateString, showDetailed) => {
 
   const timeUnits = [];
   if (years > 0) {
-    timeUnits.push(
-      polyglot.t(years > 1 ? "date.years" : "date.year", { count: years }),
-    );
+    timeUnits.push(polyglot.t("date.years", years));
   }
   if (months > 0) {
-    timeUnits.push(
-      polyglot.t(months > 1 ? "date.months" : "date.month", { count: months }),
-    );
+    timeUnits.push(polyglot.t("date.months", months));
   }
   if (days > 0) {
-    timeUnits.push(
-      polyglot.t(days > 1 ? "date.days" : "date.day", { count: days }),
-    );
+    timeUnits.push(polyglot.t("date.days", days));
   }
   if (hours > 0) {
-    timeUnits.push(
-      polyglot.t(hours > 1 ? "date.hours" : "date.hour", { count: hours }),
-    );
+    timeUnits.push(polyglot.t("date.hours", hours));
   }
   if (minutes > 0) {
-    timeUnits.push(
-      polyglot.t(minutes > 1 ? "date.minutes" : "date.minute", {
-        count: minutes,
-      }),
-    );
+    timeUnits.push(polyglot.t("date.minutes", minutes));
   }
 
   if (timeUnits.length === 0) {
@@ -92,9 +80,6 @@ export const generateRelativeTime = (dateString, showDetailed) => {
 export const generateReadingTime = (time) => {
   const { polyglot } = polyglotState.get();
 
-  const minuteStr = polyglot.t(time > 1 ? "date.minutes" : "date.minute", {
-    count: time,
-  });
-
+  const minuteStr = polyglot.t("date.minutes", time);
   return polyglot.t("article_card.reading_time", { time: minuteStr });
 };
