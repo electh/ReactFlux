@@ -88,3 +88,13 @@ export const generateRelativeTime = (dateString, showDetailed) => {
     ? polyglot.t("date.in_time", { time: relativeTime })
     : polyglot.t("date.time_ago", { time: relativeTime });
 };
+
+export const generateReadingTime = (time) => {
+  const { polyglot } = polyglotState.get();
+
+  const minuteStr = polyglot.t(time > 1 ? "date.minutes" : "date.minute", {
+    count: time,
+  });
+
+  return polyglot.t("article_card.reading_time", { time: minuteStr });
+};

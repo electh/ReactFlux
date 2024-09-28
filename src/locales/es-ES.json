@@ -37,6 +37,7 @@
     "saved_to_third-party_services_error": "Error al guardar en servicios de terceros, por favor intente de nuevo más tarde, o verifique la configuración de integración"
   },
   "article_card": {
+    "reading_time": "%{time} de lectura",
     "marked_as_starred": "Marcado como favorito",
     "unmarked_as_starred": "Desmarcado como favorito",
     "marked_as_read": "Marcado como leído",

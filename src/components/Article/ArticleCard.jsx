@@ -16,7 +16,7 @@ import useEntryActions from "../../hooks/useEntryActions";
 import { polyglotState } from "../../hooks/useLanguage";
 import { contentState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
-import { generateRelativeTime } from "../../utils/date";
+import { generateReadingTime, generateRelativeTime } from "../../utils/date";
 import FeedIcon from "../ui/FeedIcon";
 import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
@@ -82,6 +82,8 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
           {entry.feed.title}
           <br />
           {generateRelativeTime(entry.published_at, showDetailedRelativeTime)}
+          <br />
+          {generateReadingTime(entry.reading_time)}
         </Typography.Text>
         {entry.starred && <IconStarFill className="icon-starred" />}
       </div>

@@ -17,7 +17,7 @@ import {
   setIsArticleFocused,
 } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
-import { generateReadableDate } from "../../utils/date";
+import { generateReadableDate, generateReadingTime } from "../../utils/date";
 import { extractImageSources } from "../../utils/images";
 import ActionButtons from "./ActionButtons";
 import "./ArticleDetail.css";
@@ -248,6 +248,10 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
           </div>
           <Typography.Text className="article-date">
             {generateReadableDate(activeContent.published_at)}
+          </Typography.Text>
+          <br />
+          <Typography.Text className="article-date">
+            {generateReadingTime(activeContent.reading_time)}
           </Typography.Text>
           <Divider />
         </div>

@@ -37,6 +37,7 @@
     "saved_to_third-party_services_error": "保存到第三方服务失败，请稍后再试，或检查您的集成设置"
   },
   "article_card": {
+    "reading_time": "需要 %{time}阅读",
     "marked_as_starred": "已标记为收藏",
     "unmarked_as_starred": "已取消收藏",
     "marked_as_read": "已标记为已读",
