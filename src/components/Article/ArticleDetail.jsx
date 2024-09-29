@@ -162,7 +162,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
   const navigate = useNavigate();
   const { activeContent } = useStore(contentState);
-  const { articleWidth, fontSize } = useStore(settingsState);
+  const { articleWidth, fontSize, fontFamily } = useStore(settingsState);
 
   const {
     isPhotoSliderVisible,
@@ -258,7 +258,11 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
         <div
           className="article-body"
           key={activeContent.id}
-          style={{ fontSize: `${fontSize}rem`, width: `${articleWidth}%` }}
+          style={{
+            fontSize: `${fontSize}rem`,
+            width: `${articleWidth}%`,
+            fontFamily: fontFamily,
+          }}
         >
           {parsedHtml}
           <PhotoSlider

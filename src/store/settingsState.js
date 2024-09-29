@@ -18,6 +18,7 @@ const defaultValue = {
   showStatus: "unread",
   theme: "light",
   themeColor: "Blue",
+  fontFamily: "system-ui",
 };
 
 export const settingsState = persistentAtom("settings", defaultValue, {

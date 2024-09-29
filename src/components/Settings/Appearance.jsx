@@ -1,5 +1,6 @@
 import {
   Divider,
+  Select,
   Slider,
   Space,
   Switch,
@@ -17,6 +18,7 @@ const Appearance = () => {
   const {
     articleWidth,
     fontSize,
+    fontFamily,
     layout,
     showDetailedRelativeTime,
     showFeedIcon,
@@ -72,7 +74,6 @@ const Appearance = () => {
           ))}
         </div>
       </div>
-
       <Divider />
       <div className="setting-row">
         <div>
@@ -126,6 +127,34 @@ const Appearance = () => {
             checked={showFeedIcon}
             onChange={(value) => handleConfigChange({ showFeedIcon: value })}
           />
+        </div>
+      </div>
+      <Divider />
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            {polyglot.t("appearance.font_family_label")}
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            {polyglot.t("appearance.font_family_description")}
+          </Typography.Text>
+        </div>
+        <div>
+          <Select
+            style={{ width: 200 }}
+            value={fontFamily}
+            onChange={(value) => handleConfigChange({ fontFamily: value })}
+          >
+            <Select.Option value="system-ui">
+              {polyglot.t("appearance.font_family_system")}
+            </Select.Option>
+            <Select.Option value="'Noto Serif SC', serif">
+              {polyglot.t("appearance.font_family_noto_serif")}
+            </Select.Option>
+            <Select.Option value="'Noto Sans SC', sans-serif">
+              {polyglot.t("appearance.font_family_noto_sans")}
+            </Select.Option>
+          </Select>
         </div>
       </div>
       <Divider />

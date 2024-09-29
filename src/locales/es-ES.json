@@ -186,7 +186,12 @@
     "font_size_label": "Tamaño de la fuente",
     "font_size_description": "Ajustar el tamaño del texto del artículo",
     "article_width_label": "Ancho del artículo",
-    "article_width_description": "Ajustar el ancho del artículo"
+    "article_width_description": "Ajustar el ancho del artículo",
+    "font_family_label": "Fuente del artículo",
+    "font_family_description": "Escoger su fuente del artículo",
+    "font_family_system": "Sistema predeterminado",
+    "font_family_noto_serif": "Noto Serif SC",
+    "font_family_noto_sans": "Noto Sans SC"
   },
   "hotkeys": {
     "key": "Clave",

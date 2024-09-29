@@ -186,7 +186,12 @@
     "font_size_label": "Font size",
     "font_size_description": "Adjust article text size",
     "article_width_label": "Article width",
-    "article_width_description": "Adjust article width"
+    "article_width_description": "Adjust article width",
+    "font_family_label": "Article font",
+    "font_family_description": "Choose your article font",
+    "font_family_system": "System default",
+    "font_family_noto_serif": "Noto Serif SC",
+    "font_family_noto_sans": "Noto Sans SC"
   },
   "hotkeys": {
     "key": "Key",
