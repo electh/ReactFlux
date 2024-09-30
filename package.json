@@ -14,7 +14,7 @@
     "@arco-design/color": "^0.4.0",
     "@arco-design/web-react": "^2.64.0",
     "@nanostores/persistent": "^0.10.2",
-    "@nanostores/react": "^0.7.3",
+    "@nanostores/react": "^0.8.0",
     "@react-spring/web": "^9.7.4",
     "@tanstack/react-virtual": "^3.10.8",
     "canvas-confetti": "^1.9.3",
