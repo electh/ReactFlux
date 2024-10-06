@@ -12,6 +12,7 @@ import {
   contentState,
   setActiveContent,
   setEntries,
+  setOffset,
 } from "../store/contentState";
 import {
   setHistoryCount,
@@ -19,6 +20,7 @@ import {
   setUnreadInfo,
   setUnreadTodayCount,
 } from "../store/dataState";
+import { settingsState } from "../store/settingsState";
 import { checkIsInLast24Hours } from "../utils/date";
 import { polyglotState } from "./useLanguage";
 
@@ -41,10 +43,17 @@ export const handleEntriesStatusUpdate = (entries, newStatus) => {
     return;
   }
 
+  const { showStatus } = settingsState.get();
   if (newStatus === "read") {
     setHistoryCount((prev) => prev + filteredEntries.length);
+    if (showStatus === "unread") {
+      setOffset((prev) => prev - filteredEntries.length);
+    }
   } else {
     setHistoryCount((prev) => Math.max(0, prev - filteredEntries.length));
+    if (showStatus === "unread") {
+      setOffset((prev) => prev + filteredEntries.length);
+    }
   }
 
   for (const entry of filteredEntries) {
