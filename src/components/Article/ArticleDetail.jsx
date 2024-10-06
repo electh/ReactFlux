@@ -162,7 +162,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
   const navigate = useNavigate();
   const { activeContent } = useStore(contentState);
-  const { articleWidth, fontSize, fontFamily } = useStore(settingsState);
+  const { articleWidth, fontFamily, fontSize } = useStore(settingsState);
 
   const {
     isPhotoSliderVisible,

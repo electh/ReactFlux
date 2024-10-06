@@ -189,9 +189,10 @@
     "article_width_description": "Ajustar el ancho del artículo",
     "font_family_label": "Fuente del artículo",
     "font_family_description": "Escoger su fuente del artículo",
-    "font_family_system": "Sistema predeterminado",
+    "font_family_system": "Predeterminado",
+    "font_family_noto_sans": "Noto Sans SC",
     "font_family_noto_serif": "Noto Serif SC",
-    "font_family_noto_sans": "Noto Sans SC"
+    "font_family_lxgw_wenkai": "LXGW WenKai Screen"
   },
   "hotkeys": {
     "key": "Clave",

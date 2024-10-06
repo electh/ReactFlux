@@ -26,6 +26,28 @@ const Appearance = () => {
   } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
 
+  const fontFamilyOptions = [
+    { label: polyglot.t("appearance.font_family_system"), value: "system-ui" },
+    { label: "sans-serif", value: "sans-serif" },
+    { label: "serif", value: "serif" },
+    { label: "Fira Sans", value: "'Fira Sans', sans-serif" },
+    { label: "Open Sans", value: "'Open Sans', sans-serif" },
+    { label: "Source Sans Pro", value: "'Source Sans Pro', sans-serif" },
+    { label: "Source Serif Pro", value: "'Source Serif Pro', serif" },
+    {
+      label: polyglot.t("appearance.font_family_noto_sans"),
+      value: "'Noto Sans SC', sans-serif",
+    },
+    {
+      label: polyglot.t("appearance.font_family_noto_serif"),
+      value: "'Noto Serif SC', serif",
+    },
+    {
+      label: polyglot.t("appearance.font_family_lxgw_wenkai"),
+      value: "'LXGW WenKai Screen', sans-serif",
+    },
+  ];
+
   const handleConfigChange = (settingsChanges) => {
     updateSettings(settingsChanges);
     if (settingsChanges.themeColor) {
@@ -141,19 +163,15 @@ const Appearance = () => {
         </div>
         <div>
           <Select
-            style={{ width: 200 }}
+            style={{ width: 166 }}
             value={fontFamily}
             onChange={(value) => handleConfigChange({ fontFamily: value })}
           >
-            <Select.Option value="system-ui">
-              {polyglot.t("appearance.font_family_system")}
-            </Select.Option>
-            <Select.Option value="'Noto Serif SC', serif">
-              {polyglot.t("appearance.font_family_noto_serif")}
-            </Select.Option>
-            <Select.Option value="'Noto Sans SC', sans-serif">
-              {polyglot.t("appearance.font_family_noto_sans")}
-            </Select.Option>
+            {fontFamilyOptions.map((option) => (
+              <Select.Option key={option.value} value={option.value}>
+                {option.label}
+              </Select.Option>
+            ))}
           </Select>
         </div>
       </div>

@@ -189,9 +189,10 @@
     "article_width_description": "Adjust article width",
     "font_family_label": "Article font",
     "font_family_description": "Choose your article font",
-    "font_family_system": "System default",
+    "font_family_system": "Default",
+    "font_family_noto_sans": "Noto Sans SC",
     "font_family_noto_serif": "Noto Serif SC",
-    "font_family_noto_sans": "Noto Sans SC"
+    "font_family_lxgw_wenkai": "LXGW WenKai Screen"
   },
   "hotkeys": {
     "key": "Key",

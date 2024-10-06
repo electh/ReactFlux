@@ -189,9 +189,10 @@
     "article_width_description": "调整文章宽度",
     "font_family_label": "文章字体",
     "font_family_description": "选择您的文章正文字体",
-    "font_family_system": "系统默认字体",
+    "font_family_system": "默认",
+    "font_family_noto_sans": "思源黑体",
     "font_family_noto_serif": "思源宋体",
-    "font_family_noto_sans": "思源黑体"
+    "font_family_lxgw_wenkai": "霞鹜文楷"
   },
   "hotkeys": {
     "key": "键",
