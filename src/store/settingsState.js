@@ -3,6 +3,7 @@ import { getBrowserLanguage } from "../utils/locales";
 
 const defaultValue = {
   articleWidth: 90,
+  fontFamily: "system-ui",
   fontSize: 1.05,
   homePage: "all",
   language: getBrowserLanguage(),
@@ -13,12 +14,12 @@ const defaultValue = {
   pageSize: 100,
   removeDuplicates: "none",
   showAllFeeds: false,
+  showUnreadFeedsOnly: false,
   showDetailedRelativeTime: false,
   showFeedIcon: true,
   showStatus: "unread",
   theme: "light",
   themeColor: "Blue",
-  fontFamily: "system-ui",
 };
 
 export const settingsState = persistentAtom("settings", defaultValue, {

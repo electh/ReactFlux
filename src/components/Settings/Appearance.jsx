@@ -28,8 +28,8 @@ const Appearance = () => {
 
   const fontFamilyOptions = [
     { label: polyglot.t("appearance.font_family_system"), value: "system-ui" },
-    { label: "sans-serif", value: "sans-serif" },
-    { label: "serif", value: "serif" },
+    { label: "Sans-serif", value: "sans-serif" },
+    { label: "Serif", value: "serif" },
     { label: "Fira Sans", value: "'Fira Sans', sans-serif" },
     { label: "Open Sans", value: "'Open Sans', sans-serif" },
     { label: "Source Sans Pro", value: "'Source Sans Pro', sans-serif" },
@@ -167,9 +167,9 @@ const Appearance = () => {
             value={fontFamily}
             onChange={(value) => handleConfigChange({ fontFamily: value })}
           >
-            {fontFamilyOptions.map((option) => (
-              <Select.Option key={option.value} value={option.value}>
-                {option.label}
+            {fontFamilyOptions.map(({ label, value }) => (
+              <Select.Option key={value} value={value}>
+                {label}
               </Select.Option>
             ))}
           </Select>

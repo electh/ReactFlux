@@ -168,6 +168,8 @@
     "remove_duplicates_option_hash": "Hash",
     "remove_duplicates_option_title": "Título",
     "remove_duplicates_option_url": "URL",
+    "show_unread_feeds_only_label": "Mostrar sólo los feeds sin leer",
+    "show_unread_feeds_only_description": "Mostrar sólo los feeds sin leer en la lista de feeds",
     "mark_read_on_scroll_label": "Marcar los artículos como leídos al desplazarlos fuera de la pantalla",
     "mark_read_on_scroll_description": "Marcar automáticamente los artículos como leídos cuando se desplazan fuera del área visible de la pantalla"
   },

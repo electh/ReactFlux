@@ -24,8 +24,46 @@ const General = () => {
     orderBy,
     pageSize,
     removeDuplicates,
+    showUnreadFeedsOnly,
   } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
+
+  const homePageOptions = [
+    {
+      label: polyglot.t("settings.default_home_page_option_all"),
+      value: "all",
+    },
+    {
+      label: polyglot.t("settings.default_home_page_option_today"),
+      value: "today",
+    },
+    {
+      label: polyglot.t("settings.default_home_page_option_starred"),
+      value: "starred",
+    },
+    {
+      label: polyglot.t("settings.default_home_page_option_history"),
+      value: "history",
+    },
+  ];
+  const removeDuplicatesOptions = [
+    {
+      label: polyglot.t("settings.remove_duplicates_option_none"),
+      value: "none",
+    },
+    {
+      label: polyglot.t("settings.remove_duplicates_option_hash"),
+      value: "hash",
+    },
+    {
+      label: polyglot.t("settings.remove_duplicates_option_title"),
+      value: "title",
+    },
+    {
+      label: polyglot.t("settings.remove_duplicates_option_url"),
+      value: "url",
+    },
+  ];
 
   return (
     <>
@@ -68,19 +106,29 @@ const General = () => {
             onChange={(value) => updateSettings({ homePage: value })}
             value={homePage}
           >
-            <Select.Option value="all">
-              {polyglot.t("settings.default_home_page_option_all")}
-            </Select.Option>
-            <Select.Option value="today">
-              {polyglot.t("settings.default_home_page_option_today")}
-            </Select.Option>
-            <Select.Option value="starred">
-              {polyglot.t("settings.default_home_page_option_starred")}
-            </Select.Option>
-            <Select.Option value="history">
-              {polyglot.t("settings.default_home_page_option_history")}
-            </Select.Option>
+            {homePageOptions.map(({ label, value }) => (
+              <Select.Option key={value} value={value}>
+                {label}
+              </Select.Option>
+            ))}
           </Select>
+        </div>
+      </div>
+      <Divider />
+      <div className="setting-row">
+        <div>
+          <Typography.Title heading={6} style={{ marginTop: 0 }}>
+            {polyglot.t("settings.show_unread_feeds_only_label")}
+          </Typography.Title>
+          <Typography.Text type="secondary">
+            {polyglot.t("settings.show_unread_feeds_only_description")}
+          </Typography.Text>
+        </div>
+        <div>
+          <Switch
+            checked={showUnreadFeedsOnly}
+            onChange={(value) => updateSettings({ showUnreadFeedsOnly: value })}
+          />
         </div>
       </div>
       <Divider />
@@ -145,18 +193,11 @@ const General = () => {
             onChange={(value) => updateSettings({ removeDuplicates: value })}
             value={removeDuplicates}
           >
-            <Select.Option value="none">
-              {polyglot.t("settings.remove_duplicates_option_none")}
-            </Select.Option>
-            <Select.Option value="hash">
-              {polyglot.t("settings.remove_duplicates_option_hash")}
-            </Select.Option>
-            <Select.Option value="title">
-              {polyglot.t("settings.remove_duplicates_option_title")}
-            </Select.Option>
-            <Select.Option value="url">
-              {polyglot.t("settings.remove_duplicates_option_url")}
-            </Select.Option>
+            {removeDuplicatesOptions.map(({ label, value }) => (
+              <Select.Option key={value} value={value}>
+                {label}
+              </Select.Option>
+            ))}
           </Select>
         </div>
       </div>

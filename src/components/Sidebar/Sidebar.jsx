@@ -125,7 +125,8 @@ const CustomMenuItem = ({ path, Icon, label, count }) => {
 };
 
 const Sidebar = () => {
-  const { homePage, showFeedIcon } = useStore(settingsState);
+  const { homePage, showFeedIcon, showUnreadFeedsOnly } =
+    useStore(settingsState);
   const { historyCount, isAppDataReady, starredCount, unreadTodayCount } =
     useStore(dataState);
   const feedsGroupedById = useStore(feedsGroupedByIdState);
@@ -174,52 +175,56 @@ const Sidebar = () => {
   );
 
   const renderFeedItems = (categoryId) =>
-    feedsGroupedById[categoryId]?.map((feed) => (
-      <MenuItem
-        key={`/feed/${feed.id}`}
-        style={{ position: "relative", overflow: "hidden" }}
-        onClick={(e) => {
-          e.stopPropagation();
-          navigate(`/feed/${feed.id}`);
-          setActiveContent(null);
-        }}
-      >
-        <div className="custom-menu-item">
-          <Typography.Ellipsis
-            expandable={false}
-            showTooltip={true}
-            style={{
-              width: feed.unreadCount ? "80%" : "100%",
-              paddingLeft: "20px",
-              boxSizing: "border-box",
-            }}
-          >
-            {showFeedIcon && (
-              <FeedIcon feed={feed} className="feed-icon-sidebar" />
-            )}
-            {feed.title}
-          </Typography.Ellipsis>
-          {feed.unreadCount !== 0 && (
-            <Typography.Ellipsis className="item-count" expandable={false}>
-              {feed.unreadCount}
+    feedsGroupedById[categoryId]
+      ?.filter((feed) => !showUnreadFeedsOnly || feed.unreadCount > 0)
+      .map((feed) => (
+        <MenuItem
+          key={`/feed/${feed.id}`}
+          style={{ position: "relative", overflow: "hidden" }}
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/feed/${feed.id}`);
+            setActiveContent(null);
+          }}
+        >
+          <div className="custom-menu-item">
+            <Typography.Ellipsis
+              expandable={false}
+              showTooltip={true}
+              style={{
+                width: feed.unreadCount ? "80%" : "100%",
+                paddingLeft: "20px",
+                boxSizing: "border-box",
+              }}
+            >
+              {showFeedIcon && (
+                <FeedIcon feed={feed} className="feed-icon-sidebar" />
+              )}
+              {feed.title}
             </Typography.Ellipsis>
-          )}
-        </div>
-      </MenuItem>
-    ));
+            {feed.unreadCount !== 0 && (
+              <Typography.Ellipsis className="item-count" expandable={false}>
+                {feed.unreadCount}
+              </Typography.Ellipsis>
+            )}
+          </div>
+        </MenuItem>
+      ));
 
   const renderCategoryItems = () =>
-    filteredCategories.map((category) => (
-      <Collapse.Item
-        name={`/category/${category.id}`}
-        key={category.id}
-        style={{ position: "relative", overflow: "hidden" }}
-        header={<CategoryTitle category={category} path={currentPath} />}
-        expandIcon={<IconRight />}
-      >
-        {renderFeedItems(category.id)}
-      </Collapse.Item>
-    ));
+    filteredCategories
+      .filter((category) => !showUnreadFeedsOnly || category.unreadCount > 0)
+      .map((category) => (
+        <Collapse.Item
+          name={`/category/${category.id}`}
+          key={category.id}
+          style={{ position: "relative", overflow: "hidden" }}
+          header={<CategoryTitle category={category} path={currentPath} />}
+          expandIcon={<IconRight />}
+        >
+          {renderFeedItems(category.id)}
+        </Collapse.Item>
+      ));
 
   return (
     <div className="sidebar-container">
