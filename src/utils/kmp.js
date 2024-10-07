@@ -162,16 +162,22 @@ export const filterData = (data, query, fields = [], ignoreCase = true) => {
 
 // 主函数
 export const filterByQuery = (data, query, fields = [], ignoreCase = true) => {
-  try {
-    if (!Array.isArray(data) || data.length === 0) {
-      throw new Error("Invalid data input");
-    }
-    if (typeof query !== "string" || query.trim().length === 0) {
-      throw new Error("Invalid query input");
-    }
-    return filterData(data, query, fields, ignoreCase);
-  } catch (error) {
-    console.error(error.message);
+  if (!Array.isArray(data) || data.length === 0) {
+    console.error("Invalid data input:", {
+      receivedData: data,
+      type: typeof data,
+      isArray: Array.isArray(data),
+      length: Array.isArray(data) ? data.length : "N/A",
+    });
     return [];
   }
+  if (typeof query !== "string" || query.trim().length === 0) {
+    console.error("Invalid query input:", {
+      receivedQuery: query,
+      type: typeof query,
+      trimmedLength: typeof query === "string" ? query.trim().length : "N/A",
+    });
+    return [];
+  }
+  return filterData(data, query, fields, ignoreCase);
 };

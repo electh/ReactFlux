@@ -82,8 +82,8 @@ const ActionButtons = ({ handleEntryClick, entryListRef }) => {
         />
         <Button
           icon={<IconCloudDownload />}
-          onClick={() => {
-            handleFetchContent();
+          onClick={async () => {
+            await handleFetchContent();
             setIsFetchedOriginal(true);
           }}
           shape="circle"
