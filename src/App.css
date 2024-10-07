@@ -97,7 +97,7 @@
     width: calc(100% - 20px) !important;
   }
 
-  .article-content {
+  .article-container {
     background-color: var(--color-bg-2);
     box-sizing: border-box;
     position: absolute !important;

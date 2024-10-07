@@ -46,6 +46,12 @@
   padding-bottom: 40px;
 }
 
+.article-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .article-content h1,
 h2,
 h3,
@@ -86,11 +92,7 @@ p {
 /* 文章内容文本样式 */
 .article-content {
   color: var(--color-text-2);
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  position: relative;
+  flex: 1;
 }
 
 /* 文章内容链接样式 */

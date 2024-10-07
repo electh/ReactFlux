@@ -362,7 +362,7 @@ const FeedList = () => {
       dataIndex: "op",
       fixed: "right",
       width: 100,
-      render: (col, record) => (
+      render: (record) => (
         <Space>
           <button
             aria-label={polyglot.t("feed_table.table_feed_edit_label")}

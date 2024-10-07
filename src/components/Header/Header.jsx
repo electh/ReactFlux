@@ -178,8 +178,6 @@ const Header = () => {
                 ))}
               </Menu>
             }
-            trigger="hover"
-            position="bottom"
           >
             <Button
               icon={getThemeIcon()}
@@ -209,11 +207,8 @@ const Header = () => {
               </Menu>
             }
             trigger="click"
-            position="br"
           >
-            <Avatar size={28} style={{ cursor: "pointer" }}>
-              <IconUser />
-            </Avatar>
+            <Button icon={<IconUser />} shape="circle" size="small" />
           </Dropdown>
         </Space>
       </div>
