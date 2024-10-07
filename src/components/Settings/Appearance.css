@@ -2,38 +2,10 @@
   padding-left: 0;
 }
 
-.custom-radio-card {
-  border-radius: 8px;
-  border: 1px solid var(--color-border-2);
-  box-sizing: border-box;
-  height: 60px;
-  padding: 8px 8px 1px 8px;
-  transition: all 0.1s linear;
-}
-
-input[name="card-radio-group"]:focus-visible + .custom-radio-card {
-  box-shadow: 0 0 0 2px var(--color-primary-light-3);
-}
-
-.custom-radio-card:hover,
-.custom-radio-card-checked,
-.custom-radio-card:hover .custom-radio-card-mask,
-.custom-radio-card-checked .custom-radio-card-mask {
-  border-color: rgb(var(--primary-6));
-}
-
-.custom-radio-card-checked {
-  background-color: var(--color-primary-light-1);
-}
-
 .setting-row {
   align-items: center;
   display: flex;
   justify-content: space-between;
-}
-
-.theme-selector {
-  margin-top: 16px;
 }
 
 .input-select {

@@ -14,22 +14,3 @@
   gap: 16px;
   justify-content: space-between;
 }
-
-.button-read-unread {
-  border-bottom: 1px solid rgb(var(--primary-5));
-  border-radius: 50% 50% 0 0;
-}
-
-.button-star {
-  border-radius: 0;
-}
-
-.button-action {
-  border-radius: 0;
-  border-top: 1px solid rgb(var(--primary-5));
-}
-
-.button-next {
-  border-radius: 0 0 50% 50%;
-  border-top: 1px solid rgb(var(--primary-5));
-}

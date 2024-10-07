@@ -15,10 +15,6 @@ body {
   padding: 10px !important;
 }
 
-.card-custom-hover-style .card-cover {
-  transition: scale 0.15s ease-in-out; /* 添加过渡效果 */
-}
-
 .article-card, .arco-card-bordered {
   border: none !important;
   overflow: hidden !important;
@@ -57,10 +53,6 @@ body[arco-theme="dark"] .article-card, body[arco-theme="dark"] .arco-card-border
 }
 
 .entry-list {
-  background-color: var(--color-bg-1) !important;
-}
-
-.entry-detail-container {
   background-color: var(--color-bg-1) !important;
 }
 

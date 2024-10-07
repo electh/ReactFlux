@@ -39,11 +39,6 @@
   margin-right: 10px;
 }
 
-.divider {
-  margin-bottom: 4px;
-  margin-top: 0;
-}
-
 .section-title {
   color: var(--color-text-3);
   font-style: italic;
