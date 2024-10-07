@@ -1,5 +1,6 @@
-import { Message } from "@arco-design/web-react";
-import { useEffect, useRef } from "react";
+import { Message, Typography } from "@arco-design/web-react";
+import { IconEmpty } from "@arco-design/web-react/icon";
+import { useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import { useStore } from "@nanostores/react";
@@ -18,10 +19,11 @@ import {
 } from "../../store/contentState";
 import { dataState, hiddenFeedIdsState } from "../../store/dataState";
 import { settingsState } from "../../store/settingsState";
+import ActionButtons from "../Article/ActionButtons";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
-import "./Content.css";
 import FooterPanel from "./FooterPanel";
+import "./Content.css";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
@@ -44,6 +46,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const { fetchAppData } = useAppData();
   const { fetchArticleList } = useArticleList(getEntries);
+
+  const [isArticleLoading, setIsArticleLoading] = useState(false);
 
   const entryListRef = useRef(null);
   const cardsRef = useRef(null);
@@ -85,31 +89,21 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   }, [orderDirection, showStatus]);
 
   const handleEntryClick = async (entry) => {
-    setActiveContent(null);
+    setIsArticleLoading(true);
 
-    if (entry.status !== "unread") {
-      setTimeout(() => {
-        setActiveContent({ ...entry, status: "read" });
-        setTimeout(() => {
-          entryDetailRef.current?.focus();
-        }, 200);
-      }, 200);
-      return;
-    }
-
-    try {
-      setTimeout(() => {
-        setActiveContent({ ...entry, status: "read" });
-        setTimeout(() => {
-          entryDetailRef.current?.focus();
-        }, 200);
+    setActiveContent({ ...entry, status: "read" });
+    setTimeout(() => {
+      entryDetailRef.current?.focus();
+      setIsArticleLoading(false);
+      if (entry.status === "unread") {
         handleEntryStatusUpdate(entry, "read");
-      }, 200);
-      await updateEntriesStatus([entry.id], "read");
-    } catch {
-      Message.error(polyglot.t("content.mark_as_read_error"));
-      handleEntryStatusUpdate(entry, "unread");
-    }
+        updateEntriesStatus([entry.id], "read").catch(() => {
+          Message.error(polyglot.t("content.mark_as_read_error"));
+          setActiveContent({ ...entry, status: "unread" });
+          handleEntryStatusUpdate(entry, "unread");
+        });
+      }
+    }, 200);
   };
 
   const {
@@ -191,19 +185,40 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           markAllAsRead={markAllAsRead}
         />
       </div>
-      <CSSTransition
-        in={activeContent !== null}
-        timeout={200}
-        nodeRef={entryDetailRef}
-        classNames="fade"
-        unmountOnExit
-      >
-        <ArticleDetail
-          handleEntryClick={handleEntryClick}
-          entryListRef={entryListRef}
-          ref={entryDetailRef}
-        />
-      </CSSTransition>
+      {activeContent ? (
+        <div className="article-container">
+          <CSSTransition
+            in={!isArticleLoading}
+            timeout={200}
+            nodeRef={entryDetailRef}
+            classNames="fade"
+            unmountOnExit
+          >
+            <ArticleDetail ref={entryDetailRef} />
+          </CSSTransition>
+          <CSSTransition
+            in={!isArticleLoading}
+            timeout={200}
+            classNames="fade"
+            unmountOnExit
+          >
+            <ActionButtons
+              handleEntryClick={handleEntryClick}
+              entryListRef={entryListRef}
+            />
+          </CSSTransition>
+        </div>
+      ) : (
+        <div className="content-empty">
+          <IconEmpty style={{ fontSize: "64px" }} />
+          <Typography.Title
+            heading={6}
+            style={{ color: "var(--color-text-3)", marginTop: "10px" }}
+          >
+            ReactFlux
+          </Typography.Title>
+        </div>
+      )}
     </>
   );
 };

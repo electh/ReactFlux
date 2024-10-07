@@ -98,11 +98,8 @@
   }
 
   .article-container {
-    background-color: var(--color-bg-2);
-    box-sizing: border-box;
     position: absolute !important;
-    height: calc(100% - 48px);
-    width: 100%;
+    height: calc(100% - 48px) !important;
     z-index: 3 !important;
   }
 

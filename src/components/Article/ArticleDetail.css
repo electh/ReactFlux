@@ -47,6 +47,7 @@
 }
 
 .article-container {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -91,6 +92,7 @@ p {
 
 /* 文章内容文本样式 */
 .article-content {
+  background-color: var(--color-bg-1);
   color: var(--color-text-2);
   flex: 1;
 }
@@ -152,15 +154,4 @@ p {
   line-height: 1.2;
   overflow: auto;
   padding: 10px;
-}
-
-.content-empty {
-  align-items: center;
-  background-color: var(--color-fill-1);
-  color: var(--color-text-3);
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: center;
-  padding: 40px 16px;
 }

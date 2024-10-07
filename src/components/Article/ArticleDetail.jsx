@@ -1,5 +1,5 @@
 import { Button, Divider, Tag, Typography } from "@arco-design/web-react";
-import { IconEmpty, IconFullscreen } from "@arco-design/web-react/icon";
+import { IconFullscreen } from "@arco-design/web-react/icon";
 import ReactHtmlParser from "html-react-parser";
 import { forwardRef, useEffect, useState } from "react";
 import { PhotoSlider } from "react-photo-view";
@@ -19,7 +19,6 @@ import {
 import { settingsState } from "../../store/settingsState";
 import { generateReadableDate, generateReadingTime } from "../../utils/date";
 import { extractImageSources } from "../../utils/images";
-import ActionButtons from "./ActionButtons";
 import "./ArticleDetail.css";
 
 const CustomLink = ({ url, text }) => {
@@ -159,7 +158,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
   },
 });
 
-const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
+const ArticleDetail = forwardRef((_, ref) => {
   const navigate = useNavigate();
   const { activeContent } = useStore(contentState);
   const { articleWidth, fontFamily, fontSize } = useStore(settingsState);
@@ -182,20 +181,6 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
     setIsArticleFocused((prev) => !prev);
   };
 
-  if (!activeContent) {
-    return (
-      <div ref={ref} className="content-empty">
-        <IconEmpty style={{ fontSize: "64px" }} />
-        <Typography.Title
-          heading={6}
-          style={{ color: "var(--color-text-3)", marginTop: "10px" }}
-        >
-          ReactFlux
-        </Typography.Title>
-      </div>
-    );
-  }
-
   const imageSources = extractImageSources(activeContent.content);
   const htmlParserOptions = getHtmlParserOptions(
     imageSources,
@@ -205,86 +190,80 @@ const ArticleDetail = forwardRef(({ handleEntryClick, entryListRef }, ref) => {
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category;
 
   return (
-    <div className="article-container">
-      <article
-        className="article-content"
-        onBlur={() => setIsArticleFocused(false)}
-        onFocus={() => setIsArticleFocused(true)}
-        ref={ref}
-        tabIndex={-1}
-      >
-        <SimpleBar className="scroll-container">
-          <div className="article-header" style={{ width: `${articleWidth}%` }}>
-            <Typography.Title className="article-title" heading={3}>
-              <a
-                href={activeContent.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {activeContent.title}
-              </a>
-            </Typography.Title>
-            <div className="article-meta">
-              <Typography.Text>
-                <CustomLink
-                  url={`/feed/${activeContent.feed.id}`}
-                  text={activeContent.feed.title}
-                />
-              </Typography.Text>
-              <Typography.Text
-                onClick={handleAuthorFilter}
-                style={{ cursor: "pointer" }}
-              >
-                {` - ${activeContent.author}`}
-              </Typography.Text>
-              <Typography.Text>
-                <Tag
-                  size="small"
-                  style={{ marginLeft: "10px", cursor: "pointer" }}
-                  onClick={() => navigate(`/category/${categoryId}`)}
-                >
-                  {categoryTitle}
-                </Tag>
-              </Typography.Text>
-            </div>
-            <Typography.Text className="article-date">
-              {generateReadableDate(activeContent.published_at)}
+    <article
+      className="article-content"
+      onBlur={() => setIsArticleFocused(false)}
+      onFocus={() => setIsArticleFocused(true)}
+      ref={ref}
+      tabIndex={-1}
+    >
+      <SimpleBar className="scroll-container">
+        <div className="article-header" style={{ width: `${articleWidth}%` }}>
+          <Typography.Title className="article-title" heading={3}>
+            <a
+              href={activeContent.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {activeContent.title}
+            </a>
+          </Typography.Title>
+          <div className="article-meta">
+            <Typography.Text>
+              <CustomLink
+                url={`/feed/${activeContent.feed.id}`}
+                text={activeContent.feed.title}
+              />
             </Typography.Text>
-            <br />
-            <Typography.Text className="article-date">
-              {generateReadingTime(activeContent.reading_time)}
+            <Typography.Text
+              onClick={handleAuthorFilter}
+              style={{ cursor: "pointer" }}
+            >
+              {` - ${activeContent.author}`}
             </Typography.Text>
-            <Divider />
+            <Typography.Text>
+              <Tag
+                size="small"
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                onClick={() => navigate(`/category/${categoryId}`)}
+              >
+                {categoryTitle}
+              </Tag>
+            </Typography.Text>
           </div>
-          <div
-            className="article-body"
-            key={activeContent.id}
-            style={{
-              fontSize: `${fontSize}rem`,
-              width: `${articleWidth}%`,
-              fontFamily: fontFamily,
+          <Typography.Text className="article-date">
+            {generateReadableDate(activeContent.published_at)}
+          </Typography.Text>
+          <br />
+          <Typography.Text className="article-date">
+            {generateReadingTime(activeContent.reading_time)}
+          </Typography.Text>
+          <Divider />
+        </div>
+        <div
+          className="article-body"
+          key={activeContent.id}
+          style={{
+            fontSize: `${fontSize}rem`,
+            width: `${articleWidth}%`,
+            fontFamily: fontFamily,
+          }}
+        >
+          {parsedHtml}
+          <PhotoSlider
+            images={imageSources.map((item) => ({ src: item, key: item }))}
+            loop={false}
+            visible={isPhotoSliderVisible}
+            onClose={() => {
+              setIsPhotoSliderVisible(false);
+              setIsArticleFocused(true);
             }}
-          >
-            {parsedHtml}
-            <PhotoSlider
-              images={imageSources.map((item) => ({ src: item, key: item }))}
-              loop={false}
-              visible={isPhotoSliderVisible}
-              onClose={() => {
-                setIsPhotoSliderVisible(false);
-                setIsArticleFocused(true);
-              }}
-              index={selectedIndex}
-              onIndexChange={setSelectedIndex}
-            />
-          </div>
-        </SimpleBar>
-      </article>
-      <ActionButtons
-        handleEntryClick={handleEntryClick}
-        entryListRef={entryListRef}
-      />
-    </div>
+            index={selectedIndex}
+            onIndexChange={setSelectedIndex}
+          />
+        </div>
+      </SimpleBar>
+    </article>
   );
 });
 

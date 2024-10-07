@@ -34,10 +34,6 @@ const ActionButtons = ({ handleEntryClick, entryListRef }) => {
   const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } =
     useKeyHandlers(handleEntryClick, entryListRef);
 
-  if (!activeContent) {
-    return null;
-  }
-
   const isUnread = activeContent.status === "unread";
   const isStarred = activeContent.starred;
   const currentIndex = filteredEntries.findIndex(
