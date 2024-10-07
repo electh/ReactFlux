@@ -15,7 +15,7 @@
     "@arco-design/web-react": "^2.64.0",
     "@nanostores/persistent": "^0.10.2",
     "@nanostores/react": "^0.8.0",
-    "@react-spring/web": "^9.7.4",
+    "@react-spring/web": "^9.7.5",
     "@tanstack/react-virtual": "^3.10.8",
     "canvas-confetti": "^1.9.3",
     "classnames": "^2.5.1",
