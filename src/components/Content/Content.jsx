@@ -196,12 +196,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           >
             <ArticleDetail ref={entryDetailRef} />
           </CSSTransition>
-          <CSSTransition
-            in={!isArticleLoading}
-            timeout={200}
-            classNames="fade"
-            unmountOnExit
-          >
+          <CSSTransition in={!isArticleLoading} timeout={200} unmountOnExit>
             <ActionButtons
               handleEntryClick={handleEntryClick}
               entryListRef={entryListRef}

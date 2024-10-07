@@ -11,6 +11,7 @@
 
 .fade-exit {
   opacity: 1;
+  transform: translateY(0);
 }
 
 .fade-exit-active {
@@ -33,6 +34,7 @@
 
   .fade-exit {
     opacity: 1;
+    transform: translateX(0);
   }
 
   .fade-exit-active {

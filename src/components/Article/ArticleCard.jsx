@@ -102,7 +102,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
   const { handleToggleStarred, handleToggleStatus } = useEntryActions();
 
   const [swipeOffset, setSwipeOffset] = useState(0);
-  const swipeThreshold = 100;
+  const swipeThreshold = 60;
   const initialDampingFactor = 0.5;
 
   const isStarred = entry.starred;
