@@ -50,8 +50,8 @@ const CategoryTitle = ({ category, path }) => {
   return (
     <div
       className={classNames("category-title", {
-        "active-subMenu": path === `/category/${category.id}`,
-        "inactive-subMenu": path !== `/category/${category.id}`,
+        "submenu-active": path === `/category/${category.id}`,
+        "submenu-inactive": path !== `/category/${category.id}`,
       })}
       onClick={handleNavigation}
       onKeyDown={(e) => {
