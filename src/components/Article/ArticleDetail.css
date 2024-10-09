@@ -16,7 +16,11 @@
   text-decoration: none;
 }
 
-.article-meta .arco-typography{
+.article-title.arco-typography {
+  word-break: normal;
+}
+
+.article-meta .arco-typography {
   color: var(--color-text-3);
   font-size: 0.75rem;
   line-height: 2 !important;

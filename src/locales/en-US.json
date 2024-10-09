@@ -121,7 +121,7 @@
     "update_feed_success": "Feed updated successfully",
     "update_feed_error": "Failed to update feed",
     "modal_bulk_update_title": "Bulk Update Hosts",
-    "modal_bulk_update_description": "This will bulk update filtered feeds' hosts. Only recommended for RssHub.",
+    "modal_bulk_update_description": "This will bulk update filtered feeds' hosts. Only recommended for RSSHub.",
     "modal_edit_feed_title": "Edit Feed",
     "modal_edit_feed_submit_error": "Feed URL cannot be empty",
     "modal_edit_feed_category_label": "Category",

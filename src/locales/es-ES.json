@@ -121,7 +121,7 @@
     "update_feed_success": "Feed actualizado con éxito",
     "update_feed_error": "No se pudo actualizar el feed",
     "modal_bulk_update_title": "Actualización masiva de hosts",
-    "modal_bulk_update_description": "Esta función actualizará en masa los hosts de las fuentes filtradas. Se recomienda únicamente para RssHub.",
+    "modal_bulk_update_description": "Esta función actualizará en masa los hosts de las fuentes filtradas. Se recomienda únicamente para RSSHub.",
     "modal_edit_feed_title": "Editar feed",
     "modal_edit_feed_submit_error": "La URL del feed no puede estar vacía",
     "modal_edit_feed_category_label": "Categoría",

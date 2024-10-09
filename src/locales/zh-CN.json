@@ -121,7 +121,7 @@
     "update_feed_success": "订阅源更新成功",
     "update_feed_error": "订阅源更新失败",
     "modal_bulk_update_title": "批量更新域名",
-    "modal_bulk_update_description": "这将批量更新已筛选订阅源的域名。仅推荐用于 RssHub。",
+    "modal_bulk_update_description": "这将批量更新已筛选订阅源的域名。仅推荐用于 RSSHub。",
     "modal_edit_feed_title": "编辑订阅源",
     "modal_edit_feed_submit_error": "订阅源 URL 不能为空",
     "modal_edit_feed_category_label": "分类",
