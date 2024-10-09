@@ -2,7 +2,7 @@ import { apiClient } from "./ofetch";
 
 export const getFeeds = async () => apiClient.get("/v1/feeds");
 
-export const getUnreadInfo = async () => apiClient.get("/v1/feeds/counters");
+export const getCounters = async () => apiClient.get("/v1/feeds/counters");
 
 export const refreshFeed = async (id) =>
   apiClient.raw(`/v1/feeds/${id}/refresh`, { method: "PUT" });

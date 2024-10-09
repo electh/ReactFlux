@@ -1,11 +1,10 @@
 import { useRef } from "react";
 import {
   getCategories,
+  getCounters,
   getFeeds,
-  getHistoryEntries,
   getStarredEntries,
   getTodayEntries,
-  getUnreadInfo,
   getVersion,
 } from "../apis";
 import {
@@ -33,34 +32,37 @@ const useAppData = () => {
 
     try {
       const responses = await Promise.all([
-        getUnreadInfo(),
+        getCounters(),
         getTodayEntries(0, "unread"),
         getStarredEntries(),
-        getHistoryEntries(),
         getFeeds(),
         getCategories(),
         getVersion(),
       ]);
 
       const [
-        unreadInfoData,
+        countersData,
         unreadTodayData,
         starredData,
-        historyData,
         feedsData,
         categoriesData,
         versionData,
       ] = responses;
 
       const unreadInfo = feedsData.reduce((acc, feed) => {
-        acc[feed.id] = unreadInfoData.unreads[feed.id] ?? 0;
+        acc[feed.id] = countersData.unreads[feed.id] ?? 0;
         return acc;
       }, {});
+
+      const historyCount = Object.values(countersData.reads).reduce(
+        (acc, count) => acc + count,
+        0,
+      );
 
       setUnreadInfo(unreadInfo);
       setUnreadTodayCount(unreadTodayData.total ?? 0);
       setStarredCount(starredData.total ?? 0);
-      setHistoryCount(historyData.total ?? 0);
+      setHistoryCount(historyCount);
       setFeedsData(feedsData);
       setCategoriesData(categoriesData);
       setIsVersionAtLeast2_2_0(
