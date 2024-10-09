@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useStore } from "@nanostores/react";
 import {
+  activeEntryIndexState,
   contentState,
   filteredEntriesState,
   setActiveContent,
@@ -13,6 +14,7 @@ import { usePhotoSlider } from "./usePhotoSlider";
 
 const useKeyHandlers = (handleEntryClick, entryListRef) => {
   const { activeContent, loadMoreVisible } = useStore(contentState);
+  const activeEntryIndex = useStore(activeEntryIndexState);
   const filteredEntries = useStore(filteredEntriesState);
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
@@ -31,14 +33,19 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
     }
   }, [loadingMore, shouldLoadNext]);
 
-  useEffect(() => {
-    if (activeContent) {
-      document.querySelector(".card-custom-selected-style")?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
+  const scrollSelectedCardIntoView = () => {
+    if (entryListRef.current) {
+      const selectedCard = entryListRef.current.el.querySelector(
+        ".card-custom-selected-style",
+      );
+      if (selectedCard) {
+        selectedCard.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }
     }
-  }, [activeContent]);
+  };
 
   const withActiveContent =
     (fn) =>
@@ -55,21 +62,28 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
     }
   });
 
+  const findAdjacentEntry = (currentIndex, direction, unread, entries) => {
+    const slice =
+      direction === "prev"
+        ? entries.slice(0, currentIndex).toReversed()
+        : entries.slice(currentIndex + 1);
+
+    return unread
+      ? slice.find((entry) => entry.status === "unread")
+      : entries[currentIndex + (direction === "prev" ? -1 : 1)];
+  };
+
   const navigateToPreviousArticle = (unread = false) => {
-    const currentIndex = filteredEntries.findIndex(
-      (entry) => entry.id === activeContent?.id,
-    );
-
-    if (currentIndex > 0) {
-      const prevEntry = unread
-        ? filteredEntries
-            .slice(0, currentIndex)
-            .toReversed()
-            .find((entry) => entry.status === "unread")
-        : filteredEntries[currentIndex - 1];
-
+    if (activeEntryIndex > 0) {
+      const prevEntry = findAdjacentEntry(
+        activeEntryIndex,
+        "prev",
+        unread,
+        filteredEntries,
+      );
       if (prevEntry) {
         handleEntryClick(prevEntry);
+        setTimeout(() => scrollSelectedCardIntoView(), 200);
       }
     }
   };
@@ -79,10 +93,7 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
       return;
     }
 
-    const currentIndex = filteredEntries.findIndex(
-      (entry) => entry.id === activeContent?.id,
-    );
-    const isLastEntry = currentIndex === filteredEntries.length - 1;
+    const isLastEntry = activeEntryIndex === filteredEntries.length - 1;
 
     if (isLastEntry && loadMoreVisible) {
       setIsLoading(true);
@@ -90,19 +101,20 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
       return;
     }
 
-    if (currentIndex === -1) {
+    if (activeEntryIndex === -1) {
       entryListRef.current.contentWrapperEl.scrollTo({ top: 0 });
       return;
     }
 
-    const nextEntry = unread
-      ? filteredEntries
-          .slice(currentIndex + 1)
-          .find((entry) => entry.status === "unread")
-      : filteredEntries[currentIndex + 1];
-
+    const nextEntry = findAdjacentEntry(
+      activeEntryIndex,
+      "next",
+      unread,
+      filteredEntries,
+    );
     if (nextEntry) {
       handleEntryClick(nextEntry);
+      setTimeout(() => scrollSelectedCardIntoView(), 200);
       setShouldLoadNext(false);
     }
   };

@@ -15,13 +15,16 @@ import { useEffect, useState } from "react";
 import { useStore } from "@nanostores/react";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
-import { contentState } from "../../store/contentState";
+import { activeEntryIndexState, contentState } from "../../store/contentState";
 import { filteredEntriesState } from "../../store/contentState";
 import "./ActionButtons.css";
 
 const ActionButtons = ({ handleEntryClick, entryListRef }) => {
   const { activeContent } = useStore(contentState);
+  const activeEntryIndex = useStore(activeEntryIndexState);
   const filteredEntries = useStore(filteredEntriesState);
+  const isFirstEntry = activeEntryIndex === 0;
+  const isLastEntry = activeEntryIndex === filteredEntries.length - 1;
 
   const [isFetchedOriginal, setIsFetchedOriginal] = useState(false);
 
@@ -36,11 +39,6 @@ const ActionButtons = ({ handleEntryClick, entryListRef }) => {
 
   const isUnread = activeContent.status === "unread";
   const isStarred = activeContent.starred;
-  const currentIndex = filteredEntries.findIndex(
-    (entry) => entry.id === activeContent?.id,
-  );
-  const isFirstEntry = currentIndex === 0;
-  const isLastEntry = currentIndex === filteredEntries.length - 1;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {

@@ -47,6 +47,17 @@ export const filteredEntriesState = computed(
   },
 );
 
+export const activeEntryIndexState = computed(
+  [contentState, filteredEntriesState],
+  (content, filteredEntries) => {
+    const { activeContent } = content;
+    if (!activeContent) {
+      return -1;
+    }
+    return filteredEntries.findIndex((entry) => entry.id === activeContent.id);
+  },
+);
+
 export const setActiveContent = createSetter(contentState, "activeContent");
 export const setEntries = createSetter(contentState, "entries");
 export const setFilterString = createSetter(contentState, "filterString");
