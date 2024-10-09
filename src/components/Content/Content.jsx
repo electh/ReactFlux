@@ -93,7 +93,17 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
     setActiveContent({ ...entry, status: "read" });
     setTimeout(() => {
-      entryDetailRef.current?.focus();
+      const articleContent = entryDetailRef.current;
+      if (articleContent) {
+        const contentWrapper = articleContent.querySelector(
+          ".simplebar-content-wrapper",
+        );
+        if (contentWrapper) {
+          contentWrapper.scroll({ top: 0 });
+        }
+        articleContent.focus();
+      }
+
       setIsArticleLoading(false);
       if (entry.status === "unread") {
         handleEntryStatusUpdate(entry, "read");

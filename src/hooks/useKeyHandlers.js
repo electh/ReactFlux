@@ -91,11 +91,7 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
     }
 
     if (currentIndex === -1) {
-      entryListRef.current.contentWrapperEl.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
+      entryListRef.current.contentWrapperEl.scrollTo({ top: 0 });
       return;
     }
 
