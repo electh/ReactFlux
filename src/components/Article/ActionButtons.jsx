@@ -10,7 +10,7 @@ import {
   IconStar,
   IconStarFill,
 } from "@arco-design/web-react/icon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useStore } from "@nanostores/react";
 import useEntryActions from "../../hooks/useEntryActions";
@@ -41,6 +41,11 @@ const ActionButtons = ({ handleEntryClick, entryListRef }) => {
   );
   const isFirstEntry = currentIndex === 0;
   const isLastEntry = currentIndex === filteredEntries.length - 1;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setIsFetchedOriginal(false);
+  }, [activeContent]);
 
   return (
     <div className="action-buttons">
