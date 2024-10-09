@@ -3,7 +3,6 @@
   cursor: pointer;
   width: 100%;
   border-radius: 2px;
-  text-align: justify;
 }
 
 .card-custom-hover-style {
@@ -102,6 +101,10 @@
 .article-card-title {
   color: var(--color-text-2);
   font-weight: 500;
+}
+
+.article-card-title.arco-typography {
+  word-break: normal;
 }
 
 .article-card-info {
