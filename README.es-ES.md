@@ -99,4 +99,3 @@ Si quiere experimentar r√°pidamente la rama `next`, esta es una [instancia en l√
 ## historial de estrellas en GitHub
 
 [![Historial de estrellas](https://starchart.cc/electh/ReactFlux.svg)](https://starchart.cc/electh/ReactFlux)
-```

@@ -99,4 +99,3 @@ If you want to quickly experience the `next` branch, here is an [online instance
 ## Star History
 
 [![Star History](https://starchart.cc/electh/ReactFlux.svg)](https://starchart.cc/electh/ReactFlux)
-```
