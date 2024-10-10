@@ -21,7 +21,7 @@ import FeedIcon from "../ui/FeedIcon";
 import "./ArticleCard.css";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 
-const RenderImage = ({ entry, isThumbnail }) => {
+const ArticleCardImage = ({ entry, isThumbnail }) => {
   if (!entry.imgSrc) {
     return null;
   }
@@ -44,6 +44,13 @@ const RenderImage = ({ entry, isThumbnail }) => {
   );
 };
 
+const getPadding = (imgSrc, isMini) => {
+  if (!imgSrc) {
+    return "0";
+  }
+  return isMini ? "0 10px 0 0" : "0 0 10px 0";
+};
+
 const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
   const { showDetailedRelativeTime } = useStore(settingsState);
   const contentClass = classNames({
@@ -60,12 +67,8 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
         opacity: entry.status === "unread" ? 1 : 0.5,
       }}
     >
-      <div
-        style={{
-          padding: !entry.imgSrc ? "0" : mini ? "0 10px 0 0" : "0 0 10px 0",
-        }}
-      >
-        <RenderImage entry={entry} isThumbnail={mini} />
+      <div style={{ padding: getPadding(entry.imgSrc, mini) }}>
+        <ArticleCardImage entry={entry} isThumbnail={mini} />
       </div>
       <div className={mini ? "article-card-mini-content-text" : ""}>
         <Typography.Text className="article-card-title">

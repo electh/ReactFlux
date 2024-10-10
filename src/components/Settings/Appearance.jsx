@@ -88,6 +88,8 @@ const Appearance = () => {
               aria-label={polyglot.t("appearance.theme_color_aria_label", {
                 color: colorName,
               })}
+              role="button"
+              tabIndex={0}
             />
           ))}
         </div>

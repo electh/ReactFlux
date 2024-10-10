@@ -40,29 +40,10 @@ const CustomLink = ({ url, text }) => {
   );
 };
 
-const ImageOverlayButton = ({
-  node,
-  index,
-  togglePhotoSlider,
-  isLinkWrapper = false,
-}) => {
+const ImageComponent = ({ imgNode, isIcon }) => {
   const { fontSize } = useStore(settingsState);
 
-  const [isHovering, setIsHovering] = useState(false);
-  const [isIcon, setIsIcon] = useState(false);
-  const { isBelowMedium } = useScreenWidth();
-
-  useEffect(() => {
-    const imgNode = isLinkWrapper ? node.children[0] : node;
-    const imgSrc = imgNode.attribs.src;
-    const img = new Image();
-    img.src = imgSrc;
-    img.onload = () => setIsIcon(img.width <= 100 && img.height <= 100);
-  }, [node, isLinkWrapper]);
-
-  const imgNode = isLinkWrapper ? node.children[0] : node;
-
-  const renderImage = () => (
+  return (
     <img
       {...imgNode.attribs}
       alt={imgNode.attribs.alt ?? "image"}
@@ -78,15 +59,36 @@ const ImageOverlayButton = ({
       }
     />
   );
+};
+
+const ImageOverlayButton = ({
+  node,
+  index,
+  togglePhotoSlider,
+  isLinkWrapper = false,
+}) => {
+  const [isHovering, setIsHovering] = useState(false);
+  const [isIcon, setIsIcon] = useState(false);
+  const { isBelowMedium } = useScreenWidth();
+
+  useEffect(() => {
+    const imgNode = isLinkWrapper ? node.children[0] : node;
+    const imgSrc = imgNode.attribs.src;
+    const img = new Image();
+    img.src = imgSrc;
+    img.onload = () => setIsIcon(img.width <= 100 && img.height <= 100);
+  }, [node, isLinkWrapper]);
+
+  const imgNode = isLinkWrapper ? node.children[0] : node;
 
   if (isIcon) {
     return isLinkWrapper ? (
       <a {...node.attribs}>
-        {renderImage()}
+        <ImageComponent imgNode={imgNode} isIcon={isIcon} />
         {node.children[1]?.data}
       </a>
     ) : (
-      renderImage()
+      <ImageComponent imgNode={imgNode} isIcon={isIcon} />
     );
   }
 
@@ -101,9 +103,11 @@ const ImageOverlayButton = ({
         onMouseLeave={handleMouseLeave}
       >
         {isLinkWrapper ? (
-          <a {...node.attribs}>{renderImage()}</a>
+          <a {...node.attribs}>
+            <ImageComponent imgNode={imgNode} isIcon={isIcon} />
+          </a>
         ) : (
-          renderImage()
+          <ImageComponent imgNode={imgNode} isIcon={isIcon} />
         )}
         <Button
           icon={<IconFullscreen />}

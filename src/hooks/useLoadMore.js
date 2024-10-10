@@ -13,6 +13,9 @@ import { createSetter } from "../utils/nanostores";
 const loadingMoreState = atom(false);
 const setLoadingMore = createSetter(loadingMoreState);
 
+const isUniqueEntry = (entry, existingEntries) =>
+  !existingEntries.some((existing) => existing.id === entry.id);
+
 const useLoadMore = () => {
   const { offset } = useStore(contentState);
   const { pageSize, showStatus } = useStore(settingsState);
@@ -22,10 +25,7 @@ const useLoadMore = () => {
 
   const updateEntries = (newEntries) => {
     const uniqueNewEntries = (existingEntries, entriesToAdd) =>
-      entriesToAdd.filter(
-        (entry) =>
-          !existingEntries.some((existing) => existing.id === entry.id),
-      );
+      entriesToAdd.filter((entry) => isUniqueEntry(entry, existingEntries));
 
     setEntries((prev) => [...prev, ...uniqueNewEntries(prev, newEntries)]);
     setOffset((prev) => prev + pageSize);

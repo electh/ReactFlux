@@ -15,8 +15,11 @@ import { useEffect, useState } from "react";
 import { useStore } from "@nanostores/react";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
-import { activeEntryIndexState, contentState } from "../../store/contentState";
-import { filteredEntriesState } from "../../store/contentState";
+import {
+  activeEntryIndexState,
+  contentState,
+  filteredEntriesState,
+} from "../../store/contentState";
 import "./ActionButtons.css";
 
 const ActionButtons = ({ handleEntryClick, entryListRef }) => {

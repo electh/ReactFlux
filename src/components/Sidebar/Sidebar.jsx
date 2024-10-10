@@ -124,28 +124,12 @@ const CustomMenuItem = ({ path, Icon, label, count }) => {
   );
 };
 
-const Sidebar = () => {
-  const { homePage, showFeedIcon, showUnreadFeedsOnly } =
-    useStore(settingsState);
-  const { historyCount, isAppDataReady, starredCount, unreadTodayCount } =
-    useStore(dataState);
-  const feedsGroupedById = useStore(feedsGroupedByIdState);
-  const filteredCategories = useStore(filteredCategoriesState);
-  const unreadTotal = useStore(unreadTotalState);
+const SidebarMenuItems = () => {
+  const { historyCount, starredCount, unreadTodayCount } = useStore(dataState);
   const { polyglot } = useStore(polyglotState);
+  const unreadTotal = useStore(unreadTotalState);
 
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`]);
-
-  const currentPath = location.pathname;
-
-  useEffect(() => {
-    setSelectedKeys([currentPath]);
-  }, [currentPath]);
-
-  const renderMenuItems = () => (
+  return (
     <>
       <CustomMenuItem
         path="/all"
@@ -173,58 +157,99 @@ const Sidebar = () => {
       />
     </>
   );
+};
 
-  const renderFeedItems = (categoryId) =>
-    feedsGroupedById[categoryId]
-      ?.filter((feed) => !showUnreadFeedsOnly || feed.unreadCount > 0)
-      .map((feed) => (
-        <MenuItem
-          key={`/feed/${feed.id}`}
-          style={{ position: "relative", overflow: "hidden" }}
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/feed/${feed.id}`);
-            setActiveContent(null);
+const FeedMenuItem = ({ feed }) => {
+  const { showFeedIcon } = useStore(settingsState);
+
+  const navigate = useNavigate();
+
+  return (
+    <MenuItem
+      key={`/feed/${feed.id}`}
+      style={{ position: "relative", overflow: "hidden" }}
+      onClick={(e) => {
+        e.stopPropagation();
+        navigate(`/feed/${feed.id}`);
+        setActiveContent(null);
+      }}
+    >
+      <div className="custom-menu-item">
+        <Typography.Ellipsis
+          expandable={false}
+          showTooltip={true}
+          style={{
+            width: feed.unreadCount ? "80%" : "100%",
+            paddingLeft: "20px",
+            boxSizing: "border-box",
           }}
         >
-          <div className="custom-menu-item">
-            <Typography.Ellipsis
-              expandable={false}
-              showTooltip={true}
-              style={{
-                width: feed.unreadCount ? "80%" : "100%",
-                paddingLeft: "20px",
-                boxSizing: "border-box",
-              }}
-            >
-              {showFeedIcon && (
-                <FeedIcon feed={feed} className="feed-icon-sidebar" />
-              )}
-              {feed.title}
-            </Typography.Ellipsis>
-            {feed.unreadCount !== 0 && (
-              <Typography.Ellipsis className="item-count" expandable={false}>
-                {feed.unreadCount}
-              </Typography.Ellipsis>
-            )}
-          </div>
-        </MenuItem>
-      ));
+          {showFeedIcon && (
+            <FeedIcon feed={feed} className="feed-icon-sidebar" />
+          )}
+          {feed.title}
+        </Typography.Ellipsis>
+        {feed.unreadCount !== 0 && (
+          <Typography.Ellipsis className="item-count" expandable={false}>
+            {feed.unreadCount}
+          </Typography.Ellipsis>
+        )}
+      </div>
+    </MenuItem>
+  );
+};
 
-  const renderCategoryItems = () =>
-    filteredCategories
-      .filter((category) => !showUnreadFeedsOnly || category.unreadCount > 0)
-      .map((category) => (
-        <Collapse.Item
-          name={`/category/${category.id}`}
-          key={category.id}
-          style={{ position: "relative", overflow: "hidden" }}
-          header={<CategoryTitle category={category} path={currentPath} />}
-          expandIcon={<IconRight />}
-        >
-          {renderFeedItems(category.id)}
-        </Collapse.Item>
-      ));
+const FeedMenuGroup = ({ categoryId }) => {
+  const { showUnreadFeedsOnly } = useStore(settingsState);
+  const feedsGroupedById = useStore(feedsGroupedByIdState);
+
+  return (
+    <>
+      {feedsGroupedById[categoryId]
+        ?.filter((feed) => !showUnreadFeedsOnly || feed.unreadCount > 0)
+        .map((feed) => (
+          <FeedMenuItem key={`/feed/${feed.id}`} feed={feed} />
+        ))}
+    </>
+  );
+};
+
+const CategoryGroup = () => {
+  const { showUnreadFeedsOnly } = useStore(settingsState);
+  const filteredCategories = useStore(filteredCategoriesState);
+
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  return filteredCategories
+    .filter((category) => !showUnreadFeedsOnly || category.unreadCount > 0)
+    .map((category) => (
+      <Collapse.Item
+        name={`/category/${category.id}`}
+        key={category.id}
+        style={{ position: "relative", overflow: "hidden" }}
+        header={<CategoryTitle category={category} path={currentPath} />}
+        expandIcon={<IconRight />}
+      >
+        <FeedMenuGroup categoryId={category.id} />
+      </Collapse.Item>
+    ));
+};
+
+const Sidebar = () => {
+  const { homePage } = useStore(settingsState);
+  const { isAppDataReady } = useStore(dataState);
+  const { polyglot } = useStore(polyglotState);
+
+  const location = useLocation();
+
+  const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`]);
+
+  const currentPath = location.pathname;
+
+  useEffect(() => {
+    setSelectedKeys([currentPath]);
+  }, [currentPath]);
 
   return (
     <div className="sidebar-container">
@@ -249,7 +274,7 @@ const Sidebar = () => {
           animation={true}
           text={{ rows: 3 }}
         />
-        {isAppDataReady && renderMenuItems()}
+        {isAppDataReady && <SidebarMenuItems />}
         <Typography.Title
           className="section-title"
           heading={6}
@@ -272,7 +297,7 @@ const Sidebar = () => {
             />
             {isAppDataReady && (
               <Collapse triggerRegion="icon" bordered={false}>
-                {renderCategoryItems()}
+                <CategoryGroup />
               </Collapse>
             )}
           </Menu>

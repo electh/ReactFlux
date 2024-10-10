@@ -99,79 +99,121 @@ const updateFeedStatus = (feed, isSuccessful, targetFeedId = null) => {
   return feed;
 };
 
-const FeedList = () => {
-  const categories = useStore(categoriesState);
-  const { isAppDataReady } = useStore(dataState);
-  const { showDetailedRelativeTime } = useStore(settingsState);
-  const filteredFeeds = useStore(filteredFeedsState);
-  const filterType = useStore(filterTypeState);
-  const tableData = useStore(tableDataState);
-  const { polyglot } = useStore(polyglotState);
-  const tooltipLines = polyglot.t("search.tooltip").split("\n");
+const handleFeedRefresh = async (
+  refreshFunc,
+  feedUpdater,
+  displayMessage = true,
+) => {
+  const polyglot = polyglotState.get();
 
-  const [bulkUpdateModalVisible, setBulkUpdateModalVisible] = useState(false);
-  const [feedForm] = Form.useForm();
-  const [feedModalVisible, setFeedModalVisible] = useState(false);
-  const [newHost, setNewHost] = useState("");
-  const [selectedFeed, setSelectedFeed] = useState(null);
+  try {
+    const response = await refreshFunc();
+    const isSuccessful = response.status === 204;
 
-  const { isBelowMedium } = useScreenWidth();
-
-  useEffect(() => {
-    setFilterString("");
-  }, []);
-
-  const handleSelectFeed = (feed) => {
-    setSelectedFeed(feed);
-    setFeedModalVisible(true);
-    feedForm.setFieldsValue({
-      category: feed.category.id,
-      title: feed.title,
-      siteUrl: feed.site_url,
-      feedUrl: feed.feed_url,
-      hidden: feed.hidden,
-      disabled: feed.disabled,
-      crawler: feed.crawler,
-    });
-  };
-
-  const handleFeedRefresh = async (
-    refreshFunc,
-    feedUpdater,
-    displayMessage = true,
-  ) => {
-    try {
-      const response = await refreshFunc();
-      const isSuccessful = response.status === 204;
-
-      if (displayMessage) {
-        isSuccessful
-          ? Message.success(polyglot.t("feed_table.refresh_success"))
-          : Message.error(polyglot.t("feed_table.refresh_error"));
-      }
-
-      setFeedsData((feeds) =>
-        feeds.map((feed) => feedUpdater(feed, isSuccessful)),
-      );
-      return isSuccessful;
-    } catch (error) {
-      console.error("Failed to refresh feed: ", error);
-      if (displayMessage) {
-        Message.error(polyglot.t("feed_table.refresh_error"));
-      }
-      setFeedsData((feeds) => feeds.map((feed) => feedUpdater(feed, false)));
-      return false;
+    if (displayMessage) {
+      isSuccessful
+        ? Message.success(polyglot.t("feed_table.refresh_success"))
+        : Message.error(polyglot.t("feed_table.refresh_error"));
     }
+
+    setFeedsData((feeds) =>
+      feeds.map((feed) => feedUpdater(feed, isSuccessful)),
+    );
+    return isSuccessful;
+  } catch (error) {
+    console.error("Failed to refresh feed: ", error);
+    if (displayMessage) {
+      Message.error(polyglot.t("feed_table.refresh_error"));
+    }
+    setFeedsData((feeds) => feeds.map((feed) => feedUpdater(feed, false)));
+    return false;
+  }
+};
+
+const refreshSingleFeed = async (feed, displayMessage = true) => {
+  const feedId = feed.id || feed.key;
+  return handleFeedRefresh(
+    () => refreshFeed(feedId),
+    (feed, isSuccessful) => updateFeedStatus(feed, isSuccessful, feedId),
+    displayMessage,
+  );
+};
+
+const RefreshModal = ({ visible, setVisible }) => {
+  const { polyglot } = useStore(polyglotState);
+  const filteredFeeds = useStore(filteredFeedsState);
+
+  const refreshAllFeeds = async () => {
+    setVisible(false);
+    await handleFeedRefresh(refreshAllFeed, updateFeedStatus);
   };
 
-  const refreshSingleFeed = async (feed, displayMessage = true) => {
-    const feedId = feed.id || feed.key;
-    return handleFeedRefresh(
-      () => refreshFeed(feedId),
-      (feed, isSuccessful) => updateFeedStatus(feed, isSuccessful, feedId),
-      displayMessage,
+  const refreshErrorFeeds = async () => {
+    setVisible(false);
+    const errorFeeds = filteredFeeds.filter(
+      (feed) => feed.parsing_error_count > 0,
+    );
+    Message.success(polyglot.t("feed_table.bulk_refresh_error_feeds_message"));
+
+    let successCount = 0;
+    let failureCount = 0;
+
+    for (const feed of errorFeeds) {
+      const isSuccessful = await refreshSingleFeed(feed, false);
+      if (isSuccessful) {
+        successCount++;
+      } else {
+        failureCount++;
+      }
+      await sleep(500);
+    }
+
+    Message.success(
+      polyglot.t("feed_table.bulk_refresh_error_feeds_result", {
+        success: successCount,
+        failure: failureCount,
+      }),
     );
   };
+
+  const closeModal = () => setVisible(false);
+
+  return (
+    <>
+      <Button
+        icon={<IconRefresh />}
+        shape="circle"
+        size="small"
+        onClick={() => setVisible(true)}
+      />
+      <Modal
+        className="edit-modal"
+        onCancel={closeModal}
+        title={polyglot.t("feed_table.refresh_feeds_title")}
+        visible={visible}
+        footer={[
+          <Button key="cancel" onClick={closeModal}>
+            {polyglot.t("feed_table.refresh_feeds_cancel")}
+          </Button>,
+          <Button key="error" type="outline" onClick={refreshErrorFeeds}>
+            {polyglot.t("feed_table.refresh_feeds_error")}
+          </Button>,
+          <Button key="all" type="primary" onClick={refreshAllFeeds}>
+            {polyglot.t("feed_table.refresh_feeds_all")}
+          </Button>,
+        ]}
+      >
+        <p>{polyglot.t("feed_table.refresh_feeds_description")}</p>
+      </Modal>
+    </>
+  );
+};
+
+const BulkUpdateModal = ({ visible, setVisible }) => {
+  const { polyglot } = useStore(polyglotState);
+  const filteredFeeds = useStore(filteredFeedsState);
+
+  const [newHost, setNewHost] = useState("");
 
   const bulkUpdateFeedHosts = async () => {
     try {
@@ -188,87 +230,213 @@ const FeedList = () => {
         }),
       );
 
+      const updateFeed = (feed, updatedFeeds) => {
+        const updatedFeed = updatedFeeds.find((f) => f.id === feed.id);
+        return updatedFeed || feed;
+      };
       setFeedsData((feeds) =>
-        feeds.map((feed) => updatedFeeds.find((f) => f.id === feed.id) || feed),
+        feeds.map((feed) => updateFeed(feed, updatedFeeds)),
       );
 
       Message.success(polyglot.t("feed_table.bulk_update_success"));
-      setBulkUpdateModalVisible(false);
+      setVisible(false);
     } catch (error) {
       console.error("Failed to bulk update feeds: ", error);
       Message.error(polyglot.t("feed_table.bulk_update_error"));
     }
   };
 
-  const RefreshModal = () => {
-    const [visible, setVisible] = useState(false);
+  return (
+    <Modal
+      className="edit-modal"
+      onOk={bulkUpdateFeedHosts}
+      title={polyglot.t("feed_table.modal_bulk_update_title")}
+      visible={visible}
+      onCancel={() => {
+        setVisible(false);
+        setNewHost("");
+      }}
+    >
+      <p>{polyglot.t("feed_table.modal_bulk_update_description")}</p>
+      <Input
+        placeholder="rsshub.app"
+        value={newHost}
+        onChange={(value) => setNewHost(value)}
+      />
+    </Modal>
+  );
+};
 
-    const refreshAllFeeds = async () => {
+const EditFeedModal = ({ visible, setVisible, feedForm, selectedFeed }) => {
+  const { polyglot } = useStore(polyglotState);
+  const categories = useStore(categoriesState);
+
+  const editFeed = async (feedId, newDetails) => {
+    try {
+      const data = await updateFeed(feedId, newDetails);
+      setFeedsData((feeds) =>
+        feeds.map((feed) => (feed.id === feedId ? { ...feed, ...data } : feed)),
+      );
+      Message.success(polyglot.t("feed_table.update_feed_success"));
       setVisible(false);
-      await handleFeedRefresh(refreshAllFeed, updateFeedStatus);
-    };
+      feedForm.resetFields();
+    } catch (error) {
+      console.error("Failed to update feed: ", error);
+      Message.error(polyglot.t("feed_table.update_feed_error"));
+    }
+  };
 
-    const refreshErrorFeeds = async () => {
-      setVisible(false);
-      const errorFeeds = filteredFeeds.filter(
-        (feed) => feed.parsing_error_count > 0,
-      );
-      Message.success(
-        polyglot.t("feed_table.bulk_refresh_error_feeds_message"),
-      );
-
-      let successCount = 0;
-      let failureCount = 0;
-
-      for (const feed of errorFeeds) {
-        const isSuccessful = await refreshSingleFeed(feed, false);
-        if (isSuccessful) {
-          successCount++;
-        } else {
-          failureCount++;
-        }
-        await sleep(500);
-      }
-
-      Message.success(
-        polyglot.t("feed_table.bulk_refresh_error_feeds_result", {
-          success: successCount,
-          failure: failureCount,
-        }),
-      );
-    };
-
-    const closeModal = () => setVisible(false);
-
-    return (
-      <>
-        <Button
-          icon={<IconRefresh />}
-          shape="circle"
-          size="small"
-          onClick={() => setVisible(true)}
-        />
-        <Modal
-          className="edit-modal"
-          onCancel={closeModal}
-          title={polyglot.t("feed_table.refresh_feeds_title")}
-          visible={visible}
-          footer={[
-            <Button key="cancel" onClick={closeModal}>
-              {polyglot.t("feed_table.refresh_feeds_cancel")}
-            </Button>,
-            <Button key="error" type="outline" onClick={refreshErrorFeeds}>
-              {polyglot.t("feed_table.refresh_feeds_error")}
-            </Button>,
-            <Button key="all" type="primary" onClick={refreshAllFeeds}>
-              {polyglot.t("feed_table.refresh_feeds_all")}
-            </Button>,
-          ]}
+  return (
+    <Modal
+      className="edit-modal"
+      onOk={feedForm.submit}
+      title={polyglot.t("feed_table.modal_edit_feed_title")}
+      unmountOnExit
+      visible={visible}
+      onCancel={() => {
+        setVisible(false);
+        feedForm.resetFields();
+      }}
+    >
+      <Form
+        form={feedForm}
+        labelCol={{ span: 7 }}
+        layout="vertical"
+        wrapperCol={{ span: 17 }}
+        onSubmit={async (values) => {
+          const newDetails = {
+            categoryId: values.category,
+            title: values.title,
+            siteUrl: values.siteUrl.trim(),
+            feedUrl: values.feedUrl.trim(),
+            hidden: values.hidden,
+            disabled: values.disabled,
+            isFullText: values.crawler,
+          };
+          if (newDetails.feedUrl) {
+            await editFeed(selectedFeed.key, newDetails);
+          } else {
+            Message.error(
+              polyglot.t("feed_table.modal_edit_feed_submit_error"),
+            );
+          }
+        }}
+      >
+        <Form.Item
+          label={polyglot.t("feed_table.modal_edit_feed_category_label")}
+          required
+          field="category"
+          rules={[{ required: true }]}
         >
-          <p>{polyglot.t("feed_table.refresh_feeds_description")}</p>
-        </Modal>
-      </>
-    );
+          <Select>
+            {categories.map((category) => (
+              <Select.Option key={category.id} value={category.id}>
+                {category.title}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label={polyglot.t("feed_table.modal_edit_feed_title_label")}
+          field="title"
+          rules={[{ required: true }]}
+        >
+          <Input
+            placeholder={polyglot.t(
+              "feed_table.modal_edit_feed_title_placeholder",
+            )}
+          />
+        </Form.Item>
+        <Form.Item
+          label={polyglot.t("feed_table.modal_edit_feed_site_url_label")}
+          field="siteUrl"
+          rules={[{ required: true }]}
+        >
+          <Input
+            placeholder={polyglot.t(
+              "feed_table.modal_edit_feed_site_url_placeholder",
+            )}
+          />
+        </Form.Item>
+        <Form.Item
+          label={polyglot.t("feed_table.modal_edit_feed_feed_url_label")}
+          field="feedUrl"
+          rules={[{ required: true }]}
+        >
+          <Input
+            placeholder={polyglot.t(
+              "feed_table.modal_edit_feed_feed_url_placeholder",
+            )}
+          />
+        </Form.Item>
+        <Form.Item
+          label={polyglot.t("feed_table.modal_edit_feed_hidden_label")}
+          field="hidden"
+          initialValue={selectedFeed.hidden}
+          triggerPropName="checked"
+          rules={[{ type: "boolean" }]}
+        >
+          <Switch />
+        </Form.Item>
+        <Form.Item
+          label={polyglot.t("feed_table.modal_edit_feed_disabled_label")}
+          field="disabled"
+          initialValue={selectedFeed.disabled}
+          triggerPropName="checked"
+          rules={[{ type: "boolean" }]}
+        >
+          <Switch />
+        </Form.Item>
+        <Form.Item
+          label={polyglot.t("feed_table.modal_edit_feed_crawler_label")}
+          field="crawler"
+          tooltip={
+            <div>
+              {polyglot.t("feed_table.modal_edit_feed_crawler_tooltip")}
+            </div>
+          }
+          triggerPropName="checked"
+          rules={[{ type: "boolean" }]}
+        >
+          <Switch />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+};
+
+const FeedList = () => {
+  const { isAppDataReady } = useStore(dataState);
+  const { showDetailedRelativeTime } = useStore(settingsState);
+  const filterType = useStore(filterTypeState);
+  const tableData = useStore(tableDataState);
+  const { polyglot } = useStore(polyglotState);
+  const tooltipLines = polyglot.t("search.tooltip").split("\n");
+
+  const [bulkUpdateModalVisible, setBulkUpdateModalVisible] = useState(false);
+  const [refreshModalVisible, setRefreshModalVisible] = useState(false);
+  const [editFeedModalVisible, setEditFeedModalVisible] = useState(false);
+  const [feedForm] = Form.useForm();
+  const [selectedFeed, setSelectedFeed] = useState(null);
+
+  const { isBelowMedium } = useScreenWidth();
+
+  useEffect(() => {
+    setFilterString("");
+  }, []);
+
+  const handleSelectFeed = (feed) => {
+    setSelectedFeed(feed);
+    setEditFeedModalVisible(true);
+    feedForm.setFieldsValue({
+      category: feed.category.id,
+      title: feed.title,
+      siteUrl: feed.site_url,
+      feedUrl: feed.feed_url,
+      hidden: feed.hidden,
+      disabled: feed.disabled,
+      crawler: feed.crawler,
+    });
   };
 
   const removeFeed = async (feed) => {
@@ -397,21 +565,6 @@ const FeedList = () => {
     },
   ].filter(Boolean);
 
-  const editFeed = async (feedId, newDetails) => {
-    try {
-      const data = await updateFeed(feedId, newDetails);
-      setFeedsData((feeds) =>
-        feeds.map((feed) => (feed.id === feedId ? { ...feed, ...data } : feed)),
-      );
-      Message.success(polyglot.t("feed_table.update_feed_success"));
-      setFeedModalVisible(false);
-      feedForm.resetFields();
-    } catch (error) {
-      console.error("Failed to update feed: ", error);
-      Message.error(polyglot.t("feed_table.update_feed_error"));
-    }
-  };
-
   return (
     <>
       <div className="feed-table-action-bar">
@@ -470,24 +623,14 @@ const FeedList = () => {
             size="small"
             onClick={() => setBulkUpdateModalVisible(true)}
           />
-          <Modal
-            className="edit-modal"
-            onOk={bulkUpdateFeedHosts}
-            title={polyglot.t("feed_table.modal_bulk_update_title")}
+          <BulkUpdateModal
             visible={bulkUpdateModalVisible}
-            onCancel={() => {
-              setBulkUpdateModalVisible(false);
-              setNewHost("");
-            }}
-          >
-            <p>{polyglot.t("feed_table.modal_bulk_update_description")}</p>
-            <Input
-              placeholder="rsshub.app"
-              value={newHost}
-              onChange={(value) => setNewHost(value)}
-            />
-          </Modal>
-          <RefreshModal />
+            setVisible={setBulkUpdateModalVisible}
+          />
+          <RefreshModal
+            visible={refreshModalVisible}
+            setVisible={setRefreshModalVisible}
+          />
         </div>
       </div>
       <Table
@@ -501,121 +644,12 @@ const FeedList = () => {
         size="small"
       />
       {selectedFeed && (
-        <Modal
-          className="edit-modal"
-          onOk={feedForm.submit}
-          title={polyglot.t("feed_table.modal_edit_feed_title")}
-          unmountOnExit
-          visible={feedModalVisible}
-          onCancel={() => {
-            setFeedModalVisible(false);
-            feedForm.resetFields();
-          }}
-        >
-          <Form
-            form={feedForm}
-            labelCol={{ span: 7 }}
-            layout="vertical"
-            wrapperCol={{ span: 17 }}
-            onSubmit={async (values) => {
-              const newDetails = {
-                categoryId: values.category,
-                title: values.title,
-                siteUrl: values.siteUrl.trim(),
-                feedUrl: values.feedUrl.trim(),
-                hidden: values.hidden,
-                disabled: values.disabled,
-                isFullText: values.crawler,
-              };
-              if (newDetails.feedUrl) {
-                await editFeed(selectedFeed.key, newDetails);
-              } else {
-                Message.error(
-                  polyglot.t("feed_table.modal_edit_feed_submit_error"),
-                );
-              }
-            }}
-          >
-            <Form.Item
-              label={polyglot.t("feed_table.modal_edit_feed_category_label")}
-              required
-              field="category"
-              rules={[{ required: true }]}
-            >
-              <Select>
-                {categories.map((category) => (
-                  <Select.Option key={category.id} value={category.id}>
-                    {category.title}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label={polyglot.t("feed_table.modal_edit_feed_title_label")}
-              field="title"
-              rules={[{ required: true }]}
-            >
-              <Input
-                placeholder={polyglot.t(
-                  "feed_table.modal_edit_feed_title_placeholder",
-                )}
-              />
-            </Form.Item>
-            <Form.Item
-              label={polyglot.t("feed_table.modal_edit_feed_site_url_label")}
-              field="siteUrl"
-              rules={[{ required: true }]}
-            >
-              <Input
-                placeholder={polyglot.t(
-                  "feed_table.modal_edit_feed_site_url_placeholder",
-                )}
-              />
-            </Form.Item>
-            <Form.Item
-              label={polyglot.t("feed_table.modal_edit_feed_feed_url_label")}
-              field="feedUrl"
-              rules={[{ required: true }]}
-            >
-              <Input
-                placeholder={polyglot.t(
-                  "feed_table.modal_edit_feed_feed_url_placeholder",
-                )}
-              />
-            </Form.Item>
-            <Form.Item
-              label={polyglot.t("feed_table.modal_edit_feed_hidden_label")}
-              field="hidden"
-              initialValue={selectedFeed.hidden}
-              triggerPropName="checked"
-              rules={[{ type: "boolean" }]}
-            >
-              <Switch />
-            </Form.Item>
-            <Form.Item
-              label={polyglot.t("feed_table.modal_edit_feed_disabled_label")}
-              field="disabled"
-              initialValue={selectedFeed.disabled}
-              triggerPropName="checked"
-              rules={[{ type: "boolean" }]}
-            >
-              <Switch />
-            </Form.Item>
-            <Form.Item
-              label={polyglot.t("feed_table.modal_edit_feed_crawler_label")}
-              field="crawler"
-              tooltip={
-                <div>
-                  {polyglot.t("feed_table.modal_edit_feed_crawler_tooltip")}
-                </div>
-              }
-              triggerPropName="checked"
-              rules={[{ type: "boolean" }]}
-            >
-              <Switch />
-            </Form.Item>
-          </Form>
-        </Modal>
+        <EditFeedModal
+          visible={editFeedModalVisible}
+          setVisible={setEditFeedModalVisible}
+          feedForm={feedForm}
+          selectedFeed={selectedFeed}
+        />
       )}
     </>
   );
