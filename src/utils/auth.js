@@ -5,7 +5,7 @@ const isValidDockerURL = (url) => {
     const parsedUrl = new URL(url);
     const { hostname, port } = parsedUrl;
     return !!hostname && !!port;
-  } catch (e) {
+  } catch {
     return false;
   }
 };

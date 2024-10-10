@@ -137,6 +137,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
           );
         }
       } catch (error) {
+        console.error("Failed to update entry: ", error);
         Message.error(polyglot.t("article_card.update_failed"));
       }
       setSwipeOffset(0);

@@ -154,6 +154,7 @@ const useEntryActions = () => {
       Message.success(polyglot.t("actions.fetched_content_success"));
       setActiveContent({ ...activeContent, content: response.content });
     } catch (error) {
+      console.error("Failed to fetch content: ", error);
       Message.error(polyglot.t("actions.fetched_content_error"));
     }
   };
@@ -171,6 +172,7 @@ const useEntryActions = () => {
         );
       }
     } catch (error) {
+      console.error("Failed to save to third-party services: ", error);
       Message.error(polyglot.t("actions.saved_to_third-party_services_error"));
     }
   };

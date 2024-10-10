@@ -155,6 +155,7 @@ const FeedList = () => {
       );
       return isSuccessful;
     } catch (error) {
+      console.error("Failed to refresh feed: ", error);
       if (displayMessage) {
         Message.error(polyglot.t("feed_table.refresh_error"));
       }
@@ -194,6 +195,7 @@ const FeedList = () => {
       Message.success(polyglot.t("feed_table.bulk_update_success"));
       setBulkUpdateModalVisible(false);
     } catch (error) {
+      console.error("Failed to bulk update feeds: ", error);
       Message.error(polyglot.t("feed_table.bulk_update_error"));
     }
   };
@@ -405,6 +407,7 @@ const FeedList = () => {
       setFeedModalVisible(false);
       feedForm.resetFields();
     } catch (error) {
+      console.error("Failed to update feed: ", error);
       Message.error(polyglot.t("feed_table.update_feed_error"));
     }
   };

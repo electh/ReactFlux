@@ -63,6 +63,7 @@ const AddFeedModal = () => {
       setAddFeedModalVisible(false);
       feedForm.resetFields();
     } catch (error) {
+      console.error("Failed to add a feed: ", error);
       Message.error(polyglot.t("main.add_feed_error"));
     } finally {
       setFeedModalLoading(false);

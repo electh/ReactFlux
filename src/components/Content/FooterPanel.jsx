@@ -32,6 +32,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       await fetchAppData();
       Message.success(polyglot.t("article_list.mark_all_as_read_success"));
     } catch (error) {
+      console.error("Failed to mark all as read: ", error);
       Message.error(polyglot.t("article_list.mark_all_as_read_error"));
     }
   };

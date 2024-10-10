@@ -23,6 +23,7 @@ const loadLanguage = async (language, polyglot) => {
   try {
     phrases = await import(`../locales/${language}.json`);
   } catch (error) {
+    console.error("Failed to load language: ", error);
     phrases = await import("../locales/en-US.json");
     locale = "en-US";
   }
