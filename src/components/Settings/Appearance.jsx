@@ -12,6 +12,7 @@ import { applyColor, colors, getColorValue } from "../../utils/colors";
 
 import { useStore } from "@nanostores/react";
 import { settingsState, updateSettings } from "../../store/settingsState";
+import SettingItem from "./SettingItem";
 import "./Appearance.css";
 
 const Appearance = () => {
@@ -57,15 +58,10 @@ const Appearance = () => {
 
   return (
     <>
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("appearance.theme_color_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("appearance.theme_color_description")}
-          </Typography.Text>
-        </div>
+      <SettingItem
+        title={polyglot.t("appearance.theme_color_label")}
+        description={polyglot.t("appearance.theme_color_description")}
+      >
         <div style={{ display: "flex" }}>
           {Object.keys(colors).map((colorName) => (
             <div
@@ -95,140 +91,112 @@ const Appearance = () => {
             />
           ))}
         </div>
-      </div>
+      </SettingItem>
+
       <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("appearance.compact_article_list_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("appearance.compact_article_list_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Switch
-            checked={layout === "small"}
-            onChange={(value) =>
-              handleConfigChange({ layout: value ? "small" : "large" })
-            }
+
+      <SettingItem
+        title={polyglot.t("appearance.compact_article_list_label")}
+        description={polyglot.t("appearance.compact_article_list_description")}
+      >
+        <Switch
+          checked={layout === "small"}
+          onChange={(value) =>
+            handleConfigChange({ layout: value ? "small" : "large" })
+          }
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("appearance.show_detailed_relative_time_label")}
+        description={polyglot.t(
+          "appearance.show_detailed_relative_time_description",
+        )}
+      >
+        <Switch
+          checked={showDetailedRelativeTime}
+          onChange={(value) =>
+            handleConfigChange({ showDetailedRelativeTime: value })
+          }
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("appearance.show_feed_icon_label")}
+        description={polyglot.t("appearance.show_feed_icon_description")}
+      >
+        <Switch
+          checked={showFeedIcon}
+          onChange={(value) => handleConfigChange({ showFeedIcon: value })}
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("appearance.font_family_label")}
+        description={polyglot.t("appearance.font_family_description")}
+      >
+        <Select
+          style={{ width: 166 }}
+          value={fontFamily}
+          onChange={(value) => handleConfigChange({ fontFamily: value })}
+        >
+          {fontFamilyOptions.map(({ label, value }) => (
+            <Select.Option key={value} value={value}>
+              {label}
+            </Select.Option>
+          ))}
+        </Select>
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("appearance.font_size_label")}
+        description={polyglot.t("appearance.font_size_description")}
+      >
+        <Space>
+          <Typography.Text style={{ fontSize: "0.75rem" }}>A</Typography.Text>
+          <Slider
+            formatTooltip={(value) => `${value}rem`}
+            max={1.25}
+            min={0.75}
+            showTicks
+            step={0.05}
+            style={{ width: 200 }}
+            value={fontSize}
+            onChange={(value) => handleConfigChange({ fontSize: value })}
           />
-        </div>
-      </div>
+          <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
+        </Space>
+      </SettingItem>
+
       <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("appearance.show_detailed_relative_time_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("appearance.show_detailed_relative_time_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Switch
-            checked={showDetailedRelativeTime}
-            onChange={(value) =>
-              handleConfigChange({ showDetailedRelativeTime: value })
-            }
+
+      <SettingItem
+        title={polyglot.t("appearance.article_width_label")}
+        description={polyglot.t("appearance.article_width_description")}
+      >
+        <Space>
+          <Typography.Text>60%</Typography.Text>
+          <Slider
+            formatTooltip={(value) => `${value}%`}
+            max={90}
+            min={60}
+            showTicks
+            step={10}
+            style={{ width: 160 }}
+            value={articleWidth}
+            onChange={(value) => handleConfigChange({ articleWidth: value })}
           />
-        </div>
-      </div>
-      <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("appearance.show_feed_icon_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("appearance.show_feed_icon_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Switch
-            checked={showFeedIcon}
-            onChange={(value) => handleConfigChange({ showFeedIcon: value })}
-          />
-        </div>
-      </div>
-      <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("appearance.font_family_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("appearance.font_family_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Select
-            style={{ width: 166 }}
-            value={fontFamily}
-            onChange={(value) => handleConfigChange({ fontFamily: value })}
-          >
-            {fontFamilyOptions.map(({ label, value }) => (
-              <Select.Option key={value} value={value}>
-                {label}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-      </div>
-      <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("appearance.font_size_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("appearance.font_size_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Space>
-            <Typography.Text style={{ fontSize: "0.75rem" }}>A</Typography.Text>
-            <Slider
-              formatTooltip={(value) => `${value}rem`}
-              max={1.25}
-              min={0.75}
-              showTicks
-              step={0.05}
-              style={{ width: 200 }}
-              value={fontSize}
-              onChange={(value) => handleConfigChange({ fontSize: value })}
-            />
-            <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
-          </Space>
-        </div>
-      </div>
-      <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("appearance.article_width_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("appearance.article_width_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Space>
-            <Typography.Text>60%</Typography.Text>
-            <Slider
-              formatTooltip={(value) => `${value}%`}
-              max={90}
-              min={60}
-              showTicks
-              step={10}
-              style={{ width: 160 }}
-              value={articleWidth}
-              onChange={(value) => handleConfigChange({ articleWidth: value })}
-            />
-            <Typography.Text>90%</Typography.Text>
-          </Space>
-        </div>
-      </div>
+          <Typography.Text>90%</Typography.Text>
+        </Space>
+      </SettingItem>
     </>
   );
 };

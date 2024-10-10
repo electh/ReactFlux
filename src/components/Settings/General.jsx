@@ -1,13 +1,8 @@
-import {
-  Divider,
-  InputNumber,
-  Select,
-  Switch,
-  Typography,
-} from "@arco-design/web-react";
+import { Divider, InputNumber, Select, Switch } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
 import { polyglotState } from "../../hooks/useLanguage";
 import { settingsState, updateSettings } from "../../store/settingsState";
+import SettingItem from "./SettingItem";
 import "./General.css";
 
 const languageOptions = [
@@ -67,157 +62,120 @@ const General = () => {
 
   return (
     <>
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("appearance.language_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("appearance.language_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Select
-            className="input-select"
-            onChange={(value) => updateSettings({ language: value })}
-            value={language}
-          >
-            {languageOptions.map(({ label, value }) => (
-              <Select.Option key={value} value={value}>
-                {label}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-      </div>
-      <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("settings.default_home_page_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("settings.default_home_page_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Select
-            className="input-select"
-            onChange={(value) => updateSettings({ homePage: value })}
-            value={homePage}
-          >
-            {homePageOptions.map(({ label, value }) => (
-              <Select.Option key={value} value={value}>
-                {label}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-      </div>
-      <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("settings.show_unread_feeds_only_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("settings.show_unread_feeds_only_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Switch
-            checked={showUnreadFeedsOnly}
-            onChange={(value) => updateSettings({ showUnreadFeedsOnly: value })}
-          />
-        </div>
-      </div>
-      <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("settings.entries_order_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("settings.entries_order_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Select
-            className="input-select"
-            onChange={(value) => updateSettings({ orderBy: value })}
-            value={orderBy}
-          >
-            <Select.Option value="published_at">
-              {polyglot.t("settings.entries_order_option_published_at")}
+      <SettingItem
+        title={polyglot.t("appearance.language_label")}
+        description={polyglot.t("appearance.language_description")}
+      >
+        <Select
+          className="input-select"
+          onChange={(value) => updateSettings({ language: value })}
+          value={language}
+        >
+          {languageOptions.map(({ label, value }) => (
+            <Select.Option key={value} value={value}>
+              {label}
             </Select.Option>
-            <Select.Option value="created_at">
-              {polyglot.t("settings.entries_order_option_created_at")}
+          ))}
+        </Select>
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("settings.default_home_page_label")}
+        description={polyglot.t("settings.default_home_page_description")}
+      >
+        <Select
+          className="input-select"
+          onChange={(value) => updateSettings({ homePage: value })}
+          value={homePage}
+        >
+          {homePageOptions.map(({ label, value }) => (
+            <Select.Option key={value} value={value}>
+              {label}
             </Select.Option>
-          </Select>
-        </div>
-      </div>
+          ))}
+        </Select>
+      </SettingItem>
+
       <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("settings.entries_per_page_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("settings.entries_per_page_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <InputNumber
-            className="input-select"
-            defaultValue={pageSize}
-            min={1}
-            mode="button"
-            onChange={(value) => updateSettings({ pageSize: value })}
-            size="small"
-          />
-        </div>
-      </div>
+
+      <SettingItem
+        title={polyglot.t("settings.show_unread_feeds_only_label")}
+        description={polyglot.t("settings.show_unread_feeds_only_description")}
+      >
+        <Switch
+          checked={showUnreadFeedsOnly}
+          onChange={(value) => updateSettings({ showUnreadFeedsOnly: value })}
+        />
+      </SettingItem>
+
       <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("settings.remove_duplicates_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("settings.remove_duplicates_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Select
-            className="input-select"
-            onChange={(value) => updateSettings({ removeDuplicates: value })}
-            value={removeDuplicates}
-          >
-            {removeDuplicatesOptions.map(({ label, value }) => (
-              <Select.Option key={value} value={value}>
-                {label}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-      </div>
+
+      <SettingItem
+        title={polyglot.t("settings.entries_order_label")}
+        description={polyglot.t("settings.entries_order_description")}
+      >
+        <Select
+          className="input-select"
+          onChange={(value) => updateSettings({ orderBy: value })}
+          value={orderBy}
+        >
+          <Select.Option value="published_at">
+            {polyglot.t("settings.entries_order_option_published_at")}
+          </Select.Option>
+          <Select.Option value="created_at">
+            {polyglot.t("settings.entries_order_option_created_at")}
+          </Select.Option>
+        </Select>
+      </SettingItem>
+
       <Divider />
-      <div className="setting-row">
-        <div>
-          <Typography.Title heading={6} style={{ marginTop: 0 }}>
-            {polyglot.t("settings.mark_read_on_scroll_label")}
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            {polyglot.t("settings.mark_read_on_scroll_description")}
-          </Typography.Text>
-        </div>
-        <div>
-          <Switch
-            checked={markReadOnScroll}
-            onChange={(value) => updateSettings({ markReadOnScroll: value })}
-          />
-        </div>
-      </div>
+
+      <SettingItem
+        title={polyglot.t("settings.entries_per_page_label")}
+        description={polyglot.t("settings.entries_per_page_description")}
+      >
+        <InputNumber
+          className="input-select"
+          defaultValue={pageSize}
+          min={1}
+          mode="button"
+          onChange={(value) => updateSettings({ pageSize: value })}
+          size="small"
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("settings.remove_duplicates_label")}
+        description={polyglot.t("settings.remove_duplicates_description")}
+      >
+        <Select
+          className="input-select"
+          onChange={(value) => updateSettings({ removeDuplicates: value })}
+          value={removeDuplicates}
+        >
+          {removeDuplicatesOptions.map(({ label, value }) => (
+            <Select.Option key={value} value={value}>
+              {label}
+            </Select.Option>
+          ))}
+        </Select>
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("settings.mark_read_on_scroll_label")}
+        description={polyglot.t("settings.mark_read_on_scroll_description")}
+      >
+        <Switch
+          checked={markReadOnScroll}
+          onChange={(value) => updateSettings({ markReadOnScroll: value })}
+        />
+      </SettingItem>
     </>
   );
 };

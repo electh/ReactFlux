@@ -2,12 +2,6 @@
   padding-left: 0;
 }
 
-.setting-row {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-}
-
 .input-select {
   margin-left: 16px;
   width: 128px;
