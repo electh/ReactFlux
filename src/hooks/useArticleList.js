@@ -7,7 +7,13 @@ import {
   setLoadMoreVisible,
   setTotal,
 } from "../store/contentState";
-import { dataState } from "../store/dataState";
+import {
+  dataState,
+  setHistoryCount,
+  setStarredCount,
+  setUnreadInfo,
+  setUnreadTodayCount,
+} from "../store/dataState";
 import { settingsState } from "../store/settingsState";
 import { parseFirstImage } from "../utils/images";
 
@@ -20,7 +26,7 @@ const handleResponses = (response) => {
   }
 };
 
-const useArticleList = (getEntries) => {
+const useArticleList = (info, getEntries) => {
   const { isAppDataReady } = useStore(dataState);
   const { showStatus } = useStore(settingsState);
 
@@ -39,6 +45,31 @@ const useArticleList = (getEntries) => {
         showStatus === "unread"
           ? await getEntries(0, "unread")
           : await getEntries();
+
+      switch (info.from) {
+        case "feed":
+          if (showStatus === "unread") {
+            setUnreadInfo((prev) => ({
+              ...prev,
+              [Number(info.id)]: response.total,
+            }));
+          }
+          break;
+        case "history":
+          setHistoryCount(response.total);
+          break;
+        case "starred":
+          if (showStatus !== "unread") {
+            setStarredCount(response.total);
+          }
+          break;
+        case "today":
+          if (showStatus === "unread") {
+            setUnreadTodayCount(response.total);
+          }
+          break;
+      }
+
       setIsArticleListReady(true);
       setIsArticleFocused(true);
       handleResponses(response);

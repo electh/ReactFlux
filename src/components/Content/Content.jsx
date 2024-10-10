@@ -45,7 +45,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   } = useEntryActions();
 
   const { fetchAppData } = useAppData();
-  const { fetchArticleList } = useArticleList(getEntries);
+  const { fetchArticleList } = useArticleList(info, getEntries);
 
   const [isArticleLoading, setIsArticleLoading] = useState(false);
 
