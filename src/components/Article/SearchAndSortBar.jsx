@@ -19,8 +19,8 @@ import { debounce } from "../../utils/time";
 import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = () => {
+  const { filterString, filterType } = useStore(contentState);
   const { orderDirection } = useStore(settingsState);
-  const { filterType } = useStore(contentState);
   const { polyglot } = useStore(polyglotState);
   const tooltipLines = polyglot.t("search.tooltip").split("\n");
 
@@ -31,6 +31,11 @@ const SearchAndSortBar = () => {
     [],
   );
 
+  const handleInputChange = (value) => {
+    setCurrentFilterString(value);
+    debouncedSetFilterString(value);
+  };
+
   const { isBelowMedium } = useScreenWidth();
 
   const toggleOrderDirection = () => {
@@ -40,23 +45,24 @@ const SearchAndSortBar = () => {
 
   useEffect(() => {
     setFilterType("title");
+    setFilterString("");
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (currentFilterString === "") {
-      setFilterString(currentFilterString);
-    } else {
-      debouncedSetFilterString(currentFilterString);
+    if (filterString !== currentFilterString) {
+      setCurrentFilterString(filterString);
     }
-  }, [currentFilterString, debouncedSetFilterString]);
+  }, [filterString]);
 
   return (
     <div className="search-and-sort-bar">
       <Input.Search
         allowClear
-        onChange={setCurrentFilterString}
+        onChange={handleInputChange}
         placeholder={polyglot.t("search.placeholder")}
         style={{ width: isBelowMedium ? "100%" : 272, marginLeft: 8 }}
+        value={currentFilterString}
         addBefore={
           <Select
             onChange={setFilterType}

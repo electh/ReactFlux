@@ -19,6 +19,7 @@
         "useArrowFunction": "warn"
       },
       "correctness": {
+        "noUndeclaredVariables": "error",
         "noUnusedImports": "warn",
         "noUnusedVariables": "warn"
       }
