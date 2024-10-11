@@ -230,12 +230,12 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
         }),
       );
 
-      const updateFeed = (feed, updatedFeeds) => {
+      const getUpdatedFeed = (feed, updatedFeeds) => {
         const updatedFeed = updatedFeeds.find((f) => f.id === feed.id);
         return updatedFeed || feed;
       };
       setFeedsData((feeds) =>
-        feeds.map((feed) => updateFeed(feed, updatedFeeds)),
+        feeds.map((feed) => getUpdatedFeed(feed, updatedFeeds)),
       );
 
       Message.success(polyglot.t("feed_table.bulk_update_success"));
