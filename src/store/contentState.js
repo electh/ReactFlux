@@ -11,7 +11,6 @@ const defaultValue = {
   filterString: "", // 搜索文本
   filterType: "Title", // title | content | author
   infoFrom: getSettings("homePage"), // all | today | starred | history
-  isArticleFocused: false, // 文章是否被聚焦
   isArticleListReady: false, // 文章列表是否加载完成
   loadMoreVisible: false, // 加载更多元素可见性
   offset: 0, // 文章分页参数
@@ -63,10 +62,6 @@ export const setEntries = createSetter(contentState, "entries");
 export const setFilterString = createSetter(contentState, "filterString");
 export const setFilterType = createSetter(contentState, "filterType");
 export const setInfoFrom = createSetter(contentState, "infoFrom");
-export const setIsArticleFocused = createSetter(
-  contentState,
-  "isArticleFocused",
-);
 export const setIsArticleListReady = createSetter(
   contentState,
   "isArticleListReady",

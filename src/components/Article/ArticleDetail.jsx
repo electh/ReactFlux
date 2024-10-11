@@ -14,7 +14,6 @@ import {
   contentState,
   setFilterString,
   setFilterType,
-  setIsArticleFocused,
 } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import { generateReadableDate, generateReadingTime } from "../../utils/date";
@@ -182,7 +181,6 @@ const ArticleDetail = forwardRef((_, ref) => {
   const togglePhotoSlider = (index) => {
     setSelectedIndex(index);
     setIsPhotoSliderVisible((prev) => !prev);
-    setIsArticleFocused((prev) => !prev);
   };
 
   const imageSources = extractImageSources(activeContent.content);
@@ -194,13 +192,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category;
 
   return (
-    <article
-      className="article-content"
-      onBlur={() => setIsArticleFocused(false)}
-      onFocus={() => setIsArticleFocused(true)}
-      ref={ref}
-      tabIndex={-1}
-    >
+    <article className="article-content" ref={ref} tabIndex={-1}>
       <SimpleBar className="scroll-container">
         <div className="article-header" style={{ width: `${articleWidth}%` }}>
           <Typography.Title className="article-title" heading={3}>
@@ -260,7 +252,6 @@ const ArticleDetail = forwardRef((_, ref) => {
             visible={isPhotoSliderVisible}
             onClose={() => {
               setIsPhotoSliderVisible(false);
-              setIsArticleFocused(true);
             }}
             index={selectedIndex}
             onIndexChange={setSelectedIndex}

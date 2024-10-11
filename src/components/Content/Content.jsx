@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import { useStore } from "@nanostores/react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { updateEntriesStatus } from "../../apis";
 import useAppData from "../../hooks/useAppData";
 import useArticleList from "../../hooks/useArticleList";
@@ -12,12 +13,12 @@ import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { polyglotState } from "../../hooks/useLanguage";
 import {
   contentState,
-  filteredEntriesState,
   setActiveContent,
   setInfoFrom,
   setOffset,
 } from "../../store/contentState";
 import { dataState, hiddenFeedIdsState } from "../../store/dataState";
+import { getHotkeys } from "../../store/hotkeysState";
 import { settingsState } from "../../store/settingsState";
 import ActionButtons from "../Article/ActionButtons";
 import ArticleDetail from "../Article/ArticleDetail";
@@ -27,12 +28,10 @@ import "./Content.css";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const { activeContent, isArticleFocused, isArticleListReady } =
-    useStore(contentState);
+  const { activeContent, isArticleListReady } = useStore(contentState);
   const { isAppDataReady } = useStore(dataState);
   const { orderBy, orderDirection, showAllFeeds, showStatus } =
     useStore(settingsState);
-  const filteredEntries = useStore(filteredEntriesState);
   const hiddenFeedIds = useStore(hiddenFeedIdsState);
   const { polyglot } = useStore(polyglotState);
 
@@ -128,41 +127,33 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     toggleStarStatus,
   } = useKeyHandlers(handleEntryClick, entryListRef);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    const keyMap = {
-      ArrowLeft: () => navigateToPreviousArticle(),
-      ArrowRight: () => navigateToNextArticle(),
-      Escape: () => exitDetailView(),
-      a: () => saveToThirdPartyServices(handleSaveToThirdPartyServices),
-      b: openLinkExternally,
-      d: () => fetchOriginalArticle(handleFetchContent),
-      m: () => toggleReadStatus(() => handleToggleStatus(activeContent)),
-      s: () => toggleStarStatus(() => handleToggleStarred(activeContent)),
-      v: openPhotoSlider,
-    };
-
-    const handleKeyDown = (event) => {
-      const handler = keyMap[event.key];
-      if (handler) {
-        if (event.key === "ArrowLeft") {
-          navigateToPreviousArticle(event.ctrlKey);
-        } else if (event.key === "ArrowRight") {
-          navigateToNextArticle(event.ctrlKey);
-        } else {
-          handler();
-        }
-      }
-    };
-
-    if (isArticleFocused) {
-      document.addEventListener("keydown", handleKeyDown);
-
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown);
-      };
-    }
-  }, [activeContent, filteredEntries, isArticleFocused]);
+  useHotkeys(getHotkeys("exitDetailView"), () => exitDetailView());
+  useHotkeys(getHotkeys("fetchOriginalArticle"), () =>
+    fetchOriginalArticle(handleFetchContent),
+  );
+  useHotkeys(getHotkeys("navigateToNextArticle"), () =>
+    navigateToNextArticle(),
+  );
+  useHotkeys(getHotkeys("navigateToNextUnreadArticle"), () =>
+    navigateToNextArticle(true),
+  );
+  useHotkeys(getHotkeys("navigateToPreviousArticle"), () =>
+    navigateToPreviousArticle(),
+  );
+  useHotkeys(getHotkeys("navigateToPreviousUnreadArticle"), () =>
+    navigateToPreviousArticle(true),
+  );
+  useHotkeys(getHotkeys("openLinkExternally"), () => openLinkExternally());
+  useHotkeys(getHotkeys("openPhotoSlider"), () => openPhotoSlider());
+  useHotkeys(getHotkeys("saveToThirdPartyServices"), () =>
+    saveToThirdPartyServices(handleSaveToThirdPartyServices),
+  );
+  useHotkeys(getHotkeys("toggleReadStatus"), () =>
+    toggleReadStatus(() => handleToggleStatus(activeContent)),
+  );
+  useHotkeys(getHotkeys("toggleStarStatus"), () =>
+    toggleStarStatus(() => handleToggleStarred(activeContent)),
+  );
 
   const refreshArticleList = async (getEntries) => {
     setOffset(0);

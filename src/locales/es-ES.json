@@ -199,17 +199,17 @@
   "hotkeys": {
     "key": "Clave",
     "function": "Función",
-    "esc": "Salir de la vista del artículo y volver a la lista",
-    "left": "Navegar al artículo previo en la lista",
-    "ctrl_left": "Navegar al artículo previo no leído en la lista",
-    "right": "Navegar al siguiente artículo en la lista",
-    "ctrl_right": "Navegar al siguiente artículo no leído en la lista",
-    "a": "Guardar el artículo actual en servicios de terceros",
-    "b": "Abrir el enlace del artículo actual en una nueva pestaña del navegador",
-    "d": "Obtener y mostrar el contenido original del artículo actual",
-    "m": "Alternar el estado de lectura del artículo actual",
-    "s": "Activar o desactivar el estado de la estrella (marcador) del artículo actual",
-    "v": "Abrir el control deslizante de fotos para ver todas las imágenes del artículo actual"
+    "exitDetailView": "Salir de la vista del artículo y volver a la lista",
+    "fetchOriginalArticle": "Obtener y mostrar el contenido original del artículo actual",
+    "navigateToNextArticle": "Navegar al siguiente artículo en la lista",
+    "navigateToNextUnreadArticle": "Navegar al siguiente artículo no leído en la lista",
+    "navigateToPreviousArticle": "Navegar al artículo previo en la lista",
+    "navigateToPreviousUnreadArticle": "Navegar al artículo previo no leído en la lista",
+    "openLinkExternally": "Abrir el enlace del artículo actual en una nueva pestaña del navegador",
+    "openPhotoSlider": "Abrir el control deslizante de fotos para ver todas las imágenes del artículo actual",
+    "saveToThirdPartyServices": "Guardar el artículo actual en servicios de terceros",
+    "toggleReadStatus": "Alternar el estado de lectura del artículo actual",
+    "toggleStarStatus": "Activar o desactivar el estado de la estrella (marcador) del artículo actual"
   },
   "date": {
     "just_now": "hace poco",

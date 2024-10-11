@@ -2,7 +2,6 @@ import { useStore } from "@nanostores/react";
 import { useEffect, useRef } from "react";
 import {
   setEntries,
-  setIsArticleFocused,
   setIsArticleListReady,
   setLoadMoreVisible,
   setTotal,
@@ -71,11 +70,9 @@ const useArticleList = (info, getEntries) => {
       }
 
       setIsArticleListReady(true);
-      setIsArticleFocused(true);
       handleResponses(response);
     } catch (error) {
       console.error("Error fetching articles: ", error);
-      setIsArticleFocused(false);
     } finally {
       isLoading.current = false;
     }

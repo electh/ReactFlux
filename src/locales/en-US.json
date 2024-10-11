@@ -199,17 +199,17 @@
   "hotkeys": {
     "key": "Key",
     "function": "Function",
-    "esc": "Exit the article view and return to the list",
-    "left": "Navigate to the previous article in the list",
-    "ctrl_left": "Navigate to the previous unread article in the list",
-    "right": "Navigate to the next article in the list",
-    "ctrl_right": "Navigate to the next unread article in the list",
-    "a": "Save the current article to third-party services",
-    "b": "Open the current article's link in a new browser tab",
-    "d": "Fetch and display the original content of the current article",
-    "m": "Toggle the read status of the current article",
-    "s": "Toggle the star status (bookmark) of the current article",
-    "v": "Open the photo slider for viewing all images in the current article"
+    "exitDetailView": "Exit the article view and return to the list",
+    "fetchOriginalArticle": "Fetch and display the original content of the current article",
+    "navigateToNextArticle": "Navigate to the next article in the list",
+    "navigateToNextUnreadArticle": "Navigate to the next unread article in the list",
+    "navigateToPreviousArticle": "Navigate to the previous article in the list",
+    "navigateToPreviousUnreadArticle": "Navigate to the previous unread article in the list",
+    "openLinkExternally": "Open the current article's link in a new browser tab",
+    "openPhotoSlider": "Open the photo slider for viewing all images in the current article",
+    "saveToThirdPartyServices": "Save the current article to third-party services",
+    "toggleReadStatus": "Toggle the read status of the current article",
+    "toggleStarStatus": "Toggle the star status (bookmark) of the current article"
   },
   "date": {
     "just_now": "just now",

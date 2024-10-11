@@ -199,17 +199,17 @@
   "hotkeys": {
     "key": "键",
     "function": "功能",
-    "esc": "退出文章视图并返回列表",
-    "left": "在列表中导航到上一篇文章",
-    "ctrl_left": "在列表中导航到上一篇未读文章",
-    "right": "在列表中导航到下一篇文章",
-    "ctrl_right": "在列表中导航到下一篇未读文章",
-    "a": "保存当前文章到第三方服务",
-    "b": "在当前文章的链接中打开一个新浏览器标签",
-    "d": "获取并显示当前文章的原始内容",
-    "m": "切换当前文章的阅读状态 (已读/未读)",
-    "s": "切换当前文章的星标状态 (收藏)",
-    "v": "打开当前文章的图片浏览器，查看所有图片"
+    "exitDetailView": "退出文章视图并返回列表",
+    "fetchOriginalArticle": "获取并显示当前文章的原始内容",
+    "navigateToNextArticle": "在列表中导航到下一篇文章",
+    "navigateToNextUnreadArticle": "在列表中导航到下一篇未读文章",
+    "navigateToPreviousArticle": "在列表中导航到上一篇文章",
+    "navigateToPreviousUnreadArticle": "在列表中导航到上一篇未读文章",
+    "openLinkExternally": "在当前文章的链接中打开一个新浏览器标签",
+    "openPhotoSlider": "打开当前文章的图片浏览器，查看所有图片",
+    "saveToThirdPartyServices": "保存当前文章到第三方服务",
+    "toggleReadStatus": "切换当前文章的阅读状态 (已读/未读)",
+    "toggleStarStatus": "切换当前文章的星标状态 (收藏)"
   },
   "date": {
     "just_now": "刚刚",

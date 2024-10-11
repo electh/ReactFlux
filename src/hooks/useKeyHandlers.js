@@ -6,7 +6,6 @@ import {
   contentState,
   filteredEntriesState,
   setActiveContent,
-  setIsArticleFocused,
 } from "../store/contentState";
 import { extractImageSources } from "../utils/images";
 import useLoadMore from "./useLoadMore";
@@ -149,7 +148,6 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
 
     setSelectedIndex(0);
     setIsPhotoSliderVisible(true);
-    setIsArticleFocused(false);
   });
 
   return {
