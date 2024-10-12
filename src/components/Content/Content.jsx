@@ -18,7 +18,7 @@ import {
   setOffset,
 } from "../../store/contentState";
 import { dataState, hiddenFeedIdsState } from "../../store/dataState";
-import { getHotkeys } from "../../store/hotkeysState";
+import { hotkeysState } from "../../store/hotkeysState";
 import { settingsState } from "../../store/settingsState";
 import ActionButtons from "../Article/ActionButtons";
 import ArticleDetail from "../Article/ArticleDetail";
@@ -32,8 +32,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const { isAppDataReady } = useStore(dataState);
   const { orderBy, orderDirection, showAllFeeds, showStatus } =
     useStore(settingsState);
-  const hiddenFeedIds = useStore(hiddenFeedIdsState);
   const { polyglot } = useStore(polyglotState);
+  const hiddenFeedIds = useStore(hiddenFeedIdsState);
+  const hotkeys = useStore(hotkeysState);
 
   const {
     handleFetchContent,
@@ -127,31 +128,29 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     toggleStarStatus,
   } = useKeyHandlers(handleEntryClick, entryListRef);
 
-  useHotkeys(getHotkeys("exitDetailView"), () => exitDetailView());
-  useHotkeys(getHotkeys("fetchOriginalArticle"), () =>
+  useHotkeys(hotkeys.exitDetailView, () => exitDetailView());
+  useHotkeys(hotkeys.fetchOriginalArticle, () =>
     fetchOriginalArticle(handleFetchContent),
   );
-  useHotkeys(getHotkeys("navigateToNextArticle"), () =>
-    navigateToNextArticle(),
-  );
-  useHotkeys(getHotkeys("navigateToNextUnreadArticle"), () =>
+  useHotkeys(hotkeys.navigateToNextArticle, () => navigateToNextArticle());
+  useHotkeys(hotkeys.navigateToNextUnreadArticle, () =>
     navigateToNextArticle(true),
   );
-  useHotkeys(getHotkeys("navigateToPreviousArticle"), () =>
+  useHotkeys(hotkeys.navigateToPreviousArticle, () =>
     navigateToPreviousArticle(),
   );
-  useHotkeys(getHotkeys("navigateToPreviousUnreadArticle"), () =>
+  useHotkeys(hotkeys.navigateToPreviousUnreadArticle, () =>
     navigateToPreviousArticle(true),
   );
-  useHotkeys(getHotkeys("openLinkExternally"), () => openLinkExternally());
-  useHotkeys(getHotkeys("openPhotoSlider"), () => openPhotoSlider());
-  useHotkeys(getHotkeys("saveToThirdPartyServices"), () =>
+  useHotkeys(hotkeys.openLinkExternally, () => openLinkExternally());
+  useHotkeys(hotkeys.openPhotoSlider, () => openPhotoSlider());
+  useHotkeys(hotkeys.saveToThirdPartyServices, () =>
     saveToThirdPartyServices(handleSaveToThirdPartyServices),
   );
-  useHotkeys(getHotkeys("toggleReadStatus"), () =>
+  useHotkeys(hotkeys.toggleReadStatus, () =>
     toggleReadStatus(() => handleToggleStatus(activeContent)),
   );
-  useHotkeys(getHotkeys("toggleStarStatus"), () =>
+  useHotkeys(hotkeys.toggleStarStatus, () =>
     toggleStarStatus(() => handleToggleStarred(activeContent)),
   );
 

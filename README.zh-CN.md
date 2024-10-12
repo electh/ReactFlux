@@ -13,7 +13,7 @@ Reactflux 是 [Miniflux](https://github.com/miniflux/miniflux) 的第三方 Web 
 - 支持黑暗模式和自定义主题
 - 类 Google 搜索语法的文章搜索功能
 - 订阅源及分组管理
-- 快捷键支持
+- 快捷键支持（可自定义）
 - 滚动时自动标记文章为已读
 - 批量更新过滤后的订阅 URL 的 host（适用于替换 RSSHub 实例）
 - 批量刷新最近更新错误的订阅源

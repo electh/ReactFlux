@@ -1,4 +1,5 @@
 import { persistentAtom } from "@nanostores/persistent";
+import { createSetter } from "../utils/nanostores";
 
 const defaultValue = {
   exitDetailView: ["esc"],
@@ -19,9 +20,9 @@ export const hotkeysState = persistentAtom("hotkeys", defaultValue, {
   decode: JSON.parse,
 });
 
-export const getHotkeys = (key) => hotkeysState.get()[key];
-
-export const updateHotkeys = (hotkeysChanges) =>
-  hotkeysState.set({ ...hotkeysState.get(), ...hotkeysChanges });
-
-export const resetHotkeys = () => hotkeysState.set(defaultValue);
+export const updateHotkey = (action, keys) => {
+  const setter = createSetter(hotkeysState, action);
+  setter(keys);
+};
+export const resetHotkey = (action) =>
+  updateHotkey(action, defaultValue[action]);

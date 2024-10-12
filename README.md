@@ -13,7 +13,7 @@ Key features include:
 - Support for dark mode and custom themes
 - Article search with Google-like syntax
 - Feed and group management
-- Keyboard shortcuts
+- Keyboard shortcuts (customizable)
 - Automatically mark articles as read when scrolling
 - Batch update the host of filtered subscription URLs (useful for replacing RSSHub instances)
 - Batch refresh recently errored subscriptions

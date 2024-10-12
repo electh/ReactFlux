@@ -1,27 +1,12 @@
-import { Table, Tag } from "@arco-design/web-react";
+import { Table } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
 import { polyglotState } from "../../hooks/useLanguage";
-import { getHotkeys } from "../../store/hotkeysState";
+import { hotkeysState } from "../../store/hotkeysState";
+import EditableTagGroup from "./EditableTagGroup";
 
 const Hotkeys = () => {
   const { polyglot } = useStore(polyglotState);
-
-  const columns = [
-    {
-      title: polyglot.t("hotkeys.key"),
-      dataIndex: "keyName",
-      render: (keyName) => <Tag>{keyName}</Tag>,
-    },
-    {
-      title: polyglot.t("hotkeys.function"),
-      dataIndex: "description",
-    },
-  ];
-
-  const processKeyName = (keys) =>
-    keys
-      .map((key) => key.replace("left", "⏴").replace("right", "⏵"))
-      .join(" / ");
+  const hotkeys = useStore(hotkeysState);
 
   const hotkeyActions = [
     "navigateToPreviousArticle",
@@ -37,9 +22,24 @@ const Hotkeys = () => {
     "exitDetailView",
   ];
 
-  const hotkeysMapping = hotkeyActions.map((action, index) => ({
-    key: index,
-    keyName: processKeyName(getHotkeys(action)),
+  const columns = [
+    {
+      title: polyglot.t("hotkeys.key"),
+      dataIndex: "keys",
+      render: (keys, record) => (
+        <EditableTagGroup keys={keys} record={record} />
+      ),
+    },
+    {
+      title: polyglot.t("hotkeys.function"),
+      dataIndex: "description",
+    },
+  ];
+
+  const hotkeysMapping = hotkeyActions.map((action) => ({
+    action,
+    key: action,
+    keys: hotkeys[action],
     description: polyglot.t(`hotkeys.${action}`),
   }));
 

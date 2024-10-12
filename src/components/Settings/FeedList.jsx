@@ -104,7 +104,7 @@ const handleFeedRefresh = async (
   feedUpdater,
   displayMessage = true,
 ) => {
-  const polyglot = polyglotState.get();
+  const { polyglot } = polyglotState.get();
 
   try {
     const response = await refreshFunc();

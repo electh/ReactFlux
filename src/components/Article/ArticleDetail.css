@@ -4,7 +4,9 @@
   margin: 0 auto;
 }
 
-.article-title, .article-meta, .article-date {
+.article-title,
+.article-meta,
+.article-date {
   padding: 0 20px;
   margin: 0 auto;
 }

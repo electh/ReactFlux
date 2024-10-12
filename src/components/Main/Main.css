@@ -1,8 +1,7 @@
 .main {
   background-color: var(--color-fill-1);
   display: flex;
-  transition: padding-left 0.1s linear,
-  width 0.1s linear;
+  transition: padding-left 0.1s linear, width 0.1s linear;
   grid-area: main;
   overflow-y: hidden;
 }

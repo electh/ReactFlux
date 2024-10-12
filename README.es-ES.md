@@ -13,7 +13,7 @@ Las funcionalidades clave incluyen:
 - Admite modo oscuro y temas personalizados
 - Búsqueda de artículos con una sintaxis similar a Google
 - Gestión de feed y de grupos de feeds
-- Atajos de teclado
+- Atajos de teclado (personalizables)
 - Marca automáticamente los artículos como leidos al desplazarlos al hacer scroll
 - Actualización por lotes del host de URL de suscripción filtradas (útil para reemplazar instancias de RSSHub)
 - Elimina artículos duplicados por hash, título o URL al cargar la lista
