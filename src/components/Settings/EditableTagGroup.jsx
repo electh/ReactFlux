@@ -4,13 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import { resetHotkey, updateHotkey } from "../../store/hotkeysState";
 import EditableTag from "./EditableTag";
 
+const capitalizeFirstLetter = (word) =>
+  word.trim().length > 1 ? word.charAt(0).toUpperCase() + word.slice(1) : word;
+
 const processKeyName = (keys) =>
   keys
     .map((key) => {
-      const modifiedKey = key.replace("left", "⏴").replace("right", "⏵");
+      const modifiedKey = key
+        .replace("left", "←")
+        .replace("right", "→")
+        .replace("up", "↑")
+        .replace("down", "↓");
       return modifiedKey.includes("+")
-        ? modifiedKey.split("+").join(" + ")
-        : modifiedKey;
+        ? modifiedKey.split("+").map(capitalizeFirstLetter).join(" + ")
+        : capitalizeFirstLetter(modifiedKey);
     })
     .join(" / ");
 
@@ -46,13 +53,10 @@ const EditableTagGroup = ({ keys, record }) => {
                 newKeys[index] = newKey;
                 updateHotkey(record.action, newKeys);
               }}
-              onRemove={
-                keys.length > 1 &&
-                (() => {
-                  const newKeys = keys.filter((_, i) => i !== index);
-                  updateHotkey(record.action, newKeys);
-                })
-              }
+              onRemove={() => {
+                const newKeys = keys.filter((_, i) => i !== index);
+                updateHotkey(record.action, newKeys);
+              }}
             />
           ))}
           <Tag

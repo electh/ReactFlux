@@ -42,11 +42,11 @@ Reactflux 使用 React 编写，构建完成后生成一组静态网页文件，
 
 ### Vercel
 
-[![ 部署到 Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/electh/ReactFlux)
+[![部署到 Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/electh/ReactFlux)
 
 ### Zeabur
 
-[![ 部署到 Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/OKXO3W)
+[![部署到 Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/OKXO3W)
 
 ### Docker
 
