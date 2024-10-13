@@ -1,0 +1,25 @@
+.code-block-container {
+    position: relative;
+}
+
+.language-selector,
+.theme-selector,
+.copy-button {
+    position: absolute;
+    top: 10px;
+    z-index: 1;
+}
+
+.language-selector {
+    right: 196px;
+    width: 120px;
+}
+
+.theme-selector {
+    right: 52px;
+    width: 134px;
+}
+
+.copy-button {
+    right: 10px;
+}
