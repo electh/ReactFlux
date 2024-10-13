@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useStore } from "@nanostores/react";
+import { useContentContext } from "../components/Content/ContentContext";
 import {
   activeEntryIndexState,
   contentState,
@@ -11,7 +12,7 @@ import { extractImageSources } from "../utils/images";
 import useLoadMore from "./useLoadMore";
 import { usePhotoSlider } from "./usePhotoSlider";
 
-const useKeyHandlers = (handleEntryClick, entryListRef) => {
+const useKeyHandlers = () => {
   const { activeContent, loadMoreVisible } = useStore(contentState);
   const activeEntryIndex = useStore(activeEntryIndexState);
   const filteredEntries = useStore(filteredEntriesState);
@@ -23,6 +24,8 @@ const useKeyHandlers = (handleEntryClick, entryListRef) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [shouldLoadNext, setShouldLoadNext] = useState(false);
+
+  const { entryListRef, handleEntryClick } = useContentContext();
 
   useEffect(() => {
     if (shouldLoadNext && !loadingMore) {

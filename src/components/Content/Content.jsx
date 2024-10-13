@@ -1,11 +1,10 @@
 import { Message, Typography } from "@arco-design/web-react";
 import { IconEmpty } from "@arco-design/web-react/icon";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import { useStore } from "@nanostores/react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { updateEntriesStatus } from "../../apis";
 import useAppData from "../../hooks/useAppData";
 import useArticleList from "../../hooks/useArticleList";
 import useEntryActions from "../../hooks/useEntryActions";
@@ -24,12 +23,14 @@ import { settingsState } from "../../store/settingsState";
 import ActionButtons from "../Article/ActionButtons";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
+import { useContentContext } from "./ContentContext";
 import FooterPanel from "./FooterPanel";
 import "./Content.css";
 import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const { activeContent, isArticleListReady } = useStore(contentState);
+  const { activeContent, isArticleListReady, isArticleLoading } =
+    useStore(contentState);
   const { isAppDataReady } = useStore(dataState);
   const { orderBy, orderDirection, showAllFeeds, showStatus } =
     useStore(settingsState);
@@ -38,52 +39,20 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const hiddenFeedIds = useStore(hiddenFeedIdsState);
   const hotkeys = useStore(hotkeysState);
 
+  const { entryDetailRef, entryListRef, handleEntryClick } =
+    useContentContext();
+
   const {
     handleFetchContent,
     handleSaveToThirdPartyServices,
     handleToggleStarred,
     handleToggleStatus,
-    handleEntryStatusUpdate,
   } = useEntryActions();
 
   const { fetchAppData } = useAppData();
   const { fetchArticleList } = useArticleList(info, getEntries);
 
-  const [isArticleLoading, setIsArticleLoading] = useState(false);
-
-  const entryListRef = useRef(null);
   const cardsRef = useRef(null);
-
-  // 文章详情页的引用
-  const entryDetailRef = useRef(null);
-
-  const handleEntryClick = async (entry) => {
-    setIsArticleLoading(true);
-
-    setActiveContent({ ...entry, status: "read" });
-    setTimeout(() => {
-      const articleContent = entryDetailRef.current;
-      if (articleContent) {
-        const contentWrapper = articleContent.querySelector(
-          ".simplebar-content-wrapper",
-        );
-        if (contentWrapper) {
-          contentWrapper.scroll({ top: 0 });
-        }
-        articleContent.focus();
-      }
-
-      setIsArticleLoading(false);
-      if (entry.status === "unread") {
-        handleEntryStatusUpdate(entry, "read");
-        updateEntriesStatus([entry.id], "read").catch(() => {
-          Message.error(polyglot.t("content.mark_as_read_error"));
-          setActiveContent({ ...entry, status: "unread" });
-          handleEntryStatusUpdate(entry, "unread");
-        });
-      }
-    }, 200);
-  };
 
   const {
     exitDetailView,
@@ -95,17 +64,17 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     saveToThirdPartyServices,
     toggleReadStatus,
     toggleStarStatus,
-  } = useKeyHandlers(handleEntryClick, entryListRef);
+  } = useKeyHandlers();
 
   const hotkeyActions = {
-    exitDetailView: exitDetailView,
+    exitDetailView,
     fetchOriginalArticle: () => fetchOriginalArticle(handleFetchContent),
-    navigateToNextArticle: navigateToNextArticle,
+    navigateToNextArticle: () => navigateToNextArticle(),
     navigateToNextUnreadArticle: () => navigateToNextArticle(true),
-    navigateToPreviousArticle: navigateToPreviousArticle,
+    navigateToPreviousArticle: () => navigateToPreviousArticle(),
     navigateToPreviousUnreadArticle: () => navigateToPreviousArticle(true),
-    openLinkExternally: openLinkExternally,
-    openPhotoSlider: openPhotoSlider,
+    openLinkExternally,
+    openPhotoSlider,
     saveToThirdPartyServices: () =>
       saveToThirdPartyServices(handleSaveToThirdPartyServices),
     toggleReadStatus: () =>
@@ -204,10 +173,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
             <ArticleDetail ref={entryDetailRef} />
           </CSSTransition>
           <CSSTransition in={!isArticleLoading} timeout={200} unmountOnExit>
-            <ActionButtons
-              handleEntryClick={handleEntryClick}
-              entryListRef={entryListRef}
-            />
+            <ActionButtons />
           </CSSTransition>
         </div>
       ) : (

@@ -13,7 +13,7 @@ import SimpleBar from "simplebar-react";
 import { contentState, filteredEntriesState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import { mergeRefs } from "../../utils/refs";
-import Ripple from "../ui/Ripple.jsx";
+import Ripple from "../ui/Ripple";
 import "./ArticleList.css";
 
 const LoadMoreComponent = ({ getEntries }) => {

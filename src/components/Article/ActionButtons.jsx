@@ -22,7 +22,7 @@ import {
 } from "../../store/contentState";
 import "./ActionButtons.css";
 
-const ActionButtons = ({ handleEntryClick, entryListRef }) => {
+const ActionButtons = () => {
   const { activeContent } = useStore(contentState);
   const activeEntryIndex = useStore(activeEntryIndexState);
   const filteredEntries = useStore(filteredEntriesState);
@@ -37,8 +37,9 @@ const ActionButtons = ({ handleEntryClick, entryListRef }) => {
     handleToggleStarred,
     handleToggleStatus,
   } = useEntryActions();
+
   const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } =
-    useKeyHandlers(handleEntryClick, entryListRef);
+    useKeyHandlers();
 
   const isUnread = activeContent.status === "unread";
   const isStarred = activeContent.starred;

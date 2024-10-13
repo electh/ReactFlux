@@ -16,6 +16,7 @@ import { polyglotState } from "../../hooks/useLanguage";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { categoriesState } from "../../store/dataState";
 import { includesIgnoreCase } from "../../utils/filter";
+import { ContextProvider } from "../Content/ContentContext";
 import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
 
@@ -143,7 +144,9 @@ const AddFeedModal = () => {
 
 const Main = () => (
   <div className="main">
-    <Outlet />
+    <ContextProvider>
+      <Outlet />
+    </ContextProvider>
     <SettingsModal />
     <AddFeedModal />
   </div>
