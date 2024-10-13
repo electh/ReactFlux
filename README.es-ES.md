@@ -20,6 +20,7 @@ Las funcionalidades clave incluyen:
 - De-duplicate articles by hash, title, or URL when loading the list
 - Disponible en varios idiomasç (incluye: Inglés / Español / 简体中文)
 - Guardar artículo en servicios de terceros
+- Personalizable resaltado de sintaxis para bloques de código
 - Otras características esperando que las descubras...
 
 ## Capturas de pantalla

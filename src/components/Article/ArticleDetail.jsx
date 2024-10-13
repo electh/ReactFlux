@@ -1,7 +1,6 @@
-import { Button, Divider, Tag, Typography } from "@arco-design/web-react";
-import { IconFullscreen } from "@arco-design/web-react/icon";
+import { Divider, Tag, Typography } from "@arco-design/web-react";
 import ReactHtmlParser from "html-react-parser";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useState } from "react";
 import { PhotoSlider } from "react-photo-view";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -9,7 +8,6 @@ import { useStore } from "@nanostores/react";
 import "react-photo-view/dist/react-photo-view.css";
 import SimpleBar from "simplebar-react";
 import { usePhotoSlider } from "../../hooks/usePhotoSlider";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
   contentState,
   setFilterString,
@@ -18,6 +16,8 @@ import {
 import { settingsState } from "../../store/settingsState";
 import { generateReadableDate, generateReadingTime } from "../../utils/date";
 import { extractImageSources } from "../../utils/images";
+import CodeBlock from "./CodeBlock";
+import ImageOverlayButton from "./ImageOverlayButton";
 import "./ArticleDetail.css";
 
 const CustomLink = ({ url, text }) => {
@@ -36,97 +36,6 @@ const CustomLink = ({ url, text }) => {
     >
       {text}
     </Link>
-  );
-};
-
-const ImageComponent = ({ imgNode, isIcon }) => {
-  const { fontSize } = useStore(settingsState);
-
-  return (
-    <img
-      {...imgNode.attribs}
-      alt={imgNode.attribs.alt ?? "image"}
-      style={
-        isIcon
-          ? {
-              display: "inline-block",
-              width: "auto",
-              height: `${fontSize}rem`,
-              margin: 0,
-            }
-          : {}
-      }
-    />
-  );
-};
-
-const ImageOverlayButton = ({
-  node,
-  index,
-  togglePhotoSlider,
-  isLinkWrapper = false,
-}) => {
-  const [isHovering, setIsHovering] = useState(false);
-  const [isIcon, setIsIcon] = useState(false);
-  const { isBelowMedium } = useScreenWidth();
-
-  useEffect(() => {
-    const imgNode = isLinkWrapper ? node.children[0] : node;
-    const imgSrc = imgNode.attribs.src;
-    const img = new Image();
-    img.src = imgSrc;
-    img.onload = () => setIsIcon(img.width <= 100 && img.height <= 100);
-  }, [node, isLinkWrapper]);
-
-  const imgNode = isLinkWrapper ? node.children[0] : node;
-
-  if (isIcon) {
-    return isLinkWrapper ? (
-      <a {...node.attribs}>
-        <ImageComponent imgNode={imgNode} isIcon={isIcon} />
-        {node.children[1]?.data}
-      </a>
-    ) : (
-      <ImageComponent imgNode={imgNode} isIcon={isIcon} />
-    );
-  }
-
-  const handleMouseEnter = () => setIsHovering(true);
-  const handleMouseLeave = () => setIsHovering(false);
-
-  return (
-    <div style={{ textAlign: "center", position: "relative" }}>
-      <div
-        style={{ display: "inline-block", position: "relative" }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {isLinkWrapper ? (
-          <a {...node.attribs}>
-            <ImageComponent imgNode={imgNode} isIcon={isIcon} />
-          </a>
-        ) : (
-          <ImageComponent imgNode={imgNode} isIcon={isIcon} />
-        )}
-        <Button
-          icon={<IconFullscreen />}
-          shape="circle"
-          style={{
-            position: "absolute",
-            top: 30,
-            right: 10,
-            color: "white",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            opacity: isBelowMedium || isHovering ? 1 : 0,
-            transition: "opacity 0.3s",
-          }}
-          onClick={(event) => {
-            event.preventDefault();
-            togglePhotoSlider(index);
-          }}
-        />
-      </div>
-    </div>
   );
 };
 
@@ -156,7 +65,18 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
           togglePhotoSlider={togglePhotoSlider}
         />
       );
+    } else if (
+      node.type === "tag" &&
+      node.name === "pre" &&
+      node.children[0]?.name === "code"
+    ) {
+      const codeNode = node.children[0];
+      const className = codeNode.attribs.class || "";
+      return (
+        <CodeBlock className={className}>{codeNode.children[0].data}</CodeBlock>
+      );
     }
+
     return node;
   },
 });
