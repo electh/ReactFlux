@@ -1,19 +1,10 @@
-name: Push Docker image to Docker Hub
+name: Scheduled Docker Build
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - '.github/**'
-      - '.husky/**'
-      - '.editorconfig'
-      - '.gitignore'
-      - 'biome.json'
-      - 'README*.md'
+  schedule:
+    - cron: "0 0 * * *"
 
   workflow_dispatch:
-
 
 jobs:
   build-and-push:
@@ -37,8 +28,7 @@ jobs:
         with:
           images: electh/reactflux
           tags: |
-            type=raw,value=latest,enable=true
-            type=sha,format=long,prefix=,enable=true
+            type=raw,value={{date 'YYYY-MM-DD'}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -47,5 +37,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           platforms: linux/amd64,linux/arm64
-          cache-from: type=gha,scope=docker-release
-          cache-to: type=gha,mode=max,scope=docker-release
+          cache-from: type=gha,scope=docker-scheduled
+          cache-to: type=gha,mode=max,scope=docker-scheduled
