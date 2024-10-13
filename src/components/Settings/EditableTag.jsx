@@ -1,7 +1,12 @@
 import { Input, Tag } from "@arco-design/web-react";
+import { useStore } from "@nanostores/react";
 import { useCallback, useEffect, useState } from "react";
+import { duplicateHotkeysState } from "../../store/hotkeysState";
+import { getColorValue } from "../../utils/colors";
 
 const EditableTag = ({ value, onChange, onRemove, editOnMount = false }) => {
+  const duplicateHotkeys = useStore(duplicateHotkeysState);
+
   const [isEditing, setIsEditing] = useState(editOnMount);
 
   const handleEdit = () => {
@@ -65,22 +70,25 @@ const EditableTag = ({ value, onChange, onRemove, editOnMount = false }) => {
   return isEditing ? (
     <Input
       autoFocus
-      size="mini"
-      value={value}
-      style={{ width: 84, marginRight: 8 }}
-      onPressEnter={handleEdit}
       onBlur={handleEdit}
       onChange={onChange}
+      onPressEnter={handleEdit}
+      size="mini"
+      status={duplicateHotkeys.includes(value) ? "error" : undefined}
+      style={{ width: 80 }}
+      value={value}
     />
   ) : (
     <Tag
-      style={{ marginRight: 8 }}
       closable={!!onRemove}
+      color={
+        duplicateHotkeys.includes(value) ? getColorValue("Red") : undefined
+      }
+      onClick={() => setIsEditing(true)}
       onClose={(event) => {
         event.stopPropagation();
         onRemove();
       }}
-      onClick={() => setIsEditing(true)}
     >
       {value}
     </Tag>

@@ -19,6 +19,7 @@ import {
 } from "../../store/contentState";
 import { dataState, hiddenFeedIdsState } from "../../store/dataState";
 import { hotkeysState } from "../../store/hotkeysState";
+import { duplicateHotkeysState } from "../../store/hotkeysState";
 import { settingsState } from "../../store/settingsState";
 import ActionButtons from "../Article/ActionButtons";
 import ArticleDetail from "../Article/ArticleDetail";
@@ -33,6 +34,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const { orderBy, orderDirection, showAllFeeds, showStatus } =
     useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
+  const duplicateHotkeys = useStore(duplicateHotkeysState);
   const hiddenFeedIds = useStore(hiddenFeedIdsState);
   const hotkeys = useStore(hotkeysState);
 
@@ -54,39 +56,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   // 文章详情页的引用
   const entryDetailRef = useRef(null);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    setInfoFrom(info.from);
-    if (activeContent) {
-      setActiveContent(null);
-    }
-    refreshArticleList(getEntries);
-  }, [info]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (["starred", "history"].includes(info.from)) {
-      return;
-    }
-    refreshArticleList(getEntries);
-  }, [orderBy]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (
-      hiddenFeedIds.length === 0 ||
-      ["starred", "history"].includes(info.from)
-    ) {
-      return;
-    }
-    refreshArticleList(getEntries);
-  }, [showAllFeeds]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    refreshArticleList(getEntries);
-  }, [orderDirection, showStatus]);
 
   const handleEntryClick = async (entry) => {
     setIsArticleLoading(true);
@@ -128,31 +97,29 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     toggleStarStatus,
   } = useKeyHandlers(handleEntryClick, entryListRef);
 
-  useHotkeys(hotkeys.exitDetailView, () => exitDetailView());
-  useHotkeys(hotkeys.fetchOriginalArticle, () =>
-    fetchOriginalArticle(handleFetchContent),
-  );
-  useHotkeys(hotkeys.navigateToNextArticle, () => navigateToNextArticle());
-  useHotkeys(hotkeys.navigateToNextUnreadArticle, () =>
-    navigateToNextArticle(true),
-  );
-  useHotkeys(hotkeys.navigateToPreviousArticle, () =>
-    navigateToPreviousArticle(),
-  );
-  useHotkeys(hotkeys.navigateToPreviousUnreadArticle, () =>
-    navigateToPreviousArticle(true),
-  );
-  useHotkeys(hotkeys.openLinkExternally, () => openLinkExternally());
-  useHotkeys(hotkeys.openPhotoSlider, () => openPhotoSlider());
-  useHotkeys(hotkeys.saveToThirdPartyServices, () =>
-    saveToThirdPartyServices(handleSaveToThirdPartyServices),
-  );
-  useHotkeys(hotkeys.toggleReadStatus, () =>
-    toggleReadStatus(() => handleToggleStatus(activeContent)),
-  );
-  useHotkeys(hotkeys.toggleStarStatus, () =>
-    toggleStarStatus(() => handleToggleStarred(activeContent)),
-  );
+  const hotkeyActions = {
+    exitDetailView: exitDetailView,
+    fetchOriginalArticle: () => fetchOriginalArticle(handleFetchContent),
+    navigateToNextArticle: navigateToNextArticle,
+    navigateToNextUnreadArticle: () => navigateToNextArticle(true),
+    navigateToPreviousArticle: navigateToPreviousArticle,
+    navigateToPreviousUnreadArticle: () => navigateToPreviousArticle(true),
+    openLinkExternally: openLinkExternally,
+    openPhotoSlider: openPhotoSlider,
+    saveToThirdPartyServices: () =>
+      saveToThirdPartyServices(handleSaveToThirdPartyServices),
+    toggleReadStatus: () =>
+      toggleReadStatus(() => handleToggleStatus(activeContent)),
+    toggleStarStatus: () =>
+      toggleStarStatus(() => handleToggleStarred(activeContent)),
+  };
+
+  const removeConflictingKeys = (keys) =>
+    keys.filter((key) => !duplicateHotkeys.includes(key));
+
+  for (const [key, action] of Object.entries(hotkeyActions)) {
+    useHotkeys(removeConflictingKeys(hotkeys[key]), action);
+  }
 
   const refreshArticleList = async (getEntries) => {
     setOffset(0);
@@ -162,6 +129,46 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       await fetchArticleList(getEntries);
     }
   };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (duplicateHotkeys.length > 0) {
+      Message.error(polyglot.t("settings.duplicate_hotkeys"));
+    }
+  }, [duplicateHotkeys]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setInfoFrom(info.from);
+    if (activeContent) {
+      setActiveContent(null);
+    }
+    refreshArticleList(getEntries);
+  }, [info]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (["starred", "history"].includes(info.from)) {
+      return;
+    }
+    refreshArticleList(getEntries);
+  }, [orderBy]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (
+      hiddenFeedIds.length === 0 ||
+      ["starred", "history"].includes(info.from)
+    ) {
+      return;
+    }
+    refreshArticleList(getEntries);
+  }, [showAllFeeds]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    refreshArticleList(getEntries);
+  }, [orderDirection, showStatus]);
 
   return (
     <>

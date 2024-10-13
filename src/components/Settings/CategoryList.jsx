@@ -32,6 +32,7 @@ const CategoryList = () => {
 
   const addNewCategory = async () => {
     if (!inputAddValue.trim()) {
+      setShowAddInput(false);
       return;
     }
 

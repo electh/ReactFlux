@@ -1,7 +1,10 @@
 import { Button, Space, Tag } from "@arco-design/web-react";
 import { IconPlus, IconRefresh } from "@arco-design/web-react/icon";
+import { useStore } from "@nanostores/react";
 import { useEffect, useRef, useState } from "react";
 import { resetHotkey, updateHotkey } from "../../store/hotkeysState";
+import { duplicateHotkeysState } from "../../store/hotkeysState";
+import { getColorValue } from "../../utils/colors";
 import EditableTag from "./EditableTag";
 
 const capitalizeFirstLetter = (word) =>
@@ -22,6 +25,8 @@ const processKeyName = (keys) =>
     .join(" / ");
 
 const EditableTagGroup = ({ keys, record }) => {
+  const duplicateHotkeys = useStore(duplicateHotkeysState);
+
   const [isEditing, setIsEditing] = useState(false);
 
   const groupRef = useRef(null);
@@ -39,10 +44,20 @@ const EditableTagGroup = ({ keys, record }) => {
     };
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (!isEditing) {
+      const newKeys = keys.filter((key) => key !== "");
+      if (newKeys.length !== keys.length) {
+        updateHotkey(record.action, newKeys);
+      }
+    }
+  }, [isEditing]);
+
   return (
     <div ref={groupRef}>
       {isEditing ? (
-        <Space wrap>
+        <Space wrap style={{ marginBottom: -8 }}>
           {keys.map((key, index) => (
             <EditableTag
               key={`${record.action}-${key}`}
@@ -65,6 +80,7 @@ const EditableTagGroup = ({ keys, record }) => {
               backgroundColor: "var(--color-fill-2)",
               border: "1px dashed var(--color-fill-3)",
               cursor: "pointer",
+              width: "32px",
             }}
             onClick={() => {
               const newKeys = [...keys, ""];
@@ -73,13 +89,21 @@ const EditableTagGroup = ({ keys, record }) => {
           />
           <Button
             icon={<IconRefresh />}
-            shape="circle"
-            size="small"
             onClick={() => resetHotkey(record.action)}
+            shape="circle"
+            size="mini"
           />
         </Space>
       ) : (
-        <Tag onClick={() => setIsEditing(true)} style={{ cursor: "pointer" }}>
+        <Tag
+          color={
+            keys.some((key) => duplicateHotkeys.includes(key))
+              ? getColorValue("Red")
+              : undefined
+          }
+          onClick={() => setIsEditing(true)}
+          style={{ cursor: "pointer" }}
+        >
           {processKeyName(keys)}
         </Tag>
       )}

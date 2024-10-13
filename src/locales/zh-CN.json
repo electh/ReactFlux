@@ -150,6 +150,7 @@
     "general": "常规",
     "appearance": "外观",
     "hotkeys": "快捷键",
+    "duplicate_hotkeys": "检测到重复的快捷键，请检查您的快捷键设置",
     "default_home_page_label": "默认主页",
     "default_home_page_description": "默认显示哪个页面：",
     "default_home_page_option_all": "全部",

@@ -150,6 +150,7 @@
     "general": "General",
     "appearance": "Apariencia",
     "hotkeys": "Atajos de teclado",
+    "duplicate_hotkeys": "Atajos de teclado duplicados detectados, por favor revise sus ajustes de atajos de teclado",
     "default_home_page_label": "Página de inicio predeterminada",
     "default_home_page_description": "Qué página mostrar de manera predeterminada:",
     "default_home_page_option_all": "Todo",

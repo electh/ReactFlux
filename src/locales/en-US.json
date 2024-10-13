@@ -150,6 +150,7 @@
     "general": "General",
     "appearance": "Appearance",
     "hotkeys": "Hotkeys",
+    "duplicate_hotkeys": "Duplicate hotkeys detected, please check your hotkeys settings",
     "default_home_page_label": "Default home page",
     "default_home_page_description": "Which page to show by default:",
     "default_home_page_option_all": "All",
