@@ -27,6 +27,7 @@
     "feeds": "Feeds"
   },
   "actions": {
+    "copied": "Copied!",
     "mark_as_read_error": "Failed to mark as read, please try again later",
     "mark_as_unread_error": "Failed to markd as unread, please try again later",
     "star_error": "Failed to star, please try again later",

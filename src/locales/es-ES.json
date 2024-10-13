@@ -27,6 +27,7 @@
     "feeds": "Feeds"
   },
   "actions": {
+    "copied": "Copiado!",
     "mark_as_read_error": "Error al marcar como leído, por favor intente de nuevo más tarde",
     "mark_as_unread_error": "Error al marcar como no leído, por favor intente de nuevo más tarde",
     "star_error": "Error al marcar como favorito, por favor intente de nuevo más tarde",

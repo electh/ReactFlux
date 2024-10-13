@@ -27,6 +27,7 @@
     "feeds": "订阅源"
   },
   "actions": {
+    "copied": "已复制！",
     "mark_as_read_error": "标记为已读失败，请稍后再试",
     "mark_as_unread_error": "标记为未读失败，请稍后再试",
     "star_error": "收藏失败，请稍后再试",

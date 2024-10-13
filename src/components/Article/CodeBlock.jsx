@@ -1,6 +1,9 @@
-import { Select } from "@arco-design/web-react";
+import { Button, Message, Select } from "@arco-design/web-react";
+import { IconCopy } from "@arco-design/web-react/icon";
+import { useStore } from "@nanostores/react";
 import { Highlight, Prism, themes } from "prism-react-renderer";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { polyglotState } from "../../hooks/useLanguage";
 
 // https://prismjs.com/#supported-languages
 const LANGUAGE_DISPLAY_NAMES = {
@@ -65,6 +68,8 @@ const THEMES = {
 const DEFAULT_THEME = "OneDark";
 
 const CodeBlock = ({ children, className }) => {
+  const { polyglot } = useStore(polyglotState);
+
   const [theme, setTheme] = useState(DEFAULT_THEME);
   const [language, setLanguage] = useState(
     () =>
@@ -77,6 +82,12 @@ const CodeBlock = ({ children, className }) => {
       ) || DEFAULT_LANGUAGE,
   );
 
+  const copyToClipboard = useCallback(() => {
+    navigator.clipboard
+      .writeText(children.trim())
+      .then(() => Message.success(polyglot.t("actions.copied")));
+  }, [children, polyglot]);
+
   return (
     <div style={{ position: "relative" }}>
       <Select
@@ -86,7 +97,7 @@ const CodeBlock = ({ children, className }) => {
         style={{
           position: "absolute",
           top: 10,
-          right: 154,
+          right: 196,
           zIndex: 1,
           width: 120,
         }}
@@ -104,7 +115,7 @@ const CodeBlock = ({ children, className }) => {
         style={{
           position: "absolute",
           top: 10,
-          right: 10,
+          right: 52,
           zIndex: 1,
           width: 134,
         }}
@@ -115,6 +126,16 @@ const CodeBlock = ({ children, className }) => {
           </Select.Option>
         ))}
       </Select>
+      <Button
+        icon={<IconCopy />}
+        onClick={copyToClipboard}
+        style={{
+          position: "absolute",
+          top: 10,
+          right: 10,
+          zIndex: 1,
+        }}
+      />
       <Highlight
         code={children.trim()}
         language={language}
@@ -122,7 +143,7 @@ const CodeBlock = ({ children, className }) => {
         theme={THEMES[theme]}
       >
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre className={className} style={{ ...style }}>
+          <pre className={className} style={{ ...style, paddingTop: "50px" }}>
             {tokens.map((line, i) => (
               <div
                 key={`line-${i}-${line[0]?.content.slice(0, 5)}`}
