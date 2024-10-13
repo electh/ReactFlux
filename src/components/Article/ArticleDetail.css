@@ -20,6 +20,7 @@
 
 .article-title.arco-typography {
   word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .article-meta .arco-typography {
