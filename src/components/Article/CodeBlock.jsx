@@ -4,6 +4,7 @@ import { useStore } from "@nanostores/react";
 import { Highlight, Prism, themes } from "prism-react-renderer";
 import { useCallback, useState } from "react";
 import { polyglotState } from "../../hooks/useLanguage";
+import { settingsState, updateSettings } from "../../store/settingsState";
 import "./CodeBlock.css";
 
 // https://prismjs.com/#supported-languages
@@ -76,12 +77,10 @@ const THEMES = {
   VsLight: themes.vsLight,
 };
 
-const DEFAULT_THEME = "OneDark";
-
 const CodeBlock = ({ children, className }) => {
+  const { highlightTheme } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
 
-  const [theme, setTheme] = useState(DEFAULT_THEME);
   const [language, setLanguage] = useState(
     () => detectLanguage(className) || DEFAULT_LANGUAGE,
   );
@@ -100,12 +99,12 @@ const CodeBlock = ({ children, className }) => {
   return (
     <div className="code-block-container">
       <LanguageSelector language={language} setLanguage={setLanguage} />
-      <ThemeSelector theme={theme} setTheme={setTheme} />
+      <ThemeSelector />
       <CopyButton onClick={copyToClipboard} />
       <CodeHighlight
         code={code}
         language={language}
-        theme={THEMES[theme]}
+        theme={THEMES[highlightTheme]}
         lineNumberWidth={lineNumberWidth}
         paddingLeft={paddingLeft}
       />
@@ -141,20 +140,24 @@ const LanguageSelector = ({ language, setLanguage }) => (
   </Select>
 );
 
-const ThemeSelector = ({ theme, setTheme }) => (
-  <Select
-    onChange={setTheme}
-    value={theme}
-    showSearch
-    className="theme-selector"
-  >
-    {Object.keys(THEMES).map((themeName) => (
-      <Select.Option key={themeName} value={themeName}>
-        {themeName}
-      </Select.Option>
-    ))}
-  </Select>
-);
+const ThemeSelector = () => {
+  const { highlightTheme } = useStore(settingsState);
+
+  return (
+    <Select
+      onChange={(value) => updateSettings({ highlightTheme: value })}
+      value={highlightTheme}
+      showSearch
+      className="theme-selector"
+    >
+      {Object.keys(THEMES).map((themeName) => (
+        <Select.Option key={themeName} value={themeName}>
+          {themeName}
+        </Select.Option>
+      ))}
+    </Select>
+  );
+};
 
 const CopyButton = ({ onClick }) => (
   <Button icon={<IconCopy />} onClick={onClick} className="copy-button" />

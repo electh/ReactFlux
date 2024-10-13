@@ -5,6 +5,7 @@ const defaultValue = {
   articleWidth: 90,
   fontFamily: "system-ui",
   fontSize: 1.05,
+  highlightTheme: "OneDark",
   homePage: "all",
   language: getBrowserLanguage(),
   layout: "large",
