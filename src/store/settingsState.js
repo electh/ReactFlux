@@ -25,7 +25,10 @@ const defaultValue = {
 
 export const settingsState = persistentAtom("settings", defaultValue, {
   encode: JSON.stringify,
-  decode: JSON.parse,
+  decode: (str) => {
+    const storedValue = JSON.parse(str);
+    return { ...defaultValue, ...storedValue };
+  },
 });
 
 export const getSettings = (key) => settingsState.get()[key];

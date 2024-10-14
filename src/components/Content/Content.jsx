@@ -56,6 +56,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     openLinkExternally,
     openPhotoSlider,
     saveToThirdPartyServices,
+    showHotkeysSettings,
     toggleReadStatus,
     toggleStarStatus,
   } = useKeyHandlers();
@@ -90,6 +91,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     openPhotoSlider,
     saveToThirdPartyServices: () =>
       saveToThirdPartyServices(handleSaveToThirdPartyServices),
+    showHotkeysSettings,
     toggleReadStatus: () =>
       toggleReadStatus(() => handleToggleStatus(activeContent)),
     toggleStarStatus: () =>

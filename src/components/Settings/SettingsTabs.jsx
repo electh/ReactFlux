@@ -16,7 +16,7 @@ import General from "./General";
 import Hotkeys from "./Hotkeys";
 import "./SettingsTabs.css";
 
-const SettingsTabs = () => {
+const SettingsTabs = ({ activeTab, onTabChange }) => {
   const { polyglot } = useStore(polyglotState);
 
   const CustomTabTitle = (icon, title) => {
@@ -36,10 +36,11 @@ const SettingsTabs = () => {
 
   return (
     <Tabs
-      className="custom-tabs"
-      defaultActiveTab="1"
-      tabPosition="top"
+      activeTab={activeTab}
       animation
+      className="custom-tabs"
+      onChange={onTabChange}
+      tabPosition="top"
     >
       <Tabs.TabPane
         key="1"

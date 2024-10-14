@@ -20,6 +20,7 @@ const Hotkeys = () => {
     "saveToThirdPartyServices",
     "openPhotoSlider",
     "exitDetailView",
+    "showHotkeysSettings",
   ];
 
   const columns = [

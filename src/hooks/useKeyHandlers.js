@@ -10,6 +10,7 @@ import {
   setActiveContent,
 } from "../store/contentState";
 import { extractImageSources } from "../utils/images";
+import { useModalToggle } from "./useModalToggle";
 import { usePhotoSlider } from "./usePhotoSlider";
 
 const useKeyHandlers = () => {
@@ -39,6 +40,8 @@ const useKeyHandlers = () => {
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
     usePhotoSlider();
+  const { setSettingsModalVisible, setSettingsTabsActiveTab } =
+    useModalToggle();
 
   const withActiveContent =
     (fn) =>
@@ -112,6 +115,12 @@ const useKeyHandlers = () => {
     },
   );
 
+  const showHotkeysSettings = () => {
+    console.log("showHotkeysSettings");
+    setSettingsTabsActiveTab("5");
+    setSettingsModalVisible(true);
+  };
+
   const toggleReadStatus = withActiveContent((handleUpdateEntry) => {
     handleUpdateEntry();
   });
@@ -141,6 +150,7 @@ const useKeyHandlers = () => {
     openLinkExternally,
     openPhotoSlider,
     saveToThirdPartyServices,
+    showHotkeysSettings,
     toggleReadStatus,
     toggleStarStatus,
   };

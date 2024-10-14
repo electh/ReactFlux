@@ -6,19 +6,23 @@ const defaultValue = {
   exitDetailView: ["esc"],
   fetchOriginalArticle: ["d"],
   navigateToNextArticle: ["n", "j", "right"],
-  navigateToNextUnreadArticle: ["N", "J", "ctrl+right"],
+  navigateToNextUnreadArticle: ["shift+n", "shift+j", "ctrl+right"],
   navigateToPreviousArticle: ["p", "k", "left"],
-  navigateToPreviousUnreadArticle: ["P", "K", "ctrl+left"],
+  navigateToPreviousUnreadArticle: ["shift+p", "shift+k", "ctrl+left"],
   openLinkExternally: ["v"],
   openPhotoSlider: ["i"],
   saveToThirdPartyServices: ["s"],
+  showHotkeysSettings: ["shift+?"],
   toggleReadStatus: ["m"],
   toggleStarStatus: ["f"],
 };
 
 export const hotkeysState = persistentAtom("hotkeys", defaultValue, {
   encode: JSON.stringify,
-  decode: JSON.parse,
+  decode: (str) => {
+    const storedValue = JSON.parse(str);
+    return { ...defaultValue, ...storedValue };
+  },
 });
 
 export const duplicateHotkeysState = computed(hotkeysState, (hotkeys) => {

@@ -10,6 +10,9 @@ const EditableTag = ({ value, onChange, onRemove, editOnMount = false }) => {
   const [isEditing, setIsEditing] = useState(editOnMount);
 
   const handleEdit = () => {
+    if (value === "") {
+      onRemove();
+    }
     setIsEditing(false);
   };
 

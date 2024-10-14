@@ -9,7 +9,10 @@ const defaultValue = {
 
 export const authState = persistentAtom("auth", defaultValue, {
   encode: JSON.stringify,
-  decode: JSON.parse,
+  decode: (str) => {
+    const storedValue = JSON.parse(str);
+    return { ...defaultValue, ...storedValue };
+  },
 });
 
 export const setAuth = (authChanges) => authState.set(authChanges);

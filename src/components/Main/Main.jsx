@@ -25,7 +25,12 @@ const categoryRule = [{ required: true }];
 const crawlerRule = [{ type: "boolean" }];
 
 const SettingsModal = () => {
-  const { setSettingsModalVisible, settingsModalVisible } = useModalToggle();
+  const {
+    setSettingsModalVisible,
+    setSettingsTabsActiveTab,
+    settingsModalVisible,
+    settingsTabsActiveTab,
+  } = useModalToggle();
 
   return (
     <Modal
@@ -34,12 +39,18 @@ const SettingsModal = () => {
       className="settings-modal"
       focusLock
       footer={null}
-      onCancel={() => setSettingsModalVisible(false)}
+      onCancel={() => {
+        setSettingsModalVisible(false);
+        setSettingsTabsActiveTab("1");
+      }}
       title={null}
       unmountOnExit
       visible={settingsModalVisible}
     >
-      <SettingsTabs />
+      <SettingsTabs
+        activeTab={settingsTabsActiveTab}
+        onTabChange={setSettingsTabsActiveTab}
+      />
     </Modal>
   );
 };

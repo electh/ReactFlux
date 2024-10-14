@@ -8,7 +8,7 @@ import { getColorValue } from "../../utils/colors";
 import EditableTag from "./EditableTag";
 
 const capitalizeFirstLetter = (word) =>
-  word.trim().length > 1 ? word.charAt(0).toUpperCase() + word.slice(1) : word;
+  word.charAt(0).toUpperCase() + word.slice(1);
 
 const processKeyName = (keys) =>
   keys
