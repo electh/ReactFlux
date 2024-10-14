@@ -1,39 +1,27 @@
-import { useEffect, useState } from "react";
-
 import { useStore } from "@nanostores/react";
 import { useContentContext } from "../components/Content/ContentContext";
 import {
   activeEntryIndexState,
   contentState,
   filteredEntriesState,
+  nextContentState,
+  prevContentState,
   setActiveContent,
 } from "../store/contentState";
 import { extractImageSources } from "../utils/images";
-import useLoadMore from "./useLoadMore";
 import { usePhotoSlider } from "./usePhotoSlider";
 
 const useKeyHandlers = () => {
-  const { activeContent, loadMoreVisible } = useStore(contentState);
+  const { activeContent } = useStore(contentState);
   const activeEntryIndex = useStore(activeEntryIndexState);
   const filteredEntries = useStore(filteredEntriesState);
+  const prevContent = useStore(prevContentState);
+  const nextContent = useStore(nextContentState);
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
     usePhotoSlider();
 
-  const { loadingMore } = useLoadMore();
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [shouldLoadNext, setShouldLoadNext] = useState(false);
-
   const { entryListRef, handleEntryClick } = useContentContext();
-
-  useEffect(() => {
-    if (shouldLoadNext && !loadingMore) {
-      setIsLoading(false);
-      setShouldLoadNext(false);
-      navigateToNextArticle();
-    }
-  }, [loadingMore, shouldLoadNext]);
 
   const scrollSelectedCardIntoView = () => {
     if (entryListRef.current) {
@@ -64,62 +52,45 @@ const useKeyHandlers = () => {
     }
   });
 
-  const findAdjacentEntry = (currentIndex, direction, unread, entries) => {
-    const slice =
-      direction === "prev"
-        ? entries.slice(0, currentIndex).toReversed()
-        : entries.slice(currentIndex + 1);
-
-    return unread
-      ? slice.find((entry) => entry.status === "unread")
-      : entries[currentIndex + (direction === "prev" ? -1 : 1)];
-  };
-
-  const navigateToPreviousArticle = (unread = false) => {
-    if (activeEntryIndex > 0) {
-      const prevEntry = findAdjacentEntry(
-        activeEntryIndex,
-        "prev",
-        unread,
-        filteredEntries,
-      );
-      if (prevEntry) {
-        handleEntryClick(prevEntry);
-        setTimeout(() => scrollSelectedCardIntoView(), 200);
-      }
+  const navigateToPreviousArticle = () => {
+    if (prevContent) {
+      handleEntryClick(prevContent);
+      setTimeout(() => scrollSelectedCardIntoView(), 200);
     }
   };
 
-  const navigateToNextArticle = (unread = false) => {
-    if (isLoading) {
-      return;
+  const navigateToNextArticle = () => {
+    if (nextContent) {
+      handleEntryClick(nextContent);
+      setTimeout(() => scrollSelectedCardIntoView(), 200);
     }
+  };
 
-    const isLastEntry = activeEntryIndex === filteredEntries.length - 1;
+  const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
+    const isSearchingBackward = direction === "prev";
+    const searchRange = isSearchingBackward
+      ? entries.slice(0, currentIndex).toReversed()
+      : entries.slice(currentIndex + 1);
 
-    if (isLastEntry && loadMoreVisible) {
-      setIsLoading(true);
-      setShouldLoadNext(true);
-      return;
-    }
+    return searchRange.find((entry) => entry.status === "unread");
+  };
 
-    if (activeEntryIndex === -1) {
-      entryListRef.current.contentWrapperEl.scrollTo({ top: 0 });
-      return;
-    }
-
-    const nextEntry = findAdjacentEntry(
+  const navigateToAdjacentUnreadArticle = (direction) => {
+    const adjacentUnreadEntry = findAdjacentUnreadEntry(
       activeEntryIndex,
-      "next",
-      unread,
+      direction,
       filteredEntries,
     );
-    if (nextEntry) {
-      handleEntryClick(nextEntry);
-      setTimeout(() => scrollSelectedCardIntoView(), 200);
-      setShouldLoadNext(false);
+    if (adjacentUnreadEntry) {
+      handleEntryClick(adjacentUnreadEntry);
+      setTimeout(scrollSelectedCardIntoView, 200);
     }
   };
+
+  const navigateToPreviousUnreadArticle = () =>
+    navigateToAdjacentUnreadArticle("prev");
+  const navigateToNextUnreadArticle = () =>
+    navigateToAdjacentUnreadArticle("next");
 
   const openLinkExternally = withActiveContent(() => {
     window.open(activeContent.url, "_blank");
@@ -157,7 +128,9 @@ const useKeyHandlers = () => {
     exitDetailView,
     fetchOriginalArticle,
     navigateToNextArticle,
+    navigateToNextUnreadArticle,
     navigateToPreviousArticle,
+    navigateToPreviousUnreadArticle,
     openLinkExternally,
     openPhotoSlider,
     saveToThirdPartyServices,

@@ -1,6 +1,6 @@
 import { Message } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
-import { createContext, useContext, useRef } from "react";
+import { createContext, useCallback, useContext, useMemo, useRef } from "react";
 import { updateEntriesStatus } from "../../apis";
 import useEntryActions from "../../hooks/useEntryActions";
 import { polyglotState } from "../../hooks/useLanguage";
@@ -19,39 +19,46 @@ export const ContextProvider = ({ children }) => {
 
   const { handleEntryStatusUpdate } = useEntryActions();
 
-  const handleEntryClick = async (entry) => {
-    setIsArticleLoading(true);
+  const handleEntryClick = useCallback(
+    async (entry) => {
+      setIsArticleLoading(true);
 
-    setActiveContent({ ...entry, status: "read" });
-    setTimeout(() => {
-      const articleContent = entryDetailRef.current;
-      if (articleContent) {
-        const contentWrapper = articleContent.querySelector(
-          ".simplebar-content-wrapper",
-        );
-        if (contentWrapper) {
-          contentWrapper.scroll({ top: 0 });
+      setActiveContent({ ...entry, status: "read" });
+      setTimeout(() => {
+        const articleContent = entryDetailRef.current;
+        if (articleContent) {
+          const contentWrapper = articleContent.querySelector(
+            ".simplebar-content-wrapper",
+          );
+          if (contentWrapper) {
+            contentWrapper.scroll({ top: 0 });
+          }
+          articleContent.focus();
         }
-        articleContent.focus();
-      }
 
-      setIsArticleLoading(false);
-      if (entry.status === "unread") {
-        handleEntryStatusUpdate(entry, "read");
-        updateEntriesStatus([entry.id], "read").catch(() => {
-          Message.error(polyglot.t("content.mark_as_read_error"));
-          setActiveContent({ ...entry, status: "unread" });
-          handleEntryStatusUpdate(entry, "unread");
-        });
-      }
-    }, 200);
-  };
+        setIsArticleLoading(false);
+        if (entry.status === "unread") {
+          handleEntryStatusUpdate(entry, "read");
+          updateEntriesStatus([entry.id], "read").catch(() => {
+            Message.error(polyglot.t("content.mark_as_read_error"));
+            setActiveContent({ ...entry, status: "unread" });
+            handleEntryStatusUpdate(entry, "unread");
+          });
+        }
+      }, 200);
+    },
+    [polyglot, handleEntryStatusUpdate],
+  );
 
-  const value = {
-    entryDetailRef,
-    entryListRef,
-    handleEntryClick,
-  };
+  const value = useMemo(
+    () => ({
+      entryDetailRef,
+      entryListRef,
+      handleEntryClick,
+      setActiveContent,
+    }),
+    [handleEntryClick],
+  );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };

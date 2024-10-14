@@ -16,18 +16,16 @@ import { useStore } from "@nanostores/react";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import {
-  activeEntryIndexState,
   contentState,
-  filteredEntriesState,
+  nextContentState,
+  prevContentState,
 } from "../../store/contentState";
 import "./ActionButtons.css";
 
 const ActionButtons = () => {
   const { activeContent } = useStore(contentState);
-  const activeEntryIndex = useStore(activeEntryIndexState);
-  const filteredEntries = useStore(filteredEntriesState);
-  const isFirstEntry = activeEntryIndex === 0;
-  const isLastEntry = activeEntryIndex === filteredEntries.length - 1;
+  const nextContent = useStore(nextContentState);
+  const prevContent = useStore(prevContentState);
 
   const [isFetchedOriginal, setIsFetchedOriginal] = useState(false);
 
@@ -61,13 +59,13 @@ const ActionButtons = () => {
           icon={<IconArrowLeft />}
           onClick={() => navigateToPreviousArticle()}
           shape="circle"
-          disabled={isFirstEntry}
+          disabled={!prevContent}
         />
         <Button
           icon={<IconArrowRight />}
           onClick={() => navigateToNextArticle()}
           shape="circle"
-          disabled={isLastEntry}
+          disabled={!nextContent}
         />
       </div>
       <div className="right-side">

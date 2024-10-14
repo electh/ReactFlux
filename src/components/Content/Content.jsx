@@ -5,6 +5,7 @@ import { CSSTransition } from "react-transition-group";
 
 import { useStore } from "@nanostores/react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useSwipeable } from "react-swipeable";
 import useAppData from "../../hooks/useAppData";
 import useArticleList from "../../hooks/useArticleList";
 import useEntryActions from "../../hooks/useEntryActions";
@@ -17,8 +18,7 @@ import {
   setOffset,
 } from "../../store/contentState";
 import { dataState, hiddenFeedIdsState } from "../../store/dataState";
-import { hotkeysState } from "../../store/hotkeysState";
-import { duplicateHotkeysState } from "../../store/hotkeysState";
+import { duplicateHotkeysState, hotkeysState } from "../../store/hotkeysState";
 import { settingsState } from "../../store/settingsState";
 import ActionButtons from "../Article/ActionButtons";
 import ArticleDetail from "../Article/ArticleDetail";
@@ -58,7 +58,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     exitDetailView,
     fetchOriginalArticle,
     navigateToNextArticle,
+    navigateToNextUnreadArticle,
     navigateToPreviousArticle,
+    navigateToPreviousUnreadArticle,
     openLinkExternally,
     openPhotoSlider,
     saveToThirdPartyServices,
@@ -70,9 +72,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     exitDetailView,
     fetchOriginalArticle: () => fetchOriginalArticle(handleFetchContent),
     navigateToNextArticle: () => navigateToNextArticle(),
-    navigateToNextUnreadArticle: () => navigateToNextArticle(true),
+    navigateToNextUnreadArticle: () => navigateToNextUnreadArticle(),
     navigateToPreviousArticle: () => navigateToPreviousArticle(),
-    navigateToPreviousUnreadArticle: () => navigateToPreviousArticle(true),
+    navigateToPreviousUnreadArticle: () => navigateToPreviousUnreadArticle(),
     openLinkExternally,
     openPhotoSlider,
     saveToThirdPartyServices: () =>
@@ -98,6 +100,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       await fetchArticleList(getEntries);
     }
   };
+
+  const handlers = useSwipeable({
+    preventScrollOnSwipe: true,
+    onSwipedLeft: () => navigateToNextArticle(),
+    onSwipedRight: () => navigateToPreviousArticle(),
+  });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -162,7 +170,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         />
       </div>
       {activeContent ? (
-        <div className="article-container">
+        <div className="article-container" {...handlers}>
           <CSSTransition
             in={!isArticleLoading}
             timeout={200}

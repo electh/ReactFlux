@@ -58,6 +58,20 @@ export const activeEntryIndexState = computed(
   },
 );
 
+export const prevContentState = computed(
+  [activeEntryIndexState, filteredEntriesState],
+  (activeEntryIndex, filteredEntries) => {
+    return filteredEntries[activeEntryIndex - 1];
+  },
+);
+
+export const nextContentState = computed(
+  [activeEntryIndexState, filteredEntriesState],
+  (activeEntryIndex, filteredEntries) => {
+    return filteredEntries[activeEntryIndex + 1];
+  },
+);
+
 export const setActiveContent = createSetter(contentState, "activeContent");
 export const setEntries = createSetter(contentState, "entries");
 export const setFilterString = createSetter(contentState, "filterString");

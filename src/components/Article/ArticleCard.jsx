@@ -173,7 +173,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
   const styles = useSpring({ x: swipeOffset });
 
   return (
-    <div {...handlers} className="article-card" key={entry.id}>
+    <div className="article-card" key={entry.id} {...handlers}>
       <div ref={ref}>
         <animated.div className="swipe-card" style={styles}>
           <Card
