@@ -8,16 +8,15 @@
 
 .settings-modal {
   width: 720px;
-  top: 10%;
+}
+
+.settings-modal .arco-modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @media screen and (max-width: 768px) {
   .settings-modal {
-    width: 100%;
-    top: 10%;
-  }
-
-  .arco-modal {
-    max-width: calc(100% - 20px) !important;
+    width: 95%;
   }
 }

@@ -284,7 +284,7 @@ const Sidebar = () => {
         </Typography.Title>
       </Menu>
       <div className="feeds-menu-wrapper">
-        <SimpleBar style={{ maxHeight: "100%" }} autoHide={true}>
+        <SimpleBar style={{ maxHeight: "100%" }}>
           <Menu
             autoScrollIntoView={true}
             hasCollapseButton={false}

@@ -9,6 +9,7 @@ import {
 
 import { useStore } from "@nanostores/react";
 import { polyglotState } from "../../hooks/useLanguage";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
 import Appearance from "./Appearance";
 import CategoryList from "./CategoryList";
 import FeedList from "./FeedList";
@@ -18,6 +19,7 @@ import "./SettingsTabs.css";
 
 const SettingsTabs = ({ activeTab, onTabChange }) => {
   const { polyglot } = useStore(polyglotState);
+  const { isBelowMedium } = useScreenWidth();
 
   const CustomTabTitle = (icon, title) => {
     return (
@@ -78,15 +80,17 @@ const SettingsTabs = ({ activeTab, onTabChange }) => {
       >
         <Appearance />
       </Tabs.TabPane>
-      <Tabs.TabPane
-        key="5"
-        title={CustomTabTitle(
-          <IconCommand style={{ fontSize: "20px" }} />,
-          polyglot.t("settings.hotkeys"),
-        )}
-      >
-        <Hotkeys />
-      </Tabs.TabPane>
+      {!isBelowMedium && (
+        <Tabs.TabPane
+          key="5"
+          title={CustomTabTitle(
+            <IconCommand style={{ fontSize: "20px" }} />,
+            polyglot.t("settings.hotkeys"),
+          )}
+        >
+          <Hotkeys />
+        </Tabs.TabPane>
+      )}
     </Tabs>
   );
 };

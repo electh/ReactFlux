@@ -34,7 +34,6 @@ const SettingsModal = () => {
 
   return (
     <Modal
-      alignCenter={false}
       autoFocus={false}
       className="settings-modal"
       focusLock
