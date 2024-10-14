@@ -53,13 +53,6 @@
   padding-bottom: 40px;
 }
 
-.article-container {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
 .article-content h1,
 h2,
 h3,

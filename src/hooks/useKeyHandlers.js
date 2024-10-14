@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/react";
+import { useState } from "react";
 import { useContentContext } from "../components/Content/ContentContext";
 import {
   activeEntryIndexState,
@@ -18,8 +19,7 @@ const useKeyHandlers = () => {
   const prevContent = useStore(prevContentState);
   const nextContent = useStore(nextContentState);
 
-  const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
-    usePhotoSlider();
+  const [direction, setDirection] = useState("next");
 
   const { entryListRef, handleEntryClick } = useContentContext();
 
@@ -37,6 +37,9 @@ const useKeyHandlers = () => {
     }
   };
 
+  const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } =
+    usePhotoSlider();
+
   const withActiveContent =
     (fn) =>
     (...args) => {
@@ -53,16 +56,18 @@ const useKeyHandlers = () => {
   });
 
   const navigateToPreviousArticle = () => {
+    setDirection("prev");
     if (prevContent) {
       handleEntryClick(prevContent);
-      setTimeout(() => scrollSelectedCardIntoView(), 200);
+      setTimeout(() => scrollSelectedCardIntoView(), 300);
     }
   };
 
   const navigateToNextArticle = () => {
+    setDirection("next");
     if (nextContent) {
       handleEntryClick(nextContent);
-      setTimeout(() => scrollSelectedCardIntoView(), 200);
+      setTimeout(() => scrollSelectedCardIntoView(), 300);
     }
   };
 
@@ -76,6 +81,7 @@ const useKeyHandlers = () => {
   };
 
   const navigateToAdjacentUnreadArticle = (direction) => {
+    setDirection(direction);
     const adjacentUnreadEntry = findAdjacentUnreadEntry(
       activeEntryIndex,
       direction,
@@ -83,7 +89,7 @@ const useKeyHandlers = () => {
     );
     if (adjacentUnreadEntry) {
       handleEntryClick(adjacentUnreadEntry);
-      setTimeout(scrollSelectedCardIntoView, 200);
+      setTimeout(scrollSelectedCardIntoView, 300);
     }
   };
 
@@ -125,6 +131,7 @@ const useKeyHandlers = () => {
   });
 
   return {
+    direction,
     exitDetailView,
     fetchOriginalArticle,
     navigateToNextArticle,

@@ -45,7 +45,7 @@ export const ContextProvider = ({ children }) => {
             handleEntryStatusUpdate(entry, "unread");
           });
         }
-      }, 200);
+      }, 300);
     },
     [polyglot, handleEntryStatusUpdate],
   );

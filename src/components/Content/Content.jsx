@@ -11,6 +11,7 @@ import useArticleList from "../../hooks/useArticleList";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { polyglotState } from "../../hooks/useLanguage";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
   contentState,
   setActiveContent,
@@ -39,22 +40,13 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const hiddenFeedIds = useStore(hiddenFeedIdsState);
   const hotkeys = useStore(hotkeysState);
 
+  const cardsRef = useRef(null);
+
   const { entryDetailRef, entryListRef, handleEntryClick } =
     useContentContext();
 
   const {
-    handleFetchContent,
-    handleSaveToThirdPartyServices,
-    handleToggleStarred,
-    handleToggleStatus,
-  } = useEntryActions();
-
-  const { fetchAppData } = useAppData();
-  const { fetchArticleList } = useArticleList(info, getEntries);
-
-  const cardsRef = useRef(null);
-
-  const {
+    direction,
     exitDetailView,
     fetchOriginalArticle,
     navigateToNextArticle,
@@ -67,6 +59,25 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     toggleReadStatus,
     toggleStarStatus,
   } = useKeyHandlers();
+
+  const { fetchAppData } = useAppData();
+  const { fetchArticleList } = useArticleList(info, getEntries);
+
+  const {
+    handleFetchContent,
+    handleSaveToThirdPartyServices,
+    handleToggleStarred,
+    handleToggleStatus,
+  } = useEntryActions();
+
+  const { isBelowMedium } = useScreenWidth();
+
+  const getAnimationClass = () => {
+    if (isBelowMedium) {
+      return direction === "next" ? "slide-left" : "slide-right";
+    }
+    return direction === "next" ? "slide-up" : "slide-down";
+  };
 
   const hotkeyActions = {
     exitDetailView,
@@ -151,10 +162,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     <>
       <div className="entry-col">
         <CSSTransition
+          classNames={getAnimationClass()}
           in={isArticleListReady}
-          timeout={200}
           nodeRef={cardsRef}
-          classNames="fade"
+          timeout={300}
         >
           <ArticleList
             cardsRef={cardsRef}
@@ -172,15 +183,15 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       {activeContent ? (
         <div className="article-container" {...handlers}>
           <CSSTransition
+            classNames={getAnimationClass()}
             in={!isArticleLoading}
-            timeout={200}
             nodeRef={entryDetailRef}
-            classNames="fade"
+            timeout={300}
             unmountOnExit
           >
             <ArticleDetail ref={entryDetailRef} />
           </CSSTransition>
-          <CSSTransition in={!isArticleLoading} timeout={200} unmountOnExit>
+          <CSSTransition in={!isArticleLoading} timeout={300} unmountOnExit>
             <ActionButtons />
           </CSSTransition>
         </div>
