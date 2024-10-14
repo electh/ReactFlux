@@ -20,92 +20,46 @@
   transition: opacity 300ms, transform 300ms;
 }
 
-.slide-up-enter {
+.slide-left-enter {
   opacity: 0;
-  transform: translateY(100%);
+  transform: translateX(100%);
 }
 
-.slide-up-enter-active {
+.slide-left-enter-active {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
   transition: transform 300ms;
 }
 
-.slide-up-exit {
+.slide-left-exit {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
 }
 
-.slide-up-exit-active {
+.slide-left-exit-active {
   opacity: 0;
-  transform: translateY(-100%);
+  transform: translateX(-100%);
   transition: transform 300ms;
 }
 
-.slide-down-enter {
+.slide-right-enter {
   opacity: 0;
-  transform: translateY(-100%);
+  transform: translateX(-100%);
 }
 
-.slide-down-enter-active {
+.slide-right-enter-active {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
   transition: transform 300ms;
 }
 
-.slide-down-exit {
+.slide-right-exit {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
 }
 
-.slide-down-exit-active {
+.slide-right-exit-active {
   opacity: 0;
-  transform: translateY(100%);
+  transform: translateX(100%);
   transition: transform 300ms;
-}
-
-@media (max-width: 768px) {
-  .slide-left-enter {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-
-  .slide-left-enter-active {
-    opacity: 1;
-    transform: translateX(0);
-    transition: transform 300ms;
-  }
-
-  .slide-left-exit {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .slide-left-exit-active {
-    opacity: 0;
-    transform: translateX(-100%);
-    transition: transform 300ms;
-  }
-
-  .slide-right-enter {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
-
-  .slide-right-enter-active {
-    opacity: 1;
-    transform: translateX(0);
-    transition: transform 300ms;
-  }
-
-  .slide-right-exit {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .slide-right-exit-active {
-    opacity: 0;
-    transform: translateX(100%);
-    transition: transform 300ms;
-  }
 }

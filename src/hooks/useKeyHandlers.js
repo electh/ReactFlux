@@ -62,7 +62,7 @@ const useKeyHandlers = () => {
     setDirection("prev");
     if (prevContent) {
       handleEntryClick(prevContent);
-      setTimeout(() => scrollSelectedCardIntoView(), 300);
+      setTimeout(() => scrollSelectedCardIntoView(), 200);
     }
   };
 
@@ -70,7 +70,7 @@ const useKeyHandlers = () => {
     setDirection("next");
     if (nextContent) {
       handleEntryClick(nextContent);
-      setTimeout(() => scrollSelectedCardIntoView(), 300);
+      setTimeout(() => scrollSelectedCardIntoView(), 200);
     }
   };
 
@@ -92,7 +92,7 @@ const useKeyHandlers = () => {
     );
     if (adjacentUnreadEntry) {
       handleEntryClick(adjacentUnreadEntry);
-      setTimeout(scrollSelectedCardIntoView, 300);
+      setTimeout(scrollSelectedCardIntoView, 200);
     }
   };
 

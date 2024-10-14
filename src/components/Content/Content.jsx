@@ -77,7 +77,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     if (isBelowMedium) {
       return direction === "next" ? "slide-left" : "slide-right";
     }
-    return direction === "next" ? "slide-up" : "slide-down";
+    return "fade";
   };
 
   const hotkeyActions = {
@@ -167,7 +167,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           classNames="fade"
           in={isArticleListReady}
           nodeRef={cardsRef}
-          timeout={300}
+          timeout={200}
         >
           <ArticleList
             cardsRef={cardsRef}
@@ -188,12 +188,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
             classNames={getAnimationClass()}
             in={!isArticleLoading}
             nodeRef={entryDetailRef}
-            timeout={300}
+            timeout={200}
             unmountOnExit
           >
             <ArticleDetail ref={entryDetailRef} />
           </CSSTransition>
-          <CSSTransition in={!isArticleLoading} timeout={300} unmountOnExit>
+          <CSSTransition in={!isArticleLoading} timeout={200} unmountOnExit>
             <ActionButtons />
           </CSSTransition>
         </div>
