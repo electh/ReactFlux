@@ -143,7 +143,11 @@
     "update_category_success": "Category updated successfully",
     "update_category_error": "Failed to update category",
     "remove_category_success": "Deleted category: %{title}",
-    "remove_category_error": "Failed to delete category: %{title}"
+    "remove_category_error": "Failed to delete category: %{title}",
+    "edit_category_title": "Edit Category",
+    "edit_category_title_label": "Title",
+    "edit_category_title_placeholder": "Please input category title",
+    "edit_category_hidden_label": "Hidden"
   },
   "settings": {
     "feeds": "Feeds",

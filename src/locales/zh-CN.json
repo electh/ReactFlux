@@ -143,7 +143,11 @@
     "update_category_success": "分类更新成功",
     "update_category_error": "更新分类失败",
     "remove_category_success": "删除分类成功： %{title}",
-    "remove_category_error": "删除分类失败： %{title}"
+    "remove_category_error": "删除分类失败： %{title}",
+    "edit_category_title": "编辑分类",
+    "edit_category_title_label": "标题",
+    "edit_category_title_placeholder": "请输入分类标题",
+    "edit_category_hidden_label": "隐藏"
   },
   "settings": {
     "feeds": "订阅源",

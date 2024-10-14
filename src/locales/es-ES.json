@@ -143,7 +143,11 @@
     "update_category_success": "Categoría actualizada con éxito",
     "update_category_error": "Error al actualizar la categoría",
     "remove_category_success": "Categoría eliminada: %{title}",
-    "remove_category_error": "Error al eliminar la categoría: %{title}"
+    "remove_category_error": "Error al eliminar la categoría: %{title}",
+    "edit_category_title": "Editar categoría",
+    "edit_category_title_label": "Título",
+    "edit_category_title_placeholder": "Por favor, introduzca el título de la categoría",
+    "edit_category_hidden_label": "Oculto"
   },
   "settings": {
     "feeds": "Feeds",

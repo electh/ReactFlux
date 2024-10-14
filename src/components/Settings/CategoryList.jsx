@@ -164,7 +164,7 @@ const CategoryList = () => {
         <Modal
           className="modal-style"
           onOk={categoryForm.submit}
-          title="Edit Category"
+          title={polyglot.t("category_list.edit_category_title")}
           unmountOnExit
           visible={categoryModalVisible}
           onCancel={() => {
@@ -185,11 +185,19 @@ const CategoryList = () => {
               style: { flexBasis: "calc(100% - 90px)" },
             }}
           >
-            <Form.Item label="Title" field="title" rules={[{ required: true }]}>
-              <Input placeholder="Please input category title" />
+            <Form.Item
+              label={polyglot.t("category_list.edit_category_title_label")}
+              field="title"
+              rules={[{ required: true }]}
+            >
+              <Input
+                placeholder={polyglot.t(
+                  "category_list.edit_category_title_placeholder",
+                )}
+              />
             </Form.Item>
             <Form.Item
-              label="Hidden"
+              label={polyglot.t("category_list.edit_category_hidden_label")}
               field="hidden"
               initialValue={selectedCategory.hide_globally}
               triggerPropName="checked"
