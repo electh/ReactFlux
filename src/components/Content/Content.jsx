@@ -164,7 +164,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     <>
       <div className="entry-col">
         <CSSTransition
-          classNames="slide-down"
+          classNames="fade"
           in={isArticleListReady}
           nodeRef={cardsRef}
           timeout={300}
