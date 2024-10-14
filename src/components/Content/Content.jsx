@@ -164,7 +164,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     <>
       <div className="entry-col">
         <CSSTransition
-          classNames={getAnimationClass()}
+          classNames="slide-down"
           in={isArticleListReady}
           nodeRef={cardsRef}
           timeout={300}

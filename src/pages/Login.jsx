@@ -40,9 +40,9 @@ const Login = () => {
   /* token or user */
   const navigate = useNavigate();
 
-  const performHealthCheck = async () => {
+  const performHealthCheck = async (auth) => {
     setLoading(true);
-    const { server, token, username, password } = loginForm.getFieldsValue();
+    const { server, token, username, password } = auth;
     try {
       const response = await ofetch.raw("v1/me", {
         baseURL: server,
@@ -62,18 +62,32 @@ const Login = () => {
     setLoading(false);
   };
 
-  const handleLogin = async () => {
-    const auth = loginForm.getFieldsValue();
+  const handleLogin = async (auth) => {
     if (!isValidAuth(auth)) {
       Message.error(polyglot.t("login.auth_error"));
       return;
     }
-    await performHealthCheck();
+    await performHealthCheck(auth);
   };
 
   useEffect(() => {
     hideSpinner();
   }, []);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const { server, token, username, password } = Object.fromEntries(
+      url.searchParams,
+    );
+    if (server) {
+      if (username) {
+        setAuthMethod("user");
+      }
+      loginForm.setFieldsValue({ server, token, username, password });
+      loginForm.submit();
+    }
+  }, [polyglot]);
 
   if (isValidAuth(auth)) {
     return <Navigate to={`/${homePage}`} />;
@@ -93,7 +107,8 @@ const Login = () => {
               layout="vertical"
               onSubmit={async () => {
                 if (validateAndFormatFormFields(loginForm)) {
-                  await handleLogin();
+                  history.replaceState(null, "", "/login");
+                  await handleLogin(loginForm.getFieldsValue());
                 } else {
                   Message.error(polyglot.t("login.submit_error"));
                 }
