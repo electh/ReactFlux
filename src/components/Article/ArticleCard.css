@@ -30,7 +30,6 @@
 
 .cover-image {
   border-radius: 2px;
-  /*border: 1px solid var(--color-border-2);*/
   height: 160px;
   overflow: hidden;
 }

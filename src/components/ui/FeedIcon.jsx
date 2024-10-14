@@ -12,10 +12,6 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
   const { icon_id: iconId } = feed.icon;
   const fallbackIconURL = getFallbackIconURL(feed);
 
-  if (iconId === 0) {
-    return <img className={className} src={fallbackIconURL} alt="" />;
-  }
-
   const [iconURL, setIconURL] = useState(fallbackIconURL);
 
   const fetchedIconURL = useFeedIcons(iconId);
@@ -25,6 +21,10 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
       setIconURL(fetchedIconURL);
     }
   }, [fetchedIconURL]);
+
+  if (iconId === 0) {
+    return <img className={className} src={fallbackIconURL} alt="" />;
+  }
 
   return (
     <img

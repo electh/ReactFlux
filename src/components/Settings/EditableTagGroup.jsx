@@ -2,8 +2,11 @@ import { Button, Space, Tag } from "@arco-design/web-react";
 import { IconPlus, IconRefresh } from "@arco-design/web-react/icon";
 import { useStore } from "@nanostores/react";
 import { useEffect, useRef, useState } from "react";
-import { resetHotkey, updateHotkey } from "../../store/hotkeysState";
-import { duplicateHotkeysState } from "../../store/hotkeysState";
+import {
+  duplicateHotkeysState,
+  resetHotkey,
+  updateHotkey,
+} from "../../store/hotkeysState";
 import { getColorValue } from "../../utils/colors";
 import EditableTag from "./EditableTag";
 

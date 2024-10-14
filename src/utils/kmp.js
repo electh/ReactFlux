@@ -91,7 +91,7 @@ export const parseQuery = (query) => {
   // 处理剩余的不带引号的部分
   const terms = queryCopy.split(/\s+/);
   for (const term of terms) {
-    const strippedTerm = term.replace(/^-|\+|\|$/, ""); // 移除可能的前缀符号
+    const strippedTerm = term.replace(/^[-+|]/, ""); // 移除可能的前缀符号
     if (term.startsWith("-") && strippedTerm) {
       excludeTerms.push(strippedTerm);
     } else if (term.startsWith("+") && strippedTerm) {
@@ -115,49 +115,48 @@ export const filterData = (data, query, fields = [], ignoreCase = true) => {
   const { includeTerms, excludeTerms, exactPhrases, orConditions } =
     parseQuery(query);
 
-  return data.filter((item) => {
-    return fields.some((field) => {
-      const value = item[field];
-      if (typeof value !== "string") {
-        return false;
-      }
+  const checkField = (itemValue) => {
+    // 检查排除项
+    if (
+      excludeTerms.some((term) => kmpSearch(itemValue, term, ignoreCase) !== -1)
+    ) {
+      return false;
+    }
 
-      const itemValue = ignoreCase ? value.toLowerCase() : value;
+    // 检查精确匹配项
+    if (
+      exactPhrases.length > 0 &&
+      !exactPhrases.some(
+        (phrase) => kmpSearch(itemValue, phrase, ignoreCase) !== -1,
+      )
+    ) {
+      return false;
+    }
 
-      // 检查排除项
-      if (
-        excludeTerms.some(
-          (term) => kmpSearch(itemValue, term, ignoreCase) !== -1,
-        )
-      ) {
-        return false;
-      }
+    // 检查包含项
+    const includeMatch = includeTerms.every(
+      (term) => kmpSearch(itemValue, term, ignoreCase) !== -1,
+    );
 
-      // 检查精确匹配项
-      if (
-        exactPhrases.length > 0 &&
-        !exactPhrases.some(
-          (phrase) => kmpSearch(itemValue, phrase, ignoreCase) !== -1,
-        )
-      ) {
-        return false;
-      }
-
-      // 检查包含项
-      const includeMatch = includeTerms.every(
-        (term) => kmpSearch(itemValue, term, ignoreCase) !== -1,
+    // 检查 OR 逻辑
+    const orMatch =
+      orConditions.length === 0 ||
+      orConditions.some((group) =>
+        group.some((term) => kmpSearch(itemValue, term, ignoreCase) !== -1),
       );
 
-      // 检查 OR 逻辑
-      const orMatch =
-        orConditions.length === 0 ||
-        orConditions.some((group) =>
-          group.some((term) => kmpSearch(itemValue, term, ignoreCase) !== -1),
-        );
+    return includeMatch && orMatch;
+  };
 
-      return includeMatch && orMatch;
-    });
-  });
+  return data.filter((item) =>
+    fields.some((field) => {
+      const value = item[field];
+      return (
+        typeof value === "string" &&
+        checkField(ignoreCase ? value.toLowerCase() : value)
+      );
+    }),
+  );
 };
 
 // 主函数
