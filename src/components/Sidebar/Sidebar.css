@@ -125,6 +125,10 @@
   height: 32px;
 }
 
+.arco-icon-hover.arco-collapse-item-icon-hover:hover::before {
+  background-color: var(--color-fill-3);
+}
+
 .sidebar-container {
   display: flex;
   flex-direction: column;
