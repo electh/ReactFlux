@@ -28,7 +28,7 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
         className={className}
         src={fallbackIconURL}
         alt=""
-        style={{ borderRadius: "50%", backgroundColor: "white" }}
+        style={{ borderRadius: "20%" }}
       />
     );
   }
@@ -39,7 +39,7 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
       src={iconURL}
       alt=""
       onError={() => setIconURL(fallbackIconURL)}
-      style={{ borderRadius: "50%", backgroundColor: "white" }}
+      style={{ borderRadius: "20%" }}
     />
   );
 };

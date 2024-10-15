@@ -14,10 +14,9 @@ const ImageWithLazyLoading = ({
   width,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   const { opacity } = useSpring({
-    opacity: imageLoaded ? 1 : 0,
+    opacity: isLoaded ? 1 : 0,
     config: { duration: 300 },
   });
 
@@ -26,11 +25,7 @@ const ImageWithLazyLoading = ({
     onChange: (inView, entry) => {
       if (inView && !isLoaded) {
         const image = new Image();
-        image.onload = () => {
-          setIsLoaded(true);
-          setImageLoaded(true);
-        };
-
+        image.onload = () => setIsLoaded(true);
         image.onerror = () => {
           entry.target.style.display = "none";
         };
@@ -62,7 +57,7 @@ const ImageWithLazyLoading = ({
               height,
               objectFit: "cover",
               borderRadius,
-              opacity: opacity,
+              opacity,
             }}
           />
         ) : (
