@@ -23,7 +23,14 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
   }, [fetchedIconURL]);
 
   if (iconId === 0) {
-    return <img className={className} src={fallbackIconURL} alt="" />;
+    return (
+      <img
+        className={className}
+        src={fallbackIconURL}
+        alt=""
+        style={{ borderRadius: "50%", backgroundColor: "white" }}
+      />
+    );
   }
 
   return (
@@ -32,6 +39,7 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
       src={iconURL}
       alt=""
       onError={() => setIconURL(fallbackIconURL)}
+      style={{ borderRadius: "50%", backgroundColor: "white" }}
     />
   );
 };
