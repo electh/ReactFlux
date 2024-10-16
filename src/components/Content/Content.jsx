@@ -10,6 +10,7 @@ import useArticleList from "../../hooks/useArticleList";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { polyglotState } from "../../hooks/useLanguage";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
   contentState,
   setActiveContent,
@@ -22,6 +23,7 @@ import { settingsState } from "../../store/settingsState";
 import ActionButtons from "../Article/ActionButtons";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
+import SearchAndSortBar from "../Article/SearchAndSortBar";
 import { useContentContext } from "./ContentContext";
 import FooterPanel from "./FooterPanel";
 import "./Content.css";
@@ -58,6 +60,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const { fetchAppData } = useAppData();
   const { fetchArticleList } = useArticleList(info, getEntries);
+  const { isBelowMedium } = useScreenWidth();
 
   const {
     handleFetchContent,
@@ -148,7 +151,13 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   return (
     <>
-      <div className="entry-col">
+      <div
+        className="entry-col"
+        style={{
+          opacity: isBelowMedium && isArticleLoading ? 0 : 1,
+        }}
+      >
+        <SearchAndSortBar />
         <ArticleList
           cardsRef={cardsRef}
           getEntries={getEntries}
@@ -163,12 +172,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       </div>
       {activeContent ? (
         <div className="article-container" {...handlers}>
-          {!isArticleLoading && (
-            <>
-              <ArticleDetail ref={entryDetailRef} />
-              <ActionButtons />
-            </>
-          )}
+          {!isArticleLoading && <ArticleDetail ref={entryDetailRef} />}
+          <ActionButtons />
         </div>
       ) : (
         <div className="content-empty">

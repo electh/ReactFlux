@@ -95,6 +95,7 @@ p {
   background-color: var(--color-bg-1);
   color: var(--color-text-2);
   flex: 1;
+  min-height: 0;
 }
 
 /* 文章内容链接样式 */

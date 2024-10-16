@@ -5,7 +5,6 @@ import { forwardRef, useCallback, useEffect } from "react";
 import useLoadMore from "../../hooks/useLoadMore";
 import ArticleCard from "./ArticleCard";
 import LoadingCards from "./LoadingCards";
-import SearchAndSortBar from "./SearchAndSortBar";
 
 import { useStore } from "@nanostores/react";
 import { useInView } from "react-intersection-observer";
@@ -99,7 +98,6 @@ const ArticleList = forwardRef(
 
     return (
       <>
-        <SearchAndSortBar />
         <SimpleBar className="entry-list" ref={ref}>
           <LoadingCards />
           {isArticleListReady && (
