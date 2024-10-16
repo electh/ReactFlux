@@ -469,7 +469,7 @@ const FeedList = () => {
         const parsingErrorCount = feed.parsing_error_count;
         let displayText = feed.disabled ? `🚫 ${title}` : title;
         if (parsingErrorCount > 0) {
-          displayText = `! ${title}`;
+          displayText = `⚠️ ${title}`;
         }
 
         const tooltipContent = (
@@ -477,7 +477,8 @@ const FeedList = () => {
             {title}
             {parsingErrorCount > 0 && (
               <>
-                <br />! Parsing error count: {parsingErrorCount}
+                <br />
+                ⚠️ Parsing error count: {parsingErrorCount}
               </>
             )}
           </div>
@@ -583,7 +584,12 @@ const FeedList = () => {
             addBefore={
               <Select
                 onChange={setFilterType}
-                style={{ width: 100 }}
+                style={{ width: 80 }}
+                triggerProps={{
+                  autoAlignPopupWidth: false,
+                  autoAlignPopupMinWidth: true,
+                  position: "bl",
+                }}
                 value={filterType}
               >
                 <Select.Option value="title">

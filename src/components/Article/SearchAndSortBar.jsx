@@ -66,7 +66,12 @@ const SearchAndSortBar = () => {
         addBefore={
           <Select
             onChange={setFilterType}
-            style={{ width: 100 }}
+            style={{ width: 80 }}
+            triggerProps={{
+              autoAlignPopupWidth: false,
+              autoAlignPopupMinWidth: true,
+              position: "bl",
+            }}
             value={filterType}
           >
             <Select.Option value="title">
