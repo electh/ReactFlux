@@ -8,7 +8,7 @@
 }
 
 .edit-modal {
-  width: 520px;
+  width: 360px;
 }
 
 .feed-table-action-bar {
@@ -26,6 +26,6 @@
 
 @media screen and (max-width: 768px) {
   .edit-modal {
-    width: 100%;
+    width: 95%;
   }
 }

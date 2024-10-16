@@ -31,6 +31,7 @@ import { generateRelativeTime, getUTCDate } from "../../utils/date";
 
 import { useStore } from "@nanostores/react";
 import { atom, computed } from "nanostores";
+import { useNavigate } from "react-router-dom";
 import { polyglotState } from "../../hooks/useLanguage";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
@@ -42,6 +43,7 @@ import { settingsState } from "../../store/settingsState";
 import { filterByQuery } from "../../utils/kmp";
 import { createSetter } from "../../utils/nanostores";
 import { sleep } from "../../utils/time";
+import CustomLink from "../ui/CustomLink";
 import "./FeedList.css";
 
 const filterStringState = atom("");
@@ -421,6 +423,8 @@ const FeedList = () => {
 
   const { isBelowMedium } = useScreenWidth();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setFilterString("");
   }, []);
@@ -487,7 +491,7 @@ const FeedList = () => {
         return (
           <Typography.Ellipsis expandable={false}>
             <Tooltip mini content={tooltipContent}>
-              {displayText}
+              <CustomLink url={`/feed/${feed.key}`} text={displayText} />
             </Tooltip>
           </Typography.Ellipsis>
         );
@@ -509,9 +513,15 @@ const FeedList = () => {
       title: polyglot.t("feed_table.table_category"),
       dataIndex: "category.title",
       sorter: (a, b) => a.category.title.localeCompare(b.category.title, "en"),
-      render: (category) => (
+      render: (category, feed) => (
         <Typography.Ellipsis expandable={false} showTooltip={true}>
-          <Tag>{category}</Tag>
+          <Tag
+            size="small"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate(`/category/${feed.category.id}`)}
+          >
+            {category}
+          </Tag>
         </Typography.Ellipsis>
       ),
     },

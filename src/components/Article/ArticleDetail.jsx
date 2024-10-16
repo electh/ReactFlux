@@ -1,8 +1,8 @@
 import { Divider, Tag, Typography } from "@arco-design/web-react";
 import ReactHtmlParser from "html-react-parser";
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
 import { PhotoSlider } from "react-photo-view";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useStore } from "@nanostores/react";
 import "react-photo-view/dist/react-photo-view.css";
@@ -16,28 +16,10 @@ import {
 import { settingsState } from "../../store/settingsState";
 import { generateReadableDate, generateReadingTime } from "../../utils/date";
 import { extractImageSources } from "../../utils/images";
+import CustomLink from "../ui/CustomLink";
 import CodeBlock from "./CodeBlock";
 import ImageOverlayButton from "./ImageOverlayButton";
 import "./ArticleDetail.css";
-
-const CustomLink = ({ url, text }) => {
-  const [isHovering, setIsHovering] = useState(false);
-  const toggleHover = () => setIsHovering(!isHovering);
-
-  return (
-    <Link
-      to={url}
-      style={{
-        color: "inherit",
-        textDecoration: isHovering ? "underline" : "none",
-      }}
-      onMouseEnter={toggleHover}
-      onMouseLeave={toggleHover}
-    >
-      {text}
-    </Link>
-  );
-};
 
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
   replace: (node) => {
@@ -110,6 +92,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   );
   const parsedHtml = ReactHtmlParser(activeContent.content, htmlParserOptions);
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category;
+  const { id: feedId, title: feedTitle } = activeContent.feed;
 
   return (
     <article className="article-content" ref={ref} tabIndex={-1}>
@@ -126,10 +109,7 @@ const ArticleDetail = forwardRef((_, ref) => {
           </Typography.Title>
           <div className="article-meta">
             <Typography.Text>
-              <CustomLink
-                url={`/feed/${activeContent.feed.id}`}
-                text={activeContent.feed.title}
-              />
+              <CustomLink url={`/feed/${feedId}`} text={feedTitle} />
             </Typography.Text>
             <Typography.Text
               onClick={handleAuthorFilter}
