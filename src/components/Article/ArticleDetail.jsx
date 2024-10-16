@@ -17,6 +17,7 @@ import { settingsState } from "../../store/settingsState";
 import { generateReadableDate, generateReadingTime } from "../../utils/date";
 import { extractImageSources } from "../../utils/images";
 import CustomLink from "../ui/CustomLink";
+import FadeInMotion from "../ui/FadeInMotion";
 import CodeBlock from "./CodeBlock";
 import ImageOverlayButton from "./ImageOverlayButton";
 import "./ArticleDetail.css";
@@ -97,66 +98,68 @@ const ArticleDetail = forwardRef((_, ref) => {
   return (
     <article className="article-content" ref={ref} tabIndex={-1}>
       <SimpleBar className="scroll-container">
-        <div className="article-header" style={{ width: `${articleWidth}%` }}>
-          <Typography.Title className="article-title" heading={3}>
-            <a
-              href={activeContent.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {activeContent.title}
-            </a>
-          </Typography.Title>
-          <div className="article-meta">
-            <Typography.Text>
-              <CustomLink url={`/feed/${feedId}`} text={feedTitle} />
-            </Typography.Text>
-            <Typography.Text
-              onClick={handleAuthorFilter}
-              style={{ cursor: "pointer" }}
-            >
-              {` - ${activeContent.author}`}
-            </Typography.Text>
-            <Typography.Text>
-              <Tag
-                size="small"
-                style={{ marginLeft: "10px", cursor: "pointer" }}
-                onClick={() => navigate(`/category/${categoryId}`)}
+        <FadeInMotion>
+          <div className="article-header" style={{ width: `${articleWidth}%` }}>
+            <Typography.Title className="article-title" heading={3}>
+              <a
+                href={activeContent.url}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                {categoryTitle}
-              </Tag>
+                {activeContent.title}
+              </a>
+            </Typography.Title>
+            <div className="article-meta">
+              <Typography.Text>
+                <CustomLink url={`/feed/${feedId}`} text={feedTitle} />
+              </Typography.Text>
+              <Typography.Text
+                onClick={handleAuthorFilter}
+                style={{ cursor: "pointer" }}
+              >
+                {` - ${activeContent.author}`}
+              </Typography.Text>
+              <Typography.Text>
+                <Tag
+                  size="small"
+                  style={{ marginLeft: "10px", cursor: "pointer" }}
+                  onClick={() => navigate(`/category/${categoryId}`)}
+                >
+                  {categoryTitle}
+                </Tag>
+              </Typography.Text>
+            </div>
+            <Typography.Text className="article-date">
+              {generateReadableDate(activeContent.published_at)}
             </Typography.Text>
+            <br />
+            <Typography.Text className="article-date">
+              {generateReadingTime(activeContent.reading_time)}
+            </Typography.Text>
+            <Divider />
           </div>
-          <Typography.Text className="article-date">
-            {generateReadableDate(activeContent.published_at)}
-          </Typography.Text>
-          <br />
-          <Typography.Text className="article-date">
-            {generateReadingTime(activeContent.reading_time)}
-          </Typography.Text>
-          <Divider />
-        </div>
-        <div
-          className="article-body"
-          key={activeContent.id}
-          style={{
-            fontSize: `${fontSize}rem`,
-            width: `${articleWidth}%`,
-            fontFamily: fontFamily,
-          }}
-        >
-          {parsedHtml}
-          <PhotoSlider
-            images={imageSources.map((item) => ({ src: item, key: item }))}
-            loop={false}
-            visible={isPhotoSliderVisible}
-            onClose={() => {
-              setIsPhotoSliderVisible(false);
+          <div
+            className="article-body"
+            key={activeContent.id}
+            style={{
+              fontSize: `${fontSize}rem`,
+              width: `${articleWidth}%`,
+              fontFamily: fontFamily,
             }}
-            index={selectedIndex}
-            onIndexChange={setSelectedIndex}
-          />
-        </div>
+          >
+            {parsedHtml}
+            <PhotoSlider
+              images={imageSources.map((item) => ({ src: item, key: item }))}
+              loop={false}
+              visible={isPhotoSliderVisible}
+              onClose={() => {
+                setIsPhotoSliderVisible(false);
+              }}
+              index={selectedIndex}
+              onIndexChange={setSelectedIndex}
+            />
+          </div>
+        </FadeInMotion>
       </SimpleBar>
     </article>
   );

@@ -1,7 +1,6 @@
 import { Message, Typography } from "@arco-design/web-react";
 import { IconEmpty } from "@arco-design/web-react/icon";
 import { useEffect, useRef } from "react";
-import { CSSTransition } from "react-transition-group";
 
 import { useStore } from "@nanostores/react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -26,11 +25,9 @@ import ArticleList from "../Article/ArticleList";
 import { useContentContext } from "./ContentContext";
 import FooterPanel from "./FooterPanel";
 import "./Content.css";
-import "./Transition.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const { activeContent, isArticleListReady, isArticleLoading } =
-    useStore(contentState);
+  const { activeContent, isArticleLoading } = useStore(contentState);
   const { isAppDataReady } = useStore(dataState);
   const { orderBy, orderDirection, showAllFeeds, showStatus } =
     useStore(settingsState);
@@ -152,19 +149,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   return (
     <>
       <div className="entry-col">
-        <CSSTransition
-          classNames="slide"
-          in={isArticleListReady}
-          nodeRef={cardsRef}
-          timeout={200}
-        >
-          <ArticleList
-            cardsRef={cardsRef}
-            getEntries={getEntries}
-            handleEntryClick={handleEntryClick}
-            ref={entryListRef}
-          />
-        </CSSTransition>
+        <ArticleList
+          cardsRef={cardsRef}
+          getEntries={getEntries}
+          handleEntryClick={handleEntryClick}
+          ref={entryListRef}
+        />
         <FooterPanel
           info={info}
           refreshArticleList={() => refreshArticleList(getEntries)}
@@ -173,18 +163,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       </div>
       {activeContent ? (
         <div className="article-container" {...handlers}>
-          <CSSTransition
-            classNames="slide"
-            in={!isArticleLoading}
-            nodeRef={entryDetailRef}
-            timeout={200}
-            unmountOnExit
-          >
-            <ArticleDetail ref={entryDetailRef} />
-          </CSSTransition>
-          <CSSTransition in={!isArticleLoading} timeout={200} unmountOnExit>
-            <ActionButtons />
-          </CSSTransition>
+          {!isArticleLoading && (
+            <>
+              <ArticleDetail ref={entryDetailRef} />
+              <ActionButtons />
+            </>
+          )}
         </div>
       ) : (
         <div className="content-empty">
