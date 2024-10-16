@@ -469,7 +469,7 @@ const FeedList = () => {
         const parsingErrorCount = feed.parsing_error_count;
         let displayText = feed.disabled ? `🚫 ${title}` : title;
         if (parsingErrorCount > 0) {
-          displayText = `⚠️ ${title}`;
+          displayText = `! ${title}`;
         }
 
         const tooltipContent = (
@@ -477,8 +477,7 @@ const FeedList = () => {
             {title}
             {parsingErrorCount > 0 && (
               <>
-                <br />
-                ⚠️ Parsing error count: {parsingErrorCount}
+                <br />! Parsing error count: {parsingErrorCount}
               </>
             )}
           </div>
@@ -572,7 +571,7 @@ const FeedList = () => {
           style={{
             display: "flex",
             flex: 1,
-            justifyContent: "center",
+            justifyContent: "left",
             minWidth: 0,
           }}
         >
@@ -584,7 +583,7 @@ const FeedList = () => {
             addBefore={
               <Select
                 onChange={setFilterType}
-                style={{ width: 126 }}
+                style={{ width: 100 }}
                 value={filterType}
               >
                 <Select.Option value="title">
@@ -598,25 +597,27 @@ const FeedList = () => {
                 </Select.Option>
               </Select>
             }
+            prefix={
+              <Tooltip
+                mini
+                position="bottom"
+                content={
+                  <div>
+                    {tooltipLines.map((line, index) => (
+                      <Fragment key={`line-${index}-${line.length}`}>
+                        {line}
+                        {index < tooltipLines.length - 1 && <br />}
+                      </Fragment>
+                    ))}
+                  </div>
+                }
+              >
+                <IconQuestionCircle />
+              </Tooltip>
+            }
           />
         </div>
         <div className="button-group">
-          <Tooltip
-            mini
-            position="bottom"
-            content={
-              <div>
-                {tooltipLines.map((line, index) => (
-                  <Fragment key={`line-${index}-${line.length}`}>
-                    {line}
-                    {index < tooltipLines.length - 1 && <br />}
-                  </Fragment>
-                ))}
-              </div>
-            }
-          >
-            <Button shape="circle" size="small" icon={<IconQuestionCircle />} />
-          </Tooltip>
           <Button
             icon={<IconEdit />}
             shape="circle"
