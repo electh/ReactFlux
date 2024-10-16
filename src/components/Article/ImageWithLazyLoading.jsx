@@ -17,7 +17,7 @@ const ImageWithLazyLoading = ({
 
   const { opacity } = useSpring({
     opacity: isLoaded ? 1 : 0,
-    config: { duration: 300 },
+    config: { duration: 200 },
   });
 
   const { ref } = useInView({

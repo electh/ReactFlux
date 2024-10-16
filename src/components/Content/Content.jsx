@@ -11,7 +11,6 @@ import useArticleList from "../../hooks/useArticleList";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { polyglotState } from "../../hooks/useLanguage";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
 import {
   contentState,
   setActiveContent,
@@ -46,7 +45,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     useContentContext();
 
   const {
-    direction,
     exitDetailView,
     fetchOriginalArticle,
     navigateToNextArticle,
@@ -70,15 +68,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleToggleStarred,
     handleToggleStatus,
   } = useEntryActions();
-
-  const { isBelowMedium } = useScreenWidth();
-
-  const getAnimationClass = () => {
-    if (isBelowMedium) {
-      return direction === "next" ? "slide-left" : "slide-right";
-    }
-    return "fade";
-  };
 
   const hotkeyActions = {
     exitDetailView,
@@ -164,7 +153,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     <>
       <div className="entry-col">
         <CSSTransition
-          classNames="fade"
+          classNames="slide"
           in={isArticleListReady}
           nodeRef={cardsRef}
           timeout={200}
@@ -185,7 +174,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       {activeContent ? (
         <div className="article-container" {...handlers}>
           <CSSTransition
-            classNames={getAnimationClass()}
+            classNames="slide"
             in={!isArticleLoading}
             nodeRef={entryDetailRef}
             timeout={200}

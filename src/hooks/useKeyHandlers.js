@@ -1,5 +1,4 @@
 import { useStore } from "@nanostores/react";
-import { useState } from "react";
 import { useContentContext } from "../components/Content/ContentContext";
 import {
   activeEntryIndexState,
@@ -19,8 +18,6 @@ const useKeyHandlers = () => {
   const filteredEntries = useStore(filteredEntriesState);
   const prevContent = useStore(prevContentState);
   const nextContent = useStore(nextContentState);
-
-  const [direction, setDirection] = useState("next");
 
   const { entryListRef, handleEntryClick } = useContentContext();
 
@@ -59,7 +56,6 @@ const useKeyHandlers = () => {
   });
 
   const navigateToPreviousArticle = () => {
-    setDirection("prev");
     if (prevContent) {
       handleEntryClick(prevContent);
       setTimeout(() => scrollSelectedCardIntoView(), 200);
@@ -67,7 +63,6 @@ const useKeyHandlers = () => {
   };
 
   const navigateToNextArticle = () => {
-    setDirection("next");
     if (nextContent) {
       handleEntryClick(nextContent);
       setTimeout(() => scrollSelectedCardIntoView(), 200);
@@ -84,7 +79,6 @@ const useKeyHandlers = () => {
   };
 
   const navigateToAdjacentUnreadArticle = (direction) => {
-    setDirection(direction);
     const adjacentUnreadEntry = findAdjacentUnreadEntry(
       activeEntryIndex,
       direction,
@@ -140,7 +134,6 @@ const useKeyHandlers = () => {
   });
 
   return {
-    direction,
     exitDetailView,
     fetchOriginalArticle,
     navigateToNextArticle,
