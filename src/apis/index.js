@@ -12,5 +12,5 @@ export const getVersion = async () => apiClient.get("/v1/version");
 
 export const markAllAsRead = async () => {
   const currentUser = await getCurrentUser();
-  return apiClient.put(`/v1/users/${currentUser.data.id}/mark-all-as-read`);
+  return apiClient.put(`/v1/users/${currentUser.id}/mark-all-as-read`);
 };
