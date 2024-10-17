@@ -191,6 +191,7 @@ const RefreshModal = ({ visible, setVisible }) => {
       <Modal
         className="edit-modal"
         onCancel={closeModal}
+        simple={true}
         title={polyglot.t("feed_table.refresh_feeds_title")}
         visible={visible}
         footer={[
@@ -252,6 +253,7 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
     <Modal
       className="edit-modal"
       onOk={bulkUpdateFeedHosts}
+      simple={true}
       title={polyglot.t("feed_table.modal_bulk_update_title")}
       visible={visible}
       onCancel={() => {
@@ -259,9 +261,15 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
         setNewHost("");
       }}
     >
-      <p>{polyglot.t("feed_table.modal_bulk_update_description")}</p>
       <Input
         placeholder="rsshub.app"
+        prefix={
+          <Tooltip
+            content={polyglot.t("feed_table.modal_bulk_update_description")}
+          >
+            <IconQuestionCircle />
+          </Tooltip>
+        }
         value={newHost}
         onChange={(value) => setNewHost(value)}
       />
@@ -473,7 +481,7 @@ const FeedList = () => {
         const parsingErrorCount = feed.parsing_error_count;
         let displayText = feed.disabled ? `🚫 ${title}` : title;
         if (parsingErrorCount > 0) {
-          displayText = `⚠️ ${title}`;
+          displayText = `! ${title}`;
         }
 
         const tooltipContent = (
@@ -481,8 +489,7 @@ const FeedList = () => {
             {title}
             {parsingErrorCount > 0 && (
               <>
-                <br />
-                ⚠️ Parsing error count: {parsingErrorCount}
+                <br />! Parsing error count: {parsingErrorCount}
               </>
             )}
           </div>

@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   Drawer,
   Dropdown,
   Menu,
@@ -14,6 +15,7 @@ import {
   IconEye,
   IconEyeInvisible,
   IconGithub,
+  IconLink,
   IconMenu,
   IconMoonFill,
   IconPlus,
@@ -201,13 +203,14 @@ const Header = () => {
                   key="1"
                   onClick={() => window.open(`${server}/settings`, "_blank")}
                 >
-                  <IconSettings className="icon-right" />
+                  <IconLink className="icon-right" />
                   {polyglot.t("header.miniflux_settings")}
                 </Menu.Item>
                 <Menu.Item key="2" onClick={() => setResetModalVisible(true)}>
                   <IconRefresh className="icon-right" />
                   {polyglot.t("header.reset_settings")}
                 </Menu.Item>
+                <Divider style={{ margin: "4px 0" }} />
                 <Menu.Item key="3" onClick={() => setLogoutModalVisible(true)}>
                   <IconPoweroff className="icon-right" />
                   {polyglot.t("header.logout")}
@@ -224,6 +227,7 @@ const Header = () => {
       <Modal
         title={polyglot.t("header.settings_reset_confirm")}
         visible={resetModalVisible}
+        simple={true}
         onOk={handleResetSettings}
         onCancel={() => setResetModalVisible(false)}
       >
@@ -233,6 +237,7 @@ const Header = () => {
       <Modal
         title={polyglot.t("header.logout_confirm")}
         visible={logoutModalVisible}
+        simple={true}
         onOk={handleLogout}
         onCancel={() => setLogoutModalVisible(false)}
       >
