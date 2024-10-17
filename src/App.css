@@ -98,7 +98,7 @@
 
   .article-container {
     position: absolute !important;
-    /*height: calc(100% - 48px) !important;*/
+    height: calc(100% - 48px) !important;
     z-index: 3 !important;
   }
 
