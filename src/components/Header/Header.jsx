@@ -167,6 +167,7 @@ const Header = () => {
             }
           />
           <Dropdown
+            position="br"
             droplist={
               <Menu defaultSelectedKeys={[theme]} className="theme-menu">
                 {themeOptions.map(({ label, value }) => (
@@ -218,6 +219,7 @@ const Header = () => {
               </Menu>
             }
             trigger="click"
+            position="br"
           >
             <Button icon={<IconUser />} shape="circle" size="small" />
           </Dropdown>
