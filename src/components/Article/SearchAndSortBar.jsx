@@ -24,6 +24,7 @@ import {
   setFilterType,
 } from "../../store/contentState";
 import { settingsState, updateSettings } from "../../store/settingsState";
+import { getStartOfToday } from "../../utils/date";
 import { debounce } from "../../utils/time";
 import "./SearchAndSortBar.css";
 
@@ -119,30 +120,23 @@ const SearchAndSortBar = () => {
           trigger="click"
           droplist={
             <>
-              <Calendar
-                panel
-                panelTodayBtn
-                onChange={setFilterDate}
-                value={filterDate}
-              />
-              <button
-                onClick={() => setFilterDate(null)}
-                type="button"
-                style={{
-                  backgroundColor: "var(--color-bg-5)",
-                  border: "1px solid var(--color-neutral-3)",
-                  borderTop: "none",
-                  color: "var(--color-text-1)",
-                  cursor: "pointer",
-                  height: "38px",
-                  lineHeight: "38px",
-                  padding: "0",
-                  textAlign: "center",
-                  width: "100%",
-                }}
-              >
-                {polyglot.t("search.reset_date")}
-              </button>
+              <Calendar panel onChange={setFilterDate} value={filterDate} />
+              <div className="calendar-actions">
+                <button
+                  className="calendar-action-button left-button"
+                  onClick={() => setFilterDate(null)}
+                  type="button"
+                >
+                  {polyglot.t("search.reset_date")}
+                </button>
+                <button
+                  className="calendar-action-button right-button"
+                  onClick={() => setFilterDate(getStartOfToday())}
+                  type="button"
+                >
+                  {polyglot.t("search.today")}
+                </button>
+              </div>
             </>
           }
         >

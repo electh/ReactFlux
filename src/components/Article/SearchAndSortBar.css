@@ -1,3 +1,24 @@
+.calendar-actions {
+  color: var(--color-text-1);
+  display: flex;
+  height: 38px;
+  justify-content: space-between;
+  line-height: 38px;
+}
+
+.calendar-action-button {
+  background-color: var(--color-bg-5);
+  border: 1px solid var(--color-neutral-3);
+  border-top: none;
+  cursor: pointer;
+  padding: 0;
+  width: 50%;
+}
+
+.calendar-action-button.right-button {
+  border-right: none;
+}
+
 .search-and-sort-bar {
   align-items: center;
   display: flex;
