@@ -11,7 +11,8 @@ Key features include:
 - Modern interface design
 - Responsive layout
 - Support for dark mode and custom themes
-- Article search with Google-like syntax
+- Article and feed search with Google-like syntax
+- Filter articles by publish date
 - Feed and group management
 - Keyboard shortcuts (customizable)
 - Automatically mark articles as read when scrolling

@@ -11,13 +11,14 @@ Las funcionalidades clave incluyen:
 - Diseño de interfaz moderna
 - Diseño adaptable a todos los dispositivos (responsivo)
 - Admite modo oscuro y temas personalizados
-- Búsqueda de artículos con una sintaxis similar a Google
+- Búsqueda de artículos y suscripciones con una sintaxis similar a Google
+- Filtrar artículos por fecha de publicación
 - Gestión de feed y de grupos de feeds
 - Atajos de teclado (personalizables)
 - Marca automáticamente los artículos como leidos al desplazarlos al hacer scroll
 - Actualización por lotes del host de URL de suscripción filtradas (útil para reemplazar instancias de RSSHub)
+- Actualización por lotes de suscripciones recientemente falladas
 - Elimina artículos duplicados por hash, título o URL al cargar la lista
-- De-duplicate articles by hash, title, or URL when loading the list
 - Disponible en varios idiomasç (incluye: Inglés / Español / 简体中文)
 - Guardar artículo en servicios de terceros
 - Personalizable resaltado de sintaxis para bloques de código

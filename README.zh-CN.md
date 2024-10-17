@@ -11,7 +11,8 @@ Reactflux 是 [Miniflux](https://github.com/miniflux/miniflux) 的第三方 Web 
 - 现代化的界面设计
 - 响应式布局
 - 支持黑暗模式和自定义主题
-- 类 Google 搜索语法的文章搜索功能
+- 类 Google 搜索语法的文章和订阅源搜索功能
+- 按发布日期过滤文章
 - 订阅源及分组管理
 - 快捷键支持（可自定义）
 - 滚动时自动标记文章为已读
