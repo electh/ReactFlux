@@ -69,8 +69,8 @@ const useArticleList = (info, getEntries) => {
           break;
       }
 
-      setIsArticleListReady(true);
       handleResponses(response);
+      setIsArticleListReady(true);
     } catch (error) {
       console.error("Error fetching articles: ", error);
     } finally {

@@ -7,14 +7,14 @@ import {
   Switch,
 } from "@arco-design/web-react";
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import { useStore } from "@nanostores/react";
 import { addFeed } from "../../apis";
 import useAppData from "../../hooks/useAppData";
 import { polyglotState } from "../../hooks/useLanguage";
 import { useModalToggle } from "../../hooks/useModalToggle";
-import { categoriesState } from "../../store/dataState";
+import { categoriesState, feedsState } from "../../store/dataState";
 import { includesIgnoreCase } from "../../utils/filter";
 import { ContextProvider } from "../Content/ContentContext";
 import SettingsTabs from "../Settings/SettingsTabs";
@@ -55,24 +55,33 @@ const SettingsModal = () => {
 };
 
 const AddFeedModal = () => {
-  const categories = useStore(categoriesState);
   const { polyglot } = useStore(polyglotState);
-
-  const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle();
+  const categories = useStore(categoriesState);
+  const feeds = useStore(feedsState);
 
   const [feedModalLoading, setFeedModalLoading] = useState(false);
   const [feedForm] = Form.useForm();
 
   const { fetchAppData } = useAppData();
+  const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle();
+
+  const navigate = useNavigate();
 
   const handleAddFeed = async (url, categoryId, isFullText) => {
     setFeedModalLoading(true);
     try {
-      await addFeed(url, categoryId, isFullText);
-      await fetchAppData();
-      Message.success(polyglot.t("main.add_feed_success"));
-      setAddFeedModalVisible(false);
-      feedForm.resetFields();
+      if (feeds.some((feed) => feed.feed_url === url)) {
+        Message.error(polyglot.t("main.add_feed_error_duplicate"));
+        return;
+      }
+
+      const response = await addFeed(url, categoryId, isFullText);
+      fetchAppData().then(() => {
+        Message.success(polyglot.t("main.add_feed_success"));
+        setAddFeedModalVisible(false);
+        navigate(`/feed/${response.feed_id}`);
+        feedForm.resetFields();
+      });
     } catch (error) {
       console.error("Failed to add a feed: ", error);
       Message.error(polyglot.t("main.add_feed_error"));

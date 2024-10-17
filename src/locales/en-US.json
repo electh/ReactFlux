@@ -72,6 +72,7 @@
   "main": {
     "add_feed_success": "Added a feed successfully",
     "add_feed_error": "Failed to add a feed",
+    "add_feed_error_duplicate": "This Feed already exists",
     "add_feed_url_empty": "Feed URL cannot be empty",
     "add_feed_modal_title": "Add Feed",
     "add_feed_modal_feed_url_label": "Feed URL",

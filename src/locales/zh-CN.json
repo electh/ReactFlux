@@ -72,6 +72,7 @@
   "main": {
     "add_feed_success": "添加订阅源成功",
     "add_feed_error": "添加订阅源失败",
+    "add_feed_error_duplicate": "此订阅源已存在",
     "add_feed_url_empty": "订阅源 URL 不能为空",
     "add_feed_modal_title": "添加订阅源",
     "add_feed_modal_feed_url_label": "订阅源 URL",
