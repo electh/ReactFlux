@@ -29,7 +29,8 @@ import FooterPanel from "./FooterPanel";
 import "./Content.css";
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const { activeContent, isArticleLoading } = useStore(contentState);
+  const { activeContent, filterDate, isArticleLoading } =
+    useStore(contentState);
   const { isAppDataReady } = useStore(dataState);
   const { orderBy, orderDirection, showAllFeeds, showStatus } =
     useStore(settingsState);
@@ -147,7 +148,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     refreshArticleList(getEntries);
-  }, [orderDirection, showStatus]);
+  }, [filterDate, orderDirection, showStatus]);
 
   return (
     <>

@@ -17,6 +17,14 @@ export const get24HoursAgoTimestamp = () => {
   return dayjs().subtract(24, "hour").unix();
 };
 
+export const getTimestamp = (dateString) => {
+  return dayjs(dateString).unix();
+};
+
+export const getDayEndTimestamp = (dateString) => {
+  return dayjs(dateString).endOf("day").unix();
+};
+
 export const getUTCDate = () => {
   return dayjs().utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
 };

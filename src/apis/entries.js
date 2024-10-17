@@ -1,5 +1,7 @@
+import { contentState } from "../store/contentState";
 import { getSettings } from "../store/settingsState";
 import { get24HoursAgoTimestamp } from "../utils/date";
+import { getDayEndTimestamp, getTimestamp } from "../utils/date";
 import { apiClient } from "./ofetch";
 
 export const updateEntriesStatus = async (entryIds, newStatus) =>
@@ -19,6 +21,7 @@ export const saveToThirdPartyServices = async (entryId) =>
 
 export const buildEntriesUrl = (baseParams, extraParams = {}) => {
   const { baseUrl, orderField, offset, limit, status } = baseParams;
+  const { filterDate } = contentState.get();
   const orderDirection = getSettings("orderDirection");
   const queryParams = new URLSearchParams({
     order: orderField,
@@ -30,6 +33,11 @@ export const buildEntriesUrl = (baseParams, extraParams = {}) => {
 
   if (status) {
     queryParams.append("status", status);
+  }
+
+  if (filterDate) {
+    queryParams.append("published_after", getTimestamp(filterDate));
+    queryParams.append("published_before", getDayEndTimestamp(filterDate));
   }
 
   return `${baseUrl}?${queryParams}`;

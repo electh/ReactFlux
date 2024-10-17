@@ -24,13 +24,8 @@ export const contentState = map(defaultValue);
 export const filteredEntriesState = computed(
   [contentState, dataState, hiddenFeedIdsState, settingsState],
   (content, data, hiddenFeedIds, settings) => {
-    const { entries, filterDate, filterString, filterType, infoFrom } = content;
-    const filteredEntries = filterEntries(
-      entries,
-      filterDate,
-      filterType,
-      filterString,
-    );
+    const { entries, filterString, filterType, infoFrom } = content;
+    const filteredEntries = filterEntries(entries, filterType, filterString);
 
     const { isVersionAtLeast2_2_0 } = data;
     const { removeDuplicates, showAllFeeds } = settings;
