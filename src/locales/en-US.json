@@ -90,6 +90,7 @@
     "show_all_feeds": "Show all feeds",
     "hide_some_feeds": "Hide some feeds",
     "settings": "Settings",
+    "miniflux_settings": "Miniflux Settings",
     "reset_settings": "Reset Settings",
     "logout": "Logout",
     "settings_reset_confirm": "Confirm Reset",

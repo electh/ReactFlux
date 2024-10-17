@@ -31,6 +31,7 @@ import { polyglotState } from "../../hooks/useLanguage";
 import { useModalToggle } from "../../hooks/useModalToggle";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { resetAuth } from "../../store/authState";
+import { authState } from "../../store/authState";
 import { resetContent } from "../../store/contentState";
 import { resetData } from "../../store/dataState";
 import {
@@ -42,6 +43,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import "./Header.css";
 
 const Header = () => {
+  const { server } = useStore(authState);
   const { showAllFeeds, theme } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
 
@@ -195,11 +197,18 @@ const Header = () => {
                   <IconSettings className="icon-right" />
                   {polyglot.t("header.settings")}
                 </Menu.Item>
-                <Menu.Item key="1" onClick={() => setResetModalVisible(true)}>
+                <Menu.Item
+                  key="1"
+                  onClick={() => window.open(`${server}/settings`, "_blank")}
+                >
+                  <IconSettings className="icon-right" />
+                  {polyglot.t("header.miniflux_settings")}
+                </Menu.Item>
+                <Menu.Item key="2" onClick={() => setResetModalVisible(true)}>
                   <IconRefresh className="icon-right" />
                   {polyglot.t("header.reset_settings")}
                 </Menu.Item>
-                <Menu.Item key="2" onClick={() => setLogoutModalVisible(true)}>
+                <Menu.Item key="3" onClick={() => setLogoutModalVisible(true)}>
                   <IconPoweroff className="icon-right" />
                   {polyglot.t("header.logout")}
                 </Menu.Item>
