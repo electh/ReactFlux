@@ -8,6 +8,7 @@ import { polyglotState } from "../../hooks/useLanguage";
 import {
   contentState,
   setEntries,
+  setFilterDate,
   setFilterString,
   setFilterType,
 } from "../../store/contentState";
@@ -43,6 +44,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    setFilterDate(null);
     setFilterType("title");
     setFilterString("");
   }, [showStatus]);

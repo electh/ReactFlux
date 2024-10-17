@@ -8,6 +8,7 @@ import { getSettings, settingsState } from "./settingsState";
 const defaultValue = {
   activeContent: null, // 当前打开的文章
   entries: [], // 接口返回的所有文章
+  filterDate: null, // 搜索日期
   filterString: "", // 搜索文本
   filterType: "Title", // title | content | author
   infoFrom: getSettings("homePage"), // all | today | starred | history
@@ -23,8 +24,13 @@ export const contentState = map(defaultValue);
 export const filteredEntriesState = computed(
   [contentState, dataState, hiddenFeedIdsState, settingsState],
   (content, data, hiddenFeedIds, settings) => {
-    const { entries, filterString, filterType, infoFrom } = content;
-    const filteredEntries = filterEntries(entries, filterType, filterString);
+    const { entries, filterDate, filterString, filterType, infoFrom } = content;
+    const filteredEntries = filterEntries(
+      entries,
+      filterDate,
+      filterType,
+      filterString,
+    );
 
     const { isVersionAtLeast2_2_0 } = data;
     const { removeDuplicates, showAllFeeds } = settings;
@@ -74,6 +80,7 @@ export const nextContentState = computed(
 
 export const setActiveContent = createSetter(contentState, "activeContent");
 export const setEntries = createSetter(contentState, "entries");
+export const setFilterDate = createSetter(contentState, "filterDate");
 export const setFilterString = createSetter(contentState, "filterString");
 export const setFilterType = createSetter(contentState, "filterType");
 export const setInfoFrom = createSetter(contentState, "infoFrom");

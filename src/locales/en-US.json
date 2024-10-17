@@ -62,6 +62,8 @@
   },
   "search": {
     "placeholder": "Search...",
+    "reset_date": "Reset date",
+    "select_date": "Select date",
     "tooltip": "Search syntax:\n• Text: apple banana\n• Exact text: \"red apple\"\n• Exclude: -text or -\"text\"\n• Must include: +text or +\"text\"\n• OR search: text1|text2\nExample: \"red apple\" +fresh -rotten banana|orange",
     "type_title": "Title",
     "type_content": "Content",
