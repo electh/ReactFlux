@@ -98,7 +98,7 @@
 
   .article-container {
     position: absolute !important;
-    height: calc(100% - 48px) !important;
+    /*height: calc(100% - 48px) !important;*/
     z-index: 3 !important;
   }
 
@@ -106,7 +106,8 @@
     display: none !important;
   }
 
-  .entry-panel {
+  .entry-panel,
+  .action-buttons {
     padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
   }
 
