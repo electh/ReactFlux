@@ -9,7 +9,6 @@ import {
 import {
   IconCalendar,
   IconQuestionCircle,
-  IconRefresh,
   IconSortAscending,
   IconSortDescending,
 } from "@arco-design/web-react/icon";
@@ -119,28 +118,37 @@ const SearchAndSortBar = () => {
           position="bottom"
           trigger="click"
           droplist={
-            <Calendar
-              panel
-              panelTodayBtn
-              onChange={setFilterDate}
-              value={filterDate}
-            />
+            <>
+              <Calendar
+                panel
+                panelTodayBtn
+                onChange={setFilterDate}
+                value={filterDate}
+              />
+              <button
+                onClick={() => setFilterDate(null)}
+                type="button"
+                style={{
+                  backgroundColor: "var(--color-bg-5)",
+                  border: "1px solid var(--color-neutral-3)",
+                  borderTop: "none",
+                  color: "var(--color-text-1)",
+                  cursor: "pointer",
+                  height: "38px",
+                  lineHeight: "38px",
+                  padding: "0",
+                  textAlign: "center",
+                  width: "100%",
+                }}
+              >
+                {polyglot.t("search.reset_date")}
+              </button>
+            </>
           }
         >
-          {filterDate ? (
-            <Tooltip mini content={polyglot.t("search.reset_date")}>
-              <Button
-                shape="circle"
-                size="small"
-                icon={<IconRefresh />}
-                onClick={() => setFilterDate(null)}
-              />
-            </Tooltip>
-          ) : (
-            <Tooltip mini content={polyglot.t("search.select_date")}>
-              <Button shape="circle" size="small" icon={<IconCalendar />} />
-            </Tooltip>
-          )}
+          <Tooltip mini content={polyglot.t("search.select_date")}>
+            <Button shape="circle" size="small" icon={<IconCalendar />} />
+          </Tooltip>
         </Dropdown>
         <Tooltip
           mini
