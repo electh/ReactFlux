@@ -167,7 +167,7 @@ const Header = () => {
             }
           />
           <Dropdown
-            position="br"
+            position="bottom"
             droplist={
               <Menu defaultSelectedKeys={[theme]} className="theme-menu">
                 {themeOptions.map(({ label, value }) => (
@@ -177,7 +177,7 @@ const Header = () => {
                     onClick={() => updateSettings({ theme: value })}
                   >
                     {label}
-                    {theme === value && <IconCheck style={{ marginLeft: 8 }} />}
+                    {theme === value && <IconCheck />}
                   </Menu.Item>
                 ))}
               </Menu>
@@ -191,6 +191,8 @@ const Header = () => {
             />
           </Dropdown>
           <Dropdown
+            position="br"
+            trigger="click"
             droplist={
               <Menu>
                 <Menu.Item
@@ -218,8 +220,6 @@ const Header = () => {
                 </Menu.Item>
               </Menu>
             }
-            trigger="click"
-            position="br"
           >
             <Button icon={<IconUser />} shape="circle" size="small" />
           </Dropdown>
