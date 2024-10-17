@@ -1,5 +1,5 @@
 import { Skeleton } from "@arco-design/web-react";
-import { animated, useSpring } from "@react-spring/web";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -14,11 +14,6 @@ const ImageWithLazyLoading = ({
   width,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-
-  const { opacity } = useSpring({
-    opacity: isLoaded ? 1 : 0,
-    config: { duration: 200 },
-  });
 
   const { ref } = useInView({
     triggerOnce: true,
@@ -48,16 +43,18 @@ const ImageWithLazyLoading = ({
         }}
       >
         {isLoaded ? (
-          <animated.img
+          <motion.img
             className={status === "unread" ? "" : "read"}
             src={src}
             alt={alt}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
             style={{
               width,
               height,
               objectFit: "cover",
               borderRadius,
-              opacity,
             }}
           />
         ) : (
