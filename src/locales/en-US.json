@@ -29,7 +29,7 @@
   "actions": {
     "copied": "Copied!",
     "mark_as_read_error": "Failed to mark as read, please try again later",
-    "mark_as_unread_error": "Failed to markd as unread, please try again later",
+    "mark_as_unread_error": "Failed to mark as unread, please try again later",
     "star_error": "Failed to star, please try again later",
     "unstar_error": "Failed to unstar, please try again later",
     "fetched_content_success": "Fetched content successfully",
@@ -62,7 +62,7 @@
   },
   "search": {
     "placeholder": "Search...",
-    "reset_date": "Reset date",
+    "reset_date": "Reset",
     "select_date": "Select date",
     "tooltip": "Search syntax:\n• Text: apple banana\n• Exact text: \"red apple\"\n• Exclude: -text or -\"text\"\n• Must include: +text or +\"text\"\n• OR search: text1|text2\nExample: \"red apple\" +fresh -rotten banana|orange",
     "type_title": "Title",
