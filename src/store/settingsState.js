@@ -17,6 +17,7 @@ const defaultValue = {
   showAllFeeds: false,
   showUnreadFeedsOnly: false,
   showDetailedRelativeTime: false,
+  showEstimatedReadingTime: false,
   showFeedIcon: true,
   showStatus: "unread",
   theme: "light",

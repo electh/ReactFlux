@@ -22,6 +22,7 @@ const Appearance = () => {
     fontFamily,
     layout,
     showDetailedRelativeTime,
+    showEstimatedReadingTime,
     showFeedIcon,
     themeColor,
   } = useStore(settingsState);
@@ -98,8 +99,8 @@ const Appearance = () => {
       <Divider />
 
       <SettingItem
-        title={polyglot.t("appearance.compact_article_list_label")}
-        description={polyglot.t("appearance.compact_article_list_description")}
+        title={polyglot.t("appearance.compact_article_card_label")}
+        description={polyglot.t("appearance.compact_article_card_description")}
       >
         <Switch
           checked={layout === "small"}
@@ -121,6 +122,22 @@ const Appearance = () => {
           checked={showDetailedRelativeTime}
           onChange={(value) =>
             handleConfigChange({ showDetailedRelativeTime: value })
+          }
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("appearance.show_estimated_reading_time_label")}
+        description={polyglot.t(
+          "appearance.show_estimated_reading_time_description",
+        )}
+      >
+        <Switch
+          checked={showEstimatedReadingTime}
+          onChange={(value) =>
+            handleConfigChange({ showEstimatedReadingTime: value })
           }
         />
       </SettingItem>

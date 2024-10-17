@@ -52,7 +52,8 @@ const getPadding = (imgSrc, isMini) => {
 };
 
 const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
-  const { showDetailedRelativeTime } = useStore(settingsState);
+  const { showDetailedRelativeTime, showEstimatedReadingTime } =
+    useStore(settingsState);
   const contentClass = classNames({
     "article-card-mini-content": mini,
     "article-card-mini-content-padding": mini && showFeedIcon,
@@ -85,8 +86,12 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
           {entry.feed.title}
           <br />
           {generateRelativeTime(entry.published_at, showDetailedRelativeTime)}
-          <br />
-          {generateReadingTime(entry.reading_time)}
+          {showEstimatedReadingTime && (
+            <>
+              <br />
+              {generateReadingTime(entry.reading_time)}
+            </>
+          )}
         </Typography.Text>
         {entry.starred && <IconStarFill className="icon-starred" />}
       </div>
