@@ -163,9 +163,12 @@ const FeedMenuItem = ({ feed }) => {
   const { showFeedIcon } = useStore(settingsState);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const isSelected = location.pathname === `/feed/${feed.id}`;
 
   return (
     <MenuItem
+      className={classNames({ "arco-menu-selected": isSelected })}
       key={`/feed/${feed.id}`}
       style={{ position: "relative", overflow: "hidden" }}
       onClick={(e) => {
