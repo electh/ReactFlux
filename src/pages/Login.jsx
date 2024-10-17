@@ -186,9 +186,7 @@ const Login = () => {
             >
               {polyglot.t("login.login_button")}
             </Button>
-            <Divider orientation="center">
-              {polyglot.t("login.another_login_method")}
-            </Divider>
+            <Divider>{polyglot.t("login.another_login_method")}</Divider>
             <Button
               type="secondary"
               long={true}

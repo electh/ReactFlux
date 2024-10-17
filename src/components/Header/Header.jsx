@@ -225,21 +225,19 @@ const Header = () => {
       </div>
 
       <Modal
+        onCancel={() => setResetModalVisible(false)}
+        onOk={handleResetSettings}
         title={polyglot.t("header.settings_reset_confirm")}
         visible={resetModalVisible}
-        simple={true}
-        onOk={handleResetSettings}
-        onCancel={() => setResetModalVisible(false)}
       >
         <p>{polyglot.t("header.settings_reset_description")}</p>
       </Modal>
 
       <Modal
+        onCancel={() => setLogoutModalVisible(false)}
+        onOk={handleLogout}
         title={polyglot.t("header.logout_confirm")}
         visible={logoutModalVisible}
-        simple={true}
-        onOk={handleLogout}
-        onCancel={() => setLogoutModalVisible(false)}
       >
         <p>{polyglot.t("header.logout_description")}</p>
       </Modal>

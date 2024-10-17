@@ -15,6 +15,7 @@ import {
 } from "@arco-design/web-react/icon";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import SimpleBar from "simplebar-react";
 
 import { useStore } from "@nanostores/react";
 import classNames from "classnames";
@@ -29,7 +30,6 @@ import {
 import { settingsState } from "../../store/settingsState";
 import FeedIcon from "../ui/FeedIcon";
 import "./Sidebar.css";
-import SimpleBar from "simplebar-react";
 
 const MenuItem = Menu.Item;
 

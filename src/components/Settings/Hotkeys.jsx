@@ -27,8 +27,6 @@ const Hotkeys = () => {
     {
       title: polyglot.t("hotkeys.key"),
       dataIndex: "keys",
-      fixed: "left",
-      width: "50%",
       render: (keys, record) => (
         <EditableTagGroup keys={keys} record={record} />
       ),

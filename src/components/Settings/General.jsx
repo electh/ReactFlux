@@ -3,7 +3,6 @@ import { useStore } from "@nanostores/react";
 import { polyglotState } from "../../hooks/useLanguage";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import SettingItem from "./SettingItem";
-import "./General.css";
 
 const languageOptions = [
   { label: "English", value: "en-US" },
