@@ -39,11 +39,20 @@
   },
   "article_card": {
     "reading_time": "%{time} read",
-    "marked_as_starred": "Marked as starred",
-    "unmarked_as_starred": "Unmarked as starred",
+    "starred": "Marked as starred",
+    "unstarred": "Unmarked as starred",
     "marked_as_read": "Marked as read",
     "marked_as_unread": "Marked as unread",
-    "update_failed": "Failed to update, please try again"
+    "update_failed": "Failed to update, please try again",
+    "close_tooltip": "Close article",
+    "previous_tooltip": "Previous article",
+    "next_tooltip": "Next article",
+    "mark_as_read_tooltip": "Mark as read",
+    "mark_as_unread_tooltip": "Mark as unread",
+    "star_tooltip": "Star",
+    "unstar_tooltip": "Unstar",
+    "fetch_original_tooltip": "Fetch original content",
+    "save_to_third_party_services_tooltip": "Save to third-party services"
   },
   "article_list": {
     "sort_direction_desc": "Newest first",
@@ -52,7 +61,9 @@
     "filter_status_unread": "Unread",
     "mark_all_as_read_success": "All articles marked as read",
     "mark_all_as_read_error": "Failed to mark all as read",
-    "mark_all_as_read_confirm": "Mark all as read?"
+    "mark_all_as_read_confirm": "Mark all as read?",
+    "mark_all_as_read_tooltip": "Mark all as read",
+    "refresh_tooltip": "Refresh"
   },
   "content": {
     "mark_as_read_error": "Failed to mark as read, please try again later"

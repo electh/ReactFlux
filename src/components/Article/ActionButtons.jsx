@@ -15,15 +15,18 @@ import { useEffect, useState } from "react";
 import { useStore } from "@nanostores/react";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
+import { polyglotState } from "../../hooks/useLanguage";
 import {
   contentState,
   nextContentState,
   prevContentState,
 } from "../../store/contentState";
+import CustomTooltip from "../ui/CustomTooltip";
 import "./ActionButtons.css";
 
 const ActionButtons = () => {
   const { activeContent } = useStore(contentState);
+  const { polyglot } = useStore(polyglotState);
   const nextContent = useStore(nextContentState);
   const prevContent = useStore(prevContentState);
 
@@ -50,55 +53,87 @@ const ActionButtons = () => {
   return (
     <div className="action-buttons">
       <div className="left-side">
-        <Button
-          icon={<IconClose />}
-          onClick={() => exitDetailView()}
-          shape="circle"
-        />
-        <Button
-          icon={<IconArrowLeft />}
-          onClick={() => navigateToPreviousArticle()}
-          shape="circle"
-          disabled={!prevContent}
-        />
-        <Button
-          icon={<IconArrowRight />}
-          onClick={() => navigateToNextArticle()}
-          shape="circle"
-          disabled={!nextContent}
-        />
+        <CustomTooltip content={polyglot.t("article_card.close_tooltip")}>
+          <Button
+            icon={<IconClose />}
+            onClick={() => exitDetailView()}
+            shape="circle"
+          />
+        </CustomTooltip>
+        <CustomTooltip content={polyglot.t("article_card.previous_tooltip")}>
+          <Button
+            icon={<IconArrowLeft />}
+            onClick={() => navigateToPreviousArticle()}
+            shape="circle"
+            disabled={!prevContent}
+          />
+        </CustomTooltip>
+        <CustomTooltip content={polyglot.t("article_card.next_tooltip")}>
+          <Button
+            icon={<IconArrowRight />}
+            onClick={() => navigateToNextArticle()}
+            shape="circle"
+            disabled={!nextContent}
+          />
+        </CustomTooltip>
       </div>
       <div className="right-side">
-        <Button
-          icon={isUnread ? <IconMinusCircle /> : <IconRecord />}
-          onClick={() => handleToggleStatus(activeContent)}
-          shape="circle"
-        />
-        <Button
-          icon={
-            isStarred ? (
-              <IconStarFill style={{ color: "#ffcd00" }} />
-            ) : (
-              <IconStar />
-            )
+        <CustomTooltip
+          content={
+            isUnread
+              ? polyglot.t("article_card.mark_as_read_tooltip")
+              : polyglot.t("article_card.mark_as_unread_tooltip")
           }
-          onClick={() => handleToggleStarred(activeContent)}
-          shape="circle"
-        />
-        <Button
-          icon={<IconCloudDownload />}
-          onClick={async () => {
-            await handleFetchContent();
-            setIsFetchedOriginal(true);
-          }}
-          shape="circle"
-          disabled={isFetchedOriginal}
-        />
-        <Button
-          icon={<IconSave />}
-          onClick={handleSaveToThirdPartyServices}
-          shape="circle"
-        />
+        >
+          <Button
+            icon={isUnread ? <IconMinusCircle /> : <IconRecord />}
+            onClick={() => handleToggleStatus(activeContent)}
+            shape="circle"
+          />
+        </CustomTooltip>
+        <CustomTooltip
+          content={
+            isStarred
+              ? polyglot.t("article_card.unstar_tooltip")
+              : polyglot.t("article_card.star_tooltip")
+          }
+        >
+          <Button
+            icon={
+              isStarred ? (
+                <IconStarFill style={{ color: "#ffcd00" }} />
+              ) : (
+                <IconStar />
+              )
+            }
+            onClick={() => handleToggleStarred(activeContent)}
+            shape="circle"
+          />
+        </CustomTooltip>
+        <CustomTooltip
+          content={polyglot.t("article_card.fetch_original_tooltip")}
+        >
+          <Button
+            icon={<IconCloudDownload />}
+            onClick={async () => {
+              await handleFetchContent();
+              setIsFetchedOriginal(true);
+            }}
+            shape="circle"
+            disabled={isFetchedOriginal}
+          />
+        </CustomTooltip>
+        <CustomTooltip
+          content={polyglot.t(
+            "article_card.save_to_third_party_services_tooltip",
+          )}
+        >
+          <Button
+            icon={<IconSave />}
+            onClick={handleSaveToThirdPartyServices}
+            shape="circle"
+          />
+        </CustomTooltip>
       </div>
     </div>
   );

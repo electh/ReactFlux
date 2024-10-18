@@ -39,11 +39,20 @@
   },
   "article_card": {
     "reading_time": "需要 %{time}阅读",
-    "marked_as_starred": "已标记为收藏",
-    "unmarked_as_starred": "已取消收藏",
+    "starred": "已收藏",
+    "unstarred": "已取消收藏",
     "marked_as_read": "已标记为已读",
     "marked_as_unread": "已标记为未读",
-    "update_failed": "更新失败，请重试"
+    "update_failed": "更新失败，请重试",
+    "close_tooltip": "关闭文章",
+    "previous_tooltip": "上一篇文章",
+    "next_tooltip": "下一篇文章",
+    "mark_as_read_tooltip": "标记为已读",
+    "mark_as_unread_tooltip": "标记为未读",
+    "star_tooltip": "收藏",
+    "unstar_tooltip": "取消收藏",
+    "fetch_original_tooltip": "获取原文",
+    "save_to_third_party_services_tooltip": "保存到第三方服务"
   },
   "article_list": {
     "sort_direction_desc": "最新优先",
@@ -52,7 +61,9 @@
     "filter_status_unread": "未读",
     "mark_all_as_read_success": "所有文章已标记为已读",
     "mark_all_as_read_error": "无法标记所有文章为已读",
-    "mark_all_as_read_confirm": "标记所有文章为已读？"
+    "mark_all_as_read_confirm": "标记所有文章为已读？",
+    "mark_all_as_read_tooltip": "标记所有文章为已读",
+    "refresh_tooltip": "刷新"
   },
   "content": {
     "mark_as_read_error": "标记为已读失败，请稍后再试"
@@ -213,7 +224,7 @@
     "key": "键",
     "function": "功能",
     "exitDetailView": "退出文章视图并返回列表",
-    "fetchOriginalArticle": "获取并显示当前文章的原始内容",
+    "fetchOriginalArticle": "获取并显示当前文章的原文",
     "navigateToNextArticle": "在列表中导航到下一篇文章",
     "navigateToNextUnreadArticle": "在列表中导航到下一篇未读文章",
     "navigateToPreviousArticle": "在列表中导航到上一篇文章",

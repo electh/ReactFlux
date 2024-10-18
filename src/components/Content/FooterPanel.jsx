@@ -13,6 +13,7 @@ import {
   setFilterType,
 } from "../../store/contentState";
 import { settingsState, updateSettings } from "../../store/settingsState";
+import CustomTooltip from "../ui/CustomTooltip";
 import "./FooterPanel.css";
 
 const updateAllEntriesAsRead = () => {
@@ -56,15 +57,20 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
         onOk={handleMarkAllAsRead}
         title={polyglot.t("article_list.mark_all_as_read_confirm")}
       >
-        <Button
-          icon={<IconCheck />}
-          shape="circle"
-          style={{
-            visibility: ["starred", "history"].includes(info.from)
-              ? "hidden"
-              : "visible",
-          }}
-        />
+        <CustomTooltip
+          content={polyglot.t("article_list.mark_all_as_read_tooltip")}
+          mini
+        >
+          <Button
+            icon={<IconCheck />}
+            shape="circle"
+            style={{
+              visibility: ["starred", "history"].includes(info.from)
+                ? "hidden"
+                : "visible",
+            }}
+          />
+        </CustomTooltip>
       </Popconfirm>
       <Radio.Group
         onChange={handleFilterChange}
@@ -79,12 +85,14 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
         type="button"
         value={showStatus}
       />
-      <Button
-        icon={<IconRefresh />}
-        loading={!isArticleListReady}
-        shape="circle"
-        onClick={refreshArticleList}
-      />
+      <CustomTooltip content={polyglot.t("article_list.refresh_tooltip")} mini>
+        <Button
+          icon={<IconRefresh />}
+          loading={!isArticleListReady}
+          shape="circle"
+          onClick={refreshArticleList}
+        />
+      </CustomTooltip>
     </div>
   );
 };

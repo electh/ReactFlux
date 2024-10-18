@@ -39,11 +39,20 @@
   },
   "article_card": {
     "reading_time": "%{time} de lectura",
-    "marked_as_starred": "Marcado como favorito",
-    "unmarked_as_starred": "Desmarcado como favorito",
+    "starred": "Marcado como favorito",
+    "unstarred": "Desmarcado como favorito",
     "marked_as_read": "Marcado como leído",
     "marked_as_unread": "Marcado como no leído",
-    "update_failed": "Error al actualizar, por favor intente de nuevo"
+    "update_failed": "Error al actualizar, por favor intente de nuevo",
+    "close_tooltip": "Cerrar artículo",
+    "previous_tooltip": "Artículo anterior",
+    "next_tooltip": "Artículo siguiente",
+    "mark_as_read_tooltip": "Marcar como leído",
+    "mark_as_unread_tooltip": "Marcar como no leído",
+    "star_tooltip": "Marcar como favorito",
+    "unstar_tooltip": "Desmarcar como favorito",
+    "fetch_original_tooltip": "Obtener contenido original",
+    "save_to_third_party_services_tooltip": "Guardar en servicios de terceros"
   },
   "article_list": {
     "sort_direction_desc": "Las más recientes primero",
@@ -52,7 +61,9 @@
     "filter_status_unread": "Sin leer",
     "mark_all_as_read_success": "Todos los artículos marcados como leídos",
     "mark_all_as_read_error": "No se pudo marcar todo como leído",
-    "mark_all_as_read_confirm": "¿Marcar todo como leído?"
+    "mark_all_as_read_confirm": "¿Marcar todo como leído?",
+    "mark_all_as_read_tooltip": "Marcar todo como leído",
+    "refresh_tooltip": "Actualizar"
   },
   "content": {
     "mark_as_read_error": "No se pudo marcar como leído, por favor intente de nuevo más tarde"

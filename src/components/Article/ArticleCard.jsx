@@ -133,8 +133,8 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
           await handleToggleStarred(entry);
           Message.success(
             isStarred
-              ? polyglot.t("article_card.unmarked_as_starred")
-              : polyglot.t("article_card.marked_as_starred"),
+              ? polyglot.t("article_card.unstarred")
+              : polyglot.t("article_card.starred"),
           );
         } else if (eventData.deltaX < -swipeThreshold) {
           await handleToggleStatus(entry);
