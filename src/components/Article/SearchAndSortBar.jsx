@@ -26,6 +26,7 @@ import {
 import { settingsState, updateSettings } from "../../store/settingsState";
 import { getStartOfToday } from "../../utils/date";
 import { debounce } from "../../utils/time";
+import CustomTooltip from "../ui/CustomTooltip";
 import "./SearchAndSortBar.css";
 
 const SearchAndSortBar = () => {
@@ -140,11 +141,11 @@ const SearchAndSortBar = () => {
             </>
           }
         >
-          <Tooltip mini content={polyglot.t("search.select_date")}>
+          <CustomTooltip mini content={polyglot.t("search.select_date")}>
             <Button shape="circle" size="small" icon={<IconCalendar />} />
-          </Tooltip>
+          </CustomTooltip>
         </Dropdown>
-        <Tooltip
+        <CustomTooltip
           mini
           content={
             orderDirection === "desc"
@@ -164,7 +165,7 @@ const SearchAndSortBar = () => {
             }
             onClick={toggleOrderDirection}
           />
-        </Tooltip>
+        </CustomTooltip>
       </div>
     </div>
   );

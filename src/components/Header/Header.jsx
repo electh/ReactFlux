@@ -7,7 +7,6 @@ import {
   Message,
   Modal,
   Space,
-  Tooltip,
 } from "@arco-design/web-react";
 import {
   IconCheck,
@@ -42,6 +41,7 @@ import {
   updateSettings,
 } from "../../store/settingsState";
 import Sidebar from "../Sidebar/Sidebar";
+import CustomTooltip from "../ui/CustomTooltip";
 import "./Header.css";
 
 const Header = () => {
@@ -134,7 +134,7 @@ const Header = () => {
       </Drawer>
       <div className="button-group">
         <Space size={16}>
-          <Tooltip content={polyglot.t("header.add_feed")} mini>
+          <CustomTooltip content={polyglot.t("header.add_feed")} mini>
             <Button
               shape="circle"
               size="small"
@@ -142,8 +142,8 @@ const Header = () => {
               icon={<IconPlus />}
               onClick={() => setAddFeedModalVisible(true)}
             />
-          </Tooltip>
-          <Tooltip
+          </CustomTooltip>
+          <CustomTooltip
             content={
               showAllFeeds
                 ? polyglot.t("header.hide_some_feeds")
@@ -157,7 +157,7 @@ const Header = () => {
               icon={showAllFeeds ? <IconEye /> : <IconEyeInvisible />}
               onClick={handleToggleFeedsVisibility}
             />
-          </Tooltip>
+          </CustomTooltip>
           <Button
             shape="circle"
             size="small"

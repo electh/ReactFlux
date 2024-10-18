@@ -44,6 +44,7 @@ import { filterByQuery } from "../../utils/kmp";
 import { createSetter } from "../../utils/nanostores";
 import { sleep } from "../../utils/time";
 import CustomLink from "../ui/CustomLink";
+import CustomTooltip from "../ui/CustomTooltip";
 import "./FeedList.css";
 
 const filterStringState = atom("");
@@ -496,9 +497,9 @@ const FeedList = () => {
 
         return (
           <Typography.Ellipsis expandable={false}>
-            <Tooltip mini content={tooltipContent}>
+            <CustomTooltip mini content={tooltipContent}>
               <CustomLink url={`/feed/${feed.key}`} text={displayText} />
-            </Tooltip>
+            </CustomTooltip>
           </Typography.Ellipsis>
         );
       },
