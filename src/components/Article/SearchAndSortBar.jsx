@@ -123,18 +123,18 @@ const SearchAndSortBar = () => {
               <Calendar panel onChange={setFilterDate} value={filterDate} />
               <div className="calendar-actions">
                 <button
-                  className="calendar-action-button left-button"
-                  onClick={() => setFilterDate(null)}
-                  type="button"
-                >
-                  {polyglot.t("search.reset_date")}
-                </button>
-                <button
-                  className="calendar-action-button right-button"
+                  className="calendar-action-button today"
                   onClick={() => setFilterDate(getStartOfToday())}
                   type="button"
                 >
                   {polyglot.t("search.today")}
+                </button>
+                <button
+                  className="calendar-action-button clear"
+                  onClick={() => setFilterDate(null)}
+                  type="button"
+                >
+                  {polyglot.t("search.clear_date")}
                 </button>
               </div>
             </>

@@ -15,8 +15,10 @@
   width: 50%;
 }
 
-.calendar-action-button.right-button {
+.calendar-action-button.today {
+  background-color: rgb(var(--primary-6));
   border-right: none;
+  color: var(--color-white);
 }
 
 .search-and-sort-bar {
