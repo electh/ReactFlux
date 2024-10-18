@@ -27,6 +27,7 @@
     "feeds": "Feeds"
   },
   "actions": {
+    "copy_to_clipboard_tooltip": "Copy to clipboard",
     "copied": "Copied!",
     "mark_as_read_error": "Failed to mark as read, please try again later",
     "mark_as_unread_error": "Failed to mark as unread, please try again later",

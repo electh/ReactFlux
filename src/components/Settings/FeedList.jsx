@@ -497,7 +497,7 @@ const FeedList = () => {
 
         return (
           <Typography.Ellipsis expandable={false}>
-            <CustomTooltip mini content={tooltipContent}>
+            <CustomTooltip content={tooltipContent} mini>
               <CustomLink url={`/feed/${feed.key}`} text={displayText} />
             </CustomTooltip>
           </Typography.Ellipsis>

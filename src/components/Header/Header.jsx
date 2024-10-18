@@ -144,12 +144,12 @@ const Header = () => {
             />
           </CustomTooltip>
           <CustomTooltip
+            mini
             content={
               showAllFeeds
                 ? polyglot.t("header.hide_some_feeds")
                 : polyglot.t("header.show_all_feeds")
             }
-            mini
           >
             <Button
               shape="circle"

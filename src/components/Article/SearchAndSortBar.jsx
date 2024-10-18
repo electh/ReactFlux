@@ -141,7 +141,7 @@ const SearchAndSortBar = () => {
             </>
           }
         >
-          <CustomTooltip mini content={polyglot.t("search.select_date")}>
+          <CustomTooltip content={polyglot.t("search.select_date")} mini>
             <Button shape="circle" size="small" icon={<IconCalendar />} />
           </CustomTooltip>
         </Dropdown>

@@ -53,14 +53,17 @@ const ActionButtons = () => {
   return (
     <div className="action-buttons">
       <div className="left-side">
-        <CustomTooltip content={polyglot.t("article_card.close_tooltip")}>
+        <CustomTooltip content={polyglot.t("article_card.close_tooltip")} mini>
           <Button
             icon={<IconClose />}
             onClick={() => exitDetailView()}
             shape="circle"
           />
         </CustomTooltip>
-        <CustomTooltip content={polyglot.t("article_card.previous_tooltip")}>
+        <CustomTooltip
+          content={polyglot.t("article_card.previous_tooltip")}
+          mini
+        >
           <Button
             icon={<IconArrowLeft />}
             onClick={() => navigateToPreviousArticle()}
@@ -68,7 +71,7 @@ const ActionButtons = () => {
             disabled={!prevContent}
           />
         </CustomTooltip>
-        <CustomTooltip content={polyglot.t("article_card.next_tooltip")}>
+        <CustomTooltip content={polyglot.t("article_card.next_tooltip")} mini>
           <Button
             icon={<IconArrowRight />}
             onClick={() => navigateToNextArticle()}
@@ -79,6 +82,7 @@ const ActionButtons = () => {
       </div>
       <div className="right-side">
         <CustomTooltip
+          mini
           content={
             isUnread
               ? polyglot.t("article_card.mark_as_read_tooltip")
@@ -92,6 +96,7 @@ const ActionButtons = () => {
           />
         </CustomTooltip>
         <CustomTooltip
+          mini
           content={
             isStarred
               ? polyglot.t("article_card.unstar_tooltip")
@@ -112,6 +117,7 @@ const ActionButtons = () => {
         </CustomTooltip>
         <CustomTooltip
           content={polyglot.t("article_card.fetch_original_tooltip")}
+          mini
         >
           <Button
             icon={<IconCloudDownload />}
@@ -124,6 +130,7 @@ const ActionButtons = () => {
           />
         </CustomTooltip>
         <CustomTooltip
+          mini
           content={polyglot.t(
             "article_card.save_to_third_party_services_tooltip",
           )}

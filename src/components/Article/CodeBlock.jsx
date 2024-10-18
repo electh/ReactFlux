@@ -5,6 +5,7 @@ import { Highlight, Prism, themes } from "prism-react-renderer";
 import { useCallback, useState } from "react";
 import { polyglotState } from "../../hooks/useLanguage";
 import { settingsState, updateSettings } from "../../store/settingsState";
+import CustomTooltip from "../ui/CustomTooltip";
 import "./CodeBlock.css";
 
 // https://prismjs.com/#supported-languages
@@ -159,9 +160,18 @@ const ThemeSelector = () => {
   );
 };
 
-const CopyButton = ({ onClick }) => (
-  <Button icon={<IconCopy />} onClick={onClick} className="copy-button" />
-);
+const CopyButton = ({ onClick }) => {
+  const { polyglot } = useStore(polyglotState);
+
+  return (
+    <CustomTooltip
+      content={polyglot.t("actions.copy_to_clipboard_tooltip")}
+      mini
+    >
+      <Button icon={<IconCopy />} onClick={onClick} className="copy-button" />
+    </CustomTooltip>
+  );
+};
 
 const LineNumber = ({ number, width }) => (
   <span

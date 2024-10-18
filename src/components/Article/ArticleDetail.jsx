@@ -48,16 +48,20 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
           togglePhotoSlider={togglePhotoSlider}
         />
       );
-    } else if (
-      node.type === "tag" &&
-      node.name === "pre" &&
-      node.children[0]?.name === "code"
-    ) {
-      const codeNode = node.children[0];
-      const className = codeNode.attribs.class || "";
-      return (
-        <CodeBlock className={className}>{codeNode.children[0].data}</CodeBlock>
-      );
+    } else if (node.type === "tag" && node.name === "pre") {
+      let codeContent = "";
+      let className = "";
+
+      if (node.children[0]?.name === "code") {
+        const codeNode = node.children[0];
+        className = codeNode.attribs.class || "";
+        codeContent = codeNode.children[0]?.data || "";
+      } else {
+        className = node.attribs.class || "";
+        codeContent = node.children.map((child) => child.data || "").join("");
+      }
+
+      return <CodeBlock className={className}>{codeContent}</CodeBlock>;
     }
 
     return node;

@@ -27,6 +27,7 @@
     "feeds": "Feeds"
   },
   "actions": {
+    "copy_to_clipboard_tooltip": "Copiar al portapapeles",
     "copied": "Copiado!",
     "mark_as_read_error": "Error al marcar como leído, por favor intente de nuevo más tarde",
     "mark_as_unread_error": "Error al marcar como no leído, por favor intente de nuevo más tarde",
