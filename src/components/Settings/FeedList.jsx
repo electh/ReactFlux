@@ -183,12 +183,17 @@ const RefreshModal = ({ visible, setVisible }) => {
 
   return (
     <>
-      <Button
-        icon={<IconRefresh />}
-        shape="circle"
-        size="small"
-        onClick={() => setVisible(true)}
-      />
+      <CustomTooltip
+        content={polyglot.t("feed_table.refresh_feeds_tooltip")}
+        mini
+      >
+        <Button
+          icon={<IconRefresh />}
+          shape="circle"
+          size="small"
+          onClick={() => setVisible(true)}
+        />
+      </CustomTooltip>
       <Modal
         className="edit-modal"
         onCancel={closeModal}
@@ -550,32 +555,41 @@ const FeedList = () => {
       fixed: "right",
       width: 100,
       render: (_col, record) => (
-        <Space>
-          <button
-            aria-label={polyglot.t("feed_table.table_feed_edit_label")}
-            className="list-item-action"
-            onClick={() => handleSelectFeed(record)}
-            type="button"
+        <Space style={{ marginLeft: -10 }}>
+          <CustomTooltip
+            content={polyglot.t("feed_table.table_feed_edit_tooltip")}
+            mini
           >
-            <IconEdit />
-          </button>
-          <button
-            aria-label={polyglot.t("feed_table.table_feed_refresh_label")}
-            className="list-item-action"
-            onClick={() => refreshSingleFeed(record)}
-            type="button"
+            <Button
+              icon={<IconEdit />}
+              shape="circle"
+              size="mini"
+              onClick={() => handleSelectFeed(record)}
+            />
+          </CustomTooltip>
+          <CustomTooltip
+            content={polyglot.t("feed_table.table_feed_refresh_tooltip")}
+            mini
           >
-            <IconRefresh />
-          </button>
+            <Button
+              icon={<IconRefresh />}
+              shape="circle"
+              size="mini"
+              onClick={() => refreshSingleFeed(record)}
+            />
+          </CustomTooltip>
           <Popconfirm
             focusLock
             position="left"
             title={polyglot.t("feed_table.table_feed_remove_confirm")}
             onOk={() => removeFeed(record)}
           >
-            <span className="list-item-action">
-              <IconDelete />
-            </span>
+            <CustomTooltip
+              content={polyglot.t("feed_table.table_feed_remove_tooltip")}
+              mini
+            >
+              <Button icon={<IconDelete />} shape="circle" size="mini" />
+            </CustomTooltip>
           </Popconfirm>
         </Space>
       ),
@@ -641,12 +655,17 @@ const FeedList = () => {
           />
         </div>
         <div className="button-group">
-          <Button
-            icon={<IconEdit />}
-            shape="circle"
-            size="small"
-            onClick={() => setBulkUpdateModalVisible(true)}
-          />
+          <CustomTooltip
+            content={polyglot.t("feed_table.table_feed_bulk_update_tooltip")}
+            mini
+          >
+            <Button
+              icon={<IconEdit />}
+              shape="circle"
+              size="small"
+              onClick={() => setBulkUpdateModalVisible(true)}
+            />
+          </CustomTooltip>
           <BulkUpdateModal
             visible={bulkUpdateModalVisible}
             setVisible={setBulkUpdateModalVisible}
