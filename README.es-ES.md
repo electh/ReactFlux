@@ -21,7 +21,7 @@ Las funcionalidades clave incluyen:
 - Elimina artículos duplicados por hash, título o URL al cargar la lista
 - Disponible en varios idiomasç (incluye: Inglés / Español / 简体中文)
 - Guardar artículo en servicios de terceros
-- Personalizable resaltado de sintaxis para bloques de código
+- Resaltado de sintaxis para bloques de código
 - Otras características esperando que las descubras...
 
 ## Capturas de pantalla

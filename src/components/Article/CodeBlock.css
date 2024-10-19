@@ -3,7 +3,6 @@
 }
 
 .language-selector,
-.theme-selector,
 .copy-button {
     position: absolute;
     top: 10px;
@@ -11,13 +10,8 @@
 }
 
 .language-selector {
-    right: 196px;
-    width: 120px;
-}
-
-.theme-selector {
     right: 52px;
-    width: 134px;
+    width: 80px;
 }
 
 .copy-button {

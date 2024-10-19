@@ -133,26 +133,11 @@ p {
   font-size: 0.8em;
 }
 
-/*code 相关样式 */
-.article-content code {
-  background-color: var(--color-neutral-3);
-  border-radius: 2px;
-  color: var(--color-text-2);
-  font-size: 0.8em;
-  margin: 2px;
-  padding: 2px;
-}
-
-/*code 相关样式 */
 .article-content figure {
   margin: 16px 0;
 }
 
-/*code 相关样式 */
 .article-content pre {
-  background-color: var(--color-neutral-3);
   border-radius: 4px;
   line-height: 1.2;
-  overflow: auto;
-  padding: 10px;
 }

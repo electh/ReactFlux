@@ -21,7 +21,7 @@ Key features include:
 - De-duplicate articles by hash, title, or URL when loading the list
 - I18n supports (include: English / Español / 简体中文)
 - Save article to third-party services
-- Customizable syntax highlighting for code blocks
+- Syntax highlighting for code blocks
 - Other features waiting for you to discover...
 
 ## Screenshots
