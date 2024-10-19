@@ -6,7 +6,7 @@
     "sidebar main";
   grid-template-columns: 240px 1fr;
   grid-template-rows: 48px 1fr;
-  height: 100dvh;
+  height: 100lvh;
 }
 
 .arco-menu-collapse-button {
