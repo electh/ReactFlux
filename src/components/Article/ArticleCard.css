@@ -29,7 +29,7 @@
 }
 
 .cover-image {
-  border-radius: 2px;
+  border-radius: 0;
   height: 160px;
   overflow: hidden;
   margin: -10px -10px 0 -10px;
@@ -95,7 +95,7 @@
 }
 
 .article-card-mini-content-text {
-  flex: 1;
+  margin-top: -2px;
 }
 
 .article-card-title {
@@ -112,22 +112,22 @@
   font-size: 13px;
 }
 
-.feed-icon,
-.feed-icon-mini {
+.feed-icon {
   height: 16px;
   margin-right: 8px;
   position: absolute;
+  bottom: 12px;
+  right: 2px;
   width: 16px;
 }
 
-.feed-icon {
-  bottom: 12px;
-  right: 2px;
-}
-
 .feed-icon-mini {
+  margin-right: 4px;
+  position: absolute;
   left: 10px;
-  top: 14px;
+  top: 10px;
+  height: 16px;
+  width: 16px;
 }
 
 .icon-starred {
@@ -137,7 +137,7 @@
 }
 
 .thumbnail {
-  border-radius: 6px;
+  border-radius: 4px;
   height: 80px;
   overflow: hidden;
   width: 80px;

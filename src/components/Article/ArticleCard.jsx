@@ -72,11 +72,17 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
         <ArticleCardImage entry={entry} isThumbnail={mini} />
       </div>
       <div className={mini ? "article-card-mini-content-text" : ""}>
-        <Typography.Text className="article-card-title">
+        <Typography.Ellipsis
+          className="article-card-title"
+          rows={2}
+          expandable={false}
+        >
           {entry.title}
-        </Typography.Text>
-        <Typography.Text className="article-card-info">
-          <br />
+        </Typography.Ellipsis>
+        <Typography.Text
+          className="article-card-info"
+          style={{ lineHeight: "1em" }}
+        >
           {showFeedIcon && (
             <FeedIcon
               feed={entry.feed}
