@@ -7,7 +7,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({ registerType: "autoUpdate" }),
-    // visualizer(),
+    // visualizer({
+    //   gzipSize: true,
+    // }),
   ],
   server: {
     host: "0.0.0.0",
@@ -17,10 +19,9 @@ export default defineConfig({
     outDir: "build",
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes("node_modules")) {
-            return "vendor";
-          }
+        manualChunks: {
+          "react-vendor": ["react", "react-dom"],
+          "arco-vendor": ["@arco-design/web-react"],
         },
       },
     },
