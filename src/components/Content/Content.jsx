@@ -1,6 +1,6 @@
 import { Message, Typography } from "@arco-design/web-react";
 import { IconEmpty } from "@arco-design/web-react/icon";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { useStore } from "@nanostores/react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -41,7 +41,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const cardsRef = useRef(null);
 
-  const { entryDetailRef, entryListRef, handleEntryClick } =
+  const { entryDetailRef, entryListRef, handleEntryClick, isSwipingCodeBlock } =
     useContentContext();
 
   const {
@@ -104,10 +104,21 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   };
 
+  const handleSwipeLeft = useCallback(() => {
+    if (!isSwipingCodeBlock) {
+      navigateToNextArticle();
+    }
+  }, [isSwipingCodeBlock, navigateToNextArticle]);
+
+  const handleSwipeRight = useCallback(() => {
+    if (!isSwipingCodeBlock) {
+      navigateToPreviousArticle();
+    }
+  }, [isSwipingCodeBlock, navigateToPreviousArticle]);
+
   const handlers = useSwipeable({
-    preventScrollOnSwipe: true,
-    onSwipedLeft: () => navigateToNextArticle(),
-    onSwipedRight: () => navigateToPreviousArticle(),
+    onSwipedLeft: handleSwipeLeft,
+    onSwipedRight: handleSwipeRight,
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>

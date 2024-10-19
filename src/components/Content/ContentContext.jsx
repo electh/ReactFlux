@@ -1,6 +1,13 @@
 import { Message } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
-import { createContext, useCallback, useContext, useMemo, useRef } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { updateEntriesStatus } from "../../apis";
 import useEntryActions from "../../hooks/useEntryActions";
 import { polyglotState } from "../../hooks/useLanguage";
@@ -13,6 +20,8 @@ const Context = createContext();
 
 export const ContextProvider = ({ children }) => {
   const polyglot = useStore(polyglotState);
+
+  const [isSwipingCodeBlock, setIsSwipingCodeBlock] = useState(false);
 
   const entryDetailRef = useRef(null);
   const entryListRef = useRef(null);
@@ -50,14 +59,20 @@ export const ContextProvider = ({ children }) => {
     [polyglot, handleEntryStatusUpdate],
   );
 
+  const setIsSwipingCodeBlockState = useCallback((value) => {
+    setIsSwipingCodeBlock(value);
+  }, []);
+
   const value = useMemo(
     () => ({
       entryDetailRef,
       entryListRef,
       handleEntryClick,
+      isSwipingCodeBlock,
       setActiveContent,
+      setIsSwipingCodeBlock: setIsSwipingCodeBlockState,
     }),
-    [handleEntryClick],
+    [handleEntryClick, isSwipingCodeBlock, setIsSwipingCodeBlockState],
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

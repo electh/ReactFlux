@@ -5,6 +5,7 @@ import { Highlight, Prism, themes } from "prism-react-renderer";
 import { useCallback, useState } from "react";
 import { polyglotState } from "../../hooks/useLanguage";
 import { settingsState, updateSettings } from "../../store/settingsState";
+import { useContentContext } from "../Content/ContentContext";
 import CustomTooltip from "../ui/CustomTooltip";
 import "./CodeBlock.css";
 
@@ -86,6 +87,8 @@ const CodeBlock = ({ children, className }) => {
     () => detectLanguage(className) || DEFAULT_LANGUAGE,
   );
 
+  const { isSwipingCodeBlock, setIsSwipingCodeBlock } = useContentContext();
+
   const copyToClipboard = useCallback(() => {
     navigator.clipboard
       .writeText(children.trim())
@@ -97,8 +100,24 @@ const CodeBlock = ({ children, className }) => {
   const lineNumberWidth = calculateLineNumberWidth(lineCount);
   const paddingLeft = `${lineNumberWidth + 1.5}em`;
 
+  const handleSwipeStart = useCallback(() => {
+    if (!isSwipingCodeBlock) {
+      setIsSwipingCodeBlock(true);
+    }
+  }, [isSwipingCodeBlock, setIsSwipingCodeBlock]);
+
+  const handleSwipeEnd = useCallback(() => {
+    if (isSwipingCodeBlock) {
+      setIsSwipingCodeBlock(false);
+    }
+  }, [isSwipingCodeBlock, setIsSwipingCodeBlock]);
+
   return (
-    <div className="code-block-container">
+    <div
+      className="code-block-container"
+      onTouchStart={handleSwipeStart}
+      onTouchEnd={handleSwipeEnd}
+    >
       <LanguageSelector language={language} setLanguage={setLanguage} />
       <ThemeSelector />
       <CopyButton onClick={copyToClipboard} />
@@ -203,7 +222,7 @@ const CodeHighlight = ({
         style={{
           ...style,
           paddingTop: "50px",
-          paddingLeft,
+          paddingLeft: tokens.length > 1 ? paddingLeft : "1.5em",
           position: "relative",
         }}
       >
@@ -213,7 +232,9 @@ const CodeHighlight = ({
             {...getLineProps({ line, key: i })}
             style={{ position: "relative" }}
           >
-            <LineNumber number={i + 1} width={lineNumberWidth} />
+            {tokens.length > 1 && (
+              <LineNumber number={i + 1} width={lineNumberWidth} />
+            )}
             {line.map((token, key) => (
               <span
                 key={`token-${i}-${key}-${token.content.slice(0, 5)}`}
