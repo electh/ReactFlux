@@ -6,7 +6,7 @@
     "sidebar main";
   grid-template-columns: 240px 1fr;
   grid-template-rows: 48px 1fr;
-  height: 100lvh;
+  height: 100%;
 }
 
 .arco-menu-collapse-button {
@@ -33,7 +33,7 @@
 
 @media screen and (display-mode: fullscreen) {
   .app {
-    height: 100lvh;
+    height: 100%;
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     border-radius: 4px;

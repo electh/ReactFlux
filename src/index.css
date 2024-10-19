@@ -16,7 +16,7 @@ textarea {
 html,
 body,
 #root {
-  height: 100lvh;
+  height: 100dvh;
   margin: 0;
   overflow: hidden;
 }
