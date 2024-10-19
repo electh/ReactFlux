@@ -38,6 +38,12 @@
     padding-right: env(safe-area-inset-right);
     border-radius: 4px;
     overflow: hidden;
+    display: grid;
+    grid-template-areas:
+      "sidebar header"
+      "sidebar main";
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: calc(48px + env(safe-area-inset-top)) 1fr;
   }
   .header {
     box-sizing: border-box;

@@ -1,24 +1,8 @@
 .calendar-actions {
   color: var(--color-text-1);
   display: flex;
-  height: 38px;
   justify-content: space-between;
-  line-height: 38px;
-}
-
-.calendar-action-button {
-  background-color: var(--color-bg-5);
-  border: 1px solid var(--color-neutral-3);
-  border-top: none;
-  cursor: pointer;
-  padding: 0;
-  width: 50%;
-}
-
-.calendar-action-button.today {
-  background-color: rgb(var(--primary-6));
-  border-right: none;
-  color: var(--color-white);
+  gap: 16px;
 }
 
 .search-and-sort-bar {

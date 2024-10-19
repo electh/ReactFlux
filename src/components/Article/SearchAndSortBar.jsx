@@ -1,7 +1,6 @@
 import {
   Button,
-  Calendar,
-  Dropdown,
+  DatePicker,
   Input,
   Select,
   Tooltip,
@@ -116,35 +115,37 @@ const SearchAndSortBar = () => {
         }
       />
       <div className="button-group">
-        <Dropdown
+        <DatePicker
           position="bottom"
-          trigger="click"
-          droplist={
-            <>
-              <Calendar panel onChange={setFilterDate} value={filterDate} />
-              <div className="calendar-actions">
-                <button
-                  className="calendar-action-button today"
-                  onClick={() => setFilterDate(getStartOfToday())}
-                  type="button"
-                >
-                  {polyglot.t("search.today")}
-                </button>
-                <button
-                  className="calendar-action-button clear"
-                  onClick={() => setFilterDate(null)}
-                  type="button"
-                >
-                  {polyglot.t("search.clear_date")}
-                </button>
-              </div>
-            </>
+          triggerElement={
+            <CustomTooltip mini content={polyglot.t("search.select_date")}>
+              <Button
+                shape="circle"
+                size="small"
+                icon={<IconCalendar />}
+                type={filterDate ? "primary" : "default"}
+              />
+            </CustomTooltip>
           }
-        >
-          <CustomTooltip content={polyglot.t("search.select_date")} mini>
-            <Button shape="circle" size="small" icon={<IconCalendar />} />
-          </CustomTooltip>
-        </Dropdown>
+          showNowBtn={false}
+          extra={
+            <div className="calendar-actions">
+              <Button
+                onClick={() => setFilterDate(getStartOfToday())}
+                type="primary"
+                size="mini"
+                long
+              >
+                {polyglot.t("search.today")}
+              </Button>
+              <Button onClick={() => setFilterDate(null)} size="mini" long>
+                {polyglot.t("search.clear_date")}
+              </Button>
+            </div>
+          }
+          value={filterDate}
+          onChange={(v) => setFilterDate(v)}
+        />
         <CustomTooltip
           mini
           content={
