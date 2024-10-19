@@ -4,11 +4,12 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
-    "lint": "biome lint .",
+    "dev": "vite",
     "format": "biome format . --write",
-    "prepare": "husky"
+    "lint": "biome lint .",
+    "prepare": "husky",
+    "serve": "serve -s build -l 3000"
   },
   "dependencies": {
     "@arco-design/color": "^0.4.0",

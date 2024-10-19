@@ -1,7 +1,6 @@
 import { Button, Message, Select } from "@arco-design/web-react";
 import { IconCopy } from "@arco-design/web-react/icon";
 import { useStore } from "@nanostores/react";
-import hljs from "highlight.js";
 import { useCallback, useState } from "react";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
@@ -17,9 +16,7 @@ import "./CodeBlock.css";
 const CodeBlock = ({ children }) => {
   const { polyglot } = useStore(polyglotState);
 
-  const [language, setLanguage] = useState(
-    () => hljs.highlightAuto(children).language,
-  );
+  const [language, setLanguage] = useState("plaintext");
 
   const { isSwipingCodeBlock, setIsSwipingCodeBlock } = useContentContext();
 
