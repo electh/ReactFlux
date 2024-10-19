@@ -526,7 +526,7 @@ const FeedList = () => {
       dataIndex: "category.title",
       sorter: (a, b) => a.category.title.localeCompare(b.category.title, "en"),
       render: (category, feed) => (
-        <Typography.Ellipsis expandable={false} showTooltip={true}>
+        <Typography.Ellipsis expandable={false} showTooltip={!isBelowMedium}>
           <Tag
             size="small"
             style={{ cursor: "pointer" }}

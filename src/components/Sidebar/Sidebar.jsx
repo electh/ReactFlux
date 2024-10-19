@@ -20,6 +20,7 @@ import SimpleBar from "simplebar-react";
 import { useStore } from "@nanostores/react";
 import classNames from "classnames";
 import { polyglotState } from "../../hooks/useLanguage";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { setActiveContent } from "../../store/contentState";
 import {
   dataState,
@@ -39,6 +40,8 @@ const CategoryTitle = ({ category, path }) => {
     (acc, feed) => acc + feed.unreadCount,
     0,
   );
+
+  const { isBelowMedium } = useScreenWidth();
 
   const navigate = useNavigate();
 
@@ -66,7 +69,7 @@ const CategoryTitle = ({ category, path }) => {
     >
       <Typography.Ellipsis
         expandable={false}
-        showTooltip={true}
+        showTooltip={!isBelowMedium}
         style={{
           width: unreadCount ? "80%" : "100%",
           fontWeight: 500,
@@ -162,6 +165,8 @@ const SidebarMenuItems = () => {
 const FeedMenuItem = ({ feed }) => {
   const { showFeedIcon } = useStore(settingsState);
 
+  const { isBelowMedium } = useScreenWidth();
+
   const navigate = useNavigate();
   const location = useLocation();
   const isSelected = location.pathname === `/feed/${feed.id}`;
@@ -180,7 +185,7 @@ const FeedMenuItem = ({ feed }) => {
       <div className="custom-menu-item">
         <Typography.Ellipsis
           expandable={false}
-          showTooltip={true}
+          showTooltip={!isBelowMedium}
           style={{
             width: feed.unreadCount ? "80%" : "100%",
             paddingLeft: "20px",
