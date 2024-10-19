@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useFeedIcons from "../../hooks/useFeedIcons";
 import { getSecondHostname } from "../../utils/url";
 
@@ -14,6 +14,8 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
 
   const [iconURL, setIconURL] = useState(fallbackIconURL);
 
+  const imgRef = useRef(null);
+
   const fetchedIconURL = useFeedIcons(iconId);
 
   useEffect(() => {
@@ -22,12 +24,21 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
     }
   }, [fetchedIconURL]);
 
+  const handleImageLoad = () => {
+    if (imgRef.current) {
+      const { naturalWidth, naturalHeight } = imgRef.current;
+      if (naturalWidth !== naturalHeight) {
+        setIconURL(fallbackIconURL);
+      }
+    }
+  };
+
   if (iconId === 0) {
     return (
       <img
+        alt=""
         className={className}
         src={fallbackIconURL}
-        alt=""
         style={{ borderRadius: "20%" }}
       />
     );
@@ -35,10 +46,12 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
 
   return (
     <img
-      className={className}
-      src={iconURL}
       alt=""
+      className={className}
       onError={() => setIconURL(fallbackIconURL)}
+      onLoad={handleImageLoad}
+      ref={imgRef}
+      src={iconURL}
       style={{ borderRadius: "20%" }}
     />
   );
