@@ -1,10 +1,11 @@
 import { Button, Message, Select } from "@arco-design/web-react";
 import { IconCopy } from "@arco-design/web-react/icon";
 import { useStore } from "@nanostores/react";
-import { useCallback, useState } from "react";
-import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
+import hljs from "highlight.js";
+import { useCallback, useEffect, useState } from "react";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { polyglotState } from "../../hooks/useLanguage";
+import { SyntaxHighlighter } from "../../utils/highlighter";
 import {
   LANGUAGE_DISPLAY_NAMES,
   SUPPORTED_LANGUAGES,
@@ -39,6 +40,18 @@ const CodeBlock = ({ children }) => {
       setIsSwipingCodeBlock(false);
     }
   }, [isSwipingCodeBlock, setIsSwipingCodeBlock]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    setTimeout(() => {
+      const detectedLanguage = hljs.highlightAuto(children).language;
+      if (SUPPORTED_LANGUAGES.includes(detectedLanguage)) {
+        setLanguage(detectedLanguage);
+      } else {
+        console.info("detectedLanguage not supported: ", detectedLanguage);
+      }
+    }, 200);
+  }, []);
 
   return (
     <div

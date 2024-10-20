@@ -100,3 +100,5 @@ export const LANGUAGE_DISPLAY_NAMES = {
 };
 
 export const SUPPORTED_LANGUAGES = Object.keys(LANGUAGE_DISPLAY_NAMES);
+
+export { SyntaxHighlighter };

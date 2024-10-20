@@ -20,8 +20,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          "react-vendor": ["react", "react-dom"],
           "arco-vendor": ["@arco-design/web-react"],
+          "highlight-vendor": ["highlight.js"],
+          "react-vendor": ["react", "react-dom"],
         },
       },
     },
