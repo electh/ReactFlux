@@ -685,6 +685,7 @@ const FeedList = () => {
         pagePosition="bottomCenter"
         scroll={{ x: true }}
         size="small"
+        pagination={{ pageSize: 15 }}
       />
       {selectedFeed && (
         <EditFeedModal

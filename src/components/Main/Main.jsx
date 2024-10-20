@@ -34,7 +34,8 @@ const SettingsModal = () => {
 
   return (
     <Modal
-      autoFocus={false}
+      alignCenter={false}
+      autoFocus
       className="settings-modal"
       focusLock
       footer={null}

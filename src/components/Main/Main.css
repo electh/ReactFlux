@@ -7,16 +7,15 @@
 }
 
 .settings-modal {
-  width: 720px;
-}
-
-.settings-modal .arco-modal-content {
   max-height: 85%;
   overflow-y: auto;
+  top: 5%;
+  width: 720px;
 }
 
 @media screen and (max-width: 768px) {
   .settings-modal {
+    top: 8%;
     width: 95%;
   }
 }
