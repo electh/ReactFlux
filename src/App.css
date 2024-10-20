@@ -32,6 +32,9 @@
 }
 
 @media screen and (display-mode: fullscreen) {
+  body {
+    min-height: 100vh;
+  }
   .app {
     height: 100%;
     padding-left: env(safe-area-inset-left);

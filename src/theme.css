@@ -32,6 +32,10 @@ body[arco-theme="dark"] .arco-card-bordered {
     inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15), 0 0 1px 0 rgba(255, 255, 255, 0.7) !important;
 }
 
+body[arco-theme="dark"] {
+  background-color: var(--color-bg-2) !important;
+}
+
 .app {
   background-color: var(--color-neutral-2) !important;
 }
