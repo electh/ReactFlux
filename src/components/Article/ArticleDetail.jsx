@@ -3,6 +3,7 @@ import ReactHtmlParser from "html-react-parser";
 import { forwardRef } from "react";
 import { PhotoSlider } from "react-photo-view";
 import { useNavigate } from "react-router-dom";
+import sanitizeHtml from "../../utils/sanitizeHtml";
 
 import { useStore } from "@nanostores/react";
 import "react-photo-view/dist/react-photo-view.css";
@@ -92,7 +93,9 @@ const ArticleDetail = forwardRef((_, ref) => {
     imageSources,
     togglePhotoSlider,
   );
-  const parsedHtml = ReactHtmlParser(activeContent.content, htmlParserOptions);
+
+  const sanitizedHtml = sanitizeHtml(activeContent.content);
+  const parsedHtml = ReactHtmlParser(sanitizedHtml, htmlParserOptions);
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category;
   const { id: feedId, title: feedTitle } = activeContent.feed;
 
