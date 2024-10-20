@@ -19,6 +19,7 @@ const General = () => {
     pageSize,
     removeDuplicates,
     showUnreadFeedsOnly,
+    swipeCardEnabled,
   } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
 
@@ -162,6 +163,18 @@ const General = () => {
             </Select.Option>
           ))}
         </Select>
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("settings.swipe_card_enabled_label")}
+        description={polyglot.t("settings.swipe_card_enabled_description")}
+      >
+        <Switch
+          checked={swipeCardEnabled}
+          onChange={(value) => updateSettings({ swipeCardEnabled: value })}
+        />
       </SettingItem>
 
       <Divider />

@@ -19,12 +19,21 @@ const defaultValue = {
   showEstimatedReadingTime: false,
   showFeedIcon: true,
   showStatus: "unread",
+  swipeCardEnabled: true,
   theme: "light",
   themeColor: "Blue",
 };
 
 export const settingsState = persistentAtom("settings", defaultValue, {
-  encode: JSON.stringify,
+  encode: (value) => {
+    const filteredValue = Object.keys(value).reduce((acc, key) => {
+      if (key in defaultValue) {
+        acc[key] = value[key];
+      }
+      return acc;
+    }, {});
+    return JSON.stringify(filteredValue);
+  },
   decode: (str) => {
     const storedValue = JSON.parse(str);
     return { ...defaultValue, ...storedValue };

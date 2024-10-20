@@ -18,7 +18,15 @@ const defaultValue = {
 };
 
 export const hotkeysState = persistentAtom("hotkeys", defaultValue, {
-  encode: JSON.stringify,
+  encode: (value) => {
+    const filteredValue = Object.keys(value).reduce((acc, key) => {
+      if (key in defaultValue) {
+        acc[key] = value[key];
+      }
+      return acc;
+    }, {});
+    return JSON.stringify(filteredValue);
+  },
   decode: (str) => {
     const storedValue = JSON.parse(str);
     return { ...defaultValue, ...storedValue };

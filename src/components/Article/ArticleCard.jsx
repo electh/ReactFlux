@@ -107,7 +107,8 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
 };
 
 const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
-  const { markReadOnScroll, showFeedIcon } = useStore(settingsState);
+  const { markReadOnScroll, showFeedIcon, swipeCardEnabled } =
+    useStore(settingsState);
   const { activeContent } = useStore(contentState);
   const { polyglot } = useStore(polyglotState);
 
@@ -126,6 +127,10 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
     preventScrollOnSwipe: true,
     delta: swipeThreshold / 2,
     onSwiping: (eventData) => {
+      if (!swipeCardEnabled) {
+        return;
+      }
+
       const newOffset =
         Math.min(
           Math.abs(eventData.deltaX * initialDampingFactor),
@@ -134,6 +139,10 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
       setSwipeOffset(newOffset);
     },
     onSwiped: async (eventData) => {
+      if (!swipeCardEnabled) {
+        return;
+      }
+
       try {
         if (eventData.deltaX > swipeThreshold) {
           await handleToggleStarred(entry);
@@ -217,22 +226,26 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
             />
           </Card>
         </motion.div>
-        <div className="swipe-actions">
-          <div className="swipe-action left">
-            {isStarred ? (
-              <IconStarFill style={{ color: "#ffcd00", fontSize: "24px" }} />
-            ) : (
-              <IconStar style={{ color: "#ffffff", fontSize: "24px" }} />
-            )}
+        {swipeCardEnabled && (
+          <div className="swipe-actions">
+            <div className="swipe-action left">
+              {isStarred ? (
+                <IconStarFill style={{ color: "#ffcd00", fontSize: "24px" }} />
+              ) : (
+                <IconStar style={{ color: "#ffffff", fontSize: "24px" }} />
+              )}
+            </div>
+            <div className="swipe-action right">
+              {isUnread ? (
+                <IconMinusCircle
+                  style={{ color: "#ffffff", fontSize: "24px" }}
+                />
+              ) : (
+                <IconRecord style={{ color: "#ffffff", fontSize: "24px" }} />
+              )}
+            </div>
           </div>
-          <div className="swipe-action right">
-            {isUnread ? (
-              <IconMinusCircle style={{ color: "#ffffff", fontSize: "24px" }} />
-            ) : (
-              <IconRecord style={{ color: "#ffffff", fontSize: "24px" }} />
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
