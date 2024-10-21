@@ -1,0 +1,40 @@
+body {
+  --gray-1: 245 245 244;
+  --gray-2: 231 229 228;
+  --gray-3: 214 211 209;
+  --gray-4: 168 162 158;
+  --gray-5: 120 113 108;
+  --gray-6: 87 83 78;
+  --gray-7: 68 64 60;
+  --gray-8: 41 37 36;
+  --gray-9: 28 25 23;
+  --gray-10: 12 10 9;
+
+  --color-bg-1: rgb(250 250 249);
+  --color-bg-2: rgb(250 250 249);
+  --color-bg-3: rgb(250 250 249);
+  --color-bg-4: rgb(250 250 249);
+  --color-bg-5: rgb(250 250 249);
+}
+
+body[arco-theme="dark"] {
+  --gray-1: 28 25 23;
+  --gray-2: 41 37 36;
+  --gray-3: 68 64 60;
+  --gray-4: 87 83 78;
+  --gray-5: 120 113 108;
+  --gray-6: 168 162 158;
+  --gray-7: 214 211 209;
+  --gray-8: 231 229 228;
+  --gray-9: 245 245 244;
+  --gray-10: 250 250 249;
+
+  --color-secondary: var(--color-neutral-3);
+  --color-secondary-hover: var(--color-neutral-4);
+
+  --color-bg-1: rgb(12 10 9);
+  --color-bg-2: rgb(28 25 23);
+  --color-bg-3: rgb(41 37 36);
+  --color-bg-4: rgb(68 64 60);
+  --color-bg-5: rgb(87 83 78);
+}
