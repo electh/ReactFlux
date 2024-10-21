@@ -39,7 +39,7 @@ const useTheme = () => {
     document.body.className = theme;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = `/src/styles/${theme}-theme.css`;
+    link.href = `/styles/${theme}-theme.css`;
     if (theme !== "default") {
       document.head.appendChild(link);
     }
