@@ -20,8 +20,7 @@ const defaultValue = {
   showFeedIcon: true,
   showStatus: "unread",
   swipeCardEnabled: true,
-  theme: "default",
-  themeColor: "Blue",
+  themeColor: "Zine",
   themeMode: "light",
 };
 

@@ -1,136 +1,151 @@
 .arco-menu-icon-suffix {
-  display: none;
+    display: none;
 }
 
 .arco-menu-vertical .arco-menu-inline-header {
-  padding-right: 12px;
+    padding-right: 12px;
 }
 
 .category-title,
 .custom-menu-item {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .unread-count {
-  color: var(--color-text-4);
-  display: flex;
-  justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
+    color: var(--color-text-4);
 }
 
 .item-count {
-  color: var(--color-text-4);
-  display: flex;
-  justify-content: flex-end;
-  width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    width: 50%;
+    color: var(--color-text-4);
 }
 
 .menu-header {
-  align-items: center;
-  display: flex;
-  height: 48px;
-  margin-top: -4px;
-  padding: 0 28px 0 2px;
+    display: flex;
+    align-items: center;
+    height: 48px;
+    margin-top: -4px;
+    padding: 0 28px 0 2px;
 }
 
 .menu-header .avatar {
-  background-color: var(--color-text-1);
-  margin-right: 10px;
+    margin-right: 10px;
+    background-color: var(--color-text-1);
 }
 
 .section-title {
-  color: var(--color-text-3);
-  font-style: italic;
+    font-style: italic;
+    color: var(--color-text-3);
 }
 
 .custom-menu-item {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .custom-menu-item .item-count {
-  color: var(--color-text-4);
-  display: flex;
-  justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
+    color: var(--color-text-4);
 }
 
 .category-title {
-  align-items: center;
-  display: flex;
-  margin-left: -32px;
-  margin-right: -12px;
-  border-radius: 8px;
-  padding: 8px 12px 8px 42px;
+    display: flex;
+    align-items: center;
+    margin-right: -12px;
+    margin-left: -32px;
+    padding: 8px 12px 8px 42px;
+    border-radius: 8px;
 }
 
 .feed-icon-sidebar {
-  margin-right: 8px;
-  width: 16px;
-  height: 16px;
-  vertical-align: -2px;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    vertical-align: -2px;
 }
 
 .arco-collapse-item-header-title {
-  width: 100%;
+    width: 100%;
 }
 
 .arco-collapse {
-  border-radius: 0 !important;
+    border-radius: 0 !important;
 }
 
 .arco-collapse-item-header {
-  background-color: transparent;
-  padding-top: 0;
-  padding-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    background-color: transparent;
 }
 
 .arco-collapse-item {
-  border-color: transparent;
+    border-color: transparent;
 }
 
 .arco-collapse-item-content-box {
-  padding: 4px 0 0 0;
+    padding: 4px 0 0 0;
 }
 
 .arco-collapse-item-content {
-  background-color: transparent;
+    background-color: transparent;
 }
 
 .arco-collapse-item-active > .arco-collapse-item-header {
-  background-color: var(--color-neutral-2);
-  border-color: var(--color-neutral-2);
+    background-color: var(--muted);
+    border-color: var(--muted);
 }
 
 .category-title:hover {
-  background-color: var(--color-neutral-3);
+    background-color: var(--color-neutral-3);
 }
 
 .submenu-active {
-  background-color: var(--color-neutral-3);
-  color: rgb(var(--primary-6)) !important;
+    background-color: var(--color-neutral-3);
+    color: rgb(var(--primary-6)) !important;
 }
 
 .submenu-inactive {
-  color: var(--color-text-2);
+    color: var(--color-text-2);
+}
+
+.sidebar {
+    grid-area: sidebar;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    height: 100%;
+    background-color: var(--muted);
+}
+
+@media screen and (max-width: 992px) {
+.sidebar {
+      display: none;
+  }
 }
 
 .sidebar .arco-btn-secondary:not(.arco-btn-disabled) {
-  background-color: transparent;
+    background-color: transparent;
 }
 
 .arco-icon-hover.arco-collapse-item-icon-hover::before {
-  width: 32px;
-  height: 32px;
+    width: 32px;
+    height: 32px;
 }
 
 .arco-icon-hover.arco-collapse-item-icon-hover:hover::before {
-  background-color: var(--color-fill-3);
+    background-color: var(--color-fill-3);
 }
 
 .sidebar-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }

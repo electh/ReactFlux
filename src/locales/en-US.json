@@ -202,7 +202,6 @@
     "mark_read_on_scroll_description": "Automatically mark articles as read when they are scrolled out of the visible screen area"
   },
   "appearance": {
-    "default_theme": "Default",
     "theme_switcher_label": "Theme",
     "theme_switcher_description": "Choose your theme",
     "theme_color_label": "Theme color",

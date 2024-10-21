@@ -7,7 +7,6 @@ import {
   resetHotkey,
   updateHotkey,
 } from "../../store/hotkeysState";
-import { getColorValue } from "../../utils/colors";
 import EditableTag from "./EditableTag";
 
 const capitalizeFirstLetter = (word) =>
@@ -99,13 +98,16 @@ const EditableTagGroup = ({ keys, record }) => {
         </Space>
       ) : (
         <Tag
-          color={
-            keys.some((key) => duplicateHotkeys.includes(key))
-              ? getColorValue("Red")
-              : undefined
-          }
           onClick={() => setIsEditing(true)}
-          style={{ cursor: "pointer" }}
+          style={{
+            cursor: "pointer",
+            backgroundColor: keys.some((key) => duplicateHotkeys.includes(key))
+              ? "var(--destructive)"
+              : "var(--secondary)",
+            color: keys.some((key) => duplicateHotkeys.includes(key))
+              ? "var(--destructive-foreground)"
+              : "var(--secondary-foreground)",
+          }}
         >
           {processKeyName(keys)}
         </Tag>

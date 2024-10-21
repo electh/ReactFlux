@@ -2,7 +2,6 @@ import { Input, Tag } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
 import { useCallback, useEffect, useState } from "react";
 import { duplicateHotkeysState } from "../../store/hotkeysState";
-import { getColorValue } from "../../utils/colors";
 
 const EditableTag = ({ value, onChange, onRemove, editOnMount = false }) => {
   const duplicateHotkeys = useStore(duplicateHotkeysState);
@@ -84,13 +83,18 @@ const EditableTag = ({ value, onChange, onRemove, editOnMount = false }) => {
   ) : (
     <Tag
       closable={!!onRemove}
-      color={
-        duplicateHotkeys.includes(value) ? getColorValue("Red") : undefined
-      }
       onClick={() => setIsEditing(true)}
       onClose={(event) => {
         event.stopPropagation();
         onRemove();
+      }}
+      style={{
+        backgroundColor: duplicateHotkeys.includes(value)
+          ? "var(--destructive)"
+          : "var(--secondary)",
+        color: duplicateHotkeys.includes(value)
+          ? "var(--destructive-foreground)"
+          : "var(--secondary-foreground)",
       }}
     >
       {value}
