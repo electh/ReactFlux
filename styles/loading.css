@@ -8,7 +8,7 @@
 
 .spinner {
   --gap: 5px;
-  --clr: #165dff; 
+  --clr: #165dff;
   --height: 23px;
   display: flex;
   position: absolute;
