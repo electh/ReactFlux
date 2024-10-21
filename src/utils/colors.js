@@ -18,8 +18,9 @@ export const getColorValue = (colorName) => {
   const isSystemDark = window.matchMedia(
     "(prefers-color-scheme: dark)",
   ).matches;
-  const theme = getSettings("theme");
-  const isDarkMode = theme === "system" ? isSystemDark : theme === "dark";
+  const themeMode = getSettings("themeMode");
+  const isDarkMode =
+    themeMode === "system" ? isSystemDark : themeMode === "dark";
   return isDarkMode ? color.dark : color.light;
 };
 

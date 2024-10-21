@@ -20,8 +20,9 @@ const defaultValue = {
   showFeedIcon: true,
   showStatus: "unread",
   swipeCardEnabled: true,
-  theme: "light",
+  theme: "default",
   themeColor: "Blue",
+  themeMode: "light",
 };
 
 export const settingsState = persistentAtom("settings", defaultValue, {

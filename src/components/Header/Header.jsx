@@ -46,7 +46,7 @@ import "./Header.css";
 
 const Header = () => {
   const { server } = useStore(authState);
-  const { showAllFeeds, theme } = useStore(settingsState);
+  const { showAllFeeds, themeMode } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
 
   const themeOptions = [
@@ -81,8 +81,8 @@ const Header = () => {
   };
 
   const handleToggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    updateSettings({ theme: newTheme });
+    const newThemeMode = themeMode === "light" ? "dark" : "light";
+    updateSettings({ themeMode: newThemeMode });
   };
 
   const handleResetSettings = () => {
@@ -99,10 +99,10 @@ const Header = () => {
   };
 
   const getThemeIcon = () => {
-    if (theme === "dark") {
+    if (themeMode === "dark") {
       return <IconMoonFill />;
     }
-    if (theme === "system") {
+    if (themeMode === "system") {
       return <IconDesktop />;
     }
     return <IconSunFill />;
@@ -169,15 +169,15 @@ const Header = () => {
           <Dropdown
             position="bottom"
             droplist={
-              <Menu defaultSelectedKeys={[theme]} className="theme-menu">
+              <Menu defaultSelectedKeys={[themeMode]} className="theme-menu">
                 {themeOptions.map(({ label, value }) => (
                   <Menu.Item
                     className="theme-menu-item"
                     key={value}
-                    onClick={() => updateSettings({ theme: value })}
+                    onClick={() => updateSettings({ themeMode: value })}
                   >
                     {label}
-                    {theme === value && <IconCheck />}
+                    {themeMode === value && <IconCheck />}
                   </Menu.Item>
                 ))}
               </Menu>
