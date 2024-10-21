@@ -1,28 +1,27 @@
 .main {
   display: flex;
   grid-area: main;
-  overflow: hidden;
-  margin: 0 8px 8px 0;
   transition: padding-left 0.1s linear, width 0.1s linear;
-  background-color: var(--background);
+  margin: 0 8px 8px 0;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  background-color: var(--background);
+  overflow: hidden;
 }
 
 .settings-modal {
   top: 5%;
-  overflow-y: auto;
   width: 720px;
   max-height: 85%;
+  overflow-y: auto;
 }
 
 @media screen and (max-width: 992px) {
   .main {
-    width: 100%;
     margin: 0;
-    padding-left: 0;
     border: none;
-    border-radius: 0;
+    padding-left: 0;
+    width: 100%;
   }
 }
 

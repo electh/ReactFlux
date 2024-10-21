@@ -1,19 +1,14 @@
-.search-input {
-  margin-bottom: 16px;
-  width: 300px;
+.edit-modal {
+  width: 400px;
 }
 
 .feed-table {
   width: 100%;
 }
 
-.edit-modal {
-  width: 400px;
-}
-
 .feed-table-action-bar {
-  align-items: center;
   display: flex;
+  align-items: center;
   width: 100%;
 }
 
@@ -22,6 +17,11 @@
   gap: 8px;
   padding-bottom: 16px;
   padding-left: 8px;
+}
+
+.search-input {
+  margin-bottom: 16px;
+  width: 300px;
 }
 
 @media screen and (max-width: 768px) {

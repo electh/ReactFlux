@@ -1,17 +1,11 @@
 .entry-list {
-  contain: strict;
-  overscroll-behavior-y: contain;
   flex: 1;
-  overflow-x: hidden;
-  height: 100%;
-  padding: 10px 10px 0 10px;
+  contain: strict;
   background-color: var(--background);
-}
-
-@media screen and (max-width: 768px) {
-  .entry-list {
-    width: calc(100% - 20px);
-  }
+  padding: 10px 10px 0 10px;
+  height: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
 }
 
 .load-more-container {
@@ -19,7 +13,13 @@
   justify-content: center;
   align-items: center;
   margin: 10px auto;
-  background-color: var(--muted);
   border-radius: var(--radius);
+  background-color: var(--muted);
   color: var(--muted-foreground);
+}
+
+@media screen and (max-width: 768px) {
+  .entry-list {
+    width: calc(100% - 20px);
+  }
 }

@@ -1,9 +1,9 @@
-.card-style {
-  margin-bottom: 10px;
+.card-cover-style {
+  aspect-ratio: 16 / 9;
   width: 100%;
 }
 
-.card-cover-style {
-  aspect-ratio: 16 / 9;
+.card-style {
+  margin-bottom: 10px;
   width: 100%;
 }

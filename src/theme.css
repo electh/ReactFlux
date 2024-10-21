@@ -1,39 +1,95 @@
-body {
-  --border-radius-small: 8px !important;
-  --border-radius-medium: 8px !important;
+.arco-btn-primary:not(.arco-btn-disabled) {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
 }
 
-.arco-input-group-addbefore .arco-select .arco-select-view {
-  border-radius: var(--border-radius-small) !important;
+.arco-btn-primary:not(.arco-btn-disabled):not(.arco-btn-loading):hover {
+  background-color: var(--muted-foreground) !important;
 }
 
-.arco-card {
+.arco-btn-secondary:not(.arco-btn-disabled) {
+  background-color: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+}
+
+.arco-btn-secondary:not(.arco-btn-disabled):hover {
+  background-color: var(--input) !important;
+}
+
+.arco-btn-secondary:not(.arco-btn-disabled):not(.arco-btn-loading):hover {
+  background-color: var(--muted-foreground) !important;
+}
+
+.arco-card:not(.card-custom-selected-style) {
   background-color: var(--card) !important;
 }
 
 .arco-card-bordered {
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.02), 0 2px 10px 0 rgba(0, 0, 0, 0.06), 0;
-  overflow: hidden !important;
   border: none !important;
-  border-radius: var(--border-radius-small) !important;
-}
-
-body[arco-theme="dark"] .arco-card-bordered {
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.2);
   overflow: hidden !important;
-  border-radius: var(--border-radius-small) !important;
 }
 
-.arco-tooltip-content {
-  background-color: var(--popover) !important;
+.arco-collapse-item {
+  border-radius: var(--radius) !important;
+}
+
+.arco-divider-horizontal {
   border-color: var(--border) !important;
-  color: var(--popover-foreground) !important;
 }
 
-.arco-picker-container {
+.arco-dropdown-menu {
   background-color: var(--popover) !important;
+}
+
+.arco-input {
+  background-color: var(--muted) !important;
+}
+
+.arco-input-group-addbefore .arco-select .arco-select-view {
+  border-radius: var(--radius) !important;
+}
+
+.arco-input-group-addbefore,
+.arco-input-inner-wrapper {
+  background-color: var(--muted) !important;
+}
+
+.arco-layout-sider {
+  border: none !important;
+}
+
+.arco-menu-light {
+  background-color: var(--muted) !important;
+}
+
+.arco-menu-light .arco-menu-item {
+  background-color: var(--muted) !important;
+}
+
+.arco-menu-light .arco-menu-item.arco-menu-selected {
+  border-radius: var(--radius) !important;
+  background-color: var(--muted-foreground) !important;
+}
+
+.arco-menu-light .arco-menu-item:hover {
+  border-radius: var(--radius) !important;
+  background-color: var(--muted-foreground) !important;
+}
+
+.arco-modal,
+.arco-picker-container {
   border-color: var(--border) !important;
   border-radius: var(--radius) !important;
+  background-color: var(--popover) !important;
+}
+
+.arco-modal-footer {
+  border-color: var(--border) !important;
+}
+
+.arco-modal-header {
+  border-color: var(--border) !important;
 }
 
 .arco-picker-footer-extra-wrapper {
@@ -45,27 +101,14 @@ body[arco-theme="dark"] .arco-card-bordered {
 }
 
 .arco-picker-header-icon:hover {
-  background-color: var(--secondary) !important;
+  background-color: var(--input) !important;
 }
 
-.arco-btn-primary:not(.arco-btn-disabled) {
-  background-color: var(--primary) !important;
-  color: var(--primary-foreground) !important;
-}
-
-.arco-modal {
-  background-color: var(--popover) !important;
-  border: 0 solid var(--border) !important;
+.arco-popconfirm-content {
+  border: 1px solid var(--border) !important;
   border-radius: var(--radius) !important;
-}
-
-.arco-switch-checked .arco-switch-dot {
-  background-color: var(--primary-foreground) !important;
-}
-
-.arco-btn-secondary:not(.arco-btn-disabled) {
-  background-color: var(--secondary) !important;
-  color: var(--secondary-foreground) !important;
+  background-color: var(--popover) !important;
+  color: var(--popover-foreground) !important;
 }
 
 .arco-select-popup {
@@ -77,69 +120,58 @@ body[arco-theme="dark"] .arco-card-bordered {
 }
 
 .arco-select-popup .arco-select-option:hover {
-  background-color: var(--secondary) !important;
+  background-color: var(--input) !important;
   color: var(--secondary-foreground) !important;
 }
 
-.arco-popconfirm-content {
-  background-color: var(--popover) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: var(--radius) !important;
-  color: var(--popover-foreground) !important;
-}
-
-.arco-dropdown-menu {
-  background-color: var(--popover) !important;
-}
-
-.arco-drawer {
-  background-color: var(--color-neutral-2) !important;
-}
-
-.arco-layout-sider {
-  border: none !important;
-}
-
-.arco-layout-sider .arco-menu-light,
-.arco-layout-sider .arco-menu-light .arco-menu-item,
-.arco-layout-sider .arco-menu-light .arco-menu-group-title,
-.arco-layout-sider .arco-menu-light .arco-menu-pop-header,
-.arco-layout-sider .arco-menu-light .arco-menu-inline-header {
+.arco-select-view {
   background-color: var(--muted) !important;
 }
 
-.sidebar-drawer .arco-menu-light,
-.sidebar-drawer .arco-menu-light .arco-menu-item,
-.sidebar-drawer .arco-menu-light .arco-menu-group-title,
-.sidebar-drawer .arco-menu-light .arco-menu-pop-header,
-.sidebar-drawer .arco-menu-light .arco-menu-inline-header {
-  background-color: var(--color-neutral-2) !important;
+.arco-select-view:hover {
+  background-color: var(--muted-foreground) !important;
 }
 
-.arco-layout-sider .arco-menu-light .arco-menu-item.arco-menu-selected {
-  background-color: var(--color-neutral-3) !important;
+.arco-switch {
+  background-color: var(--muted) !important;
 }
 
-.sidebar-drawer .arco-menu-light .arco-menu-item.arco-menu-selected {
-  background-color: var(--color-neutral-3) !important;
+.arco-switch-checked .arco-switch-dot {
+  background-color: var(--primary-foreground) !important;
 }
 
-.arco-layout-sider .arco-menu-light .arco-menu-item:hover,
-.arco-layout-sider .arco-menu-light .arco-menu-group-title:hover,
-.arco-layout-sider .arco-menu-light .arco-menu-pop-header:hover,
-.arco-layout-sider .arco-menu-light .arco-menu-inline-header:hover {
-  background-color: var(--color-neutral-3) !important;
+.arco-table-td {
+  background-color: var(--popover) !important;
 }
 
-.sidebar-drawer .arco-menu-light .arco-menu-item:hover,
-.sidebar-drawer .arco-menu-light .arco-menu-group-title:hover,
-.sidebar-drawer .arco-menu-light .arco-menu-pop-header:hover,
-.sidebar-drawer .arco-menu-light .arco-menu-inline-header:hover {
-  background-color: var(--color-neutral-3) !important;
+.arco-table-td:hover {
+  background-color: var(--input) !important;
+}
+
+.arco-table-th {
+  background-color: var(--muted) !important;
+}
+
+.arco-table-th:hover {
+  background-color: var(--muted-foreground) !important;
+}
+
+.arco-tabs-header-nav::before {
+  background-color: var(--border) !important;
+}
+
+.arco-tooltip-content {
+  border-color: var(--border) !important;
+  background-color: var(--popover) !important;
+  color: var(--popover-foreground) !important;
+}
+
+body[arco-theme="dark"] .arco-card-bordered {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.2);
 }
 
 @media screen and (max-width: 992px) {
   .arco-layout-sider {
-    border-right: 1px solid var(--color-border-2) !important;
+    border-right: 1px solid var(--border) !important;
   }
 }

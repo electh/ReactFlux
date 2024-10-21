@@ -1,22 +1,24 @@
-html {
-  font-family:
-    -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", helvetica neue, ubuntu, roboto, noto, segoe ui, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 ::-webkit-input-placeholder,
 button,
 input,
 textarea {
-  font-family:
-    -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", helvetica neue, ubuntu, roboto, noto, segoe ui, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", helvetica neue, ubuntu, roboto,
+    noto, segoe ui, Arial, sans-serif;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", helvetica neue, ubuntu, roboto,
+    noto, segoe ui, Arial, sans-serif;
 }
 
 html,
 body,
 #root {
-  height: 100%;
   margin: 0;
+  height: 100%;
   overflow: hidden;
 }

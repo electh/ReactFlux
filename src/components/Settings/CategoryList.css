@@ -1,20 +1,20 @@
-.tag-style {
+.add-category-tag {
   cursor: pointer;
-  margin-bottom: 10px;
-  margin-right: 10px;
+  border: 1px dashed var(--border);
+  background-color: var(--background);
+  width: 32px;
 }
 
 .input-style {
   width: 84px;
 }
 
-.add-category-tag {
-  background-color: var(--color-fill-2);
-  border: 1px dashed var(--color-fill-3);
-  cursor: pointer;
-  width: 32px;
-}
-
 .modal-style {
   width: 400px;
+}
+
+.tag-style {
+  cursor: pointer;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }

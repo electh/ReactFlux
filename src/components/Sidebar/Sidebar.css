@@ -29,9 +29,9 @@
 .menu-header {
     display: flex;
     align-items: center;
-    height: 48px;
     margin-top: -4px;
     padding: 0 28px 0 2px;
+    height: 48px;
 }
 
 .menu-header .avatar {
@@ -40,8 +40,8 @@
 }
 
 .section-title {
-    font-style: italic;
     color: var(--color-text-3);
+    font-style: italic;
 }
 
 .custom-menu-item {
@@ -61,15 +61,15 @@
     align-items: center;
     margin-right: -12px;
     margin-left: -32px;
+    border-radius: var(--radius);
     padding: 8px 12px 8px 42px;
-    border-radius: 8px;
 }
 
 .feed-icon-sidebar {
+    vertical-align: -2px;
+    margin-right: 8px;
     width: 16px;
     height: 16px;
-    margin-right: 8px;
-    vertical-align: -2px;
 }
 
 .arco-collapse-item-header-title {
@@ -81,9 +81,9 @@
 }
 
 .arco-collapse-item-header {
+    background-color: transparent;
     padding-top: 0;
     padding-bottom: 0;
-    background-color: transparent;
 }
 
 .arco-collapse-item {
@@ -99,16 +99,16 @@
 }
 
 .arco-collapse-item-active > .arco-collapse-item-header {
+    border-color: var(--border);
     background-color: var(--muted);
-    border-color: var(--muted);
 }
 
 .category-title:hover {
-    background-color: var(--color-neutral-3);
+    background-color: var(--muted-foreground);
 }
 
 .submenu-active {
-    background-color: var(--color-neutral-3);
+    background-color: var(--muted-foreground);
     color: rgb(var(--primary-6)) !important;
 }
 
@@ -117,12 +117,11 @@
 }
 
 .sidebar {
-    grid-area: sidebar;
     position: fixed;
-    z-index: 999;
     top: 0;
+    grid-area: sidebar;
+    z-index: 999;
     height: 100%;
-    background-color: var(--muted);
 }
 
 @media screen and (max-width: 992px) {

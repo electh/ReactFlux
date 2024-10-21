@@ -1,22 +1,22 @@
 .background {
   background-image: url("./images/background.jpg");
-  background-size: cover;
   background-position: center;
+  background-size: cover;
   background-repeat: no-repeat;
   width: 50%;
   height: 100%;
 }
 
 .form-panel {
-  background-color: var(--color-bg-1);
-  width: 50%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  overflow-y: auto;
+  align-items: center;
   z-index: 2;
+  background-color: var(--background);
+  width: 50%;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .login-form {
@@ -26,4 +26,12 @@
 .page-layout {
   display: flex;
   height: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .form-panel {
+    position: absolute !important;
+    z-index: 2 !important;
+    width: 100% !important;
+  }
 }

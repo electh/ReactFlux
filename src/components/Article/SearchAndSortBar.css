@@ -7,18 +7,18 @@
 
 .search-and-sort-bar {
   display: flex;
-  align-items: center;
   position: sticky;
-  z-index: 2;
   top: 0;
-  padding: 8px 0;
-  background-color: var(--background);
+  align-items: center;
+  z-index: 2;
   border-bottom: 1px solid var(--border);
+  background-color: var(--background);
+  padding: 8px 0;
 }
 
 .search-and-sort-bar .button-group {
   display: flex;
-  gap: 8px;
   flex-shrink: 0;
+  gap: 8px;
   margin: 0 8px;
 }

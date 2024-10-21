@@ -1,92 +1,18 @@
-/* 文章列表卡片自定义样式 */
-.card-custom-style {
-  width: 100%;
-  cursor: pointer;
-  border-radius: 2px;
-}
-
-.card-custom-hover-style {
-  transition-property: box-shadow, background-color;
-}
-
-.card-custom-hover-style .arco-card-body {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 10px;
-}
-
-.card-custom-hover-style img {
-  transition: scale 0.15s ease-in-out; /* 添加过渡效果 */
-}
-
-.card-custom-hover-style:hover img {
-  /*opacity: 0.9; !* 设置透明度为 0.90 *!*/
-  scale: 1.05;
-}
-
-.card-custom-selected-style {
-  background-color: var(--color-neutral-3);
-}
-
-.cover-image {
-  overflow: hidden;
-  height: 160px;
-  margin: -10px -10px 0 -10px;
-  border-radius: 0;
-}
-
 .article-card {
+  position: relative;
+  margin-bottom: 10px;
   box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
     rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
-  scroll-snap-type: x mandatory;
-  user-select: none;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 10px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  overflow: hidden;
+  scroll-snap-type: x mandatory;
+  user-select: none;
 }
 
-.swipe-card {
-  display: flex;
-  position: relative;
-  z-index: 1;
-}
-
-.swipe-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: absolute;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgb(var(--primary-5));
-  border-radius: var(--border-radius-small);
-}
-
-.swipe-action {
-  flex: 0 0 54px;
-}
-
-.swipe-content {
-  flex: 1;
-}
-
-.swipe-action.left {
-  justify-content: flex-end;
-  background-color: rgb(var(--primary-5));
-}
-
-.swipe-action.right {
-  justify-content: flex-start;
-  background-color: rgb(var(--primary-5));
-}
-
-.swipe-action svg {
-  padding: 0 20px;
+.article-card-info {
+  color: var(--color-text-3);
+  font-size: 13px;
 }
 
 .article-card-mini-content {
@@ -103,46 +29,120 @@
 }
 
 .article-card-title {
-  font-weight: 500;
   color: var(--color-text-2);
+  font-weight: 500;
 }
 
 .article-card-title.arco-typography {
   word-break: normal;
 }
 
-.article-card-info {
-  font-size: 13px;
-  color: var(--color-text-3);
+.card-custom-hover-style {
+  transition-property: box-shadow, background-color;
+}
+
+.card-custom-hover-style .arco-card-body {
+  box-sizing: border-box;
+  padding: 10px;
+  width: 100%;
+}
+
+.card-custom-hover-style img {
+  transition: scale 0.15s ease-in-out; /* 添加过渡效果 */
+}
+
+.card-custom-hover-style:hover img {
+  /*opacity: 0.9; !* 设置透明度为 0.90 *!*/
+  scale: 1.05;
+}
+
+.card-custom-selected-style {
+  background-color: var(--muted);
+}
+
+/* 文章列表卡片自定义样式 */
+.card-custom-style {
+  cursor: pointer;
+  border-radius: var(--radius);
+  width: 100%;
+}
+
+.cover-image {
+  margin: -10px -10px 0 -10px;
+  border-radius: 0;
+  height: 160px;
+  overflow: hidden;
 }
 
 .feed-icon {
   position: absolute;
-  bottom: 12px;
   right: 2px;
+  bottom: 12px;
+  margin-right: 8px;
   width: 16px;
   height: 16px;
-  margin-right: 8px;
 }
 
 .feed-icon-mini {
   position: absolute;
   top: 10px;
   left: 10px;
+  margin-right: 4px;
   width: 16px;
   height: 16px;
-  margin-right: 4px;
 }
 
 .icon-starred {
   margin-left: 8px;
+  color: var(--foreground);
   font-size: 13px;
-  color: var(--color-text-3);
+}
+
+.swipe-action {
+  flex: 0 0 54px;
+}
+
+.swipe-action svg {
+  padding: 0 20px;
+}
+
+.swipe-action.left {
+  justify-content: flex-end;
+  background-color: var(--secondary);
+}
+
+.swipe-action.right {
+  justify-content: flex-start;
+  background-color: var(--secondary);
+}
+
+.swipe-actions {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 0;
+  border-radius: var(--radius);
+  background-color: var(--secondary);
+  width: 100%;
+  height: 100%;
+}
+
+.swipe-card {
+  display: flex;
+  position: relative;
+  z-index: 1;
+}
+
+.swipe-content {
+  flex: 1;
 }
 
 .thumbnail {
-  overflow: hidden;
+  border-radius: var(--radius);
   width: 80px;
   height: 80px;
-  border-radius: 4px;
+  overflow: hidden;
 }

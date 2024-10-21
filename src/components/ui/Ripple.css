@@ -7,16 +7,16 @@
 }
 
 .ripple-span {
-  transform: scale(0);
-  border-radius: 100%;
   position: absolute;
+  transform: scale(0);
   opacity: 0.2;
   animation-name: ripple;
+  border-radius: 100%;
 }
 
 @keyframes ripple {
   to {
-    opacity: 0;
     transform: scale(2);
+    opacity: 0;
   }
 }

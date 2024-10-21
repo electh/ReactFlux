@@ -79,8 +79,8 @@ const EditableTagGroup = ({ keys, record }) => {
           <Tag
             icon={<IconPlus />}
             style={{
-              backgroundColor: "var(--color-fill-2)",
-              border: "1px dashed var(--color-fill-3)",
+              backgroundColor: "var(--background)",
+              border: "1px dashed var(--border)",
               cursor: "pointer",
               width: "32px",
             }}

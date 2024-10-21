@@ -1,19 +1,19 @@
 .code-block-container {
-    position: relative;
+  position: relative;
+}
+
+.copy-button {
+  right: 3px;
+}
+
+.language-selector {
+  right: 38px;
+  width: 100px;
 }
 
 .language-selector,
 .copy-button {
-    position: absolute;
-    top: 3px;
-    z-index: 1;
-}
-
-.language-selector {
-    right: 38px;
-    width: 100px;
-}
-
-.copy-button {
-    right: 3px;
+  position: absolute;
+  top: 3px;
+  z-index: 1;
 }

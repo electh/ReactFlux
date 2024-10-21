@@ -3,8 +3,8 @@
   flex-direction: row;
   justify-content: space-between;
   z-index: 2;
-  padding: 8px 10px;
   border-top: 1px solid var(--border);
+  padding: 8px 10px;
 }
 
 @media screen and (max-width: 768px) {

@@ -1,56 +1,37 @@
-.article-header {
-    margin: 0 auto;
-    padding-top: 20px;
-    text-align: center;
-}
-
-.article-title,
-.article-meta,
-.article-date {
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* 文章标题链接样式 */
-.article-title a {
-    font-weight: 500;
-    color: var(--color-text-1); /* 设置链接文字颜色 */
-    text-decoration: none;
-}
-
-.article-title.arco-typography {
-    overflow-wrap: break-word;
-    word-break: normal;
-}
-
-.article-meta .arco-typography {
-    font-size: 0.75rem;
-    line-height: 2 !important;
-    color: var(--color-text-3);
-}
-
-.article-date {
-    font-size: 0.75rem;
-    color: var(--color-text-3);
-}
-
-.scroll-container {
-    contain: strict;
-    overscroll-behavior-y: contain;
-    overflow-y: auto;
-    width: 100%;
-    height: 100%;
+.article-body {
+  margin: 0 auto;
+  padding-bottom: 40px;
+  line-height: 1.8;
+  overflow-wrap: break-word;
 }
 
 .article-body * {
-    max-width: 100%;
+  max-width: 100%;
 }
 
-.article-body {
-    overflow-wrap: break-word;
-    margin: 0 auto;
-    padding-bottom: 40px;
-    line-height: 1.8;
+.article-body a:hover {
+  border-bottom: 1px dotted rgb(var(--primary-5)); /* 设置链接文字颜色 */
+  color: rgb(var(--primary-5));
+  text-decoration: none;
+}
+
+.article-body audio,
+.article-body iframe,
+.article-body img,
+.article-body video {
+  display: block;
+  margin: 20px auto;
+}
+
+.article-body figcaption {
+  margin: 0 auto;
+  color: var(--color-text-3);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.article-content figure {
+  margin: 16px 0;
 }
 
 .article-content h1,
@@ -61,82 +42,101 @@ h5,
 h6,
 b,
 strong {
-    font-weight: var(--font-weight-500);
-    color: var(--color-text-1);
+  color: var(--color-text-1);
+  font-weight: var(--font-weight-500);
 }
 
 .article-content li,
 p {
-    margin-block-end: 1em;
-    margin-block-start: 1em;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
 }
 
-/* 文章内容图片样式 */
-.article-body img {
-    height: auto;
-    border-radius: 4px;
+.article-content pre {
+  border-radius: var(--radius);
+  line-height: 1.2;
 }
 
-/*video 相关样式 */
-.article-body video {
-    border-radius: 4px;
+.article-date {
+  color: var(--color-text-3);
+  font-size: 0.75rem;
 }
 
-.article-body audio,
-.article-body iframe,
-.article-body img,
-.article-body video {
-    display: block;
-    margin: 20px auto;
+.article-header {
+  margin: 0 auto;
+  padding-top: 20px;
+  text-align: center;
 }
 
-/* 文章内容文本样式 */
-.article-content {
-    flex: 1;
-    min-height: 0;
-    color: var(--color-text-2);
+.article-meta .arco-typography {
+  color: var(--color-text-3);
+  font-size: 0.75rem;
+  line-height: 2 !important;
+}
+
+.article-title,
+.article-meta,
+.article-date {
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.article-title.arco-typography {
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.scroll-container {
+  contain: strict;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+/* 文章标题链接样式 */
+.article-title a {
+  color: var(--color-text-1); /* 设置链接文字颜色 */
+  font-weight: 500;
+  text-decoration: none;
 }
 
 /* 文章内容链接样式 */
 .article-body a {
-    transition: color 0.1s linear;
-    border-bottom: 1px dotted rgb(var(--primary-6)); /* 设置链接文字颜色 */
-    color: rgb(var(--primary-6));
-    text-decoration: none;
+  transition: color 0.1s linear;
+  border-bottom: 1px dotted rgb(var(--primary-6)); /* 设置链接文字颜色 */
+  color: rgb(var(--primary-6));
+  text-decoration: none;
 }
 
-.article-body a:hover {
-    border-bottom: 1px dotted rgb(var(--primary-5)); /* 设置链接文字颜色 */
-    color: rgb(var(--primary-5));
-    text-decoration: none;
+/* 文章内容图片样式 */
+.article-body img {
+  border-radius: var(--radius);
+  height: auto;
+}
+
+/* 文章内容文本样式 */
+.article-content {
+  flex: 1;
+  min-height: 0;
+  color: var(--color-text-2);
 }
 
 /* 文章内容引用样式 */
 .article-body blockquote {
-    margin: 1em 0;
-    padding: 0 20px;
-    border-left: 1px solid var(--color-border-3);
-    color: var(--color-text-3);
-}
-
-.article-body figcaption {
-    margin: 0 auto;
-    font-size: 0.75rem;
-    color: var(--color-text-3);
-    text-align: center;
+  margin: 1em 0;
+  border-left: 1px solid var(--border);
+  padding: 0 20px;
+  color: var(--color-text-3);
 }
 
 /*code 相关样式 - 表格 */
 .article-content td {
-    font-size: 0.8em;
-    color: var(--color-text-3);
+  color: var(--color-text-3);
+  font-size: 0.8em;
 }
 
-.article-content figure {
-    margin: 16px 0;
-}
-
-.article-content pre {
-    border-radius: 4px;
-    line-height: 1.2;
+/*video 相关样式 */
+.article-body video {
+  border-radius: var(--radius);
 }

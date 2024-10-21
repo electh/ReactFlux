@@ -1,7 +1,9 @@
-.entry-col {
+.article-container {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--border);
+  box-sizing: border-box;
+  background-color: var(--background);
+  width: 100%;
 }
 
 .content-empty {
@@ -15,12 +17,10 @@
   color: var(--foreground);
 }
 
-.article-container {
+.entry-col {
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
-  background-color: var(--background);
-  width: 100%;
+  border-right: 1px solid var(--border);
 }
 
 @media screen and (max-width: 768px) {
@@ -29,11 +29,9 @@
     z-index: 3 !important;
     height: calc(100% - 48px) !important;
   }
-
   .content-empty {
     display: none;
   }
-
   .entry-col {
     border: none;
     width: 100%;
