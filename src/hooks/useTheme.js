@@ -4,7 +4,7 @@ import { settingsState } from "../store/settingsState";
 import { applyColor } from "../utils/colors";
 
 const useTheme = () => {
-  const { theme, themeColor, themeMode } = useStore(settingsState);
+  const { themeColor, themeMode } = useStore(settingsState);
   const [isSystemDark, setIsSystemDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
@@ -36,20 +36,16 @@ const useTheme = () => {
   }, [isSystemDark, themeMode, themeColor]);
 
   useEffect(() => {
-    document.body.className = theme;
+    document.body.className = themeColor;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = `/styles/${theme}-theme.css`;
-    if (theme !== "default") {
-      document.head.appendChild(link);
-    }
+    link.href = `/styles/${themeColor.toLowerCase()}-theme.css`;
+    document.head.appendChild(link);
 
     return () => {
-      if (theme !== "default") {
-        document.head.removeChild(link);
-      }
+      document.head.removeChild(link);
     };
-  }, [theme]);
+  }, [themeColor]);
 };
 
 export default useTheme;
