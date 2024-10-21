@@ -8,25 +8,25 @@
 
 .spinner {
   --gap: 5px;
-  --clr: #165dff;
+  --clr: #165dff; 
   --height: 23px;
-  width: 100px;
-  height: 100px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--gap);
   position: absolute;
   top: 50%;
   left: 50%;
+  justify-content: center;
+  align-items: center;
+  gap: var(--gap);
   transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
 }
 
 .spinner span {
+  animation: grow 1s ease-in-out infinite;
   background: var(--clr);
   width: 6px;
   height: var(--height);
-  animation: grow 1s ease-in-out infinite;
 }
 
 .spinner span:nth-child(2) {
