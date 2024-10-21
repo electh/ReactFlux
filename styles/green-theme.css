@@ -1,0 +1,44 @@
+body {
+  --background: rgb(255 255 255);
+  --foreground: rgb(9 9 11);
+  --card: rgb(255 255 255);
+  --card-foreground: rgb(9 9 11);
+  --popover: rgb(255 255 255);
+  --popover-foreground: rgb(9 9 11);
+  --primary: rgb(22 163 74);
+  --primary-foreground: rgb(255 241 242);
+  --secondary: rgb(244 244 245);
+  --secondary-foreground: rgb(24 24 27);
+  --muted: rgb(244 244 245);
+  --muted-foreground: rgb(113 113 122);
+  --accent: rgb(244 244 245);
+  --accent-foreground: rgb(24 24 27);
+  --destructive: rgb(239 68 68);
+  --destructive-foreground: rgb(250 250 250);
+  --border: rgb(228 228 231);
+  --input: rgb(228 228 231);
+  --ring: rgb(22 163 74);
+  --radius: 0.5rem;
+}
+
+body[arco-theme="dark"] {
+  --background: rgb(12 10 9);
+  --foreground: rgb(242 242 242);
+  --card: rgb(28 25 23);
+  --card-foreground: rgb(242 242 242);
+  --popover: rgb(23 23 23);
+  --popover-foreground: rgb(242 242 242);
+  --primary: rgb(34 197 94);
+  --primary-foreground: rgb(5 46 22);
+  --secondary: rgb(39 39 42);
+  --secondary-foreground: rgb(250 250 250);
+  --muted: rgb(38 38 38);
+  --muted-foreground: rgb(161 161 170);
+  --accent: rgb(41 37 36);
+  --accent-foreground: rgb(250 250 250);
+  --destructive: rgb(127 29 29);
+  --destructive-foreground: rgb(254 242 242);
+  --border: rgb(39 39 42);
+  --input: rgb(39 39 42);
+  --ring: rgb(21 128 61);
+}

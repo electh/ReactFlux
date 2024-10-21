@@ -5,8 +5,8 @@ body {
   --card-foreground: rgb(12 10 9);
   --popover: rgb(255 255 255);
   --popover-foreground: rgb(12 10 9);
-  --primary: rgb(28 25 23);
-  --primary-foreground: rgb(250 250 249);
+  --primary: rgb(250 204 21);
+  --primary-foreground: rgb(66 32 6);
   --secondary: rgb(245 245 244);
   --secondary-foreground: rgb(28 25 23);
   --muted: rgb(245 245 244);
@@ -28,8 +28,8 @@ body[arco-theme="dark"] {
   --card-foreground: rgb(250 250 249);
   --popover: rgb(12 10 9);
   --popover-foreground: rgb(250 250 249);
-  --primary: rgb(250 250 249);
-  --primary-foreground: rgb(28 25 23);
+  --primary: rgb(250 204 21);
+  --primary-foreground: rgb(66 32 6);
   --secondary: rgb(41 37 36);
   --secondary-foreground: rgb(250 250 249);
   --muted: rgb(41 37 36);
@@ -40,5 +40,5 @@ body[arco-theme="dark"] {
   --destructive-foreground: rgb(250 250 249);
   --border: rgb(41 37 36);
   --input: rgb(41 37 36);
-  --ring: rgb(214 211 209);
+  --ring: rgb(161 98 7);
 }
