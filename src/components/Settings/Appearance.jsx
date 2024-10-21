@@ -13,6 +13,7 @@ import { applyColor, colors, getColorValue } from "../../utils/colors";
 import { useStore } from "@nanostores/react";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import SettingItem from "./SettingItem";
+import ThemeSwitcher from "./ThemeSwitcher";
 import "./Appearance.css";
 
 const Appearance = () => {
@@ -94,6 +95,15 @@ const Appearance = () => {
             />
           ))}
         </div>
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("appearance.theme_switcher_label")}
+        description={polyglot.t("appearance.theme_switcher_description")}
+      >
+        <ThemeSwitcher />
       </SettingItem>
 
       <Divider />

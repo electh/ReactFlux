@@ -11,7 +11,6 @@ import "simplebar-react/dist/simplebar.min.css";
 import "./index.css";
 import router from "./routes";
 import "./theme.css";
-import "./reeder.css";
 import { getPreferredLanguage } from "./utils/locales";
 
 const localMap = {
