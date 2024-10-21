@@ -1,18 +1,18 @@
 /* 文章列表卡片自定义样式 */
 .card-custom-style {
-  cursor: pointer;
   width: 100%;
+  cursor: pointer;
   border-radius: 2px;
 }
 
 .card-custom-hover-style {
-  transition-property: transform, box-shadow, background-color;
+  transition-property: box-shadow, background-color;
 }
 
 .card-custom-hover-style .arco-card-body {
-  padding: 10px;
-  width: 100%;
   box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
 }
 
 .card-custom-hover-style img {
@@ -29,18 +29,22 @@
 }
 
 .cover-image {
-  border-radius: 0;
-  height: 160px;
   overflow: hidden;
+  height: 160px;
   margin: -10px -10px 0 -10px;
+  border-radius: 0;
 }
 
 .article-card {
-  margin-bottom: 10px;
+  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
   scroll-snap-type: x mandatory;
   user-select: none;
-  overflow-x: hidden;
   position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
 .swipe-card {
@@ -50,17 +54,17 @@
 }
 
 .swipe-actions {
-  align-items: center;
-  border-radius: var(--border-radius-small);
-  background-color: rgb(var(--primary-5));
   display: flex;
-  height: 100%;
   justify-content: space-between;
-  left: 0;
+  align-items: center;
   position: absolute;
-  top: 0;
-  width: 100%;
   z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(var(--primary-5));
+  border-radius: var(--border-radius-small);
 }
 
 .swipe-action {
@@ -72,13 +76,13 @@
 }
 
 .swipe-action.left {
-  background-color: rgb(var(--primary-5));
   justify-content: flex-end;
+  background-color: rgb(var(--primary-5));
 }
 
 .swipe-action.right {
-  background-color: rgb(var(--primary-5));
   justify-content: flex-start;
+  background-color: rgb(var(--primary-5));
 }
 
 .swipe-action svg {
@@ -99,8 +103,8 @@
 }
 
 .article-card-title {
-  color: var(--color-text-2);
   font-weight: 500;
+  color: var(--color-text-2);
 }
 
 .article-card-title.arco-typography {
@@ -108,37 +112,37 @@
 }
 
 .article-card-info {
-  color: var(--color-text-3);
   font-size: 13px;
+  color: var(--color-text-3);
 }
 
 .feed-icon {
-  height: 16px;
-  margin-right: 8px;
   position: absolute;
   bottom: 12px;
   right: 2px;
   width: 16px;
+  height: 16px;
+  margin-right: 8px;
 }
 
 .feed-icon-mini {
-  margin-right: 4px;
   position: absolute;
-  left: 10px;
   top: 10px;
-  height: 16px;
+  left: 10px;
   width: 16px;
+  height: 16px;
+  margin-right: 4px;
 }
 
 .icon-starred {
-  color: var(--color-text-3);
-  font-size: 13px;
   margin-left: 8px;
+  font-size: 13px;
+  color: var(--color-text-3);
 }
 
 .thumbnail {
-  border-radius: 4px;
-  height: 80px;
   overflow: hidden;
   width: 80px;
+  height: 80px;
+  border-radius: 4px;
 }

@@ -201,7 +201,6 @@
     "mark_read_on_scroll_description": "Marcar automáticamente los artículos como leídos cuando se desplazan fuera del área visible de la pantalla"
   },
   "appearance": {
-    "default_theme": "Predeterminado",
     "theme_switcher_label": "Tema",
     "theme_switcher_description": "Escoger su tema",
     "theme_color_label": "Color del tema",

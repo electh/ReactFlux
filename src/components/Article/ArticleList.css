@@ -1,19 +1,25 @@
 .entry-list {
-  background-color: var(--color-fill-1);
   contain: strict;
-  flex: 1;
-  height: 100%;
-  overflow-x: hidden;
   overscroll-behavior-y: contain;
+  flex: 1;
+  overflow-x: hidden;
+  height: 100%;
   padding: 10px 10px 0 10px;
+  background-color: var(--background);
+}
+
+@media screen and (max-width: 768px) {
+  .entry-list {
+    width: calc(100% - 20px);
+  }
 }
 
 .load-more-container {
-  align-items: center;
-  background-color: var(--color-bg-2);
-  border-radius: var(--border-radius-small);
-  color: var(--color-text-2);
   display: flex;
   justify-content: center;
+  align-items: center;
   margin: 10px auto;
+  background-color: var(--muted);
+  border-radius: var(--radius);
+  color: var(--muted-foreground);
 }

@@ -8,7 +8,7 @@ import {
 } from "@arco-design/web-react";
 
 import { polyglotState } from "../../hooks/useLanguage";
-import { applyColor, colors, getColorValue } from "../../utils/colors";
+import { applyColor, colors, getDisplayColorValue } from "../../utils/colors";
 
 import { useStore } from "@nanostores/react";
 import { settingsState, updateSettings } from "../../store/settingsState";
@@ -73,12 +73,12 @@ const Appearance = () => {
                 height: "18px",
                 borderRadius: "50%",
                 margin: "2px",
-                backgroundColor: getColorValue(colorName),
+                backgroundColor: getDisplayColorValue(colorName),
                 cursor: "pointer",
                 border: "3px solid var(--color-bg-3)",
                 outline:
                   colorName === themeColor
-                    ? `1px solid ${getColorValue(colorName)}`
+                    ? `1px solid ${getDisplayColorValue(colorName)}`
                     : "none",
               }}
               onClick={() => handleConfigChange({ themeColor: colorName })}
