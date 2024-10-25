@@ -10,7 +10,6 @@
 .settings-modal {
   top: 5%;
   width: 720px;
-  max-height: 85%;
   overflow-y: auto;
 }
 
