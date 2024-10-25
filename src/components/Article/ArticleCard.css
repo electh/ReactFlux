@@ -1,10 +1,11 @@
+.article-card,
+.arco-card-bordered {
+  border: none;
+}
+
 .article-card {
   position: relative;
-  margin-bottom: 10px;
-  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
-    rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--border-radius-medium);
   overflow: hidden;
   scroll-snap-type: x mandatory;
   user-select: none;
@@ -18,6 +19,7 @@
 .article-card-mini-content {
   display: flex;
   padding-left: 0;
+  gap: 10px;
 }
 
 .article-card-mini-content-padding {
@@ -26,6 +28,7 @@
 
 .article-card-mini-content-text {
   margin-top: -2px;
+  flex: 1;
 }
 
 .article-card-title {
@@ -37,39 +40,58 @@
   word-break: normal;
 }
 
-.card-custom-hover-style {
-  transition-property: box-shadow, background-color;
+.card-custom-selected-style {
+  background-color: var(--color-bg-2) !important;
+  box-shadow: var(--shadow) !important;
 }
 
-.card-custom-hover-style .arco-card-body {
+/* 文章列表卡片自定义样式 */
+.arco-card {
+  background-color: transparent;
+}
+
+.card-custom-style {
+  cursor: pointer;
+  border-radius: var(--border-radius-medium);
+  transition-property: box-shadow, background-color;
+  transition-duration: 0.3s;
+  width: 100%;
+}
+
+.card-custom-style:hover {
+  background-color: var(--color-bg-2);
+}
+
+.card-custom-style .arco-card-body {
   box-sizing: border-box;
   padding: 10px;
   width: 100%;
 }
 
-.card-custom-hover-style img {
+.card-custom-style img {
   transition: scale 0.15s ease-in-out; /* 添加过渡效果 */
 }
 
-.card-custom-hover-style:hover img {
-  /*opacity: 0.9; !* 设置透明度为 0.90 *!*/
+.card-custom-style:hover img {
   scale: 1.05;
 }
 
-.card-custom-selected-style {
-  background-color: var(--muted);
+.article-card-image-container {
+  box-shadow: var(--shadow);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
 }
 
-/* 文章列表卡片自定义样式 */
-.card-custom-style {
-  cursor: pointer;
-  border-radius: var(--radius);
-  width: 100%;
+.article-card-image-container-mini {
+  box-shadow: var(--shadow);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  height: 80px;
+  width: 80px;
 }
 
 .cover-image {
-  margin: -10px -10px 0 -10px;
-  border-radius: 0;
+  margin: 0;
   height: 160px;
   overflow: hidden;
 }
@@ -94,54 +116,12 @@
 
 .icon-starred {
   margin-left: 8px;
-  color: var(--foreground);
+  color: var(--color-text-3);
   font-size: 13px;
 }
 
-.swipe-action {
-  flex: 0 0 54px;
-}
-
-.swipe-action svg {
-  padding: 0 20px;
-}
-
-.swipe-action.left {
-  justify-content: flex-end;
-  background-color: var(--secondary);
-}
-
-.swipe-action.right {
-  justify-content: flex-start;
-  background-color: var(--secondary);
-}
-
-.swipe-actions {
-  display: flex;
-  position: absolute;
-  top: 0;
-  left: 0;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 0;
-  border-radius: var(--radius);
-  background-color: var(--secondary);
-  width: 100%;
-  height: 100%;
-}
-
-.swipe-card {
-  display: flex;
-  position: relative;
-  z-index: 1;
-}
-
-.swipe-content {
-  flex: 1;
-}
-
 .thumbnail {
-  border-radius: var(--radius);
+  border-radius: var(--border-radius-medium);
   width: 80px;
   height: 80px;
   overflow: hidden;

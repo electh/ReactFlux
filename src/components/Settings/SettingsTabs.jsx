@@ -16,6 +16,7 @@ import FeedList from "./FeedList";
 import General from "./General";
 import Hotkeys from "./Hotkeys";
 import "./SettingsTabs.css";
+import SimpleBar from "simplebar-react";
 
 const CustomTabTitle = ({ icon, title }) => (
   <div
@@ -35,71 +36,80 @@ const SettingsTabs = ({ activeTab, onTabChange }) => {
   const { isBelowMedium } = useScreenWidth();
 
   return (
-    <Tabs
-      activeTab={activeTab}
-      animation
-      className="custom-tabs"
-      onChange={onTabChange}
-      tabPosition="top"
+    <SimpleBar
+      style={{
+        maxHeight: "80vh",
+        overflow: "auto",
+        marginRight: "-20px",
+        paddingRight: "20px",
+      }}
     >
-      <Tabs.TabPane
-        key="1"
-        title={
-          <CustomTabTitle
-            icon={<IconFile style={{ fontSize: "20px" }} />}
-            title={polyglot.t("settings.feeds")}
-          />
-        }
+      <Tabs
+        activeTab={activeTab}
+        animation
+        className="custom-tabs"
+        onChange={onTabChange}
+        tabPosition="top"
       >
-        <FeedList />
-      </Tabs.TabPane>
-      <Tabs.TabPane
-        key="2"
-        title={
-          <CustomTabTitle
-            icon={<IconFolder style={{ fontSize: "20px" }} />}
-            title={polyglot.t("settings.categories")}
-          />
-        }
-      >
-        <CategoryList />
-      </Tabs.TabPane>
-      <Tabs.TabPane
-        key="3"
-        title={
-          <CustomTabTitle
-            icon={<IconStorage style={{ fontSize: "20px" }} />}
-            title={polyglot.t("settings.general")}
-          />
-        }
-      >
-        <General />
-      </Tabs.TabPane>
-      <Tabs.TabPane
-        key="4"
-        title={
-          <CustomTabTitle
-            icon={<IconSkin style={{ fontSize: "20px" }} />}
-            title={polyglot.t("settings.appearance")}
-          />
-        }
-      >
-        <Appearance />
-      </Tabs.TabPane>
-      {!isBelowMedium && (
         <Tabs.TabPane
-          key="5"
+          key="1"
           title={
             <CustomTabTitle
-              icon={<IconCommand style={{ fontSize: "20px" }} />}
-              title={polyglot.t("settings.hotkeys")}
+              icon={<IconFile style={{ fontSize: "20px" }} />}
+              title={polyglot.t("settings.feeds")}
             />
           }
         >
-          <Hotkeys />
+          <FeedList />
         </Tabs.TabPane>
-      )}
-    </Tabs>
+        <Tabs.TabPane
+          key="2"
+          title={
+            <CustomTabTitle
+              icon={<IconFolder style={{ fontSize: "20px" }} />}
+              title={polyglot.t("settings.categories")}
+            />
+          }
+        >
+          <CategoryList />
+        </Tabs.TabPane>
+        <Tabs.TabPane
+          key="3"
+          title={
+            <CustomTabTitle
+              icon={<IconStorage style={{ fontSize: "20px" }} />}
+              title={polyglot.t("settings.general")}
+            />
+          }
+        >
+          <General />
+        </Tabs.TabPane>
+        <Tabs.TabPane
+          key="4"
+          title={
+            <CustomTabTitle
+              icon={<IconSkin style={{ fontSize: "20px" }} />}
+              title={polyglot.t("settings.appearance")}
+            />
+          }
+        >
+          <Appearance />
+        </Tabs.TabPane>
+        {!isBelowMedium && (
+          <Tabs.TabPane
+            key="5"
+            title={
+              <CustomTabTitle
+                icon={<IconCommand style={{ fontSize: "20px" }} />}
+                title={polyglot.t("settings.hotkeys")}
+              />
+            }
+          >
+            <Hotkeys />
+          </Tabs.TabPane>
+        )}
+      </Tabs>
+    </SimpleBar>
   );
 };
 

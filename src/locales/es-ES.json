@@ -97,6 +97,7 @@
     "add_feed_modal_crawler_label": "Obtener contenido original"
   },
   "header": {
+    "theme": "Apariencia",
     "theme_option_light": "Claro",
     "theme_option_dark": "Oscuro",
     "theme_option_system": "Sistema",
@@ -195,8 +196,6 @@
     "remove_duplicates_option_url": "URL",
     "show_unread_feeds_only_label": "Mostrar sólo los feeds sin leer",
     "show_unread_feeds_only_description": "Mostrar sólo los feeds sin leer en la lista de feeds",
-    "swipe_card_enabled_label": "Swipe article card",
-    "swipe_card_enabled_description": "Habilitar swipe article card para actualizar el estado de lectura o de estrella",
     "mark_read_on_scroll_label": "Marcar los artículos como leídos al desplazarlos fuera de la pantalla",
     "mark_read_on_scroll_description": "Marcar automáticamente los artículos como leídos cuando se desplazan fuera del área visible de la pantalla"
   },

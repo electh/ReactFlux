@@ -74,7 +74,7 @@ const Appearance = () => {
                 margin: "2px",
                 backgroundColor: getDisplayColorValue(colorName),
                 cursor: "pointer",
-                border: "3px solid var(--border)",
+                border: "3px solid var(--color-bg-3)",
                 outline:
                   colorName === themeColor
                     ? `1px solid ${getDisplayColorValue(colorName)}`

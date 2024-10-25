@@ -1,0 +1,15 @@
+.theme-menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icon-right {
+  margin-right: 8px;
+  font-size: 16px;
+  transform: translateY(1px);
+}
+
+.arco-dropdown-menu {
+  max-height: 100%;
+}

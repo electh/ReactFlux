@@ -32,8 +32,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, filterDate, isArticleLoading } =
     useStore(contentState);
   const { isAppDataReady } = useStore(dataState);
-  const { orderBy, orderDirection, showAllFeeds, showStatus } =
-    useStore(settingsState);
+  const {
+    orderBy,
+    orderDirection,
+    showAllFeeds: showHiddenFeeds,
+    showStatus,
+  } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
   const duplicateHotkeys = useStore(duplicateHotkeysState);
   const hiddenFeedIds = useStore(hiddenFeedIdsState);
@@ -154,7 +158,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       return;
     }
     refreshArticleList(getEntries);
-  }, [showAllFeeds]);
+  }, [showHiddenFeeds]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -183,12 +187,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         />
       </div>
       {activeContent ? (
-        <div className="article-container" {...handlers}>
-          {!isArticleLoading && <ArticleDetail ref={entryDetailRef} />}
+        <div className="article-container content-wrapper" {...handlers}>
           <ActionButtons />
+          {!isArticleLoading && <ArticleDetail ref={entryDetailRef} />}
         </div>
       ) : (
-        <div className="content-empty">
+        <div className="content-empty content-wrapper">
           <IconEmpty style={{ fontSize: "64px" }} />
           <Typography.Title
             heading={6}

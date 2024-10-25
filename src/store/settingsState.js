@@ -19,7 +19,6 @@ const defaultValue = {
   showEstimatedReadingTime: false,
   showFeedIcon: true,
   showStatus: "unread",
-  swipeCardEnabled: true,
   themeColor: "Zine",
   themeMode: "light",
 };

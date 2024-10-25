@@ -31,6 +31,8 @@ import {
 import { settingsState } from "../../store/settingsState";
 import FeedIcon from "../ui/FeedIcon";
 import "./Sidebar.css";
+import AddFeed from "./AddFeed.jsx";
+import Profile from "./Profile.jsx";
 
 const MenuItem = Menu.Item;
 
@@ -264,12 +266,15 @@ const Sidebar = () => {
       <SimpleBar style={{ maxHeight: "100%" }}>
         <Menu hasCollapseButton={false} selectedKeys={selectedKeys}>
           <div className="menu-header">
-            <Avatar className="avatar" size={32}>
-              <IconBook style={{ color: "var(--color-bg-1)" }} />
-            </Avatar>
-            <Typography.Title heading={6} style={{ margin: 0 }}>
-              ReactFlux
-            </Typography.Title>
+            <span style={{ display: "flex", alignItems: "center" }}>
+              <Avatar className="avatar" size={32}>
+                <IconBook style={{ color: "var(--color-bg-1)" }} />
+              </Avatar>
+              <Typography.Title heading={6} style={{ margin: 0 }}>
+                ReactFlux
+              </Typography.Title>
+            </span>
+            <Profile />
           </div>
           <Typography.Title
             className="section-title"
@@ -284,13 +289,22 @@ const Sidebar = () => {
             text={{ rows: 3 }}
           />
           {isAppDataReady && <SidebarMenuItems />}
-          <Typography.Title
-            className="section-title"
-            heading={6}
-            style={{ paddingLeft: "12px" }}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
           >
-            {polyglot.t("sidebar.feeds")}
-          </Typography.Title>
+            <Typography.Title
+              className="section-title"
+              heading={6}
+              style={{ paddingLeft: "12px" }}
+            >
+              {polyglot.t("sidebar.feeds")}
+            </Typography.Title>
+            <AddFeed />
+          </div>
           <Skeleton
             loading={!isAppDataReady}
             animation={true}

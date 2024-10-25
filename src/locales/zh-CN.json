@@ -97,6 +97,7 @@
     "add_feed_modal_crawler_label": "获取原文"
   },
   "header": {
+    "theme": "外观",
     "theme_option_light": "浅色",
     "theme_option_dark": "深色",
     "theme_option_system": "系统",
@@ -196,8 +197,6 @@
     "remove_duplicates_option_url": "URL",
     "show_unread_feeds_only_label": "仅显示未读订阅源",
     "show_unread_feeds_only_description": "仅在订阅源列表中显示未读订阅源",
-    "swipe_card_enabled_label": "滑动文章卡片",
-    "swipe_card_enabled_description": "启用滑动文章卡片以更新阅读状态或收藏状态",
     "mark_read_on_scroll_label": "滚动时标记文章为已读",
     "mark_read_on_scroll_description": "当文章滚动出屏幕时自动标记为已读"
   },

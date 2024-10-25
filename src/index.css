@@ -2,7 +2,8 @@
 button,
 input,
 textarea {
-  font-family: -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB,
+  font-family:
+    -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB,
     Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", helvetica neue, ubuntu, roboto,
     noto, segoe ui, Arial, sans-serif;
 }
@@ -10,7 +11,8 @@ textarea {
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB,
+  font-family:
+    -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB,
     Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", helvetica neue, ubuntu, roboto,
     noto, segoe ui, Arial, sans-serif;
 }
@@ -21,4 +23,5 @@ body,
   margin: 0;
   height: 100%;
   overflow: hidden;
+  background-color: var(--color-bg-1);
 }

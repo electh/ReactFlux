@@ -53,7 +53,7 @@ p {
 }
 
 .article-content pre {
-  border-radius: var(--radius);
+  border-radius: var(--border-radius-medium);
   line-height: 1.2;
 }
 
@@ -111,7 +111,7 @@ p {
 
 /* 文章内容图片样式 */
 .article-body img {
-  border-radius: var(--radius);
+  border-radius: var(--border-radius-medium);
   height: auto;
 }
 
@@ -125,7 +125,7 @@ p {
 /* 文章内容引用样式 */
 .article-body blockquote {
   margin: 1em 0;
-  border-left: 1px solid var(--border);
+  border-left: 1px solid var(--color-border-2);
   padding: 0 20px;
   color: var(--color-text-3);
 }
@@ -138,5 +138,5 @@ p {
 
 /*video 相关样式 */
 .article-body video {
-  border-radius: var(--radius);
+  border-radius: var(--border-radius-medium);
 }

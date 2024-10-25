@@ -1,177 +1,48 @@
-.arco-btn-primary:not(.arco-btn-disabled) {
-  background-color: var(--primary) !important;
-  color: var(--primary-foreground) !important;
+body {
+  --border-radius-small: 8px;
+  --border-radius-medium: 8px;
+  --shadow: 0 0 5px 0 rgba(0, 0, 0, 0.02), 0 2px 10px 0 rgba(0, 0, 0, 0.07), 0 0
+    1px 0 rgba(0, 0, 0, 0.3);
 }
 
-.arco-btn-primary:not(.arco-btn-disabled):not(.arco-btn-loading):hover {
-  background-color: var(--muted-foreground) !important;
+body[arco-theme="dark"] {
+  --shadow: 0 0 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.2),
+    inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15), 0 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-.arco-btn-secondary:not(.arco-btn-disabled) {
-  background-color: var(--secondary) !important;
-  color: var(--secondary-foreground) !important;
+body[color-name="Orange"] {
+  --gray-1: 245 245 244;
+  --gray-2: 231 229 228;
+  --gray-3: 214 211 209;
+  --gray-4: 168 162 158;
+  --gray-5: 120 113 108;
+  --gray-6: 87 83 78;
+  --gray-7: 68 64 60;
+  --gray-8: 41 37 36;
+  --gray-9: 28 25 23;
+  --gray-10: 12 10 9;
+  --color-bg-1: rgb(250 250 249);
+  --color-bg-2: rgb(250 250 249);
+  --color-bg-3: rgb(250 250 249);
+  --color-bg-4: rgb(250 250 249);
+  --color-bg-5: rgb(250 250 249);
 }
 
-.arco-btn-secondary:not(.arco-btn-disabled):hover {
-  background-color: var(--input) !important;
-}
+body[arco-theme="dark"][color-name="Orange"] {
+  --gray-1: 28 25 23;
+  --gray-2: 41 37 36;
+  --gray-3: 68 64 60;
+  --gray-4: 87 83 78;
+  --gray-5: 120 113 108;
+  --gray-6: 168 162 158;
+  --gray-7: 214 211 209;
+  --gray-8: 231 229 228;
+  --gray-9: 245 245 244;
+  --gray-10: 250 250 249;
 
-.arco-btn-secondary:not(.arco-btn-disabled):not(.arco-btn-loading):hover {
-  background-color: var(--muted-foreground) !important;
-}
-
-.arco-card:not(.card-custom-selected-style) {
-  background-color: var(--card) !important;
-}
-
-.arco-card-bordered {
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.02), 0 2px 10px 0 rgba(0, 0, 0, 0.06), 0;
-  border: none !important;
-  overflow: hidden !important;
-}
-
-.arco-collapse-item {
-  border-radius: var(--radius) !important;
-}
-
-.arco-divider-horizontal {
-  border-color: var(--border) !important;
-}
-
-.arco-dropdown-menu {
-  background-color: var(--popover) !important;
-}
-
-.arco-input {
-  background-color: var(--muted) !important;
-}
-
-.arco-input-group-addbefore .arco-select .arco-select-view {
-  border-radius: var(--radius) !important;
-}
-
-.arco-input-group-addbefore,
-.arco-input-inner-wrapper {
-  background-color: var(--muted) !important;
-}
-
-.arco-layout-sider {
-  border: none !important;
-}
-
-.arco-menu-light {
-  background-color: var(--muted) !important;
-}
-
-.arco-menu-light .arco-menu-item {
-  background-color: var(--muted) !important;
-}
-
-.arco-menu-light .arco-menu-item.arco-menu-selected {
-  border-radius: var(--radius) !important;
-  background-color: var(--muted-foreground) !important;
-}
-
-.arco-menu-light .arco-menu-item:hover {
-  border-radius: var(--radius) !important;
-  background-color: var(--muted-foreground) !important;
-}
-
-.arco-modal,
-.arco-picker-container {
-  border-color: var(--border) !important;
-  border-radius: var(--radius) !important;
-  background-color: var(--popover) !important;
-}
-
-.arco-modal-footer {
-  border-color: var(--border) !important;
-}
-
-.arco-modal-header {
-  border-color: var(--border) !important;
-}
-
-.arco-picker-footer-extra-wrapper {
-  border-top: 1px solid var(--border) !important;
-}
-
-.arco-picker-header-icon {
-  background-color: var(--background) !important;
-}
-
-.arco-picker-header-icon:hover {
-  background-color: var(--input) !important;
-}
-
-.arco-popconfirm-content {
-  border: 1px solid var(--border) !important;
-  border-radius: var(--radius) !important;
-  background-color: var(--popover) !important;
-  color: var(--popover-foreground) !important;
-}
-
-.arco-select-popup {
-  background-color: var(--popover) !important;
-}
-
-.arco-select-popup .arco-select-option {
-  background-color: var(--popover) !important;
-}
-
-.arco-select-popup .arco-select-option:hover {
-  background-color: var(--input) !important;
-  color: var(--secondary-foreground) !important;
-}
-
-.arco-select-view {
-  background-color: var(--muted) !important;
-}
-
-.arco-select-view:hover {
-  background-color: var(--muted-foreground) !important;
-}
-
-.arco-switch {
-  background-color: var(--muted) !important;
-}
-
-.arco-switch-checked .arco-switch-dot {
-  background-color: var(--primary-foreground) !important;
-}
-
-.arco-table-td {
-  background-color: var(--popover) !important;
-}
-
-.arco-table-td:hover {
-  background-color: var(--input) !important;
-}
-
-.arco-table-th {
-  background-color: var(--muted) !important;
-}
-
-.arco-table-th:hover {
-  background-color: var(--muted-foreground) !important;
-}
-
-.arco-tabs-header-nav::before {
-  background-color: var(--border) !important;
-}
-
-.arco-tooltip-content {
-  border-color: var(--border) !important;
-  background-color: var(--popover) !important;
-  color: var(--popover-foreground) !important;
-}
-
-body[arco-theme="dark"] .arco-card-bordered {
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.2);
-}
-
-@media screen and (max-width: 992px) {
-  .arco-layout-sider {
-    border-right: 1px solid var(--border) !important;
-  }
+  --color-bg-1: rgb(12 10 9);
+  --color-bg-2: rgb(28 25 23);
+  --color-bg-3: rgb(41 37 36);
+  --color-bg-4: rgb(68 64 60);
+  --color-bg-5: rgb(87 83 78);
 }

@@ -1,0 +1,14 @@
+.brand {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.sidebar-drawer .arco-drawer-content {
+  padding: 0;
+  background-color: var(--color-neutral-2);
+}
+
+.trigger {
+  display: none;
+}

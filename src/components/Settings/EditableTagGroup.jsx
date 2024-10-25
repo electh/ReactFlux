@@ -79,8 +79,8 @@ const EditableTagGroup = ({ keys, record }) => {
           <Tag
             icon={<IconPlus />}
             style={{
-              backgroundColor: "var(--background)",
-              border: "1px dashed var(--border)",
+              backgroundColor: "var(--color-bg-1)",
+              border: "1px dashed var(--color-border-2)",
               cursor: "pointer",
               width: "32px",
             }}
@@ -102,11 +102,11 @@ const EditableTagGroup = ({ keys, record }) => {
           style={{
             cursor: "pointer",
             backgroundColor: keys.some((key) => duplicateHotkeys.includes(key))
-              ? "var(--destructive)"
-              : "var(--secondary)",
+              ? "var(--color-danger-light-4)"
+              : "var(--color-fill-2)",
             color: keys.some((key) => duplicateHotkeys.includes(key))
-              ? "var(--destructive-foreground)"
-              : "var(--secondary-foreground)",
+              ? "white"
+              : "var(--color-text-1)",
           }}
         >
           {processKeyName(keys)}

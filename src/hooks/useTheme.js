@@ -34,18 +34,6 @@ const useTheme = () => {
       applyColorScheme(themeMode === "dark");
     }
   }, [isSystemDark, themeMode, themeColor]);
-
-  useEffect(() => {
-    document.body.className = themeColor;
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = `/styles/${themeColor.toLowerCase()}-theme.css`;
-    document.head.appendChild(link);
-
-    return () => {
-      document.head.removeChild(link);
-    };
-  }, [themeColor]);
 };
 
 export default useTheme;

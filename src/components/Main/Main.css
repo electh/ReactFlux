@@ -2,10 +2,8 @@
   display: flex;
   grid-area: main;
   transition: padding-left 0.1s linear, width 0.1s linear;
-  margin: 0 8px 8px 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background-color: var(--background);
+  margin: 0;
+  border: none;
   overflow: hidden;
 }
 

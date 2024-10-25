@@ -2,7 +2,6 @@ import { Layout } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
 import { useEffect } from "react";
 import "./App.css";
-import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import Sidebar from "./components/Sidebar/Sidebar";
 import useLanguage, { polyglotState } from "./hooks/useLanguage";
@@ -36,7 +35,6 @@ const App = () => {
             <Sidebar />
           </Layout.Sider>
         )}
-        <Header />
         <Main />
       </div>
     )

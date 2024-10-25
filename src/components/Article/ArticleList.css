@@ -1,7 +1,6 @@
 .entry-list {
   flex: 1;
   contain: strict;
-  background-color: var(--background);
   padding: 10px 10px 0 10px;
   height: 100%;
   overflow-x: hidden;
@@ -13,9 +12,9 @@
   justify-content: center;
   align-items: center;
   margin: 10px auto;
-  border-radius: var(--radius);
-  background-color: var(--muted);
-  color: var(--muted-foreground);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--color-bg-2);
+  color: var(--color-text-2);
 }
 
 @media screen and (max-width: 768px) {

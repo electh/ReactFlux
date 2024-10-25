@@ -1,7 +1,7 @@
 .add-category-tag {
   cursor: pointer;
-  border: 1px dashed var(--border);
-  background-color: var(--background);
+  border: 1px dashed var(--color-border-2);
+  background-color: var(--color-bg-1);
   width: 32px;
 }
 

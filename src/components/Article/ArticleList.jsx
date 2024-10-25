@@ -1,4 +1,4 @@
-import { Spin } from "@arco-design/web-react";
+import { Divider, Spin } from "@arco-design/web-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { forwardRef, useCallback, useEffect } from "react";
 
@@ -130,6 +130,14 @@ const ArticleList = forwardRef(
                       >
                         <Ripple color="var(--color-text-4)" duration={1000} />
                       </ArticleCard>
+                      {!(item.index === filteredEntries.length - 1) && (
+                        <Divider
+                          style={{
+                            margin: "8px 0",
+                            borderBottom: "1px solid var(--color-border-2)",
+                          }}
+                        />
+                      )}
                     </div>
                   ))}
                 </div>

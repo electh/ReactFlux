@@ -27,6 +27,7 @@ import { getStartOfToday } from "../../utils/date";
 import { debounce } from "../../utils/time";
 import CustomTooltip from "../ui/CustomTooltip";
 import "./SearchAndSortBar.css";
+import SidebarTrigger from "./SidebarTrigger.jsx";
 
 const SearchAndSortBar = () => {
   const { filterDate, filterString, filterType } = useStore(contentState);
@@ -68,6 +69,7 @@ const SearchAndSortBar = () => {
 
   return (
     <div className="search-and-sort-bar">
+      <SidebarTrigger />
       <Input.Search
         allowClear
         onChange={handleInputChange}

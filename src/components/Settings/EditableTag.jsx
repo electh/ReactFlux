@@ -90,11 +90,11 @@ const EditableTag = ({ value, onChange, onRemove, editOnMount = false }) => {
       }}
       style={{
         backgroundColor: duplicateHotkeys.includes(value)
-          ? "var(--destructive)"
-          : "var(--secondary)",
+          ? "var(--color-danger-light-4)"
+          : "var(--color-fill-2)",
         color: duplicateHotkeys.includes(value)
-          ? "var(--destructive-foreground)"
-          : "var(--secondary-foreground)",
+          ? "white"
+          : "var(--color-text-1)",
       }}
     >
       {value}
