@@ -24,20 +24,21 @@ const children = [
 ];
 
 const router = createBrowserRouter([
+  { path: "/login", element: <Login /> },
   {
     path: "/",
-    element: (
-      <RouterProtect>
-        <App />
-      </RouterProtect>
-    ),
+    element: <App />,
     errorElement: <ErrorPage />,
     children: [
-      ...children,
-      { index: true, element: <Navigate to={`/${homePage}`} replace /> },
+      {
+        element: <RouterProtect />,
+        children: [
+          ...children,
+          { index: true, element: <Navigate to={`/${homePage}`} replace /> },
+        ],
+      },
     ],
   },
-  { path: "/login", element: <Login /> },
 ]);
 
 export default router;

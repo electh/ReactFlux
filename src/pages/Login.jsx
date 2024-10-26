@@ -11,7 +11,7 @@ import useForm from "@arco-design/web-react/es/Form/useForm";
 import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon";
 import { ofetch } from "ofetch";
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import { useStore } from "@nanostores/react";
 import useLanguage, { polyglotState } from "../hooks/useLanguage";
@@ -38,6 +38,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [authMethod, setAuthMethod] = useState("token");
   /* token or user */
+  const location = useLocation();
   const navigate = useNavigate();
 
   const performHealthCheck = async (auth) => {
@@ -53,7 +54,8 @@ const Login = () => {
       if (response.status === 200) {
         Message.success(polyglot.t("login.success"));
         setAuth({ server, token, username, password });
-        navigate("/");
+        const from = location.state?.from || `/${homePage}`;
+        navigate(from, { replace: true });
       }
     } catch (error) {
       console.error(error);
