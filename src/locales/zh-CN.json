@@ -97,7 +97,7 @@
     "add_feed_modal_crawler_label": "获取原文"
   },
   "header": {
-    "theme": "外观",
+    "theme": "黑暗模式",
     "theme_option_light": "浅色",
     "theme_option_dark": "深色",
     "theme_option_system": "系统",

@@ -2,13 +2,12 @@ import { generate, getRgbStr } from "@arco-design/color";
 import { getSettings } from "../store/settingsState";
 
 export const colors = {
-  Zine: { light: "#18181B", dark: "#FAFAFA" },
   Red: { light: "#DC2626", dark: "#DC2626" },
   Orange: { light: "#F97316", dark: "#EA580C" },
   Yellow: { light: "#FACC15", dark: "#FACC15" },
   Green: { light: "#16A34A", dark: "#22C55E" },
   Blue: { light: "#2563EB", dark: "#3B82F6" },
-  Violet: { light: "#7C3AED", dark: "#6D28D9" },
+  Violet: { light: "#722ED1", dark: "#8E51DA" },
 };
 
 const isDarkMode = () => {

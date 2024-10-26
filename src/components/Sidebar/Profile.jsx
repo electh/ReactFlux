@@ -5,9 +5,9 @@ import {
   Menu,
   Message,
   Modal,
+  Radio,
 } from "@arco-design/web-react";
 import {
-  IconCheck,
   IconDesktop,
   IconEye,
   IconEyeInvisible,
@@ -50,12 +50,6 @@ export default function Profile() {
 
   const { themeMode, showAllFeeds } = useStore(settingsState);
 
-  const themeOptions = [
-    { label: polyglot.t("header.theme_option_light"), value: "light" },
-    { label: polyglot.t("header.theme_option_dark"), value: "dark" },
-    { label: polyglot.t("header.theme_option_system"), value: "system" },
-  ];
-
   const [resetModalVisible, setResetModalVisible] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const { setSettingsModalVisible } = useModalToggle();
@@ -73,16 +67,6 @@ export default function Profile() {
     Message.success(polyglot.t("header.logout_success"));
   };
 
-  const getThemeIcon = () => {
-    if (themeMode === "dark") {
-      return <IconMoonFill className="icon-right" />;
-    }
-    if (themeMode === "system") {
-      return <IconDesktop className="icon-right" />;
-    }
-    return <IconSunFill className="icon-right" />;
-  };
-
   return (
     <div className="user-profile-container">
       <div>
@@ -91,28 +75,29 @@ export default function Profile() {
           trigger="click"
           droplist={
             <Menu>
-              <Menu.SubMenu
-                key="theme"
-                title={
-                  <span>
-                    {getThemeIcon()}
-                    {polyglot.t("header.theme")}
-                  </span>
-                }
+              <Radio.Group
+                type="button"
+                name="theme"
+                size="mini"
+                value={themeMode}
+                onChange={(value) => updateSettings({ themeMode: value })}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "8px",
+                }}
               >
-                {themeOptions.map(({ label, value }) => (
-                  <Menu.Item
-                    key={value}
-                    onClick={() => updateSettings({ themeMode: value })}
-                    className="theme-menu-item"
-                  >
-                    {label}
-                    {themeMode === value && (
-                      <IconCheck style={{ marginLeft: 8 }} />
-                    )}
-                  </Menu.Item>
-                ))}
-              </Menu.SubMenu>
+                <Radio value="light">
+                  <IconSunFill />
+                </Radio>
+                <Radio value="dark">
+                  <IconMoonFill />
+                </Radio>
+                <Radio value="system">
+                  <IconDesktop />
+                </Radio>
+              </Radio.Group>
+              <Divider style={{ margin: "4px 0" }} />
               <Menu.Item key="4" onClick={handleToggleFeedsVisibility}>
                 {showAllFeeds ? (
                   <IconEyeInvisible className="icon-right" />

@@ -19,7 +19,7 @@ const defaultValue = {
   showEstimatedReadingTime: false,
   showFeedIcon: true,
   showStatus: "unread",
-  themeColor: "Zine",
+  themeColor: "Blue",
   themeMode: "light",
 };
 

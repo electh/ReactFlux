@@ -97,7 +97,7 @@
     "add_feed_modal_crawler_label": "Fetch original content"
   },
   "header": {
-    "theme": "Appearance",
+    "theme": "Dark Mode",
     "theme_option_light": "Light",
     "theme_option_dark": "Dark",
     "theme_option_system": "System",
