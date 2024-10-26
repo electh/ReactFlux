@@ -21,6 +21,7 @@ const defaultValue = {
   showStatus: "unread",
   themeColor: "Blue",
   themeMode: "light",
+  titleAlignment: "center",
 };
 
 export const settingsState = persistentAtom("settings", defaultValue, {

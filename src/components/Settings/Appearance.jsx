@@ -1,11 +1,13 @@
 import {
   Divider,
+  Radio,
   Select,
   Slider,
   Space,
   Switch,
   Typography,
 } from "@arco-design/web-react";
+import { IconAlignCenter, IconAlignLeft } from "@arco-design/web-react/icon";
 
 import { polyglotState } from "../../hooks/useLanguage";
 import { applyColor, colors, getDisplayColorValue } from "../../utils/colors";
@@ -25,6 +27,7 @@ const Appearance = () => {
     showEstimatedReadingTime,
     showFeedIcon,
     themeColor,
+    titleAlignment,
   } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
 
@@ -152,6 +155,27 @@ const Appearance = () => {
           checked={showFeedIcon}
           onChange={(value) => handleConfigChange({ showFeedIcon: value })}
         />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("appearance.title_alignment_label")}
+        description={polyglot.t("appearance.title_alignment_description")}
+      >
+        <Radio.Group
+          type="button"
+          name="title-alignment"
+          value={titleAlignment}
+          onChange={(value) => handleConfigChange({ titleAlignment: value })}
+        >
+          <Radio value="left">
+            <IconAlignLeft />
+          </Radio>
+          <Radio value="center">
+            <IconAlignCenter />
+          </Radio>
+        </Radio.Group>
       </SettingItem>
 
       <Divider />

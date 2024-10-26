@@ -225,7 +225,9 @@
     "font_family_system": "Default",
     "font_family_noto_sans": "Noto Sans SC",
     "font_family_noto_serif": "Noto Serif SC",
-    "font_family_lxgw_wenkai": "LXGW WenKai Screen"
+    "font_family_lxgw_wenkai": "LXGW WenKai Screen",
+    "title_alignment_label": "Article title alignment",
+    "title_alignment_description": "Choose the alignment of the article title"
   },
   "hotkeys": {
     "key": "Key",

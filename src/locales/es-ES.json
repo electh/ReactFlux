@@ -224,7 +224,9 @@
     "font_family_system": "Predeterminado",
     "font_family_noto_sans": "Noto Sans SC",
     "font_family_noto_serif": "Noto Serif SC",
-    "font_family_lxgw_wenkai": "LXGW WenKai Screen"
+    "font_family_lxgw_wenkai": "LXGW WenKai Screen",
+    "title_alignment_label": "Alineación del título del artículo",
+    "title_alignment_description": "Escoger la alineación del título del artículo"
   },
   "hotkeys": {
     "key": "Clave",

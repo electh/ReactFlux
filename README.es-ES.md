@@ -26,9 +26,8 @@ Las funcionalidades clave incluyen:
 
 ## Capturas de pantalla
 
-![Inicio de sesión](images/login.png)
-![Interfaz](images/layout.png)
-![Ajustes](images/settings.png)
+![Interfaz](images/light.png)
+![Ajustes](images/dark.png)
 
 ## Demo
 

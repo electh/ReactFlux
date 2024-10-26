@@ -69,7 +69,8 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 const ArticleDetail = forwardRef((_, ref) => {
   const navigate = useNavigate();
   const { activeContent } = useStore(contentState);
-  const { articleWidth, fontFamily, fontSize } = useStore(settingsState);
+  const { articleWidth, fontFamily, fontSize, titleAlignment } =
+    useStore(settingsState);
 
   const {
     isPhotoSliderVisible,
@@ -103,8 +104,15 @@ const ArticleDetail = forwardRef((_, ref) => {
     <article className="article-content" ref={ref} tabIndex={-1}>
       <SimpleBar className="scroll-container">
         <FadeInMotion>
-          <div className="article-header" style={{ width: `${articleWidth}%` }}>
-            <Typography.Title className="article-title" heading={3}>
+          <div
+            className="article-header"
+            style={{ width: `${articleWidth}%`, textAlign: titleAlignment }}
+          >
+            <Typography.Title
+              className="article-title"
+              heading={3}
+              style={{ fontFamily: fontFamily }}
+            >
               <a
                 href={activeContent.url}
                 target="_blank"

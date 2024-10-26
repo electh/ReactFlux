@@ -26,9 +26,8 @@ Key features include:
 
 ## Screenshots
 
-![Login](images/login.png)
-![Layout](images/layout.png)
-![Settings](images/settings.png)
+![Light Mode](images/light.png)
+![Dark Mode](images/dark.png)
 
 ## Demo
 

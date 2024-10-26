@@ -225,7 +225,9 @@
     "font_family_system": "默认",
     "font_family_noto_sans": "思源黑体",
     "font_family_noto_serif": "思源宋体",
-    "font_family_lxgw_wenkai": "霞鹜文楷"
+    "font_family_lxgw_wenkai": "霞鹜文楷",
+    "title_alignment_label": "文章标题对齐方式",
+    "title_alignment_description": "选择文章标题的对齐方式"
   },
   "hotkeys": {
     "key": "键",

@@ -65,7 +65,6 @@ p {
 .article-header {
   margin: 0 auto;
   padding-top: 20px;
-  text-align: center;
 }
 
 .article-meta .arco-typography {
@@ -78,7 +77,6 @@ p {
 .article-meta,
 .article-date {
   margin: 0 auto;
-  padding: 0 20px;
 }
 
 .article-title.arco-typography {
