@@ -23,7 +23,6 @@ jobs:
   build-and-deploy:
     concurrency: ci-${{github.ref}}
     runs-on: ubuntu-latest
-    if: github.repository == 'electh/ReactFlux'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

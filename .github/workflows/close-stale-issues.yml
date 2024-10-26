@@ -12,7 +12,6 @@ permissions:
 jobs:
   close_stale_issues:
     runs-on: ubuntu-latest
-    if: github.repository == 'electh/ReactFlux'
     steps:
       - uses: actions/stale@v9
         with:

@@ -12,7 +12,6 @@ on:
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
-    if: github.repository == 'electh/ReactFlux'
     steps:
       - uses: actions/checkout@v4
 
@@ -21,6 +20,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: electh/reactflux
+          repository: ${{ github.repository }}
           short-description: ${{ github.event.repository.description }}
           enable-url-completion: true
