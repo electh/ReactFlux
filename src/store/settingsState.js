@@ -20,7 +20,7 @@ const defaultValue = {
   showFeedIcon: true,
   showStatus: "unread",
   themeColor: "Blue",
-  themeMode: "light",
+  themeMode: "system",
   titleAlignment: "center",
 };
 

@@ -11,6 +11,7 @@
 
 .modal-style {
   width: 400px;
+  max-width: 95%;
 }
 
 .tag-style {

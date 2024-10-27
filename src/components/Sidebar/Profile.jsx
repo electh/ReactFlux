@@ -87,14 +87,14 @@ export default function Profile() {
                   padding: "8px",
                 }}
               >
+                <Radio value="system">
+                  <IconDesktop />
+                </Radio>
                 <Radio value="light">
                   <IconSunFill />
                 </Radio>
                 <Radio value="dark">
                   <IconMoonFill />
-                </Radio>
-                <Radio value="system">
-                  <IconDesktop />
                 </Radio>
               </Radio.Group>
               <Divider style={{ margin: "4px 0" }} />
@@ -145,6 +145,7 @@ export default function Profile() {
         onOk={handleResetSettings}
         title={polyglot.t("header.settings_reset_confirm")}
         visible={resetModalVisible}
+        style={{ maxWidth: "95%" }}
       >
         <p>{polyglot.t("header.settings_reset_description")}</p>
       </Modal>
@@ -154,6 +155,7 @@ export default function Profile() {
         onOk={handleLogout}
         title={polyglot.t("header.logout_confirm")}
         visible={logoutModalVisible}
+        style={{ maxWidth: "95%" }}
       >
         <p>{polyglot.t("header.logout_description")}</p>
       </Modal>

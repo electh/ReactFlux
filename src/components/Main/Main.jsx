@@ -96,7 +96,7 @@ const AddFeedModal = () => {
       title={polyglot.t("main.add_feed_modal_title")}
       visible={addFeedModalVisible}
       unmountOnExit
-      style={{ width: "400px" }}
+      style={{ width: "400px", maxWidth: "95%" }}
       onOk={feedForm.submit}
       confirmLoading={feedModalLoading}
       onCancel={() => {
