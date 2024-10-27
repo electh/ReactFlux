@@ -1,5 +1,3 @@
-import { Button } from "@arco-design/web-react";
-import { IconFullscreen } from "@arco-design/web-react/icon";
 import { useEffect, useState } from "react";
 
 import { useStore } from "@nanostores/react";
@@ -75,18 +73,23 @@ const ImageOverlayButton = ({
         ) : (
           <ImageComponent imgNode={imgNode} isIcon={isIcon} />
         )}
-        <Button
-          icon={<IconFullscreen />}
-          shape="circle"
+        <button
           style={{
             position: "absolute",
-            top: 30,
-            right: 10,
-            color: "white",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "transparent",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             opacity: isBelowMedium || isHovering ? 1 : 0,
             transition: "opacity 0.3s",
+            cursor: "pointer",
+            border: "none",
           }}
+          type="button"
           onClick={(event) => {
             event.preventDefault();
             togglePhotoSlider(index);

@@ -22,6 +22,7 @@ import FadeInMotion from "../ui/FadeInMotion";
 import CodeBlock from "./CodeBlock";
 import ImageOverlayButton from "./ImageOverlayButton";
 import "./ArticleDetail.css";
+import { useScreenWidth } from "../../hooks/useScreenWidth";
 
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
   replace: (node) => {
@@ -50,7 +51,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
         />
       );
     } else if (node.type === "tag" && node.name === "pre") {
-      let codeContent = "";
+      let codeContent;
 
       if (node.children[0]?.name === "code") {
         const codeNode = node.children[0];
@@ -68,6 +69,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 
 const ArticleDetail = forwardRef((_, ref) => {
   const navigate = useNavigate();
+  const { isBelowMedium } = useScreenWidth();
   const { activeContent } = useStore(contentState);
   const { articleWidth, fontFamily, fontSize, titleAlignment } =
     useStore(settingsState);
@@ -163,6 +165,9 @@ const ArticleDetail = forwardRef((_, ref) => {
             <PhotoSlider
               images={imageSources.map((item) => ({ src: item, key: item }))}
               loop={false}
+              maskOpacity={0.6}
+              maskClassName={"img-mask"}
+              bannerVisible={!isBelowMedium}
               visible={isPhotoSliderVisible}
               onClose={() => {
                 setIsPhotoSliderVisible(false);

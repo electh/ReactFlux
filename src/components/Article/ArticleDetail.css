@@ -113,6 +113,11 @@ p {
   height: auto;
 }
 
+.img-mask {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
 /* 文章内容文本样式 */
 .article-content {
   flex: 1;

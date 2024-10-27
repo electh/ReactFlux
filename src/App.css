@@ -76,4 +76,7 @@
   .page-layout {
     display: block !important;
   }
+  .sidebar-drawer {
+    width: 80% !important;
+  }
 }
