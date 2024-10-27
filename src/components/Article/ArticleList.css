@@ -1,7 +1,7 @@
 .entry-list {
   flex: 1;
   contain: strict;
-  padding: 10px 10px 0 10px;
+  padding: 10px;
   height: 100%;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
