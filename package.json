@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@arco-design/color": "^0.4.0",
-    "@arco-design/web-react": "^2.64.0",
+    "@arco-design/web-react": "^2.64.1",
     "@nanostores/persistent": "^0.10.2",
     "@nanostores/react": "^0.8.0",
     "@tanstack/react-virtual": "^3.10.8",
