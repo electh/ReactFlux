@@ -13,3 +13,11 @@
 .arco-dropdown-menu {
   max-height: 100%;
 }
+
+.arco-modal-simple .arco-modal-title {
+  text-align: left;
+}
+
+.arco-modal-simple .arco-modal-footer {
+  text-align: right;
+}

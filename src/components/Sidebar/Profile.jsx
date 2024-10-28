@@ -11,6 +11,7 @@ import {
   IconDesktop,
   IconEye,
   IconEyeInvisible,
+  IconInfoCircleFill,
   IconLink,
   IconMoonFill,
   IconPoweroff,
@@ -143,7 +144,15 @@ export default function Profile() {
       <Modal
         onCancel={() => setResetModalVisible(false)}
         onOk={handleResetSettings}
-        title={polyglot.t("header.settings_reset_confirm")}
+        title={
+          <div>
+            <IconInfoCircleFill />
+            <span>{polyglot.t("header.settings_reset_confirm")}</span>
+          </div>
+        }
+        simple
+        closable
+        okButtonProps={{ status: "danger" }}
         visible={resetModalVisible}
         style={{ maxWidth: "95%" }}
       >
@@ -153,7 +162,15 @@ export default function Profile() {
       <Modal
         onCancel={() => setLogoutModalVisible(false)}
         onOk={handleLogout}
-        title={polyglot.t("header.logout_confirm")}
+        title={
+          <div>
+            <IconInfoCircleFill />
+            <span>{polyglot.t("header.logout_confirm")}</span>
+          </div>
+        }
+        simple
+        closable
+        okButtonProps={{ status: "danger" }}
         visible={logoutModalVisible}
         style={{ maxWidth: "95%" }}
       >
