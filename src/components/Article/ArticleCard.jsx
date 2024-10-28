@@ -62,7 +62,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
     >
       <div
         className={
-          mini
+          entry.imgSrc && mini
             ? "article-card-image-container-mini"
             : "article-card-image-container"
         }
