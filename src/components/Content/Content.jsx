@@ -188,8 +188,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       </div>
       {activeContent ? (
         <div className="article-container content-wrapper" {...handlers}>
+          {!isBelowMedium && <ActionButtons />}
           {!isArticleLoading && <ArticleDetail ref={entryDetailRef} />}
-          <ActionButtons />
+          {isBelowMedium && <ActionButtons />}
         </div>
       ) : (
         <div className="content-empty content-wrapper">

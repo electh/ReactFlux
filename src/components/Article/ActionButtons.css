@@ -3,8 +3,7 @@
   flex-direction: row;
   justify-content: space-between;
   z-index: 2;
-  margin-top: auto;
-  border-top: 1px solid var(--color-border-1);
+  border-bottom: 1px solid var(--color-border-1);
   padding: 8px 10px;
 }
 
@@ -17,4 +16,18 @@
 
 .action-buttons .arco-btn-secondary:not(.arco-btn-disabled) {
   background-color: var(--color-bg-1);
+}
+
+@media screen and (min-width: 769px) {
+  .action-buttons {
+    border-top: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .action-buttons {
+    margin-top: auto;
+    border-top: 1px solid var(--color-border-1);
+    border-bottom: none;
+  }
 }

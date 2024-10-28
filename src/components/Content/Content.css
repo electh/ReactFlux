@@ -7,6 +7,7 @@
   box-shadow: var(--shadow);
   border-radius: var(--border-radius-medium);
   margin: 10px;
+  min-height: 0;
 }
 
 .content-empty {
