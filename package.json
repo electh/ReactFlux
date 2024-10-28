@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@types/react": "^18.3.11",
+    "@types/react": "^18.3.12",
     "@vitejs/plugin-react": "^4.3.3",
     "depcheck": "^1.4.7",
     "husky": "^9.1.6",
