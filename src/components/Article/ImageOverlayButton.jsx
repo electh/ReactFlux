@@ -1,27 +1,52 @@
 import { useEffect, useState } from "react";
 
+import { Tag } from "@arco-design/web-react";
+import { IconLink } from "@arco-design/web-react/icon";
 import { useStore } from "@nanostores/react";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { settingsState } from "../../store/settingsState";
 
-const ImageComponent = ({ imgNode, isIcon }) => {
+const ImageComponent = ({ imgNode, isIcon, index, togglePhotoSlider }) => {
   const { fontSize } = useStore(settingsState);
 
   return (
-    <img
-      {...imgNode.attribs}
-      alt={imgNode.attribs.alt ?? "image"}
-      style={
-        isIcon
-          ? {
-              display: "inline-block",
-              width: "auto",
-              height: `${fontSize}rem`,
-              margin: 0,
-            }
-          : {}
-      }
-    />
+    <div style={{ position: "relative" }}>
+      <img
+        {...imgNode.attribs}
+        className={isIcon ? "" : "big-image"}
+        alt={imgNode.attribs.alt ?? "image"}
+        style={
+          isIcon
+            ? {
+                display: "inline-block",
+                width: "auto",
+                height: `${fontSize}rem`,
+                margin: 0,
+              }
+            : {}
+        }
+      />
+      <button
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "transparent",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          cursor: "pointer",
+          border: "none",
+          zIndex: 1,
+        }}
+        type="button"
+        onClick={(event) => {
+          event.preventDefault();
+          togglePhotoSlider(index);
+        }}
+      />
+    </div>
   );
 };
 
@@ -31,9 +56,7 @@ const ImageOverlayButton = ({
   togglePhotoSlider,
   isLinkWrapper = false,
 }) => {
-  const [isHovering, setIsHovering] = useState(false);
   const [isIcon, setIsIcon] = useState(false);
-  const { isBelowMedium } = useScreenWidth();
 
   useEffect(() => {
     const imgNode = isLinkWrapper ? node.children[0] : node;
@@ -48,53 +71,59 @@ const ImageOverlayButton = ({
   if (isIcon) {
     return isLinkWrapper ? (
       <a {...node.attribs}>
-        <ImageComponent imgNode={imgNode} isIcon={isIcon} />
+        <ImageComponent
+          imgNode={imgNode}
+          isIcon={isIcon}
+          index={index}
+          togglePhotoSlider={togglePhotoSlider}
+        />
         {node.children[1]?.data}
       </a>
     ) : (
-      <ImageComponent imgNode={imgNode} isIcon={isIcon} />
+      <ImageComponent
+        imgNode={imgNode}
+        isIcon={isIcon}
+        index={index}
+        togglePhotoSlider={togglePhotoSlider}
+      />
     );
   }
 
-  const handleMouseEnter = () => setIsHovering(true);
-  const handleMouseLeave = () => setIsHovering(false);
-
   return (
     <div style={{ textAlign: "center", position: "relative" }}>
-      <div
-        style={{ display: "inline-block", position: "relative" }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <div style={{ display: "inline-block", position: "relative" }}>
         {isLinkWrapper ? (
-          <a {...node.attribs}>
-            <ImageComponent imgNode={imgNode} isIcon={isIcon} />
-          </a>
+          <div>
+            <a {...node.attribs}>
+              <ImageComponent
+                imgNode={imgNode}
+                isIcon={isIcon}
+                index={index}
+                togglePhotoSlider={togglePhotoSlider}
+              />
+            </a>
+            <Tag
+              icon={<IconLink />}
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(node.attribs.href, "_blank");
+              }}
+              style={{
+                cursor: "pointer",
+                maxWidth: "50%",
+              }}
+            >
+              {node.attribs.href}
+            </Tag>
+          </div>
         ) : (
-          <ImageComponent imgNode={imgNode} isIcon={isIcon} />
+          <ImageComponent
+            imgNode={imgNode}
+            isIcon={isIcon}
+            index={index}
+            togglePhotoSlider={togglePhotoSlider}
+          />
         )}
-        <button
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "transparent",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            opacity: isBelowMedium || isHovering ? 1 : 0,
-            transition: "opacity 0.3s",
-            cursor: "pointer",
-            border: "none",
-          }}
-          type="button"
-          onClick={(event) => {
-            event.preventDefault();
-            togglePhotoSlider(index);
-          }}
-        />
       </div>
     </div>
   );
