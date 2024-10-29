@@ -12,18 +12,17 @@ const ImageWithLazyLoading = ({
   src,
   status,
   width,
+  setHasError,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const { ref } = useInView({
     triggerOnce: true,
-    onChange: (inView, entry) => {
+    onChange: (inView) => {
       if (inView && !isLoaded) {
         const image = new Image();
         image.onload = () => setIsLoaded(true);
-        image.onerror = () => {
-          entry.target.style.display = "none";
-        };
+        image.onerror = () => setHasError(true);
         image.src = src;
       }
     },

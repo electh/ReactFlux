@@ -13,7 +13,7 @@ import FeedIcon from "../ui/FeedIcon";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 import "./ArticleCard.css";
 
-const ArticleCardImage = ({ entry, isThumbnail }) => {
+const ArticleCardImage = ({ entry, isThumbnail, setHasError }) => {
   if (!entry.imgSrc) {
     return null;
   }
@@ -23,16 +23,16 @@ const ArticleCardImage = ({ entry, isThumbnail }) => {
     : { width: "100%", height: "160px" };
 
   return (
-    <div className={isThumbnail ? "thumbnail" : "cover-image"}>
-      <ImageWithLazyLoading
-        alt={entry.id}
-        borderRadius={isThumbnail ? "2px" : undefined}
-        src={entry.imgSrc}
-        status={entry.status}
-        width={imageSize.width}
-        height={imageSize.height}
-      />
-    </div>
+    <ImageWithLazyLoading
+      className={isThumbnail ? "thumbnail" : "cover-image"}
+      alt={entry.id}
+      borderRadius={isThumbnail ? "2px" : undefined}
+      src={entry.imgSrc}
+      status={entry.status}
+      width={imageSize.width}
+      height={imageSize.height}
+      setHasError={setHasError}
+    />
   );
 };
 
@@ -46,6 +46,9 @@ const getMargin = (imgSrc, isMini) => {
 const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
   const { showDetailedRelativeTime, showEstimatedReadingTime } =
     useStore(settingsState);
+
+  const [hasError, setHasError] = useState(false);
+
   const contentClass = classNames({
     "article-card-mini-content": mini,
     "article-card-mini-content-padding": mini && showFeedIcon,
@@ -62,13 +65,17 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
     >
       <div
         className={
-          entry.imgSrc && mini
+          entry.imgSrc && !hasError && mini
             ? "article-card-image-container-mini"
             : "article-card-image-container"
         }
         style={{ margin: getMargin(entry.imgSrc, mini) }}
       >
-        <ArticleCardImage entry={entry} isThumbnail={mini} />
+        <ArticleCardImage
+          entry={entry}
+          isThumbnail={mini}
+          setHasError={setHasError}
+        />
       </div>
       <div className={mini ? "article-card-mini-content-text" : ""}>
         <Typography.Ellipsis
