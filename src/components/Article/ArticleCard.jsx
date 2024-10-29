@@ -14,33 +14,23 @@ import ImageWithLazyLoading from "./ImageWithLazyLoading";
 import "./ArticleCard.css";
 
 const ArticleCardImage = ({ entry, isThumbnail, setHasError }) => {
-  if (!entry.imgSrc) {
-    return null;
-  }
-
   const imageSize = isThumbnail
     ? { width: "80px", height: "80px" }
     : { width: "100%", height: "160px" };
 
   return (
-    <ImageWithLazyLoading
-      className={isThumbnail ? "thumbnail" : "cover-image"}
-      alt={entry.id}
-      borderRadius={isThumbnail ? "2px" : undefined}
-      src={entry.imgSrc}
-      status={entry.status}
-      width={imageSize.width}
-      height={imageSize.height}
-      setHasError={setHasError}
-    />
+    <div className={isThumbnail ? "thumbnail" : "cover-image"}>
+      <ImageWithLazyLoading
+        alt={entry.id}
+        borderRadius={isThumbnail ? "2px" : undefined}
+        src={entry.imgSrc}
+        status={entry.status}
+        width={imageSize.width}
+        height={imageSize.height}
+        setHasError={setHasError}
+      />
+    </div>
   );
-};
-
-const getMargin = (imgSrc, isMini) => {
-  if (!imgSrc) {
-    return "0";
-  }
-  return isMini ? "0" : "0 0 10px 0";
 };
 
 const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
@@ -63,20 +53,22 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
         opacity: entry.status === "unread" ? 1 : 0.5,
       }}
     >
-      <div
-        className={
-          entry.imgSrc && !hasError && mini
-            ? "article-card-image-container-mini"
-            : "article-card-image-container"
-        }
-        style={{ margin: getMargin(entry.imgSrc, mini) }}
-      >
-        <ArticleCardImage
-          entry={entry}
-          isThumbnail={mini}
-          setHasError={setHasError}
-        />
-      </div>
+      {entry.imgSrc && !hasError && (
+        <div
+          className={
+            mini
+              ? "article-card-image-container-mini"
+              : "article-card-image-container"
+          }
+          style={{ margin: mini ? "0" : "0 0 10px 0" }}
+        >
+          <ArticleCardImage
+            entry={entry}
+            isThumbnail={mini}
+            setHasError={setHasError}
+          />
+        </div>
+      )}
       <div className={mini ? "article-card-mini-content-text" : ""}>
         <Typography.Ellipsis
           className="article-card-title"
