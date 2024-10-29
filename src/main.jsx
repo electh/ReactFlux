@@ -15,9 +15,9 @@ import "./theme.css";
 import { getPreferredLanguage } from "./utils/locales";
 
 const localMap = {
-  "zh-CN": zhCN,
   "es-ES": esES,
   "fr-FR": frFR,
+  "zh-CN": zhCN,
 };
 
 const getLocale = () => localMap[getPreferredLanguage()] || enUS;

@@ -1,10 +1,10 @@
 # ReactFlux
 
-阅读其他语言版本： [English](README.md), [Español](README.es-ES.md)
+阅读其他语言版本： [English](README.md), [Español](README.es-ES.md), [Français](README.fr-FR.md)
 
 ## 概述
 
-Reactflux 是 [Miniflux](https://github.com/miniflux/miniflux) 的第三方 Web 前端，旨在提供更加友好的阅读体验。
+Reactflux 是 [Miniflux](https://github.com/miniflux/v2) 的第三方 Web 前端，旨在提供更加友好的阅读体验。
 
 主要特性包括：
 
@@ -26,8 +26,8 @@ Reactflux 是 [Miniflux](https://github.com/miniflux/miniflux) 的第三方 Web 
 
 ## 截图
 
-![Light Mode](images/light.png)
-![Dark Mode](images/dark.png)
+![浅色模式](images/light.png)
+![深色模式](images/dark.png)
 
 ## 演示
 
