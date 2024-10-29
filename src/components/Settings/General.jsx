@@ -7,6 +7,7 @@ import SettingItem from "./SettingItem";
 const languageOptions = [
   { label: "English", value: "en-US" },
   { label: "Español", value: "es-ES" },
+  { label: "Français", value: "fr-FR" },
   { label: "简体中文", value: "zh-CN" },
 ];
 
