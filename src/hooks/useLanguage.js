@@ -2,6 +2,7 @@ import { useStore } from "@nanostores/react";
 import dayjs from "dayjs";
 import "dayjs/locale/en";
 import "dayjs/locale/es";
+import "dayjs/locale/fr";
 import "dayjs/locale/zh-cn";
 import { map } from "nanostores";
 import Polyglot from "node-polyglot";
@@ -9,6 +10,12 @@ import { useEffect } from "react";
 import { settingsState, updateSettings } from "../store/settingsState";
 import { getBrowserLanguage } from "../utils/locales";
 import { createSetter } from "../utils/nanostores";
+
+const languageToLocale = {
+  "zh-CN": "zh-cn",
+  es: "es",
+  fr: "fr",
+};
 
 export const polyglotState = map({
   polyglot: null,
@@ -49,13 +56,11 @@ const useLanguage = () => {
     } else {
       loadLanguage(language);
 
-      if (language === "zh-CN") {
-        dayjs.locale("zh-cn");
-      } else if (language === "es" || language.startsWith("es-")) {
-        dayjs.locale("es");
-      } else {
-        dayjs.locale("en");
-      }
+      const locale =
+        language.startsWith("es-") || language.startsWith("fr-")
+          ? language.substring(0, 2)
+          : languageToLocale[language] || "en";
+      dayjs.locale(locale);
     }
   }, [language]);
 };

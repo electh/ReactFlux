@@ -1,10 +1,10 @@
 # ReactFlux
 
-Lea este texto en otros idiomas: [English](README.md), [简体中文](README.zh-CN.md)
+Lea este texto en otros idiomas: [English](README.md), [Français](README.fr-FR.md), [简体中文](README.zh-CN.md)
 
 ## Descripción general
 
-ReactFlux es una interfaz web de terceros para [Miniflux](https://github.com/miniflux/miniflux), cuyo objetivo es proporcionar una experiencia de lectura más fácil de usar.
+ReactFlux es una interfaz web de terceros para [Miniflux](https://github.com/miniflux/v2), cuyo objetivo es proporcionar una experiencia de lectura más fácil de usar.
 
 Las funcionalidades clave incluyen:
 
@@ -26,8 +26,8 @@ Las funcionalidades clave incluyen:
 
 ## Capturas de pantalla
 
-![Interfaz](images/light.png)
-![Ajustes](images/dark.png)
+![Modo Claro](images/light.png)
+![Modo Oscuro](images/dark.png)
 
 ## Demo
 
