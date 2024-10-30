@@ -24,7 +24,22 @@
     "starred": "Starred",
     "history": "History",
     "articles": "Articles",
-    "feeds": "Feeds"
+    "feeds": "Feeds",
+    "logout_success": "Successfully logged out",
+    "add_feed": "Add a feed",
+    "show_all_feeds": "Show all feeds",
+    "hide_some_feeds": "Hide some feeds",
+    "show_read_feeds": "Show read feeds",
+    "hide_read_feeds": "Hide read feeds",
+    "settings": "Settings",
+    "miniflux_settings": "Miniflux Settings",
+    "report_issue": "Report an issue",
+    "reset_settings": "Reset Settings",
+    "logout": "Logout",
+    "settings_reset_confirm": "Confirm Reset",
+    "settings_reset_description": "Are you sure you want to reset your settings? This action cannot be undone.",
+    "logout_confirm": "Confirm Logout",
+    "logout_description": "Are you sure you want to logout? This action cannot be undone."
   },
   "actions": {
     "copy_to_clipboard_tooltip": "Copy to clipboard",
@@ -95,25 +110,6 @@
     "add_feed_modal_category_label": "Category",
     "add_feed_modal_category_placeholder": "Please select a category",
     "add_feed_modal_crawler_label": "Fetch original content"
-  },
-  "header": {
-    "theme": "Dark Mode",
-    "theme_option_light": "Light",
-    "theme_option_dark": "Dark",
-    "theme_option_system": "System",
-    "logout_success": "Successfully logged out",
-    "add_feed": "Add a feed",
-    "show_all_feeds": "Show all feeds",
-    "hide_some_feeds": "Hide some feeds",
-    "settings": "Settings",
-    "miniflux_settings": "Miniflux Settings",
-    "report_issue": "Report an issue",
-    "reset_settings": "Reset Settings",
-    "logout": "Logout",
-    "settings_reset_confirm": "Confirm Reset",
-    "settings_reset_description": "Are you sure you want to reset your settings? This action cannot be undone.",
-    "logout_confirm": "Confirm Logout",
-    "logout_description": "Are you sure you want to logout? This action cannot be undone."
   },
   "feed_table": {
     "refresh_success": "Refreshed",
@@ -196,8 +192,6 @@
     "remove_duplicates_option_hash": "Hash",
     "remove_duplicates_option_title": "Title",
     "remove_duplicates_option_url": "URL",
-    "show_unread_feeds_only_label": "Show unread feeds only",
-    "show_unread_feeds_only_description": "Only show unread feeds in the feed list",
     "mark_read_on_scroll_label": "Mark articles as read when scrolled off screen",
     "mark_read_on_scroll_description": "Automatically mark articles as read when they are scrolled out of the visible screen area"
   },

@@ -10,10 +10,10 @@ export default function AddFeed() {
   const { polyglot } = useStore(polyglotState);
 
   return (
-    <CustomTooltip content={polyglot.t("header.add_feed")} mini>
+    <CustomTooltip content={polyglot.t("sidebar.add_feed")} mini>
       <Button
         shape="circle"
-        size="mini"
+        size="small"
         icon={<IconPlus />}
         style={{ marginTop: "1em", marginBottom: "0.5em" }}
         onClick={() => setAddFeedModalVisible(true)}

@@ -19,7 +19,6 @@ const General = () => {
     orderBy,
     pageSize,
     removeDuplicates,
-    showUnreadFeedsOnly,
   } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
 
@@ -96,18 +95,6 @@ const General = () => {
             </Select.Option>
           ))}
         </Select>
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        title={polyglot.t("settings.show_unread_feeds_only_label")}
-        description={polyglot.t("settings.show_unread_feeds_only_description")}
-      >
-        <Switch
-          checked={showUnreadFeedsOnly}
-          onChange={(value) => updateSettings({ showUnreadFeedsOnly: value })}
-        />
       </SettingItem>
 
       <Divider />

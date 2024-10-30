@@ -24,7 +24,22 @@
     "starred": "Favoris",
     "history": "Historique",
     "articles": "Articles",
-    "feeds": "Flux"
+    "feeds": "Flux",
+    "logout_success": "Déconnexion réussie",
+    "add_feed": "Ajouter un flux",
+    "show_all_feeds": "Afficher tous les flux",
+    "hide_some_feeds": "Masquer certains flux",
+    "show_read_feeds": "Afficher les flux lus",
+    "hide_read_feeds": "Masquer les flux lus",
+    "settings": "Paramètres",
+    "miniflux_settings": "Paramètres de Miniflux",
+    "report_issue": "Signaler un problème",
+    "reset_settings": "Réinitialiser les paramètres",
+    "logout": "Déconnexion",
+    "settings_reset_confirm": "Confirmer la réinitialisation",
+    "settings_reset_description": "Êtes-vous sûr de vouloir réinitialiser vos paramètres ? Cette action est irréversible.",
+    "logout_confirm": "Confirmer la déconnexion",
+    "logout_description": "Êtes-vous sûr de vouloir vous déconnecter ? Cette action est irréversible."
   },
   "actions": {
     "copy_to_clipboard_tooltip": "Copier dans le presse-papiers",
@@ -95,25 +110,6 @@
     "add_feed_modal_category_label": "Catégorie",
     "add_feed_modal_category_placeholder": "Veuillez sélectionner une catégorie",
     "add_feed_modal_crawler_label": "Récupérer le contenu original"
-  },
-  "header": {
-    "theme": "Mode sombre",
-    "theme_option_light": "Clair",
-    "theme_option_dark": "Sombre",
-    "theme_option_system": "Système",
-    "logout_success": "Déconnexion réussie",
-    "add_feed": "Ajouter un flux",
-    "show_all_feeds": "Afficher tous les flux",
-    "hide_some_feeds": "Masquer certains flux",
-    "settings": "Paramètres",
-    "miniflux_settings": "Paramètres de Miniflux",
-    "report_issue": "Signaler un problème",
-    "reset_settings": "Réinitialiser les paramètres",
-    "logout": "Déconnexion",
-    "settings_reset_confirm": "Confirmer la réinitialisation",
-    "settings_reset_description": "Êtes-vous sûr de vouloir réinitialiser vos paramètres ? Cette action est irréversible.",
-    "logout_confirm": "Confirmer la déconnexion",
-    "logout_description": "Êtes-vous sûr de vouloir vous déconnecter ? Cette action est irréversible."
   },
   "feed_table": {
     "refresh_success": "Rafraîchi",
@@ -196,8 +192,6 @@
     "remove_duplicates_option_hash": "Hash",
     "remove_duplicates_option_title": "Titre",
     "remove_duplicates_option_url": "URL",
-    "show_unread_feeds_only_label": "Afficher uniquement les flux non lus",
-    "show_unread_feeds_only_description": "Afficher uniquement les flux non lus dans la liste des flux",
     "mark_read_on_scroll_label": "Marquer les articles comme lus lors du défilement",
     "mark_read_on_scroll_description": "Marquer automatiquement les articles comme lus lorsqu'ils sont défilés hors de la zone visible de l'écran"
   },

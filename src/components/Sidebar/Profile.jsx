@@ -55,7 +55,7 @@ export default function Profile() {
     resetContent();
     resetData();
     navigate("/login");
-    Message.success(polyglot.t("header.logout_success"));
+    Message.success(polyglot.t("sidebar.logout_success"));
   };
 
   return (
@@ -91,14 +91,14 @@ export default function Profile() {
               <Divider style={{ margin: "4px 0" }} />
               <Menu.Item key="0" onClick={() => setSettingsModalVisible(true)}>
                 <IconSettings className="icon-right" />
-                {polyglot.t("header.settings")}
+                {polyglot.t("sidebar.settings")}
               </Menu.Item>
               <Menu.Item
                 key="1"
                 onClick={() => window.open(`${server}/settings`, "_blank")}
               >
                 <IconLink className="icon-right" />
-                {polyglot.t("header.miniflux_settings")}
+                {polyglot.t("sidebar.miniflux_settings")}
               </Menu.Item>
               <Menu.Item
                 key="2"
@@ -110,16 +110,16 @@ export default function Profile() {
                 }
               >
                 <IconExclamationCircle className="icon-right" />
-                {polyglot.t("header.report_issue")}
+                {polyglot.t("sidebar.report_issue")}
               </Menu.Item>
               <Divider style={{ margin: "4px 0" }} />
               <Menu.Item key="3" onClick={() => setResetModalVisible(true)}>
                 <IconRefresh className="icon-right" />
-                {polyglot.t("header.reset_settings")}
+                {polyglot.t("sidebar.reset_settings")}
               </Menu.Item>
               <Menu.Item key="4" onClick={() => setLogoutModalVisible(true)}>
                 <IconPoweroff className="icon-right" />
-                {polyglot.t("header.logout")}
+                {polyglot.t("sidebar.logout")}
               </Menu.Item>
             </Menu>
           }
@@ -139,7 +139,7 @@ export default function Profile() {
         title={
           <div>
             <IconInfoCircleFill />
-            <span>{polyglot.t("header.settings_reset_confirm")}</span>
+            <span>{polyglot.t("sidebar.settings_reset_confirm")}</span>
           </div>
         }
         simple
@@ -148,7 +148,7 @@ export default function Profile() {
         visible={resetModalVisible}
         style={{ maxWidth: "95%" }}
       >
-        <p>{polyglot.t("header.settings_reset_description")}</p>
+        <p>{polyglot.t("sidebar.settings_reset_description")}</p>
       </Modal>
 
       <Modal
@@ -157,7 +157,7 @@ export default function Profile() {
         title={
           <div>
             <IconInfoCircleFill />
-            <span>{polyglot.t("header.logout_confirm")}</span>
+            <span>{polyglot.t("sidebar.logout_confirm")}</span>
           </div>
         }
         simple
@@ -166,7 +166,7 @@ export default function Profile() {
         visible={logoutModalVisible}
         style={{ maxWidth: "95%" }}
       >
-        <p>{polyglot.t("header.logout_description")}</p>
+        <p>{polyglot.t("sidebar.logout_description")}</p>
       </Modal>
     </div>
   );
