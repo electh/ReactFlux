@@ -10,7 +10,8 @@ const defaultValue = {
   historyCount: 0,
   feedsData: [],
   categoriesData: [],
-  isVersionAtLeast2_2_0: false,
+  version: "",
+  hasIntegrations: false,
 };
 
 export const dataState = map(defaultValue);
@@ -119,13 +120,11 @@ export const unreadTotalState = computed(
 
 export const setCategoriesData = createSetter(dataState, "categoriesData");
 export const setFeedsData = createSetter(dataState, "feedsData");
+export const setHasIntegrations = createSetter(dataState, "hasIntegrations");
 export const setHistoryCount = createSetter(dataState, "historyCount");
 export const setIsAppDataReady = createSetter(dataState, "isAppDataReady");
 export const setStarredCount = createSetter(dataState, "starredCount");
 export const setUnreadInfo = createSetter(dataState, "unreadInfo");
 export const setUnreadTodayCount = createSetter(dataState, "unreadTodayCount");
-export const setIsVersionAtLeast2_2_0 = createSetter(
-  dataState,
-  "isVersionAtLeast2_2_0",
-);
+export const setVersion = createSetter(dataState, "version");
 export const resetData = () => dataState.set(defaultValue);

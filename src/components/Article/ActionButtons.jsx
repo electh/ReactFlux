@@ -21,11 +21,13 @@ import {
   nextContentState,
   prevContentState,
 } from "../../store/contentState";
+import { dataState } from "../../store/dataState";
 import CustomTooltip from "../ui/CustomTooltip";
 import "./ActionButtons.css";
 
 const ActionButtons = () => {
   const { activeContent } = useStore(contentState);
+  const { hasIntegrations } = useStore(dataState);
   const { polyglot } = useStore(polyglotState);
   const nextContent = useStore(nextContentState);
   const prevContent = useStore(prevContentState);
@@ -129,18 +131,20 @@ const ActionButtons = () => {
             disabled={isFetchedOriginal}
           />
         </CustomTooltip>
-        <CustomTooltip
-          mini
-          content={polyglot.t(
-            "article_card.save_to_third_party_services_tooltip",
-          )}
-        >
-          <Button
-            icon={<IconSave />}
-            onClick={handleSaveToThirdPartyServices}
-            shape="circle"
-          />
-        </CustomTooltip>
+        {hasIntegrations && (
+          <CustomTooltip
+            mini
+            content={polyglot.t(
+              "article_card.save_to_third_party_services_tooltip",
+            )}
+          >
+            <Button
+              icon={<IconSave />}
+              onClick={handleSaveToThirdPartyServices}
+              shape="circle"
+            />
+          </CustomTooltip>
+        )}
       </div>
     </div>
   );

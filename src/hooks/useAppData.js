@@ -3,6 +3,7 @@ import {
   getCategories,
   getCounters,
   getFeeds,
+  getIntegrationsStatus,
   getStarredEntries,
   getTodayEntries,
   getVersion,
@@ -10,12 +11,13 @@ import {
 import {
   setCategoriesData,
   setFeedsData,
+  setHasIntegrations,
   setHistoryCount,
   setIsAppDataReady,
-  setIsVersionAtLeast2_2_0,
   setStarredCount,
   setUnreadInfo,
   setUnreadTodayCount,
+  setVersion,
 } from "../store/dataState";
 import { compareVersions } from "../utils/version";
 
@@ -59,15 +61,22 @@ const useAppData = () => {
         0,
       );
 
+      const { version } = versionData;
+      setVersion(version);
+
+      if (compareVersions(version, "2.2.2") >= 0) {
+        const integrationsStatus = await getIntegrationsStatus();
+        if (integrationsStatus.has_integrations) {
+          setHasIntegrations(true);
+        }
+      }
+
       setUnreadInfo(unreadInfo);
       setUnreadTodayCount(unreadTodayData.total ?? 0);
       setStarredCount(starredData.total ?? 0);
       setHistoryCount(historyCount);
       setFeedsData(feedsData);
       setCategoriesData(categoriesData);
-      setIsVersionAtLeast2_2_0(
-        compareVersions(versionData.version, "2.2.0") >= 0,
-      );
       setIsAppDataReady(true);
     } catch (error) {
       console.error("Error fetching app data: ", error);

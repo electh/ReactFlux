@@ -2,6 +2,7 @@ import { computed, map } from "nanostores";
 import { removeDuplicateEntries } from "../utils/deduplicate";
 import { filterEntries } from "../utils/filter";
 import { createSetter } from "../utils/nanostores";
+import { compareVersions } from "../utils/version";
 import { dataState, hiddenFeedIdsState } from "./dataState";
 import { getSettings, settingsState } from "./settingsState";
 
@@ -27,11 +28,11 @@ export const filteredEntriesState = computed(
     const { entries, filterString, filterType, infoFrom } = content;
     const filteredEntries = filterEntries(entries, filterType, filterString);
 
-    const { isVersionAtLeast2_2_0 } = data;
+    const { version } = data;
     const { removeDuplicates, showAllFeeds } = settings;
     const isValidFilter = !["starred", "history"].includes(infoFrom);
     const isVisible = (entry) =>
-      isVersionAtLeast2_2_0 ||
+      compareVersions(version, "2.2.0") >= 0 ||
       showAllFeeds ||
       !hiddenFeedIds.includes(entry.feed.id);
     const visibleEntries = isValidFilter
