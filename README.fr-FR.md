@@ -24,14 +24,20 @@ Les fonctionnalités principales incluent :
 - Coloration syntaxique pour les blocs de code
 - D'autres fonctionnalités à découvrir...
 
-## Captures d'écran
+## Démo en ligne et captures d'écran
+
+Essayez ReactFlux avec notre [instance de démo en ligne](https://reactflux.pages.dev).
+
+Voyez à quoi ressemble ReactFlux dans différents thèmes :
 
 ![Mode Clair](images/light.png)
 ![Mode Sombre](images/dark.png)
 
-## Démo
+## Démarrage rapide
 
-[Instance de démonstration en ligne](https://reactflux.pages.dev/login)
+1. Assurez-vous d'avoir une instance fonctionnelle de Miniflux
+2. Utilisez directement notre [instance de démo en ligne](https://reactflux.pages.dev) ou déployez ReactFlux en utilisant l'une des méthodes ci-dessous
+3. Connectez-vous en utilisant votre nom d'utilisateur et mot de passe Miniflux ou la clé API (recommandé)
 
 ## Déploiement
 
@@ -39,7 +45,21 @@ Les fonctionnalités principales incluent :
 
 ReactFlux est construit avec React et génère un ensemble de fichiers web statiques après la compilation, qui peuvent être directement déployés sur Cloudflare Pages.
 
-Vous pouvez également le déployer vous-même sur Cloudflare Pages en sélectionnant `Framework preset` comme `Create React App`.
+Vous pouvez le déployer sur Cloudflare Pages en sélectionnant `Framework preset` comme `Create React App`.
+
+### Utilisation des fichiers pré-construits
+
+Vous pouvez télécharger les fichiers pré-construits à partir de la branche `gh-pages` et les déployer sur n'importe quel service d'hébergement statique qui prend en charge les applications monopages (SPA).
+
+Assurez-vous de configurer la réécriture des URL pour rediriger toutes les requêtes vers `index.html`.
+
+Si vous déployez en utilisant Nginx, vous devrez peut-être ajouter la configuration suivante :
+
+```nginx
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```
 
 ### Vercel
 
@@ -55,47 +75,31 @@ Vous pouvez également le déployer vous-même sur Cloudflare Pages en sélectio
 docker run -p 2000:2000 electh/reactflux
 ```
 
-## Configuration
+## Guide de traduction
 
-Vous avez besoin d'une instance Miniflux fonctionnelle pour utiliser ce projet, qui prend en charge les deux méthodes de connexion suivantes :
+Pour nous aider à traduire ReactFlux dans votre langue, veuillez contribuer au dossier `locales` et envoyer une pull request.
 
-1. Se connecter en utilisant le nom d'utilisateur et le mot de passe de l'instance (non recommandé) ;
-2. Se connecter en utilisant un jeton Miniflux, qui peut être généré dans "Paramètres > Clés API > Créer une nouvelle clé API".
+De plus, vous devez ajouter un fichier README pour la langue respective et le référencer dans tous les fichiers README existants.
 
-## Branches
+Vous devez également modifier certaines parties du code source pour inclure les packages de langue i18n pour `Arco Design` et `Day.js`.
 
-- Branche `main` : Fournit les fonctionnalités les plus complètes. Les nouvelles fonctionnalités sont généralement publiées d'abord sur cette branche, adaptée à la plupart des utilisateurs.
-- Branche `next` : Initialement créée pour améliorer la compatibilité avec les appareils mobiles, offrant une meilleure expérience et performance pour les appareils mobiles tout en restant compatible avec les ordinateurs de bureau. Cette branche manque actuellement de fonctionnalités comme les raccourcis clavier et migrera sélectivement les fonctionnalités de la branche `main`.
-- Branche `gh-pages` : Utilisée pour compiler et déployer la branche `main` sur GitHub Pages.
+Pour des modifications détaillées, veuillez vous référer aux modifications dans la PR #120.
 
-Si vous souhaitez rapidement essayer la branche `next`, voici une [instance en ligne](https://arcoflux.pages.dev/login).
+### Traducteurs actuels
+
+- Español by [Victorhck](https://github.com/victorhck)
+- Français by [MickGe](https://github.com/MickGe)
+- 简体中文 by [Neko Aria](https://github.com/NekoAria)
 
 ## Contributeurs
 
-> Merci à tous les contributeurs qui ont rendu ce projet possible !
+> Merci à tous les contributeurs qui ont rendu ce projet encore plus génial !
 
-<table>
-<tr>
-    <td align="center">
-        <a href="https://github.com/NekoAria">
-            <img src="https://avatars.githubusercontent.com/u/23137034?v=4" width="90" alt="NekoAria" style="border-radius: 4px"/>
-        </a>
-        <br />
-        <sub><b>NekoAria</b></sub>
-        <br />
-        <sub><b>Contributeur Principal</b></sub>
-    </td>
-    <td align="center">
-        <a href="https://github.com/electh">
-            <img src="https://avatars.githubusercontent.com/u/83588235?v=4" width="90" alt="electh" style="border-radius: 4px"/>
-        </a>
-        <br />
-        <sub><b>electh</b></sub>
-        <br />
-        <sub><b>Initiateur du Projet</b></sub>
-    </td>
-</tr>
-</table>
+<a href="https://github.com/electh/ReactFlux/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=electh/ReactFlux" alt="Contributeurs pour ReactFlux" />
+</a>
+
+Créé avec [contrib.rocks](https://contrib.rocks).
 
 ## Historique des étoiles
 

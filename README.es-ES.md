@@ -19,19 +19,25 @@ Las funcionalidades clave incluyen:
 - Actualización por lotes del host de URL de suscripción filtradas (útil para reemplazar instancias de RSSHub)
 - Actualización por lotes de suscripciones recientemente falladas
 - Elimina artículos duplicados por hash, título o URL al cargar la lista
-- Disponible en varios idiomasç (incluye: Inglés / Español / 简体中文)
+- Disponible en varios idiomas (incluye: Inglés / Español / 简体中文)
 - Guardar artículo en servicios de terceros
 - Resaltado de sintaxis para bloques de código
 - Otras características esperando que las descubras...
 
-## Capturas de pantalla
+## Demostración en línea y capturas de pantalla
+
+Pruebe ReactFlux con nuestra [instancia de demostración en línea](https://reactflux.pages.dev).
+
+Vea cómo se ve ReactFlux en diferentes temas:
 
 ![Modo Claro](images/light.png)
 ![Modo Oscuro](images/dark.png)
 
-## Demo
+## Inicio Rápido
 
-[Instancia de demostración en línea](https://reactflux.pages.dev/login)
+1. Asegúrese de tener una instancia funcional de Miniflux
+2. Use directamente nuestra [instancia de demostración en línea](https://reactflux.pages.dev) o despliegue ReactFlux utilizando uno de los métodos a continuación
+3. Inicie sesión usando su nombre de usuario y contraseña de Miniflux o la clave API (recomendado)
 
 ## Despliegue
 
@@ -39,7 +45,21 @@ Las funcionalidades clave incluyen:
 
 ReactFlux está construido con React y genera un conjunto de archivos web estáticos después de la compilación, que se pueden implementar directamente en Cloudflare Pages.
 
-Puede desplegarla en páginas Cloudflare por sí mismo seleccionando `Framework preset` como `Create React App`.
+Puede desplegarlo en Cloudflare Pages seleccionando `Framework preset` como `Create React App`.
+
+### Usando archivos preconstruidos
+
+Puede descargar los archivos preconstruidos de la rama `gh-pages` y desplegarlos en cualquier servicio de alojamiento estático que soporte aplicaciones de una sola página (SPA).
+
+Asegúrese de configurar la reescritura de URL para redirigir todas las solicitudes a `index.html`.
+
+Si está desplegando usando Nginx, es posible que necesite agregar la siguiente configuración:
+
+```nginx
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```
 
 ### Vercel
 
@@ -55,48 +75,32 @@ Puede desplegarla en páginas Cloudflare por sí mismo seleccionando `Framework 
 docker run -p 2000:2000 electh/reactflux
 ```
 
-## Configuración
+## Guía de Traducción
 
-Necesita una instancia de Miniflux funcional para utilizar este proyecto, y admite los siguientes dos métodos de inicio de sesión:
+Para ayudarnos a traducir ReactFlux a su idioma, por favor contribuya a la carpeta `locales` y envíe una solicitud de extracción.
 
-1. Inicio de sesión utilizando el nombre de usuario y contraseña de la instancia (no recomendado);
-2. Inicio de sesión utilizando un token de Miniflux, que puede ser generado en “Configuración > Claves API > Crear una nueva clave API”.
+Además, necesita agregar un archivo README para el idioma respectivo y referenciarlo en todos los archivos README existentes.
 
-## Ramas
+También debe modificar partes del código fuente para incluir los paquetes de idiomas i18n para `Arco Design` y `Day.js`.
 
-- Rama `main`: Proporciona las funciones más completas. Las nuevas funciones generalmente se lanzan primero en esta rama, adecuadas para la mayoría de los usuarios.
-- Rama `next`: Creado inicialmente para mejorar la compatibilidad con dispositivos móviles, ofreciendo una mejor experiencia y rendimiento para dispositivos móviles y al mismo tiempo siendo compatible con dispositivos de escritorio. Esta rama actualmente carece de funciones como atajos de teclado y migrará selectivamente funciones desde la rama `main`.
-- Rama `gh-pages`: Utilizada para compilar y desplegar la rama `main` en el servicio de páginas de GitHub.
+Para cambios detallados, por favor consulte las modificaciones en PR #120.
 
-Si quiere experimentar rápidamente la rama `next`, esta es una [instancia en línea](https://arcoflux.pages.dev/login).
+### Traductores Actuales
+
+- Español by [Victorhck](https://github.com/victorhck)
+- Français by [MickGe](https://github.com/MickGe)
+- 简体中文 by [Neko Aria](https://github.com/NekoAria)
 
 ## Colaboradores
 
-> ¡Gracias a todos los colaboradores que han hecho posible este proyecto!
+> ¡Gracias a todos los colaboradores que han hecho este proyecto más increíble!
 
-<table>
-<tr>
-    <td align="center">
-        <a href="https://github.com/NekoAria">
-            <img src="https://avatars.githubusercontent.com/u/23137034?v=4" width="90" alt="NekoAria" style="border-radius: 4px"/>
-        </a>
-        <br />
-        <sub><b>NekoAria</b></sub>
-        <br />
-        <sub><b> Colaborador principal </b></sub>
-    </td>
-    <td align="center">
-        <a href="https://github.com/electh">
-            <img src="https://avatars.githubusercontent.com/u/83588235?v=4" width="90" alt="electh" style="border-radius: 4px"/>
-        </a>
-        <br />
-        <sub><b>electh</b></sub>
-        <br />
-        <sub><b> Creador del proyecto </b></sub>
-    </td>
-</tr>
-</table>
+<a href="https://github.com/electh/ReactFlux/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=electh/ReactFlux" alt="Colaboradores de ReactFlux" />
+</a>
 
-## historial de estrellas en GitHub
+Hecho con [contrib.rocks](https://contrib.rocks).
+
+## Historial de estrellas en GitHub
 
 [![Historial de estrellas](https://starchart.cc/electh/ReactFlux.svg)](https://starchart.cc/electh/ReactFlux)

@@ -24,14 +24,20 @@ Key features include:
 - Syntax highlighting for code blocks
 - Other features waiting for you to discover...
 
-## Screenshots
+## Online Demo & Screenshots
+
+Try ReactFlux with our [online demo instance](https://reactflux.pages.dev).
+
+See how ReactFlux looks in different themes:
 
 ![Light Mode](images/light.png)
 ![Dark Mode](images/dark.png)
 
-## Demo
+## Quick Start
 
-[Online demo instance](https://reactflux.pages.dev/login)
+1. Ensure you have a working Miniflux instance
+2. Directly use our [online demo instance](https://reactflux.pages.dev) or deploy ReactFlux using one of the methods below
+3. Log in using your Miniflux username and password or API key (recommended)
 
 ## Deployment
 
@@ -39,7 +45,21 @@ Key features include:
 
 ReactFlux is built with React and generates a set of static web files after building, which can be directly deployed on Cloudflare Pages.
 
-You can also deploy it on Cloudflare Pages yourself by selecting `Framework preset` as `Create React App`.
+You can deploy it on Cloudflare Pages by selecting `Framework preset` as `Create React App`.
+
+### Using Pre-built Files
+
+You can download the pre-built files from the `gh-pages` branch and deploy them to any static hosting service that supports single-page applications (SPA).
+
+Make sure to configure URL rewriting to redirect all requests to `index.html`.
+
+If you are deploying using Nginx, you might need to add the following configuration:
+
+```nginx
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```
 
 ### Vercel
 
@@ -55,47 +75,31 @@ You can also deploy it on Cloudflare Pages yourself by selecting `Framework pres
 docker run -p 2000:2000 electh/reactflux
 ```
 
-## Configuration
+## Translation Guide
 
-You need a working Miniflux instance to use this project, and it supports the following two login methods:
+To help us translate ReactFlux into your language, please contribute to the `locales` folder and send a pull request.
 
-1. Log in using the instance username and password (not recommended);
-2. Log in using a Miniflux token, which can be generated in “Settings > API Keys > Create a new API key”.
+Additionally, you need to add a README file for the respective language and reference it in all existing README files.
 
-## Branches
+You should also modify parts of the source code to include the i18n language packages for `Arco Design` and `Day.js`.
 
-- `main` branch: Provides the most comprehensive features. New features are usually released on this branch first, suitable for most users.
-- `next` branch: Initially created to improve mobile device compatibility, offering better experience and performance for mobile devices while also being compatible with desktop devices. This branch currently lacks features like keyboard shortcuts and will selectively migrate features from the `main` branch.
-- `gh-pages` branch: Used for building and deploying the `main` branch to GitHub Pages.
+For detailed changes, please refer to the modifications in PR #120.
 
-If you want to quickly experience the `next` branch, here is an [online instance](https://arcoflux.pages.dev/login).
+### Current Translators
+
+- Español by [Victorhck](https://github.com/victorhck)
+- Français by [MickGe](https://github.com/MickGe)
+- 简体中文 by [Neko Aria](https://github.com/NekoAria)
 
 ## Contributors
 
-> Thanks to all the contributors who have made this project possible!
+> Thanks to all the contributors who have made this project more awesome!
 
-<table>
-<tr>
-    <td align="center">
-        <a href="https://github.com/NekoAria">
-            <img src="https://avatars.githubusercontent.com/u/23137034?v=4" width="90" alt="NekoAria" style="border-radius: 4px"/>
-        </a>
-        <br />
-        <sub><b>NekoAria</b></sub>
-        <br />
-        <sub><b> Main Contributor </b></sub>
-    </td>
-    <td align="center">
-        <a href="https://github.com/electh">
-            <img src="https://avatars.githubusercontent.com/u/83588235?v=4" width="90" alt="electh" style="border-radius: 4px"/>
-        </a>
-        <br />
-        <sub><b>electh</b></sub>
-        <br />
-        <sub><b> Project Initiator </b></sub>
-    </td>
-</tr>
-</table>
+<a href="https://github.com/electh/ReactFlux/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=electh/ReactFlux" alt="Contributors for ReactFlux" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
 
 ## Star History
 

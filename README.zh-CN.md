@@ -4,7 +4,7 @@
 
 ## 概述
 
-Reactflux 是 [Miniflux](https://github.com/miniflux/v2) 的第三方 Web 前端，旨在提供更加友好的阅读体验。
+ReactFlux 是 [Miniflux](https://github.com/miniflux/v2) 的第三方 Web 前端，旨在提供更加友好的阅读体验。
 
 主要特性包括：
 
@@ -22,24 +22,44 @@ Reactflux 是 [Miniflux](https://github.com/miniflux/v2) 的第三方 Web 前端
 - 多语言支持 (目前包括：English / Español / 简体中文)
 - 保存文章到第三方服务
 - 代码块语法高亮
-- 其他功能等你来发现...
+- 其他功能等您来发现...
 
-## 截图
+## 在线演示和截图
+
+试用 ReactFlux 的 [在线演示实例](https://reactflux.pages.dev)。
+
+查看 ReactFlux 在不同主题下的外观：
 
 ![浅色模式](images/light.png)
 ![深色模式](images/dark.png)
 
-## 演示
+## 快速开始
 
-[在线演示实例](https://reactflux.pages.dev/login)
+1. 确保您有一个正常运行的 Miniflux 实例
+2. 直接使用我们的 [在线演示实例](https://reactflux.pages.dev) 或使用以下方法之一部署 ReactFlux
+3. 使用您的 Miniflux 用户名和密码或 API 密钥（推荐）登录
 
 ## 部署
 
 ### Cloudflare Pages
 
-Reactflux 使用 React 编写，构建完成后生成一组静态网页文件，可以直接使用部署在 Cloudflare Pages 上的演示站。
+ReactFlux 使用 React 编写，构建完成后生成一组静态网页文件，可以直接部署在 Cloudflare Pages 上。
 
-您也可以自行部署在 Cloudflare Pages 上，选择 ` 框架预设 ` 为 `Create React App` 即可。
+您可以通过选择 `Framework preset` 为 `Create React App` 来将其部署在 Cloudflare Pages 上。
+
+### 使用预构建文件
+
+您可以从 `gh-pages` 分支下载预构建文件，并将它们部署到任何支持单页应用程序 (SPA) 的静态托管服务。
+
+确保配置 URL 重写，将所有请求重定向到 `index.html`。
+
+如果您使用 Nginx 部署，可能需要添加以下配置：
+
+```nginx
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```
 
 ### Vercel
 
@@ -55,47 +75,31 @@ Reactflux 使用 React 编写，构建完成后生成一组静态网页文件，
 docker run -p 2000:2000 electh/reactflux
 ```
 
-## 配置
+## 翻译指南
 
-您需要一个可用的 Miniflux 实例来使用本项目，支持以下两种登录方式：
+为了帮助我们将 ReactFlux 翻译成您的语言，请贡献到 `locales` 文件夹并发送 pull request。
 
-1. 使用实例用户名和密码登录（不推荐）；
-2. 使用 Miniflux 的 token 登录，可在“Settings > API Keys > Create a new API key”中生成一个。
+此外，您需要为相应的语言添加一个 README 文件，并在所有现有的 README 文件中引用它。
 
-## 分支说明
+您还需要修改部分源代码，以包含 `Arco Design` 和 `Day.js` 的 i18n 语言包。
 
-- `main` 分支：提供最全面的功能，新功能通常会首先在该分支上发布，适合绝大多数用户使用。
-- `next` 分支：最初为了提升移动设备兼容性而创建，为移动设备提供更好的体验和性能，同时也兼容桌面设备。该分支目前缺少键盘快捷键等功能，会有选择性地从 `main` 分支迁移后续功能。
-- `gh-pages` 分支：用于 `main` 分支的构建和部署到 GitHub Pages。
+有关详细的更改，请参阅 PR #120 中的修改。
 
-如果您想快速体验 `next` 分支，这里有一个[在线实例](https://arcoflux.pages.dev/login)。
+### 当前翻译者
+
+- Español by [Victorhck](https://github.com/victorhck)
+- Français by [MickGe](https://github.com/MickGe)
+- 简体中文 by [Neko Aria](https://github.com/NekoAria)
 
 ## 贡献者
 
-> 感谢所有为这个项目做出贡献的人！
+> 感谢所有让这个项目变得更加出色的贡献者！
 
-<table>
-<tr>
-    <td align="center">
-        <a href="https://github.com/NekoAria">
-            <img src="https://avatars.githubusercontent.com/u/23137034?v=4" width="90" alt="NekoAria" style="border-radius: 4px"/>
-        </a>
-        <br />
-        <sub><b>NekoAria</b></sub>
-        <br />
-        <sub><b> 主要贡献者 </b></sub>
-    </td>
-    <td align="center">
-        <a href="https://github.com/electh">
-            <img src="https://avatars.githubusercontent.com/u/83588235?v=4" width="90" alt="electh" style="border-radius: 4px"/>
-        </a>
-        <br />
-        <sub><b>electh</b></sub>
-        <br />
-        <sub><b> 项目发起人 </b></sub>
-    </td>
-</tr>
-</table>
+<a href="https://github.com/electh/ReactFlux/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=electh/ReactFlux" alt="ReactFlux 的贡献者们" />
+</a>
+
+使用 [contrib.rocks](https://contrib.rocks) 生成。
 
 ## 星标历史
 
