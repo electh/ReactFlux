@@ -1,0 +1,200 @@
+@custom-media --breakpoint (width < 768px);
+
+.littlefoot {
+  --button-background-color: #949494;
+  --button-text-color: #fff;
+  --button-active-background-color: #3f3f3f;
+  --button-active-text-color: #fff;
+  --button-border-radius: 0.5rem;
+  --button-height: 1rem;
+  --button-margin: 0 0.1rem;
+  --button-padding: 0 0.6rem;
+  --button-transition: background-color 0.25s ease, color 0.25s ease;
+  --popover-background-color: #f5f5f5;
+  --popover-text-color: #111;
+  --popover-border: 1px solid #949494;
+  --popover-border-radius: 0.5rem;
+  --popover-max-height: 15em;
+  --popover-max-width: 90%;
+  --popover-horizontal-padding: 1.4rem;
+  --popover-vertical-padding: 0.6rem;
+  --popover-shadow: 0 0 8px #0000004d;
+  --popover-transform-origin: 50% 0;
+  --popover-transform: scale(0.1) translateZ(0);
+  --popover-active-transform: scale(1) translateZ(0);
+  --popover-transition: opacity 0.25s ease, transform 0.25s ease;
+  --popover-width: 22em;
+  --popover-scroll-indicator-color: #3f3f3f;
+  --popover-tooltip-size: 0.5rem;
+
+  position: relative;
+}
+
+.littlefoot__button {
+  background-color: var(--button-background-color);
+  border-radius: var(--button-border-radius);
+  border: var(--button-border, 0);
+  color: var(--button-text-color);
+  cursor: pointer;
+  display: inline-block;
+  font-size: var(--button-font-size, 0.75rem);
+  font-weight: var(--button-font-weight, initial);
+  height: var(--button-height);
+  margin: var(--button-margin);
+  padding: var(--button-padding);
+  text-decoration: none;
+  transition: var(--button-transition);
+  vertical-align: middle;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &.is-active {
+    background-color: var(--button-active-background-color);
+    color: var(--button-active-text-color);
+  }
+
+  & svg {
+    float: left;
+    height: 0.3rem;
+  }
+}
+
+.littlefoot__popover {
+  border: var(--popover-border);
+  border-radius: var(--popover-border-radius);
+  box-shadow: var(--popover-shadow);
+  margin: calc(var(--popover-tooltip-size) + var(--button-height)) 0;
+  max-width: var(--popover-max-width);
+  position: absolute;
+  top: 0;
+  transform-origin: var(--popover-transform-origin);
+  transform: var(--popover-transform);
+  transition: var(--popover-transition);
+  width: var(--popover-width);
+  z-index: 1;
+
+  &.is-above {
+    bottom: 0;
+    top: auto;
+  }
+
+  &.is-active {
+    transform: var(--popover-active-transform);
+  }
+}
+
+.littlefoot__wrapper {
+  border-radius: var(--popover-border-radius);
+  position: relative;
+  z-index: 1;
+}
+
+.littlefoot__content {
+  -webkit-overflow-scrolling: touch;
+  background-color: var(--popover-background-color);
+  border-radius: var(--popover-border-radius);
+  box-sizing: border-box;
+  color: var(--popover-text-color);
+  font-family: var(--popover-font-family);
+  font-size: var(--popover-font-size, initial);
+  font-style: var(--popover-font-style, initial);
+  font-weight: var(--popover-font-weight, initial);
+  line-height: var(--popover-line-height, normal);
+  max-height: var(--popover-max-height);
+  overflow: auto;
+  padding: var(--popover-vertical-padding) var(--popover-horizontal-padding);
+  width: 100%;
+
+  & img {
+    max-width: 100%;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.is-scrollable {
+  --arrow-x: calc(-1 * var(--popover-horizontal-padding));
+  --arrow-y: calc(var(--popover-vertical-padding) / 2);
+
+  & .littlefoot__content::after {
+    bottom: 0;
+    color: var(--popover-scroll-indicator-color);
+    content: "\21E3";
+    display: block;
+    left: 0;
+    opacity: 1;
+    position: sticky;
+    text-align: center;
+    transform: translateX(var(--arrow-x)) translateY(var(--arrow-y));
+    transition: var(--popover-transition);
+    width: var(--popover-horizontal-padding);
+  }
+
+  &.is-fully-scrolled .littlefoot__content::after {
+    opacity: 0;
+  }
+}
+
+.littlefoot__tooltip {
+  --tooltip-margin: calc(-1 * var(--popover-tooltip-size));
+
+  background-color: var(--popover-background-color);
+  border: var(--popover-border);
+  box-shadow: var(--popover-shadow);
+  height: calc(2 * var(--popover-tooltip-size));
+  margin-left: var(--tooltip-margin);
+  position: absolute;
+  transform: rotate(45deg);
+  width: calc(2 * var(--popover-tooltip-size));
+}
+
+.is-below .littlefoot__tooltip {
+  top: var(--tooltip-margin);
+}
+
+.is-above .littlefoot__tooltip {
+  bottom: var(--tooltip-margin);
+}
+
+@media (--breakpoint) {
+  .littlefoot__popover {
+    border-radius: 0;
+    border-width: 1px 0 0;
+    inset: auto 0 0 !important;
+    margin: 0;
+    max-width: 100% !important;
+    position: fixed;
+    transform: translateY(100%);
+    width: 100%;
+
+    &.is-active {
+      transform: translateY(0);
+    }
+  }
+
+  .littlefoot__wrapper {
+    border-radius: 0;
+    max-width: 100% !important;
+    transform: none;
+  }
+
+  .littlefoot__tooltip {
+    display: none;
+  }
+}
+
+@media not print {
+  .littlefoot--print {
+    display: none;
+  }
+}
+
+@media print {
+  .littlefoot__popover,
+  .littlefoot__button {
+    display: none;
+  }
+}

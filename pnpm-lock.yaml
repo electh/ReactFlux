@@ -13,7 +13,7 @@ importers:
         version: 0.4.0
       '@arco-design/web-react':
         specifier: ^2.64.1
-        version: 2.64.1(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 2.64.1(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@nanostores/persistent':
         specifier: ^0.10.2
         version: 0.10.2(nanostores@0.11.3)
@@ -41,6 +41,9 @@ importers:
       html-react-parser:
         specifier: ^5.1.18
         version: 5.1.18(@types/react@18.3.12)(react@18.3.1)
+      littlefoot:
+        specifier: ^4.1.2
+        version: 4.1.2
       nanostores:
         specifier: ^0.11.3
         version: 0.11.3
@@ -944,6 +947,15 @@ packages:
     peerDependencies:
       nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0
       react: '>=18.0.0'
+
+  '@pacote/get-style@2.0.2':
+    resolution: {integrity: sha512-5Pwu8fOk0TNjP/yAsw8WgwgOnC1r890i51utJ1vjSjUolbrjv3TEtZHMKY00NzeEXIl3Gt5v8W5po3H/ftdhWw==}
+
+  '@pacote/pixels@2.0.2':
+    resolution: {integrity: sha512-VkvJ595J6xZ0hIRoD2rJtR0J+k7b5hCs8vzkMvr1/JIlk74MltOGYhCcr4u/iGQeSwkYCi28iLORwO4X4si5XQ==}
+
+  '@pacote/throttle@2.0.2':
+    resolution: {integrity: sha512-Yn8SbAAFRTiVXBvh8E0aGG44TUZOueQFtHqjIwfYkoKJHknchc3PjktiMbRFBFUCWZiS68lHP9K1gXdGu/Z1vQ==}
 
   '@remix-run/router@1.20.0':
     resolution: {integrity: sha512-mUnk8rPJBI9loFDZ+YzPGdeniYK+FTmRD1TMCz7ev2SNIozyKKpnGgsxO34u6Z4z/t0ITuu7voi/AshfsGsgFg==}
@@ -2100,6 +2112,9 @@ packages:
     resolution: {integrity: sha512-opevsywziHd3zHCVQGAj8zu+Z3yHNkkoYhWIGnq54RrCVwLz0MozotJEDnKsIBLvkfLGN6BLOyAeRrYI0pKA4g==}
     engines: {node: '>=18.0.0'}
 
+  littlefoot@4.1.2:
+    resolution: {integrity: sha512-XCEFqn2wx5lfcgr2TIKJ9HnCwfsSxtldVnjjCi2WChhRT8qArYxcpnDVaqVjsrYAG1In0eZJ8dC+9FTct5c70w==}
+
   lodash-es@4.17.21:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
 
@@ -3087,7 +3102,7 @@ snapshots:
     dependencies:
       color: 3.2.1
 
-  '@arco-design/web-react@2.64.1(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@arco-design/web-react@2.64.1(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@arco-design/color': 0.4.0
       '@babel/runtime': 7.25.6
@@ -4013,6 +4028,14 @@ snapshots:
     dependencies:
       nanostores: 0.11.3
       react: 18.3.1
+
+  '@pacote/get-style@2.0.2': {}
+
+  '@pacote/pixels@2.0.2':
+    dependencies:
+      '@pacote/get-style': 2.0.2
+
+  '@pacote/throttle@2.0.2': {}
 
   '@remix-run/router@1.20.0': {}
 
@@ -5216,6 +5239,12 @@ snapshots:
       log-update: 6.1.0
       rfdc: 1.4.1
       wrap-ansi: 9.0.0
+
+  littlefoot@4.1.2:
+    dependencies:
+      '@pacote/get-style': 2.0.2
+      '@pacote/pixels': 2.0.2
+      '@pacote/throttle': 2.0.2
 
   lodash-es@4.17.21: {}
 
