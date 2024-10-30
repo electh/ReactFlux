@@ -233,13 +233,21 @@ const FeedMenuGroup = ({ categoryId }) => {
 
 const CategoryGroup = () => {
   const { showUnreadFeedsOnly } = useStore(settingsState);
+  const feedsGroupedById = useStore(feedsGroupedByIdState);
   const filteredCategories = useStore(filteredCategoriesState);
 
   const location = useLocation();
   const currentPath = location.pathname;
 
   return filteredCategories
-    .filter((category) => !showUnreadFeedsOnly || category.unreadCount > 0)
+    .filter((category) =>
+      feedsGroupedById[category.id]?.some((feed) => {
+        if (showUnreadFeedsOnly) {
+          return feed.unreadCount > 0;
+        }
+        return true;
+      }),
+    )
     .map((category) => (
       <Collapse.Item
         name={`/category/${category.id}`}
