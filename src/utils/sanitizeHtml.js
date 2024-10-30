@@ -10,10 +10,15 @@ const getSanitizeOptions = () => ({
       "height",
       "loading",
       "src",
+      "srcset",
       "style",
       "title",
       "width",
     ],
+    // used by littlefoot
+    a: ["href", "name", "target", "rel", "referrerpolicy"],
+    sup: ["id"],
+    li: ["id"],
   },
   allowedSchemes: ["http", "https", "data", "mailto"],
 });

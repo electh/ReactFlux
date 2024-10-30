@@ -1,6 +1,7 @@
 import { Divider, Tag, Typography } from "@arco-design/web-react";
 import ReactHtmlParser from "html-react-parser";
-import { forwardRef } from "react";
+import { littlefoot } from "littlefoot";
+import { forwardRef, useEffect } from "react";
 import { PhotoSlider } from "react-photo-view";
 import { useNavigate } from "react-router-dom";
 import sanitizeHtml from "../../utils/sanitizeHtml";
@@ -23,6 +24,7 @@ import CodeBlock from "./CodeBlock";
 import ImageOverlayButton from "./ImageOverlayButton";
 import "./ArticleDetail.css";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
+import "./littlefoot.css";
 
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
   replace: (node) => {
@@ -101,6 +103,11 @@ const ArticleDetail = forwardRef((_, ref) => {
   const parsedHtml = ReactHtmlParser(sanitizedHtml, htmlParserOptions);
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category;
   const { id: feedId, title: feedTitle } = activeContent.feed;
+
+  // pretty footnotes
+  useEffect(() => {
+    littlefoot();
+  }, []);
 
   return (
     <article className="article-content" ref={ref} tabIndex={-1}>
