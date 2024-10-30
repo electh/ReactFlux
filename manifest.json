@@ -1,6 +1,6 @@
 {
-  "name": "Reactflux",
-  "short_name": "Reactflux",
+  "name": "ReactFlux",
+  "short_name": "ReactFlux",
   "description": "Simple RSS reader for Miniflux",
   "icons": [
     {
