@@ -107,6 +107,7 @@
     "hide_some_feeds": "Hide some feeds",
     "settings": "Settings",
     "miniflux_settings": "Miniflux Settings",
+    "report_issue": "Report an issue",
     "reset_settings": "Reset Settings",
     "logout": "Logout",
     "settings_reset_confirm": "Confirm Reset",

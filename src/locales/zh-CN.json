@@ -107,6 +107,7 @@
     "hide_some_feeds": "隐藏部分订阅源",
     "settings": "设置",
     "miniflux_settings": "Miniflux 设置",
+    "report_issue": "报告问题",
     "reset_settings": "重置设置",
     "logout": "登出",
     "settings_reset_confirm": "确认重置",

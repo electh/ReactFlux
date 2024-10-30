@@ -30,9 +30,10 @@ import {
 } from "../../store/dataState";
 import { settingsState } from "../../store/settingsState";
 import FeedIcon from "../ui/FeedIcon";
-import "./Sidebar.css";
 import AddFeed from "./AddFeed.jsx";
+import FeedDisplayToggle from "./FeedDisplayToggle.jsx";
 import Profile from "./Profile.jsx";
+import "./Sidebar.css";
 
 const MenuItem = Menu.Item;
 
@@ -303,7 +304,10 @@ const Sidebar = () => {
             >
               {polyglot.t("sidebar.feeds")}
             </Typography.Title>
-            <AddFeed />
+            <div style={{ display: "flex", gap: "8px", marginRight: "8px" }}>
+              <FeedDisplayToggle />
+              <AddFeed />
+            </div>
           </div>
           <Skeleton
             loading={!isAppDataReady}

@@ -107,6 +107,7 @@
     "hide_some_feeds": "Masquer certains flux",
     "settings": "Paramètres",
     "miniflux_settings": "Paramètres de Miniflux",
+    "report_issue": "Signaler un problème",
     "reset_settings": "Réinitialiser les paramètres",
     "logout": "Déconnexion",
     "settings_reset_confirm": "Confirmer la réinitialisation",
