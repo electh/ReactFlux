@@ -83,7 +83,7 @@ De plus, vous devez ajouter un fichier README pour la langue respective et le r�
 
 Vous devez également modifier certaines parties du code source pour inclure les packages de langue i18n pour `Arco Design` et `Day.js`.
 
-Pour des modifications détaillées, veuillez vous référer aux modifications dans la PR #120.
+Pour des modifications détaillées, veuillez vous référer aux modifications dans la [PR #120](https://github.com/electh/ReactFlux/pull/120).
 
 ### Traducteurs actuels
 
