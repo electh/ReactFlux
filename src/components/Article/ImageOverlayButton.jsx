@@ -34,6 +34,7 @@ const ImageComponent = ({
         alt={imgNode.attribs.alt ?? "image"}
       />
       <button
+        className={"image-overlay-button"}
         style={{
           position: "absolute",
           top: 0,
