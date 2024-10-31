@@ -11,6 +11,7 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@arco-design/web-react/icon";
+import { useLocation } from "react-router-dom";
 
 import { useStore } from "@nanostores/react";
 import { Fragment, useCallback, useEffect, useState } from "react";
@@ -31,11 +32,14 @@ import SidebarTrigger from "./SidebarTrigger.jsx";
 
 const SearchAndSortBar = () => {
   const { filterDate, filterString, filterType } = useStore(contentState);
-  const { orderDirection } = useStore(settingsState);
+  const { orderDirection, showStatus } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
   const tooltipLines = polyglot.t("search.tooltip").split("\n");
 
+  const location = useLocation();
+
   const [currentFilterString, setCurrentFilterString] = useState("");
+  const [isMount, setIsMount] = useState(false);
 
   const debouncedSetFilterString = useCallback(
     debounce((value) => setFilterString(value), 500),
@@ -54,18 +58,25 @@ const SearchAndSortBar = () => {
     updateSettings({ orderDirection: newOrderDirection });
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setFilterDate(null);
     setFilterType("title");
     setFilterString("");
-  }, []);
+    setIsMount(false);
+  }, [location.pathname, showStatus]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    if (!isMount) {
+      setIsMount(true);
+      return;
+    }
+
     if (filterString !== currentFilterString) {
       setCurrentFilterString(filterString);
     }
-  }, [filterString]);
+  }, [filterString, isMount]);
 
   return (
     <div className="search-and-sort-bar">

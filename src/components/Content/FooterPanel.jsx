@@ -1,17 +1,10 @@
 import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
-import { useEffect } from "react";
 
 import { useStore } from "@nanostores/react";
 import useAppData from "../../hooks/useAppData";
 import { polyglotState } from "../../hooks/useLanguage";
-import {
-  contentState,
-  setEntries,
-  setFilterDate,
-  setFilterString,
-  setFilterType,
-} from "../../store/contentState";
+import { contentState, setEntries } from "../../store/contentState";
 import { settingsState, updateSettings } from "../../store/settingsState";
 import CustomTooltip from "../ui/CustomTooltip";
 import "./FooterPanel.css";
@@ -42,13 +35,6 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const handleFilterChange = (value) => {
     updateSettings({ showStatus: value });
   };
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    setFilterDate(null);
-    setFilterType("title");
-    setFilterString("");
-  }, [showStatus]);
 
   return (
     <div className="entry-panel">
