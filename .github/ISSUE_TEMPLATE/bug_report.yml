@@ -1,0 +1,106 @@
+name: "🐛 Bug Report"
+description: "Create a report to help us improve ReactFlux"
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Videos
+      description: If applicable, add screenshots or videos to help explain your problem.
+    validations:
+      required: false
+
+  - type: input
+    id: reactflux-version
+    attributes:
+      label: ReactFlux Version
+      placeholder: "e.g. v2024.10.31 or 26bb210"
+    validations:
+      required: true
+
+  - type: input
+    id: miniflux-version
+    attributes:
+      label: Miniflux Version
+      placeholder: "e.g. v2.2.2"
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: "e.g. Chrome 130.0.6723.92"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      placeholder: "e.g. Windows 11 24H2, iOS 18.1"
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      placeholder: "e.g. Desktop, iPhone 16"
+    validations:
+      required: true
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Console Errors
+      description: If applicable, please provide any relevant console errors
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: |
+        Please provide any additional context that might be helpful:
+        - Are you using any specific settings? (e.g. dark mode, custom theme)
+        - Does this happen with specific feeds or articles?
+        - Any other relevant information
+    validations:
+      required: false
