@@ -5,25 +5,33 @@ import { IconLink } from "@arco-design/web-react/icon";
 import { useStore } from "@nanostores/react";
 import { settingsState } from "../../store/settingsState";
 
-const ImageComponent = ({ imgNode, isIcon, index, togglePhotoSlider }) => {
+const ImageComponent = ({
+  imgNode,
+  isIcon,
+  isBigImage,
+  index,
+  togglePhotoSlider,
+}) => {
   const { fontSize } = useStore(settingsState);
 
-  return (
+  return isIcon ? (
+    <img
+      {...imgNode.attribs}
+      className={"icon-image"}
+      alt={imgNode.attribs.alt ?? "image"}
+      style={{
+        display: "inline-block",
+        width: "auto",
+        height: `${fontSize}rem`,
+        margin: 0,
+      }}
+    />
+  ) : (
     <div style={{ position: "relative" }}>
       <img
         {...imgNode.attribs}
-        className={isIcon ? "" : "big-image"}
+        className={isBigImage ? "big-image" : ""}
         alt={imgNode.attribs.alt ?? "image"}
-        style={
-          isIcon
-            ? {
-                display: "inline-block",
-                width: "auto",
-                height: `${fontSize}rem`,
-                margin: 0,
-              }
-            : {}
-        }
       />
       <button
         style={{
@@ -57,13 +65,20 @@ const ImageOverlayButton = ({
   isLinkWrapper = false,
 }) => {
   const [isIcon, setIsIcon] = useState(false);
-
+  const [isBigImage, setIsBigImage] = useState(false);
   useEffect(() => {
     const imgNode = isLinkWrapper ? node.children[0] : node;
     const imgSrc = imgNode.attribs.src;
     const img = new Image();
     img.src = imgSrc;
-    img.onload = () => setIsIcon(img.width <= 100 && img.height <= 100);
+
+    img.onload = () => {
+      const isSmall = img.width <= 100 && img.height <= 100;
+      const isLarge = img.width > 768;
+
+      setIsIcon(isSmall);
+      setIsBigImage(isLarge && !isSmall);
+    };
   }, [node, isLinkWrapper]);
 
   const imgNode = isLinkWrapper ? node.children[0] : node;
@@ -74,6 +89,7 @@ const ImageOverlayButton = ({
         <ImageComponent
           imgNode={imgNode}
           isIcon={isIcon}
+          isBigImage={isBigImage}
           index={index}
           togglePhotoSlider={togglePhotoSlider}
         />
@@ -83,6 +99,7 @@ const ImageOverlayButton = ({
       <ImageComponent
         imgNode={imgNode}
         isIcon={isIcon}
+        isBigImage={isBigImage}
         index={index}
         togglePhotoSlider={togglePhotoSlider}
       />
@@ -98,6 +115,7 @@ const ImageOverlayButton = ({
               <ImageComponent
                 imgNode={imgNode}
                 isIcon={isIcon}
+                isBigImage={isBigImage}
                 index={index}
                 togglePhotoSlider={togglePhotoSlider}
               />
@@ -120,6 +138,7 @@ const ImageOverlayButton = ({
           <ImageComponent
             imgNode={imgNode}
             isIcon={isIcon}
+            isBigImage={isBigImage}
             index={index}
             togglePhotoSlider={togglePhotoSlider}
           />

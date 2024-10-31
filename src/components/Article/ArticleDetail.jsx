@@ -166,6 +166,7 @@ const ArticleDetail = forwardRef((_, ref) => {
               fontSize: `${fontSize}rem`,
               width: `${articleWidth}%`,
               fontFamily: fontFamily,
+              "--article-width": articleWidth,
             }}
           >
             {parsedHtml}

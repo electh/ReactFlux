@@ -118,6 +118,30 @@ p {
   -webkit-backdrop-filter: blur(10px);
 }
 
+.article-body {
+  --article-width: 60%;
+  --image-scale: calc((100 / var(--article-width)) * 100%);
+  --image-margin: calc((var(--image-scale) - 100%) / -2);
+}
+
+@media screen and (max-width: 768px) {
+  .article-body .big-image {
+    border-radius: 0;
+    display: block;
+    margin: 10px var(--image-margin);
+    width: var(--image-scale);
+    max-width: var(--image-scale);
+  }
+
+  .article-body .image-overlay-button {
+    border-radius: 0;
+    display: block;
+    margin: 0 var(--image-margin);
+    width: var(--image-scale);
+    max-width: var(--image-scale);
+  }
+}
+
 /* 文章内容文本样式 */
 .article-content {
   flex: 1;
