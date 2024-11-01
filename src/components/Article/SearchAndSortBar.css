@@ -11,7 +11,6 @@
   top: 0;
   align-items: center;
   z-index: 2;
-  border-bottom: 1px solid var(--color-border-2);
   background-color: rgb(var(--color-bg-1));
   padding: 8px 0;
 }
@@ -21,6 +20,10 @@
   flex-shrink: 0;
   gap: 8px;
   margin: 0 8px;
+}
+
+.search-and-sort-bar .button-group button {
+  background-color: transparent;
 }
 
 .arco-input-group-addbefore .arco-select .arco-select-view {

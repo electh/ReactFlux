@@ -3,8 +3,11 @@
   flex-direction: row;
   justify-content: space-between;
   z-index: 2;
-  border-top: 1px solid var(--color-border-2);
   padding: 8px 10px;
+}
+
+.entry-panel .arco-btn-secondary {
+  background-color: transparent;
 }
 
 @media screen and (max-width: 768px) {
