@@ -201,8 +201,6 @@
     "theme_color_label": "Color del tema",
     "theme_color_description": "Escoger su color del tema",
     "theme_color_aria_label": "Cambiar el color del tema a %{color}",
-    "compact_article_card_label": "Compactar la tarjeta de artículo",
-    "compact_article_card_description": "Utilizar la miniatura pequeña en la tarjeta de artículo",
     "show_detailed_relative_time_label": "Mostrar tiempo relativo detallado",
     "show_detailed_relative_time_description": "Mostrar tiempo relativo detallado en la tarjeta de artículo",
     "show_estimated_reading_time_label": "Mostrar tiempo estimado de lectura",

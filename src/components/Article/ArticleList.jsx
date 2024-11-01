@@ -55,8 +55,7 @@ const LoadMoreComponent = ({ getEntries }) => {
 
 const ArticleList = forwardRef(
   ({ getEntries, handleEntryClick, cardsRef }, ref) => {
-    const { layout, pageSize } = useStore(settingsState);
-    const isCompactLayout = layout === "small";
+    const { pageSize } = useStore(settingsState);
 
     const { isArticleListReady, loadMoreVisible } = useStore(contentState);
     const filteredEntries = useStore(filteredEntriesState);
@@ -78,10 +77,7 @@ const ArticleList = forwardRef(
     const virtualizer = useVirtualizer({
       count: filteredEntries.length,
       getScrollElement: () => cardsRef.current,
-      estimateSize: useCallback(
-        () => (isCompactLayout ? 120 : 280),
-        [isCompactLayout],
-      ),
+      estimateSize: useCallback(() => 160, []),
       overscan: 5,
     });
     const virtualItems = virtualizer.getVirtualItems();
@@ -126,7 +122,6 @@ const ArticleList = forwardRef(
                       <ArticleCard
                         entry={filteredEntries[item.index]}
                         handleEntryClick={handleEntryClick}
-                        mini={isCompactLayout}
                       >
                         <Ripple color="var(--color-text-4)" duration={1000} />
                       </ArticleCard>

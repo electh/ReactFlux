@@ -14,21 +14,37 @@ import FeedIcon from "../ui/FeedIcon";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 import "./ArticleCard.css";
 
-const ArticleCardImage = ({ entry, isThumbnail, setHasError }) => {
-  const imageSize = isThumbnail
-    ? { width: "80px", height: "80px" }
-    : { width: "100%", height: "160px" };
+const ASPECT_RATIO_THRESHOLD = 4 / 3;
+
+const ArticleCardImage = ({
+  entry,
+  setHasError,
+  isWideImage,
+  onLoadComplete,
+}) => {
+  const imageSize = isWideImage
+    ? { width: "100%", height: "100%" }
+    : { width: "80px", height: "80px" };
+
+  const handleImageLoad = (e) => {
+    const img = e.target;
+    if (img) {
+      const aspectRatio = img.naturalWidth / img.naturalHeight;
+      onLoadComplete(aspectRatio);
+    }
+  };
 
   return (
-    <div className={isThumbnail ? "thumbnail" : "cover-image"}>
+    <div className={"thumbnail"}>
       <ImageWithLazyLoading
         alt={entry.id}
-        borderRadius={isThumbnail ? "2px" : undefined}
+        borderRadius={"2px"}
         src={entry.imgSrc}
         status={entry.status}
         width={imageSize.width}
         height={imageSize.height}
         setHasError={setHasError}
+        onLoad={handleImageLoad}
       />
     </div>
   );
@@ -40,16 +56,21 @@ const extractTextFromHtml = (html) => {
   return div.textContent || div.innerText || "";
 };
 
-const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
+const ArticleCardContent = ({ entry, showFeedIcon, children }) => {
   const { showDetailedRelativeTime, showEstimatedReadingTime } =
     useStore(settingsState);
 
   const [hasError, setHasError] = useState(false);
+  const [isWideImage, setIsWideImage] = useState(false);
 
   const contentClass = classNames({
-    "article-card-mini-content": mini,
-    "article-card-mini-content-padding": mini && showFeedIcon,
+    "article-card-mini-content": true,
+    "article-card-mini-content-padding": showFeedIcon,
   });
+
+  const handleImageLoadComplete = (aspectRatio) => {
+    setIsWideImage(aspectRatio >= ASPECT_RATIO_THRESHOLD);
+  };
 
   return (
     <div
@@ -60,23 +81,20 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
         opacity: entry.status === "unread" ? 1 : 0.5,
       }}
     >
-      <div className={mini ? "article-card-mini-content-text" : ""}>
+      <div className="article-card-mini-content-text">
         <div className="article-card-header">
           <div className="article-card-meta">
             <Typography.Text
-              className="article-card-info"
+              className="article-card-info article-title"
               style={{ lineHeight: "1em" }}
             >
               {showFeedIcon && (
-                <FeedIcon
-                  feed={entry.feed}
-                  className={mini ? "feed-icon-mini" : "feed-icon"}
-                />
+                <FeedIcon feed={entry.feed} className="feed-icon-mini" />
               )}
               {entry.feed.title}
             </Typography.Text>
             <Typography.Text
-              className="article-card-info"
+              className="article-card-info published-time"
               style={{ lineHeight: "1em" }}
             >
               {generateRelativeTime(
@@ -101,6 +119,16 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
             {entry.title}
           </Typography.Ellipsis>
         </div>
+        {entry.imgSrc && !hasError && isWideImage && (
+          <div className="article-card-image-container-wide">
+            <ArticleCardImage
+              entry={entry}
+              setHasError={setHasError}
+              isWideImage={isWideImage}
+              onLoadComplete={handleImageLoadComplete}
+            />
+          </div>
+        )}
         <div className="article-card-body">
           <div className="article-card-content">
             <Typography.Text
@@ -130,12 +158,13 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
               {entry.starred && <IconStarFill className="icon-starred" />}
             </Typography.Text>
           </div>
-          {entry.imgSrc && !hasError && (
+          {entry.imgSrc && !hasError && !isWideImage && (
             <div className="article-card-image-container-mini">
               <ArticleCardImage
                 entry={entry}
-                isThumbnail={mini}
                 setHasError={setHasError}
+                isWideImage={isWideImage}
+                onLoadComplete={handleImageLoadComplete}
               />
             </div>
           )}
@@ -146,7 +175,7 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
   );
 };
 
-const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
+const ArticleCard = ({ entry, handleEntryClick, children }) => {
   const { markReadOnScroll, showFeedIcon } = useStore(settingsState);
   const { activeContent } = useStore(contentState);
 
@@ -196,11 +225,7 @@ const ArticleCard = ({ entry, handleEntryClick, mini, children }) => {
         >
           <Card.Meta
             description={
-              <ArticleCardContent
-                entry={entry}
-                showFeedIcon={showFeedIcon}
-                mini={mini}
-              >
+              <ArticleCardContent entry={entry} showFeedIcon={showFeedIcon}>
                 {children}
               </ArticleCardContent>
             }

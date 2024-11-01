@@ -201,8 +201,6 @@
     "theme_color_label": "主题颜色",
     "theme_color_description": "选择您的主题颜色",
     "theme_color_aria_label": "将主题颜色更改为 %{color}",
-    "compact_article_card_label": "紧凑文章卡片",
-    "compact_article_card_description": "使用小缩略图显示文章卡片",
     "show_detailed_relative_time_label": "显示详细相对时间",
     "show_detailed_relative_time_description": "在文章卡片中显示详细相对时间",
     "show_estimated_reading_time_label": "显示预计阅读时间",

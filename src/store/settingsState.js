@@ -7,7 +7,6 @@ const defaultValue = {
   fontSize: 1.05,
   homePage: "all",
   language: getBrowserLanguage(),
-  layout: "large",
   markReadOnScroll: false,
   orderBy: "created_at",
   orderDirection: "desc",

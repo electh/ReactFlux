@@ -22,7 +22,6 @@ const Appearance = () => {
     articleWidth,
     fontSize,
     fontFamily,
-    layout,
     showDetailedRelativeTime,
     showEstimatedReadingTime,
     showFeedIcon,
@@ -97,20 +96,6 @@ const Appearance = () => {
             />
           ))}
         </div>
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        title={polyglot.t("appearance.compact_article_card_label")}
-        description={polyglot.t("appearance.compact_article_card_description")}
-      >
-        <Switch
-          checked={layout === "small"}
-          onChange={(value) =>
-            handleConfigChange({ layout: value ? "small" : "large" })
-          }
-        />
       </SettingItem>
 
       <Divider />

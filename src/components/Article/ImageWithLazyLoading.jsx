@@ -13,6 +13,7 @@ const ImageWithLazyLoading = ({
   status,
   width,
   setHasError,
+  onLoad,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -21,7 +22,12 @@ const ImageWithLazyLoading = ({
     onChange: (inView) => {
       if (inView && !isLoaded) {
         const image = new Image();
-        image.onload = () => setIsLoaded(true);
+        image.onload = () => {
+          setIsLoaded(true);
+          if (onLoad) {
+            onLoad(image);
+          }
+        };
         image.onerror = () => setHasError(true);
         image.src = src;
       }
@@ -55,6 +61,7 @@ const ImageWithLazyLoading = ({
               objectFit: "cover",
               borderRadius,
             }}
+            onLoad={onLoad}
           />
         ) : (
           <div className="skeleton-container">
