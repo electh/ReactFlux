@@ -18,8 +18,8 @@
 
 .article-card-mini-content {
   display: flex;
-  padding-left: 0;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .article-card-mini-content-padding {
@@ -27,13 +27,13 @@
 }
 
 .article-card-mini-content-text {
-  margin-top: -2px;
-  flex: 1;
+  width: 100%;
 }
 
 .article-card-title {
   color: var(--color-text-2);
   font-weight: 500;
+  margin-top: 8px;
 }
 
 .article-card-title.arco-typography {
@@ -64,7 +64,7 @@
 
 .card-custom-style .arco-card-body {
   box-sizing: border-box;
-  padding: 10px;
+  padding: 8px;
   width: 100%;
 }
 
@@ -88,6 +88,9 @@
   overflow: hidden;
   height: 80px;
   width: 80px;
+  order: 2;
+  flex-shrink: 0;
+  margin: 0;
 }
 
 .cover-image {
@@ -125,4 +128,34 @@
   width: 80px;
   height: 80px;
   overflow: hidden;
+}
+
+.article-card-preview {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--color-text-3);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.article-card-header {
+  margin-bottom: 8px;
+}
+
+.article-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.article-card-body {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.article-card-content {
+  flex: 1;
+  min-width: 0;
 }

@@ -1,5 +1,5 @@
 import { Card, Typography } from "@arco-design/web-react";
-import { IconStarFill } from "@arco-design/web-react/icon";
+import { IconClockCircle, IconStarFill } from "@arco-design/web-react/icon";
 import classNames from "classnames";
 import { useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -9,6 +9,7 @@ import useEntryActions from "../../hooks/useEntryActions";
 import { contentState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import { generateReadingTime, generateRelativeTime } from "../../utils/date";
+import sanitizeHtml from "../../utils/sanitizeHtml";
 import FeedIcon from "../ui/FeedIcon";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 import "./ArticleCard.css";
@@ -33,6 +34,12 @@ const ArticleCardImage = ({ entry, isThumbnail, setHasError }) => {
   );
 };
 
+const extractTextFromHtml = (html) => {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.textContent || div.innerText || "";
+};
+
 const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
   const { showDetailedRelativeTime, showEstimatedReadingTime } =
     useStore(settingsState);
@@ -53,51 +60,86 @@ const ArticleCardContent = ({ entry, showFeedIcon, mini, children }) => {
         opacity: entry.status === "unread" ? 1 : 0.5,
       }}
     >
-      {entry.imgSrc && !hasError && (
-        <div
-          className={
-            mini
-              ? "article-card-image-container-mini"
-              : "article-card-image-container"
-          }
-          style={{ margin: mini ? "0" : "0 0 10px 0" }}
-        >
-          <ArticleCardImage
-            entry={entry}
-            isThumbnail={mini}
-            setHasError={setHasError}
-          />
-        </div>
-      )}
       <div className={mini ? "article-card-mini-content-text" : ""}>
-        <Typography.Ellipsis
-          className="article-card-title"
-          rows={2}
-          expandable={false}
-        >
-          {entry.title}
-        </Typography.Ellipsis>
-        <Typography.Text
-          className="article-card-info"
-          style={{ lineHeight: "1em" }}
-        >
-          {showFeedIcon && (
-            <FeedIcon
-              feed={entry.feed}
-              className={mini ? "feed-icon-mini" : "feed-icon"}
-            />
+        <div className="article-card-header">
+          <div className="article-card-meta">
+            <Typography.Text
+              className="article-card-info"
+              style={{ lineHeight: "1em" }}
+            >
+              {showFeedIcon && (
+                <FeedIcon
+                  feed={entry.feed}
+                  className={mini ? "feed-icon-mini" : "feed-icon"}
+                />
+              )}
+              {entry.feed.title}
+            </Typography.Text>
+            <Typography.Text
+              className="article-card-info"
+              style={{ lineHeight: "1em" }}
+            >
+              {generateRelativeTime(
+                entry.published_at,
+                showDetailedRelativeTime,
+              )}
+            </Typography.Text>
+          </div>
+          <Typography.Ellipsis
+            className="article-card-info"
+            style={{ lineHeight: "1em" }}
+            rows={1}
+            expandable={false}
+          >
+            {entry.author}
+          </Typography.Ellipsis>
+          <Typography.Ellipsis
+            className="article-card-title"
+            rows={2}
+            expandable={false}
+          >
+            {entry.title}
+          </Typography.Ellipsis>
+        </div>
+        <div className="article-card-body">
+          <div className="article-card-content">
+            <Typography.Text
+              className="article-card-info"
+              style={{ lineHeight: "1em" }}
+            >
+              <div style={{ marginBottom: 8 }}>
+                {showEstimatedReadingTime && (
+                  <>
+                    <IconClockCircle />{" "}
+                    {generateReadingTime(entry.reading_time)}
+                  </>
+                )}
+              </div>
+            </Typography.Text>
+            <Typography.Ellipsis
+              className="article-card-preview"
+              rows={3}
+              expandable={false}
+            >
+              {extractTextFromHtml(sanitizeHtml(entry.content))}
+            </Typography.Ellipsis>
+            <Typography.Text
+              className="article-card-info"
+              style={{ lineHeight: "1em" }}
+            >
+              {entry.starred && <IconStarFill className="icon-starred" />}
+            </Typography.Text>
+          </div>
+          {entry.imgSrc && !hasError && (
+            <div className="article-card-image-container-mini">
+              <ArticleCardImage
+                entry={entry}
+                isThumbnail={mini}
+                setHasError={setHasError}
+              />
+            </div>
           )}
-          {entry.feed.title}
-          <br />
-          {generateRelativeTime(entry.published_at, showDetailedRelativeTime)}
-          {showEstimatedReadingTime && (
-            <>
-              <br />
-              {generateReadingTime(entry.reading_time)}
-            </>
-          )}
-        </Typography.Text>
-        {entry.starred && <IconStarFill className="icon-starred" />}
+        </div>
       </div>
       <div>{children}</div>
     </div>
