@@ -9,19 +9,29 @@ ReactFlux es una interfaz web de terceros para [Miniflux](https://github.com/min
 Las funcionalidades clave incluyen:
 
 - Diseño de interfaz moderna
-- Diseño adaptable a todos los dispositivos (responsivo)
+- Diseño adaptable a todos los dispositivos (responsivo), soporte de gestos táctiles
 - Admite modo oscuro y temas personalizados
-- Búsqueda de artículos y suscripciones con una sintaxis similar a Google
-- Filtrar artículos por fecha de publicación
-- Gestión de feed y de grupos de feeds
-- Atajos de teclado (personalizables)
-- Marca automáticamente los artículos como leidos al desplazarlos al hacer scroll
-- Actualización por lotes del host de URL de suscripción filtradas (útil para reemplazar instancias de RSSHub)
-- Actualización por lotes de suscripciones recientemente falladas
-- Elimina artículos duplicados por hash, título o URL al cargar la lista
-- Disponible en varios idiomas (incluye: English / Español / Français / 简体中文)
-- Guardar artículo en servicios de terceros
-- Resaltado de sintaxis para bloques de código
+- Experiencia de lectura personalizable:
+  - Configuración de familia y tamaño de fuente
+  - Ajuste del ancho del artículo
+  - Opciones de alineación del título
+  - Visor de imágenes con zoom y presentación
+  - Mejora de notas al pie
+  - Resaltado de sintaxis para código
+  - Tiempo estimado de lectura
+- Gestión de artículos y feeds:
+  - Búsqueda con sintaxis similar a Google
+  - Filtrar artículos por estado de lectura, fecha de publicación, título, contenido o autor
+  - Operaciones por lotes para feeds
+  - Soporte de recuperación de texto completo
+  - Elimina artículos duplicados por hash, título o URL
+  - Marca automáticamente los artículos como leídos al desplazarlos
+- Características avanzadas:
+  - Atajos de teclado (personalizables)
+  - Actualización por lotes del host de URL de suscripción filtradas (útil para reemplazar instancias de RSSHub)
+  - Actualización por lotes de suscripciones con errores
+  - Guardar artículos en servicios de terceros
+- Disponible en varios idiomas (English / Español / Français / 简体中文)
 - Otras características esperando que las descubras...
 
 ## Demostración en línea y capturas de pantalla

@@ -9,19 +9,29 @@ ReactFlux is a third-party web frontend for [Miniflux](https://github.com/minifl
 Key features include:
 
 - Modern interface design
-- Responsive layout
+- Responsive layout with touch gestures support
 - Support for dark mode and custom themes
-- Article and feed search with Google-like syntax
-- Filter articles by publish date
-- Feed and group management
-- Keyboard shortcuts (customizable)
-- Automatically mark articles as read when scrolling
-- Batch update the host of filtered subscription URLs (useful for replacing RSSHub instances)
-- Batch refresh recently errored subscriptions
-- De-duplicate articles by hash, title, or URL when loading the list
-- I18n supports (include: English / Español / Français / 简体中文)
-- Save article to third-party services
-- Syntax highlighting for code blocks
+- Customizable reading experience:
+  - Font family and size settings
+  - Article width adjustment
+  - Title alignment options
+  - Image viewer with zoom and slideshow
+  - Footnotes enhancement
+  - Code syntax highlighting
+  - Estimated reading time
+- Article and feed management:
+  - Google-like syntax for search
+  - Filter articles by read status, publish date, title, content, or author
+  - Batch operations for feeds
+  - Full-text fetching support
+  - De-duplicate articles by hash, title, or URL
+  - Auto mark articles as read while scrolling
+- Advanced features:
+  - Keyboard shortcuts (customizable)
+  - Batch update the host of filtered subscription URLs (useful for replacing RSSHub instances)
+  - Batch refresh errored subscriptions
+  - Save articles to third-party services
+- I18n supports (English / Español / Français / 简体中文)
 - Other features waiting for you to discover...
 
 ## Online Demo & Screenshots

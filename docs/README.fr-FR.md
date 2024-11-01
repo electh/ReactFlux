@@ -9,19 +9,29 @@ ReactFlux est une interface web tierce pour [Miniflux](https://github.com/minifl
 Les fonctionnalités principales incluent :
 
 - Design d'interface moderne
-- Mise en page responsive
+- Mise en page responsive avec support de gestes tactiles
 - Prise en charge du mode sombre et des thèmes personnalisés
-- Recherche d'articles et de flux avec une syntaxe similaire à Google
-- Filtrage des articles par date de publication
-- Gestion des flux et des groupes
-- Raccourcis clavier (personnalisables)
-- Marquage automatique des articles comme lus lors du défilement
-- Mise à jour par lot de l'hôte des URLs de souscription filtrées (utile pour remplacer les instances RSSHub)
-- Actualisation par lot des souscriptions récemment en erreur
-- Dédoublonnage des articles par hash, titre ou URL lors du chargement de la liste
-- Support multilingue (inclut : English / Español / Français / 简体中文)
-- Sauvegarde d'articles vers des services tiers
-- Coloration syntaxique pour les blocs de code
+- Expérience de lecture personnalisable :
+  - Paramètres de police et de taille
+  - Ajustement de la largeur des articles
+  - Options d'alignement des titres
+  - Visionneuse d'images avec zoom et diaporama
+  - Amélioration des notes de bas de page
+  - Coloration syntaxique du code
+  - Temps de lecture estimé
+- Gestion des articles et des flux :
+  - Recherche avec une syntaxe similaire à Google
+  - Filtrage des articles par statut de lecture, date de publication, titre, contenu ou auteur
+  - Opérations par lot sur les flux
+  - Support de la récupération du texte intégral
+  - Dédoublonnage des articles par hash, titre ou URL
+  - Marquage automatique des articles comme lus lors du défilement
+- Fonctionnalités avancées :
+  - Raccourcis clavier (personnalisables)
+  - Mise à jour par lot de l'hôte des URLs de souscription filtrées (utile pour remplacer les instances RSSHub)
+  - Actualisation par lot des souscriptions récemment en erreur
+  - Sauvegarde d'articles vers des services tiers
+- Support multilingue (English / Español / Français / 简体中文)
 - D'autres fonctionnalités à découvrir...
 
 ## Démo en ligne et captures d'écran
