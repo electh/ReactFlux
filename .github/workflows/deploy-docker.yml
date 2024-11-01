@@ -9,8 +9,9 @@ on:
       - '.husky/**'
       - '.editorconfig'
       - '.gitignore'
+      - 'docs/**'
       - 'biome.json'
-      - 'README*.md'
+      - 'README.md'
 
   workflow_dispatch:
 

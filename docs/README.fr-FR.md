@@ -1,6 +1,6 @@
 # ReactFlux
 
-Lire dans d'autres langues : [English](README.md), [Español](README.es-ES.md), [简体中文](README.zh-CN.md)
+Lire dans d'autres langues : [English](../README.md), [Español](README.es-ES.md), [简体中文](README.zh-CN.md)
 
 ## Aperçu
 
@@ -19,7 +19,7 @@ Les fonctionnalités principales incluent :
 - Mise à jour par lot de l'hôte des URLs de souscription filtrées (utile pour remplacer les instances RSSHub)
 - Actualisation par lot des souscriptions récemment en erreur
 - Dédoublonnage des articles par hash, titre ou URL lors du chargement de la liste
-- Support multilingue (inclut : Anglais / Español / 简体中文)
+- Support multilingue (inclut : English / Español / Français / 简体中文)
 - Sauvegarde d'articles vers des services tiers
 - Coloration syntaxique pour les blocs de code
 - D'autres fonctionnalités à découvrir...
