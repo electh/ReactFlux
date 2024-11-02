@@ -23,6 +23,7 @@ const Appearance = () => {
     fontSize,
     fontFamily,
     showDetailedRelativeTime,
+    showEstimatedReadingTime,
     showFeedIcon,
     themeColor,
     titleAlignment,
@@ -109,6 +110,22 @@ const Appearance = () => {
           checked={showDetailedRelativeTime}
           onChange={(value) =>
             handleConfigChange({ showDetailedRelativeTime: value })
+          }
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        title={polyglot.t("appearance.show_estimated_reading_time_label")}
+        description={polyglot.t(
+          "appearance.show_estimated_reading_time_description",
+        )}
+      >
+        <Switch
+          checked={showEstimatedReadingTime}
+          onChange={(value) =>
+            handleConfigChange({ showEstimatedReadingTime: value })
           }
         />
       </SettingItem>
