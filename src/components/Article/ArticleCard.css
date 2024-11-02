@@ -7,6 +7,9 @@
   padding: 12px;
   user-select: none;
   overflow: hidden;
+  contain: content;
+  will-change: background-color;
+  transform: translateZ(0);
 }
 
 .card-wrapper:hover {
@@ -22,6 +25,8 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  will-change: opacity, background-color;
+  transform: translateZ(0);
 }
 
 .card-meta {
