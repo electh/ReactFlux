@@ -24,7 +24,7 @@ const useKeyHandlers = () => {
   const scrollSelectedCardIntoView = () => {
     if (entryListRef.current) {
       const selectedCard = entryListRef.current.el.querySelector(
-        ".card-custom-selected-style",
+        ".card-wrapper.selected",
       );
       if (selectedCard) {
         selectedCard.scrollIntoView({
