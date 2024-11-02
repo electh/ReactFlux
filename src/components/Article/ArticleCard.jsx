@@ -55,8 +55,12 @@ const extractTextFromHtml = (html) => {
 };
 
 const ArticleCard = ({ entry, handleEntryClick, children }) => {
-  const { markReadOnScroll, showFeedIcon, showDetailedRelativeTime } =
-    useStore(settingsState);
+  const {
+    markReadOnScroll,
+    showFeedIcon,
+    showDetailedRelativeTime,
+    showEstimatedReadingTime,
+  } = useStore(settingsState);
   const { activeContent } = useStore(contentState);
   const isSelected = activeContent && entry.id === activeContent.id;
   const { handleToggleStatus } = useEntryActions();
@@ -73,7 +77,9 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
   const { ref } = useInView({
     skip: shouldSkip,
     onChange: async (inView, entry) => {
-      if (!markReadOnScroll || !isUnread) return;
+      if (!markReadOnScroll || !isUnread) {
+        return;
+      }
 
       if (inView) {
         setHasBeenInView(true);
@@ -89,6 +95,11 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
 
   const handleImageLoadComplete = (aspectRatio) => {
     setIsWideImage(aspectRatio >= ASPECT_RATIO_THRESHOLD);
+  };
+
+  const getLineClamp = () => {
+    const hasSideImage = entry.imgSrc && !hasError && !isWideImage;
+    return !showEstimatedReadingTime && hasSideImage ? 4 : 3;
   };
 
   return (
@@ -145,11 +156,16 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
 
         <div className="card-body">
           <div className="card-text">
-            <div className="card-reading-time">
-              <IconClockCircle />
-              <span>{generateReadingTime(entry.reading_time)}</span>
-            </div>
-            <p className="card-preview">
+            {showEstimatedReadingTime && (
+              <div className="card-reading-time">
+                <IconClockCircle />
+                <span>{generateReadingTime(entry.reading_time)}</span>
+              </div>
+            )}
+            <p
+              className="card-preview"
+              style={{ WebkitLineClamp: getLineClamp() }}
+            >
               {extractTextFromHtml(sanitizeHtml(entry.content))}
             </p>
             {entry.starred && <IconStarFill className="icon-starred" />}
