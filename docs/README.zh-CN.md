@@ -81,8 +81,16 @@ location / {
 
 ### Docker
 
+[![dockeri.co](https://dockerico.blankenship.io/image/electh/reactflux)](https://hub.docker.com/r/electh/reactflux)
+
 ```bash
 docker run -p 2000:2000 electh/reactflux
+```
+
+或者使用 [Docker Compose](docker-compose.yml)：
+
+```bash
+docker-compose up -d
 ```
 
 ## 翻译指南

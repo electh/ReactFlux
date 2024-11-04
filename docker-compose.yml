@@ -1,0 +1,6 @@
+services:
+  reactflux:
+    image: electh/reactflux
+    restart: always
+    ports:
+      - 2000:2000
