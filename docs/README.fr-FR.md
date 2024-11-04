@@ -75,10 +75,6 @@ location / {
 
 [![Déployer sur Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/electh/ReactFlux)
 
-### Zeabur
-
-[![Déployer sur Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/OKXO3W)
-
 ### Docker
 
 [![dockeri.co](https://dockerico.blankenship.io/image/electh/reactflux)](https://hub.docker.com/r/electh/reactflux)
@@ -92,6 +88,10 @@ Ou en utilisant [Docker Compose](docker-compose.yml):
 ```bash
 docker-compose up -d
 ```
+
+<!-- ### Zeabur (Obsolète, non recommandé)
+
+[![Déployer sur Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/OKXO3W) -->
 
 ## Guide de traduction
 
