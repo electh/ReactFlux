@@ -11,7 +11,6 @@ import { useInView } from "react-intersection-observer";
 import SimpleBar from "simplebar-react";
 import { contentState, filteredEntriesState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
-import { mergeRefs } from "../../utils/refs";
 import FadeInMotion from "../ui/FadeInMotion";
 import Ripple from "../ui/Ripple";
 import "./ArticleList.css";
@@ -87,10 +86,12 @@ const ArticleList = forwardRef(
 
     const getItemRef = useCallback(
       (index) => {
-        if (index === lastPercent20StartIndex) {
-          return mergeRefs(virtualizer.measureElement, loadMoreRef);
-        }
-        return virtualizer.measureElement;
+        return (element) => {
+          virtualizer.measureElement(element);
+          if (index === lastPercent20StartIndex) {
+            loadMoreRef(element);
+          }
+        };
       },
       [lastPercent20StartIndex, virtualizer.measureElement, loadMoreRef],
     );
