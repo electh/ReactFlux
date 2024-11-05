@@ -20,7 +20,8 @@ import {
   IconStar,
   IconUnorderedList,
 } from "@arco-design/web-react/icon";
-import { useEffect, useState } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 
@@ -220,14 +221,60 @@ const FeedMenuGroup = ({ categoryId }) => {
   const { showUnreadFeedsOnly } = useStore(settingsState);
   const feedsGroupedById = useStore(feedsGroupedByIdState);
 
+  const parentRef = useRef(null);
+  const scrollableNodeRef = useRef(null);
+
+  const filteredFeeds = useMemo(
+    () =>
+      feedsGroupedById[categoryId]?.filter(
+        (feed) => !showUnreadFeedsOnly || feed.unreadCount > 0,
+      ) || [],
+    [feedsGroupedById, categoryId, showUnreadFeedsOnly],
+  );
+
+  const virtualizer = useVirtualizer({
+    count: filteredFeeds.length,
+    getScrollElement: () => scrollableNodeRef.current,
+    estimateSize: () => 40,
+    overscan: 10,
+  });
+
+  const virtualItems = virtualizer.getVirtualItems();
+
   return (
-    <>
-      {feedsGroupedById[categoryId]
-        ?.filter((feed) => !showUnreadFeedsOnly || feed.unreadCount > 0)
-        .map((feed) => (
-          <FeedMenuItem key={`/feed/${feed.id}`} feed={feed} />
-        ))}
-    </>
+    <SimpleBar
+      ref={parentRef}
+      scrollableNodeProps={{ ref: scrollableNodeRef }}
+      style={{ maxHeight: 400 }}
+    >
+      <div
+        style={{
+          height: virtualizer.getTotalSize(),
+          width: "100%",
+          position: "relative",
+        }}
+      >
+        {virtualItems.map((virtualRow) => {
+          const feed = filteredFeeds[virtualRow.index];
+          return (
+            <div
+              key={virtualRow.key}
+              data-index={virtualRow.index}
+              ref={virtualizer.measureElement}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+            >
+              <FeedMenuItem feed={feed} />
+            </div>
+          );
+        })}
+      </div>
+    </SimpleBar>
   );
 };
 
