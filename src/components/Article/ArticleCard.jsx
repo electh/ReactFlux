@@ -1,5 +1,5 @@
 import { IconClockCircle, IconStarFill } from "@arco-design/web-react/icon";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { useStore } from "@nanostores/react";
@@ -7,7 +7,6 @@ import useEntryActions from "../../hooks/useEntryActions";
 import { contentState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import { generateReadingTime, generateRelativeTime } from "../../utils/date";
-import sanitizeHtml from "../../utils/sanitizeHtml";
 import FeedIcon from "../ui/FeedIcon";
 import ImageWithLazyLoading from "./ImageWithLazyLoading";
 import "./ArticleCard.css";
@@ -49,9 +48,12 @@ const ArticleCardImage = ({
 };
 
 const extractTextFromHtml = (html) => {
-  const div = document.createElement("div");
-  div.innerHTML = html;
-  return div.textContent || div.innerText || "";
+  if (!html) return "";
+  return html
+    .replace(/<[^>]*>/g, "") // 移除所有HTML标签
+    .replace(/&nbsp;/g, " ") // 替换HTML实体
+    .replace(/&[a-z]+;/g, "") // 移除其他HTML实体
+    .trim();
 };
 
 const ArticleCard = ({ entry, handleEntryClick, children }) => {
@@ -101,6 +103,11 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
     const hasSideImage = entry.imgSrc && !hasError && !isWideImage;
     return !showEstimatedReadingTime && hasSideImage ? 4 : 3;
   };
+
+  const previewContent = useMemo(
+    () => extractTextFromHtml(entry.content),
+    [entry.content],
+  );
 
   return (
     <div
@@ -166,7 +173,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
               className="card-preview"
               style={{ WebkitLineClamp: getLineClamp() }}
             >
-              {extractTextFromHtml(sanitizeHtml(entry.content))}
+              {previewContent}
             </p>
             {entry.starred && <IconStarFill className="icon-starred" />}
           </div>
