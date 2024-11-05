@@ -8,37 +8,49 @@ import { contentState } from "../../store/contentState";
 import { settingsState } from "../../store/settingsState";
 import { generateReadingTime, generateRelativeTime } from "../../utils/date";
 import FeedIcon from "../ui/FeedIcon";
-import ImageWithLazyLoading from "./ImageWithLazyLoading";
 import "./ArticleCard.css";
 
 const ASPECT_RATIO_THRESHOLD = 4 / 3;
 
-const ArticleCardImage = ({ entry, setHasError, isWideImage }) => {
+const ArticleCardImage = ({ entry, isWideImage }) => {
   const imageSize = isWideImage
     ? { width: "100%", height: "100%" }
     : { width: "80px", height: "80px" };
 
   return (
     <div className="card-thumbnail">
-      <ImageWithLazyLoading
-        alt={entry.id}
-        borderRadius="2px"
+      <img
         src={entry.imgSrc}
-        status={entry.status}
-        width={imageSize.width}
-        height={imageSize.height}
-        setHasError={setHasError}
+        alt={entry.id}
+        style={{
+          width: imageSize.width,
+          height: imageSize.height,
+        }}
       />
     </div>
   );
 };
 
 const extractTextFromHtml = (html) => {
-  if (!html) return "";
+  if (!html) {
+    return "";
+  }
+
   return html
-    .replace(/<[^>]*>/g, "") // 移除所有HTML标签
-    .replace(/&nbsp;/g, " ") // 替换HTML实体
-    .replace(/&[a-z]+;/g, "") // 移除其他HTML实体
+    .replace(/<[^>]*>/g, "") // Remove all HTML tags
+    .replace(/&nbsp;/g, " ") // Replace space entities
+    .replace(/&#(\d+);/g, (_match, dec) => String.fromCharCode(dec)) // Handle numeric HTML entities
+    .replace(/&([a-z]+);/g, (_match, entity) => {
+      // Handle named HTML entities
+      const entities = {
+        amp: "&",
+        lt: "<",
+        gt: ">",
+        quot: '"',
+        apos: "'",
+      };
+      return entities[entity] || "";
+    })
     .trim();
 };
 

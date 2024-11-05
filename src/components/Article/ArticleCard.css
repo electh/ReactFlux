@@ -1,3 +1,138 @@
+.card-author {
+  color: var(--color-text-3);
+  margin-top: -3px;
+  font-size: 0.7rem;
+  font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-body {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  will-change: opacity, background-color;
+  transform: translateZ(0);
+}
+
+.card-image-mini {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.card-image-wide {
+  width: 100%;
+  height: 160px;
+  margin: 4px 0;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+  gap: 4px;
+}
+
+.card-preview {
+  color: var(--color-text-2);
+  font-size: 0.9rem;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-reading-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-3);
+  font-size: 0.75rem;
+  margin-bottom: 2px;
+}
+
+.card-source {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-source-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.card-source-title {
+  color: var(--color-text-3);
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.card-star {
+  margin-top: -2px;
+}
+
+.card-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-thumbnail {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-neutral-3);
+}
+
+.card-thumbnail img {
+  object-fit: cover;
+  border-radius: 2px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.card-time {
+  white-space: nowrap;
+}
+
+.card-time-wrapper {
+  color: var(--color-text-3);
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-title {
+  color: var(--color-text-2);
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .card-wrapper {
   position: relative;
   border-radius: var(--border-radius-medium);
@@ -21,140 +156,8 @@
   box-shadow: var(--shadow);
 }
 
-.card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  will-change: opacity, background-color;
-  transform: translateZ(0);
-}
-
-.card-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 4px;
-  gap: 4px;
-}
-
-.card-source {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex: 1;
-  min-width: 0;
-}
-
-.card-source-content {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.card-source-title {
-  color: var(--color-text-3);
-  font-size: 0.75rem;
-  font-weight: bold;
-}
-
-.card-author {
-  color: var(--color-text-3);
-  margin-top: -3px;
-  font-size: 0.7rem;
-  font-weight: normal;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .feed-icon-mini {
   margin-right: 4px;
   width: 18px;
   height: 18px;
-}
-
-.card-time-wrapper {
-  color: var(--color-text-3);
-  font-size: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.card-star {
-  margin-top: -2px;
-}
-
-.card-time {
-  white-space: nowrap;
-}
-
-.card-title {
-  color: var(--color-text-2);
-  font-size: 1rem;
-  font-weight: bold;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-body {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-}
-
-.card-text {
-  flex: 1;
-  min-width: 0;
-}
-
-.card-reading-time {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--color-text-3);
-  font-size: 0.75rem;
-  margin-bottom: 2px;
-}
-
-.card-preview {
-  color: var(--color-text-2);
-  font-size: 0.9rem;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-image-wide {
-  width: 100%;
-  height: 160px;
-  margin: 4px 0;
-  border-radius: var(--border-radius-medium);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-
-.card-image-mini {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--border-radius-medium);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-
-.card-thumbnail {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-.card-thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
