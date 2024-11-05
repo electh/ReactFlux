@@ -39,7 +39,7 @@
 
 .card-source {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 4px;
   flex: 1;
   min-width: 0;
@@ -53,15 +53,14 @@
 
 .card-source-title {
   color: var(--color-text-3);
-  margin-top: -5px;
   font-size: 0.75rem;
   font-weight: bold;
 }
 
 .card-author {
   color: var(--color-text-3);
-  margin-top: -5px;
-  font-size: 0.6rem;
+  margin-top: -3px;
+  font-size: 0.7rem;
   font-weight: normal;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -74,10 +73,19 @@
   height: 18px;
 }
 
-.card-time {
+.card-time-wrapper {
   color: var(--color-text-3);
-  margin-top: -5px;
   font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-star {
+  margin-top: -2px;
+}
+
+.card-time {
   white-space: nowrap;
 }
 

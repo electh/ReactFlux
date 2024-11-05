@@ -41,7 +41,7 @@ const ImageWithLazyLoading = ({
         style={{
           width: "100%",
           height: "100%",
-          backgroundColor: "var(--color-neutral-2)",
+          backgroundColor: "var(--color-neutral-3)",
           position: "absolute",
           left: 0,
           top: 0,
