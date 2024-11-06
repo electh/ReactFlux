@@ -29,11 +29,11 @@ export const filteredEntriesState = computed(
     const filteredEntries = filterEntries(entries, filterType, filterString);
 
     const { version } = data;
-    const { removeDuplicates, showAllFeeds } = settings;
+    const { removeDuplicates, showHiddenFeeds } = settings;
     const isValidFilter = !["starred", "history"].includes(infoFrom);
     const isVisible = (entry) =>
       compareVersions(version, "2.2.0") >= 0 ||
-      showAllFeeds ||
+      showHiddenFeeds ||
       !hiddenFeedIds.includes(entry.feed.id);
     const visibleEntries = isValidFilter
       ? filteredEntries.filter(isVisible)

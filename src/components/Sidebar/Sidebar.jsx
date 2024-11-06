@@ -322,7 +322,7 @@ const CategoryGroup = () => {
 };
 
 const Sidebar = () => {
-  const { homePage, showAllFeeds, showUnreadFeedsOnly } =
+  const { homePage, showHiddenFeeds, showUnreadFeedsOnly } =
     useStore(settingsState);
   const { isAppDataReady } = useStore(dataState);
   const { polyglot } = useStore(polyglotState);
@@ -334,7 +334,7 @@ const Sidebar = () => {
   const currentPath = location.pathname;
 
   const handleToggleFeedsVisibility = () => {
-    updateSettings({ showAllFeeds: !showAllFeeds });
+    updateSettings({ showHiddenFeeds: !showHiddenFeeds });
   };
 
   const handleToggleUnreadFeedsOnly = () => {
@@ -395,14 +395,14 @@ const Sidebar = () => {
                 droplist={
                   <Menu>
                     <MenuItem key="1" onClick={handleToggleFeedsVisibility}>
-                      {showAllFeeds ? (
+                      {showHiddenFeeds ? (
                         <IconEyeInvisible className="icon-right" />
                       ) : (
                         <IconEye className="icon-right" />
                       )}
-                      {showAllFeeds
-                        ? polyglot.t("sidebar.hide_some_feeds")
-                        : polyglot.t("sidebar.show_all_feeds")}
+                      {showHiddenFeeds
+                        ? polyglot.t("sidebar.hide_hidden_feeds")
+                        : polyglot.t("sidebar.show_hidden_feeds")}
                     </MenuItem>
                     <MenuItem key="2" onClick={handleToggleUnreadFeedsOnly}>
                       {showUnreadFeedsOnly ? (

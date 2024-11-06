@@ -74,9 +74,9 @@ export const hiddenFeedIdsState = computed(
 export const filteredFeedsState = computed(
   [feedsState, hiddenFeedIdsState, settingsState],
   (feeds, hiddenFeedIds, settings) => {
-    const { showAllFeeds } = settings;
+    const { showHiddenFeeds } = settings;
     return feeds.filter(
-      (feed) => showAllFeeds || !hiddenFeedIds.includes(feed.id),
+      (feed) => showHiddenFeeds || !hiddenFeedIds.includes(feed.id),
     );
   },
 );
@@ -84,9 +84,9 @@ export const filteredFeedsState = computed(
 export const filteredCategoriesState = computed(
   [categoriesState, hiddenCategoryIdsState, settingsState],
   (categories, hiddenCategoryIds, settings) => {
-    const { showAllFeeds } = settings;
+    const { showHiddenFeeds } = settings;
     return categories.filter(
-      (category) => showAllFeeds || !hiddenCategoryIds.includes(category.id),
+      (category) => showHiddenFeeds || !hiddenCategoryIds.includes(category.id),
     );
   },
 );

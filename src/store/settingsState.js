@@ -12,7 +12,7 @@ const defaultValue = {
   orderDirection: "desc",
   pageSize: 100,
   removeDuplicates: "none",
-  showAllFeeds: false,
+  showHiddenFeeds: false,
   showUnreadFeedsOnly: false,
   showDetailedRelativeTime: false,
   showEstimatedReadingTime: false,

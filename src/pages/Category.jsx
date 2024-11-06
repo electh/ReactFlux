@@ -9,7 +9,7 @@ const Category = () => {
   const { id: categoryId } = useParams();
   const orderBy = getSettings("orderBy");
   const pageSize = getSettings("pageSize");
-  const showAllFeeds = getSettings("showAllFeeds");
+  const showHiddenFeeds = getSettings("showHiddenFeeds");
 
   const getCategoryEntries = async (offset = 0, status = null) => {
     const baseParams = {
@@ -20,7 +20,7 @@ const Category = () => {
       status,
     };
 
-    const extraParams = { globally_visible: !showAllFeeds };
+    const extraParams = { globally_visible: !showHiddenFeeds };
 
     return apiClient.get(buildEntriesUrl(baseParams, extraParams));
   };
