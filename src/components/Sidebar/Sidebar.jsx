@@ -241,10 +241,23 @@ const FeedMenuGroup = ({ categoryId }) => {
 
   const virtualItems = virtualizer.getVirtualItems();
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (scrollableNodeRef.current) {
+        virtualizer.measure();
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [virtualizer]);
+
   return (
     <SimpleBar
       ref={parentRef}
-      scrollableNodeProps={{ ref: scrollableNodeRef }}
+      scrollableNodeProps={{
+        ref: scrollableNodeRef,
+        style: { minHeight: "40px" },
+      }}
       style={{ maxHeight: 400 }}
     >
       <div
