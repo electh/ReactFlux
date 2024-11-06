@@ -32,11 +32,16 @@
 
 .card-image-wide {
   width: 100%;
-  height: 160px;
+  aspect-ratio: auto;
   margin: 4px 0;
   border-radius: var(--border-radius-medium);
   overflow: hidden;
   box-shadow: var(--shadow);
+}
+
+.card-image-wide .card-thumbnail img {
+  position: unset;
+  display: block;
 }
 
 .card-meta {
