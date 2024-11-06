@@ -189,7 +189,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       {activeContent ? (
         <div className="article-container content-wrapper" {...handlers}>
           {!isBelowMedium && <ActionButtons />}
-          {!isArticleLoading && <ArticleDetail ref={entryDetailRef} />}
+          {isArticleLoading ? (
+            <div style={{ flex: 1 }} />
+          ) : (
+            <ArticleDetail ref={entryDetailRef} />
+          )}
           {isBelowMedium && <ActionButtons />}
         </div>
       ) : (
