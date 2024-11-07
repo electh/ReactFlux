@@ -2,6 +2,10 @@
   position: relative;
 }
 
+.code-block-container code {
+  white-space: pre-wrap !important;
+}
+
 .copy-button {
   right: 3px;
 }
