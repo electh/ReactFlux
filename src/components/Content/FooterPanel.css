@@ -9,9 +9,3 @@
 .entry-panel .arco-btn-secondary {
   background-color: transparent;
 }
-
-@media screen and (max-width: 768px) {
-  .entry-panel {
-    padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
-  }
-}

@@ -45,9 +45,6 @@
     padding-top: env(safe-area-inset-top);
     padding-left: env(safe-area-inset-left);
   }
-  .action-buttons {
-    padding-bottom: env(safe-area-inset-bottom) !important;
-  }
   body {
     min-height: 100vh;
   }

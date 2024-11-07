@@ -37,6 +37,7 @@
     border-radius: 0;
     box-shadow: none;
     margin: 0;
+    padding-bottom: env(safe-area-inset-bottom) !important;
   }
   .content-empty {
     display: none;

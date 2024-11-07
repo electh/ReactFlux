@@ -23,6 +23,9 @@
 }
 
 @media screen and (max-width: 768px) {
+  .main {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
   .settings-modal {
     top: 8%;
     width: 95%;
