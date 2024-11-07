@@ -20,3 +20,16 @@
 .action-buttons .arco-btn-secondary:not(.arco-btn-disabled) {
   background-color: var(--color-bg-1);
 }
+
+.settings-menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+}
+
+.font-family-submenu .arco-dropdown-menu,
+.settings-dropdown .arco-dropdown-menu {
+  background-color: var(--color-neutral-1);
+}

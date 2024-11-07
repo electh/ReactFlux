@@ -1,13 +1,4 @@
-import {
-  Divider,
-  Radio,
-  Select,
-  Slider,
-  Space,
-  Switch,
-  Typography,
-} from "@arco-design/web-react";
-import { IconAlignCenter, IconAlignLeft } from "@arco-design/web-react/icon";
+import { Divider, Switch } from "@arco-design/web-react";
 
 import { polyglotState } from "../../hooks/useLanguage";
 import { applyColor, colors, getDisplayColorValue } from "../../utils/colors";
@@ -19,38 +10,12 @@ import "./Appearance.css";
 
 const Appearance = () => {
   const {
-    articleWidth,
-    fontSize,
-    fontFamily,
     showDetailedRelativeTime,
     showEstimatedReadingTime,
     showFeedIcon,
     themeColor,
-    titleAlignment,
   } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
-
-  const fontFamilyOptions = [
-    { label: polyglot.t("appearance.font_family_system"), value: "system-ui" },
-    { label: "Sans-serif", value: "sans-serif" },
-    { label: "Serif", value: "serif" },
-    { label: "Fira Sans", value: "'Fira Sans', sans-serif" },
-    { label: "Open Sans", value: "'Open Sans', sans-serif" },
-    { label: "Source Sans Pro", value: "'Source Sans Pro', sans-serif" },
-    { label: "Source Serif Pro", value: "'Source Serif Pro', serif" },
-    {
-      label: polyglot.t("appearance.font_family_noto_sans"),
-      value: "'Noto Sans SC', sans-serif",
-    },
-    {
-      label: polyglot.t("appearance.font_family_noto_serif"),
-      value: "'Noto Serif SC', serif",
-    },
-    {
-      label: polyglot.t("appearance.font_family_lxgw_wenkai"),
-      value: "'LXGW WenKai Screen', sans-serif",
-    },
-  ];
 
   const handleConfigChange = (settingsChanges) => {
     updateSettings(settingsChanges);
@@ -140,90 +105,6 @@ const Appearance = () => {
           checked={showFeedIcon}
           onChange={(value) => handleConfigChange({ showFeedIcon: value })}
         />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        title={polyglot.t("appearance.title_alignment_label")}
-        description={polyglot.t("appearance.title_alignment_description")}
-      >
-        <Radio.Group
-          type="button"
-          name="title-alignment"
-          value={titleAlignment}
-          onChange={(value) => handleConfigChange({ titleAlignment: value })}
-        >
-          <Radio value="left">
-            <IconAlignLeft />
-          </Radio>
-          <Radio value="center">
-            <IconAlignCenter />
-          </Radio>
-        </Radio.Group>
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        title={polyglot.t("appearance.font_family_label")}
-        description={polyglot.t("appearance.font_family_description")}
-      >
-        <Select
-          style={{ width: 166 }}
-          value={fontFamily}
-          onChange={(value) => handleConfigChange({ fontFamily: value })}
-        >
-          {fontFamilyOptions.map(({ label, value }) => (
-            <Select.Option key={value} value={value}>
-              {label}
-            </Select.Option>
-          ))}
-        </Select>
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        title={polyglot.t("appearance.font_size_label")}
-        description={polyglot.t("appearance.font_size_description")}
-      >
-        <Space>
-          <Typography.Text style={{ fontSize: "0.75rem" }}>A</Typography.Text>
-          <Slider
-            formatTooltip={(value) => `${value}rem`}
-            max={1.25}
-            min={0.75}
-            showTicks
-            step={0.05}
-            style={{ width: 200 }}
-            value={fontSize}
-            onChange={(value) => handleConfigChange({ fontSize: value })}
-          />
-          <Typography.Text style={{ fontSize: "1.25rem" }}>A</Typography.Text>
-        </Space>
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        title={polyglot.t("appearance.article_width_label")}
-        description={polyglot.t("appearance.article_width_description")}
-      >
-        <Space>
-          <Typography.Text>60%</Typography.Text>
-          <Slider
-            formatTooltip={(value) => `${value}%`}
-            max={90}
-            min={60}
-            showTicks
-            step={10}
-            style={{ width: 160 }}
-            value={articleWidth}
-            onChange={(value) => handleConfigChange({ articleWidth: value })}
-          />
-          <Typography.Text>90%</Typography.Text>
-        </Space>
       </SettingItem>
     </>
   );

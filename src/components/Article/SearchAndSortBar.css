@@ -26,10 +26,6 @@
   background-color: transparent;
 }
 
-.arco-input-group-addbefore, .arco-input-inner-wrapper {
-  background-color: transparent;
-}
-
 .arco-input-group-addbefore .arco-select .arco-select-view {
   border-radius: var(--border-radius-medium);
 }

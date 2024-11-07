@@ -1,10 +1,20 @@
-import { Button } from "@arco-design/web-react";
 import {
+  Button,
+  Dropdown,
+  InputNumber,
+  Menu,
+  Radio,
+} from "@arco-design/web-react";
+import {
+  IconAlignCenter,
+  IconAlignLeft,
   IconArrowLeft,
   IconArrowRight,
+  IconCheck,
   IconClose,
   IconCloudDownload,
   IconMinusCircle,
+  IconMoreVertical,
   IconRecord,
   IconSave,
   IconStar,
@@ -22,6 +32,7 @@ import {
   prevContentState,
 } from "../../store/contentState";
 import { dataState } from "../../store/dataState";
+import { settingsState, updateSettings } from "../../store/settingsState";
 import CustomTooltip from "../ui/CustomTooltip";
 import "./ActionButtons.css";
 
@@ -29,9 +40,14 @@ const ActionButtons = () => {
   const { activeContent } = useStore(contentState);
   const { hasIntegrations } = useStore(dataState);
   const { polyglot } = useStore(polyglotState);
+
+  const { articleWidth, fontSize, fontFamily, titleAlignment } =
+    useStore(settingsState);
+
   const nextContent = useStore(nextContentState);
   const prevContent = useStore(prevContentState);
 
+  const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isFetchedOriginal, setIsFetchedOriginal] = useState(false);
 
   const {
@@ -46,6 +62,28 @@ const ActionButtons = () => {
 
   const isUnread = activeContent.status === "unread";
   const isStarred = activeContent.starred;
+
+  const fontFamilyOptions = [
+    { label: polyglot.t("appearance.font_family_system"), value: "system-ui" },
+    { label: "Sans-serif", value: "sans-serif" },
+    { label: "Serif", value: "serif" },
+    { label: "Fira Sans", value: "'Fira Sans', sans-serif" },
+    { label: "Open Sans", value: "'Open Sans', sans-serif" },
+    { label: "Source Sans Pro", value: "'Source Sans Pro', sans-serif" },
+    { label: "Source Serif Pro", value: "'Source Serif Pro', serif" },
+    {
+      label: polyglot.t("appearance.font_family_noto_sans"),
+      value: "'Noto Sans SC', sans-serif",
+    },
+    {
+      label: polyglot.t("appearance.font_family_noto_serif"),
+      value: "'Noto Serif SC', serif",
+    },
+    {
+      label: polyglot.t("appearance.font_family_lxgw_wenkai"),
+      value: "'LXGW WenKai Screen', sans-serif",
+    },
+  ];
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -145,6 +183,111 @@ const ActionButtons = () => {
             />
           </CustomTooltip>
         )}
+
+        <Dropdown
+          position="br"
+          trigger="click"
+          popupVisible={dropdownVisible}
+          onVisibleChange={setDropdownVisible}
+          triggerProps={{ className: "settings-dropdown" }}
+          droplist={
+            <Menu>
+              <Menu.Item key="title-alignment">
+                <div className="settings-menu-item">
+                  <span>{polyglot.t("appearance.title_alignment_label")}</span>
+                  <Radio.Group
+                    type="button"
+                    name="title-alignment"
+                    value={titleAlignment}
+                    onChange={(value) =>
+                      updateSettings({ titleAlignment: value })
+                    }
+                  >
+                    <Radio value="left">
+                      <IconAlignLeft />
+                    </Radio>
+                    <Radio value="center">
+                      <IconAlignCenter />
+                    </Radio>
+                  </Radio.Group>
+                </div>
+              </Menu.Item>
+
+              <Menu.SubMenu
+                key="font-family"
+                triggerProps={{ className: "font-family-submenu" }}
+                title={
+                  <div className="settings-menu-item">
+                    <span>{polyglot.t("appearance.font_family_label")}</span>
+                    <span>
+                      {
+                        fontFamilyOptions.find(
+                          (opt) => opt.value === fontFamily,
+                        )?.label
+                      }
+                    </span>
+                  </div>
+                }
+              >
+                {fontFamilyOptions.map(({ label, value }) => (
+                  <Menu.Item
+                    key={value}
+                    onClick={() => updateSettings({ fontFamily: value })}
+                  >
+                    <div className="settings-menu-item">
+                      {label}
+                      {value === fontFamily && <IconCheck />}
+                    </div>
+                  </Menu.Item>
+                ))}
+              </Menu.SubMenu>
+
+              <Menu.Item key="font-size">
+                {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+                <div
+                  className="settings-menu-item"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <span>{polyglot.t("appearance.font_size_label")}</span>
+                  <InputNumber
+                    min={0.75}
+                    max={1.25}
+                    step={0.05}
+                    value={fontSize}
+                    onChange={(value) => updateSettings({ fontSize: value })}
+                    suffix="rem"
+                    style={{ width: 90 }}
+                    size="small"
+                  />
+                </div>
+              </Menu.Item>
+
+              <Menu.Item key="article-width">
+                {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+                <div
+                  className="settings-menu-item"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <span>{polyglot.t("appearance.article_width_label")}</span>
+                  <InputNumber
+                    min={60}
+                    max={90}
+                    step={10}
+                    value={articleWidth}
+                    onChange={(value) =>
+                      updateSettings({ articleWidth: value })
+                    }
+                    suffix="%"
+                    style={{ width: 90 }}
+                    size="small"
+                  />
+                </div>
+              </Menu.Item>
+            </Menu>
+          }
+        >
+          <Button icon={<IconMoreVertical />} shape="circle" />
+        </Dropdown>
       </div>
     </div>
   );
