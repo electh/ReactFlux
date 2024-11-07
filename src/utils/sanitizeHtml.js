@@ -42,6 +42,7 @@ const getSanitizeOptions = () => ({
   allowedIframeHostnames: [
     "www.youtube.com",
     "www.youtube-nocookie.com",
+    "player.bilibili.com",
     "player.vimeo.com",
   ],
 });
