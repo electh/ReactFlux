@@ -53,8 +53,22 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
         />
       );
     } else if (node.type === "tag" && node.name === "pre") {
-      let codeContent;
+      // Remove line number text for code blocks in VuePress / VitePress
+      let currentNode = node.next;
+      while (currentNode) {
+        const nextNode = currentNode.next;
+        if (
+          (currentNode.type === "text" &&
+            /^\d+(<br>|\n)*/.test(currentNode.data)) ||
+          (currentNode.type === "tag" && currentNode.name === "br")
+        ) {
+          currentNode.data = "";
+          currentNode.type = "text";
+        }
+        currentNode = nextNode;
+      }
 
+      let codeContent;
       if (node.children[0]?.name === "code") {
         const codeNode = node.children[0];
         codeContent = codeNode.children[0]?.data || "";
