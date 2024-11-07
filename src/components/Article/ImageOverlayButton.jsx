@@ -45,7 +45,7 @@ const ImageComponent = ({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          cursor: "pointer",
+          cursor: "zoom-in",
           border: "none",
           zIndex: 1,
         }}
