@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   Dropdown,
   InputNumber,
   Menu,
@@ -229,6 +230,22 @@ const ActionButtons = () => {
         triggerProps={{ className: "settings-dropdown" }}
         droplist={
           <Menu>
+            {hasIntegrations && isBelowMedium && (
+              <>
+                <Menu.Item
+                  key="save_to_third_party_services"
+                  onClick={handleSaveToThirdPartyServices}
+                >
+                  <span>
+                    {polyglot.t(
+                      "article_card.save_to_third_party_services_tooltip",
+                    )}
+                  </span>
+                </Menu.Item>
+                <Divider style={{ margin: "4px 0" }} />
+              </>
+            )}
+
             <Menu.Item key="title-alignment">
               <div className="settings-menu-item">
                 <span>{polyglot.t("appearance.title_alignment_label")}</span>
