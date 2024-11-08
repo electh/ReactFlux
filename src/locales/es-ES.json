@@ -51,7 +51,9 @@
     "fetched_content_success": "Contenido obtenido con éxito",
     "fetched_content_error": "Error al obtener el contenido, por favor intente de nuevo más tarde",
     "saved_to_third-party_services_success": "Guardado en servicios de terceros con éxito",
-    "saved_to_third-party_services_error": "Error al guardar en servicios de terceros, por favor intente de nuevo más tarde, o verifique la configuración de integración"
+    "saved_to_third-party_services_error": "Error al guardar en servicios de terceros, por favor intente de nuevo más tarde, o verifique la configuración de integración",
+    "no_previous_article": "No hay artículo anterior",
+    "no_next_article": "No hay artículo siguiente"
   },
   "article_card": {
     "reading_time": "%{time} de lectura",

@@ -1,8 +1,9 @@
 import { Message, Typography } from "@arco-design/web-react";
-import { IconEmpty } from "@arco-design/web-react/icon";
-import { useCallback, useEffect, useRef } from "react";
+import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useStore } from "@nanostores/react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useSwipeable } from "react-swipeable";
 import useAppData from "../../hooks/useAppData";
@@ -40,11 +41,13 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const hiddenFeedIds = useStore(hiddenFeedIdsState);
   const hotkeys = useStore(hotkeysState);
 
+  const [isSwipingLeft, setIsSwipingLeft] = useState(false);
+  const [isSwipingRight, setIsSwipingRight] = useState(false);
   const cardsRef = useRef(null);
 
   useDocumentTitle();
 
-  const { entryDetailRef, entryListRef, handleEntryClick, isSwipingCodeBlock } =
+  const { entryDetailRef, entryListRef, handleEntryClick } =
     useContentContext();
 
   const {
@@ -107,19 +110,29 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   };
 
-  const handleSwipeLeft = useCallback(() => {
-    if (!isSwipingCodeBlock) {
-      navigateToNextArticle();
-    }
-  }, [isSwipingCodeBlock, navigateToNextArticle]);
+  const handleSwiping = (eventData) => {
+    setIsSwipingLeft(eventData.dir === "Left");
+    setIsSwipingRight(eventData.dir === "Right");
+  };
 
-  const handleSwipeRight = useCallback(() => {
-    if (!isSwipingCodeBlock) {
-      navigateToPreviousArticle();
-    }
-  }, [isSwipingCodeBlock, navigateToPreviousArticle]);
+  const handleSwiped = () => {
+    setIsSwipingLeft(false);
+    setIsSwipingRight(false);
+  };
+
+  const handleSwipeLeft = useCallback(
+    () => navigateToNextArticle(),
+    [navigateToNextArticle],
+  );
+
+  const handleSwipeRight = useCallback(
+    () => navigateToPreviousArticle(),
+    [navigateToPreviousArticle],
+  );
 
   const handlers = useSwipeable({
+    onSwiping: handleSwiping,
+    onSwiped: handleSwiped,
     onSwipedLeft: handleSwipeLeft,
     onSwipedRight: handleSwipeRight,
   });
@@ -191,7 +204,33 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           {isArticleLoading ? (
             <div style={{ flex: 1 }} />
           ) : (
-            <ArticleDetail ref={entryDetailRef} />
+            <>
+              <AnimatePresence>
+                {isSwipingRight && (
+                  <motion.div
+                    className="swipe-hint left"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <IconLeft style={{ fontSize: 24 }} />
+                  </motion.div>
+                )}
+                {isSwipingLeft && (
+                  <motion.div
+                    className="swipe-hint right"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <IconRight style={{ fontSize: 24 }} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <ArticleDetail ref={entryDetailRef} />
+            </>
           )}
           {isBelowMedium && <ActionButtons />}
         </div>

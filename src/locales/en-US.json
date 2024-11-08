@@ -51,7 +51,9 @@
     "fetched_content_success": "Fetched content successfully",
     "fetched_content_error": "Failed to fetch content, please try again later",
     "saved_to_third-party_services_success": "Saved to third-party services successfully",
-    "saved_to_third-party_services_error": "Failed to save to third-party services, please try again later, or check your integration settings"
+    "saved_to_third-party_services_error": "Failed to save to third-party services, please try again later, or check your integration settings",
+    "no_previous_article": "No previous article",
+    "no_next_article": "No next article"
   },
   "article_card": {
     "reading_time": "%{time} read",

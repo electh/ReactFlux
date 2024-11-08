@@ -51,7 +51,9 @@
     "fetched_content_success": "Contenu récupéré avec succès",
     "fetched_content_error": "Impossible de récupérer le contenu, veuillez réessayer plus tard",
     "saved_to_third-party_services_success": "Sauvegardé avec succès dans les services tiers",
-    "saved_to_third-party_services_error": "Impossible de sauvegarder dans les services tiers, veuillez réessayer plus tard ou vérifier vos paramètres d'intégration"
+    "saved_to_third-party_services_error": "Impossible de sauvegarder dans les services tiers, veuillez réessayer plus tard ou vérifier vos paramètres d'intégration",
+    "no_previous_article": "Aucun article précédent",
+    "no_next_article": "Aucun article suivant"
   },
   "article_card": {
     "reading_time": "%{time} de lecture",

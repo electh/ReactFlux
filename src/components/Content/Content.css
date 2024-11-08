@@ -29,6 +29,29 @@
   flex-direction: column;
 }
 
+.swipe-hint {
+  --hint-size: 24px;
+  --hint-padding: 12px;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: var(--hint-padding);
+  background-color: rgb(var(--primary-6));
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 100;
+  width: var(--hint-size);
+  height: var(--hint-size);
+}
+
+.swipe-hint.left {
+  left: 16px;
+}
+
+.swipe-hint.right {
+  right: 16px;
+}
+
 @media screen and (max-width: 768px) {
   .article-container {
     position: absolute !important;

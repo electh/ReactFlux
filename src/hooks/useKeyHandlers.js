@@ -1,3 +1,4 @@
+import { Message } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
 import { useContentContext } from "../components/Content/ContentContext";
 import {
@@ -9,11 +10,13 @@ import {
   setActiveContent,
 } from "../store/contentState";
 import { extractImageSources } from "../utils/images";
+import { polyglotState } from "./useLanguage";
 import { useModalToggle } from "./useModalToggle";
 import { usePhotoSlider } from "./usePhotoSlider";
 
 const useKeyHandlers = () => {
   const { activeContent } = useStore(contentState);
+  const { polyglot } = useStore(polyglotState);
   const activeEntryIndex = useStore(activeEntryIndexState);
   const filteredEntries = useStore(filteredEntriesState);
   const prevContent = useStore(prevContentState);
@@ -59,6 +62,8 @@ const useKeyHandlers = () => {
     if (prevContent) {
       handleEntryClick(prevContent);
       setTimeout(() => scrollSelectedCardIntoView(), 200);
+    } else {
+      Message.info(polyglot.t("actions.no_previous_article"));
     }
   };
 
@@ -66,6 +71,8 @@ const useKeyHandlers = () => {
     if (nextContent) {
       handleEntryClick(nextContent);
       setTimeout(() => scrollSelectedCardIntoView(), 200);
+    } else {
+      Message.info(polyglot.t("actions.no_next_article"));
     }
   };
 

@@ -10,7 +10,6 @@ import {
   LANGUAGE_DISPLAY_NAMES,
   SUPPORTED_LANGUAGES,
 } from "../../utils/highlighter";
-import { useContentContext } from "../Content/ContentContext";
 import CustomTooltip from "../ui/CustomTooltip";
 import "./CodeBlock.css";
 
@@ -19,8 +18,6 @@ const CodeBlock = ({ children }) => {
 
   const [language, setLanguage] = useState("plaintext");
 
-  const { isSwipingCodeBlock, setIsSwipingCodeBlock } = useContentContext();
-
   const copyToClipboard = useCallback(() => {
     navigator.clipboard
       .writeText(children.trim())
@@ -28,18 +25,6 @@ const CodeBlock = ({ children }) => {
   }, [children, polyglot]);
 
   const code = children.trim();
-
-  const handleSwipeStart = useCallback(() => {
-    if (!isSwipingCodeBlock) {
-      setIsSwipingCodeBlock(true);
-    }
-  }, [isSwipingCodeBlock, setIsSwipingCodeBlock]);
-
-  const handleSwipeEnd = useCallback(() => {
-    if (isSwipingCodeBlock) {
-      setIsSwipingCodeBlock(false);
-    }
-  }, [isSwipingCodeBlock, setIsSwipingCodeBlock]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -54,11 +39,7 @@ const CodeBlock = ({ children }) => {
   }, []);
 
   return (
-    <div
-      className="code-block-container"
-      onTouchStart={handleSwipeStart}
-      onTouchEnd={handleSwipeEnd}
-    >
+    <div className="code-block-container">
       <LanguageSelector language={language} setLanguage={setLanguage} />
       <CopyButton onClick={copyToClipboard} />
       <SyntaxHighlighter

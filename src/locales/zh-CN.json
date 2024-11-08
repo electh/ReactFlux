@@ -51,7 +51,9 @@
     "fetched_content_success": "内容获取成功",
     "fetched_content_error": "内容获取失败，请稍后再试",
     "saved_to_third-party_services_success": "成功保存到第三方服务",
-    "saved_to_third-party_services_error": "保存到第三方服务失败，请稍后再试，或检查您的集成设置"
+    "saved_to_third-party_services_error": "保存到第三方服务失败，请稍后再试，或检查您的集成设置",
+    "no_previous_article": "没有上一篇文章",
+    "no_next_article": "没有下一篇文章"
   },
   "article_card": {
     "reading_time": "需要 %{time}阅读",

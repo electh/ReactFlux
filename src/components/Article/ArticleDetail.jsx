@@ -1,9 +1,7 @@
 import { Divider, Tag, Typography } from "@arco-design/web-react";
-import { IconLeft, IconRight } from "@arco-design/web-react/icon";
-import { AnimatePresence, motion } from "framer-motion";
 import ReactHtmlParser from "html-react-parser";
 import { littlefoot } from "littlefoot";
-import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect } from "react";
 import ReactHlsPlayer from "react-hls-video-player";
 import { PhotoSlider } from "react-photo-view";
 import { useNavigate } from "react-router-dom";
@@ -28,9 +26,6 @@ import CodeBlock from "./CodeBlock";
 import ImageOverlayButton from "./ImageOverlayButton";
 import "./ArticleDetail.css";
 import "./littlefoot.css";
-
-const SWIPE_THRESHOLD = 30;
-const HINT_DURATION = 500;
 
 const handleLinkWithImage = (node, imageSources, togglePhotoSlider) => {
   const imgNode = node.children.find(
@@ -147,35 +142,6 @@ const ArticleDetail = forwardRef((_, ref) => {
   const { articleWidth, fontFamily, fontSize, titleAlignment } =
     useStore(settingsState);
 
-  const [isSwipingLeft, setIsSwipingLeft] = useState(false);
-  const [isSwipingRight, setIsSwipingRight] = useState(false);
-  const touchStartX = useRef(null);
-
-  const handleTouchStart = useCallback((e) => {
-    const touch = e.touches[0];
-    touchStartX.current = touch.clientX;
-  }, []);
-
-  const handleTouchMove = useCallback((e) => {
-    if (!touchStartX.current) {
-      return;
-    }
-
-    const touch = e.touches[0];
-    const deltaX = touch.clientX - touchStartX.current;
-
-    setIsSwipingLeft(deltaX > SWIPE_THRESHOLD);
-    setIsSwipingRight(deltaX < -SWIPE_THRESHOLD);
-  }, []);
-
-  const handleTouchEnd = useCallback(() => {
-    touchStartX.current = null;
-    setTimeout(() => {
-      setIsSwipingLeft(false);
-      setIsSwipingRight(false);
-    }, HINT_DURATION);
-  }, []);
-
   const {
     isPhotoSliderVisible,
     setIsPhotoSliderVisible,
@@ -211,39 +177,7 @@ const ArticleDetail = forwardRef((_, ref) => {
 
   return (
     <article className="article-content" ref={ref} tabIndex={-1}>
-      {isBelowMedium && (
-        <AnimatePresence>
-          {isSwipingLeft && (
-            <motion.div
-              className="swipe-hint left"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <IconLeft style={{ fontSize: 24 }} />
-            </motion.div>
-          )}
-          {isSwipingRight && (
-            <motion.div
-              className="swipe-hint right"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <IconRight style={{ fontSize: 24 }} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      )}
-
-      <SimpleBar
-        className="scroll-container"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+      <SimpleBar className="scroll-container">
         <FadeInMotion>
           <div
             className="article-header"
