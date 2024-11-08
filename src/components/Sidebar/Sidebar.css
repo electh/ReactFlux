@@ -133,10 +133,6 @@
   }
 }
 
-.sidebar .arco-btn-secondary:not(.arco-btn-disabled) {
-  background-color: transparent;
-}
-
 .arco-icon-hover.arco-collapse-item-icon-hover::before {
   width: 32px;
   height: 32px;

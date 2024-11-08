@@ -1,8 +1,11 @@
 .article-body {
-  margin: 0 auto;
-  padding-bottom: 40px;
+  --article-width: 60%;
+  --image-margin: calc((var(--image-scale) - 100%) / -2);
+  --image-scale: calc((100 / var(--article-width)) * 100%);
   line-height: 1.8;
+  margin: 0 auto;
   overflow-wrap: break-word;
+  padding-bottom: 40px;
 }
 
 .article-body * {
@@ -118,12 +121,6 @@ p {
   -webkit-backdrop-filter: blur(10px);
 }
 
-.article-body {
-  --article-width: 60%;
-  --image-scale: calc((100 / var(--article-width)) * 100%);
-  --image-margin: calc((var(--image-scale) - 100%) / -2);
-}
-
 @media screen and (max-width: 768px) {
   .article-body .big-image {
     border-radius: 0;
@@ -166,4 +163,27 @@ p {
 /*video 相关样式 */
 .article-body video {
   border-radius: var(--border-radius-medium);
+}
+
+.swipe-hint {
+  --hint-size: 24px;
+  --hint-padding: 12px;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: var(--hint-padding);
+  background-color: rgb(var(--primary-6));
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 100;
+  width: var(--hint-size);
+  height: var(--hint-size);
+}
+
+.swipe-hint.left {
+  left: 16px;
+}
+
+.swipe-hint.right {
+  right: 16px;
 }

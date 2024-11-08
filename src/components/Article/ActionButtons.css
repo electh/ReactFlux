@@ -21,6 +21,18 @@
   background-color: var(--color-bg-1);
 }
 
+.action-buttons.mobile {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.mobile-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
 .settings-menu-item {
   display: flex;
   justify-content: space-between;

@@ -6,6 +6,10 @@
   height: 100%;
 }
 
+.arco-btn-secondary:not(.arco-btn-disabled) {
+  background-color: transparent;
+}
+
 .arco-layout-sider-light {
   box-shadow: none !important;
 }
