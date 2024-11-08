@@ -28,8 +28,11 @@ import { useScreenWidth } from "../../hooks/useScreenWidth";
 import "./littlefoot.css";
 
 const handleLinkWithImage = (node, imageSources, togglePhotoSlider) => {
-  const imgNode = node.children[0];
-  if (imgNode.type === "tag" && imgNode.name === "img") {
+  const imgNode = node.children.find(
+    (child) => child.type === "tag" && child.name === "img",
+  );
+
+  if (imgNode) {
     const index = imageSources.findIndex((src) => src === imgNode.attribs.src);
 
     return (

@@ -59,6 +59,13 @@ const ImageComponent = ({
   );
 };
 
+const findImageNode = (node, isLinkWrapper) =>
+  isLinkWrapper
+    ? node.children.find(
+        (child) => child.type === "tag" && child.name === "img",
+      )
+    : node;
+
 const ImageOverlayButton = ({
   node,
   index,
@@ -67,8 +74,11 @@ const ImageOverlayButton = ({
 }) => {
   const [isIcon, setIsIcon] = useState(false);
   const [isBigImage, setIsBigImage] = useState(false);
+
+  const imgNode = findImageNode(node, isLinkWrapper);
+
   useEffect(() => {
-    const imgNode = isLinkWrapper ? node.children[0] : node;
+    const imgNode = findImageNode(node, isLinkWrapper);
     const imgSrc = imgNode.attribs.src;
     const img = new Image();
     img.src = imgSrc;
@@ -81,8 +91,6 @@ const ImageOverlayButton = ({
       setIsBigImage(isLarge && !isSmall);
     };
   }, [node, isLinkWrapper]);
-
-  const imgNode = isLinkWrapper ? node.children[0] : node;
 
   if (isIcon) {
     return isLinkWrapper ? (
