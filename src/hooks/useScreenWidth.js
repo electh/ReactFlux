@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
 
 export const useScreenWidth = () => {
-  const [width, setWidth] = useState(window.innerWidth);
-  const isBelowMedium = width <= 768;
-  const isBelowLarge = width <= 992;
+  const mediumThreshold = 768;
+  const largeThreshold = 992;
+  const [isBelowMedium, setIsBelowMedium] = useState(
+    window.innerWidth <= mediumThreshold,
+  );
+  const [isBelowLarge, setIsBelowLarge] = useState(
+    window.innerWidth <= largeThreshold,
+  );
 
   useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
+    const handleResize = () => {
+      setIsBelowMedium(window.innerWidth <= mediumThreshold);
+      setIsBelowLarge(window.innerWidth <= largeThreshold);
+    };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return { width, isBelowMedium, isBelowLarge };
+  return { isBelowMedium, isBelowLarge };
 };
