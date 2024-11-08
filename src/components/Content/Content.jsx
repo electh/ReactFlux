@@ -7,6 +7,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useSwipeable } from "react-swipeable";
 import useAppData from "../../hooks/useAppData";
 import useArticleList from "../../hooks/useArticleList";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import useEntryActions from "../../hooks/useEntryActions";
 import useKeyHandlers from "../../hooks/useKeyHandlers";
 import { polyglotState } from "../../hooks/useLanguage";
@@ -40,6 +41,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const hotkeys = useStore(hotkeysState);
 
   const cardsRef = useRef(null);
+
+  useDocumentTitle();
 
   const { entryDetailRef, entryListRef, handleEntryClick, isSwipingCodeBlock } =
     useContentContext();
