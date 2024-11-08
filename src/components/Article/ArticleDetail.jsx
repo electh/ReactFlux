@@ -2,6 +2,7 @@ import { Divider, Tag, Typography } from "@arco-design/web-react";
 import ReactHtmlParser from "html-react-parser";
 import { littlefoot } from "littlefoot";
 import { forwardRef, useEffect } from "react";
+import ReactHlsPlayer from "react-hls-video-player";
 import { PhotoSlider } from "react-photo-view";
 import { useNavigate } from "react-router-dom";
 import sanitizeHtml from "../../utils/sanitizeHtml";
@@ -44,6 +45,24 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
         );
       }
     } else if (node.type === "tag" && node.name === "img") {
+      if (/video\.bsky\.app.*thumbnail\.jpg$/.test(node.attribs.src)) {
+        // bsky video from openrss
+        const thumbnail = node.attribs.src;
+        const videoSrc = thumbnail.replace("thumbnail.jpg", "playlist.m3u8");
+        return (
+          <ReactHlsPlayer
+            src={videoSrc}
+            controls={true}
+            loop={true}
+            poster={thumbnail}
+            playsInline={true}
+            hlsConfig={{
+              startLevel: -1, // force autolevel
+            }}
+          />
+        );
+      }
+
       const index = imageSources.findIndex((src) => src === node.attribs.src);
       return (
         <ImageOverlayButton
