@@ -59,6 +59,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-hls-video-player:
+        specifier: ^3.2.4
+        version: 3.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-hotkeys-hook:
         specifier: ^4.6.1
         version: 4.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1840,6 +1843,9 @@ packages:
   highlightjs-vue@1.0.0:
     resolution: {integrity: sha512-PDEfEF102G23vHmPhLyPboFCD+BkMGu+GuJe2d9/eH4FsCwvgBpnc9n0pGE+ffKdph38s6foEZiEjdgHdzp+IA==}
 
+  hls.js@1.5.17:
+    resolution: {integrity: sha512-wA66nnYFvQa1o4DO/BFgLNRKnBTVXpNeldGRBJ2Y0SvFtdwvFKCbqa9zhHoZLoxHhZ+jYsj3aIBkWQQCPNOhMw==}
+
   homedir-polyfill@1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
     engines: {node: '>=0.10.0'}
@@ -2418,6 +2424,12 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-hls-video-player@3.2.4:
+    resolution: {integrity: sha512-P2GSZt+Lmzk5nswtCYXG+thL0jlBR0Giuy9iII84o2L64a6zylQE4WUD8U/IG9kfLxfQ7f1DUfNbkov5aVp5cw==}
+    peerDependencies:
+      react: ^18.3.1
+      react-dom: ^18.3.1
 
   react-hotkeys-hook@4.6.1:
     resolution: {integrity: sha512-XlZpbKUj9tkfgPgT9gA+1p7Ey6vFIZHttUjPqpTdyT5nqQ8mHL7elxvSbaC+dpSiHUSmr21Ya1mDxBZG3aje4Q==}
@@ -5000,6 +5012,8 @@ snapshots:
 
   highlightjs-vue@1.0.0: {}
 
+  hls.js@1.5.17: {}
+
   homedir-polyfill@1.0.3:
     dependencies:
       parse-passwd: 1.0.0
@@ -5533,6 +5547,12 @@ snapshots:
       use-sidecar: 1.1.2(@types/react@18.3.12)(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.3.12
+
+  react-hls-video-player@3.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      hls.js: 1.5.17
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   react-hotkeys-hook@4.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
