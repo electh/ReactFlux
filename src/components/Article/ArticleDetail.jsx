@@ -87,26 +87,64 @@ const handleImage = (node, imageSources, togglePhotoSlider) => {
   );
 };
 
+const parseCodeContent = (pre) => {
+  return pre.children
+    .map((child) => child.data || (child.name === "br" ? "\n" : ""))
+    .join("")
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+};
+
+const handleTableBasedCode = (node) => {
+  const table = node.children[0];
+  const tbody = table.children.find((child) => child.name === "tbody");
+  if (!tbody) {
+    return null;
+  }
+
+  const tr = tbody.children.find((child) => child.name === "tr");
+  if (!tr || tr.children.length !== 2) {
+    return null;
+  }
+
+  const codeTd = tr.children[1];
+  const pre = codeTd.children.find((child) => child.name === "pre");
+
+  return pre ? parseCodeContent(pre) : null;
+};
+
 const handleCodeBlock = (node) => {
+  let codeContent;
+
+  // Handle table-based code blocks with line numbers
+  if (node.name === "figure" && node.children[0]?.name === "table") {
+    codeContent = handleTableBasedCode(node);
+    if (codeContent) {
+      return <CodeBlock>{codeContent}</CodeBlock>;
+    }
+  }
+
   // Remove line number text for code blocks in VuePress / VitePress
   let currentNode = node.next;
   while (currentNode) {
     const nextNode = currentNode.next;
-    if (
-      (currentNode.type === "text" &&
-        /^\d+(<br>|\n)*/.test(currentNode.data)) ||
-      (currentNode.type === "tag" && currentNode.name === "br")
-    ) {
+    const isLineNumber =
+      currentNode.type === "text" && /^\d+(<br>|\n)*/.test(currentNode.data);
+    const isBreak = currentNode.type === "tag" && currentNode.name === "br";
+
+    if (isLineNumber || isBreak) {
       currentNode.data = "";
       currentNode.type = "text";
     }
     currentNode = nextNode;
   }
 
-  let codeContent;
+  // Extract code content
   if (node.children[0]?.name === "code") {
-    const codeNode = node.children[0];
-    codeContent = codeNode.children[0]?.data || "";
+    codeContent = node.children[0].children[0]?.data || "";
   } else {
     codeContent = node.children.map((child) => child.data || "").join("");
   }
@@ -128,6 +166,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
       case "img":
         return handleImage(node, imageSources, togglePhotoSlider);
       case "pre":
+      case "figure":
         return handleCodeBlock(node);
       default:
         return node;
