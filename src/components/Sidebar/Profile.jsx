@@ -22,6 +22,7 @@ import {
 import { useStore } from "@nanostores/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { resetFeedIcons } from "../../hooks/useFeedIcons.js";
 import { polyglotState } from "../../hooks/useLanguage.js";
 import { useModalToggle } from "../../hooks/useModalToggle.js";
 import { authState, resetAuth } from "../../store/authState.js";
@@ -54,6 +55,7 @@ export default function Profile() {
     resetAuth();
     resetContent();
     resetData();
+    resetFeedIcons();
     navigate("/login");
     Message.success(polyglot.t("sidebar.logout_success"));
   };

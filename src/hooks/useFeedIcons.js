@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { getFeedIcon } from "../apis";
 
 const feedIconsState = map();
+export const resetFeedIcons = () => feedIconsState.set({});
 const loadingIcons = new Set();
 
 const useFeedIcons = (id) => {
