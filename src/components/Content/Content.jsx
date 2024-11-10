@@ -22,6 +22,7 @@ import {
 import { dataState, hiddenFeedIdsState } from "../../store/dataState";
 import { duplicateHotkeysState, hotkeysState } from "../../store/hotkeysState";
 import { settingsState } from "../../store/settingsState";
+import { ANIMATION_DURATION_S } from "../../utils/constants";
 import ActionButtons from "../Article/ActionButtons";
 import ArticleDetail from "../Article/ArticleDetail";
 import ArticleList from "../Article/ArticleList";
@@ -208,22 +209,24 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
               <AnimatePresence>
                 {isSwipingRight && (
                   <motion.div
+                    key="swipe-hint-left"
                     className="swipe-hint left"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: ANIMATION_DURATION_S }}
                   >
                     <IconLeft style={{ fontSize: 24 }} />
                   </motion.div>
                 )}
                 {isSwipingLeft && (
                   <motion.div
+                    key="swipe-hint-right"
                     className="swipe-hint right"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: ANIMATION_DURATION_S }}
                   >
                     <IconRight style={{ fontSize: 24 }} />
                   </motion.div>

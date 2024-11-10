@@ -8,6 +8,7 @@ import {
   setActiveContent,
   setIsArticleLoading,
 } from "../../store/contentState";
+import { ANIMATION_DURATION_MS } from "../../utils/constants";
 
 const Context = createContext();
 
@@ -45,7 +46,7 @@ export const ContextProvider = ({ children }) => {
             handleEntryStatusUpdate(entry, "unread");
           });
         }
-      }, 200);
+      }, ANIMATION_DURATION_MS);
     },
     [polyglot, handleEntryStatusUpdate],
   );

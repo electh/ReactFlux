@@ -9,6 +9,7 @@ import {
   prevContentState,
   setActiveContent,
 } from "../store/contentState";
+import { ANIMATION_DURATION_MS } from "../utils/constants";
 import { extractImageSources } from "../utils/images";
 import { polyglotState } from "./useLanguage";
 import { useModalToggle } from "./useModalToggle";
@@ -61,7 +62,7 @@ const useKeyHandlers = () => {
   const navigateToPreviousArticle = () => {
     if (prevContent) {
       handleEntryClick(prevContent);
-      setTimeout(() => scrollSelectedCardIntoView(), 200);
+      setTimeout(() => scrollSelectedCardIntoView(), ANIMATION_DURATION_MS);
     } else {
       Message.info(polyglot.t("actions.no_previous_article"));
     }
@@ -70,7 +71,7 @@ const useKeyHandlers = () => {
   const navigateToNextArticle = () => {
     if (nextContent) {
       handleEntryClick(nextContent);
-      setTimeout(() => scrollSelectedCardIntoView(), 200);
+      setTimeout(() => scrollSelectedCardIntoView(), ANIMATION_DURATION_MS);
     } else {
       Message.info(polyglot.t("actions.no_next_article"));
     }
@@ -93,7 +94,7 @@ const useKeyHandlers = () => {
     );
     if (adjacentUnreadEntry) {
       handleEntryClick(adjacentUnreadEntry);
-      setTimeout(scrollSelectedCardIntoView, 200);
+      setTimeout(scrollSelectedCardIntoView, ANIMATION_DURATION_MS);
     }
   };
 

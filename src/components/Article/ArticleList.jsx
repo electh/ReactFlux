@@ -10,7 +10,7 @@ import { useStore } from "@nanostores/react";
 import { useInView } from "react-intersection-observer";
 import SimpleBar from "simplebar-react";
 import { contentState, filteredEntriesState } from "../../store/contentState";
-import FadeInMotion from "../ui/FadeInMotion";
+import FadeTransition from "../ui/FadeTransition";
 import Ripple from "../ui/Ripple";
 import "./ArticleList.css";
 
@@ -109,45 +109,43 @@ const ArticleList = forwardRef(
       >
         <LoadingCards />
         {isArticleListReady && (
-          <FadeInMotion>
-            <div
-              style={{
-                height: virtualizer.getTotalSize(),
-                width: "100%",
-                position: "relative",
-              }}
-            >
-              {virtualItems.map((item) => (
-                <div
-                  key={item.key}
-                  data-index={item.index}
-                  ref={virtualizer.measureElement}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    transform: `translateY(${item.start}px)`,
-                  }}
+          <FadeTransition
+            style={{
+              height: virtualizer.getTotalSize(),
+              width: "100%",
+              position: "relative",
+            }}
+          >
+            {virtualItems.map((item) => (
+              <div
+                key={item.key}
+                data-index={item.index}
+                ref={virtualizer.measureElement}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  transform: `translateY(${item.start}px)`,
+                }}
+              >
+                <ArticleCard
+                  entry={filteredEntries[item.index]}
+                  handleEntryClick={handleEntryClick}
                 >
-                  <ArticleCard
-                    entry={filteredEntries[item.index]}
-                    handleEntryClick={handleEntryClick}
-                  >
-                    <Ripple color="var(--color-text-4)" duration={1000} />
-                  </ArticleCard>
-                  {item.index < filteredEntries.length - 1 && (
-                    <Divider
-                      style={{
-                        margin: "8px 0",
-                        borderBottom: "1px solid var(--color-border-2)",
-                      }}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          </FadeInMotion>
+                  <Ripple color="var(--color-text-4)" duration={1000} />
+                </ArticleCard>
+                {item.index < filteredEntries.length - 1 && (
+                  <Divider
+                    style={{
+                      margin: "8px 0",
+                      borderBottom: "1px solid var(--color-border-2)",
+                    }}
+                  />
+                )}
+              </div>
+            ))}
+          </FadeTransition>
         )}
         <LoadMoreComponent getEntries={getEntries} />
       </SimpleBar>

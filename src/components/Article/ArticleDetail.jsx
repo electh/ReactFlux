@@ -21,7 +21,7 @@ import { settingsState } from "../../store/settingsState";
 import { generateReadableDate, generateReadingTime } from "../../utils/date";
 import { extractImageSources } from "../../utils/images";
 import CustomLink from "../ui/CustomLink";
-import FadeInMotion from "../ui/FadeInMotion";
+import FadeTransition from "../ui/FadeTransition";
 import CodeBlock from "./CodeBlock";
 import ImageOverlayButton from "./ImageOverlayButton";
 import "./ArticleDetail.css";
@@ -178,7 +178,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   return (
     <article className="article-content" ref={ref} tabIndex={-1}>
       <SimpleBar className="scroll-container">
-        <FadeInMotion>
+        <FadeTransition>
           <div
             className="article-header"
             style={{ width: `${articleWidth}%`, textAlign: titleAlignment }}
@@ -250,7 +250,7 @@ const ArticleDetail = forwardRef((_, ref) => {
               onIndexChange={setSelectedIndex}
             />
           </div>
-        </FadeInMotion>
+        </FadeTransition>
       </SimpleBar>
     </article>
   );

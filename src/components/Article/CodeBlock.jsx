@@ -5,6 +5,7 @@ import hljs from "highlight.js";
 import { useCallback, useEffect, useState } from "react";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { polyglotState } from "../../hooks/useLanguage";
+import { ANIMATION_DURATION_MS } from "../../utils/constants";
 import { SyntaxHighlighter } from "../../utils/highlighter";
 import {
   LANGUAGE_DISPLAY_NAMES,
@@ -35,7 +36,7 @@ const CodeBlock = ({ children }) => {
       } else {
         console.info("detectedLanguage not supported: ", detectedLanguage);
       }
-    }, 200);
+    }, ANIMATION_DURATION_MS);
   }, []);
 
   return (
