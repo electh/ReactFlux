@@ -3,6 +3,7 @@ import { getBrowserLanguage } from "../utils/locales";
 
 const defaultValue = {
   articleWidth: 90,
+  edgeToEdgeImages: false,
   fontFamily: "system-ui",
   fontSize: 1.05,
   homePage: "all",
@@ -12,12 +13,12 @@ const defaultValue = {
   orderDirection: "desc",
   pageSize: 100,
   removeDuplicates: "none",
-  showHiddenFeeds: false,
-  showUnreadFeedsOnly: false,
   showDetailedRelativeTime: false,
   showEstimatedReadingTime: false,
   showFeedIcon: true,
+  showHiddenFeeds: false,
   showStatus: "unread",
+  showUnreadFeedsOnly: false,
   themeColor: "Blue",
   themeMode: "system",
   titleAlignment: "center",

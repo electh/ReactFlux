@@ -146,12 +146,20 @@ p {
 }
 
 @media screen and (max-width: 768px) {
-  .article-body .big-image {
+  .edge-to-edge .article-body .big-image {
     border-radius: 0;
     display: block;
     margin: 10px var(--image-margin);
     width: var(--image-scale);
     max-width: var(--image-scale);
+  }
+
+  .article-body .big-image {
+    border-radius: var(--border-radius-medium);
+    display: block;
+    margin: 10px auto;
+    width: 100%;
+    max-width: 100%;
   }
 
   .article-body .image-overlay-button {

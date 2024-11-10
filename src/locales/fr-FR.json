@@ -198,8 +198,6 @@
     "mark_read_on_scroll_description": "Marquer automatiquement les articles comme lus lorsqu'ils sont défilés hors de la zone visible de l'écran"
   },
   "appearance": {
-    "theme_switcher_label": "Thème",
-    "theme_switcher_description": "Choisir votre thème",
     "theme_color_label": "Couleur du thème",
     "theme_color_description": "Choisir votre couleur de thème",
     "theme_color_aria_label": "Changer la couleur du thème en %{color}",
@@ -210,19 +208,16 @@
     "show_feed_icon_label": "Afficher l'icône du flux",
     "show_feed_icon_description": "Afficher l'icône du flux dans la liste des flux et la carte d'article",
     "language_label": "Langue",
-    "language_description": "Choisir votre langue :",
+    "language_description": "Choisir votre langue :",
     "font_size_label": "Taille de la police",
-    "font_size_description": "Ajuster la taille de la police des articles",
     "article_width_label": "Largeur de l'article",
-    "article_width_description": "Ajuster la largeur de l'article",
+    "edge_to_edge_images_label": "Images bord à bord",
     "font_family_label": "Police de l'article",
-    "font_family_description": "Choisir votre police de l'article",
     "font_family_system": "Par défaut",
     "font_family_noto_sans": "Noto Sans SC",
     "font_family_noto_serif": "Noto Serif SC",
     "font_family_lxgw_wenkai": "LXGW WenKai Screen",
-    "title_alignment_label": "Alignement du titre de l'article",
-    "title_alignment_description": "Choisir l'alignement du titre de l'article"
+    "title_alignment_label": "Alignement du titre de l'article"
   },
   "hotkeys": {
     "key": "Touche",

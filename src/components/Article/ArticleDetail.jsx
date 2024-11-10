@@ -178,8 +178,13 @@ const ArticleDetail = forwardRef((_, ref) => {
   const navigate = useNavigate();
   const { isBelowMedium } = useScreenWidth();
   const { activeContent } = useStore(contentState);
-  const { articleWidth, fontFamily, fontSize, titleAlignment } =
-    useStore(settingsState);
+  const {
+    articleWidth,
+    edgeToEdgeImages,
+    fontFamily,
+    fontSize,
+    titleAlignment,
+  } = useStore(settingsState);
 
   const {
     isPhotoSliderVisible,
@@ -215,7 +220,11 @@ const ArticleDetail = forwardRef((_, ref) => {
   }, []);
 
   return (
-    <article className="article-content" ref={ref} tabIndex={-1}>
+    <article
+      className={`article-content ${edgeToEdgeImages ? "edge-to-edge" : ""}`}
+      ref={ref}
+      tabIndex={-1}
+    >
       <SimpleBar className="scroll-container">
         <FadeTransition y={20}>
           <div

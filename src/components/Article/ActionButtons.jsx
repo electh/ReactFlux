@@ -5,6 +5,7 @@ import {
   InputNumber,
   Menu,
   Radio,
+  Switch,
 } from "@arco-design/web-react";
 import {
   IconAlignCenter,
@@ -111,8 +112,13 @@ const ActionButtons = () => {
   const { hasIntegrations } = useStore(dataState);
   const { polyglot } = useStore(polyglotState);
 
-  const { articleWidth, fontSize, fontFamily, titleAlignment } =
-    useStore(settingsState);
+  const {
+    articleWidth,
+    edgeToEdgeImages,
+    fontSize,
+    fontFamily,
+    titleAlignment,
+  } = useStore(settingsState);
 
   const nextContent = useStore(nextContentState);
   const prevContent = useStore(prevContentState);
@@ -266,6 +272,23 @@ const ActionButtons = () => {
                 </Radio.Group>
               </div>
             </Menu.Item>
+
+            {isBelowMedium && (
+              <Menu.Item key="edge-to-edge-images">
+                <div className="settings-menu-item">
+                  <span>
+                    {polyglot.t("appearance.edge_to_edge_images_label")}
+                  </span>
+                  <Switch
+                    checked={edgeToEdgeImages}
+                    onChange={(value) =>
+                      updateSettings({ edgeToEdgeImages: value })
+                    }
+                    size="small"
+                  />
+                </div>
+              </Menu.Item>
+            )}
 
             <Menu.SubMenu
               key="font-family"

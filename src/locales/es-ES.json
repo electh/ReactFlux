@@ -198,8 +198,6 @@
     "mark_read_on_scroll_description": "Marcar automáticamente los artículos como leídos cuando se desplazan fuera del área visible de la pantalla"
   },
   "appearance": {
-    "theme_switcher_label": "Tema",
-    "theme_switcher_description": "Escoger su tema",
     "theme_color_label": "Color del tema",
     "theme_color_description": "Escoger su color del tema",
     "theme_color_aria_label": "Cambiar el color del tema a %{color}",
@@ -212,17 +210,14 @@
     "language_label": "Idioma",
     "language_description": "Escoger su idioma:",
     "font_size_label": "Tamaño de la fuente",
-    "font_size_description": "Ajustar el tamaño del texto del artículo",
     "article_width_label": "Ancho del artículo",
-    "article_width_description": "Ajustar el ancho del artículo",
+    "edge_to_edge_images_label": "Imágenes de borde a borde",
     "font_family_label": "Fuente del artículo",
-    "font_family_description": "Escoger su fuente del artículo",
     "font_family_system": "Predeterminado",
     "font_family_noto_sans": "Noto Sans SC",
     "font_family_noto_serif": "Noto Serif SC",
     "font_family_lxgw_wenkai": "LXGW WenKai Screen",
-    "title_alignment_label": "Alineación del título del artículo",
-    "title_alignment_description": "Escoger la alineación del título del artículo"
+    "title_alignment_label": "Alineación del título del artículo"
   },
   "hotkeys": {
     "key": "Clave",
