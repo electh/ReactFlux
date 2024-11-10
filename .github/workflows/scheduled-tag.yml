@@ -20,7 +20,21 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y.%m.%d')" >> $GITHUB_OUTPUT
 
+      - name: Check existing tag
+        id: check_tag
+        run: |
+          LATEST_COMMIT=$(git rev-parse HEAD)
+          TAGS_ON_COMMIT=$(git tag --points-at $LATEST_COMMIT)
+          if [ ! -z "$TAGS_ON_COMMIT" ]; then
+            echo "Tag(s) ${TAGS_ON_COMMIT} already exists on commit ${LATEST_COMMIT}, skipping..."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "No tags found on latest commit, proceeding with tag creation"
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create tag
+        if: steps.check_tag.outputs.skip != 'true'
         run: |
           git tag v${{ steps.date.outputs.date }}
           git push origin v${{ steps.date.outputs.date }}
