@@ -110,6 +110,7 @@ const ArticleList = forwardRef(
         <LoadingCards />
         {isArticleListReady && (
           <FadeTransition
+            y={20}
             style={{
               height: virtualizer.getTotalSize(),
               width: "100%",

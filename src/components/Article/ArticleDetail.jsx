@@ -178,7 +178,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   return (
     <article className="article-content" ref={ref} tabIndex={-1}>
       <SimpleBar className="scroll-container">
-        <FadeTransition>
+        <FadeTransition y={20}>
           <div
             className="article-header"
             style={{ width: `${articleWidth}%`, textAlign: titleAlignment }}
