@@ -7,6 +7,9 @@ export const extractImageSources = (htmlString) => {
 export const parseFirstImage = (entry) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(entry.content, "text/html");
-  const imgSrc = doc.querySelector("img")?.getAttribute("src");
+  let imgSrc = doc.querySelector("img")?.getAttribute("src");
+  if (!imgSrc) {
+    imgSrc = doc.querySelector("video")?.getAttribute("poster");
+  }
   return { ...entry, imgSrc };
 };
