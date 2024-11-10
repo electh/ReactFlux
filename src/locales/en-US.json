@@ -53,7 +53,9 @@
     "saved_to_third-party_services_success": "Saved to third-party services successfully",
     "saved_to_third-party_services_error": "Failed to save to third-party services, please try again later, or check your integration settings",
     "no_previous_article": "No previous article",
-    "no_next_article": "No next article"
+    "no_previous_unread_article": "No previous unread article",
+    "no_next_article": "No next article",
+    "no_next_unread_article": "No next unread article"
   },
   "article_card": {
     "reading_time": "%{time} read",

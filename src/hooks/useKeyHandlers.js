@@ -95,6 +95,10 @@ const useKeyHandlers = () => {
     if (adjacentUnreadEntry) {
       handleEntryClick(adjacentUnreadEntry);
       setTimeout(scrollSelectedCardIntoView, ANIMATION_DURATION_MS);
+    } else if (direction === "prev") {
+      Message.info(polyglot.t("actions.no_previous_unread_article"));
+    } else {
+      Message.info(polyglot.t("actions.no_next_unread_article"));
     }
   };
 

@@ -53,7 +53,9 @@
     "saved_to_third-party_services_success": "Sauvegardé avec succès dans les services tiers",
     "saved_to_third-party_services_error": "Impossible de sauvegarder dans les services tiers, veuillez réessayer plus tard ou vérifier vos paramètres d'intégration",
     "no_previous_article": "Aucun article précédent",
-    "no_next_article": "Aucun article suivant"
+    "no_previous_unread_article": "Aucun article précédent non lu",
+    "no_next_article": "Aucun article suivant",
+    "no_next_unread_article": "Aucun article suivant non lu"
   },
   "article_card": {
     "reading_time": "%{time} de lecture",
