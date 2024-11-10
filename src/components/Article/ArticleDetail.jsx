@@ -116,17 +116,25 @@ const handleTableBasedCode = (node) => {
   return pre ? parseCodeContent(pre) : null;
 };
 
-const handleCodeBlock = (node) => {
-  let codeContent;
+const handleFigure = (node, imageSources, togglePhotoSlider) => {
+  const firstChild = node.children[0];
+
+  if (firstChild.name === "img") {
+    return handleImage(firstChild, imageSources, togglePhotoSlider);
+  }
 
   // Handle table-based code blocks with line numbers
-  if (node.name === "figure" && node.children[0]?.name === "table") {
-    codeContent = handleTableBasedCode(node);
+  if (firstChild.name === "table") {
+    const codeContent = handleTableBasedCode(firstChild);
     if (codeContent) {
       return <CodeBlock>{codeContent}</CodeBlock>;
     }
   }
 
+  return null;
+};
+
+const handleCodeBlock = (node) => {
   // Remove line number text for code blocks in VuePress / VitePress
   let currentNode = node.next;
   while (currentNode) {
@@ -143,6 +151,7 @@ const handleCodeBlock = (node) => {
   }
 
   // Extract code content
+  let codeContent;
   if (node.children[0]?.name === "code") {
     codeContent = node.children[0].children[0]?.data || "";
   } else {
@@ -188,8 +197,9 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
       case "img":
         return handleImage(node, imageSources, togglePhotoSlider);
       case "pre":
-      case "figure":
         return handleCodeBlock(node);
+      case "figure":
+        return handleFigure(node, imageSources, togglePhotoSlider);
       case "video":
         return handleVideo(node);
       default:
