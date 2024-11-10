@@ -68,7 +68,7 @@ const handleBskyVideo = (node) => {
       />
     );
   }
-  return node;
+  return null;
 };
 
 const handleImage = (node, imageSources, togglePhotoSlider) => {
