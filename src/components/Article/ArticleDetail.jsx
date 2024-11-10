@@ -152,6 +152,28 @@ const handleCodeBlock = (node) => {
   return <CodeBlock>{codeContent}</CodeBlock>;
 };
 
+const handleVideo = (node) => {
+  const sourceNode = node.children?.find(
+    (child) => child.name === "source" && child.attribs?.src,
+  );
+
+  const videoSrc = sourceNode?.attribs.src || node.attribs.src;
+
+  if (videoSrc?.endsWith(".m3u8")) {
+    return (
+      <ReactHlsPlayer
+        src={videoSrc}
+        controls
+        poster={node.attribs.poster}
+        playsInline
+        hlsConfig={{ startLevel: -1 }}
+      />
+    );
+  }
+
+  return node;
+};
+
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
   replace: (node) => {
     if (node.type !== "tag") {
@@ -168,6 +190,8 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
       case "pre":
       case "figure":
         return handleCodeBlock(node);
+      case "video":
+        return handleVideo(node);
       default:
         return node;
     }

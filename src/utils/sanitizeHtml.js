@@ -1,7 +1,12 @@
 import sanitize from "sanitize-html";
 
 const getSanitizeOptions = () => ({
-  allowedTags: sanitize.defaults.allowedTags.concat(["img", "iframe"]),
+  allowedTags: sanitize.defaults.allowedTags.concat([
+    "img",
+    "iframe",
+    "video",
+    "source",
+  ]),
   allowedAttributes: {
     ...sanitize.defaults.allowedAttributes,
     img: [
@@ -33,6 +38,20 @@ const getSanitizeOptions = () => ({
       "loading",
       "src",
     ],
+    video: [
+      "autoplay",
+      "controls",
+      "height",
+      "loop",
+      "muted",
+      "playsinline",
+      "poster",
+      "preload",
+      "src",
+      "type",
+      "width",
+    ],
+    source: ["src", "type"],
     // used by littlefoot
     a: ["href", "name", "target", "rel", "referrerpolicy"],
     sup: ["id"],
