@@ -24,19 +24,19 @@ import {
 } from "@arco-design/web-react/icon";
 import { memo, useEffect, useState } from "react";
 
-import { useStore } from "@nanostores/react";
-import useEntryActions from "../../hooks/useEntryActions";
-import useKeyHandlers from "../../hooks/useKeyHandlers";
-import { polyglotState } from "../../hooks/useLanguage";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
+import CustomTooltip from "@/components/ui/CustomTooltip";
+import useEntryActions from "@/hooks/useEntryActions";
+import useKeyHandlers from "@/hooks/useKeyHandlers";
+import { polyglotState } from "@/hooks/useLanguage";
+import { useScreenWidth } from "@/hooks/useScreenWidth";
 import {
   contentState,
   nextContentState,
   prevContentState,
-} from "../../store/contentState";
-import { dataState } from "../../store/dataState";
-import { settingsState, updateSettings } from "../../store/settingsState";
-import CustomTooltip from "../ui/CustomTooltip";
+} from "@/store/contentState";
+import { dataState } from "@/store/dataState";
+import { settingsState, updateSettings } from "@/store/settingsState";
+import { useStore } from "@nanostores/react";
 import "./ActionButtons.css";
 
 const DesktopButtons = memo(

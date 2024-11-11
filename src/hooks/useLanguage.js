@@ -4,12 +4,12 @@ import "dayjs/locale/en";
 import "dayjs/locale/es";
 import "dayjs/locale/fr";
 import "dayjs/locale/zh-cn";
+import { settingsState, updateSettings } from "@/store/settingsState";
+import { getBrowserLanguage } from "@/utils/locales";
+import { createSetter } from "@/utils/nanostores";
 import { map } from "nanostores";
 import Polyglot from "node-polyglot";
 import { useEffect } from "react";
-import { settingsState, updateSettings } from "../store/settingsState";
-import { getBrowserLanguage } from "../utils/locales";
-import { createSetter } from "../utils/nanostores";
 
 const languageToLocale = {
   "zh-CN": "zh-cn",

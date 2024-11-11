@@ -1,7 +1,7 @@
 import { Card, Skeleton } from "@arco-design/web-react";
 
+import { contentState } from "@/store/contentState";
 import { useStore } from "@nanostores/react";
-import { contentState } from "../../store/contentState";
 import "./LoadingCards.css";
 
 const LoadingCard = ({ isArticleListReady }) => (

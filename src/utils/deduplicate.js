@@ -1,7 +1,7 @@
+import { updateEntriesStatus } from "@/apis";
+import { handleEntriesStatusUpdate } from "@/hooks/useEntryActions";
+import { polyglotState } from "@/hooks/useLanguage";
 import { Message } from "@arco-design/web-react";
-import { updateEntriesStatus } from "../apis";
-import { handleEntriesStatusUpdate } from "../hooks/useEntryActions";
-import { polyglotState } from "../hooks/useLanguage";
 
 export const removeDuplicateEntries = (entries, option) => {
   const { polyglot } = polyglotState.get();

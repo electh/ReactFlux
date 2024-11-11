@@ -2,16 +2,16 @@ import { Divider, Spin } from "@arco-design/web-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { forwardRef, useCallback, useEffect, useMemo } from "react";
 
-import useLoadMore from "../../hooks/useLoadMore";
+import useLoadMore from "@/hooks/useLoadMore";
 import ArticleCard from "./ArticleCard";
 import LoadingCards from "./LoadingCards";
 
+import FadeTransition from "@/components/ui/FadeTransition";
+import Ripple from "@/components/ui/Ripple";
+import { contentState, filteredEntriesState } from "@/store/contentState";
 import { useStore } from "@nanostores/react";
 import { useInView } from "react-intersection-observer";
 import SimpleBar from "simplebar-react";
-import { contentState, filteredEntriesState } from "../../store/contentState";
-import FadeTransition from "../ui/FadeTransition";
-import Ripple from "../ui/Ripple";
 import "./ArticleList.css";
 
 const LoadMoreComponent = ({ getEntries }) => {

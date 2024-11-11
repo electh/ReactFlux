@@ -1,6 +1,6 @@
+import { createSetter } from "@/utils/nanostores";
 import { persistentAtom } from "@nanostores/persistent";
 import { computed } from "nanostores";
-import { createSetter } from "../utils/nanostores";
 
 const defaultValue = {
   exitDetailView: ["esc"],

@@ -1,28 +1,28 @@
 import { Message, Notification } from "@arco-design/web-react";
 import Confetti from "canvas-confetti";
 
-import { useStore } from "@nanostores/react";
 import {
   getOriginalContent,
   saveToThirdPartyServices,
   toggleEntryStarred,
   updateEntriesStatus,
-} from "../apis";
+} from "@/apis";
+import { polyglotState } from "@/hooks/useLanguage";
 import {
   contentState,
   setActiveContent,
   setEntries,
   setOffset,
-} from "../store/contentState";
+} from "@/store/contentState";
 import {
   setHistoryCount,
   setStarredCount,
   setUnreadInfo,
   setUnreadTodayCount,
-} from "../store/dataState";
-import { settingsState } from "../store/settingsState";
-import { checkIsInLast24Hours } from "../utils/date";
-import { polyglotState } from "./useLanguage";
+} from "@/store/dataState";
+import { settingsState } from "@/store/settingsState";
+import { checkIsInLast24Hours } from "@/utils/date";
+import { useStore } from "@nanostores/react";
 
 const updateEntries = (entries, updatedEntries) => {
   const updatedEntryIds = updatedEntries.map((entry) => entry.id);

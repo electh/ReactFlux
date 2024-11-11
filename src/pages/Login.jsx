@@ -14,17 +14,17 @@ import { ofetch } from "ofetch";
 import { useEffect, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
-import { useStore } from "@nanostores/react";
-import useLanguage, { polyglotState } from "../hooks/useLanguage";
-import useTheme from "../hooks/useTheme";
-import { authState, setAuth } from "../store/authState";
-import { settingsState } from "../store/settingsState";
-import { isValidAuth } from "../utils/auth";
+import useLanguage, { polyglotState } from "@/hooks/useLanguage";
+import useTheme from "@/hooks/useTheme";
+import { authState, setAuth } from "@/store/authState";
+import { settingsState } from "@/store/settingsState";
+import { isValidAuth } from "@/utils/auth";
 import {
   handleEnterKeyToSubmit,
   validateAndFormatFormFields,
-} from "../utils/form";
-import { hideSpinner } from "../utils/loading";
+} from "@/utils/form";
+import { hideSpinner } from "@/utils/loading";
+import { useStore } from "@nanostores/react";
 import "./Login.css";
 
 const Login = () => {

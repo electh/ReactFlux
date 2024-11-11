@@ -1,9 +1,9 @@
+import Sidebar from "@/components/Sidebar/Sidebar";
+import { useScreenWidth } from "@/hooks/useScreenWidth";
 import { Button, Drawer } from "@arco-design/web-react";
 import { IconMenu } from "@arco-design/web-react/icon";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useScreenWidth } from "../../hooks/useScreenWidth.js";
-import Sidebar from "../Sidebar/Sidebar.jsx";
 import "./SidebarTrigger.css";
 
 export default function SidebarTrigger() {

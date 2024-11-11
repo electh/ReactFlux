@@ -7,9 +7,9 @@ import {
   IconStorage,
 } from "@arco-design/web-react/icon";
 
+import { polyglotState } from "@/hooks/useLanguage";
+import { useScreenWidth } from "@/hooks/useScreenWidth";
 import { useStore } from "@nanostores/react";
-import { polyglotState } from "../../hooks/useLanguage";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
 import Appearance from "./Appearance";
 import CategoryList from "./CategoryList";
 import FeedList from "./FeedList";

@@ -2,12 +2,12 @@ import { IconClockCircle, IconStarFill } from "@arco-design/web-react/icon";
 import { useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
+import FeedIcon from "@/components/ui/FeedIcon";
+import useEntryActions from "@/hooks/useEntryActions";
+import { contentState } from "@/store/contentState";
+import { settingsState } from "@/store/settingsState";
+import { generateReadingTime, generateRelativeTime } from "@/utils/date";
 import { useStore } from "@nanostores/react";
-import useEntryActions from "../../hooks/useEntryActions";
-import { contentState } from "../../store/contentState";
-import { settingsState } from "../../store/settingsState";
-import { generateReadingTime, generateRelativeTime } from "../../utils/date";
-import FeedIcon from "../ui/FeedIcon";
 import "./ArticleCard.css";
 
 const ASPECT_RATIO_THRESHOLD = 4 / 3;

@@ -2,31 +2,31 @@ import { Button, Notification, Typography } from "@arco-design/web-react";
 import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { useStore } from "@nanostores/react";
-import { AnimatePresence } from "framer-motion";
-import { useHotkeys } from "react-hotkeys-hook";
-import { useSwipeable } from "react-swipeable";
-import useAppData from "../../hooks/useAppData";
-import useArticleList from "../../hooks/useArticleList";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
-import useEntryActions from "../../hooks/useEntryActions";
-import useKeyHandlers from "../../hooks/useKeyHandlers";
-import { polyglotState } from "../../hooks/useLanguage";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
+import ActionButtons from "@/components/Article/ActionButtons";
+import ArticleDetail from "@/components/Article/ArticleDetail";
+import ArticleList from "@/components/Article/ArticleList";
+import SearchAndSortBar from "@/components/Article/SearchAndSortBar";
+import FadeTransition from "@/components/ui/FadeTransition";
+import useAppData from "@/hooks/useAppData";
+import useArticleList from "@/hooks/useArticleList";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import useEntryActions from "@/hooks/useEntryActions";
+import useKeyHandlers from "@/hooks/useKeyHandlers";
+import { polyglotState } from "@/hooks/useLanguage";
+import { useScreenWidth } from "@/hooks/useScreenWidth";
 import {
   contentState,
   setActiveContent,
   setInfoFrom,
   setOffset,
-} from "../../store/contentState";
-import { dataState, hiddenFeedIdsState } from "../../store/dataState";
-import { duplicateHotkeysState, hotkeysState } from "../../store/hotkeysState";
-import { settingsState } from "../../store/settingsState";
-import ActionButtons from "../Article/ActionButtons";
-import ArticleDetail from "../Article/ArticleDetail";
-import ArticleList from "../Article/ArticleList";
-import SearchAndSortBar from "../Article/SearchAndSortBar";
-import FadeTransition from "../ui/FadeTransition";
+} from "@/store/contentState";
+import { dataState, hiddenFeedIdsState } from "@/store/dataState";
+import { duplicateHotkeysState, hotkeysState } from "@/store/hotkeysState";
+import { settingsState } from "@/store/settingsState";
+import { useStore } from "@nanostores/react";
+import { AnimatePresence } from "framer-motion";
+import { useHotkeys } from "react-hotkeys-hook";
+import { useSwipeable } from "react-swipeable";
 import { useContentContext } from "./ContentContext";
 import FooterPanel from "./FooterPanel";
 import "./Content.css";

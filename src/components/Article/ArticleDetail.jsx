@@ -1,3 +1,4 @@
+import sanitizeHtml from "@/utils/sanitizeHtml";
 import { Divider, Tag, Typography } from "@arco-design/web-react";
 import MuxPlayer from "@mux/mux-player-react";
 import ReactHtmlParser from "html-react-parser";
@@ -5,23 +6,22 @@ import { littlefoot } from "littlefoot";
 import { forwardRef, useEffect } from "react";
 import { PhotoSlider } from "react-photo-view";
 import { useNavigate } from "react-router-dom";
-import sanitizeHtml from "../../utils/sanitizeHtml";
 
 import { useStore } from "@nanostores/react";
 import "react-photo-view/dist/react-photo-view.css";
-import SimpleBar from "simplebar-react";
-import { usePhotoSlider } from "../../hooks/usePhotoSlider";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
+import CustomLink from "@/components/ui/CustomLink";
+import FadeTransition from "@/components/ui/FadeTransition";
+import { usePhotoSlider } from "@/hooks/usePhotoSlider";
+import { useScreenWidth } from "@/hooks/useScreenWidth";
 import {
   contentState,
   setFilterString,
   setFilterType,
-} from "../../store/contentState";
-import { settingsState } from "../../store/settingsState";
-import { generateReadableDate, generateReadingTime } from "../../utils/date";
-import { extractImageSources } from "../../utils/images";
-import CustomLink from "../ui/CustomLink";
-import FadeTransition from "../ui/FadeTransition";
+} from "@/store/contentState";
+import { settingsState } from "@/store/settingsState";
+import { generateReadableDate, generateReadingTime } from "@/utils/date";
+import { extractImageSources } from "@/utils/images";
+import SimpleBar from "simplebar-react";
 import CodeBlock from "./CodeBlock";
 import ImageOverlayButton from "./ImageOverlayButton";
 import "./ArticleDetail.css";

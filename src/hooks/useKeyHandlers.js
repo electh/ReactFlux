@@ -1,6 +1,4 @@
-import { Message } from "@arco-design/web-react";
-import { useStore } from "@nanostores/react";
-import { useContentContext } from "../components/Content/ContentContext";
+import { useContentContext } from "@/components/Content/ContentContext";
 import {
   activeEntryIndexState,
   contentState,
@@ -8,9 +6,11 @@ import {
   nextContentState,
   prevContentState,
   setActiveContent,
-} from "../store/contentState";
-import { ANIMATION_DURATION_MS } from "../utils/constants";
-import { extractImageSources } from "../utils/images";
+} from "@/store/contentState";
+import { ANIMATION_DURATION_MS } from "@/utils/constants";
+import { extractImageSources } from "@/utils/images";
+import { Message } from "@arco-design/web-react";
+import { useStore } from "@nanostores/react";
 import { polyglotState } from "./useLanguage";
 import { useModalToggle } from "./useModalToggle";
 import { usePhotoSlider } from "./usePhotoSlider";

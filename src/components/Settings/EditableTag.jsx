@@ -1,7 +1,7 @@
+import { duplicateHotkeysState } from "@/store/hotkeysState";
 import { Input, Tag } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
 import { useCallback, useEffect, useState } from "react";
-import { duplicateHotkeysState } from "../../store/hotkeysState";
 
 const EditableTag = ({ value, onChange, onRemove, editOnMount = false }) => {
   const duplicateHotkeys = useStore(duplicateHotkeysState);

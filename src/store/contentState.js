@@ -1,8 +1,8 @@
+import { removeDuplicateEntries } from "@/utils/deduplicate";
+import { filterEntries } from "@/utils/filter";
+import { createSetter } from "@/utils/nanostores";
+import { compareVersions } from "@/utils/version";
 import { computed, map } from "nanostores";
-import { removeDuplicateEntries } from "../utils/deduplicate";
-import { filterEntries } from "../utils/filter";
-import { createSetter } from "../utils/nanostores";
-import { compareVersions } from "../utils/version";
 import { dataState, hiddenFeedIdsState } from "./dataState";
 import { getSettings, settingsState } from "./settingsState";
 

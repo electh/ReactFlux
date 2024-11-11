@@ -1,6 +1,6 @@
+import { useScreenWidth } from "@/hooks/useScreenWidth";
 import { Tooltip } from "@arco-design/web-react";
 import { useState } from "react";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
 
 const CustomTooltip = ({ children, ...props }) => {
   const { isBelowMedium } = useScreenWidth();

@@ -1,9 +1,9 @@
+import CustomTooltip from "@/components/ui/CustomTooltip.jsx";
+import { polyglotState } from "@/hooks/useLanguage.js";
+import { useModalToggle } from "@/hooks/useModalToggle.js";
 import { Button } from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
 import { useStore } from "@nanostores/react";
-import { polyglotState } from "../../hooks/useLanguage.js";
-import { useModalToggle } from "../../hooks/useModalToggle.js";
-import CustomTooltip from "../ui/CustomTooltip.jsx";
 
 export default function AddFeed() {
   const { setAddFeedModalVisible } = useModalToggle();

@@ -1,7 +1,7 @@
+import { getFeedIcon } from "@/apis";
 import { useStore } from "@nanostores/react";
 import { map } from "nanostores";
 import { useEffect } from "react";
-import { getFeedIcon } from "../apis";
 
 const feedIconsState = map();
 export const resetFeedIcons = () => feedIconsState.set({});

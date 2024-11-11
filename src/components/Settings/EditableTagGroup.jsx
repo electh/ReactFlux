@@ -1,12 +1,12 @@
-import { Button, Space, Tag } from "@arco-design/web-react";
-import { IconPlus, IconRefresh } from "@arco-design/web-react/icon";
-import { useStore } from "@nanostores/react";
-import { useEffect, useRef, useState } from "react";
 import {
   duplicateHotkeysState,
   resetHotkey,
   updateHotkey,
-} from "../../store/hotkeysState";
+} from "@/store/hotkeysState";
+import { Button, Space, Tag } from "@arco-design/web-react";
+import { IconPlus, IconRefresh } from "@arco-design/web-react/icon";
+import { useStore } from "@nanostores/react";
+import { useEffect, useRef, useState } from "react";
 import EditableTag from "./EditableTag";
 
 const capitalizeFirstLetter = (word) =>

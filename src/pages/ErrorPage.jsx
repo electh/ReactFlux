@@ -1,7 +1,7 @@
+import { hideSpinner } from "@/utils/loading";
 import { Button, Result } from "@arco-design/web-react";
 import { useEffect } from "react";
 import { useNavigate, useRouteError } from "react-router-dom";
-import { hideSpinner } from "../utils/loading";
 
 const ErrorPage = () => {
   const navigate = useNavigate();

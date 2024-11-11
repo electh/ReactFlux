@@ -1,6 +1,6 @@
+import useFeedIcons from "@/hooks/useFeedIcons";
+import { getSecondHostname } from "@/utils/url";
 import { useEffect, useRef, useState } from "react";
-import useFeedIcons from "../../hooks/useFeedIcons";
-import { getSecondHostname } from "../../utils/url";
 
 const getFallbackIconURL = (feed) => {
   const hostname =

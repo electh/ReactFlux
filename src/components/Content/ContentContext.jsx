@@ -1,14 +1,11 @@
+import { updateEntriesStatus } from "@/apis";
+import useEntryActions from "@/hooks/useEntryActions";
+import { polyglotState } from "@/hooks/useLanguage";
+import { setActiveContent, setIsArticleLoading } from "@/store/contentState";
+import { ANIMATION_DURATION_MS } from "@/utils/constants";
 import { Message } from "@arco-design/web-react";
 import { useStore } from "@nanostores/react";
 import { createContext, useCallback, useContext, useMemo, useRef } from "react";
-import { updateEntriesStatus } from "../../apis";
-import useEntryActions from "../../hooks/useEntryActions";
-import { polyglotState } from "../../hooks/useLanguage";
-import {
-  setActiveContent,
-  setIsArticleLoading,
-} from "../../store/contentState";
-import { ANIMATION_DURATION_MS } from "../../utils/constants";
 
 const Context = createContext();
 

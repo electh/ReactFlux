@@ -1,9 +1,9 @@
+import { polyglotState } from "@/hooks/useLanguage";
+import { contentState } from "@/store/contentState";
+import { categoriesState, feedsState } from "@/store/dataState";
 import { useStore } from "@nanostores/react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { contentState } from "../store/contentState";
-import { categoriesState, feedsState } from "../store/dataState";
-import { polyglotState } from "./useLanguage";
 
 const BASE_TITLE = "ReactFlux";
 

@@ -1,4 +1,4 @@
-import { settingsState } from "../store/settingsState";
+import { settingsState } from "@/store/settingsState";
 
 export const getPreferredLanguage = () => {
   const { language } = settingsState.get();

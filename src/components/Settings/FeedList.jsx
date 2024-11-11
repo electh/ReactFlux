@@ -21,30 +21,21 @@ import {
 } from "@arco-design/web-react/icon";
 import { Fragment, useEffect, useState } from "react";
 
-import {
-  deleteFeed,
-  refreshAllFeed,
-  refreshFeed,
-  updateFeed,
-} from "../../apis";
-import { generateRelativeTime, getUTCDate } from "../../utils/date";
+import { deleteFeed, refreshAllFeed, refreshFeed, updateFeed } from "@/apis";
+import { generateRelativeTime, getUTCDate } from "@/utils/date";
 
+import CustomLink from "@/components/ui/CustomLink";
+import CustomTooltip from "@/components/ui/CustomTooltip";
+import { polyglotState } from "@/hooks/useLanguage";
+import { useScreenWidth } from "@/hooks/useScreenWidth";
+import { categoriesState, dataState, setFeedsData } from "@/store/dataState";
+import { settingsState } from "@/store/settingsState";
+import { filterByQuery } from "@/utils/kmp";
+import { createSetter } from "@/utils/nanostores";
+import { sleep } from "@/utils/time";
 import { useStore } from "@nanostores/react";
 import { atom, computed } from "nanostores";
 import { useNavigate } from "react-router-dom";
-import { polyglotState } from "../../hooks/useLanguage";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
-import {
-  categoriesState,
-  dataState,
-  setFeedsData,
-} from "../../store/dataState";
-import { settingsState } from "../../store/settingsState";
-import { filterByQuery } from "../../utils/kmp";
-import { createSetter } from "../../utils/nanostores";
-import { sleep } from "../../utils/time";
-import CustomLink from "../ui/CustomLink";
-import CustomTooltip from "../ui/CustomTooltip";
 import "./FeedList.css";
 
 const filterStringState = atom("");

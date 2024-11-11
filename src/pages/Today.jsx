@@ -1,5 +1,5 @@
-import { getTodayEntries, updateEntriesStatus } from "../apis";
-import Content from "../components/Content/Content";
+import { getTodayEntries, updateEntriesStatus } from "@/apis";
+import Content from "@/components/Content/Content";
 
 const Today = () => {
   const markTodayAsRead = async () => {

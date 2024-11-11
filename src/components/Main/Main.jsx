@@ -9,15 +9,15 @@ import {
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
+import { addFeed } from "@/apis";
+import { ContextProvider } from "@/components/Content/ContentContext";
+import SettingsTabs from "@/components/Settings/SettingsTabs";
+import useAppData from "@/hooks/useAppData";
+import { polyglotState } from "@/hooks/useLanguage";
+import { useModalToggle } from "@/hooks/useModalToggle";
+import { categoriesState, feedsState } from "@/store/dataState";
+import { includesIgnoreCase } from "@/utils/filter";
 import { useStore } from "@nanostores/react";
-import { addFeed } from "../../apis";
-import useAppData from "../../hooks/useAppData";
-import { polyglotState } from "../../hooks/useLanguage";
-import { useModalToggle } from "../../hooks/useModalToggle";
-import { categoriesState, feedsState } from "../../store/dataState";
-import { includesIgnoreCase } from "../../utils/filter";
-import { ContextProvider } from "../Content/ContentContext";
-import SettingsTabs from "../Settings/SettingsTabs";
 import "./Main.css";
 
 const urlRule = [{ required: true }];

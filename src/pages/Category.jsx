@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 
-import { buildEntriesUrl, markCategoryAsRead } from "../apis";
-import { apiClient } from "../apis/ofetch";
-import Content from "../components/Content/Content";
-import { getSettings } from "../store/settingsState";
+import { buildEntriesUrl, markCategoryAsRead } from "@/apis";
+import { apiClient } from "@/apis/ofetch";
+import Content from "@/components/Content/Content";
+import { getSettings } from "@/store/settingsState";
 
 const Category = () => {
   const { id: categoryId } = useParams();

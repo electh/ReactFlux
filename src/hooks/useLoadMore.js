@@ -1,14 +1,14 @@
-import { useStore } from "@nanostores/react";
-import { atom } from "nanostores";
 import {
   contentState,
   setEntries,
   setLoadMoreVisible,
   setOffset,
-} from "../store/contentState";
-import { settingsState } from "../store/settingsState";
-import { parseFirstImage } from "../utils/images";
-import { createSetter } from "../utils/nanostores";
+} from "@/store/contentState";
+import { settingsState } from "@/store/settingsState";
+import { parseFirstImage } from "@/utils/images";
+import { createSetter } from "@/utils/nanostores";
+import { useStore } from "@nanostores/react";
+import { atom } from "nanostores";
 
 const loadingMoreState = atom(false);
 const setLoadingMore = createSetter(loadingMoreState);

@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import {
   getCategories,
   getCounters,
@@ -7,7 +6,7 @@ import {
   getStarredEntries,
   getTodayEntries,
   getVersion,
-} from "../apis";
+} from "@/apis";
 import {
   setCategoriesData,
   setFeedsData,
@@ -18,8 +17,9 @@ import {
   setUnreadInfo,
   setUnreadTodayCount,
   setVersion,
-} from "../store/dataState";
-import { compareVersions } from "../utils/version";
+} from "@/store/dataState";
+import { compareVersions } from "@/utils/version";
+import { useRef } from "react";
 
 const useAppData = () => {
   const isLoading = useRef(false);

@@ -1,5 +1,5 @@
+import { getBrowserLanguage } from "@/utils/locales";
 import { persistentAtom } from "@nanostores/persistent";
-import { getBrowserLanguage } from "../utils/locales";
 
 const defaultValue = {
   articleWidth: 90,

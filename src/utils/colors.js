@@ -1,5 +1,5 @@
+import { getSettings } from "@/store/settingsState";
 import { generate, getRgbStr } from "@arco-design/color";
-import { getSettings } from "../store/settingsState";
 
 export const colors = {
   Red: { light: "#DC2626", dark: "#DC2626" },

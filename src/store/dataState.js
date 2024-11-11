@@ -1,5 +1,5 @@
+import { createSetter } from "@/utils/nanostores";
 import { computed, map } from "nanostores";
-import { createSetter } from "../utils/nanostores";
 import { settingsState } from "./settingsState";
 
 const defaultValue = {

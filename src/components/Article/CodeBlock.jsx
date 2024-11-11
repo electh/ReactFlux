@@ -1,17 +1,17 @@
+import CustomTooltip from "@/components/ui/CustomTooltip";
+import { polyglotState } from "@/hooks/useLanguage";
+import { ANIMATION_DURATION_MS } from "@/utils/constants";
+import { SyntaxHighlighter } from "@/utils/highlighter";
+import {
+  LANGUAGE_DISPLAY_NAMES,
+  SUPPORTED_LANGUAGES,
+} from "@/utils/highlighter";
 import { Button, Message, Select } from "@arco-design/web-react";
 import { IconCopy } from "@arco-design/web-react/icon";
 import { useStore } from "@nanostores/react";
 import hljs from "highlight.js";
 import { useCallback, useEffect, useState } from "react";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { polyglotState } from "../../hooks/useLanguage";
-import { ANIMATION_DURATION_MS } from "../../utils/constants";
-import { SyntaxHighlighter } from "../../utils/highlighter";
-import {
-  LANGUAGE_DISPLAY_NAMES,
-  SUPPORTED_LANGUAGES,
-} from "../../utils/highlighter";
-import CustomTooltip from "../ui/CustomTooltip";
 import "./CodeBlock.css";
 
 const CodeBlock = ({ children }) => {

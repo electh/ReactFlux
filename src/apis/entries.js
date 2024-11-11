@@ -1,7 +1,7 @@
-import { contentState } from "../store/contentState";
-import { getSettings } from "../store/settingsState";
-import { get24HoursAgoTimestamp } from "../utils/date";
-import { getDayEndTimestamp, getTimestamp } from "../utils/date";
+import { contentState } from "@/store/contentState";
+import { getSettings } from "@/store/settingsState";
+import { get24HoursAgoTimestamp } from "@/utils/date";
+import { getDayEndTimestamp, getTimestamp } from "@/utils/date";
 import { apiClient } from "./ofetch";
 
 export const updateEntriesStatus = async (entryIds, newStatus) =>

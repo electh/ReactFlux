@@ -29,21 +29,21 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 
-import { useStore } from "@nanostores/react";
-import classNames from "classnames";
-import { exportOPML, importOPML } from "../../apis";
-import useAppData from "../../hooks/useAppData";
-import { polyglotState } from "../../hooks/useLanguage";
-import { useScreenWidth } from "../../hooks/useScreenWidth";
-import { contentState, setActiveContent } from "../../store/contentState";
+import { exportOPML, importOPML } from "@/apis";
+import FeedIcon from "@/components/ui/FeedIcon";
+import useAppData from "@/hooks/useAppData";
+import { polyglotState } from "@/hooks/useLanguage";
+import { useScreenWidth } from "@/hooks/useScreenWidth";
+import { contentState, setActiveContent } from "@/store/contentState";
 import {
   dataState,
   feedsGroupedByIdState,
   filteredCategoriesState,
   unreadTotalState,
-} from "../../store/dataState";
-import { settingsState, updateSettings } from "../../store/settingsState";
-import FeedIcon from "../ui/FeedIcon";
+} from "@/store/dataState";
+import { settingsState, updateSettings } from "@/store/settingsState";
+import { useStore } from "@nanostores/react";
+import classNames from "classnames";
 import AddFeed from "./AddFeed.jsx";
 import Profile from "./Profile.jsx";
 import "./Sidebar.css";

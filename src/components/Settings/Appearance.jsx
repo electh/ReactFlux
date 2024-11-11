@@ -1,10 +1,10 @@
 import { Divider, Switch } from "@arco-design/web-react";
 
-import { polyglotState } from "../../hooks/useLanguage";
-import { applyColor, colors, getDisplayColorValue } from "../../utils/colors";
+import { polyglotState } from "@/hooks/useLanguage";
+import { applyColor, colors, getDisplayColorValue } from "@/utils/colors";
 
+import { settingsState, updateSettings } from "@/store/settingsState";
 import { useStore } from "@nanostores/react";
-import { settingsState, updateSettings } from "../../store/settingsState";
 import SettingItem from "./SettingItem";
 import "./Appearance.css";
 

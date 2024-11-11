@@ -9,15 +9,15 @@ import {
 import { IconPlus } from "@arco-design/web-react/icon";
 import { useState } from "react";
 
-import { addCategory, deleteCategory, updateCategory } from "../../apis";
+import { addCategory, deleteCategory, updateCategory } from "@/apis";
 
-import { useStore } from "@nanostores/react";
-import { polyglotState } from "../../hooks/useLanguage";
+import { polyglotState } from "@/hooks/useLanguage";
 import {
   categoriesState,
   setCategoriesData,
   setFeedsData,
-} from "../../store/dataState";
+} from "@/store/dataState";
+import { useStore } from "@nanostores/react";
 import "./CategoryList.css";
 
 const CategoryList = () => {

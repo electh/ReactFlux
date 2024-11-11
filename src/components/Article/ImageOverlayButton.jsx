@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
+import { settingsState } from "@/store/settingsState";
 import { Tag, Tooltip } from "@arco-design/web-react";
 import { IconLink } from "@arco-design/web-react/icon";
 import { useStore } from "@nanostores/react";
-import { settingsState } from "../../store/settingsState";
 
 import "./ImageOverlayButton.css";
 

@@ -1,5 +1,5 @@
+import { ANIMATION_DURATION_S } from "@/utils/constants";
 import { motion } from "framer-motion";
-import { ANIMATION_DURATION_S } from "../../utils/constants";
 
 const FadeTransition = ({
   children,

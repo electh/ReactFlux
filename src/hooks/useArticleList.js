@@ -1,21 +1,21 @@
-import { useStore } from "@nanostores/react";
-import { useEffect, useRef } from "react";
 import {
   contentState,
   setEntries,
   setIsArticleListReady,
   setLoadMoreVisible,
   setTotal,
-} from "../store/contentState";
+} from "@/store/contentState";
 import {
   dataState,
   setHistoryCount,
   setStarredCount,
   setUnreadInfo,
   setUnreadTodayCount,
-} from "../store/dataState";
-import { settingsState } from "../store/settingsState";
-import { parseFirstImage } from "../utils/images";
+} from "@/store/dataState";
+import { settingsState } from "@/store/settingsState";
+import { parseFirstImage } from "@/utils/images";
+import { useStore } from "@nanostores/react";
+import { useEffect, useRef } from "react";
 
 const handleResponses = (response) => {
   if (response?.total >= 0) {

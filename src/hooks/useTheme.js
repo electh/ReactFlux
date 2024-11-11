@@ -1,7 +1,7 @@
+import { settingsState } from "@/store/settingsState";
+import { applyColor } from "@/utils/colors";
 import { useStore } from "@nanostores/react";
 import { useEffect, useState } from "react";
-import { settingsState } from "../store/settingsState";
-import { applyColor } from "../utils/colors";
 
 const useTheme = () => {
   const { themeColor, themeMode } = useStore(settingsState);

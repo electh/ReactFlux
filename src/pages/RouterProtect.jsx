@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
+import { authState } from "@/store/authState";
+import { isValidAuth } from "@/utils/auth";
 import { useStore } from "@nanostores/react";
-import { authState } from "../store/authState";
-import { isValidAuth } from "../utils/auth";
 
 const RouterProtect = () => {
   const auth = useStore(authState);

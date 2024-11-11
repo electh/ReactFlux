@@ -1,8 +1,8 @@
 import { ofetch } from "ofetch";
 
-import router from "../routes";
-import { authState } from "../store/authState";
-import { isValidAuth } from "../utils/auth";
+import router from "@/routes";
+import { authState } from "@/store/authState";
+import { isValidAuth } from "@/utils/auth";
 
 // 创建 ofetch 实例并设置默认配置
 const createApiClient = () => {
