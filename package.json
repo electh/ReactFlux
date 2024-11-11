@@ -14,6 +14,7 @@
   "dependencies": {
     "@arco-design/color": "^0.4.0",
     "@arco-design/web-react": "^2.64.1",
+    "@mux/mux-player-react": "^3.1.0",
     "@nanostores/persistent": "^0.10.2",
     "@nanostores/react": "^0.8.0",
     "@tanstack/react-virtual": "^3.10.9",
@@ -29,7 +30,6 @@
     "ofetch": "^1.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hls-video-player": "^3.2.4",
     "react-hotkeys-hook": "^4.6.1",
     "react-intersection-observer": "^9.13.1",
     "react-photo-view": "^1.2.6",

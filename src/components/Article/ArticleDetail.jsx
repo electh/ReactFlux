@@ -1,8 +1,8 @@
 import { Divider, Tag, Typography } from "@arco-design/web-react";
+import MuxPlayer from "@mux/mux-player-react";
 import ReactHtmlParser from "html-react-parser";
 import { littlefoot } from "littlefoot";
 import { forwardRef, useEffect } from "react";
-import ReactHlsPlayer from "react-hls-video-player";
 import { PhotoSlider } from "react-photo-view";
 import { useNavigate } from "react-router-dom";
 import sanitizeHtml from "../../utils/sanitizeHtml";
@@ -56,15 +56,11 @@ const handleBskyVideo = (node) => {
     const playlistUrl = thumbnailUrl.replace("thumbnail.jpg", "playlist.m3u8");
 
     return (
-      <ReactHlsPlayer
+      <MuxPlayer
         src={playlistUrl}
         controls
-        loop
         poster={thumbnailUrl}
-        playsInline
-        hlsConfig={{
-          startLevel: -1, // force autolevel
-        }}
+        style={{ width: "100%", height: "auto" }}
       />
     );
   }
@@ -168,19 +164,19 @@ const handleVideo = (node) => {
 
   const videoSrc = sourceNode?.attribs.src || node.attribs.src;
 
-  if (videoSrc?.endsWith(".m3u8")) {
-    return (
-      <ReactHlsPlayer
-        src={videoSrc}
-        controls
-        poster={node.attribs.poster}
-        playsInline
-        hlsConfig={{ startLevel: -1 }}
-      />
-    );
+  if (!videoSrc) {
+    return node;
   }
 
-  return node;
+  return (
+    <MuxPlayer
+      src={videoSrc}
+      controls
+      poster={node.attribs.poster}
+      crossOrigin="anonymous"
+      style={{ width: "100%", height: "auto" }}
+    />
+  );
 };
 
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
