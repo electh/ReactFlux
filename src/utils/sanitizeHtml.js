@@ -1,25 +1,10 @@
-import sanitize from "sanitize-html";
+import sanitize from "sanitize-html"
 
 const getSanitizeOptions = () => ({
-  allowedTags: sanitize.defaults.allowedTags.concat([
-    "img",
-    "iframe",
-    "video",
-    "source",
-  ]),
+  allowedTags: sanitize.defaults.allowedTags.concat(["img", "iframe", "video", "source"]),
   allowedAttributes: {
     ...sanitize.defaults.allowedAttributes,
-    img: [
-      "alt",
-      "class",
-      "height",
-      "loading",
-      "src",
-      "srcset",
-      "style",
-      "title",
-      "width",
-    ],
+    img: ["alt", "class", "height", "loading", "src", "srcset", "style", "title", "width"],
     iframe: [
       {
         name: "sandbox",
@@ -64,11 +49,11 @@ const getSanitizeOptions = () => ({
     "player.bilibili.com",
     "player.vimeo.com",
   ],
-});
+})
 
 const sanitizeHtml = (content) => {
-  const sanitizeOptions = getSanitizeOptions();
-  return sanitize(content, sanitizeOptions);
-};
+  const sanitizeOptions = getSanitizeOptions()
+  return sanitize(content, sanitizeOptions)
+}
 
-export default sanitizeHtml;
+export default sanitizeHtml

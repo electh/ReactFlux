@@ -1,20 +1,22 @@
-export const createSetter =
+const createSetter =
   (store, key = null) =>
   (updater) => {
-    const state = store.get();
+    const state = store.get()
 
     if (typeof state === "object" && state !== null) {
       if (key === null) {
-        return;
+        return
       }
       if (typeof updater === "function") {
-        store.set({ ...state, [key]: updater(state[key]) });
+        store.set({ ...state, [key]: updater(state[key]) })
       } else {
-        store.set({ ...state, [key]: updater });
+        store.set({ ...state, [key]: updater })
       }
     } else if (typeof updater === "function") {
-      store.set(updater(state));
+      store.set(updater(state))
     } else {
-      store.set(updater);
+      store.set(updater)
     }
-  };
+  }
+
+export default createSetter

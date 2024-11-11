@@ -1,15 +1,15 @@
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom"
 
-import { buildEntriesUrl, markCategoryAsRead } from "@/apis";
-import { apiClient } from "@/apis/ofetch";
-import Content from "@/components/Content/Content";
-import { getSettings } from "@/store/settingsState";
+import { buildEntriesUrl, markCategoryAsRead } from "@/apis"
+import apiClient from "@/apis/ofetch"
+import Content from "@/components/Content/Content"
+import { getSettings } from "@/store/settingsState"
 
 const Category = () => {
-  const { id: categoryId } = useParams();
-  const orderBy = getSettings("orderBy");
-  const pageSize = getSettings("pageSize");
-  const showHiddenFeeds = getSettings("showHiddenFeeds");
+  const { id: categoryId } = useParams()
+  const orderBy = getSettings("orderBy")
+  const pageSize = getSettings("pageSize")
+  const showHiddenFeeds = getSettings("showHiddenFeeds")
 
   const getCategoryEntries = async (offset = 0, status = null) => {
     const baseParams = {
@@ -18,20 +18,20 @@ const Category = () => {
       offset,
       limit: pageSize,
       status,
-    };
+    }
 
-    const extraParams = { globally_visible: !showHiddenFeeds };
+    const extraParams = { globally_visible: !showHiddenFeeds }
 
-    return apiClient.get(buildEntriesUrl(baseParams, extraParams));
-  };
+    return apiClient.get(buildEntriesUrl(baseParams, extraParams))
+  }
 
   return (
     <Content
-      info={{ from: "category", id: categoryId }}
       getEntries={getCategoryEntries}
+      info={{ from: "category", id: categoryId }}
       markAllAsRead={() => markCategoryAsRead(categoryId)}
     />
-  );
-};
+  )
+}
 
-export default Category;
+export default Category

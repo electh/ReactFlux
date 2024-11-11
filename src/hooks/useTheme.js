@@ -1,39 +1,40 @@
-import { settingsState } from "@/store/settingsState";
-import { applyColor } from "@/utils/colors";
-import { useStore } from "@nanostores/react";
-import { useEffect, useState } from "react";
+import { useStore } from "@nanostores/react"
+import { useEffect, useState } from "react"
+
+import { settingsState } from "@/store/settingsState"
+import { applyColor } from "@/utils/colors"
 
 const useTheme = () => {
-  const { themeColor, themeMode } = useStore(settingsState);
+  const { themeColor, themeMode } = useStore(settingsState)
   const [isSystemDark, setIsSystemDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
-  );
+  )
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const updateSystemDarkMode = (event) => setIsSystemDark(event.matches);
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const updateSystemDarkMode = (event) => setIsSystemDark(event.matches)
 
-    mediaQuery.addEventListener("change", updateSystemDarkMode);
+    mediaQuery.addEventListener("change", updateSystemDarkMode)
 
     // 在组件卸载时清除监听器
-    return () => mediaQuery.removeEventListener("change", updateSystemDarkMode);
-  }, []);
+    return () => mediaQuery.removeEventListener("change", updateSystemDarkMode)
+  }, [])
 
   useEffect(() => {
     const applyColorScheme = (isDarkMode) => {
-      const themeMode = isDarkMode ? "dark" : "light";
-      document.body.setAttribute("arco-theme", themeMode);
-      document.body.style.colorScheme = themeMode;
-    };
+      const themeMode = isDarkMode ? "dark" : "light"
+      document.body.setAttribute("arco-theme", themeMode)
+      document.body.style.colorScheme = themeMode
+    }
 
-    applyColor(themeColor);
+    applyColor(themeColor)
 
     if (themeMode === "system") {
-      applyColorScheme(isSystemDark);
+      applyColorScheme(isSystemDark)
     } else {
-      applyColorScheme(themeMode === "dark");
+      applyColorScheme(themeMode === "dark")
     }
-  }, [isSystemDark, themeMode, themeColor]);
-};
+  }, [isSystemDark, themeMode, themeColor])
+}
 
-export default useTheme;
+export default useTheme

@@ -5,16 +5,17 @@ on:
     branches:
       - main
     paths-ignore:
-      - '.github/**'
-      - '.husky/**'
-      - '.editorconfig'
-      - '.gitignore'
-      - 'docs/**'
-      - 'biome.json'
-      - 'README.md'
+      - ".github/**"
+      - ".husky/**"
+      - ".editorconfig"
+      - ".gitignore"
+      - ".prettierignore"
+      - ".prettierrc"
+      - "docs/**"
+      - "eslint.config.mjs"
+      - "README.md"
 
   workflow_dispatch:
-
 
 jobs:
   build-and-push:

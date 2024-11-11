@@ -7,98 +7,92 @@ import {
   Message,
   Notification,
   Typography,
-} from "@arco-design/web-react";
-import useForm from "@arco-design/web-react/es/Form/useForm";
-import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon";
-import { ofetch } from "ofetch";
-import { useEffect, useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+} from "@arco-design/web-react"
+import useForm from "@arco-design/web-react/es/Form/useForm"
+import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon"
+import { useStore } from "@nanostores/react"
+import { ofetch } from "ofetch"
+import { useEffect, useState } from "react"
+import { Navigate, useLocation, useNavigate } from "react-router-dom"
 
-import useLanguage, { polyglotState } from "@/hooks/useLanguage";
-import useTheme from "@/hooks/useTheme";
-import { authState, setAuth } from "@/store/authState";
-import { settingsState } from "@/store/settingsState";
-import { isValidAuth } from "@/utils/auth";
-import {
-  handleEnterKeyToSubmit,
-  validateAndFormatFormFields,
-} from "@/utils/form";
-import { hideSpinner } from "@/utils/loading";
-import { useStore } from "@nanostores/react";
-import "./Login.css";
+import useLanguage, { polyglotState } from "@/hooks/useLanguage"
+import useTheme from "@/hooks/useTheme"
+import { authState, setAuth } from "@/store/authState"
+import { settingsState } from "@/store/settingsState"
+import isValidAuth from "@/utils/auth"
+import { handleEnterKeyToSubmit, validateAndFormatFormFields } from "@/utils/form"
+import hideSpinner from "@/utils/loading"
+import "./Login.css"
 
 const Login = () => {
-  useLanguage();
-  useTheme();
+  useLanguage()
+  useTheme()
 
-  const auth = useStore(authState);
-  const { homePage } = useStore(settingsState);
-  const { polyglot } = useStore(polyglotState);
+  const auth = useStore(authState)
+  const { homePage } = useStore(settingsState)
+  const { polyglot } = useStore(polyglotState)
 
-  const [loginForm] = useForm();
-  const [loading, setLoading] = useState(false);
-  const [authMethod, setAuthMethod] = useState("token");
+  const [loginForm] = useForm()
+  const [loading, setLoading] = useState(false)
+  const [authMethod, setAuthMethod] = useState("token")
   /* token or user */
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const performHealthCheck = async (auth) => {
-    setLoading(true);
-    const { server, token, username, password } = auth;
+    setLoading(true)
+    const { server, token, username, password } = auth
     try {
       const response = await ofetch.raw("v1/me", {
         baseURL: server,
         headers: token
           ? { "X-Auth-Token": token }
           : { Authorization: `Basic ${btoa(`${username}:${password}`)}` },
-      });
+      })
       if (response.status === 200) {
         Notification.success({
           title: polyglot.t("login.success"),
-        });
-        setAuth({ server, token, username, password });
-        const from = location.state?.from || `/${homePage}`;
-        navigate(from, { replace: true });
+        })
+        setAuth({ server, token, username, password })
+        const from = location.state?.from || `/${homePage}`
+        navigate(from, { replace: true })
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
       Notification.error({
         title: polyglot.t("login.error"),
         content: error.message,
-      });
+      })
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   const handleLogin = async (auth) => {
     if (!isValidAuth(auth)) {
-      Message.error(polyglot.t("login.auth_error"));
-      return;
+      Message.error(polyglot.t("login.auth_error"))
+      return
     }
-    await performHealthCheck(auth);
-  };
+    await performHealthCheck(auth)
+  }
 
   useEffect(() => {
-    hideSpinner();
-  }, []);
+    hideSpinner()
+  }, [])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    const url = new URL(window.location.href);
-    const { server, token, username, password } = Object.fromEntries(
-      url.searchParams,
-    );
+    const url = new URL(window.location.href)
+    const { server, token, username, password } = Object.fromEntries(url.searchParams)
     if (server) {
       if (username) {
-        setAuthMethod("user");
+        setAuthMethod("user")
       }
-      loginForm.setFieldsValue({ server, token, username, password });
-      loginForm.submit();
+      loginForm.setFieldsValue({ server, token, username, password })
+      loginForm.submit()
     }
-  }, [polyglot]);
+  }, [loginForm, polyglot])
 
   if (isValidAuth(auth)) {
-    return <Navigate to={`/${homePage}`} />;
+    return <Navigate to={`/${homePage}`} />
   }
 
   return (
@@ -115,10 +109,10 @@ const Login = () => {
               layout="vertical"
               onSubmit={async () => {
                 if (validateAndFormatFormFields(loginForm)) {
-                  history.replaceState(null, "", "/login");
-                  await handleLogin(loginForm.getFieldsValue());
+                  history.replaceState(null, "", "/login")
+                  await handleLogin(loginForm.getFieldsValue())
                 } else {
-                  Message.error(polyglot.t("login.submit_error"));
+                  Message.error(polyglot.t("login.submit_error"))
                 }
               }}
             >
@@ -127,7 +121,7 @@ const Login = () => {
                 label={polyglot.t("login.server_label")}
                 rules={[{ required: true }]}
                 onKeyDown={(event) => {
-                  handleEnterKeyToSubmit(event, loginForm);
+                  handleEnterKeyToSubmit(event, loginForm)
                 }}
               >
                 <Input
@@ -142,7 +136,7 @@ const Login = () => {
                   label={polyglot.t("login.token_label")}
                   rules={[{ required: true }]}
                   onKeyDown={(event) => {
-                    handleEnterKeyToSubmit(event, loginForm);
+                    handleEnterKeyToSubmit(event, loginForm)
                   }}
                 >
                   <Input.Password
@@ -159,7 +153,7 @@ const Login = () => {
                     label={polyglot.t("login.username_label")}
                     rules={[{ required: true }]}
                     onKeyDown={(event) => {
-                      handleEnterKeyToSubmit(event, loginForm);
+                      handleEnterKeyToSubmit(event, loginForm)
                     }}
                   >
                     <Input
@@ -173,7 +167,7 @@ const Login = () => {
                     label={polyglot.t("login.password_label")}
                     rules={[{ required: true }]}
                     onKeyDown={(event) => {
-                      handleEnterKeyToSubmit(event, loginForm);
+                      handleEnterKeyToSubmit(event, loginForm)
                     }}
                   >
                     <Input.Password
@@ -187,30 +181,26 @@ const Login = () => {
             </Form>
             <Button
               loading={loading}
-              type="primary"
               long={true}
-              onClick={() => loginForm.submit()}
               style={{ marginTop: "20px" }}
+              type="primary"
+              onClick={() => loginForm.submit()}
             >
               {polyglot.t("login.login_button")}
             </Button>
             <Divider>{polyglot.t("login.another_login_method")}</Divider>
             <Button
-              type="secondary"
               long={true}
-              onClick={() =>
-                setAuthMethod(authMethod === "token" ? "user" : "token")
-              }
               style={{ marginTop: "20px" }}
+              type="secondary"
+              onClick={() => setAuthMethod(authMethod === "token" ? "user" : "token")}
             >
               {authMethod === "token"
                 ? polyglot.t("login.another_login_button")
                 : polyglot.t("login.token_label")}
             </Button>
             <div style={{ display: "flex", marginTop: "40px" }}>
-              <Typography.Text disabled>
-                {polyglot.t("login.need_help")}
-              </Typography.Text>
+              <Typography.Text disabled>{polyglot.t("login.need_help")}</Typography.Text>
               <Link
                 href={"https://miniflux.app/docs/api.html#authentication"}
                 style={{ fontWeight: "500" }}
@@ -223,7 +213,7 @@ const Login = () => {
         <div className="background" />
       </div>
     )
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

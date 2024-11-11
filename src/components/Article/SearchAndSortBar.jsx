@@ -1,112 +1,95 @@
-import {
-  Button,
-  DatePicker,
-  Input,
-  Select,
-  Tooltip,
-} from "@arco-design/web-react";
+import { Button, DatePicker, Input, Select, Tooltip } from "@arco-design/web-react"
 import {
   IconCalendar,
   IconQuestionCircle,
   IconSortAscending,
   IconSortDescending,
-} from "@arco-design/web-react/icon";
-import { useLocation } from "react-router-dom";
+} from "@arco-design/web-react/icon"
+import { useStore } from "@nanostores/react"
+import { Fragment, useEffect, useState, useMemo } from "react"
+import { useLocation } from "react-router-dom"
 
-import CustomTooltip from "@/components/ui/CustomTooltip";
-import { polyglotState } from "@/hooks/useLanguage";
-import { useScreenWidth } from "@/hooks/useScreenWidth";
-import {
-  contentState,
-  setFilterDate,
-  setFilterString,
-  setFilterType,
-} from "@/store/contentState";
-import { settingsState, updateSettings } from "@/store/settingsState";
-import { getStartOfToday } from "@/utils/date";
-import { debounce } from "@/utils/time";
-import { useStore } from "@nanostores/react";
-import { Fragment, useCallback, useEffect, useState } from "react";
-import "./SearchAndSortBar.css";
-import SidebarTrigger from "./SidebarTrigger.jsx";
+import SidebarTrigger from "./SidebarTrigger.jsx"
+
+import CustomTooltip from "@/components/ui/CustomTooltip"
+import { polyglotState } from "@/hooks/useLanguage"
+import useScreenWidth from "@/hooks/useScreenWidth"
+import { contentState, setFilterDate, setFilterString, setFilterType } from "@/store/contentState"
+import { settingsState, updateSettings } from "@/store/settingsState"
+import { getStartOfToday } from "@/utils/date"
+import { debounce } from "@/utils/time"
+
+import "./SearchAndSortBar.css"
 
 const SearchAndSortBar = () => {
-  const { filterDate, filterString, filterType } = useStore(contentState);
-  const { orderDirection, showStatus } = useStore(settingsState);
-  const { polyglot } = useStore(polyglotState);
-  const tooltipLines = polyglot.t("search.tooltip").split("\n");
+  const { filterDate, filterString, filterType } = useStore(contentState)
+  const { orderDirection, showStatus } = useStore(settingsState)
+  const { polyglot } = useStore(polyglotState)
+  const tooltipLines = polyglot.t("search.tooltip").split("\n")
 
-  const location = useLocation();
+  const location = useLocation()
 
-  const [currentFilterString, setCurrentFilterString] = useState("");
-  const [isMount, setIsMount] = useState(false);
+  const [currentFilterString, setCurrentFilterString] = useState("")
+  const [isMount, setIsMount] = useState(false)
 
-  const debouncedSetFilterString = useCallback(
-    debounce((value) => setFilterString(value), 500),
+  const debouncedSetFilterString = useMemo(
+    () => debounce((value) => setFilterString(value), 500),
     [],
-  );
+  )
 
   const handleInputChange = (value) => {
-    setCurrentFilterString(value);
-    debouncedSetFilterString(value);
-  };
+    setCurrentFilterString(value)
+    debouncedSetFilterString(value)
+  }
 
-  const { isBelowMedium } = useScreenWidth();
+  const { isBelowMedium } = useScreenWidth()
 
   const toggleOrderDirection = () => {
-    const newOrderDirection = orderDirection === "desc" ? "asc" : "desc";
-    updateSettings({ orderDirection: newOrderDirection });
-  };
+    const newOrderDirection = orderDirection === "desc" ? "asc" : "desc"
+    updateSettings({ orderDirection: newOrderDirection })
+  }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    setFilterDate(null);
-    setFilterType("title");
-    setFilterString("");
-    setIsMount(false);
-  }, [location.pathname, showStatus]);
+    setFilterDate(null)
+    setFilterType("title")
+    setFilterString("")
+    setIsMount(false)
+  }, [location.pathname, showStatus])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!isMount) {
-      setIsMount(true);
-      return;
+      setIsMount(true)
+      return
     }
 
     if (filterString !== currentFilterString) {
-      setCurrentFilterString(filterString);
+      setCurrentFilterString(filterString)
     }
-  }, [filterString, isMount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterString, isMount])
 
   return (
     <div className="search-and-sort-bar">
       <SidebarTrigger />
       <Input.Search
         allowClear
-        onChange={handleInputChange}
         placeholder={polyglot.t("search.placeholder")}
         style={{ width: isBelowMedium ? "100%" : 272, marginLeft: 8 }}
         value={currentFilterString}
         addBefore={
           <Select
-            onChange={setFilterType}
             style={{ width: 80 }}
+            value={filterType}
             triggerProps={{
               autoAlignPopupWidth: false,
               autoAlignPopupMinWidth: true,
               position: "bl",
             }}
-            value={filterType}
+            onChange={setFilterType}
           >
-            <Select.Option value="title">
-              {polyglot.t("search.type_title")}
-            </Select.Option>
-            <Select.Option value="content">
-              {polyglot.t("search.type_content")}
-            </Select.Option>
-            <Select.Option value="author">
-              {polyglot.t("search.type_author")}
-            </Select.Option>
+            <Select.Option value="title">{polyglot.t("search.type_title")}</Select.Option>
+            <Select.Option value="content">{polyglot.t("search.type_content")}</Select.Option>
+            <Select.Option value="author">{polyglot.t("search.type_author")}</Select.Option>
           </Select>
         }
         prefix={
@@ -126,41 +109,40 @@ const SearchAndSortBar = () => {
             <IconQuestionCircle />
           </Tooltip>
         }
+        onChange={handleInputChange}
       />
       <div className="button-group">
         <DatePicker
           position="bottom"
-          triggerElement={
-            <CustomTooltip mini content={polyglot.t("search.select_date")}>
-              <Button
-                shape="circle"
-                size="small"
-                icon={<IconCalendar />}
-                style={{
-                  backgroundColor: filterDate
-                    ? "rgb(var(--primary-6))"
-                    : "inherit",
-                }}
-              />
-            </CustomTooltip>
-          }
           showNowBtn={false}
+          value={filterDate}
           extra={
             <div className="calendar-actions">
               <Button
-                onClick={() => setFilterDate(getStartOfToday())}
-                type="primary"
-                size="mini"
                 long
+                size="mini"
+                type="primary"
+                onClick={() => setFilterDate(getStartOfToday())}
               >
                 {polyglot.t("search.today")}
               </Button>
-              <Button onClick={() => setFilterDate(null)} size="mini" long>
+              <Button long size="mini" onClick={() => setFilterDate(null)}>
                 {polyglot.t("search.clear_date")}
               </Button>
             </div>
           }
-          value={filterDate}
+          triggerElement={
+            <CustomTooltip mini content={polyglot.t("search.select_date")}>
+              <Button
+                icon={<IconCalendar />}
+                shape="circle"
+                size="small"
+                style={{
+                  backgroundColor: filterDate ? "rgb(var(--primary-6))" : "inherit",
+                }}
+              />
+            </CustomTooltip>
+          }
           onChange={(v) => setFilterDate(v)}
         />
         <CustomTooltip
@@ -172,21 +154,15 @@ const SearchAndSortBar = () => {
           }
         >
           <Button
+            icon={orderDirection === "desc" ? <IconSortDescending /> : <IconSortAscending />}
             shape="circle"
             size="small"
-            icon={
-              orderDirection === "desc" ? (
-                <IconSortDescending />
-              ) : (
-                <IconSortAscending />
-              )
-            }
             onClick={toggleOrderDirection}
           />
         </CustomTooltip>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SearchAndSortBar;
+export default SearchAndSortBar

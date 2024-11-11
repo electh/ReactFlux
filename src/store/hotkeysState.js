@@ -1,6 +1,7 @@
-import { createSetter } from "@/utils/nanostores";
-import { persistentAtom } from "@nanostores/persistent";
-import { computed } from "nanostores";
+import { persistentAtom } from "@nanostores/persistent"
+import { computed } from "nanostores"
+
+import createSetter from "@/utils/nanostores"
 
 const defaultValue = {
   exitDetailView: ["esc"],
@@ -15,39 +16,38 @@ const defaultValue = {
   showHotkeysSettings: ["shift+?"],
   toggleReadStatus: ["m"],
   toggleStarStatus: ["f"],
-};
+}
 
 export const hotkeysState = persistentAtom("hotkeys", defaultValue, {
   encode: (value) => {
     const filteredValue = Object.keys(value).reduce((acc, key) => {
       if (key in defaultValue) {
-        acc[key] = value[key];
+        acc[key] = value[key]
       }
-      return acc;
-    }, {});
-    return JSON.stringify(filteredValue);
+      return acc
+    }, {})
+    return JSON.stringify(filteredValue)
   },
   decode: (str) => {
-    const storedValue = JSON.parse(str);
-    return { ...defaultValue, ...storedValue };
+    const storedValue = JSON.parse(str)
+    return { ...defaultValue, ...storedValue }
   },
-});
+})
 
 export const duplicateHotkeysState = computed(hotkeysState, (hotkeys) => {
-  const allKeys = Object.values(hotkeys).flat();
+  const allKeys = Object.values(hotkeys).flat()
   const keyCount = allKeys.reduce((acc, key) => {
-    acc[key] = (acc[key] || 0) + 1;
-    return acc;
-  }, {});
+    acc[key] = (acc[key] || 0) + 1
+    return acc
+  }, {})
 
   return Object.entries(keyCount)
     .filter(([_key, count]) => count > 1)
-    .map(([key]) => key);
-});
+    .map(([key]) => key)
+})
 
 export const updateHotkey = (action, keys) => {
-  const setter = createSetter(hotkeysState, action);
-  setter(keys);
-};
-export const resetHotkey = (action) =>
-  updateHotkey(action, defaultValue[action]);
+  const setter = createSetter(hotkeysState, action)
+  setter(keys)
+}
+export const resetHotkey = (action) => updateHotkey(action, defaultValue[action])

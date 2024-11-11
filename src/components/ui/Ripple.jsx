@@ -1,47 +1,47 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react"
 
-import "./Ripple.css";
+import "./Ripple.css"
 
 const useDebouncedRippleCleanUp = (rippleCount, duration, cleanUpFunction) => {
   useLayoutEffect(() => {
-    let bounce = null;
+    let bounce = null
     if (rippleCount > 0) {
-      clearTimeout(bounce);
+      clearTimeout(bounce)
 
       bounce = setTimeout(() => {
-        cleanUpFunction();
-        clearTimeout(bounce);
-      }, duration * 4);
+        cleanUpFunction()
+        clearTimeout(bounce)
+      }, duration * 4)
     }
 
-    return () => clearTimeout(bounce);
-  }, [rippleCount, duration, cleanUpFunction]);
-};
+    return () => clearTimeout(bounce)
+  }, [rippleCount, duration, cleanUpFunction])
+}
 
 const Ripple = ({ duration, color }) => {
-  const [rippleArray, setRippleArray] = useState([]);
+  const [rippleArray, setRippleArray] = useState([])
 
   useDebouncedRippleCleanUp(rippleArray.length, duration, () => {
-    setRippleArray([]);
-  });
+    setRippleArray([])
+  })
 
   const addRipple = (event) => {
-    const rippleContainer = event.currentTarget.getBoundingClientRect();
+    const rippleContainer = event.currentTarget.getBoundingClientRect()
     const size =
       rippleContainer.width > rippleContainer.height
         ? rippleContainer.width
-        : rippleContainer.height;
-    const x = event.pageX - rippleContainer.x - size / 2;
-    const y = event.pageY - rippleContainer.y - size / 2;
+        : rippleContainer.height
+    const x = event.pageX - rippleContainer.x - size / 2
+    const y = event.pageY - rippleContainer.y - size / 2
     const newRipple = {
       x,
       y,
       size,
       id: `${new Date().getTime()}-${x}-${y}`,
-    };
+    }
 
-    setRippleArray([...rippleArray, newRipple]);
-  };
+    setRippleArray([...rippleArray, newRipple])
+  }
 
   return (
     <div className="ripple-container" onMouseDown={addRipple}>
@@ -60,10 +60,10 @@ const Ripple = ({ duration, color }) => {
                 animationDuration: `${duration}ms`,
               }}
             />
-          );
+          )
         })}
     </div>
-  );
-};
+  )
+}
 
-export default Ripple;
+export default Ripple

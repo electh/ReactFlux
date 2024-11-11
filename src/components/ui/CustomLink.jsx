@@ -1,25 +1,23 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react"
+import { Link } from "react-router-dom"
 
 const CustomLink = ({
   url,
   text,
-  onMouseEnter = (e) =>
-    e.target.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true })),
-  onMouseLeave = (e) =>
-    e.target.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true })),
+  onMouseEnter = (e) => e.target.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true })),
+  onMouseLeave = (e) => e.target.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true })),
 }) => {
-  const [isHovering, setIsHovering] = useState(false);
+  const [isHovering, setIsHovering] = useState(false)
 
   const handleMouseEnter = (e) => {
-    setIsHovering(true);
-    onMouseEnter(e);
-  };
+    setIsHovering(true)
+    onMouseEnter(e)
+  }
 
   const handleMouseLeave = (e) => {
-    setIsHovering(false);
-    onMouseLeave(e);
-  };
+    setIsHovering(false)
+    onMouseLeave(e)
+  }
 
   return (
     <Link
@@ -33,7 +31,7 @@ const CustomLink = ({
     >
       {text}
     </Link>
-  );
-};
+  )
+}
 
-export default CustomLink;
+export default CustomLink

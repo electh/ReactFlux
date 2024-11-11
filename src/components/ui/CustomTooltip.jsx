@@ -1,10 +1,11 @@
-import { useScreenWidth } from "@/hooks/useScreenWidth";
-import { Tooltip } from "@arco-design/web-react";
-import { useState } from "react";
+import { Tooltip } from "@arco-design/web-react"
+import { useState } from "react"
+
+import useScreenWidth from "@/hooks/useScreenWidth"
 
 const CustomTooltip = ({ children, ...props }) => {
-  const { isBelowMedium } = useScreenWidth();
-  const [isHovered, setIsHovered] = useState(false);
+  const { isBelowMedium } = useScreenWidth()
+  const [isHovered, setIsHovered] = useState(false)
 
   return (
     <Tooltip
@@ -14,7 +15,7 @@ const CustomTooltip = ({ children, ...props }) => {
     >
       {children}
     </Tooltip>
-  );
-};
+  )
+}
 
-export default CustomTooltip;
+export default CustomTooltip

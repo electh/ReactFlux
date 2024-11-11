@@ -1,8 +1,6 @@
-import { getHistoryEntries } from "@/apis";
-import Content from "@/components/Content/Content";
+import { getHistoryEntries } from "@/apis"
+import Content from "@/components/Content/Content"
 
-const History = () => (
-  <Content info={{ from: "history", id: "" }} getEntries={getHistoryEntries} />
-);
+const History = () => <Content getEntries={getHistoryEntries} info={{ from: "history", id: "" }} />
 
-export default History;
+export default History

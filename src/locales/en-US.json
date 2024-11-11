@@ -56,6 +56,7 @@
     "dismiss": "Dismiss",
     "copy_to_clipboard_tooltip": "Copy to clipboard",
     "copied": "Copied!",
+    "copy_failed": "Failed to copy, please try again later",
     "mark_as_read_error": "Failed to mark as read, please try again later",
     "mark_as_unread_error": "Failed to mark as unread, please try again later",
     "star_error": "Failed to star, please try again later",

@@ -1,28 +1,21 @@
-import {
-  Form,
-  Input,
-  Message,
-  Modal,
-  Select,
-  Switch,
-} from "@arco-design/web-react";
-import { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Form, Input, Message, Modal, Select, Switch } from "@arco-design/web-react"
+import { useStore } from "@nanostores/react"
+import { useState } from "react"
+import { Outlet, useNavigate } from "react-router-dom"
 
-import { addFeed } from "@/apis";
-import { ContextProvider } from "@/components/Content/ContentContext";
-import SettingsTabs from "@/components/Settings/SettingsTabs";
-import useAppData from "@/hooks/useAppData";
-import { polyglotState } from "@/hooks/useLanguage";
-import { useModalToggle } from "@/hooks/useModalToggle";
-import { categoriesState, feedsState } from "@/store/dataState";
-import { includesIgnoreCase } from "@/utils/filter";
-import { useStore } from "@nanostores/react";
-import "./Main.css";
+import { addFeed } from "@/apis"
+import { ContextProvider } from "@/components/Content/ContentContext"
+import SettingsTabs from "@/components/Settings/SettingsTabs"
+import useAppData from "@/hooks/useAppData"
+import { polyglotState } from "@/hooks/useLanguage"
+import useModalToggle from "@/hooks/useModalToggle"
+import { categoriesState, feedsState } from "@/store/dataState"
+import { includesIgnoreCase } from "@/utils/filter"
+import "./Main.css"
 
-const urlRule = [{ required: true }];
-const categoryRule = [{ required: true }];
-const crawlerRule = [{ type: "boolean" }];
+const urlRule = [{ required: true }]
+const categoryRule = [{ required: true }]
+const crawlerRule = [{ type: "boolean" }]
 
 const SettingsModal = () => {
   const {
@@ -30,78 +23,81 @@ const SettingsModal = () => {
     setSettingsTabsActiveTab,
     settingsModalVisible,
     settingsTabsActiveTab,
-  } = useModalToggle();
+  } = useModalToggle()
 
   return (
     <Modal
-      alignCenter={false}
       autoFocus
-      className="settings-modal"
       focusLock
-      footer={null}
-      onCancel={() => {
-        setSettingsModalVisible(false);
-        setSettingsTabsActiveTab("1");
-      }}
-      title={null}
       unmountOnExit
+      alignCenter={false}
+      className="settings-modal"
+      footer={null}
+      title={null}
       visible={settingsModalVisible}
+      onCancel={() => {
+        setSettingsModalVisible(false)
+        setSettingsTabsActiveTab("1")
+      }}
     >
-      <SettingsTabs
-        activeTab={settingsTabsActiveTab}
-        onTabChange={setSettingsTabsActiveTab}
-      />
+      <SettingsTabs activeTab={settingsTabsActiveTab} onTabChange={setSettingsTabsActiveTab} />
     </Modal>
-  );
-};
+  )
+}
 
 const AddFeedModal = () => {
-  const { polyglot } = useStore(polyglotState);
-  const categories = useStore(categoriesState);
-  const feeds = useStore(feedsState);
+  const { polyglot } = useStore(polyglotState)
+  const categories = useStore(categoriesState)
+  const feeds = useStore(feedsState)
 
-  const [feedModalLoading, setFeedModalLoading] = useState(false);
-  const [feedForm] = Form.useForm();
+  const [feedModalLoading, setFeedModalLoading] = useState(false)
+  const [feedForm] = Form.useForm()
 
-  const { fetchAppData } = useAppData();
-  const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle();
+  const { fetchAppData } = useAppData()
+  const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle()
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleAddFeed = async (url, categoryId, isFullText) => {
-    setFeedModalLoading(true);
+    setFeedModalLoading(true)
     try {
       if (feeds.some((feed) => feed.feed_url === url)) {
-        Message.error(polyglot.t("main.add_feed_error_duplicate"));
-        return;
+        Message.error(polyglot.t("main.add_feed_error_duplicate"))
+        return
       }
 
-      const response = await addFeed(url, categoryId, isFullText);
-      fetchAppData().then(() => {
-        Message.success(polyglot.t("main.add_feed_success"));
-        setAddFeedModalVisible(false);
-        navigate(`/feed/${response.feed_id}`);
-        feedForm.resetFields();
-      });
+      const response = await addFeed(url, categoryId, isFullText)
+      fetchAppData()
+        .then(() => {
+          Message.success(polyglot.t("main.add_feed_success"))
+          setAddFeedModalVisible(false)
+          navigate(`/feed/${response.feed_id}`)
+          feedForm.resetFields()
+          return null
+        })
+        .catch((error) => {
+          console.error("Failed to fetch app data: ", error)
+          Message.error(polyglot.t("main.add_feed_error"))
+        })
     } catch (error) {
-      console.error("Failed to add a feed: ", error);
-      Message.error(polyglot.t("main.add_feed_error"));
+      console.error("Failed to add a feed: ", error)
+      Message.error(polyglot.t("main.add_feed_error"))
     } finally {
-      setFeedModalLoading(false);
+      setFeedModalLoading(false)
     }
-  };
+  }
 
   return (
     <Modal
+      unmountOnExit
+      confirmLoading={feedModalLoading}
+      style={{ width: "400px", maxWidth: "95%" }}
       title={polyglot.t("main.add_feed_modal_title")}
       visible={addFeedModalVisible}
-      unmountOnExit
-      style={{ width: "400px", maxWidth: "95%" }}
       onOk={feedForm.submit}
-      confirmLoading={feedModalLoading}
       onCancel={() => {
-        setAddFeedModalVisible(false);
-        feedForm.resetFields();
+        setAddFeedModalVisible(false)
+        feedForm.resetFields()
       }}
     >
       <Form
@@ -110,32 +106,30 @@ const AddFeedModal = () => {
         layout="vertical"
         wrapperCol={{ span: 17 }}
         onSubmit={async (values) => {
-          const url = values.url.trim();
+          const url = values.url.trim()
           if (url) {
-            await handleAddFeed(url, values.category, values.crawler);
+            await handleAddFeed(url, values.category, values.crawler)
           } else {
-            Message.error(polyglot.t("main.add_feed_url_empty"));
+            Message.error(polyglot.t("main.add_feed_url_empty"))
           }
         }}
       >
         <Form.Item
-          label={polyglot.t("main.add_feed_modal_feed_url_label")}
           field="url"
+          label={polyglot.t("main.add_feed_modal_feed_url_label")}
           rules={urlRule}
         >
-          <Input
-            placeholder={polyglot.t("main.add_feed_modal_feed_url_placeholder")}
-          />
+          <Input placeholder={polyglot.t("main.add_feed_modal_feed_url_placeholder")} />
         </Form.Item>
         <Form.Item
+          required
           field="category"
           label={polyglot.t("main.add_feed_modal_category_label")}
-          required
           rules={categoryRule}
         >
           <Select
-            placeholder={polyglot.t("main.add_feed_modal_category_placeholder")}
             showSearch
+            placeholder={polyglot.t("main.add_feed_modal_category_placeholder")}
             filterOption={(inputValue, option) =>
               includesIgnoreCase(option.props.children, inputValue)
             }
@@ -159,8 +153,8 @@ const AddFeedModal = () => {
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
 const Main = () => (
   <div className="main">
@@ -170,6 +164,6 @@ const Main = () => (
     <SettingsModal />
     <AddFeedModal />
   </div>
-);
+)
 
-export default Main;
+export default Main

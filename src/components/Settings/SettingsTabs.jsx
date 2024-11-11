@@ -1,22 +1,24 @@
-import { Tabs } from "@arco-design/web-react";
+import { Tabs } from "@arco-design/web-react"
 import {
   IconCommand,
   IconFile,
   IconFolder,
   IconSkin,
   IconStorage,
-} from "@arco-design/web-react/icon";
+} from "@arco-design/web-react/icon"
+import { useStore } from "@nanostores/react"
+import SimpleBar from "simplebar-react"
 
-import { polyglotState } from "@/hooks/useLanguage";
-import { useScreenWidth } from "@/hooks/useScreenWidth";
-import { useStore } from "@nanostores/react";
-import Appearance from "./Appearance";
-import CategoryList from "./CategoryList";
-import FeedList from "./FeedList";
-import General from "./General";
-import Hotkeys from "./Hotkeys";
-import "./SettingsTabs.css";
-import SimpleBar from "simplebar-react";
+import Appearance from "./Appearance"
+import CategoryList from "./CategoryList"
+import FeedList from "./FeedList"
+import General from "./General"
+import Hotkeys from "./Hotkeys"
+
+import { polyglotState } from "@/hooks/useLanguage"
+import useScreenWidth from "@/hooks/useScreenWidth"
+
+import "./SettingsTabs.css"
 
 const CustomTabTitle = ({ icon, title }) => (
   <div
@@ -29,11 +31,11 @@ const CustomTabTitle = ({ icon, title }) => (
     {icon}
     <div style={{ fontSize: "12px" }}>{title}</div>
   </div>
-);
+)
 
 const SettingsTabs = ({ activeTab, onTabChange }) => {
-  const { polyglot } = useStore(polyglotState);
-  const { isBelowMedium } = useScreenWidth();
+  const { polyglot } = useStore(polyglotState)
+  const { isBelowMedium } = useScreenWidth()
 
   return (
     <SimpleBar
@@ -45,11 +47,11 @@ const SettingsTabs = ({ activeTab, onTabChange }) => {
       }}
     >
       <Tabs
-        activeTab={activeTab}
         animation
+        activeTab={activeTab}
         className="custom-tabs"
-        onChange={onTabChange}
         tabPosition="top"
+        onChange={onTabChange}
       >
         <Tabs.TabPane
           key="1"
@@ -110,7 +112,7 @@ const SettingsTabs = ({ activeTab, onTabChange }) => {
         )}
       </Tabs>
     </SimpleBar>
-  );
-};
+  )
+}
 
-export default SettingsTabs;
+export default SettingsTabs

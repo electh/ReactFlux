@@ -1,39 +1,41 @@
-import { Divider, Switch } from "@arco-design/web-react";
+import { Divider, Switch } from "@arco-design/web-react"
+import { useStore } from "@nanostores/react"
 
-import { polyglotState } from "@/hooks/useLanguage";
-import { applyColor, colors, getDisplayColorValue } from "@/utils/colors";
+import SettingItem from "./SettingItem"
 
-import { settingsState, updateSettings } from "@/store/settingsState";
-import { useStore } from "@nanostores/react";
-import SettingItem from "./SettingItem";
-import "./Appearance.css";
+import { polyglotState } from "@/hooks/useLanguage"
+import { settingsState, updateSettings } from "@/store/settingsState"
+import { applyColor, colors, getDisplayColorValue } from "@/utils/colors"
+
+import "./Appearance.css"
 
 const Appearance = () => {
-  const {
-    showDetailedRelativeTime,
-    showEstimatedReadingTime,
-    showFeedIcon,
-    themeColor,
-  } = useStore(settingsState);
-  const { polyglot } = useStore(polyglotState);
+  const { showDetailedRelativeTime, showEstimatedReadingTime, showFeedIcon, themeColor } =
+    useStore(settingsState)
+  const { polyglot } = useStore(polyglotState)
 
   const handleConfigChange = (settingsChanges) => {
-    updateSettings(settingsChanges);
+    updateSettings(settingsChanges)
     if (settingsChanges.themeColor) {
-      applyColor(settingsChanges.themeColor);
+      applyColor(settingsChanges.themeColor)
     }
-  };
+  }
 
   return (
     <>
       <SettingItem
-        title={polyglot.t("appearance.theme_color_label")}
         description={polyglot.t("appearance.theme_color_description")}
+        title={polyglot.t("appearance.theme_color_label")}
       >
         <div style={{ display: "flex" }}>
           {Object.keys(colors).map((colorName) => (
             <div
               key={colorName}
+              role="button"
+              tabIndex={0}
+              aria-label={polyglot.t("appearance.theme_color_aria_label", {
+                color: colorName,
+              })}
               style={{
                 width: "18px",
                 height: "18px",
@@ -50,14 +52,9 @@ const Appearance = () => {
               onClick={() => handleConfigChange({ themeColor: colorName })}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
-                  handleConfigChange({ themeColor: colorName });
+                  handleConfigChange({ themeColor: colorName })
                 }
               }}
-              aria-label={polyglot.t("appearance.theme_color_aria_label", {
-                color: colorName,
-              })}
-              role="button"
-              tabIndex={0}
             />
           ))}
         </div>
@@ -66,40 +63,32 @@ const Appearance = () => {
       <Divider />
 
       <SettingItem
+        description={polyglot.t("appearance.show_detailed_relative_time_description")}
         title={polyglot.t("appearance.show_detailed_relative_time_label")}
-        description={polyglot.t(
-          "appearance.show_detailed_relative_time_description",
-        )}
       >
         <Switch
           checked={showDetailedRelativeTime}
-          onChange={(value) =>
-            handleConfigChange({ showDetailedRelativeTime: value })
-          }
+          onChange={(value) => handleConfigChange({ showDetailedRelativeTime: value })}
         />
       </SettingItem>
 
       <Divider />
 
       <SettingItem
+        description={polyglot.t("appearance.show_estimated_reading_time_description")}
         title={polyglot.t("appearance.show_estimated_reading_time_label")}
-        description={polyglot.t(
-          "appearance.show_estimated_reading_time_description",
-        )}
       >
         <Switch
           checked={showEstimatedReadingTime}
-          onChange={(value) =>
-            handleConfigChange({ showEstimatedReadingTime: value })
-          }
+          onChange={(value) => handleConfigChange({ showEstimatedReadingTime: value })}
         />
       </SettingItem>
 
       <Divider />
 
       <SettingItem
-        title={polyglot.t("appearance.show_feed_icon_label")}
         description={polyglot.t("appearance.show_feed_icon_description")}
+        title={polyglot.t("appearance.show_feed_icon_label")}
       >
         <Switch
           checked={showFeedIcon}
@@ -107,7 +96,7 @@ const Appearance = () => {
         />
       </SettingItem>
     </>
-  );
-};
+  )
+}
 
-export default Appearance;
+export default Appearance

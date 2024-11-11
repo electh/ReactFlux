@@ -1,53 +1,54 @@
-import Sidebar from "@/components/Sidebar/Sidebar";
-import { useScreenWidth } from "@/hooks/useScreenWidth";
-import { Button, Drawer } from "@arco-design/web-react";
-import { IconMenu } from "@arco-design/web-react/icon";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import "./SidebarTrigger.css";
+import { Button, Drawer } from "@arco-design/web-react"
+import { IconMenu } from "@arco-design/web-react/icon"
+import { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
+
+import Sidebar from "@/components/Sidebar/Sidebar"
+import useScreenWidth from "@/hooks/useScreenWidth"
+import "./SidebarTrigger.css"
 
 export default function SidebarTrigger() {
-  const currentPath = useLocation().pathname;
-  const { isBelowLarge } = useScreenWidth();
+  const currentPath = useLocation().pathname
+  const { isBelowLarge } = useScreenWidth()
 
-  const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(false)
 
   useEffect(() => {
     if (!isBelowLarge) {
-      setSidebarVisible(false);
+      setSidebarVisible(false)
     }
-  }, [isBelowLarge]);
+  }, [isBelowLarge])
 
   useEffect(() => {
     if (currentPath) {
-      setSidebarVisible(false);
+      setSidebarVisible(false)
     }
-  }, [currentPath]);
+  }, [currentPath])
 
   return (
     <div>
       <div className="brand">
         <Button
           className="trigger"
-          onClick={() => setSidebarVisible(!sidebarVisible)}
           shape="circle"
           size="small"
+          onClick={() => setSidebarVisible(!sidebarVisible)}
         >
           <IconMenu />
         </Button>
       </div>
       <Drawer
         className="sidebar-drawer"
-        visible={sidebarVisible}
-        title={null}
-        footer={null}
         closable={false}
-        onCancel={() => setSidebarVisible(false)}
+        footer={null}
         placement="left"
+        title={null}
+        visible={sidebarVisible}
         width={240}
+        onCancel={() => setSidebarVisible(false)}
       >
         <Sidebar />
       </Drawer>
     </div>
-  );
+  )
 }

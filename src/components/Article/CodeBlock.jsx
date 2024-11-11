@@ -1,43 +1,43 @@
-import CustomTooltip from "@/components/ui/CustomTooltip";
-import { polyglotState } from "@/hooks/useLanguage";
-import { ANIMATION_DURATION_MS } from "@/utils/constants";
-import { SyntaxHighlighter } from "@/utils/highlighter";
-import {
-  LANGUAGE_DISPLAY_NAMES,
-  SUPPORTED_LANGUAGES,
-} from "@/utils/highlighter";
-import { Button, Message, Select } from "@arco-design/web-react";
-import { IconCopy } from "@arco-design/web-react/icon";
-import { useStore } from "@nanostores/react";
-import hljs from "highlight.js";
-import { useCallback, useEffect, useState } from "react";
-import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import "./CodeBlock.css";
+import { Button, Message, Select } from "@arco-design/web-react"
+import { IconCopy } from "@arco-design/web-react/icon"
+import { useStore } from "@nanostores/react"
+import hljs from "highlight.js"
+import { useCallback, useEffect, useState } from "react"
+import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs"
+
+import CustomTooltip from "@/components/ui/CustomTooltip"
+import { polyglotState } from "@/hooks/useLanguage"
+import { ANIMATION_DURATION_MS } from "@/utils/constants"
+import { LANGUAGE_DISPLAY_NAMES, SUPPORTED_LANGUAGES, SyntaxHighlighter } from "@/utils/highlighter"
+import "./CodeBlock.css"
 
 const CodeBlock = ({ children }) => {
-  const { polyglot } = useStore(polyglotState);
+  const { polyglot } = useStore(polyglotState)
 
-  const [language, setLanguage] = useState("plaintext");
+  const [language, setLanguage] = useState("plaintext")
 
   const copyToClipboard = useCallback(() => {
     navigator.clipboard
       .writeText(children.trim())
-      .then(() => Message.success(polyglot.t("actions.copied")));
-  }, [children, polyglot]);
+      .then(() => Message.success(polyglot.t("actions.copied")))
+      .catch((error) => {
+        console.error(error)
+        Message.error(polyglot.t("actions.copy_failed"))
+      })
+  }, [children, polyglot])
 
-  const code = children.trim();
+  const code = children.trim()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setTimeout(() => {
-      const detectedLanguage = hljs.highlightAuto(children).language;
+      const detectedLanguage = hljs.highlightAuto(children).language
       if (SUPPORTED_LANGUAGES.includes(detectedLanguage)) {
-        setLanguage(detectedLanguage);
+        setLanguage(detectedLanguage)
       } else {
-        console.info("detectedLanguage not supported: ", detectedLanguage);
+        console.info("detectedLanguage not supported: ", detectedLanguage)
       }
-    }, ANIMATION_DURATION_MS);
-  }, []);
+    }, ANIMATION_DURATION_MS)
+  }, [children])
 
   return (
     <div className="code-block-container">
@@ -54,20 +54,20 @@ const CodeBlock = ({ children }) => {
         {code}
       </SyntaxHighlighter>
     </div>
-  );
-};
+  )
+}
 
 const LanguageSelector = ({ language, setLanguage }) => (
   <Select
-    className="language-selector"
-    onChange={setLanguage}
     showSearch
+    className="language-selector"
     value={language}
     triggerProps={{
       autoAlignPopupWidth: false,
       autoAlignPopupMinWidth: true,
       position: "bl",
     }}
+    onChange={setLanguage}
   >
     {SUPPORTED_LANGUAGES.map((lang) => (
       <Select.Option key={lang} value={lang}>
@@ -75,19 +75,16 @@ const LanguageSelector = ({ language, setLanguage }) => (
       </Select.Option>
     ))}
   </Select>
-);
+)
 
 const CopyButton = ({ onClick }) => {
-  const { polyglot } = useStore(polyglotState);
+  const { polyglot } = useStore(polyglotState)
 
   return (
-    <CustomTooltip
-      content={polyglot.t("actions.copy_to_clipboard_tooltip")}
-      mini
-    >
-      <Button icon={<IconCopy />} onClick={onClick} className="copy-button" />
+    <CustomTooltip mini content={polyglot.t("actions.copy_to_clipboard_tooltip")}>
+      <Button className="copy-button" icon={<IconCopy />} onClick={onClick} />
     </CustomTooltip>
-  );
-};
+  )
+}
 
-export default CodeBlock;
+export default CodeBlock

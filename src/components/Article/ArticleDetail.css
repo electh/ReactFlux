@@ -175,22 +175,22 @@ p {
     display: block;
     max-width: 100%;
   }
-  
+
   .article-body tbody {
     display: block;
     width: 100%;
   }
-  
+
   .article-body tr {
     display: flex;
     flex-direction: column;
   }
-  
+
   .article-body td {
     display: block;
     width: 100%;
   }
-  
+
   .article-body td .big-image,
   .article-body td .image-overlay-button {
     margin: 10px 0;

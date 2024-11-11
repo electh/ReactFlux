@@ -1,18 +1,18 @@
-import { Navigate, createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom"
 
-import App from "./App";
-import All from "./pages/All";
-import Category from "./pages/Category";
-import ErrorPage from "./pages/ErrorPage";
-import Feed from "./pages/Feed";
-import History from "./pages/History";
-import Login from "./pages/Login";
-import RouterProtect from "./pages/RouterProtect";
-import Starred from "./pages/Starred";
-import Today from "./pages/Today";
-import { getSettings } from "./store/settingsState";
+import App from "./App"
+import All from "./pages/All"
+import Category from "./pages/Category"
+import ErrorPage from "./pages/ErrorPage"
+import Feed from "./pages/Feed"
+import History from "./pages/History"
+import Login from "./pages/Login"
+import RouterProtect from "./pages/RouterProtect"
+import Starred from "./pages/Starred"
+import Today from "./pages/Today"
+import { getSettings } from "./store/settingsState"
 
-const homePage = getSettings("homePage");
+const homePage = getSettings("homePage")
 
 const children = [
   { path: "/all", element: <All /> },
@@ -21,7 +21,7 @@ const children = [
   { path: "/history", element: <History /> },
   { path: "/category/:id", element: <Category /> },
   { path: "/feed/:id", element: <Feed /> },
-];
+]
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -32,13 +32,10 @@ const router = createBrowserRouter([
     children: [
       {
         element: <RouterProtect />,
-        children: [
-          ...children,
-          { index: true, element: <Navigate to={`/${homePage}`} replace /> },
-        ],
+        children: [...children, { index: true, element: <Navigate replace to={`/${homePage}`} /> }],
       },
     ],
   },
-]);
+])
 
-export default router;
+export default router

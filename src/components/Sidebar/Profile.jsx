@@ -1,24 +1,4 @@
-import { resetFeedIcons } from "@/hooks/useFeedIcons.js";
-import { polyglotState } from "@/hooks/useLanguage.js";
-import { useModalToggle } from "@/hooks/useModalToggle.js";
-import { authState, resetAuth } from "@/store/authState.js";
-import { resetContent } from "@/store/contentState.js";
-import { resetData } from "@/store/dataState.js";
-import {
-  resetSettings,
-  settingsState,
-  updateSettings,
-} from "@/store/settingsState.js";
-import { GITHUB_REPO_PATH } from "@/utils/constants.js";
-import {
-  Button,
-  Divider,
-  Dropdown,
-  Menu,
-  Modal,
-  Notification,
-  Radio,
-} from "@arco-design/web-react";
+import { Button, Divider, Dropdown, Menu, Modal, Notification, Radio } from "@arco-design/web-react"
 import {
   IconDesktop,
   IconExclamationCircle,
@@ -30,38 +10,47 @@ import {
   IconSettings,
   IconSunFill,
   IconUser,
-} from "@arco-design/web-react/icon";
-import { useStore } from "@nanostores/react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Profile.css";
+} from "@arco-design/web-react/icon"
+import { useStore } from "@nanostores/react"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+
+import { resetFeedIcons } from "@/hooks/useFeedIcons"
+import { polyglotState } from "@/hooks/useLanguage"
+import useModalToggle from "@/hooks/useModalToggle"
+import { authState, resetAuth } from "@/store/authState"
+import { resetContent } from "@/store/contentState"
+import { resetData } from "@/store/dataState"
+import { resetSettings, settingsState, updateSettings } from "@/store/settingsState"
+import { GITHUB_REPO_PATH } from "@/utils/constants"
+import "./Profile.css"
 
 export default function Profile() {
-  const navigate = useNavigate();
-  const { server } = useStore(authState);
-  const { polyglot } = useStore(polyglotState);
+  const navigate = useNavigate()
+  const { server } = useStore(authState)
+  const { polyglot } = useStore(polyglotState)
 
-  const { themeMode } = useStore(settingsState);
+  const { themeMode } = useStore(settingsState)
 
-  const [resetModalVisible, setResetModalVisible] = useState(false);
-  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
-  const { setSettingsModalVisible } = useModalToggle();
+  const [resetModalVisible, setResetModalVisible] = useState(false)
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false)
+  const { setSettingsModalVisible } = useModalToggle()
 
   const handleResetSettings = () => {
-    resetSettings();
-    setResetModalVisible(false);
-  };
+    resetSettings()
+    setResetModalVisible(false)
+  }
 
   const handleLogout = () => {
-    resetAuth();
-    resetContent();
-    resetData();
-    resetFeedIcons();
-    navigate("/login");
+    resetAuth()
+    resetContent()
+    resetData()
+    resetFeedIcons()
+    navigate("/login")
     Notification.success({
       title: polyglot.t("sidebar.logout_success"),
-    });
-  };
+    })
+  }
 
   return (
     <div className="user-profile-container">
@@ -72,16 +61,16 @@ export default function Profile() {
           droplist={
             <Menu>
               <Radio.Group
-                type="button"
                 name="theme"
                 size="small"
+                type="button"
                 value={themeMode}
-                onChange={(value) => updateSettings({ themeMode: value })}
                 style={{
                   display: "flex",
                   justifyContent: "center",
                   padding: "8px",
                 }}
+                onChange={(value) => updateSettings({ themeMode: value })}
               >
                 <Radio value="system">
                   <IconDesktop />
@@ -98,20 +87,14 @@ export default function Profile() {
                 <IconSettings className="icon-right" />
                 {polyglot.t("sidebar.settings")}
               </Menu.Item>
-              <Menu.Item
-                key="1"
-                onClick={() => window.open(`${server}/settings`, "_blank")}
-              >
+              <Menu.Item key="1" onClick={() => window.open(`${server}/settings`, "_blank")}>
                 <IconLink className="icon-right" />
                 {polyglot.t("sidebar.miniflux_settings")}
               </Menu.Item>
               <Menu.Item
                 key="2"
                 onClick={() =>
-                  window.open(
-                    `https://github.com/${GITHUB_REPO_PATH}/issues/new`,
-                    "_blank",
-                  )
+                  window.open(`https://github.com/${GITHUB_REPO_PATH}/issues/new`, "_blank")
                 }
               >
                 <IconExclamationCircle className="icon-right" />
@@ -129,50 +112,45 @@ export default function Profile() {
             </Menu>
           }
         >
-          <Button
-            icon={<IconUser />}
-            shape="circle"
-            size="small"
-            style={{ marginRight: 8 }}
-          />
+          <Button icon={<IconUser />} shape="circle" size="small" style={{ marginRight: 8 }} />
         </Dropdown>
       </div>
 
       <Modal
-        onCancel={() => setResetModalVisible(false)}
-        onOk={handleResetSettings}
+        closable
+        simple
+        okButtonProps={{ status: "danger" }}
+        style={{ maxWidth: "95%" }}
+        visible={resetModalVisible}
         title={
           <div>
             <IconInfoCircleFill />
             <span>{polyglot.t("sidebar.settings_reset_confirm")}</span>
           </div>
         }
-        simple
-        closable
-        okButtonProps={{ status: "danger" }}
-        visible={resetModalVisible}
-        style={{ maxWidth: "95%" }}
+        onCancel={() => setResetModalVisible(false)}
+        onOk={handleResetSettings}
       >
         <p>{polyglot.t("sidebar.settings_reset_description")}</p>
       </Modal>
 
       <Modal
-        onCancel={() => setLogoutModalVisible(false)}
-        onOk={handleLogout}
+        closable
+        simple
+        okButtonProps={{ status: "danger" }}
+        style={{ maxWidth: "95%" }}
+        visible={logoutModalVisible}
         title={
           <div>
             <IconInfoCircleFill />
             <span>{polyglot.t("sidebar.logout_confirm")}</span>
           </div>
         }
-        simple
-        closable
-        okButtonProps={{ status: "danger" }}
-        visible={logoutModalVisible}
-        style={{ maxWidth: "95%" }}
+        onCancel={() => setLogoutModalVisible(false)}
+        onOk={handleLogout}
       >
         <p>{polyglot.t("sidebar.logout_description")}</p>
       </Modal>
     </div>
-  );
+  )
 }

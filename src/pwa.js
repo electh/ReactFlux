@@ -1,17 +1,17 @@
-import { registerSW } from "virtual:pwa-register";
+import { registerSW } from "virtual:pwa-register"
 
-const intervalMS = 60 * 60 * 1000;
+const intervalMS = 60 * 60 * 1000
 
-export const updateSW = registerSW({
+const updateSW = registerSW({
   onRegisteredSW(swUrl, r) {
     r &&
       setInterval(async () => {
         if (r.installing || !navigator) {
-          return;
+          return
         }
 
         if ("connection" in navigator && !navigator.onLine) {
-          return;
+          return
         }
 
         const resp = await fetch(swUrl, {
@@ -20,11 +20,13 @@ export const updateSW = registerSW({
             cache: "no-store",
             "cache-control": "no-cache",
           },
-        });
+        })
 
         if (resp?.status === 200) {
-          await r.update();
+          await r.update()
         }
-      }, intervalMS);
+      }, intervalMS)
   },
-});
+})
+
+export default updateSW

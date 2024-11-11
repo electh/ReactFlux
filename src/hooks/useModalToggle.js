@@ -1,20 +1,20 @@
-import { createSetter } from "@/utils/nanostores";
-import { useStore } from "@nanostores/react";
-import { map } from "nanostores";
+import { useStore } from "@nanostores/react"
+import { map } from "nanostores"
+
+import createSetter from "@/utils/nanostores"
 
 const state = map({
   addFeedModalVisible: false,
   settingsModalVisible: false,
   settingsTabsActiveTab: "1",
-});
+})
 
-const setAddFeedModalVisible = createSetter(state, "addFeedModalVisible");
-const setSettingsModalVisible = createSetter(state, "settingsModalVisible");
-const setSettingsTabsActiveTab = createSetter(state, "settingsTabsActiveTab");
+const setAddFeedModalVisible = createSetter(state, "addFeedModalVisible")
+const setSettingsModalVisible = createSetter(state, "settingsModalVisible")
+const setSettingsTabsActiveTab = createSetter(state, "settingsTabsActiveTab")
 
-export const useModalToggle = () => {
-  const { addFeedModalVisible, settingsModalVisible, settingsTabsActiveTab } =
-    useStore(state);
+const useModalToggle = () => {
+  const { addFeedModalVisible, settingsModalVisible, settingsTabsActiveTab } = useStore(state)
 
   return {
     addFeedModalVisible,
@@ -23,5 +23,7 @@ export const useModalToggle = () => {
     setSettingsModalVisible,
     settingsTabsActiveTab,
     setSettingsTabsActiveTab,
-  };
-};
+  }
+}
+
+export default useModalToggle

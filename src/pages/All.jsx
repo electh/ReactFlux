@@ -1,12 +1,12 @@
-import { getAllEntries, markAllAsRead } from "@/apis";
-import Content from "@/components/Content/Content";
+import { getAllEntries, markAllAsRead } from "@/apis"
+import Content from "@/components/Content/Content"
 
 const All = () => (
   <Content
-    info={{ from: "all", id: "" }}
     getEntries={getAllEntries}
+    info={{ from: "all", id: "" }}
     markAllAsRead={markAllAsRead}
   />
-);
+)
 
-export default All;
+export default All

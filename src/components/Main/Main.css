@@ -1,7 +1,9 @@
 .main {
   display: flex;
   grid-area: main;
-  transition: padding-left 0.1s linear, width 0.1s linear;
+  transition:
+    padding-left 0.1s linear,
+    width 0.1s linear;
   margin: 0;
   border: none;
   overflow: hidden;

@@ -1,3 +1,5 @@
+import { useRef } from "react"
+
 import {
   getCategories,
   getCounters,
@@ -6,7 +8,7 @@ import {
   getStarredEntries,
   getTodayEntries,
   getVersion,
-} from "@/apis";
+} from "@/apis"
 import {
   setCategoriesData,
   setFeedsData,
@@ -17,20 +19,19 @@ import {
   setUnreadInfo,
   setUnreadTodayCount,
   setVersion,
-} from "@/store/dataState";
-import { compareVersions } from "@/utils/version";
-import { useRef } from "react";
+} from "@/store/dataState"
+import compareVersions from "@/utils/version"
 
 const useAppData = () => {
-  const isLoading = useRef(false);
+  const isLoading = useRef(false)
 
   const fetchAppData = async () => {
     if (isLoading.current) {
-      return;
+      return
     }
 
-    isLoading.current = true;
-    setIsAppDataReady(false);
+    isLoading.current = true
+    setIsAppDataReady(false)
 
     try {
       const responses = await Promise.all([
@@ -40,52 +41,43 @@ const useAppData = () => {
         getFeeds(),
         getCategories(),
         getVersion(),
-      ]);
+      ])
 
-      const [
-        countersData,
-        unreadTodayData,
-        starredData,
-        feedsData,
-        categoriesData,
-        versionData,
-      ] = responses;
+      const [countersData, unreadTodayData, starredData, feedsData, categoriesData, versionData] =
+        responses
 
       const unreadInfo = feedsData.reduce((acc, feed) => {
-        acc[feed.id] = countersData.unreads[feed.id] ?? 0;
-        return acc;
-      }, {});
+        acc[feed.id] = countersData.unreads[feed.id] ?? 0
+        return acc
+      }, {})
 
-      const historyCount = Object.values(countersData.reads).reduce(
-        (acc, count) => acc + count,
-        0,
-      );
+      const historyCount = Object.values(countersData.reads).reduce((acc, count) => acc + count, 0)
 
-      const { version } = versionData;
-      setVersion(version);
+      const { version } = versionData
+      setVersion(version)
 
       if (compareVersions(version, "2.2.2") >= 0) {
-        const integrationsStatus = await getIntegrationsStatus();
+        const integrationsStatus = await getIntegrationsStatus()
         if (integrationsStatus.has_integrations) {
-          setHasIntegrations(true);
+          setHasIntegrations(true)
         }
       }
 
-      setUnreadInfo(unreadInfo);
-      setUnreadTodayCount(unreadTodayData.total ?? 0);
-      setStarredCount(starredData.total ?? 0);
-      setHistoryCount(historyCount);
-      setFeedsData(feedsData);
-      setCategoriesData(categoriesData);
-      setIsAppDataReady(true);
+      setUnreadInfo(unreadInfo)
+      setUnreadTodayCount(unreadTodayData.total ?? 0)
+      setStarredCount(starredData.total ?? 0)
+      setHistoryCount(historyCount)
+      setFeedsData(feedsData)
+      setCategoriesData(categoriesData)
+      setIsAppDataReady(true)
     } catch (error) {
-      console.error("Error fetching app data: ", error);
+      console.error("Error fetching app data: ", error)
     } finally {
-      isLoading.current = false;
+      isLoading.current = false
     }
-  };
+  }
 
-  return { fetchAppData };
-};
+  return { fetchAppData }
+}
 
-export default useAppData;
+export default useAppData

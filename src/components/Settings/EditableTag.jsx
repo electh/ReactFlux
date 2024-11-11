@@ -1,105 +1,103 @@
-import { duplicateHotkeysState } from "@/store/hotkeysState";
-import { Input, Tag } from "@arco-design/web-react";
-import { useStore } from "@nanostores/react";
-import { useCallback, useEffect, useState } from "react";
+import { Input, Tag } from "@arco-design/web-react"
+import { useStore } from "@nanostores/react"
+import { useCallback, useEffect, useState } from "react"
+
+import { duplicateHotkeysState } from "@/store/hotkeysState"
 
 const EditableTag = ({ value, onChange, onRemove, editOnMount = false }) => {
-  const duplicateHotkeys = useStore(duplicateHotkeysState);
+  const duplicateHotkeys = useStore(duplicateHotkeysState)
 
-  const [isEditing, setIsEditing] = useState(editOnMount);
+  const [isEditing, setIsEditing] = useState(editOnMount)
 
   const handleEdit = () => {
     if (value === "") {
-      onRemove();
+      onRemove()
     }
-    setIsEditing(false);
-  };
+    setIsEditing(false)
+  }
 
   const handleKeyDown = useCallback(
     (event) => {
       if (isEditing) {
-        event.preventDefault();
+        event.preventDefault()
 
-        const { key, ctrlKey, shiftKey, altKey, metaKey } = event;
+        const { key, ctrlKey, shiftKey, altKey, metaKey } = event
 
         if (["Control", "Shift", "Alt", "Meta", "CapsLock"].includes(key)) {
-          return;
+          return
         }
 
-        let keyName = key;
+        let keyName = key
         switch (key) {
           case "ArrowLeft":
           case "ArrowRight":
           case "ArrowUp":
           case "ArrowDown":
-            keyName = key.replace("Arrow", "").toLowerCase();
-            break;
+            keyName = key.replace("Arrow", "").toLowerCase()
+            break
           case " ":
-            keyName = "space";
-            break;
+            keyName = "space"
+            break
         }
 
-        const modifiers = [];
+        const modifiers = []
         if (ctrlKey) {
-          modifiers.push("ctrl");
+          modifiers.push("ctrl")
         }
         if (shiftKey) {
-          modifiers.push("shift");
+          modifiers.push("shift")
         }
         if (altKey) {
-          modifiers.push("alt");
+          modifiers.push("alt")
         }
         if (metaKey) {
-          modifiers.push("meta");
+          modifiers.push("meta")
         }
 
-        const newValue =
-          modifiers.length > 0 ? `${modifiers.join("+")}+${keyName}` : keyName;
-        onChange(newValue);
-        setIsEditing(false);
+        const newValue = modifiers.length > 0 ? `${modifiers.join("+")}+${keyName}` : keyName
+        onChange(newValue)
+        setIsEditing(false)
       }
     },
     [isEditing, onChange],
-  );
+  )
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown)
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [handleKeyDown]);
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [handleKeyDown])
 
   return isEditing ? (
     <Input
       autoFocus
-      onBlur={handleEdit}
-      onChange={onChange}
-      onPressEnter={handleEdit}
       size="mini"
       status={duplicateHotkeys.includes(value) ? "error" : undefined}
       style={{ width: 80 }}
       value={value}
+      onBlur={handleEdit}
+      onChange={onChange}
+      onPressEnter={handleEdit}
     />
   ) : (
     <Tag
       closable={!!onRemove}
-      onClick={() => setIsEditing(true)}
-      onClose={(event) => {
-        event.stopPropagation();
-        onRemove();
-      }}
       style={{
         backgroundColor: duplicateHotkeys.includes(value)
           ? "var(--color-danger-light-4)"
           : "var(--color-fill-2)",
-        color: duplicateHotkeys.includes(value)
-          ? "white"
-          : "var(--color-text-1)",
+        color: duplicateHotkeys.includes(value) ? "white" : "var(--color-text-1)",
+      }}
+      onClick={() => setIsEditing(true)}
+      onClose={(event) => {
+        event.stopPropagation()
+        onRemove()
       }}
     >
       {value}
     </Tag>
-  );
-};
+  )
+}
 
-export default EditableTag;
+export default EditableTag

@@ -1,6 +1,6 @@
-import { Typography } from "@arco-design/web-react";
+import { Typography } from "@arco-design/web-react"
 
-import "./SettingItem.css";
+import "./SettingItem.css"
 
 const SettingItem = ({ title, description, children }) => (
   <section className="setting-row">
@@ -12,6 +12,6 @@ const SettingItem = ({ title, description, children }) => (
     </header>
     {children}
   </section>
-);
+)
 
-export default SettingItem;
+export default SettingItem

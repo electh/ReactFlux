@@ -56,6 +56,7 @@
     "dismiss": "Descartar",
     "copy_to_clipboard_tooltip": "Copier dans le presse-papiers",
     "copied": "Copié !",
+    "copy_failed": "Erreur lors de la copie, veuillez réessayer plus tard",
     "mark_as_read_error": "Impossible de marquer comme lu, veuillez réessayer plus tard",
     "mark_as_unread_error": "Impossible de marquer comme non lu, veuillez réessayer plus tard",
     "star_error": "Impossible de marquer comme favori, veuillez réessayer plus tard",

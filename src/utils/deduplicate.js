@@ -1,73 +1,76 @@
-import { updateEntriesStatus } from "@/apis";
-import { handleEntriesStatusUpdate } from "@/hooks/useEntryActions";
-import { polyglotState } from "@/hooks/useLanguage";
-import { Message } from "@arco-design/web-react";
+import { Message } from "@arco-design/web-react"
 
-export const removeDuplicateEntries = (entries, option) => {
-  const { polyglot } = polyglotState.get();
+import { updateEntriesStatus } from "@/apis"
+import { handleEntriesStatusUpdate } from "@/hooks/useEntryActions"
+import { polyglotState } from "@/hooks/useLanguage"
+
+const removeDuplicateEntries = (entries, option) => {
+  const { polyglot } = polyglotState.get()
 
   if (entries.length === 0 || option === "none") {
-    return entries;
+    return entries
   }
 
   const originalOrder = entries.map((entry, index) => ({
     id: entry.id,
     index,
-  }));
+  }))
 
-  const seenHashes = new Map();
-  const seenTitles = new Map();
-  const seenURLs = new Map();
-  const duplicateEntries = [];
+  const seenHashes = new Map()
+  const seenTitles = new Map()
+  const seenURLs = new Map()
+  const duplicateEntries = []
 
   const uniqueEntries = entries
     .slice()
     .sort((a, b) => a.id - b.id)
     .filter((entry) => {
-      const { hash, title, url, id } = entry;
+      const { hash, title, url, id } = entry
 
       switch (option) {
         case "hash":
           if (seenHashes.has(hash)) {
-            duplicateEntries.push(entry);
-            return false;
+            duplicateEntries.push(entry)
+            return false
           }
-          seenHashes.set(hash, id);
-          break;
+          seenHashes.set(hash, id)
+          break
         case "title":
           if (seenTitles.has(title)) {
-            duplicateEntries.push(entry);
-            return false;
+            duplicateEntries.push(entry)
+            return false
           }
-          seenTitles.set(title, id);
-          break;
+          seenTitles.set(title, id)
+          break
         case "url":
           if (seenURLs.has(url)) {
-            duplicateEntries.push(entry);
-            return false;
+            duplicateEntries.push(entry)
+            return false
           }
-          seenURLs.set(url, id);
-          break;
+          seenURLs.set(url, id)
+          break
         default:
-          return true;
+          return true
       }
-      return true;
-    });
+      return true
+    })
 
   const unreadDuplicateIds = duplicateEntries
     .filter((entry) => entry.status === "unread")
-    .map((entry) => entry.id);
+    .map((entry) => entry.id)
   if (unreadDuplicateIds.length > 0) {
-    handleEntriesStatusUpdate(duplicateEntries, "read");
+    handleEntriesStatusUpdate(duplicateEntries, "read")
     updateEntriesStatus(unreadDuplicateIds, "read").catch(() => {
-      Message.error(polyglot.t("deduplicate.mark_as_read_error"));
-      handleEntriesStatusUpdate(duplicateEntries, "unread");
-    });
+      Message.error(polyglot.t("deduplicate.mark_as_read_error"))
+      handleEntriesStatusUpdate(duplicateEntries, "unread")
+    })
   }
 
   return uniqueEntries.sort((a, b) => {
-    const indexA = originalOrder.find((order) => order.id === a.id).index;
-    const indexB = originalOrder.find((order) => order.id === b.id).index;
-    return indexA - indexB;
-  });
-};
+    const indexA = originalOrder.find((order) => order.id === a.id).index
+    const indexB = originalOrder.find((order) => order.id === b.id).index
+    return indexA - indexB
+  })
+}
+
+export default removeDuplicateEntries

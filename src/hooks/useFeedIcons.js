@@ -1,34 +1,36 @@
-import { getFeedIcon } from "@/apis";
-import { useStore } from "@nanostores/react";
-import { map } from "nanostores";
-import { useEffect } from "react";
+import { useStore } from "@nanostores/react"
+import { map } from "nanostores"
+import { useEffect } from "react"
 
-const feedIconsState = map();
-export const resetFeedIcons = () => feedIconsState.set({});
-const loadingIcons = new Set();
+import { getFeedIcon } from "@/apis"
+
+const feedIconsState = map()
+export const resetFeedIcons = () => feedIconsState.set({})
+const loadingIcons = new Set()
 
 const useFeedIcons = (id) => {
-  const feedIcons = useStore(feedIconsState);
+  const feedIcons = useStore(feedIconsState)
 
   useEffect(() => {
     if (feedIcons[id] || loadingIcons.has(id)) {
-      return;
+      return
     }
 
-    loadingIcons.add(id);
+    loadingIcons.add(id)
 
     getFeedIcon(id)
       .then((data) => {
-        const iconURL = `data:${data.data}`;
-        feedIconsState.setKey(id, iconURL);
-        loadingIcons.delete(id);
+        const iconURL = `data:${data.data}`
+        feedIconsState.setKey(id, iconURL)
+        loadingIcons.delete(id)
+        return null
       })
       .catch(() => {
-        loadingIcons.delete(id);
-      });
-  }, [id, feedIcons]);
+        loadingIcons.delete(id)
+      })
+  }, [id, feedIcons])
 
-  return feedIcons[id];
-};
+  return feedIcons[id]
+}
 
-export default useFeedIcons;
+export default useFeedIcons

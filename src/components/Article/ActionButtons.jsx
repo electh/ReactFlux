@@ -1,12 +1,4 @@
-import {
-  Button,
-  Divider,
-  Dropdown,
-  InputNumber,
-  Menu,
-  Radio,
-  Switch,
-} from "@arco-design/web-react";
+import { Button, Divider, Dropdown, InputNumber, Menu, Radio, Switch } from "@arco-design/web-react"
 import {
   IconAlignCenter,
   IconAlignLeft,
@@ -21,23 +13,19 @@ import {
   IconSave,
   IconStar,
   IconStarFill,
-} from "@arco-design/web-react/icon";
-import { memo, useEffect, useState } from "react";
+} from "@arco-design/web-react/icon"
+import { useStore } from "@nanostores/react"
+import { memo, useEffect, useState } from "react"
 
-import CustomTooltip from "@/components/ui/CustomTooltip";
-import useEntryActions from "@/hooks/useEntryActions";
-import useKeyHandlers from "@/hooks/useKeyHandlers";
-import { polyglotState } from "@/hooks/useLanguage";
-import { useScreenWidth } from "@/hooks/useScreenWidth";
-import {
-  contentState,
-  nextContentState,
-  prevContentState,
-} from "@/store/contentState";
-import { dataState } from "@/store/dataState";
-import { settingsState, updateSettings } from "@/store/settingsState";
-import { useStore } from "@nanostores/react";
-import "./ActionButtons.css";
+import CustomTooltip from "@/components/ui/CustomTooltip"
+import useEntryActions from "@/hooks/useEntryActions"
+import useKeyHandlers from "@/hooks/useKeyHandlers"
+import { polyglotState } from "@/hooks/useLanguage"
+import useScreenWidth from "@/hooks/useScreenWidth"
+import { contentState, nextContentState, prevContentState } from "@/store/contentState"
+import { dataState } from "@/store/dataState"
+import { settingsState, updateSettings } from "@/store/settingsState"
+import "./ActionButtons.css"
 
 const DesktopButtons = memo(
   ({
@@ -53,23 +41,20 @@ const DesktopButtons = memo(
     <>
       <div className="left-side">
         {commonButtons.close}
-        <CustomTooltip
-          content={polyglot.t("article_card.previous_tooltip")}
-          mini
-        >
+        <CustomTooltip mini content={polyglot.t("article_card.previous_tooltip")}>
           <Button
-            icon={<IconArrowLeft />}
-            onClick={navigateToPreviousArticle}
-            shape="circle"
             disabled={!prevContent}
+            icon={<IconArrowLeft />}
+            shape="circle"
+            onClick={navigateToPreviousArticle}
           />
         </CustomTooltip>
-        <CustomTooltip content={polyglot.t("article_card.next_tooltip")} mini>
+        <CustomTooltip mini content={polyglot.t("article_card.next_tooltip")}>
           <Button
-            icon={<IconArrowRight />}
-            onClick={navigateToNextArticle}
-            shape="circle"
             disabled={!nextContent}
+            icon={<IconArrowRight />}
+            shape="circle"
+            onClick={navigateToNextArticle}
           />
         </CustomTooltip>
       </div>
@@ -80,22 +65,17 @@ const DesktopButtons = memo(
         {hasIntegrations && (
           <CustomTooltip
             mini
-            content={polyglot.t(
-              "article_card.save_to_third_party_services_tooltip",
-            )}
+            content={polyglot.t("article_card.save_to_third_party_services_tooltip")}
           >
-            <Button
-              icon={<IconSave />}
-              onClick={handleSaveToThirdPartyServices}
-              shape="circle"
-            />
+            <Button icon={<IconSave />} shape="circle" onClick={handleSaveToThirdPartyServices} />
           </CustomTooltip>
         )}
         {commonButtons.more}
       </div>
     </>
   ),
-);
+)
+DesktopButtons.displayName = "DesktopButtons"
 
 const MobileButtons = memo(({ commonButtons }) => (
   <div className="mobile-buttons">
@@ -105,41 +85,35 @@ const MobileButtons = memo(({ commonButtons }) => (
     {commonButtons.fetch}
     {commonButtons.more}
   </div>
-));
-
+))
+MobileButtons.displayName = "MobileButtons"
 const ActionButtons = () => {
-  const { activeContent } = useStore(contentState);
-  const { hasIntegrations } = useStore(dataState);
-  const { polyglot } = useStore(polyglotState);
+  const { activeContent } = useStore(contentState)
+  const { hasIntegrations } = useStore(dataState)
+  const { polyglot } = useStore(polyglotState)
 
-  const {
-    articleWidth,
-    edgeToEdgeImages,
-    fontSize,
-    fontFamily,
-    titleAlignment,
-  } = useStore(settingsState);
+  const { articleWidth, edgeToEdgeImages, fontSize, fontFamily, titleAlignment } =
+    useStore(settingsState)
 
-  const nextContent = useStore(nextContentState);
-  const prevContent = useStore(prevContentState);
+  const nextContent = useStore(nextContentState)
+  const prevContent = useStore(prevContentState)
 
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [isFetchedOriginal, setIsFetchedOriginal] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false)
+  const [isFetchedOriginal, setIsFetchedOriginal] = useState(false)
 
   const {
     handleFetchContent,
     handleSaveToThirdPartyServices,
     handleToggleStarred,
     handleToggleStatus,
-  } = useEntryActions();
+  } = useEntryActions()
 
-  const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } =
-    useKeyHandlers();
+  const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } = useKeyHandlers()
 
-  const { isBelowMedium } = useScreenWidth();
+  const { isBelowMedium } = useScreenWidth()
 
-  const isUnread = activeContent.status === "unread";
-  const isStarred = activeContent.starred;
+  const isUnread = activeContent.status === "unread"
+  const isStarred = activeContent.starred
 
   const fontFamilyOptions = [
     { label: polyglot.t("appearance.font_family_system"), value: "system-ui" },
@@ -161,7 +135,7 @@ const ActionButtons = () => {
       label: polyglot.t("appearance.font_family_lxgw_wenkai"),
       value: "'LXGW WenKai Screen', sans-serif",
     },
-  ];
+  ]
 
   const commonButtons = {
     status: (
@@ -175,8 +149,8 @@ const ActionButtons = () => {
       >
         <Button
           icon={isUnread ? <IconMinusCircle /> : <IconRecord />}
-          onClick={() => handleToggleStatus(activeContent)}
           shape="circle"
+          onClick={() => handleToggleStatus(activeContent)}
         />
       </CustomTooltip>
     ),
@@ -190,49 +164,35 @@ const ActionButtons = () => {
         }
       >
         <Button
-          icon={
-            isStarred ? (
-              <IconStarFill style={{ color: "#ffcd00" }} />
-            ) : (
-              <IconStar />
-            )
-          }
-          onClick={() => handleToggleStarred(activeContent)}
+          icon={isStarred ? <IconStarFill style={{ color: "#ffcd00" }} /> : <IconStar />}
           shape="circle"
+          onClick={() => handleToggleStarred(activeContent)}
         />
       </CustomTooltip>
     ),
     close: (
-      <CustomTooltip content={polyglot.t("article_card.close_tooltip")} mini>
-        <Button
-          icon={<IconClose />}
-          onClick={() => exitDetailView()}
-          shape="circle"
-        />
+      <CustomTooltip mini content={polyglot.t("article_card.close_tooltip")}>
+        <Button icon={<IconClose />} shape="circle" onClick={() => exitDetailView()} />
       </CustomTooltip>
     ),
     fetch: (
-      <CustomTooltip
-        content={polyglot.t("article_card.fetch_original_tooltip")}
-        mini
-      >
+      <CustomTooltip mini content={polyglot.t("article_card.fetch_original_tooltip")}>
         <Button
-          icon={<IconCloudDownload />}
-          onClick={async () => {
-            await handleFetchContent();
-            setIsFetchedOriginal(true);
-          }}
-          shape="circle"
           disabled={isFetchedOriginal}
+          icon={<IconCloudDownload />}
+          shape="circle"
+          onClick={async () => {
+            await handleFetchContent()
+            setIsFetchedOriginal(true)
+          }}
         />
       </CustomTooltip>
     ),
     more: (
       <Dropdown
+        popupVisible={dropdownVisible}
         position="br"
         trigger="click"
-        popupVisible={dropdownVisible}
-        onVisibleChange={setDropdownVisible}
         triggerProps={{ className: "settings-dropdown" }}
         droplist={
           <Menu>
@@ -242,11 +202,7 @@ const ActionButtons = () => {
                   key="save_to_third_party_services"
                   onClick={handleSaveToThirdPartyServices}
                 >
-                  <span>
-                    {polyglot.t(
-                      "article_card.save_to_third_party_services_tooltip",
-                    )}
-                  </span>
+                  <span>{polyglot.t("article_card.save_to_third_party_services_tooltip")}</span>
                 </Menu.Item>
                 <Divider style={{ margin: "4px 0" }} />
               </>
@@ -256,12 +212,10 @@ const ActionButtons = () => {
               <div className="settings-menu-item">
                 <span>{polyglot.t("appearance.title_alignment_label")}</span>
                 <Radio.Group
-                  type="button"
                   name="title-alignment"
+                  type="button"
                   value={titleAlignment}
-                  onChange={(value) =>
-                    updateSettings({ titleAlignment: value })
-                  }
+                  onChange={(value) => updateSettings({ titleAlignment: value })}
                 >
                   <Radio value="left">
                     <IconAlignLeft />
@@ -276,15 +230,11 @@ const ActionButtons = () => {
             {isBelowMedium && (
               <Menu.Item key="edge-to-edge-images">
                 <div className="settings-menu-item">
-                  <span>
-                    {polyglot.t("appearance.edge_to_edge_images_label")}
-                  </span>
+                  <span>{polyglot.t("appearance.edge_to_edge_images_label")}</span>
                   <Switch
                     checked={edgeToEdgeImages}
-                    onChange={(value) =>
-                      updateSettings({ edgeToEdgeImages: value })
-                    }
                     size="small"
+                    onChange={(value) => updateSettings({ edgeToEdgeImages: value })}
                   />
                 </div>
               </Menu.Item>
@@ -296,20 +246,12 @@ const ActionButtons = () => {
               title={
                 <div className="settings-menu-item">
                   <span>{polyglot.t("appearance.font_family_label")}</span>
-                  <span>
-                    {
-                      fontFamilyOptions.find((opt) => opt.value === fontFamily)
-                        ?.label
-                    }
-                  </span>
+                  <span>{fontFamilyOptions.find((opt) => opt.value === fontFamily)?.label}</span>
                 </div>
               }
             >
               {fontFamilyOptions.map(({ label, value }) => (
-                <Menu.Item
-                  key={value}
-                  onClick={() => updateSettings({ fontFamily: value })}
-                >
+                <Menu.Item key={value} onClick={() => updateSettings({ fontFamily: value })}>
                   <div className="settings-menu-item">
                     {label}
                     {value === fontFamily && <IconCheck />}
@@ -319,56 +261,48 @@ const ActionButtons = () => {
             </Menu.SubMenu>
 
             <Menu.Item key="font-size">
-              {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-              <div
-                className="settings-menu-item"
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className="settings-menu-item" onClick={(e) => e.stopPropagation()}>
                 <span>{polyglot.t("appearance.font_size_label")}</span>
                 <InputNumber
-                  min={0.75}
                   max={1.25}
+                  min={0.75}
+                  size="small"
                   step={0.05}
+                  style={{ width: 90 }}
+                  suffix="rem"
                   value={fontSize}
                   onChange={(value) => updateSettings({ fontSize: value })}
-                  suffix="rem"
-                  style={{ width: 90 }}
-                  size="small"
                 />
               </div>
             </Menu.Item>
 
             <Menu.Item key="article-width">
-              {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-              <div
-                className="settings-menu-item"
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className="settings-menu-item" onClick={(e) => e.stopPropagation()}>
                 <span>{polyglot.t("appearance.article_width_label")}</span>
                 <InputNumber
-                  min={60}
                   max={90}
+                  min={60}
+                  size="small"
                   step={10}
+                  style={{ width: 90 }}
+                  suffix="%"
                   value={articleWidth}
                   onChange={(value) => updateSettings({ articleWidth: value })}
-                  suffix="%"
-                  style={{ width: 90 }}
-                  size="small"
                 />
               </div>
             </Menu.Item>
           </Menu>
         }
+        onVisibleChange={setDropdownVisible}
       >
         <Button icon={<IconMoreVertical />} shape="circle" />
       </Dropdown>
     ),
-  };
+  }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    setIsFetchedOriginal(false);
-  }, [activeContent]);
+    setIsFetchedOriginal(false)
+  }, [activeContent])
 
   return (
     <div className={`action-buttons ${isBelowMedium ? "mobile" : ""}`}>
@@ -377,17 +311,17 @@ const ActionButtons = () => {
       ) : (
         <DesktopButtons
           commonButtons={commonButtons}
-          hasIntegrations={hasIntegrations}
-          prevContent={prevContent}
-          nextContent={nextContent}
-          navigateToPreviousArticle={navigateToPreviousArticle}
-          navigateToNextArticle={navigateToNextArticle}
           handleSaveToThirdPartyServices={handleSaveToThirdPartyServices}
+          hasIntegrations={hasIntegrations}
+          navigateToNextArticle={navigateToNextArticle}
+          navigateToPreviousArticle={navigateToPreviousArticle}
+          nextContent={nextContent}
           polyglot={polyglot}
+          prevContent={prevContent}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ActionButtons;
+export default ActionButtons

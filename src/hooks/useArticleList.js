@@ -1,51 +1,49 @@
+import { useStore } from "@nanostores/react"
+import { useEffect, useRef } from "react"
+
 import {
   contentState,
   setEntries,
   setIsArticleListReady,
   setLoadMoreVisible,
   setTotal,
-} from "@/store/contentState";
+} from "@/store/contentState"
 import {
   dataState,
   setHistoryCount,
   setStarredCount,
   setUnreadInfo,
   setUnreadTodayCount,
-} from "@/store/dataState";
-import { settingsState } from "@/store/settingsState";
-import { parseFirstImage } from "@/utils/images";
-import { useStore } from "@nanostores/react";
-import { useEffect, useRef } from "react";
+} from "@/store/dataState"
+import { settingsState } from "@/store/settingsState"
+import { parseFirstImage } from "@/utils/images"
 
 const handleResponses = (response) => {
   if (response?.total >= 0) {
-    const articles = response.entries.map(parseFirstImage);
-    setEntries(articles);
-    setTotal(response.total);
-    setLoadMoreVisible(articles.length < response.total);
+    const articles = response.entries.map(parseFirstImage)
+    setEntries(articles)
+    setTotal(response.total)
+    setLoadMoreVisible(articles.length < response.total)
   }
-};
+}
 
 const useArticleList = (info, getEntries) => {
-  const { filterDate } = useStore(contentState);
-  const { isAppDataReady } = useStore(dataState);
-  const { showStatus } = useStore(settingsState);
+  const { filterDate } = useStore(contentState)
+  const { isAppDataReady } = useStore(dataState)
+  const { showStatus } = useStore(settingsState)
 
-  const isLoading = useRef(false);
+  const isLoading = useRef(false)
 
   const fetchArticleList = async (getEntries) => {
     if (isLoading.current) {
-      return;
+      return
     }
 
-    isLoading.current = true;
-    setIsArticleListReady(false);
+    isLoading.current = true
+    setIsArticleListReady(false)
 
     try {
-      const response =
-        showStatus === "unread"
-          ? await getEntries(0, "unread")
-          : await getEntries();
+      const response = showStatus === "unread" ? await getEntries(0, "unread") : await getEntries()
 
       if (!filterDate) {
         switch (info.from) {
@@ -54,42 +52,42 @@ const useArticleList = (info, getEntries) => {
               setUnreadInfo((prev) => ({
                 ...prev,
                 [Number(info.id)]: response.total,
-              }));
+              }))
             }
-            break;
+            break
           case "history":
-            setHistoryCount(response.total);
-            break;
+            setHistoryCount(response.total)
+            break
           case "starred":
             if (showStatus !== "unread") {
-              setStarredCount(response.total);
+              setStarredCount(response.total)
             }
-            break;
+            break
           case "today":
             if (showStatus === "unread") {
-              setUnreadTodayCount(response.total);
+              setUnreadTodayCount(response.total)
             }
-            break;
+            break
         }
       }
 
-      handleResponses(response);
-      setIsArticleListReady(true);
+      handleResponses(response)
+      setIsArticleListReady(true)
     } catch (error) {
-      console.error("Error fetching articles: ", error);
+      console.error("Error fetching articles: ", error)
     } finally {
-      isLoading.current = false;
+      isLoading.current = false
     }
-  };
+  }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (isAppDataReady) {
-      fetchArticleList(getEntries);
+      fetchArticleList(getEntries)
     }
-  }, [isAppDataReady]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAppDataReady])
 
-  return { fetchArticleList };
-};
+  return { fetchArticleList }
+}
 
-export default useArticleList;
+export default useArticleList
