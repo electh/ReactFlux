@@ -1,4 +1,8 @@
 {
+  "app": {
+    "new_version_available": "Nueva versión disponible",
+    "new_version_available_description": "Por favor, compruebe la última versión en GitHub"
+  },
   "login": {
     "success": "Inicio de sesión correcto",
     "auth_error": "Por favor, compruebe la dirección de su servidor y las credenciales",

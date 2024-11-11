@@ -1,4 +1,8 @@
 {
+  "app": {
+    "new_version_available": "New version available",
+    "new_version_available_description": "Please check the latest version on GitHub"
+  },
   "login": {
     "success": "Login successfully",
     "auth_error": "Please check your server address and credentials",

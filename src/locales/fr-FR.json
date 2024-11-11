@@ -1,4 +1,8 @@
 {
+  "app": {
+    "new_version_available": "Nouvelle version disponible",
+    "new_version_available_description": "Veuillez vérifier la dernière version sur GitHub"
+  },
   "login": {
     "success": "Connexion réussie",
     "auth_error": "Veuillez vérifier votre adresse de serveur et vos informations d'identification",

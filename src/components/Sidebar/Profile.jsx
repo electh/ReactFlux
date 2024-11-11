@@ -1,3 +1,15 @@
+import { resetFeedIcons } from "@/hooks/useFeedIcons.js";
+import { polyglotState } from "@/hooks/useLanguage.js";
+import { useModalToggle } from "@/hooks/useModalToggle.js";
+import { authState, resetAuth } from "@/store/authState.js";
+import { resetContent } from "@/store/contentState.js";
+import { resetData } from "@/store/dataState.js";
+import {
+  resetSettings,
+  settingsState,
+  updateSettings,
+} from "@/store/settingsState.js";
+import { GITHUB_REPO_PATH } from "@/utils/constants.js";
 import {
   Button,
   Divider,
@@ -22,17 +34,6 @@ import {
 import { useStore } from "@nanostores/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { resetFeedIcons } from "../../hooks/useFeedIcons.js";
-import { polyglotState } from "../../hooks/useLanguage.js";
-import { useModalToggle } from "../../hooks/useModalToggle.js";
-import { authState, resetAuth } from "../../store/authState.js";
-import { resetContent } from "../../store/contentState.js";
-import { resetData } from "../../store/dataState.js";
-import {
-  resetSettings,
-  settingsState,
-  updateSettings,
-} from "../../store/settingsState.js";
 import "./Profile.css";
 
 export default function Profile() {
@@ -108,7 +109,7 @@ export default function Profile() {
                 key="2"
                 onClick={() =>
                   window.open(
-                    "https://github.com/electh/ReactFlux/issues/new",
+                    `https://github.com/${GITHUB_REPO_PATH}/issues/new`,
                     "_blank",
                   )
                 }

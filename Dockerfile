@@ -1,9 +1,10 @@
 # Stage 1: Build the React application
 # Specify the version to ensure consistent builds
-FROM node:21-alpine AS build
+FROM node:22-alpine AS build
 
-# Install pnpm globally
-RUN npm install -g pnpm
+# Install git and pnpm
+RUN apk add --no-cache git && \
+    npm install -g pnpm
 
 # Set the working directory in the container
 WORKDIR /app

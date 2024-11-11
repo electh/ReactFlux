@@ -8,8 +8,9 @@
     "dev": "vite",
     "format": "biome format . --write",
     "lint": "biome lint .",
+    "prebuild": "node src/scripts/version-info.js",
     "prepare": "husky",
-    "preview": "vite build && vite preview"
+    "preview": "pnpm run build && vite preview"
   },
   "dependencies": {
     "@arco-design/color": "^0.4.0",
