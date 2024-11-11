@@ -48,6 +48,8 @@
     "logout_description": "Are you sure you want to logout? This action cannot be undone."
   },
   "actions": {
+    "check": "Check",
+    "dismiss": "Dismiss",
     "copy_to_clipboard_tooltip": "Copy to clipboard",
     "copied": "Copied!",
     "mark_as_read_error": "Failed to mark as read, please try again later",
@@ -127,7 +129,7 @@
     "refresh_feed": "Refresh feed",
     "bulk_update_success": "Bulk update successfully",
     "bulk_update_error": "Failed to bulk update, please try again",
-    "bulk_refresh_error_feeds_message": "Starting refresh of error feeds, please wait",
+    "bulk_refresh_error_feeds_message": "Starting refresh of error feeds...",
     "bulk_refresh_error_feeds_result": "Feeds refreshed. Success: %{success}, Failure: %{failure}",
     "refresh_feeds_tooltip": "Refresh feeds",
     "refresh_feeds_title": "Refresh Feeds",

@@ -1,4 +1,9 @@
-import { Button, Message, Popconfirm, Radio } from "@arco-design/web-react";
+import {
+  Button,
+  Notification,
+  Popconfirm,
+  Radio,
+} from "@arco-design/web-react";
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon";
 
 import { useStore } from "@nanostores/react";
@@ -25,10 +30,15 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       await markAllAsRead();
       updateAllEntriesAsRead();
       await fetchAppData();
-      Message.success(polyglot.t("article_list.mark_all_as_read_success"));
+      Notification.success({
+        title: polyglot.t("article_list.mark_all_as_read_success"),
+      });
     } catch (error) {
       console.error("Failed to mark all as read: ", error);
-      Message.error(polyglot.t("article_list.mark_all_as_read_error"));
+      Notification.error({
+        title: polyglot.t("article_list.mark_all_as_read_error"),
+        content: error.message,
+      });
     }
   };
 

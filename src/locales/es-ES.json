@@ -48,6 +48,8 @@
     "logout_description": "¿Está seguro de que desea cerrar sesión? Esta acción no se puede deshacer."
   },
   "actions": {
+    "check": "Comprobar",
+    "dismiss": "Descartar",
     "copy_to_clipboard_tooltip": "Copiar al portapapeles",
     "copied": "Copiado!",
     "mark_as_read_error": "Error al marcar como leído, por favor intente de nuevo más tarde",
@@ -127,7 +129,7 @@
     "refresh_feed": "Actualizar feed",
     "bulk_update_success": "Actualización masiva realizada con éxito",
     "bulk_update_error": "Error en la actualización masiva, inténtelo nuevamente",
-    "bulk_refresh_error_feeds_message": "Iniciando la actualización de feeds de errores, por favor espere",
+    "bulk_refresh_error_feeds_message": "Iniciando la actualización de feeds de errores...",
     "bulk_refresh_error_feeds_result": "Feeds acualizados. Correctamente: %{success}, Fallo: %{failure}",
     "refresh_feeds_tooltip": "Actualizar Feeds",
     "refresh_feeds_title": "Actualizar feeds",

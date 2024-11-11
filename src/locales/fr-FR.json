@@ -48,6 +48,8 @@
     "logout_description": "Êtes-vous sûr de vouloir vous déconnecter ? Cette action est irréversible."
   },
   "actions": {
+    "check": "Vérifier",
+    "dismiss": "Descartar",
     "copy_to_clipboard_tooltip": "Copier dans le presse-papiers",
     "copied": "Copié !",
     "mark_as_read_error": "Impossible de marquer comme lu, veuillez réessayer plus tard",
@@ -127,7 +129,7 @@
     "refresh_feed": "Rafraîchir le flux",
     "bulk_update_success": "Mise à jour en masse réussie",
     "bulk_update_error": "Impossible de mettre à jour en masse, veuillez réessayer",
-    "bulk_refresh_error_feeds_message": "Début de la mise à jour des flux en erreur, veuillez patienter",
+    "bulk_refresh_error_feeds_message": "Début de la mise à jour des flux en erreur...",
     "bulk_refresh_error_feeds_result": "Flux mis à jour. Succès : %{success}, Échec : %{failure}",
     "refresh_feeds_tooltip": "Rafraîchir les flux",
     "refresh_feeds_title": "Rafraîchir les flux",

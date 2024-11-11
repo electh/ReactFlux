@@ -48,6 +48,8 @@
     "logout_description": "您确定要登出吗？此操作无法撤消。"
   },
   "actions": {
+    "check": "查看",
+    "dismiss": "关闭",
     "copy_to_clipboard_tooltip": "复制到剪贴板",
     "copied": "已复制！",
     "mark_as_read_error": "标记为已读失败，请稍后再试",
@@ -127,7 +129,7 @@
     "refresh_feed": "刷新订阅源",
     "bulk_update_success": "批量更新成功",
     "bulk_update_error": "批量更新失败，请重试",
-    "bulk_refresh_error_feeds_message": "正在刷新错误订阅源，请稍候",
+    "bulk_refresh_error_feeds_message": "正在刷新错误订阅源...",
     "bulk_refresh_error_feeds_result": "订阅源已刷新。成功： %{success}, 失败： %{failure}",
     "refresh_feeds_tooltip": "刷新订阅源",
     "refresh_feeds_title": "刷新订阅源",

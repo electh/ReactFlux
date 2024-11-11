@@ -1,4 +1,4 @@
-import { Message, Typography } from "@arco-design/web-react";
+import { Button, Notification, Typography } from "@arco-design/web-react";
 import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -141,7 +141,34 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (duplicateHotkeys.length > 0) {
-      Message.error(polyglot.t("settings.duplicate_hotkeys"));
+      const id = "duplicate-hotkeys";
+      Notification.error({
+        id,
+        title: polyglot.t("settings.duplicate_hotkeys"),
+        duration: 0,
+        btn: (
+          <span>
+            <Button
+              type="secondary"
+              size="small"
+              onClick={() => Notification.remove(id)}
+              style={{ marginRight: 8 }}
+            >
+              {polyglot.t("actions.dismiss")}
+            </Button>
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => {
+                showHotkeysSettings();
+                Notification.remove(id);
+              }}
+            >
+              {polyglot.t("actions.check")}
+            </Button>
+          </span>
+        ),
+      });
     }
   }, [duplicateHotkeys]);
 

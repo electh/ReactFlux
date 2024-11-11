@@ -156,7 +156,11 @@ const RefreshModal = ({ visible, setVisible }) => {
     const errorFeeds = filteredFeeds.filter(
       (feed) => feed.parsing_error_count > 0,
     );
-    Message.success(polyglot.t("feed_table.bulk_refresh_error_feeds_message"));
+    const id = "bulk-refresh-error-feeds";
+    Message.loading({
+      id,
+      content: polyglot.t("feed_table.bulk_refresh_error_feeds_message"),
+    });
 
     let successCount = 0;
     let failureCount = 0;
@@ -171,12 +175,13 @@ const RefreshModal = ({ visible, setVisible }) => {
       await sleep(500);
     }
 
-    Message.success(
-      polyglot.t("feed_table.bulk_refresh_error_feeds_result", {
+    Message.success({
+      id,
+      content: polyglot.t("feed_table.bulk_refresh_error_feeds_result", {
         success: successCount,
         failure: failureCount,
       }),
-    );
+    });
   };
 
   const closeModal = () => setVisible(false);

@@ -6,7 +6,7 @@
   height: 100%;
 }
 
-.arco-btn-secondary:not(.arco-btn-disabled) {
+.arco-btn-secondary:not(.arco-btn-disabled):has(svg) {
   background-color: transparent;
 }
 
