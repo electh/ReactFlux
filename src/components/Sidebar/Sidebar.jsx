@@ -5,7 +5,7 @@ import {
   Divider,
   Dropdown,
   Menu,
-  Message,
+  Notification,
   Skeleton,
   Typography,
 } from "@arco-design/web-react";
@@ -362,13 +362,20 @@ const MoreOptionsDropdown = () => {
       const response = await importOPML(fileContent);
 
       if (response.status === 201) {
-        Message.success(polyglot.t("sidebar.import_opml_success"));
+        Notification.success({
+          title: polyglot.t("sidebar.import_opml_success"),
+        });
         await fetchAppData();
       } else {
-        Message.error(polyglot.t("sidebar.import_opml_error"));
+        Notification.error({
+          title: polyglot.t("sidebar.import_opml_error"),
+        });
       }
     } catch (error) {
-      Message.error(polyglot.t("sidebar.import_opml_error"));
+      Notification.error({
+        title: polyglot.t("sidebar.import_opml_error"),
+        content: error.message,
+      });
     }
   };
 
@@ -388,8 +395,14 @@ const MoreOptionsDropdown = () => {
     try {
       const opmlContent = await exportOPML();
       downloadFile(opmlContent, "feeds.opml", "text/xml");
+      Notification.success({
+        title: polyglot.t("sidebar.export_opml_success"),
+      });
     } catch (error) {
-      Message.error(polyglot.t("sidebar.export_opml_error"));
+      Notification.error({
+        title: polyglot.t("sidebar.export_opml_error"),
+        content: error.message,
+      });
     }
   };
 

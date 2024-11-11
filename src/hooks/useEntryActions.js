@@ -1,4 +1,4 @@
-import { Message } from "@arco-design/web-react";
+import { Message, Notification } from "@arco-design/web-react";
 import Confetti from "canvas-confetti";
 
 import { useStore } from "@nanostores/react";
@@ -163,17 +163,20 @@ const useEntryActions = () => {
     try {
       const response = await saveToThirdPartyServices(activeContent.id);
       if (response.status === 202) {
-        Message.success(
-          polyglot.t("actions.saved_to_third-party_services_success"),
-        );
+        Notification.success({
+          title: polyglot.t("actions.saved_to_third-party_services_success"),
+        });
       } else {
-        Message.error(
-          polyglot.t("actions.saved_to_third-party_services_error"),
-        );
+        Notification.error({
+          title: polyglot.t("actions.saved_to_third-party_services_error"),
+        });
       }
     } catch (error) {
       console.error("Failed to save to third-party services: ", error);
-      Message.error(polyglot.t("actions.saved_to_third-party_services_error"));
+      Notification.error({
+        title: polyglot.t("actions.saved_to_third-party_services_error"),
+        content: error.message,
+      });
     }
   };
 

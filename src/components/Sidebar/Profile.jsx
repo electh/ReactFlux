@@ -3,8 +3,8 @@ import {
   Divider,
   Dropdown,
   Menu,
-  Message,
   Modal,
+  Notification,
   Radio,
 } from "@arco-design/web-react";
 import {
@@ -57,7 +57,9 @@ export default function Profile() {
     resetData();
     resetFeedIcons();
     navigate("/login");
-    Message.success(polyglot.t("sidebar.logout_success"));
+    Notification.success({
+      title: polyglot.t("sidebar.logout_success"),
+    });
   };
 
   return (

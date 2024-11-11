@@ -5,6 +5,7 @@ import {
   Input,
   Link,
   Message,
+  Notification,
   Typography,
 } from "@arco-design/web-react";
 import useForm from "@arco-design/web-react/es/Form/useForm";
@@ -52,14 +53,19 @@ const Login = () => {
           : { Authorization: `Basic ${btoa(`${username}:${password}`)}` },
       });
       if (response.status === 200) {
-        Message.success(polyglot.t("login.success"));
+        Notification.success({
+          title: polyglot.t("login.success"),
+        });
         setAuth({ server, token, username, password });
         const from = location.state?.from || `/${homePage}`;
         navigate(from, { replace: true });
       }
     } catch (error) {
       console.error(error);
-      Message.error(error.message);
+      Notification.error({
+        title: polyglot.t("login.error"),
+        content: error.message,
+      });
     }
     setLoading(false);
   };
