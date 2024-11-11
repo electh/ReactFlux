@@ -35,7 +35,7 @@ import { exportOPML, importOPML } from "../../apis";
 import useAppData from "../../hooks/useAppData";
 import { polyglotState } from "../../hooks/useLanguage";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
-import { setActiveContent } from "../../store/contentState";
+import { contentState, setActiveContent } from "../../store/contentState";
 import {
   dataState,
   feedsGroupedByIdState,
@@ -144,6 +144,7 @@ const CustomMenuItem = ({ path, Icon, label, count }) => {
 };
 
 const SidebarMenuItems = () => {
+  const { infoFrom } = useStore(contentState);
   const { historyCount, starredCount, unreadTodayCount } = useStore(dataState);
   const { polyglot } = useStore(polyglotState);
   const unreadTotal = useStore(unreadTotalState);
@@ -166,13 +167,13 @@ const SidebarMenuItems = () => {
         path="/starred"
         Icon={IconStar}
         label={polyglot.t("sidebar.starred")}
-        count={starredCount}
+        count={infoFrom === "starred" ? starredCount : 0}
       />
       <CustomMenuItem
         path="/history"
         Icon={IconHistory}
         label={polyglot.t("sidebar.history")}
-        count={historyCount}
+        count={infoFrom === "history" ? historyCount : 0}
       />
     </>
   );

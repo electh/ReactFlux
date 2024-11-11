@@ -55,14 +55,7 @@ const handleBskyVideo = (node) => {
     const thumbnailUrl = node.attribs.src;
     const playlistUrl = thumbnailUrl.replace("thumbnail.jpg", "playlist.m3u8");
 
-    return (
-      <MuxPlayer
-        src={playlistUrl}
-        controls
-        poster={thumbnailUrl}
-        style={{ width: "100%", height: "auto" }}
-      />
-    );
+    return <MuxPlayer src={playlistUrl} controls poster={thumbnailUrl} />;
   }
   return null;
 };
@@ -168,14 +161,7 @@ const handleVideo = (node) => {
     return node;
   }
 
-  return (
-    <MuxPlayer
-      src={videoSrc}
-      controls
-      poster={node.attribs.poster}
-      style={{ width: "100%", height: "auto" }}
-    />
-  );
+  return <MuxPlayer src={videoSrc} controls poster={node.attribs.poster} />;
 };
 
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
