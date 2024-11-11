@@ -136,7 +136,11 @@ const SearchAndSortBar = () => {
                 shape="circle"
                 size="small"
                 icon={<IconCalendar />}
-                type={filterDate ? "primary" : "default"}
+                style={{
+                  backgroundColor: filterDate
+                    ? "rgb(var(--primary-6))"
+                    : "inherit",
+                }}
               />
             </CustomTooltip>
           }

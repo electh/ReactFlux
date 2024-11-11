@@ -173,7 +173,6 @@ const handleVideo = (node) => {
       src={videoSrc}
       controls
       poster={node.attribs.poster}
-      crossOrigin="anonymous"
       style={{ width: "100%", height: "auto" }}
     />
   );

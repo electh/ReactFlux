@@ -21,7 +21,8 @@
 .article-body audio,
 .article-body iframe,
 .article-body img,
-.article-body video {
+.article-body video,
+.article-body mux-player {
   display: block;
   margin: 10px auto;
 }
