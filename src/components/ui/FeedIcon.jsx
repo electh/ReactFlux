@@ -52,7 +52,10 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
       onLoad={handleImageLoad}
       ref={imgRef}
       src={iconURL}
-      style={{ borderRadius: "20%" }}
+      style={{
+        borderRadius: "20%",
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+      }}
     />
   );
 };
