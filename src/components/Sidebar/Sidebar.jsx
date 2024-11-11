@@ -2,14 +2,17 @@ import {
   Avatar,
   Button,
   Collapse,
+  Divider,
   Dropdown,
   Menu,
+  Message,
   Skeleton,
   Typography,
 } from "@arco-design/web-react";
 import {
   IconBook,
   IconCalendar,
+  IconDownload,
   IconEye,
   IconEyeInvisible,
   IconHistory,
@@ -19,6 +22,7 @@ import {
   IconRight,
   IconStar,
   IconUnorderedList,
+  IconUpload,
 } from "@arco-design/web-react/icon";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -27,6 +31,8 @@ import SimpleBar from "simplebar-react";
 
 import { useStore } from "@nanostores/react";
 import classNames from "classnames";
+import { exportOPML, importOPML } from "../../apis";
+import useAppData from "../../hooks/useAppData";
 import { polyglotState } from "../../hooks/useLanguage";
 import { useScreenWidth } from "../../hooks/useScreenWidth";
 import { setActiveContent } from "../../store/contentState";
@@ -321,17 +327,11 @@ const CategoryGroup = () => {
     ));
 };
 
-const Sidebar = () => {
-  const { homePage, showHiddenFeeds, showUnreadFeedsOnly } =
-    useStore(settingsState);
-  const { isAppDataReady } = useStore(dataState);
+const MoreOptionsDropdown = () => {
+  const { showHiddenFeeds, showUnreadFeedsOnly } = useStore(settingsState);
   const { polyglot } = useStore(polyglotState);
 
-  const location = useLocation();
-
-  const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`]);
-
-  const currentPath = location.pathname;
+  const { fetchAppData } = useAppData();
 
   const handleToggleFeedsVisibility = () => {
     updateSettings({ showHiddenFeeds: !showHiddenFeeds });
@@ -340,6 +340,127 @@ const Sidebar = () => {
   const handleToggleUnreadFeedsOnly = () => {
     updateSettings({ showUnreadFeedsOnly: !showUnreadFeedsOnly });
   };
+
+  const readFileAsText = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  };
+
+  const handleImportOPML = async (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      return;
+    }
+
+    try {
+      const fileContent = await readFileAsText(file);
+      const response = await importOPML(fileContent);
+
+      if (response.status === 201) {
+        Message.success(polyglot.t("sidebar.import_opml_success"));
+        await fetchAppData();
+      } else {
+        Message.error(polyglot.t("sidebar.import_opml_error"));
+      }
+    } catch (error) {
+      Message.error(polyglot.t("sidebar.import_opml_error"));
+    }
+  };
+
+  const downloadFile = (content, filename, type) => {
+    const blob = new Blob([content], { type });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleExportOPML = async () => {
+    try {
+      const opmlContent = await exportOPML();
+      downloadFile(opmlContent, "feeds.opml", "text/xml");
+    } catch (error) {
+      Message.error(polyglot.t("sidebar.export_opml_error"));
+    }
+  };
+
+  return (
+    <>
+      <Dropdown
+        position="br"
+        trigger="click"
+        droplist={
+          <Menu>
+            <MenuItem key="1" onClick={handleToggleFeedsVisibility}>
+              {showHiddenFeeds ? (
+                <IconEyeInvisible className="icon-right" />
+              ) : (
+                <IconEye className="icon-right" />
+              )}
+              {showHiddenFeeds
+                ? polyglot.t("sidebar.hide_hidden_feeds")
+                : polyglot.t("sidebar.show_hidden_feeds")}
+            </MenuItem>
+            <MenuItem key="2" onClick={handleToggleUnreadFeedsOnly}>
+              {showUnreadFeedsOnly ? (
+                <IconMinusCircle className="icon-right" />
+              ) : (
+                <IconRecord className="icon-right" />
+              )}
+              {showUnreadFeedsOnly
+                ? polyglot.t("sidebar.show_read_feeds")
+                : polyglot.t("sidebar.hide_read_feeds")}
+            </MenuItem>
+            <Divider style={{ margin: "4px 0" }} />
+            <MenuItem
+              key="3"
+              onClick={() => document.getElementById("opmlInput").click()}
+            >
+              <IconUpload className="icon-right" />
+              {polyglot.t("sidebar.import_opml")}
+            </MenuItem>
+            <MenuItem key="4" onClick={handleExportOPML}>
+              <IconDownload className="icon-right" />
+              {polyglot.t("sidebar.export_opml")}
+            </MenuItem>
+          </Menu>
+        }
+      >
+        <Button
+          icon={<IconMoreVertical />}
+          shape="circle"
+          size="small"
+          style={{ marginTop: "1em", marginBottom: "0.5em" }}
+        />
+      </Dropdown>
+      <input
+        id="opmlInput"
+        type="file"
+        accept=".opml,.xml"
+        style={{ display: "none" }}
+        onChange={handleImportOPML}
+      />
+    </>
+  );
+};
+
+const Sidebar = () => {
+  const { homePage } = useStore(settingsState);
+  const { isAppDataReady } = useStore(dataState);
+  const { polyglot } = useStore(polyglotState);
+
+  const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`]);
+
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   useEffect(() => {
     setSelectedKeys([currentPath]);
@@ -389,41 +510,7 @@ const Sidebar = () => {
             </Typography.Title>
             <div style={{ display: "flex", gap: "8px", marginRight: "8px" }}>
               <AddFeed />
-              <Dropdown
-                position="br"
-                trigger="click"
-                droplist={
-                  <Menu>
-                    <MenuItem key="1" onClick={handleToggleFeedsVisibility}>
-                      {showHiddenFeeds ? (
-                        <IconEyeInvisible className="icon-right" />
-                      ) : (
-                        <IconEye className="icon-right" />
-                      )}
-                      {showHiddenFeeds
-                        ? polyglot.t("sidebar.hide_hidden_feeds")
-                        : polyglot.t("sidebar.show_hidden_feeds")}
-                    </MenuItem>
-                    <MenuItem key="2" onClick={handleToggleUnreadFeedsOnly}>
-                      {showUnreadFeedsOnly ? (
-                        <IconMinusCircle className="icon-right" />
-                      ) : (
-                        <IconRecord className="icon-right" />
-                      )}
-                      {showUnreadFeedsOnly
-                        ? polyglot.t("sidebar.show_read_feeds")
-                        : polyglot.t("sidebar.hide_read_feeds")}
-                    </MenuItem>
-                  </Menu>
-                }
-              >
-                <Button
-                  icon={<IconMoreVertical />}
-                  shape="circle"
-                  size="small"
-                  style={{ marginTop: "1em", marginBottom: "0.5em" }}
-                />
-              </Dropdown>
+              <MoreOptionsDropdown />
             </div>
           </div>
           <Skeleton
