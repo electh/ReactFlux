@@ -9,7 +9,7 @@ import { RouterProvider } from "react-router-dom";
 import { registerLanguages } from "./utils/highlighter";
 import "simplebar-react/dist/simplebar.min.css";
 
-import "./pwa";
+import { updateSW } from "./pwa";
 import "./index.css";
 import router from "./routes";
 import "./theme.css";
@@ -23,6 +23,7 @@ const localMap = {
 
 const getLocale = () => localMap[getPreferredLanguage()] || enUS;
 
+updateSW();
 registerLanguages();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
