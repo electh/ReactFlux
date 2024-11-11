@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { Tag } from "@arco-design/web-react";
+import { Tag, Tooltip } from "@arco-design/web-react";
 import { IconLink } from "@arco-design/web-react/icon";
 import { useStore } from "@nanostores/react";
 import { settingsState } from "../../store/settingsState";
+
+import "./ImageOverlayButton.css";
 
 const ImageComponent = ({
   imgNode,
@@ -17,13 +19,10 @@ const ImageComponent = ({
   return isIcon ? (
     <img
       {...imgNode.attribs}
-      className={"icon-image"}
+      className="icon-image"
       alt={imgNode.attribs.alt ?? "image"}
       style={{
-        display: "inline-block",
-        width: "auto",
         height: `${fontSize}rem`,
-        margin: 0,
       }}
     />
   ) : (
@@ -34,21 +33,7 @@ const ImageComponent = ({
         alt={imgNode.attribs.alt ?? "image"}
       />
       <button
-        className={"image-overlay-button"}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "transparent",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          cursor: "zoom-in",
-          border: "none",
-          zIndex: 1,
-        }}
+        className="image-overlay-button"
         type="button"
         onClick={(event) => {
           event.preventDefault();
@@ -116,8 +101,8 @@ const ImageOverlayButton = ({
   }
 
   return (
-    <div style={{ textAlign: "center", position: "relative" }}>
-      <div style={{ display: "inline-block", position: "relative" }}>
+    <div className="image-wrapper">
+      <div className="image-container">
         {isLinkWrapper ? (
           <div>
             <a {...node.attribs}>
@@ -129,19 +114,18 @@ const ImageOverlayButton = ({
                 togglePhotoSlider={togglePhotoSlider}
               />
             </a>
-            <Tag
-              icon={<IconLink />}
-              onClick={(e) => {
-                e.stopPropagation();
-                window.open(node.attribs.href, "_blank");
-              }}
-              style={{
-                cursor: "pointer",
-                maxWidth: "50%",
-              }}
-            >
-              {node.attribs.href}
-            </Tag>
+            <Tooltip content={node.attribs.href}>
+              <Tag
+                icon={<IconLink />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(node.attribs.href, "_blank");
+                }}
+                className="link-tag"
+              >
+                {node.attribs.href}
+              </Tag>
+            </Tooltip>
           </div>
         ) : (
           <ImageComponent

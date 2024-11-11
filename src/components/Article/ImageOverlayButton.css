@@ -1,0 +1,35 @@
+.icon-image {
+  display: inline-block;
+  width: auto;
+  margin: 0;
+}
+
+.image-overlay-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-in;
+  border: none;
+  z-index: 1;
+}
+
+.image-wrapper {
+  text-align: center;
+  position: relative;
+}
+
+.image-container {
+  display: inline-block;
+  position: relative;
+}
+
+.link-tag {
+  cursor: pointer;
+  max-width: calc(100% - 32px);
+}
