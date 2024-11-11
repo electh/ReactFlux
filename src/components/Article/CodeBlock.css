@@ -1,23 +1,22 @@
 .code-block-container {
-  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .code-block-container code {
   white-space: pre-wrap !important;
 }
 
-.copy-button {
-  right: 3px;
+.code-block-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  background: inherit;
+  z-index: 1;
+  margin-bottom: -12px;
 }
 
 .language-selector {
-  right: 38px;
   width: 100px;
-}
-
-.language-selector,
-.copy-button {
-  position: absolute;
-  top: 3px;
-  z-index: 1;
 }

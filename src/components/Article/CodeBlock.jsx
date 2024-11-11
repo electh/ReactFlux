@@ -41,8 +41,10 @@ const CodeBlock = ({ children }) => {
 
   return (
     <div className="code-block-container">
-      <LanguageSelector language={language} setLanguage={setLanguage} />
-      <CopyButton onClick={copyToClipboard} />
+      <div className="code-block-header">
+        <LanguageSelector language={language} setLanguage={setLanguage} />
+        <CopyButton onClick={copyToClipboard} />
+      </div>
       <SyntaxHighlighter
         language={language}
         showLineNumbers={true}
