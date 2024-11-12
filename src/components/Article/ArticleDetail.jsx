@@ -1,5 +1,4 @@
 import { Divider, Tag, Typography } from "@arco-design/web-react"
-import MuxPlayer from "@mux/mux-player-react"
 import { useStore } from "@nanostores/react"
 import ReactHtmlParser from "html-react-parser"
 import { littlefoot } from "littlefoot"
@@ -14,6 +13,7 @@ import ImageOverlayButton from "./ImageOverlayButton"
 
 import CustomLink from "@/components/ui/CustomLink"
 import FadeTransition from "@/components/ui/FadeTransition"
+import PlyrPlayer from "@/components/ui/PlyrPlayer"
 import usePhotoSlider from "@/hooks/usePhotoSlider"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { contentState, setFilterString, setFilterType } from "@/store/contentState"
@@ -48,7 +48,7 @@ const handleBskyVideo = (node) => {
     const thumbnailUrl = node.attribs.src
     const playlistUrl = thumbnailUrl.replace("thumbnail.jpg", "playlist.m3u8")
 
-    return <MuxPlayer controls poster={thumbnailUrl} src={playlistUrl} />
+    return <PlyrPlayer poster={thumbnailUrl} src={playlistUrl} />
   }
   return null
 }
@@ -149,7 +149,9 @@ const handleVideo = (node) => {
     return node
   }
 
-  return <MuxPlayer controls poster={node.attribs.poster} src={videoSrc} />
+  return (
+    <PlyrPlayer poster={node.attribs.poster} sourceType={sourceNode?.attribs.type} src={videoSrc} />
+  )
 }
 
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
