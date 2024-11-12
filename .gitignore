@@ -35,10 +35,9 @@ dist-ssr
 # production
 /build
 
+# development
+/dev-dist
+
 # misc
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 stats.html
 src/version-info.json
