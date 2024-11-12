@@ -1,7 +1,7 @@
 {
   "name": "ReactFlux",
   "short_name": "ReactFlux",
-  "description": "Simple RSS reader for Miniflux",
+  "description": "A Simple but Powerful RSS Reader for Miniflux",
   "icons": [
     {
       "src": "favicon.ico",
