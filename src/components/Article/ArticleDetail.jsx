@@ -75,8 +75,7 @@ const parseCodeContent = (pre) => {
 }
 
 const handleTableBasedCode = (node) => {
-  const table = node.children[0]
-  const tbody = table.children.find((child) => child.name === "tbody")
+  const tbody = node.children.find((child) => child.name === "tbody")
   if (!tbody) {
     return null
   }
@@ -86,10 +85,15 @@ const handleTableBasedCode = (node) => {
     return null
   }
 
-  const codeTd = tr.children[1]
-  const pre = codeTd.children.find((child) => child.name === "pre")
+  const [_lineNumbersTd, codeTd] = tr.children
 
-  return pre ? parseCodeContent(pre) : null
+  const codePre = codeTd.children.find((child) => child.name === "pre")
+
+  if (!codePre) {
+    return null
+  }
+
+  return parseCodeContent(codePre)
 }
 
 const handleFigure = (node, imageSources, togglePhotoSlider) => {
