@@ -8,8 +8,22 @@ export const parseFirstImage = (entry) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(entry.content, "text/html")
   let imgSrc = doc.querySelector("img")?.getAttribute("src")
+  let isVideo = false
+
   if (!imgSrc) {
-    imgSrc = doc.querySelector("video")?.getAttribute("poster")
+    const video = doc.querySelector("video")
+    if (video) {
+      imgSrc = video.getAttribute("poster")
+      isVideo = true
+    } else if (entry.enclosures.length > 0) {
+      if (entry.enclosures[0].mime_type.includes("image")) {
+        imgSrc = entry.enclosures[0].url
+      }
+      // Youtube thumbnail
+      if (imgSrc?.startsWith("https://i.ytimg.com")) {
+        isVideo = true
+      }
+    }
   }
-  return { ...entry, imgSrc }
+  return { ...entry, imgSrc, isVideo }
 }
