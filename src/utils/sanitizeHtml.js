@@ -33,7 +33,6 @@ const getSanitizeOptions = () => ({
       "poster",
       "preload",
       "src",
-      "type",
       "width",
     ],
     source: ["src", "type"],

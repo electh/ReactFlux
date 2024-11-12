@@ -117,6 +117,7 @@
     "type_site_url": "Site URL"
   },
   "main": {
+    "add_feed_loading": "Adding a feed...",
     "add_feed_success": "Added a feed successfully",
     "add_feed_error": "Failed to add a feed",
     "add_feed_error_duplicate": "This Feed already exists",

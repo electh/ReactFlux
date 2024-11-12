@@ -60,6 +60,8 @@ const AddFeedModal = () => {
 
   const handleAddFeed = async (url, categoryId, isFullText) => {
     setFeedModalLoading(true)
+    const id = "add-feed-loading"
+
     try {
       if (feeds.some((feed) => feed.feed_url === url)) {
         Message.error(polyglot.t("main.add_feed_error_duplicate"))
@@ -67,9 +69,11 @@ const AddFeedModal = () => {
       }
 
       const response = await addFeed(url, categoryId, isFullText)
+      Message.loading({ id, content: polyglot.t("main.add_feed_loading") })
+
       fetchAppData()
         .then(() => {
-          Message.success(polyglot.t("main.add_feed_success"))
+          Message.success({ id, content: polyglot.t("main.add_feed_success") })
           setAddFeedModalVisible(false)
           navigate(`/feed/${response.feed_id}`)
           feedForm.resetFields()
@@ -77,11 +81,11 @@ const AddFeedModal = () => {
         })
         .catch((error) => {
           console.error("Failed to fetch app data: ", error)
-          Message.error(polyglot.t("main.add_feed_error"))
+          Message.error({ id, content: polyglot.t("main.add_feed_error") })
         })
     } catch (error) {
       console.error("Failed to add a feed: ", error)
-      Message.error(polyglot.t("main.add_feed_error"))
+      Message.error({ id, content: polyglot.t("main.add_feed_error") })
     } finally {
       setFeedModalLoading(false)
     }

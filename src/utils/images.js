@@ -4,26 +4,29 @@ export const extractImageSources = (htmlString) => {
   return Array.from(images).map((img) => img.getAttribute("src"))
 }
 
-export const parseFirstImage = (entry) => {
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(entry.content, "text/html")
-  let imgSrc = doc.querySelector("img")?.getAttribute("src")
+export const parseCoverImage = (entry) => {
+  const doc = new DOMParser().parseFromString(entry.content, "text/html")
+  const firstImage = doc.querySelector("img")
+  let coverSource = firstImage?.getAttribute("src")
   let isVideo = false
 
-  if (!imgSrc) {
+  if (!coverSource) {
     const video = doc.querySelector("video")
     if (video) {
-      imgSrc = video.getAttribute("poster")
+      coverSource = video.getAttribute("poster")
       isVideo = true
-    } else if (entry.enclosures.length > 0) {
-      if (entry.enclosures[0].mime_type.includes("image")) {
-        imgSrc = entry.enclosures[0].url
+    } else if (entry.enclosures?.[0]) {
+      const firstEnclosure = entry.enclosures[0]
+      const isImage =
+        firstEnclosure.mime_type.toLowerCase().startsWith("image/") ||
+        /\.(jpg|jpeg|png|gif)$/i.test(firstEnclosure.url)
+      if (isImage) {
+        coverSource = firstEnclosure.url
       }
       // Youtube thumbnail
-      if (imgSrc?.startsWith("https://i.ytimg.com")) {
-        isVideo = true
-      }
+      isVideo = coverSource?.startsWith("https://i.ytimg.com") ?? false
     }
   }
-  return { ...entry, imgSrc, isVideo }
+
+  return { ...entry, coverSource, isVideo }
 }

@@ -16,11 +16,11 @@ import {
   setUnreadTodayCount,
 } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
-import { parseFirstImage } from "@/utils/images"
+import { parseCoverImage } from "@/utils/images"
 
 const handleResponses = (response) => {
   if (response?.total >= 0) {
-    const articles = response.entries.map(parseFirstImage)
+    const articles = response.entries.map(parseCoverImage)
     setEntries(articles)
     setTotal(response.total)
     setLoadMoreVisible(articles.length < response.total)

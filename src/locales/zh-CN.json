@@ -117,6 +117,7 @@
     "type_site_url": "网站 URL"
   },
   "main": {
+    "add_feed_loading": "正在添加订阅源...",
     "add_feed_success": "添加订阅源成功",
     "add_feed_error": "添加订阅源失败",
     "add_feed_error_duplicate": "此订阅源已存在",

@@ -117,6 +117,7 @@
     "type_site_url": "URL du site"
   },
   "main": {
+    "add_feed_loading": "Ajout d'un flux...",
     "add_feed_success": "Flux ajouté avec succès",
     "add_feed_error": "Impossible d'ajouter le flux",
     "add_feed_error_duplicate": "Ce flux existe déjà",

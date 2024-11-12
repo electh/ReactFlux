@@ -3,7 +3,7 @@ import { atom } from "nanostores"
 
 import { contentState, setEntries, setLoadMoreVisible, setOffset } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
-import { parseFirstImage } from "@/utils/images"
+import { parseCoverImage } from "@/utils/images"
 import createSetter from "@/utils/nanostores"
 
 const loadingMoreState = atom(false)
@@ -36,7 +36,7 @@ const useLoadMore = () => {
           ? await getEntries(offset + pageSize, "unread")
           : await getEntries(offset + pageSize)
       if (response?.entries?.length > 0) {
-        const newEntries = response.entries.map(parseFirstImage)
+        const newEntries = response.entries.map(parseCoverImage)
         updateEntries(newEntries)
       } else {
         setLoadMoreVisible(false)
