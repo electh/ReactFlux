@@ -63,15 +63,24 @@ const handleImage = (node, imageSources, togglePhotoSlider) => {
   return <ImageOverlayButton index={index} node={node} togglePhotoSlider={togglePhotoSlider} />
 }
 
-const parseCodeContent = (pre) => {
-  return pre.children
-    .map((child) => child.data || (child.name === "br" ? "\n" : ""))
+const htmlEntities = {
+  "&#39;": "'",
+  "&quot;": '"',
+  "&lt;": "<",
+  "&gt;": ">",
+  "&amp;": "&",
+}
+
+const decodeAndParseCodeContent = (preElement) => {
+  return preElement.children
+    .map((child) => {
+      if (child.type === "tag" && child.name === "strong") {
+        return child.children[0]?.data ?? ""
+      }
+      return child.data ?? (child.name === "br" ? "\n" : "")
+    })
     .join("")
-    .replace(/&#39;/g, "'")
-    .replace(/&quot;/g, '"')
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&")
+    .replace(new RegExp(Object.keys(htmlEntities).join("|"), "g"), (match) => htmlEntities[match])
 }
 
 const handleTableBasedCode = (node) => {
@@ -93,7 +102,7 @@ const handleTableBasedCode = (node) => {
     return null
   }
 
-  return parseCodeContent(codePre)
+  return decodeAndParseCodeContent(codePre)
 }
 
 const handleFigure = (node, imageSources, togglePhotoSlider) => {
@@ -132,9 +141,9 @@ const handleCodeBlock = (node) => {
   // Extract code content
   let codeContent
   if (node.children[0]?.name === "code") {
-    codeContent = node.children[0].children[0]?.data || ""
+    codeContent = decodeAndParseCodeContent(node.children[0])
   } else {
-    codeContent = node.children.map((child) => child.data || "").join("")
+    codeContent = decodeAndParseCodeContent(node)
   }
 
   return <CodeBlock>{codeContent}</CodeBlock>
