@@ -50,30 +50,41 @@ const useKeyHandlers = () => {
       }
     }
 
-  const exitDetailView = withActiveContent(() => {
-    setActiveContent(null)
-    if (entryListRef.current) {
-      entryListRef.current.contentWrapperEl.focus()
+  const withPhotoSliderCheck =
+    (fn) =>
+    (...args) => {
+      if (isPhotoSliderVisible) {
+        return
+      }
+      return fn(...args)
     }
-  })
 
-  const navigateToPreviousArticle = () => {
+  const exitDetailView = withActiveContent(
+    withPhotoSliderCheck(() => {
+      setActiveContent(null)
+      if (entryListRef.current) {
+        entryListRef.current.contentWrapperEl.focus()
+      }
+    }),
+  )
+
+  const navigateToPreviousArticle = withPhotoSliderCheck(() => {
     if (prevContent) {
       handleEntryClick(prevContent)
       setTimeout(() => scrollSelectedCardIntoView(), ANIMATION_DURATION_MS)
     } else {
       Message.info(polyglot.t("actions.no_previous_article"))
     }
-  }
+  })
 
-  const navigateToNextArticle = () => {
+  const navigateToNextArticle = withPhotoSliderCheck(() => {
     if (nextContent) {
       handleEntryClick(nextContent)
       setTimeout(() => scrollSelectedCardIntoView(), ANIMATION_DURATION_MS)
     } else {
       Message.info(polyglot.t("actions.no_next_article"))
     }
-  }
+  })
 
   const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
     const isSearchingBackward = direction === "prev"
@@ -84,7 +95,7 @@ const useKeyHandlers = () => {
     return searchRange.find((entry) => entry.status === "unread")
   }
 
-  const navigateToAdjacentUnreadArticle = (direction) => {
+  const navigateToAdjacentUnreadArticle = withPhotoSliderCheck((direction) => {
     const adjacentUnreadEntry = findAdjacentUnreadEntry(
       activeEntryIndex,
       direction,
@@ -98,7 +109,7 @@ const useKeyHandlers = () => {
     } else {
       Message.info(polyglot.t("actions.no_next_unread_article"))
     }
-  }
+  })
 
   const navigateToPreviousUnreadArticle = () => navigateToAdjacentUnreadArticle("prev")
   const navigateToNextUnreadArticle = () => navigateToAdjacentUnreadArticle("next")
@@ -129,8 +140,13 @@ const useKeyHandlers = () => {
   })
 
   const openPhotoSlider = withActiveContent(() => {
+    if (isPhotoSliderVisible) {
+      setIsPhotoSliderVisible(false)
+      return
+    }
+
     const imageSources = extractImageSources(activeContent.content)
-    if (!imageSources.length || isPhotoSliderVisible) {
+    if (!imageSources.length) {
       return
     }
 
