@@ -25,11 +25,11 @@ import {
   IconUpload,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { useVirtualizer } from "@tanstack/react-virtual"
 import classNames from "classnames"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import SimpleBar from "simplebar-react"
+import { Virtualizer } from "virtua"
 
 import AddFeed from "./AddFeed.jsx"
 import Profile from "./Profile.jsx"
@@ -238,25 +238,6 @@ const FeedMenuGroup = ({ categoryId }) => {
     [feedsGroupedById, categoryId, showUnreadFeedsOnly],
   )
 
-  const virtualizer = useVirtualizer({
-    count: filteredFeeds.length,
-    getScrollElement: () => scrollableNodeRef.current,
-    estimateSize: () => 40,
-    overscan: 10,
-  })
-
-  const virtualItems = virtualizer.getVirtualItems()
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (scrollableNodeRef.current) {
-        virtualizer.measure()
-      }
-    }, 100)
-
-    return () => clearTimeout(timer)
-  }, [virtualizer])
-
   return (
     <SimpleBar
       ref={parentRef}
@@ -266,33 +247,11 @@ const FeedMenuGroup = ({ categoryId }) => {
         style: { minHeight: "40px" },
       }}
     >
-      <div
-        style={{
-          height: virtualizer.getTotalSize(),
-          width: "100%",
-          position: "relative",
-        }}
-      >
-        {virtualItems.map((virtualRow) => {
-          const feed = filteredFeeds[virtualRow.index]
-          return (
-            <div
-              key={virtualRow.key}
-              ref={virtualizer.measureElement}
-              data-index={virtualRow.index}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-            >
-              <FeedMenuItem feed={feed} />
-            </div>
-          )
-        })}
-      </div>
+      <Virtualizer overscan={10} scrollRef={scrollableNodeRef}>
+        {filteredFeeds.map((feed) => (
+          <FeedMenuItem key={feed.id} feed={feed} />
+        ))}
+      </Virtualizer>
     </SimpleBar>
   )
 }

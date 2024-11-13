@@ -1,9 +1,9 @@
 import { Divider, Spin } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
-import { useVirtualizer } from "@tanstack/react-virtual"
 import { forwardRef, useCallback, useEffect, useMemo } from "react"
 import { useInView } from "react-intersection-observer"
 import SimpleBar from "simplebar-react"
+import { Virtualizer } from "virtua"
 
 import ArticleCard from "./ArticleCard"
 import LoadingCards from "./LoadingCards"
@@ -53,85 +53,54 @@ const ArticleList = forwardRef(({ getEntries, handleEntryClick, cardsRef }, ref)
 
   const items = useMemo(() => filteredEntries, [filteredEntries])
 
-  const virtualizer = useVirtualizer({
-    count: items.length,
-    getScrollElement: () => cardsRef.current,
-    estimateSize: () => 160,
-    overscan: 10,
-  })
-
-  const virtualItems = virtualizer.getVirtualItems()
-
   const canLoadMore = loadMoreVisible && isArticleListReady && !loadingMore
 
   const checkAndLoadMore = useCallback(
-    (scrollElement) => {
+    (element) => {
       if (!canLoadMore) {
         return
       }
 
-      const { scrollTop, clientHeight, scrollHeight } = scrollElement
-      const scrollPercentage = (scrollTop + clientHeight) / scrollHeight
-
-      if (scrollPercentage >= 0.8) {
+      const threshold = element.scrollHeight * 0.8
+      const scrolledDistance = element.scrollTop + element.clientHeight
+      if (scrolledDistance >= threshold) {
         handleLoadMore(getEntries)
       }
     },
     [canLoadMore, handleLoadMore, getEntries],
   )
 
-  useEffect(() => {
-    const { scrollElement } = virtualizer
-    if (!scrollElement) {
-      return
-    }
-
-    const handleScroll = () => checkAndLoadMore(scrollElement)
-    scrollElement.addEventListener("scroll", handleScroll)
-
-    return () => {
-      scrollElement.removeEventListener("scroll", handleScroll)
-    }
-  }, [virtualizer, checkAndLoadMore])
-
   return (
     <SimpleBar ref={ref} className="entry-list" scrollableNodeProps={{ ref: cardsRef }}>
       <LoadingCards />
       {isArticleListReady && (
-        <FadeTransition
-          y={20}
-          style={{
-            height: virtualizer.getTotalSize(),
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          {virtualItems.map((item) => (
-            <div
-              key={item.key}
-              ref={virtualizer.measureElement}
-              data-index={item.index}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                transform: `translateY(${item.start}px)`,
-              }}
-            >
-              <ArticleCard entry={filteredEntries[item.index]} handleEntryClick={handleEntryClick}>
-                <Ripple color="var(--color-text-4)" duration={1000} />
-              </ArticleCard>
-              {item.index < filteredEntries.length - 1 && (
-                <Divider
-                  style={{
-                    margin: "8px 0",
-                    borderBottom: "1px solid var(--color-border-2)",
-                  }}
-                />
-              )}
-            </div>
-          ))}
+        <FadeTransition y={20}>
+          <Virtualizer
+            overscan={10}
+            scrollRef={cardsRef}
+            onRangeChange={() => {
+              const element = cardsRef.current
+              if (element) {
+                checkAndLoadMore(element)
+              }
+            }}
+          >
+            {items.map((entry, index) => (
+              <div key={entry.id}>
+                <ArticleCard entry={entry} handleEntryClick={handleEntryClick}>
+                  <Ripple color="var(--color-text-4)" duration={1000} />
+                </ArticleCard>
+                {index < items.length - 1 && (
+                  <Divider
+                    style={{
+                      margin: "8px 0",
+                      borderBottom: "1px solid var(--color-border-2)",
+                    }}
+                  />
+                )}
+              </div>
+            ))}
+          </Virtualizer>
         </FadeTransition>
       )}
       <LoadMoreComponent getEntries={getEntries} />

@@ -33,7 +33,7 @@ const useKeyHandlers = () => {
       if (selectedCard) {
         selectedCard.scrollIntoView({
           behavior: "smooth",
-          block: "nearest",
+          block: "center",
         })
       }
     }

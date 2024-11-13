@@ -45,3 +45,7 @@ body,
   overflow: hidden;
   background-color: var(--color-bg-1);
 }
+
+a:not(:last-child) {
+  margin-right: 10px;
+}
