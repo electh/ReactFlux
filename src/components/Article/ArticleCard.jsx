@@ -142,7 +142,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
             </div>
             <div className="card-time-wrapper">
               <span className="card-star">
-                {entry.starred && <IconStarFill className="icon-starred" />}
+                <IconStarFill className="icon-starred" style={{ opacity: entry.starred ? 1 : 0 }} />
               </span>
               <span className="card-time">
                 {generateRelativeTime(entry.published_at, showDetailedRelativeTime)}

@@ -144,7 +144,7 @@
   border-radius: var(--border-radius-medium);
   background-color: transparent;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s;
   padding: 12px;
   user-select: none;
   overflow: hidden;
@@ -166,4 +166,8 @@
   margin-right: 4px;
   width: 18px;
   height: 18px;
+}
+
+.icon-starred {
+  transition: opacity 0.2s;
 }
