@@ -8,6 +8,10 @@ function useVersionCheck() {
   const [hasUpdate, setHasUpdate] = useState(false)
 
   useEffect(() => {
+    if (!import.meta.env.PROD) {
+      return
+    }
+
     const checkUpdate = async () => {
       try {
         const data = await ofetch(`https://api.github.com/repos/${GITHUB_REPO_PATH}/commits/main`)
