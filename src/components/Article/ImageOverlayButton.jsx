@@ -4,6 +4,7 @@ import { useStore } from "@nanostores/react"
 import { useEffect, useState } from "react"
 
 import { settingsState } from "@/store/settingsState"
+import { MIN_THUMBNAIL_SIZE } from "@/utils/constants"
 
 import "./ImageOverlayButton.css"
 
@@ -54,7 +55,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
     img.src = imgSrc
 
     img.onload = () => {
-      const isSmall = img.width <= 100 && img.height <= 100
+      const isSmall = Math.max(img.width, img.height) <= MIN_THUMBNAIL_SIZE
       const isLarge = img.width > 768
 
       setIsIcon(isSmall)

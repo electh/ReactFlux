@@ -20,7 +20,7 @@
 
 .article-body audio,
 .article-body iframe,
-.article-body img,
+.article-body img:not(.icon-image),
 .article-body .plyr--video {
   display: block;
   margin: 10px auto;

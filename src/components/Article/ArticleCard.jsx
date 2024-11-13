@@ -7,10 +7,9 @@ import FeedIcon from "@/components/ui/FeedIcon"
 import useEntryActions from "@/hooks/useEntryActions"
 import { contentState } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
+import { MIN_THUMBNAIL_SIZE, WIDE_IMAGE_RATIO } from "@/utils/constants"
 import { generateReadingTime, generateRelativeTime } from "@/utils/date"
 import "./ArticleCard.css"
-
-const ASPECT_RATIO_THRESHOLD = 4 / 3
 
 const ArticleCardImage = ({ entry, isWideImage }) => {
   const imageSize = isWideImage
@@ -96,7 +95,8 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
       img.src = entry.coverSource
       img.onload = () => {
         const aspectRatio = img.naturalWidth / img.naturalHeight
-        setIsWideImage(aspectRatio >= ASPECT_RATIO_THRESHOLD)
+        const isThumbnailSize = Math.max(img.width, img.height) <= MIN_THUMBNAIL_SIZE
+        setIsWideImage(aspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize)
         setIsImageLoaded(true)
       }
       img.onerror = () => {
