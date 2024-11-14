@@ -42,12 +42,13 @@ export default defineConfig({
   },
   build: {
     outDir: "build",
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
-          "arco-vendor": ["@arco-design/web-react"],
-          "highlight-vendor": ["highlight.js"],
-          "react-vendor": ["react", "react-dom"],
+          arco: ["@arco-design/web-react"],
+          highlight: ["highlight.js"],
+          react: ["react", "react-dom", "react-router-dom"],
         },
       },
     },

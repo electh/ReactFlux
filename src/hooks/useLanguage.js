@@ -28,21 +28,21 @@ const loadLanguage = async (language, polyglot) => {
   let locale = language
 
   try {
-    phrases = await import(`../locales/${language}.json`)
+    phrases = (await import(`../locales/${language}.json`)).default
   } catch (error) {
     console.error("Failed to load language: ", error)
-    phrases = await import("@/locales/en-US.json")
+    phrases = (await import("@/locales/en-US.json")).default
     locale = "en-US"
   }
 
   if (!polyglot) {
     const newPolyglot = new Polyglot({
-      phrases: phrases.default,
+      phrases: phrases,
       locale: locale,
     })
     setPolyglot(newPolyglot)
   } else {
-    polyglot.replace(phrases.default)
+    polyglot.replace(phrases)
     polyglot.locale(locale)
     setPolyglot(polyglot)
   }

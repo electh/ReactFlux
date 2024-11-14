@@ -1,11 +1,11 @@
 import { useStore } from "@nanostores/react"
-import Hls from "hls.js"
-import Plyr from "plyr"
 import { useEffect, useRef } from "react"
 
 import { contentState } from "@/store/contentState"
 import "plyr/dist/plyr.css"
 import "./PlyrPlayer.css"
+
+const PlyrPromise = import("plyr")
 
 const MEDIA_TYPES = {
   HLS: "hls",
@@ -66,7 +66,9 @@ const getMediaType = (src, sourceType, elementType) => {
   return elementType === "audio" ? MEDIA_TYPES.AUDIO : MEDIA_TYPES.VIDEO
 }
 
-const initHls = (mediaRef, src, onError) => {
+const initHls = async (mediaRef, src, onError) => {
+  const { default: Hls } = await import("hls.js")
+
   if (!Hls.isSupported()) {
     if (mediaRef.current.canPlayType("application/vnd.apple.mpegurl")) {
       mediaRef.current.src = src
@@ -109,6 +111,8 @@ const PlyrPlayer = ({
       try {
         const mediaType = getMediaType(src, sourceType, elementType)
 
+        const { default: Plyr } = await PlyrPromise
+
         playerRef.current = new Plyr(mediaRef.current, {
           controls: DEFAULT_CONTROLS,
           loadSprite: true,
@@ -116,7 +120,7 @@ const PlyrPlayer = ({
         })
 
         if (mediaType === MEDIA_TYPES.HLS) {
-          hlsRef.current = initHls(mediaRef, src, onError)
+          hlsRef.current = await initHls(mediaRef, src, onError)
         } else {
           mediaRef.current.src = src
         }
