@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react"
 import useFeedIcons from "@/hooks/useFeedIcons"
 import { getSecondHostname } from "@/utils/url"
 
+const DEFAULT_ICON_URL = "/default-feed-icon.png"
+
 const getFallbackIconURL = (feed) => {
   const hostname = getSecondHostname(feed.site_url) ?? getSecondHostname(feed.feed_url)
   return `https://icons.duckduckgo.com/ip3/${hostname}.ico`
@@ -12,7 +14,8 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
   const { icon_id: iconId } = feed.icon
   const fallbackIconURL = getFallbackIconURL(feed)
 
-  const [iconURL, setIconURL] = useState(fallbackIconURL)
+  const [iconURL, setIconURL] = useState(iconId === 0 ? fallbackIconURL : DEFAULT_ICON_URL)
+  const [fallbackFailed, setFallbackFailed] = useState(false)
 
   const imgRef = useRef(null)
 
@@ -21,21 +24,40 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
   useEffect(() => {
     if (fetchedIconURL) {
       setIconURL(fetchedIconURL)
+    } else if (iconId === 0 && !fallbackFailed) {
+      setIconURL(fallbackIconURL)
     }
-  }, [fetchedIconURL])
+  }, [fetchedIconURL, iconId, fallbackFailed, fallbackIconURL])
 
   const handleImageLoad = () => {
     if (imgRef.current) {
       const { naturalWidth, naturalHeight } = imgRef.current
-      if (naturalWidth !== naturalHeight) {
+      if ((naturalWidth !== naturalHeight || naturalWidth === 0) && !fallbackFailed) {
         setIconURL(fallbackIconURL)
       }
     }
   }
 
-  if (iconId === 0) {
+  const handleError = () => {
+    if (iconURL === fallbackIconURL && !fallbackFailed) {
+      setFallbackFailed(true)
+      setIconURL(DEFAULT_ICON_URL)
+      return
+    }
+
+    if (!fallbackFailed) {
+      setIconURL(fallbackIconURL)
+    }
+  }
+
+  if (fallbackFailed) {
     return (
-      <img alt="" className={className} src={fallbackIconURL} style={{ borderRadius: "20%" }} />
+      <img
+        alt=""
+        className={className}
+        src={DEFAULT_ICON_URL}
+        style={{ borderRadius: "20%", backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+      />
     )
   }
 
@@ -49,7 +71,7 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
         borderRadius: "20%",
         backgroundColor: "rgba(255, 255, 255, 0.1)",
       }}
-      onError={() => setIconURL(fallbackIconURL)}
+      onError={handleError}
       onLoad={handleImageLoad}
     />
   )
