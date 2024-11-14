@@ -150,17 +150,30 @@ const handleCodeBlock = (node) => {
 }
 
 const handleVideo = (node) => {
-  const sourceNode = node.children?.find((child) => child.name === "source" && child.attribs?.src)
-
-  const videoSrc = sourceNode?.attribs.src || node.attribs.src
-
-  if (!videoSrc) {
+  if (!node.attribs?.src && !node.children?.some((child) => child.name === "source")) {
     return node
   }
 
-  return (
-    <PlyrPlayer poster={node.attribs.poster} sourceType={sourceNode?.attribs.type} src={videoSrc} />
-  )
+  const sources = []
+
+  if (node.attribs?.src) {
+    sources.push({
+      src: node.attribs.src,
+      type: node.attribs.type,
+    })
+  }
+
+  const sourceNodes =
+    node.children?.filter((child) => child.name === "source" && child.attribs?.src) || []
+
+  sourceNodes.forEach((sourceNode) => {
+    sources.push({
+      src: sourceNode.attribs.src,
+      type: sourceNode.attribs.type,
+    })
+  })
+
+  return <PlyrPlayer poster={node.attribs.poster} src={sources} />
 }
 
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({

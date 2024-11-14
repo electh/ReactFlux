@@ -88,7 +88,7 @@ const initHls = async (mediaRef, src, onError) => {
 }
 
 const PlyrPlayer = ({
-  src,
+  src, // string | [{src: string, type?: string}]
   sourceType = undefined,
   elementType = "video",
   plyrOptions = {},
@@ -109,7 +109,12 @@ const PlyrPlayer = ({
 
     const initPlayer = async () => {
       try {
-        const mediaType = getMediaType(src, sourceType, elementType)
+        const sources = Array.isArray(src)
+          ? src
+          : [{ src, type: sourceType || getMimeType(src, sourceType) }]
+        const hlsSource = sources.find(
+          (source) => getMediaType(source.src, source.type, elementType) === MEDIA_TYPES.HLS,
+        )
 
         const { default: Plyr } = await PlyrPromise
 
@@ -119,10 +124,8 @@ const PlyrPlayer = ({
           ...plyrOptions,
         })
 
-        if (mediaType === MEDIA_TYPES.HLS) {
-          hlsRef.current = await initHls(mediaRef, src, onError)
-        } else {
-          mediaRef.current.src = src
+        if (hlsSource) {
+          hlsRef.current = await initHls(mediaRef, hlsSource.src, onError)
         }
 
         onPlayerInit(playerRef.current)
@@ -151,18 +154,21 @@ const PlyrPlayer = ({
       poster: poster,
     }
 
-    const sourceProps = {
-      src,
-      type: getMimeType(src, sourceType),
-    }
+    const sources = Array.isArray(src)
+      ? src
+      : [{ src, type: sourceType || getMimeType(src, sourceType) }]
 
     return elementType === "audio" ? (
       <audio {...mediaProps}>
-        <source {...sourceProps} />
+        {sources.map((source, index) => (
+          <source key={index} src={source.src} type={source.type || getMimeType(source.src)} />
+        ))}
       </audio>
     ) : (
       <video {...mediaProps}>
-        <source {...sourceProps} />
+        {sources.map((source, index) => (
+          <source key={index} src={source.src} type={source.type || getMimeType(source.src)} />
+        ))}
       </video>
     )
   }
