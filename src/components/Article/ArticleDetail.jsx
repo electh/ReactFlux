@@ -108,8 +108,15 @@ const handleTableBasedCode = (node) => {
 const handleFigure = (node, imageSources, togglePhotoSlider) => {
   const firstChild = node.children[0]
 
-  if (firstChild.name === "img") {
-    return handleImage(firstChild, imageSources, togglePhotoSlider)
+  // Handle multiple images in figure
+  if (node.children.some((child) => child.name === "img")) {
+    return (
+      <>
+        {node.children.map((child, index) =>
+          child.name === "img" ? handleImage(child, imageSources, togglePhotoSlider) : null,
+        )}
+      </>
+    )
   }
 
   // Handle table-based code blocks with line numbers
