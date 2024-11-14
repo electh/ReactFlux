@@ -16,7 +16,7 @@ const App = () => {
   useLanguage()
   useTheme()
 
-  const { hasUpdate } = useVersionCheck()
+  const { hasUpdate, dismissUpdate } = useVersionCheck()
 
   const { isBelowLarge } = useScreenWidth()
 
@@ -32,6 +32,7 @@ const App = () => {
       Notification.info({
         id,
         title: polyglot.t("app.new_version_available"),
+        closable: false,
         content: polyglot.t("app.new_version_available_description"),
         duration: 0,
         btn: (
@@ -40,7 +41,10 @@ const App = () => {
               size="small"
               style={{ marginRight: 8 }}
               type="secondary"
-              onClick={() => Notification.remove(id)}
+              onClick={() => {
+                dismissUpdate()
+                Notification.remove(id)
+              }}
             >
               {polyglot.t("actions.dismiss")}
             </Button>
@@ -58,7 +62,7 @@ const App = () => {
         ),
       })
     }
-  }, [hasUpdate, polyglot])
+  }, [dismissUpdate, hasUpdate, polyglot])
 
   return (
     polyglot && (
