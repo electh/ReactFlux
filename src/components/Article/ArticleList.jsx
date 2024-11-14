@@ -1,5 +1,6 @@
 import { Divider, Spin } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
+import { throttle } from "lodash-es"
 import { forwardRef, useCallback, useEffect, useMemo } from "react"
 import { useInView } from "react-intersection-observer"
 import SimpleBar from "simplebar-react"
@@ -50,23 +51,21 @@ const ArticleList = forwardRef(({ getEntries, handleEntryClick, cardsRef }, ref)
   const filteredEntries = useStore(filteredEntriesState)
 
   const { loadingMore, handleLoadMore } = useLoadMore()
-
-  const items = useMemo(() => filteredEntries, [filteredEntries])
-
   const canLoadMore = loadMoreVisible && isArticleListReady && !loadingMore
 
-  const checkAndLoadMore = useCallback(
-    (element) => {
-      if (!canLoadMore) {
-        return
-      }
+  const checkAndLoadMore = useMemo(
+    () =>
+      throttle((element) => {
+        if (!canLoadMore) {
+          return
+        }
 
-      const threshold = element.scrollHeight * 0.8
-      const scrolledDistance = element.scrollTop + element.clientHeight
-      if (scrolledDistance >= threshold) {
-        handleLoadMore(getEntries)
-      }
-    },
+        const threshold = element.scrollHeight * 0.8
+        const scrolledDistance = element.scrollTop + element.clientHeight
+        if (scrolledDistance >= threshold) {
+          handleLoadMore(getEntries)
+        }
+      }, 200),
     [canLoadMore, handleLoadMore, getEntries],
   )
 
@@ -85,12 +84,12 @@ const ArticleList = forwardRef(({ getEntries, handleEntryClick, cardsRef }, ref)
               }
             }}
           >
-            {items.map((entry, index) => (
+            {filteredEntries.map((entry, index) => (
               <div key={entry.id}>
                 <ArticleCard entry={entry} handleEntryClick={handleEntryClick}>
                   <Ripple color="var(--color-text-4)" duration={1000} />
                 </ArticleCard>
-                {index < items.length - 1 && (
+                {index < filteredEntries.length - 1 && (
                   <Divider
                     style={{
                       margin: "8px 0",

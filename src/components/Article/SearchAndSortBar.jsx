@@ -6,6 +6,7 @@ import {
   IconSortDescending,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
+import { debounce } from "lodash-es"
 import { Fragment, useEffect, useState, useMemo } from "react"
 import { useLocation } from "react-router-dom"
 
@@ -17,7 +18,6 @@ import useScreenWidth from "@/hooks/useScreenWidth"
 import { contentState, setFilterDate, setFilterString, setFilterType } from "@/store/contentState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { getStartOfToday } from "@/utils/date"
-import { debounce } from "@/utils/time"
 
 import "./SearchAndSortBar.css"
 

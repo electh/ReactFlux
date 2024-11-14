@@ -29,7 +29,7 @@ import { settingsState } from "@/store/settingsState"
 import { generateRelativeTime, getUTCDate } from "@/utils/date"
 import { filterByQuery } from "@/utils/kmp"
 import createSetter from "@/utils/nanostores"
-import { sleep } from "@/utils/time"
+import sleep from "@/utils/time"
 import "./FeedList.css"
 
 const filterStringState = atom("")

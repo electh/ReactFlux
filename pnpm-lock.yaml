@@ -44,6 +44,9 @@ importers:
       littlefoot:
         specifier: ^4.1.2
         version: 4.1.2
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
       nanostores:
         specifier: ^0.11.3
         version: 0.11.3
