@@ -94,7 +94,7 @@ const handleTableBasedCode = (node) => {
     return null
   }
 
-  const [_lineNumbersTd, codeTd] = tr.children
+  const [, codeTd] = tr.children
 
   const codePre = codeTd.children.find((child) => child.name === "pre")
 

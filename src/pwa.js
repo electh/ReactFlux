@@ -2,7 +2,14 @@ import { registerSW } from "virtual:pwa-register"
 
 const intervalMS = 60 * 60 * 1000
 
+let _hasPWAUpdate = false
+
+export const hasPWAUpdate = () => _hasPWAUpdate
+
 const updateSW = registerSW({
+  onNeedRefresh() {
+    _hasPWAUpdate = true
+  },
   onRegisteredSW(swUrl, r) {
     r &&
       setInterval(async () => {
