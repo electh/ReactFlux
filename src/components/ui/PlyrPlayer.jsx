@@ -25,7 +25,9 @@ const MIME_TYPES = {
 
 const DEFAULT_CONTROLS = [
   "play-large",
+  "fast-forward",
   "play",
+  "rewind",
   "progress",
   "current-time",
   "mute",

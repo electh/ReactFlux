@@ -1,3 +1,22 @@
 .plyr {
   --plyr-color-main: rgb(var(--primary-6));
 }
+
+.plyr__volume {
+  position: relative;
+}
+
+.plyr__volume input[data-plyr="volume"] {
+  display: none;
+  height: 2rem;
+  position: absolute;
+  right: -3rem;
+  top: -1rem;
+  transform-origin: left;
+  transform: rotate(-90deg);
+}
+
+.plyr__volume:hover input[data-plyr="volume"],
+.plyr__volume input[data-plyr="volume"]:hover {
+  display: block;
+}
