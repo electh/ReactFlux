@@ -40,8 +40,8 @@ Pruebe ReactFlux con nuestra [instancia de demostración en línea](https://reac
 
 Vea cómo se ve ReactFlux en diferentes temas:
 
-![Modo Claro](images/light.png)
-![Modo Oscuro](images/dark.png)
+![screenshot](../images/screenshot.png)
+![devices](../images/devices.png)
 
 ## Inicio Rápido
 

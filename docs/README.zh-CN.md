@@ -40,8 +40,8 @@ ReactFlux 是 [Miniflux](https://github.com/miniflux/v2) 的第三方 Web 前端
 
 查看 ReactFlux 在不同主题下的外观：
 
-![浅色模式](images/light.png)
-![深色模式](images/dark.png)
+![screenshot](../images/screenshot.png)
+![devices](../images/devices.png)
 
 ## 快速开始
 

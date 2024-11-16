@@ -40,8 +40,8 @@ Try ReactFlux with our [online demo instance](https://reactflux.pages.dev).
 
 See how ReactFlux looks in different themes:
 
-![Light Mode](images/light.png)
-![Dark Mode](images/dark.png)
+![screenshot](images/screenshot.png)
+![devices](images/devices.png)
 
 ## Quick Start
 

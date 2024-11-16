@@ -40,8 +40,8 @@ Essayez ReactFlux avec notre [instance de démo en ligne](https://reactflux.page
 
 Voyez à quoi ressemble ReactFlux dans différents thèmes :
 
-![Mode Clair](images/light.png)
-![Mode Sombre](images/dark.png)
+![screenshot](../images/screenshot.png)
+![devices](../images/devices.png)
 
 ## Démarrage rapide
 
