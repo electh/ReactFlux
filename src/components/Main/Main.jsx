@@ -69,7 +69,7 @@ const AddFeedModal = () => {
       }
 
       const response = await addFeed(url, categoryId, isFullText)
-      Message.loading({ id, content: polyglot.t("main.add_feed_loading") })
+      Message.loading({ id, duration: 0, content: polyglot.t("main.add_feed_loading") })
 
       fetchAppData()
         .then(() => {
