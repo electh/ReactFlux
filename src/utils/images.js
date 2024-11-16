@@ -16,12 +16,13 @@ export const parseCoverImage = (entry) => {
       coverSource = video.getAttribute("poster")
       isVideo = true
     } else if (entry.enclosures?.[0]) {
-      const firstEnclosure = entry.enclosures[0]
-      const isImage =
-        firstEnclosure.mime_type.toLowerCase().startsWith("image/") ||
-        /\.(jpg|jpeg|png|gif)$/i.test(firstEnclosure.url)
-      if (isImage) {
-        coverSource = firstEnclosure.url
+      const imageEnclosure = entry.enclosures.find(
+        (enclosure) =>
+          enclosure.mime_type.toLowerCase().startsWith("image/") ||
+          /\.(jpg|jpeg|png|gif)$/i.test(enclosure.url),
+      )
+      if (imageEnclosure) {
+        coverSource = imageEnclosure.url
       }
       // Youtube thumbnail
       isVideo = coverSource?.startsWith("https://i.ytimg.com") ?? false

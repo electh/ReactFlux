@@ -24,3 +24,8 @@ export const markAllAsRead = async () => {
   const currentUser = await getCurrentUser()
   return apiClient.put(`/v1/users/${currentUser.id}/mark-all-as-read`)
 }
+
+export const saveEnclosureProgression = async (
+  enclosureId,
+  progress, // enclosureId: number, progress: number
+) => apiClient.put(`/v1/enclosures/${enclosureId}`, { media_progression: progress })

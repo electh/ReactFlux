@@ -223,6 +223,21 @@ const ArticleDetail = forwardRef((_, ref) => {
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category
   const { id: feedId, title: feedTitle } = activeContent.feed
 
+  const mediaPlayerEnclosure = activeContent.enclosures?.find(
+    (enclosure) =>
+      enclosure.url !== "" &&
+      (enclosure.mime_type.startsWith("video/") || enclosure.mime_type.startsWith("audio/")),
+  )
+  const enclosure = mediaPlayerEnclosure || null
+
+  const imageEnclosure = activeContent.enclosures?.find(
+    (enclosure) =>
+      enclosure.mime_type.toLowerCase().startsWith("image/") ||
+      /\.(jpg|jpeg|png|gif)$/i.test(enclosure.url),
+  )
+
+  const poster = imageEnclosure?.url || ""
+
   // pretty footnotes
   useEffect(() => {
     littlefoot()
@@ -285,6 +300,7 @@ const ArticleDetail = forwardRef((_, ref) => {
               "--article-width": articleWidth,
             }}
           >
+            {enclosure && <PlyrPlayer enclosure={enclosure} poster={poster} src={enclosure.url} />}
             {parsedHtml}
             <PhotoSlider
               bannerVisible={!isBelowMedium}
