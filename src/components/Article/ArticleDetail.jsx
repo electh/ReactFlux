@@ -292,6 +292,9 @@ const ArticleDetail = forwardRef((_, ref) => {
                 enclosure={mediaPlayerEnclosure}
                 poster={coverSource}
                 src={mediaPlayerEnclosure.url}
+                style={{
+                  maxWidth: mediaPlayerEnclosure.mime_type.startsWith("video/") ? "100%" : "400px",
+                }}
               />
             )}
             {parsedHtml}

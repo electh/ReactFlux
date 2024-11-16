@@ -11,8 +11,9 @@ import LoadingCards from "./LoadingCards"
 
 import FadeTransition from "@/components/ui/FadeTransition"
 import Ripple from "@/components/ui/Ripple"
+import { feedIconsState } from "@/hooks/useFeedIcons"
 import useLoadMore from "@/hooks/useLoadMore"
-import { contentState, filteredEntriesState } from "@/store/contentState"
+import { contentState, filteredEntriesState, setEntries } from "@/store/contentState"
 
 import "./ArticleList.css"
 
@@ -49,6 +50,7 @@ const LoadMoreComponent = ({ getEntries }) => {
 const ArticleList = forwardRef(({ getEntries, handleEntryClick, cardsRef }, ref) => {
   const { isArticleListReady, loadMoreVisible } = useStore(contentState)
   const filteredEntries = useStore(filteredEntriesState)
+  const feedIcons = useStore(feedIconsState)
 
   const { loadingMore, handleLoadMore } = useLoadMore()
   const canLoadMore = loadMoreVisible && isArticleListReady && !loadingMore
@@ -68,6 +70,22 @@ const ArticleList = forwardRef(({ getEntries, handleEntryClick, cardsRef }, ref)
       }, 200),
     [canLoadMore, handleLoadMore, getEntries],
   )
+
+  useEffect(() => {
+    setEntries((prev) =>
+      prev.map((entry) => {
+        const feedIconId = entry.feed.icon.icon_id
+        const feedIcon = feedIcons[feedIconId]
+        if (feedIcon?.width) {
+          return {
+            ...entry,
+            coverSource: feedIcon.url,
+          }
+        }
+        return entry
+      }),
+    )
+  }, [feedIcons])
 
   return (
     <SimpleBar ref={ref} className="entry-list" scrollableNodeProps={{ ref: cardsRef }}>

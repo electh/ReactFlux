@@ -96,6 +96,7 @@ const PlyrPlayer = ({
   elementType = "video",
   plyrOptions = {},
   poster = "",
+  style = {},
   enclosure = null,
   onPlayerInit = () => {},
   onError = () => {},
@@ -195,7 +196,7 @@ const PlyrPlayer = ({
     )
   }
 
-  return renderMedia()
+  return <div style={{ ...style, margin: "0 auto" }}>{renderMedia()}</div>
 }
 
 export default PlyrPlayer

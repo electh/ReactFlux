@@ -1,4 +1,3 @@
-import { feedIconsState } from "@/hooks/useFeedIcons"
 import { allowedIframeHostnames } from "@/utils/sanitizeHtml"
 
 export const extractImageSources = (htmlString) => {
@@ -35,13 +34,6 @@ export const parseCoverImage = (entry) => {
       )
       if (imageEnclosure) {
         coverSource = imageEnclosure.url
-      }
-    }
-    if (!coverSource) {
-      const feedIconId = entry.feed.icon.id
-      const feedIcon = feedIconsState.get()[feedIconId]
-      if (feedIcon?.width) {
-        coverSource = feedIcon.url
       }
     }
     if (!isMedia) {
