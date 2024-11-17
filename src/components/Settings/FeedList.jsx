@@ -579,7 +579,7 @@ const FeedList = () => {
             placeholder={polyglot.t("search.placeholder")}
             addBefore={
               <Select
-                style={{ width: 80 }}
+                style={{ width: "auto" }}
                 value={filterType}
                 triggerProps={{
                   autoAlignPopupWidth: false,

@@ -78,7 +78,7 @@ const SearchAndSortBar = () => {
         value={currentFilterString}
         addBefore={
           <Select
-            style={{ width: 80 }}
+            style={{ width: "auto" }}
             value={filterType}
             triggerProps={{
               autoAlignPopupWidth: false,

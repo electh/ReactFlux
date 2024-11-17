@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 
-import useFeedIcons, { updateFeedIcon } from "@/hooks/useFeedIcons"
+import useFeedIcons from "@/hooks/useFeedIcons"
+import { updateFeedIcon } from "@/store/feedIconsState"
 import { getSecondHostname } from "@/utils/url"
 
 const DEFAULT_ICON_URL = "/default-feed-icon.png"
@@ -33,7 +34,7 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
   const handleImageLoad = () => {
     if (imgRef.current) {
       const { naturalWidth, naturalHeight } = imgRef.current
-      if (naturalWidth > 100 && naturalHeight > 100 && fetchedIcon.width === null) {
+      if (naturalWidth > 200 && naturalHeight > 200 && fetchedIcon.width === null) {
         updateFeedIcon(iconId, { width: naturalWidth, height: naturalHeight })
       }
       if ((naturalWidth !== naturalHeight || naturalWidth === 0) && !fallbackFailed) {

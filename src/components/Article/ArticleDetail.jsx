@@ -113,7 +113,11 @@ const handleFigure = (node, imageSources, togglePhotoSlider) => {
     return (
       <>
         {node.children.map((child, index) =>
-          child.name === "img" ? handleImage(child, imageSources, togglePhotoSlider) : null,
+          child.name === "img" ? (
+            <div key={`figure-img-${index}`}>
+              {handleImage(child, imageSources, togglePhotoSlider)}
+            </div>
+          ) : null,
         )}
       </>
     )

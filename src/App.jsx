@@ -5,6 +5,7 @@ import { useEffect } from "react"
 import "./App.css"
 import Main from "./components/Main/Main"
 import Sidebar from "./components/Sidebar/Sidebar"
+import useFeedIconsSync from "./hooks/useFeedIconsSync"
 import useLanguage, { polyglotState } from "./hooks/useLanguage"
 import useScreenWidth from "./hooks/useScreenWidth"
 import useTheme from "./hooks/useTheme"
@@ -15,6 +16,7 @@ import hideSpinner from "./utils/loading"
 const App = () => {
   useLanguage()
   useTheme()
+  useFeedIconsSync()
 
   const { hasUpdate, dismissUpdate } = useVersionCheck()
 
