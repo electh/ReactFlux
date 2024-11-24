@@ -18,9 +18,7 @@ export default defineConfig({
         enabled: true,
       },
       workbox: {
-        cleanupOutdatedCaches: true,
         skipWaiting: true,
-        clientsClaim: true,
       },
     }),
     // visualizer({

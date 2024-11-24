@@ -1,7 +1,6 @@
 import { ofetch } from "ofetch"
 import { useEffect, useState } from "react"
 
-import { hasPWAUpdate } from "@/pwa"
 import { GITHUB_REPO_PATH, UPDATE_NOTIFICATION_KEY } from "@/utils/constants"
 import { checkIsInLast24Hours, getTimestamp } from "@/utils/date"
 import buildInfo from "@/version-info.json"
@@ -15,7 +14,7 @@ function useVersionCheck() {
   }
 
   useEffect(() => {
-    if (!import.meta.env.PROD || hasPWAUpdate()) {
+    if (!import.meta.env.PROD) {
       return
     }
 

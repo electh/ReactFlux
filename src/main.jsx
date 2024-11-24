@@ -6,10 +6,10 @@ import frFR from "@arco-design/web-react/es/locale/fr-FR"
 import zhCN from "@arco-design/web-react/es/locale/zh-CN"
 import ReactDOM from "react-dom/client"
 import { RouterProvider } from "react-router-dom"
+import { registerSW } from "virtual:pwa-register"
 
 import "simplebar-react/dist/simplebar.min.css"
 
-import updateSW from "./pwa"
 import "./index.css"
 import router from "./routes"
 import { registerLanguages } from "./utils/highlighter"
@@ -24,7 +24,7 @@ const localMap = {
 
 const getLocale = () => localMap[getPreferredLanguage()] || enUS
 
-updateSW()
+registerSW({ immediate: true })
 registerLanguages()
 
 ReactDOM.createRoot(document.getElementById("root")).render(
