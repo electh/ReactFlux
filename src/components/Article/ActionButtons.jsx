@@ -139,16 +139,26 @@ const ActionButtons = () => {
   ]
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: activeContent.title,
-          url: activeContent.url,
-        })
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          console.error("Error sharing article:", error)
-        }
+    if (!navigator.share) {
+      console.error("Web Share API is not supported")
+      return
+    }
+
+    const shareData = {
+      title: activeContent.title,
+      url: activeContent.url,
+    }
+
+    if (navigator.canShare && !navigator.canShare(shareData)) {
+      console.error("This content cannot be shared")
+      return
+    }
+
+    try {
+      await navigator.share(shareData)
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Error sharing article:", error)
       }
     }
   }
