@@ -29,6 +29,7 @@ const SearchAndSortBar = () => {
 
   const location = useLocation()
 
+  const [calendarVisible, setCalendarVisible] = useState(false)
   const [currentFilterString, setCurrentFilterString] = useState("")
   const [isMount, setIsMount] = useState(false)
 
@@ -113,6 +114,7 @@ const SearchAndSortBar = () => {
       />
       <div className="button-group">
         <DatePicker
+          popupVisible={calendarVisible}
           position="bottom"
           showNowBtn={false}
           value={filterDate}
@@ -122,11 +124,21 @@ const SearchAndSortBar = () => {
                 long
                 size="mini"
                 type="primary"
-                onClick={() => setFilterDate(getStartOfToday())}
+                onClick={() => {
+                  setFilterDate(getStartOfToday())
+                  setCalendarVisible(false)
+                }}
               >
                 {polyglot.t("search.today")}
               </Button>
-              <Button long size="mini" onClick={() => setFilterDate(null)}>
+              <Button
+                long
+                size="mini"
+                onClick={() => {
+                  setFilterDate(null)
+                  setCalendarVisible(false)
+                }}
+              >
                 {polyglot.t("search.clear_date")}
               </Button>
             </div>
@@ -144,6 +156,7 @@ const SearchAndSortBar = () => {
             </CustomTooltip>
           }
           onChange={(v) => setFilterDate(v)}
+          onVisibleChange={setCalendarVisible}
         />
         <CustomTooltip
           mini
