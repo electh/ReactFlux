@@ -13,7 +13,6 @@ import FadeTransition from "@/components/ui/FadeTransition"
 import Ripple from "@/components/ui/Ripple"
 import useLoadMore from "@/hooks/useLoadMore"
 import { contentState, filteredEntriesState } from "@/store/contentState"
-import { feedIconsState } from "@/store/feedIconsState"
 
 import "./ArticleList.css"
 
@@ -50,7 +49,6 @@ const LoadMoreComponent = ({ getEntries }) => {
 const ArticleList = forwardRef(({ getEntries, handleEntryClick, cardsRef }, ref) => {
   const { isArticleListReady, loadMoreVisible } = useStore(contentState)
   const filteredEntries = useStore(filteredEntriesState)
-  const feedIcons = useStore(feedIconsState)
 
   const { loadingMore, handleLoadMore } = useLoadMore()
   const canLoadMore = loadMoreVisible && isArticleListReady && !loadingMore
@@ -79,7 +77,7 @@ const ArticleList = forwardRef(({ getEntries, handleEntryClick, cardsRef }, ref)
           <Virtualizer
             overscan={10}
             scrollRef={cardsRef}
-            onRangeChange={() => {
+            onScroll={() => {
               const element = cardsRef.current
               if (element) {
                 checkAndLoadMore(element)
