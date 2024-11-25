@@ -17,7 +17,7 @@ import { IconDelete, IconEdit, IconQuestionCircle, IconRefresh } from "@arco-des
 import { useStore } from "@nanostores/react"
 import { atom, computed } from "nanostores"
 import { Fragment, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 
 import { deleteFeed, refreshAllFeed, refreshFeed, updateFeed } from "@/apis"
 import CustomLink from "@/components/ui/CustomLink"

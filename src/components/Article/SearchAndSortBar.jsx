@@ -8,7 +8,7 @@ import {
 import { useStore } from "@nanostores/react"
 import { debounce } from "lodash-es"
 import { Fragment, useEffect, useState, useMemo } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router"
 
 import SidebarTrigger from "./SidebarTrigger.jsx"
 

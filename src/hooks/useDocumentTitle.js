@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/react"
 import { useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router"
 
 import { polyglotState } from "@/hooks/useLanguage"
 import { contentState } from "@/store/contentState"

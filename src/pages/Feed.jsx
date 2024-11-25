@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router"
 
 import { buildEntriesUrl, markFeedAsRead } from "@/apis"
 import apiClient from "@/apis/ofetch"

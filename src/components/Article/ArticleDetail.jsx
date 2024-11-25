@@ -4,7 +4,7 @@ import ReactHtmlParser from "html-react-parser"
 import { littlefoot } from "littlefoot"
 import { forwardRef, useEffect } from "react"
 import { PhotoSlider } from "react-photo-view"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import "react-photo-view/dist/react-photo-view.css"
 import SimpleBar from "simplebar-react"
 

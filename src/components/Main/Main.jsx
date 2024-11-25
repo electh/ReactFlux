@@ -1,7 +1,7 @@
 import { Form, Input, Message, Modal, Select, Switch } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import { useState } from "react"
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router"
 
 import { addFeed } from "@/apis"
 import { ContextProvider } from "@/components/Content/ContentContext"

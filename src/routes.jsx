@@ -1,4 +1,4 @@
-import { Navigate, createBrowserRouter } from "react-router-dom"
+import { Navigate, createBrowserRouter } from "react-router"
 
 import App from "./App"
 import All from "./pages/All"

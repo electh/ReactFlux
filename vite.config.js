@@ -46,7 +46,7 @@ export default defineConfig({
         manualChunks: {
           arco: ["@arco-design/web-react"],
           highlight: ["highlight.js"],
-          react: ["react", "react-dom", "react-router-dom"],
+          react: ["react", "react-dom", "react-router"],
         },
       },
     },

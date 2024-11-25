@@ -1,7 +1,7 @@
 import { Button, Drawer } from "@arco-design/web-react"
 import { IconMenu } from "@arco-design/web-react/icon"
 import { useEffect, useState } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router"
 
 import Sidebar from "@/components/Sidebar/Sidebar"
 import useScreenWidth from "@/hooks/useScreenWidth"

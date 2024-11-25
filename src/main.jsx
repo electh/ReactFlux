@@ -5,7 +5,7 @@ import esES from "@arco-design/web-react/es/locale/es-ES"
 import frFR from "@arco-design/web-react/es/locale/fr-FR"
 import zhCN from "@arco-design/web-react/es/locale/zh-CN"
 import ReactDOM from "react-dom/client"
-import { RouterProvider } from "react-router-dom"
+import { RouterProvider } from "react-router/dom"
 import { registerSW } from "virtual:pwa-register"
 
 import "simplebar-react/dist/simplebar.min.css"

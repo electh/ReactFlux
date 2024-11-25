@@ -13,7 +13,7 @@ import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { ofetch } from "ofetch"
 import { useEffect, useState } from "react"
-import { Navigate, useLocation, useNavigate } from "react-router-dom"
+import { Navigate, useLocation, useNavigate } from "react-router"
 
 import useLanguage, { polyglotState } from "@/hooks/useLanguage"
 import useTheme from "@/hooks/useTheme"

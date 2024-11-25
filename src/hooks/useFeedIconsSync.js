@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/react"
 import { useEffect } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router"
 
 import { setEntries } from "@/store/contentState"
 import { feedIconsState } from "@/store/feedIconsState"

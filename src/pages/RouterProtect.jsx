@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react"
-import { Navigate, Outlet, useLocation } from "react-router-dom"
+import { Navigate, Outlet, useLocation } from "react-router"
 
 import { authState } from "@/store/authState"
 import isValidAuth from "@/utils/auth"

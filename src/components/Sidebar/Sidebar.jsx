@@ -27,7 +27,7 @@ import {
 import { useStore } from "@nanostores/react"
 import classNames from "classnames"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router"
 import SimpleBar from "simplebar-react"
 import { Virtualizer } from "virtua"
 
