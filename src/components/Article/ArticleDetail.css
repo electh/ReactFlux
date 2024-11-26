@@ -26,6 +26,13 @@
   margin: 10px auto;
 }
 
+.article-body iframe {
+  max-width: 100%;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+}
+
 .article-body figcaption {
   margin: 0 auto;
   color: var(--color-text-3);
