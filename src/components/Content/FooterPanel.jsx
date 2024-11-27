@@ -2,10 +2,11 @@ import { Button, Notification, Popconfirm, Radio } from "@arco-design/web-react"
 import { IconCheck, IconRefresh } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 
+import { getCounters } from "@/apis"
 import CustomTooltip from "@/components/ui/CustomTooltip"
-import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
 import { contentState, setEntries } from "@/store/contentState"
+import { dataState, setUnreadInfo, setUnreadTodayCount } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import "./FooterPanel.css"
 
@@ -15,16 +16,39 @@ const updateAllEntriesAsRead = () => {
 
 const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const { isArticleListReady } = useStore(contentState)
+  const { feedsData } = useStore(dataState)
   const { showStatus } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
-
-  const { fetchAppData } = useAppData()
 
   const handleMarkAllAsRead = async () => {
     try {
       await markAllAsRead()
       updateAllEntriesAsRead()
-      await fetchAppData()
+
+      if (info.from === "all") {
+        setUnreadInfo({})
+      } else if (info.from === "today") {
+        const countersData = await getCounters()
+        const unreadInfo = feedsData.reduce((acc, feed) => {
+          acc[feed.id] = countersData.unreads[feed.id] ?? 0
+          return acc
+        }, {})
+
+        setUnreadInfo(unreadInfo)
+        setUnreadTodayCount(0)
+      } else if (info.from === "feed") {
+        setUnreadInfo((prev) => ({ ...prev, [info.id]: 0 }))
+      } else if (info.from === "category") {
+        const feedIds = feedsData
+          .filter((feed) => feed.category.id === Number(info.id))
+          .map((feed) => feed.id)
+
+        setUnreadInfo((prev) => ({
+          ...prev,
+          ...feedIds.reduce((acc, id) => ({ ...acc, [id]: 0 }), {}),
+        }))
+      }
+
       Notification.success({
         title: polyglot.t("article_list.mark_all_as_read_success"),
       })
