@@ -215,9 +215,9 @@
     "mark_read_on_scroll_description": "Artikel werden automatisch als gelesen markiert, wenn sie beim Scrollen die sichtbare Bildschirmfläche verlassen"
   },
   "appearance": {
-    "theme_color_label": "Themenfarbe",
-    "theme_color_description": "Themenfarbe wählen",
-    "theme_color_aria_label": "Farbe des Themas auf %{color} ändern",
+    "theme_color_label": "Farbthema",
+    "theme_color_description": "Farbthema wählen",
+    "theme_color_aria_label": "Farbthema auf %{color} ändern",
     "show_detailed_relative_time_label": "Genaue relative Zeitangabe anzeigen",
     "show_detailed_relative_time_description": "Zeitangabe in Artikelkarte (wird relativ zum derzeitigen Zeitpunkt angezeigt) exakt ausgeben",
     "show_estimated_reading_time_label": "Geschätzte Lesedauer anzeigen",
