@@ -105,10 +105,12 @@ docker-compose up -d
 
 ### 当前翻译者
 
-- Deutsch by [DonkeeeyKong](https://github.com/donkeeeykong)
-- Español by [Victorhck](https://github.com/victorhck)
-- Français by [MickGe](https://github.com/MickGe)
-- 简体中文 by [Neko Aria](https://github.com/NekoAria)
+| 语言     | 译者                                            |
+| -------- | ----------------------------------------------- |
+| Deutsch  | [DonkeeeyKong](https://github.com/donkeeeykong) |
+| Español  | [Victorhck](https://github.com/victorhck)       |
+| Français | [MickGe](https://github.com/MickGe)             |
+| 简体中文 | [Neko Aria](https://github.com/NekoAria)        |
 
 ## 贡献者
 

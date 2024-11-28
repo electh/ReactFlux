@@ -105,10 +105,12 @@ For detailed changes, please refer to the modifications in [PR #145](https://git
 
 ### Current Translators
 
-- Deutsch by [DonkeeeyKong](https://github.com/donkeeeykong)
-- Español by [Victorhck](https://github.com/victorhck)
-- Français by [MickGe](https://github.com/MickGe)
-- 简体中文 by [Neko Aria](https://github.com/NekoAria)
+| Language | Translator                                      |
+| -------- | ----------------------------------------------- |
+| Deutsch  | [DonkeeeyKong](https://github.com/donkeeeykong) |
+| Español  | [Victorhck](https://github.com/victorhck)       |
+| Français | [MickGe](https://github.com/MickGe)             |
+| 简体中文 | [Neko Aria](https://github.com/NekoAria)        |
 
 ## Contributors
 

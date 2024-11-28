@@ -105,10 +105,12 @@ Detaillierte Änderungen bitte [PR #145](https://github.com/electh/ReactFlux/pul
 
 ### Derzeit mit Übersetzungen Beitragende
 
-- Deutsch von [DonkeeeyKong](https://github.com/donkeeeykong)
-- Español von [Victorhck](https://github.com/victorhck)
-- Français von [MickGe](https://github.com/MickGe)
-- 简体中文 von [Neko Aria](https://github.com/NekoAria)
+| Sprache  | Mitwirkende                                     |
+| -------- | ----------------------------------------------- |
+| Deutsch  | [DonkeeeyKong](https://github.com/donkeeeykong) |
+| Español  | [Victorhck](https://github.com/victorhck)       |
+| Français | [MickGe](https://github.com/MickGe)             |
+| 简体中文 | [Neko Aria](https://github.com/NekoAria)        |
 
 ## Mitwirkende
 

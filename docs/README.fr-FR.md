@@ -105,10 +105,12 @@ Pour des modifications détaillées, veuillez vous référer aux modifications d
 
 ### Traducteurs actuels
 
-- Deutsch by [DonkeeeyKong](https://github.com/donkeeeykong)
-- Español by [Victorhck](https://github.com/victorhck)
-- Français by [MickGe](https://github.com/MickGe)
-- 简体中文 by [Neko Aria](https://github.com/NekoAria)
+| Langue   | Traducteur                                      |
+| -------- | ----------------------------------------------- |
+| Deutsch  | [DonkeeeyKong](https://github.com/donkeeeykong) |
+| Español  | [Victorhck](https://github.com/victorhck)       |
+| Français | [MickGe](https://github.com/MickGe)             |
+| 简体中文 | [Neko Aria](https://github.com/NekoAria)        |
 
 ## Contributeurs
 
