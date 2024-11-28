@@ -1,6 +1,6 @@
 # ReactFlux
 
-In anderen Sprachen lesen: [English](../README.md), [Español](docs/README.es-ES.md), [Français](docs/README.fr-FR.md), [简体中文](docs/README.zh-CN.md)
+In anderen Sprachen lesen: [English](../README.md), [Español](README.es-ES.md), [Français](README.fr-FR.md), [简体中文](README.zh-CN.md)
 
 ## Überblick
 
@@ -19,10 +19,10 @@ Die wichtigsten Merkmale sind:
   - Fußnoten-Verbesserung
   - Quelltext-Syntax-Hervorhebung
   - Geschätzte Lesezeit
-- Verwaltung von Artikeln und Abonnements (*Feeds*):
+- Verwaltung von Artikeln und Abonnements (_Feeds_):
   - Google-artige Syntax für die Suche
   - Filtern von Artikeln nach Lesestatus, Veröffentlichungsdatum, Titel, Inhalt oder Autor
-  - Stapel-Operationen für Abonnements (*Feeds*)
+  - Stapel-Operationen für Abonnements (_Feeds_)
   - Unterstützung für Volltextabruf
   - Artikel nach Hashsumme, Titel oder URL de-duplizieren
   - Artikel beim Scrollen automatisch als gelesen markieren
@@ -59,7 +59,7 @@ ReactFlux kann auf Cloudflare Pages eingerichtet werden, indem man `Framework pr
 
 ### Vorgenerierte Dateien verwenden
 
-Fertige Dateien können aus dem `gh-pages`-Zweig heruntergeladen und bei jedem statischen Hosting-Service eingesetzt werden, der Single-Page-Webanwendungen (SPA: *single-page applications*) unterstützt.
+Fertige Dateien können aus dem `gh-pages`-Zweig heruntergeladen und bei jedem statischen Hosting-Service eingesetzt werden, der Single-Page-Webanwendungen (SPA: _single-page applications_) unterstützt.
 
 Es sollte sichergestellt werden, dass das URL-Rewriting so konfiguriert ist, dass alle Anfragen auf `index.html` umgeleitet werden.
 
@@ -101,9 +101,9 @@ Zusätzlich muss eine README-Datei für die jeweilige Sprache hinzufügt und die
 
 Es sollten auch Teile des Quellcodes geändert werden, um die i18n-Sprachpakete für `Arco Design` und `Day.js` einzubinden.
 
-Detaillierte Änderungen bitte [PR #120](https://github.com/electh/ReactFlux/pull/120) entnehmen.
+Detaillierte Änderungen bitte [PR #145](https://github.com/electh/ReactFlux/pull/145) entnehmen.
 
-### Derzeit mit Übersetzungen Beitragende 
+### Derzeit mit Übersetzungen Beitragende
 
 - Deutsch von [DonkeeeyKong](https://github.com/donkeeeykong)
 - Español von [Victorhck](https://github.com/victorhck)

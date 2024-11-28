@@ -101,7 +101,7 @@ docker-compose up -d
 
 您还需要修改部分源代码，以包含 `Arco Design` 和 `Day.js` 的 i18n 语言包。
 
-有关详细的更改，请参阅 [PR #120](https://github.com/electh/ReactFlux/pull/120) 中的修改。
+有关详细的更改，请参阅 [PR #145](https://github.com/electh/ReactFlux/pull/145) 中的修改。
 
 ### 当前翻译者
 
