@@ -7,6 +7,7 @@ import { polyglotState } from "@/hooks/useLanguage"
 import { settingsState, updateSettings } from "@/store/settingsState"
 
 const languageOptions = [
+  { label: "Deutsch", value: "de-DE" },
   { label: "English", value: "en-US" },
   { label: "Español", value: "es-ES" },
   { label: "Français", value: "fr-FR" },

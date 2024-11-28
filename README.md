@@ -1,6 +1,6 @@
 # ReactFlux
 
-Read in other languages: [Español](docs/README.es-ES.md), [Français](docs/README.fr-FR.md), [简体中文](docs/README.zh-CN.md)
+Read in other languages: [Deutsch](docs/README.de-DE.md), [Español](docs/README.es-ES.md), [Français](docs/README.fr-FR.md), [简体中文](docs/README.zh-CN.md)
 
 ## Overview
 
@@ -31,7 +31,7 @@ Key features include:
   - Batch update the host of filtered subscription URLs (useful for replacing RSSHub instances)
   - Batch refresh errored subscriptions
   - Save articles to third-party services
-- I18n supports (English / Español / Français / 简体中文)
+- I18n supports (Deutsch / English / Español / Français / 简体中文)
 - Other features waiting for you to discover...
 
 ## Online Demo & Screenshots
@@ -105,6 +105,7 @@ For detailed changes, please refer to the modifications in [PR #120](https://git
 
 ### Current Translators
 
+- Deutsch by [DonkeeeyKong](https://github.com/donkeeeykong)
 - Español by [Victorhck](https://github.com/victorhck)
 - Français by [MickGe](https://github.com/MickGe)
 - 简体中文 by [Neko Aria](https://github.com/NekoAria)

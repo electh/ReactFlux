@@ -1,6 +1,6 @@
 # ReactFlux
 
-Lire dans d'autres langues : [English](../README.md), [Español](README.es-ES.md), [简体中文](README.zh-CN.md)
+Lire dans d'autres langues : [Deutsch](README.de-DE.md), [English](../README.md), [Español](README.es-ES.md), [简体中文](README.zh-CN.md)
 
 ## Aperçu
 
@@ -31,7 +31,7 @@ Les fonctionnalités principales incluent :
   - Mise à jour par lot de l'hôte des URLs de souscription filtrées (utile pour remplacer les instances RSSHub)
   - Actualisation par lot des souscriptions récemment en erreur
   - Sauvegarde d'articles vers des services tiers
-- Support multilingue (English / Español / Français / 简体中文)
+- Support multilingue (Deutsch / English / Español / Français / 简体中文)
 - D'autres fonctionnalités à découvrir...
 
 ## Démo en ligne et captures d'écran
@@ -105,6 +105,7 @@ Pour des modifications détaillées, veuillez vous référer aux modifications d
 
 ### Traducteurs actuels
 
+- Deutsch by [DonkeeeyKong](https://github.com/donkeeeykong)
 - Español by [Victorhck](https://github.com/victorhck)
 - Français by [MickGe](https://github.com/MickGe)
 - 简体中文 by [Neko Aria](https://github.com/NekoAria)
