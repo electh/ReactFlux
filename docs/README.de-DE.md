@@ -101,7 +101,7 @@ Zusätzlich muss eine README-Datei für die jeweilige Sprache hinzufügt und die
 
 Es sollten auch Teile des Quellcodes geändert werden, um die i18n-Sprachpakete für `Arco Design` und `Day.js` einzubinden.
 
-Detaillierte Änderungen bitte den Änderungen in [PR #120](https://github.com/electh/ReactFlux/pull/120) entnehmen.
+Detaillierte Änderungen bitte [PR #120](https://github.com/electh/ReactFlux/pull/120) entnehmen.
 
 ### Derzeit mit Übersetzungen Beitragende 
 
