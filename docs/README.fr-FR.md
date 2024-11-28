@@ -1,6 +1,6 @@
 # ReactFlux
 
-Lire dans d'autres langues : [English](../README.md), [Español](README.es-ES.md), [简体中文](README.zh-CN.md)
+Lire dans d'autres langues : [Deutsch](README.de-DE.md), [English](../README.md), [Español](README.es-ES.md), [简体中文](README.zh-CN.md)
 
 ## Aperçu
 
@@ -31,7 +31,7 @@ Les fonctionnalités principales incluent :
   - Mise à jour par lot de l'hôte des URLs de souscription filtrées (utile pour remplacer les instances RSSHub)
   - Actualisation par lot des souscriptions récemment en erreur
   - Sauvegarde d'articles vers des services tiers
-- Support multilingue (English / Español / Français / 简体中文)
+- Support multilingue (Deutsch / English / Español / Français / 简体中文)
 - D'autres fonctionnalités à découvrir...
 
 ## Démo en ligne et captures d'écran
@@ -83,7 +83,7 @@ location / {
 docker run -p 2000:2000 electh/reactflux
 ```
 
-Ou en utilisant [Docker Compose](docker-compose.yml):
+Ou en utilisant [Docker Compose](../docker-compose.yml):
 
 ```bash
 docker-compose up -d
@@ -101,13 +101,16 @@ De plus, vous devez ajouter un fichier README pour la langue respective et le r�
 
 Vous devez également modifier certaines parties du code source pour inclure les packages de langue i18n pour `Arco Design` et `Day.js`.
 
-Pour des modifications détaillées, veuillez vous référer aux modifications dans la [PR #120](https://github.com/electh/ReactFlux/pull/120).
+Pour des modifications détaillées, veuillez vous référer aux modifications dans la [PR #145](https://github.com/electh/ReactFlux/pull/145).
 
 ### Traducteurs actuels
 
-- Español by [Victorhck](https://github.com/victorhck)
-- Français by [MickGe](https://github.com/MickGe)
-- 简体中文 by [Neko Aria](https://github.com/NekoAria)
+| Langue   | Traducteur                                      |
+| -------- | ----------------------------------------------- |
+| Deutsch  | [DonkeeeyKong](https://github.com/donkeeeykong) |
+| Español  | [Victorhck](https://github.com/victorhck)       |
+| Français | [MickGe](https://github.com/MickGe)             |
+| 简体中文 | [Neko Aria](https://github.com/NekoAria)        |
 
 ## Contributeurs
 

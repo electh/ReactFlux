@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/react"
 import dayjs from "dayjs"
+import "dayjs/locale/de"
 import "dayjs/locale/en"
 import "dayjs/locale/es"
 import "dayjs/locale/fr"
@@ -14,6 +15,7 @@ import createSetter from "@/utils/nanostores"
 
 const languageToLocale = {
   "zh-CN": "zh-cn",
+  de: "de",
   es: "es",
   fr: "fr",
 }
@@ -58,7 +60,7 @@ const useLanguage = () => {
       loadLanguage(language)
 
       const locale =
-        language.startsWith("es-") || language.startsWith("fr-")
+        language.startsWith("de-") || language.startsWith("es-") || language.startsWith("fr-")
           ? language.substring(0, 2)
           : languageToLocale[language] || "en"
       dayjs.locale(locale)

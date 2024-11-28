@@ -1,5 +1,6 @@
 import { ConfigProvider } from "@arco-design/web-react"
 import "@arco-design/web-react/dist/css/arco.css"
+import deDE from "@arco-design/web-react/es/locale/de-DE"
 import enUS from "@arco-design/web-react/es/locale/en-US"
 import esES from "@arco-design/web-react/es/locale/es-ES"
 import frFR from "@arco-design/web-react/es/locale/fr-FR"
@@ -17,6 +18,7 @@ import "./theme.css"
 import { getPreferredLanguage } from "./utils/locales"
 
 const localMap = {
+  "de-DE": deDE,
   "es-ES": esES,
   "fr-FR": frFR,
   "zh-CN": zhCN,

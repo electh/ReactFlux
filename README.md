@@ -1,6 +1,6 @@
 # ReactFlux
 
-Read in other languages: [Español](docs/README.es-ES.md), [Français](docs/README.fr-FR.md), [简体中文](docs/README.zh-CN.md)
+Read in other languages: [Deutsch](docs/README.de-DE.md), [Español](docs/README.es-ES.md), [Français](docs/README.fr-FR.md), [简体中文](docs/README.zh-CN.md)
 
 ## Overview
 
@@ -31,7 +31,7 @@ Key features include:
   - Batch update the host of filtered subscription URLs (useful for replacing RSSHub instances)
   - Batch refresh errored subscriptions
   - Save articles to third-party services
-- I18n supports (English / Español / Français / 简体中文)
+- I18n supports (Deutsch / English / Español / Français / 简体中文)
 - Other features waiting for you to discover...
 
 ## Online Demo & Screenshots
@@ -101,13 +101,16 @@ Additionally, you need to add a README file for the respective language and refe
 
 You should also modify parts of the source code to include the i18n language packages for `Arco Design` and `Day.js`.
 
-For detailed changes, please refer to the modifications in [PR #120](https://github.com/electh/ReactFlux/pull/120).
+For detailed changes, please refer to the modifications in [PR #145](https://github.com/electh/ReactFlux/pull/145).
 
 ### Current Translators
 
-- Español by [Victorhck](https://github.com/victorhck)
-- Français by [MickGe](https://github.com/MickGe)
-- 简体中文 by [Neko Aria](https://github.com/NekoAria)
+| Language | Translator                                      |
+| -------- | ----------------------------------------------- |
+| Deutsch  | [DonkeeeyKong](https://github.com/donkeeeykong) |
+| Español  | [Victorhck](https://github.com/victorhck)       |
+| Français | [MickGe](https://github.com/MickGe)             |
+| 简体中文 | [Neko Aria](https://github.com/NekoAria)        |
 
 ## Contributors
 

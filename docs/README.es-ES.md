@@ -1,6 +1,6 @@
 # ReactFlux
 
-Lea este texto en otros idiomas: [English](../README.md), [Français](README.fr-FR.md), [简体中文](README.zh-CN.md)
+Lea este texto en otros idiomas: [Deutsch](README.de-DE.md), [English](../README.md), [Français](README.fr-FR.md), [简体中文](README.zh-CN.md)
 
 ## Descripción general
 
@@ -31,7 +31,7 @@ Las funcionalidades clave incluyen:
   - Actualización por lotes del host de URL de suscripción filtradas (útil para reemplazar instancias de RSSHub)
   - Actualización por lotes de suscripciones con errores
   - Guardar artículos en servicios de terceros
-- Disponible en varios idiomas (English / Español / Français / 简体中文)
+- Disponible en varios idiomas (Deutsch / English / Español / Français / 简体中文)
 - Otras características esperando que las descubras...
 
 ## Demostración en línea y capturas de pantalla
@@ -83,7 +83,7 @@ location / {
 docker run -p 2000:2000 electh/reactflux
 ```
 
-O usando [Docker Compose](docker-compose.yml):
+O usando [Docker Compose](../docker-compose.yml):
 
 ```bash
 docker-compose up -d
@@ -101,13 +101,16 @@ Además, necesita agregar un archivo README para el idioma respectivo y referenc
 
 También debe modificar partes del código fuente para incluir los paquetes de idiomas i18n para `Arco Design` y `Day.js`.
 
-Para cambios detallados, por favor consulte las modificaciones en [PR #120](https://github.com/electh/ReactFlux/pull/120).
+Para cambios detallados, por favor consulte las modificaciones en [PR #145](https://github.com/electh/ReactFlux/pull/145).
 
 ### Traductores Actuales
 
-- Español by [Victorhck](https://github.com/victorhck)
-- Français by [MickGe](https://github.com/MickGe)
-- 简体中文 by [Neko Aria](https://github.com/NekoAria)
+| Idioma   | Traductor                                       |
+| -------- | ----------------------------------------------- |
+| Deutsch  | [DonkeeeyKong](https://github.com/donkeeeykong) |
+| Español  | [Victorhck](https://github.com/victorhck)       |
+| Français | [MickGe](https://github.com/MickGe)             |
+| 简体中文 | [Neko Aria](https://github.com/NekoAria)        |
 
 ## Colaboradores
 
