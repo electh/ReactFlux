@@ -83,7 +83,7 @@ location / {
 docker run -p 2000:2000 electh/reactflux
 ```
 
-O usando [Docker Compose](docker-compose.yml):
+O usando [Docker Compose](../docker-compose.yml):
 
 ```bash
 docker-compose up -d

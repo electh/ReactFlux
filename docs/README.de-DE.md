@@ -40,8 +40,8 @@ ReactFlux mit unserer [Online-Demo-Instanz](https://reactflux.pages.dev) testen.
 
 So sieht ReactFlux in verschiedenen Themen aus:
 
-![screenshot](images/screenshot.png)
-![devices](images/devices.png)
+![screenshot](../images/screenshot.png)
+![devices](../images/devices.png)
 
 ## Schnellstart
 
@@ -83,7 +83,7 @@ location / {
 docker run -p 2000:2000 electh/reactflux
 ```
 
-Oder mit [Docker Compose](docker-compose.yml):
+Oder mit [Docker Compose](../docker-compose.yml):
 
 ```bash
 docker-compose up -d
