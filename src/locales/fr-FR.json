@@ -53,7 +53,7 @@
   },
   "actions": {
     "check": "Vérifier",
-    "dismiss": "Descartar",
+    "dismiss": "Ignorer",
     "copy_to_clipboard_tooltip": "Copier dans le presse-papiers",
     "copied": "Copié !",
     "copy_failed": "Erreur lors de la copie, veuillez réessayer plus tard",

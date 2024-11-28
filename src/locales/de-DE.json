@@ -239,7 +239,7 @@
   "hotkeys": {
     "key": "Taste",
     "function": "Funktion",
-    "exitDetailView": "ARtikelansicht verlassen und zur Liste zurückkehren",
+    "exitDetailView": "Artikelansicht verlassen und zur Liste zurückkehren",
     "fetchOriginalArticle": "Den Originalinhalt des derzeitigen Artikels herunterladen und anzeigen",
     "navigateToNextArticle": "Zu nächstem Artikel in der Liste navigieren",
     "navigateToNextUnreadArticle": "Zu nächstem ungelesenen Artikel in der Liste navigieren",
@@ -248,7 +248,7 @@
     "openLinkExternally": "Den Link des derzeitigen Artikels in neuem Browser-Tab öffnen",
     "openPhotoSlider": "Diashow öffnen, um alle Bilder des Artikels anzusehen",
     "saveToThirdPartyServices": "Derzeitigen Artikel bei Drittanbieter speichern",
-    "showHotkeysSettings": "Tastenlürzeleinstellungen anzeigen",
+    "showHotkeysSettings": "Tastenkürzeleinstellungen anzeigen",
     "toggleReadStatus": "Lesezustand des derzeitigen Artikels umschalten",
     "toggleStarStatus": "Lesezeichenzustand des derzeitigen Artikels umschalten"
   },

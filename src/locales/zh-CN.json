@@ -61,8 +61,8 @@
     "mark_as_unread_error": "标记为未读失败，请稍后再试",
     "star_error": "收藏失败，请稍后再试",
     "unstar_error": "取消收藏失败，请稍后再试",
-    "fetched_content_success": "内容获取成功",
-    "fetched_content_error": "内容获取失败，请稍后再试",
+    "fetched_content_success": "原文获取成功",
+    "fetched_content_error": "原文获取失败，请稍后再试",
     "saved_to_third-party_services_success": "成功保存到第三方服务",
     "saved_to_third-party_services_error": "保存到第三方服务失败，请稍后再试，或检查您的集成设置",
     "no_previous_article": "没有上一篇文章",
@@ -71,7 +71,7 @@
     "no_next_unread_article": "没有下一篇未读文章"
   },
   "article_card": {
-    "reading_time": "需要 %{time}阅读",
+    "reading_time": "阅读时间：%{time}",
     "starred": "已收藏",
     "unstarred": "已取消收藏",
     "marked_as_read": "已标记为已读",
