@@ -10,13 +10,13 @@ Die wichtigsten Merkmale sind:
 
 - Modernes Oberflächendesign
 - Responsives Layout mit Unterstützung von Touch-Gesten
-- Unterstützung für Darkmode und benutzerdefinierte Themen
+- Unterstützung für Darkmode und benutzerdefinierte Designs
 - Anpassbare Leseerfahrung:
   - Einstellungen für Schriftfamilie und -größe
   - Anpassung der Artikelbreite
-  - Optionen für die Titelausrichtung
+  - Optionen für Titelausrichtung
   - Bildbetrachter mit Zoom und Diashow
-  - Verbesserung der Fußnoten
+  - Fußnoten-Verbesserung
   - Quelltext-Syntax-Hervorhebung
   - Geschätzte Lesezeit
 - Verwaltung von Artikeln und Abonnements (*Feeds*):
@@ -32,13 +32,13 @@ Die wichtigsten Merkmale sind:
   - Stapelaktualisierung fehlerhafter Abonnements
   - Speichern von Artikeln in Diensten von Drittanbietern
 - I18n-Unterstützung (Deutsch / English / Español / Français / 简体中文)
-- Andere Funktionen warten darauf, entdeckt zu werden...
+- Andere Funktionen warten darauf, entdeckt zu werden…
 
 ## Online-Demo & Screenshots
 
 ReactFlux mit unserer [Online-Demo-Instanz](https://reactflux.pages.dev) testen.
 
-So sieht ReactFlux in verschiedenen Themen aus:
+So sieht ReactFlux in verschiedenen Designs aus:
 
 ![screenshot](../images/screenshot.png)
 ![devices](../images/devices.png)
