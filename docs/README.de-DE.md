@@ -49,7 +49,7 @@ So sieht ReactFlux in verschiedenen Designs aus:
 2. Direkt unsere [Online-Demo-Instanz](https://reactflux.pages.dev) verwenden oder ReactFlux mit einer der folgenden Methoden einrichten
 3. Mit Miniflux-Benutzernamen und -Passwort oder mit API-Schlüssel (empfohlen) anmelden
 
-## Einrichtung
+## Installation
 
 ### Cloudflare Pages
 
