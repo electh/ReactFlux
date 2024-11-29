@@ -105,6 +105,27 @@ const handleTableBasedCode = (node) => {
   return decodeAndParseCodeContent(codePre)
 }
 
+// Remove empty td elements from table-based layout content
+const handleContentTable = (node) => {
+  const tbody = node.children.find((child) => child.name === "tbody")
+  if (!tbody) {
+    return null
+  }
+
+  for (const tr of tbody.children) {
+    if (tr.name === "tr") {
+      tr.children = tr.children.filter(
+        (td) =>
+          td.name === "td" &&
+          td.children?.length > 0 &&
+          td.children.some((child) => child.data?.trim() || child.children?.length),
+      )
+    }
+  }
+
+  return node
+}
+
 const handleFigure = (node, imageSources, togglePhotoSlider) => {
   const firstChild = node.children[0]
 
@@ -193,6 +214,8 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
         return handleFigure(node, imageSources, togglePhotoSlider)
       case "video":
         return handleVideo(node)
+      case "table":
+        return handleContentTable(node)
       default:
         return node
     }

@@ -91,27 +91,27 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
       <div className="image-container">
         {isLinkWrapper ? (
           <div>
-            <a {...node.attribs}>
-              <ImageComponent
-                imgNode={imgNode}
-                index={index}
-                isBigImage={isBigImage}
-                isIcon={isIcon}
-                togglePhotoSlider={togglePhotoSlider}
-              />
-            </a>
-            <Tooltip content={node.attribs.href}>
-              <Tag
-                className="link-tag"
-                icon={<IconLink />}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  window.open(node.attribs.href, "_blank")
-                }}
-              >
-                {node.attribs.href}
-              </Tag>
-            </Tooltip>
+            <ImageComponent
+              imgNode={imgNode}
+              index={index}
+              isBigImage={isBigImage}
+              isIcon={isIcon}
+              togglePhotoSlider={togglePhotoSlider}
+            />
+            {node.attribs.href !== "#" && (
+              <Tooltip content={node.attribs.href}>
+                <Tag
+                  className="link-tag"
+                  icon={<IconLink />}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    window.open(node.attribs.href, "_blank")
+                  }}
+                >
+                  {node.attribs.href}
+                </Tag>
+              </Tooltip>
+            )}
           </div>
         ) : (
           <ImageComponent
