@@ -74,6 +74,9 @@ const htmlEntities = {
 const decodeAndParseCodeContent = (preElement) => {
   return preElement.children
     .map((child) => {
+      if (child.type === "tag" && child.name === "p") {
+        return (child.children[0]?.data ?? "") + "\n"
+      }
       if (child.type === "tag" && child.name === "strong") {
         return child.children[0]?.data ?? ""
       }
@@ -128,6 +131,14 @@ const handleContentTable = (node) => {
 
 const handleFigure = (node, imageSources, togglePhotoSlider) => {
   const firstChild = node.children[0]
+
+  // Handle code blocks wrapped in figure
+  if (firstChild?.name === "pre") {
+    const codeContent = decodeAndParseCodeContent(firstChild)
+    if (codeContent) {
+      return <CodeBlock>{codeContent}</CodeBlock>
+    }
+  }
 
   // Handle multiple images in figure
   if (node.children.some((child) => child.name === "img")) {
