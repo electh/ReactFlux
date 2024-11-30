@@ -49,17 +49,27 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
   const imgNode = findImageNode(node, isLinkWrapper)
 
   useEffect(() => {
+    let isSubscribed = true
+
     const imgNode = findImageNode(node, isLinkWrapper)
     const imgSrc = imgNode.attribs.src
     const img = new Image()
     img.src = imgSrc
 
     img.onload = () => {
-      const isSmall = Math.max(img.width, img.height) <= MIN_THUMBNAIL_SIZE
-      const isLarge = img.width > 768
+      if (isSubscribed) {
+        const isSmall = Math.max(img.width, img.height) <= MIN_THUMBNAIL_SIZE
+        const isLarge = img.width > 768
 
-      setIsIcon(isSmall)
-      setIsBigImage(isLarge && !isSmall)
+        setIsIcon(isSmall)
+        setIsBigImage(isLarge && !isSmall)
+      }
+    }
+
+    return () => {
+      isSubscribed = false
+      img.src = ""
+      img.onload = null
     }
   }, [node, isLinkWrapper])
 

@@ -26,7 +26,12 @@ const useFeedIcons = (id) => {
       .catch(() => {
         loadingIcons.delete(id)
       })
-  }, [id, feedIcons])
+
+    return () => {
+      loadingIcons.delete(id)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
 
   return feedIcons[id]
 }

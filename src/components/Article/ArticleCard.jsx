@@ -90,17 +90,32 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
   })
 
   useEffect(() => {
+    let isSubscribed = true
+
     if (entry.coverSource) {
       const img = new Image()
       img.src = entry.coverSource
+
       img.onload = () => {
-        const aspectRatio = img.naturalWidth / img.naturalHeight
-        const isThumbnailSize = Math.max(img.width, img.height) <= 250
-        setIsWideImage(aspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize)
-        setIsImageLoaded(true)
+        if (isSubscribed) {
+          const aspectRatio = img.naturalWidth / img.naturalHeight
+          const isThumbnailSize = Math.max(img.width, img.height) <= 250
+          setIsWideImage(aspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize)
+          setIsImageLoaded(true)
+        }
       }
+
       img.onerror = () => {
-        setHasError(true)
+        if (isSubscribed) {
+          setHasError(true)
+        }
+      }
+
+      return () => {
+        isSubscribed = false
+        img.src = ""
+        img.onload = null
+        img.onerror = null
       }
     }
   }, [entry.coverSource])

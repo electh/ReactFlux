@@ -29,7 +29,7 @@ const CodeBlock = ({ children }) => {
   const code = children.trim()
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       const detectedLanguage = hljs.highlightAuto(children).language
       if (SUPPORTED_LANGUAGES.includes(detectedLanguage)) {
         setLanguage(detectedLanguage)
@@ -37,6 +37,8 @@ const CodeBlock = ({ children }) => {
         console.info("detectedLanguage not supported: ", detectedLanguage)
       }
     }, ANIMATION_DURATION_MS)
+
+    return () => clearTimeout(timeoutId)
   }, [children])
 
   return (
