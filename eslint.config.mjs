@@ -7,7 +7,15 @@ import reactHooks from "eslint-plugin-react-hooks"
 import reactRefresh from "eslint-plugin-react-refresh"
 
 export default [
-  { ignores: ["build", "src/components/ui/*.tsx", "src/hooks/use-mobile.tsx", "src/lib/utils.ts"] },
+  {
+    ignores: [
+      "build",
+      "dev-dist",
+      "src/components/ui/*.tsx",
+      "src/hooks/use-mobile.tsx",
+      "src/lib/utils.ts",
+    ],
+  },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
