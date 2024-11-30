@@ -278,7 +278,7 @@ const ArticleDetail = forwardRef((_, ref) => {
         <FadeTransition y={20}>
           <div
             className="article-header"
-            style={{ width: `${articleWidth}%`, textAlign: titleAlignment }}
+            style={{ maxWidth: `${articleWidth}ch`, textAlign: titleAlignment }}
           >
             <Typography.Title
               className="article-title"
@@ -320,7 +320,7 @@ const ArticleDetail = forwardRef((_, ref) => {
             className="article-body"
             style={{
               fontSize: `${fontSize}rem`,
-              width: `${articleWidth}%`,
+              maxWidth: `${articleWidth}ch`,
               fontFamily: fontFamily,
               "--article-width": articleWidth,
             }}

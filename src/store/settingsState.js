@@ -3,7 +3,7 @@ import { persistentAtom } from "@nanostores/persistent"
 import { getBrowserLanguage } from "@/utils/locales"
 
 const defaultValue = {
-  articleWidth: 90,
+  articleWidth: 75,
   edgeToEdgeImages: false,
   fontFamily: "system-ui",
   fontSize: 1.05,

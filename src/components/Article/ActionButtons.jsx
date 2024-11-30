@@ -312,12 +312,12 @@ const ActionButtons = () => {
               <div className="settings-menu-item" onClick={(e) => e.stopPropagation()}>
                 <span>{polyglot.t("appearance.article_width_label")}</span>
                 <InputNumber
-                  max={90}
-                  min={60}
+                  max={100}
+                  min={50}
                   size="small"
-                  step={10}
+                  step={5}
                   style={{ width: 90 }}
-                  suffix="%"
+                  suffix="ch"
                   value={articleWidth}
                   onChange={(value) => updateSettings({ articleWidth: value })}
                 />
