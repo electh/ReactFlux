@@ -22,7 +22,7 @@ import useKeyHandlers from "@/hooks/useKeyHandlers"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { contentState, setActiveContent, setInfoFrom, setOffset } from "@/store/contentState"
-import { dataState, hiddenFeedIdsState } from "@/store/dataState"
+import { dataState } from "@/store/dataState"
 import { duplicateHotkeysState, hotkeysState } from "@/store/hotkeysState"
 import { settingsState } from "@/store/settingsState"
 
@@ -31,10 +31,9 @@ import "./Content.css"
 const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, filterDate, isArticleLoading } = useStore(contentState)
   const { isAppDataReady } = useStore(dataState)
-  const { orderBy, orderDirection, showHiddenFeeds, showStatus } = useStore(settingsState)
+  const { orderBy, orderDirection, showStatus } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
   const duplicateHotkeys = useStore(duplicateHotkeysState)
-  const hiddenFeedIds = useStore(hiddenFeedIdsState)
   const hotkeys = useStore(hotkeysState)
 
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
@@ -175,14 +174,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     refreshArticleList(getEntries)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderBy])
-
-  useEffect(() => {
-    if (hiddenFeedIds.length === 0 || ["starred", "history"].includes(info.from)) {
-      return
-    }
-    refreshArticleList(getEntries)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showHiddenFeeds])
 
   useEffect(() => {
     refreshArticleList(getEntries)
