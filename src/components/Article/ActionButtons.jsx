@@ -308,21 +308,23 @@ const ActionButtons = () => {
               </div>
             </Menu.Item>
 
-            <Menu.Item key="article-width">
-              <div className="settings-menu-item" onClick={(e) => e.stopPropagation()}>
-                <span>{polyglot.t("appearance.article_width_label")}</span>
-                <InputNumber
-                  max={100}
-                  min={50}
-                  size="small"
-                  step={5}
-                  style={{ width: 90 }}
-                  suffix="ch"
-                  value={articleWidth}
-                  onChange={(value) => updateSettings({ articleWidth: value })}
-                />
-              </div>
-            </Menu.Item>
+            {!isBelowMedium && (
+              <Menu.Item key="article-width">
+                <div className="settings-menu-item" onClick={(e) => e.stopPropagation()}>
+                  <span>{polyglot.t("appearance.article_width_label")}</span>
+                  <InputNumber
+                    max={100}
+                    min={50}
+                    size="small"
+                    step={5}
+                    style={{ width: 90 }}
+                    suffix="ch"
+                    value={articleWidth}
+                    onChange={(value) => updateSettings({ articleWidth: value })}
+                  />
+                </div>
+              </Menu.Item>
+            )}
           </Menu>
         }
         onVisibleChange={setDropdownVisible}

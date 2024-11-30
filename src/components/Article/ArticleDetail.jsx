@@ -263,6 +263,13 @@ const ArticleDetail = forwardRef((_, ref) => {
 
   const { coverSource, mediaPlayerEnclosure, isMedia } = activeContent
 
+  const getResponsiveMaxWidth = () => {
+    if (isBelowMedium) {
+      return "90%"
+    }
+    return `${articleWidth}ch`
+  }
+
   // pretty footnotes
   useEffect(() => {
     littlefoot()
@@ -278,7 +285,7 @@ const ArticleDetail = forwardRef((_, ref) => {
         <FadeTransition y={20}>
           <div
             className="article-header"
-            style={{ maxWidth: `${articleWidth}ch`, textAlign: titleAlignment }}
+            style={{ maxWidth: getResponsiveMaxWidth(), textAlign: titleAlignment }}
           >
             <Typography.Title
               className="article-title"
@@ -320,7 +327,7 @@ const ArticleDetail = forwardRef((_, ref) => {
             className="article-body"
             style={{
               fontSize: `${fontSize}rem`,
-              maxWidth: `${articleWidth}ch`,
+              maxWidth: getResponsiveMaxWidth(),
               fontFamily: fontFamily,
               "--article-width": articleWidth,
             }}
