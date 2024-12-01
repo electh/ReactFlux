@@ -5,7 +5,6 @@ import {
   getCounters,
   getFeeds,
   getIntegrationsStatus,
-  getStarredEntries,
   getTodayEntries,
   getVersion,
 } from "@/apis"
@@ -15,7 +14,6 @@ import {
   setHasIntegrations,
   setHistoryCount,
   setIsAppDataReady,
-  setStarredCount,
   setUnreadInfo,
   setUnreadTodayCount,
   setVersion,
@@ -37,14 +35,12 @@ const useAppData = () => {
       const responses = await Promise.all([
         getCounters(),
         getTodayEntries(0, "unread"),
-        getStarredEntries(),
         getFeeds(),
         getCategories(),
         getVersion(),
       ])
 
-      const [countersData, unreadTodayData, starredData, feedsData, categoriesData, versionData] =
-        responses
+      const [countersData, unreadTodayData, feedsData, categoriesData, versionData] = responses
 
       const unreadInfo = feedsData.reduce((acc, feed) => {
         acc[feed.id] = countersData.unreads[feed.id] ?? 0
@@ -65,7 +61,6 @@ const useAppData = () => {
 
       setUnreadInfo(unreadInfo)
       setUnreadTodayCount(unreadTodayData.total ?? 0)
-      setStarredCount(starredData.total ?? 0)
       setHistoryCount(historyCount)
       setFeedsData(feedsData)
       setCategoriesData(categoriesData)
