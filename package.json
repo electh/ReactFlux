@@ -46,7 +46,7 @@
     "virtua": "^0.37.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.15.0",
+    "@eslint/js": "^9.16.0",
     "@types/node": "^22.9.3",
     "@types/react": "^18.3.12",
     "@vitejs/plugin-react": "^4.3.3",
