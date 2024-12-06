@@ -453,8 +453,7 @@ const Sidebar = () => {
           <Typography.Title className="section-title" heading={6} style={{ paddingLeft: "12px" }}>
             {polyglot.t("sidebar.articles")}
           </Typography.Title>
-          <Skeleton animation={true} loading={!isAppDataReady} text={{ rows: 3 }} />
-          {isAppDataReady && <SidebarMenuItems />}
+          <SidebarMenuItems />
           <div
             style={{
               display: "flex",

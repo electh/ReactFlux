@@ -72,11 +72,11 @@ const useArticleList = (info, getEntries) => {
       }
 
       handleResponses(response)
-      setIsArticleListReady(true)
     } catch (error) {
       console.error("Error fetching articles: ", error)
     } finally {
       isLoading.current = false
+      setIsArticleListReady(true)
     }
   }
 
