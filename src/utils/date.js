@@ -10,7 +10,7 @@ dayjs.extend(relativeTime)
 dayjs.extend(utc)
 
 export const checkIsInLast24Hours = (dateString) => {
-  const targetDate = dayjs(dateString)
+  const targetDate = /^\d+$/.test(dateString) ? dayjs(Number(dateString) * 1000) : dayjs(dateString)
   return targetDate.isAfter(dayjs().subtract(24, "hour"))
 }
 
