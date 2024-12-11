@@ -221,6 +221,12 @@ p {
   color: var(--color-text-3);
 }
 
+.article-content code {
+  background-color: #282c34;
+  border-radius: var(--border-radius-small);
+  padding: 0.2em 0.4em;
+}
+
 /*code 相关样式 - 表格 */
 .article-content td {
   color: var(--color-text-3);
