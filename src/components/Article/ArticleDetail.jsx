@@ -131,36 +131,34 @@ const handleContentTable = (node) => {
 
 const handleFigure = (node, imageSources, togglePhotoSlider) => {
   const firstChild = node.children[0]
+  const hasImages = node.children.some((child) => child.name === "img")
 
   // Handle code blocks wrapped in figure
   if (firstChild?.name === "pre") {
     const codeContent = decodeAndParseCodeContent(firstChild)
-    if (codeContent) {
-      return <CodeBlock>{codeContent}</CodeBlock>
-    }
-  }
-
-  // Handle multiple images in figure
-  if (node.children.some((child) => child.name === "img")) {
-    return (
-      <>
-        {node.children.map((child, index) =>
-          child.name === "img" ? (
-            <div key={`figure-img-${index}`}>
-              {handleImage(child, imageSources, togglePhotoSlider)}
-            </div>
-          ) : null,
-        )}
-      </>
-    )
+    return codeContent ? <CodeBlock>{codeContent}</CodeBlock> : null
   }
 
   // Handle table-based code blocks with line numbers
-  if (firstChild.name === "table") {
+  if (firstChild?.name === "table") {
     const codeContent = handleTableBasedCode(firstChild)
-    if (codeContent) {
-      return <CodeBlock>{codeContent}</CodeBlock>
-    }
+    return codeContent ? <CodeBlock>{codeContent}</CodeBlock> : null
+  }
+
+  // Handle multiple images in figure
+  if (hasImages) {
+    return (
+      <>
+        {node.children.map(
+          (child, index) =>
+            child.name === "img" && (
+              <div key={`figure-img-${index}`}>
+                {handleImage(child, imageSources, togglePhotoSlider)}
+              </div>
+            ),
+        )}
+      </>
+    )
   }
 
   return null
