@@ -1,7 +1,6 @@
 import { IconClockCircle, IconStarFill } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { useEffect, useMemo, useState } from "react"
-import { useInView } from "react-intersection-observer"
+import { useEffect, useMemo, useState, useRef } from "react"
 
 import FeedIcon from "@/components/ui/FeedIcon"
 import useEntryActions from "@/hooks/useEntryActions"
@@ -61,33 +60,54 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
   const { handleToggleStatus } = useEntryActions()
   const isUnread = entry.status === "unread"
 
-  const [hasBeenInView, setHasBeenInView] = useState(false)
-  const [shouldSkip, setShouldSkip] = useState(false)
   const [hasError, setHasError] = useState(false)
   const [isWideImage, setIsWideImage] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
 
-  const toggleStatus = () => handleToggleStatus(entry)
-  const threshold = 20
+  const toggleStatus = async () => await handleToggleStatus(entry)
+  const hasBeenVisible = useRef(false)
+  const cardRef = useRef(null)
 
-  const { ref } = useInView({
-    skip: shouldSkip,
-    onChange: async (inView, entry) => {
-      if (!markReadOnScroll || !isUnread) {
-        return
-      }
+  useEffect(() => {
+    // 如果文章已读或未启用滚动标记已读,则不需要观察
+    if (entry.status === "read" || !markReadOnScroll) return
 
-      if (inView) {
-        setHasBeenInView(true)
-      } else if (hasBeenInView) {
-        const { top } = entry.boundingClientRect
-        if (top < threshold) {
-          await toggleStatus()
-          setShouldSkip(true)
-        }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const cardRect = entry.boundingClientRect
+          const rootRect = entry.rootBounds
+
+          // 当文章进入视口时记录状态
+          if (entry.isIntersecting) {
+            hasBeenVisible.current = true
+          }
+          // 只有当卡片完全在视口顶部以上,且之前显示过时才标记已读
+          else if (hasBeenVisible.current && cardRect.top < rootRect.top) {
+            // console.log(cardRect.bottom, rootRect.top, '标记已读');
+            toggleStatus(entry)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        // 设置根元素为滚动容器
+        root: document.querySelector(".entry-list"),
+        // 设置阈值为0,表示完全离开视口时触发
+        threshold: 0.2,
+      },
+    )
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current)
+    }
+
+    return () => {
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current)
       }
-    },
-  })
+    }
+  }, [entry, markReadOnScroll])
 
   useEffect(() => {
     let isSubscribed = true
@@ -129,7 +149,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
 
   return (
     <div
-      ref={ref}
+      ref={cardRef}
       className={isSelected ? "card-wrapper selected" : "card-wrapper"}
       data-entry-id={entry.id}
       onClick={() => handleEntryClick(entry)}
