@@ -71,6 +71,12 @@ location / {
 }
 ```
 
+Or using Caddy, you might need to add the following configuration:
+
+```caddyfile
+try_files {path} {path}/ /index.html
+```
+
 ### Vercel
 
 [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/electh/ReactFlux)
