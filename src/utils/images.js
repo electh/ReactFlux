@@ -1,5 +1,3 @@
-import { allowedIframeHostnames } from "@/utils/sanitizeHtml"
-
 export const extractImageSources = (htmlString) => {
   const doc = new DOMParser().parseFromString(htmlString, "text/html")
   const images = doc.querySelectorAll("img")
@@ -39,7 +37,7 @@ export const parseCoverImage = (entry) => {
     if (!isMedia) {
       const iframe = doc.querySelector("iframe")
       const iframeHost = iframe?.getAttribute("src")?.split("/")[2]
-      if (iframeHost && allowedIframeHostnames.includes(iframeHost)) {
+      if (iframeHost) {
         isMedia = true
       }
     }

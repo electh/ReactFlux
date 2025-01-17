@@ -20,7 +20,6 @@ import { contentState, setFilterString, setFilterType } from "@/store/contentSta
 import { settingsState } from "@/store/settingsState"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
 import { extractImageSources } from "@/utils/images"
-import sanitizeHtml from "@/utils/sanitizeHtml"
 import "./ArticleDetail.css"
 import "./littlefoot.css"
 
@@ -254,8 +253,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   const imageSources = extractImageSources(activeContent.content)
   const htmlParserOptions = getHtmlParserOptions(imageSources, togglePhotoSlider)
 
-  const sanitizedHtml = sanitizeHtml(activeContent.content)
-  const parsedHtml = ReactHtmlParser(sanitizedHtml, htmlParserOptions)
+  const parsedHtml = ReactHtmlParser(activeContent.content, htmlParserOptions)
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category
   const { id: feedId, title: feedTitle } = activeContent.feed
 
