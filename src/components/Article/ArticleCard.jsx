@@ -56,7 +56,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
   const { markReadOnScroll, showFeedIcon, showDetailedRelativeTime, showEstimatedReadingTime } =
     useStore(settingsState)
   const { activeContent } = useStore(contentState)
-  const isSelected = activeContent && entry.id === activeContent.id
+  const isSelected = activeContent?.id === entry.id
   const { handleToggleStatus } = useEntryActions()
   const isUnread = entry.status === "unread"
 
@@ -64,31 +64,29 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
   const [isWideImage, setIsWideImage] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
 
-  const toggleStatus = async () => await handleToggleStatus(entry)
-  const hasBeenVisible = useRef(false)
+  const wasVisible = useRef(false)
   const cardRef = useRef(null)
 
   useEffect(() => {
-    // 如果文章已读或未启用滚动标记已读,则不需要观察
-    if (entry.status === "read" || !markReadOnScroll) return
+    // 如果文章已读或未启用滚动标记已读，则不需要观察
+    if (!isUnread || !markReadOnScroll) {
+      return
+    }
+
+    const markAsRead = async () => await handleToggleStatus(entry)
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const cardRect = entry.boundingClientRect
-          const rootRect = entry.rootBounds
+      ([entry]) => {
+        const { boundingClientRect, rootBounds, isIntersecting } = entry
 
-          // 当文章进入视口时记录状态
-          if (entry.isIntersecting) {
-            hasBeenVisible.current = true
-          }
-          // 只有当卡片完全在视口顶部以上,且之前显示过时才标记已读
-          else if (hasBeenVisible.current && cardRect.top < rootRect.top) {
-            // console.log(cardRect.bottom, rootRect.top, '标记已读');
-            toggleStatus(entry)
-            observer.unobserve(entry.target)
-          }
-        })
+        // 当文章进入视口时记录状态
+        if (isIntersecting) {
+          wasVisible.current = true
+        } else if (wasVisible.current && boundingClientRect.top < rootBounds.top) {
+          // 只有当卡片完全在视口顶部以上，且之前显示过时才标记已读
+          markAsRead()
+          observer.unobserve(entry.target)
+        }
       },
       {
         // 设置根元素为滚动容器
@@ -98,16 +96,17 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
       },
     )
 
-    if (cardRef.current) {
-      observer.observe(cardRef.current)
+    const element = cardRef.current
+    if (element) {
+      observer.observe(element)
     }
 
     return () => {
-      if (cardRef.current) {
-        observer.unobserve(cardRef.current)
+      if (element) {
+        observer.unobserve(element)
       }
     }
-  }, [entry, markReadOnScroll])
+  }, [entry, markReadOnScroll, handleToggleStatus, isUnread])
 
   useEffect(() => {
     let isSubscribed = true
