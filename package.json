@@ -50,7 +50,7 @@
     "@types/react": "^18.3.12",
     "@vitejs/plugin-react": "^4.3.3",
     "depcheck": "^1.4.7",
-    "eslint": "^9.18.0",
+    "eslint": "^9.20.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-react": "^7.37.4",
