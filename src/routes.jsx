@@ -23,19 +23,27 @@ const children = [
   { path: "/feed/:id", element: <Feed /> },
 ]
 
-const router = createBrowserRouter([
-  { path: "/login", element: <Login /> },
+const router = createBrowserRouter(
+  [
+    { path: "/login", element: <Login /> },
+    {
+      path: "/",
+      element: <App />,
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          element: <RouterProtect />,
+          children: [
+            ...children,
+            { index: true, element: <Navigate replace to={`/${homePage}`} /> },
+          ],
+        },
+      ],
+    },
+  ],
   {
-    path: "/",
-    element: <App />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        element: <RouterProtect />,
-        children: [...children, { index: true, element: <Navigate replace to={`/${homePage}`} /> }],
-      },
-    ],
+    basename: import.meta.env.BASE_URL,
   },
-])
+)
 
 export default router
