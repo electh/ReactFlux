@@ -1,12 +1,13 @@
 body {
   --border-radius-small: 8px;
   --border-radius-medium: 8px;
-  --shadow: 0 0 5px 0 rgba(0, 0, 0, 0.02), 0 2px 10px 0 rgba(0, 0, 0, 0.07),
-    0 0 1px 0 rgba(0, 0, 0, 0.3);
+  --shadow:
+    0 0 5px 0 rgba(0, 0, 0, 0.02), 0 2px 10px 0 rgba(0, 0, 0, 0.07), 0 0 1px 0 rgba(0, 0, 0, 0.3);
 }
 
 body[arco-theme="dark"] {
-  --shadow: 0 0 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.2),
+  --shadow:
+    0 0 5px 0 rgba(0, 0, 0, 0.05), 0 2px 10px 0 rgba(0, 0, 0, 0.2),
     inset 0 0 1px 0 hsla(0, 0%, 100%, 0.15), 0 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
