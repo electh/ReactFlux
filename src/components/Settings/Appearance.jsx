@@ -1,4 +1,4 @@
-import { Divider, Switch } from "@arco-design/web-react"
+import { Divider, Select, Switch } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 
 import SettingItem from "./SettingItem"
@@ -10,8 +10,13 @@ import { applyColor, colors, getDisplayColorValue } from "@/utils/colors"
 import "./Appearance.css"
 
 const Appearance = () => {
-  const { showDetailedRelativeTime, showEstimatedReadingTime, showFeedIcon, themeColor } =
-    useStore(settingsState)
+  const {
+    showDetailedRelativeTime,
+    showEstimatedReadingTime,
+    showFeedIcon,
+    themeColor,
+    coverDisplayMode,
+  } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
 
   const handleConfigChange = (settingsChanges) => {
@@ -58,6 +63,29 @@ const Appearance = () => {
             />
           ))}
         </div>
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("appearance.cover_display_mode_description")}
+        title={polyglot.t("appearance.cover_display_mode_label")}
+      >
+        <Select
+          className="input-select"
+          value={coverDisplayMode}
+          onChange={(value) => handleConfigChange({ coverDisplayMode: value })}
+        >
+          <Select.Option value="auto">
+            {polyglot.t("appearance.cover_display_mode_auto")}
+          </Select.Option>
+          <Select.Option value="banner">
+            {polyglot.t("appearance.cover_display_mode_banner")}
+          </Select.Option>
+          <Select.Option value="thumbnail">
+            {polyglot.t("appearance.cover_display_mode_thumbnail")}
+          </Select.Option>
+        </Select>
       </SettingItem>
 
       <Divider />

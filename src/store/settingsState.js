@@ -4,6 +4,7 @@ import { getBrowserLanguage } from "@/utils/locales"
 
 const defaultValue = {
   articleWidth: 75,
+  coverDisplayMode: "auto",
   edgeToEdgeImages: false,
   fontFamily: "system-ui",
   fontSize: 1.05,

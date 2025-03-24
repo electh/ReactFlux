@@ -15,16 +15,21 @@ const ArticleCardImage = ({ entry, isWideImage }) => {
     ? { width: "100%", height: "100%" }
     : { width: "80px", height: "80px" }
 
+  const { coverDisplayMode } = useStore(settingsState)
+
+  const imageStyle = {
+    width: imageSize.width,
+    height: imageSize.height,
+    // When set to banner mode, add maximum height limit and object-fit style
+    ...(coverDisplayMode === "banner" && {
+      maxHeight: "183px",
+      objectFit: "cover",
+    }),
+  }
+
   return (
     <div className="card-thumbnail">
-      <img
-        alt={entry.id}
-        src={entry.coverSource}
-        style={{
-          width: imageSize.width,
-          height: imageSize.height,
-        }}
-      />
+      <img alt={entry.id} src={entry.coverSource} style={imageStyle} />
     </div>
   )
 }
@@ -53,8 +58,13 @@ const extractTextFromHtml = (html) => {
 }
 
 const ArticleCard = ({ entry, handleEntryClick, children }) => {
-  const { markReadOnScroll, showFeedIcon, showDetailedRelativeTime, showEstimatedReadingTime } =
-    useStore(settingsState)
+  const {
+    markReadOnScroll,
+    showFeedIcon,
+    showDetailedRelativeTime,
+    showEstimatedReadingTime,
+    coverDisplayMode,
+  } = useStore(settingsState)
   const { activeContent } = useStore(contentState)
   const isSelected = activeContent?.id === entry.id
   const { handleToggleStatus } = useEntryActions()
@@ -68,7 +78,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
   const cardRef = useRef(null)
 
   useEffect(() => {
-    // 如果文章已读或未启用滚动标记已读，则不需要观察
+    // If the article is read or scroll marking is not enabled, no observation needed
     if (!isUnread || !markReadOnScroll) {
       return
     }
@@ -79,19 +89,19 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
       ([entry]) => {
         const { boundingClientRect, rootBounds, isIntersecting } = entry
 
-        // 当文章进入视口时记录状态
+        // Record status when the article enters the viewport
         if (isIntersecting) {
           wasVisible.current = true
         } else if (wasVisible.current && boundingClientRect.top < rootBounds.top) {
-          // 只有当卡片完全在视口顶部以上，且之前显示过时才标记已读
+          // Only mark as read when the card is completely above the viewport top and was previously visible
           markAsRead()
           observer.unobserve(entry.target)
         }
       },
       {
-        // 设置根元素为滚动容器
+        // Set the root element as the scroll container
         root: document.querySelector(".entry-list"),
-        // 设置阈值为0,表示完全离开视口时触发
+        // Set threshold to 0, triggered when completely leaving the viewport
         threshold: 0.2,
       },
     )
@@ -119,7 +129,16 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
         if (isSubscribed) {
           const aspectRatio = img.naturalWidth / img.naturalHeight
           const isThumbnailSize = Math.max(img.width, img.height) <= 250
-          setIsWideImage(aspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize)
+
+          // Determine image display mode based on user settings
+          if (coverDisplayMode === "auto") {
+            setIsWideImage(aspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize)
+          } else if (coverDisplayMode === "banner") {
+            setIsWideImage(true)
+          } else if (coverDisplayMode === "thumbnail") {
+            setIsWideImage(false)
+          }
+
           setIsImageLoaded(true)
         }
       }
@@ -137,7 +156,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
         img.onerror = null
       }
     }
-  }, [entry.coverSource])
+  }, [entry.coverSource, coverDisplayMode])
 
   const getLineClamp = () => {
     const hasSideImage = entry.coverSource && !hasError && !isWideImage
