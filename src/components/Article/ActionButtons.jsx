@@ -13,6 +13,7 @@ import {
   IconSave,
   IconStar,
   IconStarFill,
+  IconLaunch,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { memo, useEffect, useState } from "react"
@@ -61,6 +62,7 @@ const DesktopButtons = memo(
       <div className="right-side">
         {commonButtons.status}
         {commonButtons.star}
+        {commonButtons.openInBrowser}
         {commonButtons.fetch}
         {hasIntegrations && (
           <CustomTooltip
@@ -107,6 +109,7 @@ const ActionButtons = () => {
     handleSaveToThirdPartyServices,
     handleToggleStarred,
     handleToggleStatus,
+    handleOpenInBrowser,
   } = useEntryActions()
 
   const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } = useKeyHandlers()
@@ -178,6 +181,12 @@ const ActionButtons = () => {
           shape="circle"
           onClick={() => handleToggleStatus(activeContent)}
         />
+      </CustomTooltip>
+    ),
+    // add open in browser functionality
+    openInBrowser: (
+      <CustomTooltip mini content={polyglot.t("article_card.open_in_browser_tooltip")}>
+        <Button icon={<IconLaunch />} shape="circle" onClick={() => handleOpenInBrowser()} />
       </CustomTooltip>
     ),
     star: (

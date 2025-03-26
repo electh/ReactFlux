@@ -171,12 +171,17 @@ const useEntryActions = () => {
     }
   }
 
+  const handleOpenInBrowser = () => {
+    window.open(activeContent.url, "_blank")
+  }
+
   return {
     handleEntryStatusUpdate,
     handleFetchContent,
     handleSaveToThirdPartyServices,
     handleToggleStarred,
     handleToggleStatus,
+    handleOpenInBrowser,
   }
 }
 

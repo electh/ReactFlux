@@ -82,6 +82,7 @@
     "next_tooltip": "Next article",
     "mark_as_read_tooltip": "Mark as read",
     "mark_as_unread_tooltip": "Mark as unread",
+    "open_in_browser_tooltip": "Open in browser",
     "star_tooltip": "Star",
     "unstar_tooltip": "Unstar",
     "fetch_original_tooltip": "Fetch original content",
