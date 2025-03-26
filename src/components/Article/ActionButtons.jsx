@@ -7,13 +7,14 @@ import {
   IconCheck,
   IconClose,
   IconCloudDownload,
+  IconLaunch,
   IconMinusCircle,
   IconMoreVertical,
   IconRecord,
   IconSave,
+  IconShareExternal,
   IconStar,
   IconStarFill,
-  IconLaunch,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { memo, useEffect, useState } from "react"
@@ -62,7 +63,6 @@ const DesktopButtons = memo(
       <div className="right-side">
         {commonButtons.status}
         {commonButtons.star}
-        {commonButtons.openInBrowser}
         {commonButtons.fetch}
         {hasIntegrations && (
           <CustomTooltip
@@ -109,7 +109,7 @@ const ActionButtons = () => {
     handleSaveToThirdPartyServices,
     handleToggleStarred,
     handleToggleStatus,
-    handleOpenInBrowser,
+    handleOpenLinkExternally,
   } = useEntryActions()
 
   const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } = useKeyHandlers()
@@ -183,12 +183,6 @@ const ActionButtons = () => {
         />
       </CustomTooltip>
     ),
-    // add open in browser functionality
-    openInBrowser: (
-      <CustomTooltip mini content={polyglot.t("article_card.open_in_browser_tooltip")}>
-        <Button icon={<IconLaunch />} shape="circle" onClick={() => handleOpenInBrowser()} />
-      </CustomTooltip>
-    ),
     star: (
       <CustomTooltip
         mini
@@ -241,13 +235,22 @@ const ActionButtons = () => {
             )}
 
             {navigator.share && (
-              <>
-                <Menu.Item key="share" onClick={handleShare}>
+              <Menu.Item key="share" onClick={handleShare}>
+                <div className="settings-menu-item">
                   <span>{polyglot.t("article_card.share_tooltip")}</span>
-                </Menu.Item>
-                <Divider style={{ margin: "4px 0" }} />
-              </>
+                  <IconShareExternal />
+                </div>
+              </Menu.Item>
             )}
+
+            <Menu.Item key="open-in-browser" onClick={handleOpenLinkExternally}>
+              <div className="settings-menu-item">
+                <span>{polyglot.t("article_card.open_link_externally_tooltip")}</span>
+                <IconLaunch />
+              </div>
+            </Menu.Item>
+
+            <Divider style={{ margin: "4px 0" }} />
 
             <Menu.Item key="title-alignment">
               <div className="settings-menu-item">
