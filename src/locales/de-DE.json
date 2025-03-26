@@ -82,6 +82,7 @@
     "next_tooltip": "Nächster Artikel",
     "mark_as_read_tooltip": "Als gelesen markieren",
     "mark_as_unread_tooltip": "Als ungelesen markieren",
+    "open_link_externally_tooltip": "Quelllink in neuer Seite öffnen",
     "star_tooltip": "Lesezeichen hinzufügen",
     "unstar_tooltip": "Lesezeichen entfernen",
     "fetch_original_tooltip": "Originalinhalt herunterladen",

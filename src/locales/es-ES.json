@@ -82,6 +82,7 @@
     "next_tooltip": "Artículo siguiente",
     "mark_as_read_tooltip": "Marcar como leído",
     "mark_as_unread_tooltip": "Marcar como no leído",
+    "open_link_externally_tooltip": "Abrir enlace fuente en página nueva",
     "star_tooltip": "Marcar como favorito",
     "unstar_tooltip": "Desmarcar como favorito",
     "fetch_original_tooltip": "Obtener contenido original",

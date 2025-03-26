@@ -171,9 +171,14 @@ const useEntryActions = () => {
     }
   }
 
+  const handleOpenLinkExternally = () => {
+    window.open(activeContent.url, "_blank")
+  }
+
   return {
     handleEntryStatusUpdate,
     handleFetchContent,
+    handleOpenLinkExternally,
     handleSaveToThirdPartyServices,
     handleToggleStarred,
     handleToggleStatus,
