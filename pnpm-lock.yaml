@@ -36,8 +36,8 @@ importers:
         specifier: ^11.11.1
         version: 11.11.1
       hls.js:
-        specifier: ^1.5.20
-        version: 1.5.20
+        specifier: ^1.6.0
+        version: 1.6.0
       html-react-parser:
         specifier: ^5.2.2
         version: 5.2.2(@types/react@18.3.12)(react@18.3.1)
@@ -2076,8 +2076,8 @@ packages:
   highlightjs-vue@1.0.0:
     resolution: {integrity: sha512-PDEfEF102G23vHmPhLyPboFCD+BkMGu+GuJe2d9/eH4FsCwvgBpnc9n0pGE+ffKdph38s6foEZiEjdgHdzp+IA==}
 
-  hls.js@1.5.20:
-    resolution: {integrity: sha512-uu0VXUK52JhihhnN/MVVo1lvqNNuhoxkonqgO3IpjvQiGpJBdIXMGkofjQb/j9zvV7a1SW8U9g1FslWx/1HOiQ==}
+  hls.js@1.6.0:
+    resolution: {integrity: sha512-AlW8ymcDKZuKtzXCUmEy4nOcHRkebnShH6t6hC2+QJQP0WXlTUSSO9Kp22uSEYdCgpwkXEJsfOhqxrgO2tDctQ==}
 
   homedir-polyfill@1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
@@ -5908,7 +5908,7 @@ snapshots:
 
   highlightjs-vue@1.0.0: {}
 
-  hls.js@1.5.20: {}
+  hls.js@1.6.0: {}
 
   homedir-polyfill@1.0.3:
     dependencies:

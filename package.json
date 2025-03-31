@@ -24,7 +24,7 @@
     "dayjs": "^1.11.13",
     "framer-motion": "^12.6.2",
     "highlight.js": "^11.11.1",
-    "hls.js": "^1.5.20",
+    "hls.js": "^1.6.0",
     "html-react-parser": "^5.2.2",
     "littlefoot": "^4.1.2",
     "lodash-es": "^4.17.21",
