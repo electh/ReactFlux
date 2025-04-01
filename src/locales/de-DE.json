@@ -213,7 +213,11 @@
     "remove_duplicates_option_title": "Titel",
     "remove_duplicates_option_url": "URL",
     "mark_read_on_scroll_label": "Artikel beim aus der Bildfläche Scrollen als gelesen markieren",
-    "mark_read_on_scroll_description": "Artikel werden automatisch als gelesen markiert, wenn sie beim Scrollen die sichtbare Bildschirmfläche verlassen"
+    "mark_read_on_scroll_description": "Artikel werden automatisch als gelesen markiert, wenn sie beim Scrollen die sichtbare Bildschirmfläche verlassen",
+    "mark_read_by_label": "Artikel als gelesen markieren durch",
+    "mark_read_by_description": "Wählen Sie, wie Artikel als gelesen markiert werden:",
+    "mark_read_manually": "Manuell",
+    "mark_read_on_view": "Ansehen"
   },
   "appearance": {
     "theme_color_label": "Themenfarbe",

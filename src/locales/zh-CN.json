@@ -213,7 +213,11 @@
     "remove_duplicates_option_title": "标题",
     "remove_duplicates_option_url": "URL",
     "mark_read_on_scroll_label": "滚动时标记文章为已读",
-    "mark_read_on_scroll_description": "当文章滚动出屏幕时自动标记为已读"
+    "mark_read_on_scroll_description": "当文章滚动出屏幕时自动标记为已读",
+    "mark_read_by_label": "标记文章为已读的方式",
+    "mark_read_by_description": "选择标记文章为已读的方式：",
+    "mark_read_manually": "手动",
+    "mark_read_on_view": "查看时自动"
   },
   "appearance": {
     "theme_color_label": "主题颜色",

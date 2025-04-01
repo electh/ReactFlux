@@ -15,7 +15,7 @@ const languageOptions = [
 ]
 
 const General = () => {
-  const { homePage, language, markReadOnScroll, orderBy, pageSize, removeDuplicates } =
+  const { homePage, language, markReadBy, markReadOnScroll, orderBy, pageSize, removeDuplicates } =
     useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
 
@@ -146,6 +146,24 @@ const General = () => {
               {label}
             </Select.Option>
           ))}
+        </Select>
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.mark_read_by_description")}
+        title={polyglot.t("settings.mark_read_by_label")}
+      >
+        <Select
+          className="input-select"
+          value={markReadBy}
+          onChange={(value) => updateSettings({ markReadBy: value })}
+        >
+          <Select.Option value="view">{polyglot.t("settings.mark_read_on_view")}</Select.Option>
+          <Select.Option value="manually">
+            {polyglot.t("settings.mark_read_manually")}
+          </Select.Option>
         </Select>
       </SettingItem>
 

@@ -213,7 +213,11 @@
     "remove_duplicates_option_title": "Título",
     "remove_duplicates_option_url": "URL",
     "mark_read_on_scroll_label": "Marcar los artículos como leídos al desplazarlos fuera de la pantalla",
-    "mark_read_on_scroll_description": "Marcar automáticamente los artículos como leídos cuando se desplazan fuera del área visible de la pantalla"
+    "mark_read_on_scroll_description": "Marcar automáticamente los artículos como leídos cuando se desplazan fuera del área visible de la pantalla",
+    "mark_read_by_label": "Marcar artículos como leídos por",
+    "mark_read_by_description": "Seleccionar cómo marcar los artículos como leídos:",
+    "mark_read_manually": "Manual",
+    "mark_read_on_view": "Ver"
   },
   "appearance": {
     "theme_color_label": "Color del tema",

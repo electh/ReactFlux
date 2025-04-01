@@ -6,12 +6,14 @@ import { updateEntriesStatus } from "@/apis"
 import useEntryActions from "@/hooks/useEntryActions"
 import { polyglotState } from "@/hooks/useLanguage"
 import { setActiveContent, setIsArticleLoading } from "@/store/contentState"
+import { settingsState } from "@/store/settingsState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
 
 const Context = createContext()
 
 export const ContextProvider = ({ children }) => {
   const polyglot = useStore(polyglotState)
+  const { markReadBy } = useStore(settingsState)
 
   const entryDetailRef = useRef(null)
   const entryListRef = useRef(null)
@@ -22,7 +24,11 @@ export const ContextProvider = ({ children }) => {
     async (entry) => {
       setIsArticleLoading(true)
 
-      setActiveContent({ ...entry, status: "read" })
+      const shouldAutoMarkAsRead = markReadBy === "view"
+      const updatedEntry = shouldAutoMarkAsRead ? { ...entry, status: "read" } : { ...entry }
+
+      setActiveContent(updatedEntry)
+
       setTimeout(() => {
         const articleContent = entryDetailRef.current
         if (articleContent) {
@@ -34,7 +40,7 @@ export const ContextProvider = ({ children }) => {
         }
 
         setIsArticleLoading(false)
-        if (entry.status === "unread") {
+        if (shouldAutoMarkAsRead && entry.status === "unread") {
           handleEntryStatusUpdate(entry, "read")
           updateEntriesStatus([entry.id], "read").catch(() => {
             Message.error(polyglot.t("content.mark_as_read_error"))
@@ -44,7 +50,7 @@ export const ContextProvider = ({ children }) => {
         }
       }, ANIMATION_DURATION_MS)
     },
-    [polyglot, handleEntryStatusUpdate],
+    [polyglot, handleEntryStatusUpdate, markReadBy],
   )
 
   const value = useMemo(

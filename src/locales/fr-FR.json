@@ -213,7 +213,11 @@
     "remove_duplicates_option_title": "Titre",
     "remove_duplicates_option_url": "URL",
     "mark_read_on_scroll_label": "Marquer les articles comme lus lors du défilement",
-    "mark_read_on_scroll_description": "Marquer automatiquement les articles comme lus lorsqu'ils sont défilés hors de la zone visible de l'écran"
+    "mark_read_on_scroll_description": "Marquer automatiquement les articles comme lus lorsqu'ils sont défilés hors de la zone visible de l'écran",
+    "mark_read_by_label": "Marquer les articles comme lus par",
+    "mark_read_by_description": "Choisir comment les articles sont marqués comme lus :",
+    "mark_read_manually": "Marquer",
+    "mark_read_on_view": "Voir"
   },
   "appearance": {
     "theme_color_label": "Couleur du thème",
