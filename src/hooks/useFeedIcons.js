@@ -30,7 +30,6 @@ const useFeedIcons = (id) => {
     return () => {
       loadingIcons.delete(id)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   return feedIcons[id]

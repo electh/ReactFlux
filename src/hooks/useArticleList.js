@@ -84,7 +84,6 @@ const useArticleList = (info, getEntries) => {
     if (isAppDataReady) {
       fetchArticleList(getEntries)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAppDataReady])
 
   return { fetchArticleList }

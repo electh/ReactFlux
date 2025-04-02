@@ -50,7 +50,6 @@ const EditableTagGroup = ({ keys, record }) => {
         updateHotkey(record.action, newKeys)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing])
 
   return (

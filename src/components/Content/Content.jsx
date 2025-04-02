@@ -88,7 +88,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const removeConflictingKeys = (keys) => keys.filter((key) => !duplicateHotkeys.includes(key))
 
   for (const [key, action] of Object.entries(hotkeyActions)) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     useHotkeys(removeConflictingKeys(hotkeys[key]), action)
   }
 
@@ -164,7 +163,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       setActiveContent(null)
     }
     refreshArticleList(getEntries)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [info])
 
   useEffect(() => {
@@ -172,12 +170,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       return
     }
     refreshArticleList(getEntries)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderBy])
 
   useEffect(() => {
     refreshArticleList(getEntries)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterDate, orderDirection, showStatus])
 
   return (

@@ -170,7 +170,6 @@ const PlyrPlayer = ({
         hlsRef.current = null
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src])
 
   const renderMedia = () => {

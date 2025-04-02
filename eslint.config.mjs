@@ -3,6 +3,7 @@ import js from "@eslint/js"
 import importPlugin from "eslint-plugin-import"
 import promise from "eslint-plugin-promise"
 import react from "eslint-plugin-react"
+import reactCompiler from "eslint-plugin-react-compiler"
 import reactHooks from "eslint-plugin-react-hooks"
 import reactRefresh from "eslint-plugin-react-refresh"
 
@@ -29,6 +30,7 @@ export default [
       import: importPlugin,
       promise,
       react,
+      "react-compiler": reactCompiler,
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
     },
@@ -89,6 +91,7 @@ export default [
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,
       ...reactHooks.configs.recommended.rules,
+      "react-compiler/react-compiler": "error",
       "react/jsx-no-target-blank": "off",
       "react/jsx-sort-props": [
         "error",

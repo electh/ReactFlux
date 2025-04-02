@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths-ignore:
-      - ".github/**"
-      - ".husky/**"
       - ".editorconfig"
+      - ".github/**"
       - ".gitignore"
+      - ".husky/**"
       - ".prettierignore"
       - ".prettierrc"
       - "docs/**"

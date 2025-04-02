@@ -1,5 +1,7 @@
 build
+package-lock.json
 pnpm-lock.yaml
+yarn.lock
 src/components/ui/*.tsx
 src/hooks/use-mobile.tsx
 src/lib/utils.ts
