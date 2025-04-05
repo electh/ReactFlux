@@ -13,7 +13,7 @@ const defaultValue = {
   entries: [], // 接口返回的所有文章
   filterDate: null, // 搜索日期
   filterString: "", // 搜索文本
-  filterType: "Title", // title | content | author
+  filterType: "title", // title | content | author
   infoFrom: getSettings("homePage"), // all | today | starred | history
   isArticleListReady: false, // 文章列表是否加载完成
   isArticleLoading: false, // 文章是否正在加载

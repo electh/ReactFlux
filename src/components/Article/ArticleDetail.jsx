@@ -340,7 +340,6 @@ const ArticleDetail = forwardRef((_, ref) => {
             )}
             {parsedHtml}
             <PhotoSlider
-              bannerVisible={!isBelowMedium}
               images={imageSources.map((item) => ({ src: item, key: item }))}
               index={selectedIndex}
               loop={false}
