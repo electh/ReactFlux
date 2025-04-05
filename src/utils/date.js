@@ -1,11 +1,13 @@
 import dayjs from "dayjs"
 import duration from "dayjs/plugin/duration"
+import localizedFormat from "dayjs/plugin/localizedFormat"
 import relativeTime from "dayjs/plugin/relativeTime"
 import utc from "dayjs/plugin/utc"
 
 import { polyglotState } from "@/hooks/useLanguage"
 
 dayjs.extend(duration)
+dayjs.extend(localizedFormat)
 dayjs.extend(relativeTime)
 dayjs.extend(utc)
 
@@ -24,8 +26,7 @@ export const getDayEndTimestamp = (dateString) => dayjs(dateString).endOf("day")
 
 export const getUTCDate = () => dayjs().utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ")
 
-export const generateReadableDate = (dateString) =>
-  dayjs(dateString).format("dddd, MMMM D, YYYY h:mm A")
+export const generateReadableDate = (dateString) => dayjs(dateString).format("dddd · LL · LT")
 
 export const generateRelativeTime = (dateString, showDetailed) => {
   const { polyglot } = polyglotState.get()
