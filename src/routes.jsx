@@ -1,4 +1,4 @@
-import { Navigate, createBrowserRouter } from "react-router"
+import { createBrowserRouter, Navigate } from "react-router"
 
 import App from "./App"
 import All from "./pages/All"

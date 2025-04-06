@@ -7,7 +7,7 @@ import {
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { debounce } from "lodash-es"
-import { Fragment, useEffect, useState, useMemo } from "react"
+import { Fragment, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router"
 
 import SidebarTrigger from "./SidebarTrigger.jsx"

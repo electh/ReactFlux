@@ -1,6 +1,6 @@
 import globals from "globals"
 import js from "@eslint/js"
-import importPlugin from "eslint-plugin-import"
+import importPlugin from "eslint-plugin-import-x"
 import promise from "eslint-plugin-promise"
 import react from "eslint-plugin-react"
 import reactCompiler from "eslint-plugin-react-compiler"
@@ -46,10 +46,6 @@ export default [
         {
           css: "always",
           json: "always",
-          js: "never",
-          jsx: "never",
-          ts: "never",
-          tsx: "never",
         },
       ],
       "import/no-anonymous-default-export": "error",
@@ -75,6 +71,7 @@ export default [
             "object",
             "type",
           ],
+          named: true,
           "newlines-between": "always",
         },
       ],
