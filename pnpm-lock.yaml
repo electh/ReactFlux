@@ -97,8 +97,8 @@ importers:
         specifier: ^9.24.0
         version: 9.24.0
       '@types/node':
-        specifier: ^22.13.17
-        version: 22.13.17
+        specifier: ^22.14.0
+        version: 22.14.0
       '@types/react':
         specifier: ^18.3.20
         version: 18.3.20
@@ -107,7 +107,7 @@ importers:
         version: 18.3.5(@types/react@18.3.20)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
-        version: 4.3.4(vite@5.4.16(@types/node@22.13.17)(less@4.2.0)(terser@5.39.0))
+        version: 4.3.4(vite@5.4.16(@types/node@22.14.0)(less@4.2.0)(terser@5.39.0))
       babel-plugin-react-compiler:
         specifier: 19.0.0-beta-e993439-20250405
         version: 19.0.0-beta-e993439-20250405
@@ -155,10 +155,10 @@ importers:
         version: 5.14.0(rollup@2.79.2)
       vite:
         specifier: ^5.4.16
-        version: 5.4.16(@types/node@22.13.17)(less@4.2.0)(terser@5.39.0)
+        version: 5.4.16(@types/node@22.14.0)(less@4.2.0)(terser@5.39.0)
       vite-plugin-pwa:
         specifier: ^0.20.5
-        version: 0.20.5(vite@5.4.16(@types/node@22.13.17)(less@4.2.0)(terser@5.39.0))(workbox-build@7.1.1(@types/babel__core@7.20.5))(workbox-window@7.3.0)
+        version: 0.20.5(vite@5.4.16(@types/node@22.14.0)(less@4.2.0)(terser@5.39.0))(workbox-build@7.1.1(@types/babel__core@7.20.5))(workbox-window@7.3.0)
       workbox-window:
         specifier: ^7.3.0
         version: 7.3.0
@@ -1147,8 +1147,8 @@ packages:
   '@types/minimatch@3.0.5':
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
 
-  '@types/node@22.13.17':
-    resolution: {integrity: sha512-nAJuQXoyPj04uLgu+obZcSmsfOenUg6DxPKogeUy6yNCFwWaj5sBF8/G/pNo8EtBJjAfSVgfIlugR/BCOleO+g==}
+  '@types/node@22.14.0':
+    resolution: {integrity: sha512-Kmpl+z84ILoG+3T/zQFyAJsU6EPTmOCj8/2+83fSN6djd6I4o7uOuGIH6vq3PrjY5BGitSbFuMN18j3iknubbA==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -3239,8 +3239,8 @@ packages:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
     engines: {node: '>= 0.4'}
 
-  undici-types@6.20.0:
-    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
+  undici-types@6.21.0:
+    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
     resolution: {integrity: sha512-dA8WbNeb2a6oQzAQ55YlT5vQAWGV9WXOsi3SskE3bcCdM0P4SDd+24zS/OCacdRq5BkdsRj9q3Pg6YyQoxIGqg==}
@@ -4586,9 +4586,9 @@ snapshots:
 
   '@types/minimatch@3.0.5': {}
 
-  '@types/node@22.13.17':
+  '@types/node@22.14.0':
     dependencies:
-      undici-types: 6.20.0
+      undici-types: 6.21.0
 
   '@types/parse-json@4.0.2': {}
 
@@ -4693,14 +4693,14 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.4.1':
     optional: true
 
-  '@vitejs/plugin-react@4.3.4(vite@5.4.16(@types/node@22.13.17)(less@4.2.0)(terser@5.39.0))':
+  '@vitejs/plugin-react@4.3.4(vite@5.4.16(@types/node@22.14.0)(less@4.2.0)(terser@5.39.0))':
     dependencies:
       '@babel/core': 7.26.10
       '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.10)
       '@babel/plugin-transform-react-jsx-source': 7.25.9(@babel/core@7.26.10)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.16(@types/node@22.13.17)(less@4.2.0)(terser@5.39.0)
+      vite: 5.4.16(@types/node@22.14.0)(less@4.2.0)(terser@5.39.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -6936,7 +6936,7 @@ snapshots:
       has-symbols: 1.1.0
       which-boxed-primitive: 1.1.1
 
-  undici-types@6.20.0: {}
+  undici-types@6.21.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 
@@ -7009,24 +7009,24 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  vite-plugin-pwa@0.20.5(vite@5.4.16(@types/node@22.13.17)(less@4.2.0)(terser@5.39.0))(workbox-build@7.1.1(@types/babel__core@7.20.5))(workbox-window@7.3.0):
+  vite-plugin-pwa@0.20.5(vite@5.4.16(@types/node@22.14.0)(less@4.2.0)(terser@5.39.0))(workbox-build@7.1.1(@types/babel__core@7.20.5))(workbox-window@7.3.0):
     dependencies:
       debug: 4.4.0
       pretty-bytes: 6.1.1
       tinyglobby: 0.2.12
-      vite: 5.4.16(@types/node@22.13.17)(less@4.2.0)(terser@5.39.0)
+      vite: 5.4.16(@types/node@22.14.0)(less@4.2.0)(terser@5.39.0)
       workbox-build: 7.1.1(@types/babel__core@7.20.5)
       workbox-window: 7.3.0
     transitivePeerDependencies:
       - supports-color
 
-  vite@5.4.16(@types/node@22.13.17)(less@4.2.0)(terser@5.39.0):
+  vite@5.4.16(@types/node@22.14.0)(less@4.2.0)(terser@5.39.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.3
       rollup: 4.38.0
     optionalDependencies:
-      '@types/node': 22.13.17
+      '@types/node': 22.14.0
       fsevents: 2.3.3
       less: 4.2.0
       terser: 5.39.0
