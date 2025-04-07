@@ -148,8 +148,8 @@ importers:
         specifier: ^3.5.3
         version: 3.5.3
       react-compiler-runtime:
-        specifier: 19.0.0-beta-e993439-20250328
-        version: 19.0.0-beta-e993439-20250328(react@18.3.1)
+        specifier: 19.0.0-beta-e993439-20250405
+        version: 19.0.0-beta-e993439-20250405(react@18.3.1)
       rollup-plugin-visualizer:
         specifier: ^5.14.0
         version: 5.14.0(rollup@2.79.2)
@@ -2759,8 +2759,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
 
-  react-compiler-runtime@19.0.0-beta-e993439-20250328:
-    resolution: {integrity: sha512-bdLTxDSnjHb8iwkAal+vNb1NK1l7MlsG02/Kc47AkQL0lmszOHRSV5wkeprCVnT2pYAI8721TOeO6e1/Wfgvuw==}
+  react-compiler-runtime@19.0.0-beta-e993439-20250405:
+    resolution: {integrity: sha512-uTvtVgJR21Xy7XAthYbC3R9V00V/U7xP3BWrwpSvcmHgtar8+TweghRIankQJLps/g7HIYxy+dnXCGBy0cKv5w==}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0 || ^19.0.0 || ^0.0.0-experimental
 
@@ -6382,7 +6382,7 @@ snapshots:
       '@babel/runtime': 7.27.0
       react: 18.3.1
 
-  react-compiler-runtime@19.0.0-beta-e993439-20250328(react@18.3.1):
+  react-compiler-runtime@19.0.0-beta-e993439-20250405(react@18.3.1):
     dependencies:
       react: 18.3.1
 
