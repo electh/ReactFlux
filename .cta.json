@@ -1,0 +1,13 @@
+{
+  "framework": "react",
+  "git": true,
+  "mode": "code-router",
+  "packageManager": "pnpm",
+  "projectName": "ReactFlux",
+  "tailwind": false,
+  "toolchain": "eslint+prettier",
+  "typescript": false,
+  "variableValues": {},
+  "version": 1,
+  "existingAddOns": []
+}
