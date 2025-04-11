@@ -87,7 +87,8 @@
     "unstar_tooltip": "Lesezeichen entfernen",
     "fetch_original_tooltip": "Originalinhalt herunterladen",
     "save_to_third_party_services_tooltip": "Bei Drittanbieter speichern",
-    "share_tooltip": "Teilen"
+    "share_tooltip": "Teilen",
+    "view_comments_tooltip": "Kommentare anzeigen"
   },
   "article_list": {
     "sort_direction_desc": "Neueste zuerst",

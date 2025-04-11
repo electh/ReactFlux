@@ -87,7 +87,8 @@
     "unstar_tooltip": "Démarquer comme favori",
     "fetch_original_tooltip": "Récupérer le contenu original",
     "save_to_third_party_services_tooltip": "Sauvegarder dans les services tiers",
-    "share_tooltip": "Partager"
+    "share_tooltip": "Partager",
+    "view_comments_tooltip": "Voir les commentaires"
   },
   "article_list": {
     "sort_direction_desc": "Les plus récents en premier",

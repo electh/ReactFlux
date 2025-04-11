@@ -87,7 +87,8 @@
     "unstar_tooltip": "Unstar",
     "fetch_original_tooltip": "Fetch original content",
     "save_to_third_party_services_tooltip": "Save to third-party services",
-    "share_tooltip": "Share"
+    "share_tooltip": "Share",
+    "view_comments_tooltip": "View comments"
   },
   "article_list": {
     "sort_direction_desc": "Newest first",
