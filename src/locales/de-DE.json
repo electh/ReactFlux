@@ -218,7 +218,11 @@
     "mark_read_by_label": "Artikel als gelesen markieren durch",
     "mark_read_by_description": "Wählen Sie, wie Artikel als gelesen markiert werden:",
     "mark_read_manually": "Manuell",
-    "mark_read_on_view": "Ansehen"
+    "mark_read_on_view": "Ansehen",
+    "enable_swipe_gesture_description": "Swipe-Geste nach links und rechts zum Wechseln von Artikeln aktivieren",
+    "enable_swipe_gesture_label": "Swipe-Geste aktivieren",
+    "swipe_sensitivity_description": "Swipe-Geste-Empfindlichkeit anpassen",
+    "swipe_sensitivity_label": "Swipe-Geste-Empfindlichkeit"
   },
   "appearance": {
     "theme_color_label": "Themenfarbe",

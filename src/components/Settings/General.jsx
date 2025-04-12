@@ -1,9 +1,10 @@
-import { Divider, InputNumber, Select, Switch } from "@arco-design/web-react"
+import { Divider, InputNumber, Select, Slider, Switch } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 
 import SettingItem from "./SettingItem"
 
 import { polyglotState } from "@/hooks/useLanguage"
+import useScreenWidth from "@/hooks/useScreenWidth"
 import { settingsState, updateSettings } from "@/store/settingsState"
 
 const languageOptions = [
@@ -15,9 +16,19 @@ const languageOptions = [
 ]
 
 const General = () => {
-  const { homePage, language, markReadBy, markReadOnScroll, orderBy, pageSize, removeDuplicates } =
-    useStore(settingsState)
+  const {
+    enableSwipeGesture,
+    homePage,
+    language,
+    markReadBy,
+    markReadOnScroll,
+    orderBy,
+    pageSize,
+    removeDuplicates,
+    swipeSensitivity,
+  } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
+  const { isBelowMedium } = useScreenWidth()
 
   const homePageOptions = [
     {
@@ -178,6 +189,43 @@ const General = () => {
           onChange={(value) => updateSettings({ markReadOnScroll: value })}
         />
       </SettingItem>
+
+      {isBelowMedium && (
+        <>
+          <Divider />
+
+          <SettingItem
+            description={polyglot.t("settings.enable_swipe_gesture_description")}
+            title={polyglot.t("settings.enable_swipe_gesture_label")}
+          >
+            <Switch
+              checked={enableSwipeGesture}
+              onChange={(value) => updateSettings({ enableSwipeGesture: value })}
+            />
+          </SettingItem>
+
+          {enableSwipeGesture && (
+            <>
+              <Divider />
+
+              <SettingItem
+                description={polyglot.t("settings.swipe_sensitivity_description")}
+                title={polyglot.t("settings.swipe_sensitivity_label")}
+              >
+                <Slider
+                  className="input-slider"
+                  max={1.5}
+                  min={0.5}
+                  showTicks={true}
+                  step={0.25}
+                  value={swipeSensitivity}
+                  onChange={(value) => updateSettings({ swipeSensitivity: value })}
+                />
+              </SettingItem>
+            </>
+          )}
+        </>
+      )}
     </>
   )
 }

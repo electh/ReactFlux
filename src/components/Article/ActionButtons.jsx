@@ -31,35 +31,12 @@ import { settingsState, updateSettings } from "@/store/settingsState"
 import "./ActionButtons.css"
 
 const DesktopButtons = memo(
-  ({
-    commonButtons,
-    hasIntegrations,
-    prevContent,
-    nextContent,
-    navigateToPreviousArticle,
-    navigateToNextArticle,
-    handleSaveToThirdPartyServices,
-    polyglot,
-  }) => (
+  ({ commonButtons, hasIntegrations, handleSaveToThirdPartyServices, polyglot }) => (
     <>
       <div className="left-side">
         {commonButtons.close}
-        <CustomTooltip mini content={polyglot.t("article_card.previous_tooltip")}>
-          <Button
-            disabled={!prevContent}
-            icon={<IconArrowLeft />}
-            shape="circle"
-            onClick={navigateToPreviousArticle}
-          />
-        </CustomTooltip>
-        <CustomTooltip mini content={polyglot.t("article_card.next_tooltip")}>
-          <Button
-            disabled={!nextContent}
-            icon={<IconArrowRight />}
-            shape="circle"
-            onClick={navigateToNextArticle}
-          />
-        </CustomTooltip>
+        {commonButtons.prev}
+        {commonButtons.next}
       </div>
       <div className="right-side">
         {commonButtons.status}
@@ -84,7 +61,9 @@ const MobileButtons = memo(({ commonButtons }) => (
   <div className="mobile-buttons">
     {commonButtons.status}
     {commonButtons.star}
+    {commonButtons.prev}
     {commonButtons.close}
+    {commonButtons.next}
     {commonButtons.fetch}
     {commonButtons.more}
   </div>
@@ -96,8 +75,14 @@ const ActionButtons = () => {
   const { hasIntegrations } = useStore(dataState)
   const { polyglot } = useStore(polyglotState)
 
-  const { articleWidth, edgeToEdgeImages, fontSize, fontFamily, titleAlignment } =
-    useStore(settingsState)
+  const {
+    articleWidth,
+    edgeToEdgeImages,
+    enableSwipeGesture,
+    fontSize,
+    fontFamily,
+    titleAlignment,
+  } = useStore(settingsState)
 
   const nextContent = useStore(nextContentState)
   const prevContent = useStore(prevContentState)
@@ -170,6 +155,28 @@ const ActionButtons = () => {
   const handleViewComments = () => window.open(activeContent.comments_url, "_blank")
 
   const commonButtons = {
+    prev:
+      isBelowMedium && enableSwipeGesture ? undefined : (
+        <CustomTooltip mini content={polyglot.t("article_card.previous_tooltip")}>
+          <Button
+            disabled={!prevContent}
+            icon={<IconArrowLeft />}
+            shape="circle"
+            onClick={navigateToPreviousArticle}
+          />
+        </CustomTooltip>
+      ),
+    next:
+      isBelowMedium && enableSwipeGesture ? undefined : (
+        <CustomTooltip mini content={polyglot.t("article_card.next_tooltip")}>
+          <Button
+            disabled={!nextContent}
+            icon={<IconArrowRight />}
+            shape="circle"
+            onClick={navigateToNextArticle}
+          />
+        </CustomTooltip>
+      ),
     status: (
       <CustomTooltip
         mini

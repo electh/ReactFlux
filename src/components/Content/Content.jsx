@@ -31,7 +31,8 @@ import "./Content.css"
 const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, filterDate, isArticleLoading } = useStore(contentState)
   const { isAppDataReady } = useStore(dataState)
-  const { orderBy, orderDirection, showStatus } = useStore(settingsState)
+  const { enableSwipeGesture, orderBy, orderDirection, showStatus, swipeSensitivity } =
+    useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
   const duplicateHotkeys = useStore(duplicateHotkeysState)
   const hotkeys = useStore(hotkeysState)
@@ -118,10 +119,18 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   )
 
   const handlers = useSwipeable({
-    onSwiping: handleSwiping,
-    onSwiped: handleSwiped,
-    onSwipedLeft: handleSwipeLeft,
-    onSwipedRight: handleSwipeRight,
+    delta: 50 / swipeSensitivity,
+    onSwiping: enableSwipeGesture
+      ? (eventData) => {
+          if (window.getSelection().toString()) {
+            return
+          }
+          handleSwiping(eventData)
+        }
+      : undefined,
+    onSwiped: enableSwipeGesture ? handleSwiped : undefined,
+    onSwipedLeft: enableSwipeGesture ? handleSwipeLeft : undefined,
+    onSwipedRight: enableSwipeGesture ? handleSwipeRight : undefined,
   })
 
   useEffect(() => {

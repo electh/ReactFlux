@@ -218,7 +218,11 @@
     "mark_read_by_label": "Marquer les articles comme lus par",
     "mark_read_by_description": "Choisir comment les articles sont marqués comme lus :",
     "mark_read_manually": "Marquer",
-    "mark_read_on_view": "Voir"
+    "mark_read_on_view": "Voir",
+    "enable_swipe_gesture_description": "Activer le geste de balayage pour changer d'article",
+    "enable_swipe_gesture_label": "Activer le geste de balayage",
+    "swipe_sensitivity_description": "Ajuster la sensibilité du geste de balayage",
+    "swipe_sensitivity_label": "Sensibilité du balayage"
   },
   "appearance": {
     "theme_color_label": "Couleur du thème",
