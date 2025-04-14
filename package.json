@@ -16,7 +16,7 @@
     "@arco-design/color": "^0.4.0",
     "@arco-design/web-react": "^2.66.1",
     "@nanostores/persistent": "^1.0.0",
-    "@nanostores/react": "^0.8.4",
+    "@nanostores/react": "^1.0.0",
     "canvas-confetti": "^1.9.3",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
