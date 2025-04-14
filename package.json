@@ -61,7 +61,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
     "prettier": "^3.5.3",
-    "react-compiler-runtime": "19.0.0-beta-e993439-20250405",
+    "react-compiler-runtime": "19.0.0-beta-ebf51a3-20250411",
     "rollup-plugin-visualizer": "^5.14.0",
     "vite": "^6.2.6",
     "vite-plugin-pwa": "^1.0.0",
