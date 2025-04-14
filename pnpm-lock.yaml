@@ -16,10 +16,10 @@ importers:
         version: 2.66.1(@types/react@18.3.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@nanostores/persistent':
         specifier: ^1.0.0
-        version: 1.0.0(nanostores@0.11.4)
+        version: 1.0.0(nanostores@1.0.1)
       '@nanostores/react':
         specifier: ^1.0.0
-        version: 1.0.0(nanostores@0.11.4)(react@18.3.1)
+        version: 1.0.0(nanostores@1.0.1)(react@18.3.1)
       canvas-confetti:
         specifier: ^1.9.3
         version: 1.9.3
@@ -48,8 +48,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       nanostores:
-        specifier: ^0.11.4
-        version: 0.11.4
+        specifier: ^1.0.1
+        version: 1.0.1
       node-polyglot:
         specifier: ^2.6.0
         version: 2.6.0
@@ -2559,9 +2559,9 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanostores@0.11.4:
-    resolution: {integrity: sha512-k1oiVNN4hDK8NcNERSZLQiMfRzEGtfnvZvdBvey3SQbgn8Dcrk0h1I6vpxApjb10PFUflZrgJ2WEZyJQ+5v7YQ==}
-    engines: {node: ^18.0.0 || >=20.0.0}
+  nanostores@1.0.1:
+    resolution: {integrity: sha512-kNZ9xnoJYKg/AfxjrVL4SS0fKX++4awQReGqWnwTRHxeHGZ1FJFVgTqr/eMrNQdp0Tz7M7tG/TDaX8QfHDwVCw==}
+    engines: {node: ^20.0.0 || >=22.0.0}
 
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
@@ -4432,13 +4432,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@nanostores/persistent@1.0.0(nanostores@0.11.4)':
+  '@nanostores/persistent@1.0.0(nanostores@1.0.1)':
     dependencies:
-      nanostores: 0.11.4
+      nanostores: 1.0.1
 
-  '@nanostores/react@1.0.0(nanostores@0.11.4)(react@18.3.1)':
+  '@nanostores/react@1.0.0(nanostores@1.0.1)(react@18.3.1)':
     dependencies:
-      nanostores: 0.11.4
+      nanostores: 1.0.1
       react: 18.3.1
 
   '@napi-rs/wasm-runtime@0.2.8':
@@ -6207,7 +6207,7 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  nanostores@0.11.4: {}
+  nanostores@1.0.1: {}
 
   natural-compare@1.4.0: {}
 
