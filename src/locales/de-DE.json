@@ -109,6 +109,9 @@
     "mark_as_read_error": "Duplikate als gelesen markieren fehlgeschlagen"
   },
   "search": {
+    "search": "Suchen",
+    "confirm": "Bestätigen",
+    "cancel": "Abbrechen",
     "placeholder": "Suchen...",
     "clear_date": "Leeren",
     "select_date": "Datum wählen",

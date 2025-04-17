@@ -109,6 +109,9 @@
     "mark_as_read_error": "No se pudo marcar los artículos duplicados como leídos"
   },
   "search": {
+    "search": "Buscar",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
     "placeholder": "Buscar...",
     "clear_date": "Limpiar",
     "select_date": "Seleccionar fecha",

@@ -1,10 +1,3 @@
-.calendar-actions {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  color: var(--color-text-1);
-}
-
 .search-and-sort-bar {
   display: flex;
   position: sticky;
@@ -13,6 +6,38 @@
   z-index: 2;
   background-color: rgb(var(--color-bg-1));
   padding: 8px 0;
+}
+
+.search-and-sort-bar .page-info {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+  color: var(--color-text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.search-and-sort-bar .page-info .title-container {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.search-and-sort-bar .page-info .title-container .arco-typography {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-and-sort-bar .page-info .count-label {
+  color: var(--color-text-4);
+  margin-left: 6px;
+  flex-shrink: 0;
+  font-weight: 500;
+  text-align: right;
 }
 
 .search-and-sort-bar .button-group {
@@ -26,6 +51,23 @@
   background-color: transparent;
 }
 
+.calendar-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--color-text-1);
+}
+
+.search-modal {
+  width: 400px;
+}
+
 .arco-input-group-addbefore .arco-select .arco-select-view {
   border-radius: var(--border-radius-medium);
+}
+
+@media screen and (max-width: 768px) {
+  .search-modal {
+    width: 95%;
+  }
 }

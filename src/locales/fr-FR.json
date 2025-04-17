@@ -109,6 +109,9 @@
     "mark_as_read_error": "Impossible de marquer les articles en double comme lus"
   },
   "search": {
+    "search": "Rechercher",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
     "placeholder": "Rechercher...",
     "clear_date": "Effacer",
     "select_date": "Sélectionner une date",

@@ -109,6 +109,9 @@
     "mark_as_read_error": "标记重复文章为已读失败"
   },
   "search": {
+    "search": "搜索",
+    "confirm": "确定",
+    "cancel": "取消",
     "placeholder": "搜索...",
     "clear_date": "清除",
     "select_date": "选择日期",

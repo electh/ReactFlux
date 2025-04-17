@@ -109,6 +109,9 @@
     "mark_as_read_error": "Failed to mark duplicate articles as read"
   },
   "search": {
+    "search": "Search",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
     "placeholder": "Search...",
     "clear_date": "Clear",
     "select_date": "Select date",
