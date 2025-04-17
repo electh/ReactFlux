@@ -18,7 +18,7 @@ function useVersionCheck() {
   }
 
   useEffect(() => {
-    if (!isAppDataReady || !import.meta.env.PROD) {
+    if (!isAppDataReady || import.meta.env.DEV) {
       return
     }
 

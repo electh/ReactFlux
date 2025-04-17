@@ -10,7 +10,7 @@ const Feed = () => {
   const orderBy = getSettings("orderBy")
   const pageSize = getSettings("pageSize")
 
-  const getFeedEntries = async (offset = 0, status = null) => {
+  const getFeedEntries = async (offset = 0, status = null, starred = false) => {
     const baseParams = {
       baseUrl: `/v1/feeds/${feedId}/entries`,
       orderField: orderBy,
@@ -19,7 +19,9 @@ const Feed = () => {
       status,
     }
 
-    return apiClient.get(buildEntriesUrl(baseParams))
+    const extraParams = { starred }
+
+    return apiClient.get(buildEntriesUrl(baseParams, extraParams))
   }
 
   return (

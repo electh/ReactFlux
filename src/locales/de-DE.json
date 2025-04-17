@@ -94,6 +94,7 @@
     "sort_direction_desc": "Neueste zuerst",
     "sort_direction_asc": "Älteste zuerst",
     "filter_status_all": "Alles",
+    "filter_status_starred": "Lesezeichen",
     "filter_status_unread": "Ungelesen",
     "mark_all_as_read_success": "Alle Artikel als gelesen markiert",
     "mark_all_as_read_error": "Alles als gelesen markieren fehlgeschlagen",

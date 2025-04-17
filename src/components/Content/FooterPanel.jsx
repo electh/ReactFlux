@@ -1,5 +1,11 @@
 import { Button, Notification, Popconfirm, Radio } from "@arco-design/web-react"
-import { IconCheck, IconRefresh } from "@arco-design/web-react/icon"
+import {
+  IconAlignLeft,
+  IconCheck,
+  IconRecord,
+  IconRefresh,
+  IconStarFill,
+} from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 
 import { getCounters } from "@/apis"
@@ -65,6 +71,39 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
     updateSettings({ showStatus: value })
   }
 
+  const baseFilterOptions = [
+    {
+      label: polyglot.t("article_list.filter_status_unread"),
+      value: "unread",
+      icon: <IconRecord />,
+    },
+    {
+      label: polyglot.t("article_list.filter_status_all"),
+      value: "all",
+      icon: <IconAlignLeft />,
+    },
+  ]
+
+  const starredOption = {
+    label: polyglot.t("article_list.filter_status_starred"),
+    value: "starred",
+    icon: <IconStarFill />,
+  }
+
+  const filterOptions = ["category", "feed"].includes(info.from)
+    ? [starredOption, ...baseFilterOptions]
+    : baseFilterOptions
+
+  const renderRadioButton = (option) => {
+    const isSelected = showStatus === option.value
+    return (
+      <Radio value={option.value}>
+        {option.icon}
+        {isSelected && <span style={{ marginLeft: "4px" }}>{option.label}</span>}
+      </Radio>
+    )
+  }
+
   return (
     <div className="entry-panel">
       <Popconfirm
@@ -86,15 +125,10 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
         style={{ visibility: info.from === "history" ? "hidden" : "visible" }}
         type="button"
         value={showStatus}
-        options={[
-          { label: polyglot.t("article_list.filter_status_all"), value: "all" },
-          {
-            label: polyglot.t("article_list.filter_status_unread"),
-            value: "unread",
-          },
-        ]}
         onChange={handleFilterChange}
-      />
+      >
+        {filterOptions.map((option) => renderRadioButton(option))}
+      </Radio.Group>
       <CustomTooltip mini content={polyglot.t("article_list.refresh_tooltip")}>
         <Button
           icon={<IconRefresh />}

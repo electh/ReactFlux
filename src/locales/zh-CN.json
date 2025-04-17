@@ -94,6 +94,7 @@
     "sort_direction_desc": "最新优先",
     "sort_direction_asc": "最旧优先",
     "filter_status_all": "全部",
+    "filter_status_starred": "收藏",
     "filter_status_unread": "未读",
     "mark_all_as_read_success": "所有文章已标记为已读",
     "mark_all_as_read_error": "无法标记所有文章为已读",

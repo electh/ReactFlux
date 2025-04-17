@@ -31,10 +31,20 @@ const useLoadMore = () => {
     setLoadingMore(true)
 
     try {
-      const response =
-        showStatus === "unread"
-          ? await getEntries(offset + pageSize, "unread")
-          : await getEntries(offset + pageSize)
+      let response
+
+      switch (showStatus) {
+        case "starred":
+          response = await getEntries(offset + pageSize, null, true)
+          break
+        case "unread":
+          response = await getEntries(offset + pageSize, "unread")
+          break
+        default:
+          response = await getEntries(offset + pageSize)
+          break
+      }
+
       if (response?.entries?.length > 0) {
         const newEntries = response.entries.map(parseCoverImage)
         updateEntries(newEntries)

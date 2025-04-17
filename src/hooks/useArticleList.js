@@ -43,7 +43,19 @@ const useArticleList = (info, getEntries) => {
     setIsArticleListReady(false)
 
     try {
-      const response = showStatus === "unread" ? await getEntries(0, "unread") : await getEntries()
+      let response
+
+      switch (showStatus) {
+        case "starred":
+          response = await getEntries(0, null, true)
+          break
+        case "unread":
+          response = await getEntries(0, "unread")
+          break
+        default:
+          response = await getEntries()
+          break
+      }
 
       if (!filterDate) {
         switch (info.from) {

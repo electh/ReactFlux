@@ -94,6 +94,7 @@
     "sort_direction_desc": "Newest first",
     "sort_direction_asc": "Oldest first",
     "filter_status_all": "All",
+    "filter_status_starred": "Starred",
     "filter_status_unread": "Unread",
     "mark_all_as_read_success": "All articles marked as read",
     "mark_all_as_read_error": "Failed to mark all as read",

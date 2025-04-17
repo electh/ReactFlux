@@ -11,7 +11,7 @@ const Category = () => {
   const pageSize = getSettings("pageSize")
   const showHiddenFeeds = getSettings("showHiddenFeeds")
 
-  const getCategoryEntries = async (offset = 0, status = null) => {
+  const getCategoryEntries = async (offset = 0, status = null, starred = false) => {
     const baseParams = {
       baseUrl: `/v1/categories/${categoryId}/entries`,
       orderField: orderBy,
@@ -20,7 +20,10 @@ const Category = () => {
       status,
     }
 
-    const extraParams = { globally_visible: !showHiddenFeeds }
+    const extraParams = {
+      globally_visible: !showHiddenFeeds,
+      starred,
+    }
 
     return apiClient.get(buildEntriesUrl(baseParams, extraParams))
   }

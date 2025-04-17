@@ -94,6 +94,7 @@
     "sort_direction_desc": "Las más recientes primero",
     "sort_direction_asc": "Las más antiguas primero",
     "filter_status_all": "Todo",
+    "filter_status_starred": "Favoritos",
     "filter_status_unread": "Sin leer",
     "mark_all_as_read_success": "Todos los artículos marcados como leídos",
     "mark_all_as_read_error": "No se pudo marcar todo como leído",
