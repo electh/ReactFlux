@@ -1,11 +1,26 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: npm
+    directory: /
     schedule:
-      interval: "weekly"
+      interval: weekly
+      day: friday
+      time: "18:00"
+      timezone: Asia/Shanghai
+    ignore:
+      - dependency-name: react
+        versions: [">=19.0.0"]
+      - dependency-name: react-dom
+        versions: [">=19.0.0"]
+      - dependency-name: "@types/react"
+        versions: [">=19.0.0"]
+      - dependency-name: "@types/react-dom"
+        versions: [">=19.0.0"]
 
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: "weekly"
+      interval: weekly
+      day: friday
+      time: "18:00"
+      timezone: Asia/Shanghai
