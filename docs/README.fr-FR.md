@@ -6,6 +6,8 @@ Lire dans d'autres langues : [Deutsch](README.de-DE.md), [English](../README.md)
 
 ReactFlux est une interface web tierce pour [Miniflux](https://github.com/miniflux/v2), visant à offrir une expérience de lecture plus conviviale.
 
+Versions Miniflux prises en charge : 2.1.4 et supérieures.
+
 Les fonctionnalités principales incluent :
 
 - Design d'interface moderne

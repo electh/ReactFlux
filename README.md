@@ -6,6 +6,8 @@ Read in other languages: [Deutsch](docs/README.de-DE.md), [Español](docs/README
 
 ReactFlux is a third-party web frontend for [Miniflux](https://github.com/miniflux/v2), aimed at providing a more user-friendly reading experience.
 
+Supported Miniflux versions: 2.1.4 and higher.
+
 Key features include:
 
 - Modern interface design

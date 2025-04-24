@@ -225,8 +225,10 @@
     "mark_read_on_view": "Ver",
     "enable_swipe_gesture_description": "Habilitar gesto de deslizamiento para cambiar artículos",
     "enable_swipe_gesture_label": "Habilitar gesto de deslizamiento",
-    "swipe_sensitivity_description": "Ajustar la sensibilidad del gesto de deslizamiento",
-    "swipe_sensitivity_label": "Sensibilidad del deslizamiento"
+    "swipe_sensitivity_description": "Ajustar la sensibilidad de los gestos de deslizamiento",
+    "swipe_sensitivity_label": "Sensibilidad de deslizamiento",
+    "update_content_on_fetch_label": "Guardar automáticamente el contenido obtenido",
+    "update_content_on_fetch_description": "Actualizar y guardar automáticamente el contenido obtenido en la base de datos"
   },
   "appearance": {
     "theme_color_label": "Color del tema",

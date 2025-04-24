@@ -225,8 +225,10 @@
     "mark_read_on_view": "Ansehen",
     "enable_swipe_gesture_description": "Swipe-Geste nach links und rechts zum Wechseln von Artikeln aktivieren",
     "enable_swipe_gesture_label": "Swipe-Geste aktivieren",
-    "swipe_sensitivity_description": "Swipe-Geste-Empfindlichkeit anpassen",
-    "swipe_sensitivity_label": "Swipe-Geste-Empfindlichkeit"
+    "swipe_sensitivity_description": "Empfindlichkeit der Wischgesten anpassen",
+    "swipe_sensitivity_label": "Wischempfindlichkeit",
+    "update_content_on_fetch_label": "Abgerufene Inhalte automatisch speichern",
+    "update_content_on_fetch_description": "Abgerufene Inhalte automatisch aktualisieren und in der Datenbank speichern"
   },
   "appearance": {
     "theme_color_label": "Themenfarbe",

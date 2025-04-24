@@ -143,7 +143,9 @@ const useEntryActions = () => {
     try {
       const response = await getOriginalContent(activeContent.id)
       Message.success(polyglot.t("actions.fetched_content_success"))
-      setActiveContent({ ...activeContent, content: response.content })
+      const newContent = response.content
+      const newReadingTime = response.reading_time ?? activeContent.reading_time
+      setActiveContent({ ...activeContent, content: newContent, readingTime: newReadingTime })
     } catch (error) {
       console.error("Failed to fetch content: ", error)
       Message.error(polyglot.t("actions.fetched_content_error"))

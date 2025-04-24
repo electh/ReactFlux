@@ -5,7 +5,9 @@ import SettingItem from "./SettingItem"
 
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
+import { dataState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
+import compareVersions from "@/utils/version"
 
 const languageOptions = [
   { label: "Deutsch", value: "de-DE" },
@@ -16,6 +18,7 @@ const languageOptions = [
 ]
 
 const General = () => {
+  const { version } = useStore(dataState)
   const {
     enableSwipeGesture,
     homePage,
@@ -26,6 +29,7 @@ const General = () => {
     pageSize,
     removeDuplicates,
     swipeSensitivity,
+    updateContentOnFetch,
   } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
   const { isBelowMedium } = useScreenWidth()
@@ -189,6 +193,22 @@ const General = () => {
           onChange={(value) => updateSettings({ markReadOnScroll: value })}
         />
       </SettingItem>
+
+      {compareVersions(version, "2.2.8") >= 0 && (
+        <>
+          <Divider />
+
+          <SettingItem
+            description={polyglot.t("settings.update_content_on_fetch_description")}
+            title={polyglot.t("settings.update_content_on_fetch_label")}
+          >
+            <Switch
+              checked={updateContentOnFetch}
+              onChange={(value) => updateSettings({ updateContentOnFetch: value })}
+            />
+          </SettingItem>
+        </>
+      )}
 
       {isBelowMedium && (
         <>

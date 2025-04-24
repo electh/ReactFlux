@@ -225,8 +225,10 @@
     "mark_read_on_view": "Voir",
     "enable_swipe_gesture_description": "Activer le geste de balayage pour changer d'article",
     "enable_swipe_gesture_label": "Activer le geste de balayage",
-    "swipe_sensitivity_description": "Ajuster la sensibilité du geste de balayage",
-    "swipe_sensitivity_label": "Sensibilité du balayage"
+    "swipe_sensitivity_description": "Ajuster la sensibilité des gestes de balayage",
+    "swipe_sensitivity_label": "Sensibilité du balayage",
+    "update_content_on_fetch_label": "Enregistrer automatiquement le contenu récupéré",
+    "update_content_on_fetch_description": "Mettre à jour et enregistrer automatiquement le contenu récupéré dans la base de données"
   },
   "appearance": {
     "theme_color_label": "Couleur du thème",

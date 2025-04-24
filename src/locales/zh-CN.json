@@ -226,7 +226,9 @@
     "enable_swipe_gesture_description": "启用左右滑动手势来切换文章",
     "enable_swipe_gesture_label": "启用滑动手势",
     "swipe_sensitivity_description": "调整滑动手势的灵敏度",
-    "swipe_sensitivity_label": "滑动灵敏度"
+    "swipe_sensitivity_label": "滑动灵敏度",
+    "update_content_on_fetch_label": "获取原文时自动保存",
+    "update_content_on_fetch_description": "获取原文时自动更新并保存到数据库"
   },
   "appearance": {
     "theme_color_label": "主题颜色",

@@ -13,8 +13,11 @@ export const updateEntriesStatus = async (entryIds, newStatus) =>
 export const toggleEntryStarred = async (entryId) =>
   apiClient.put(`/v1/entries/${entryId}/bookmark`)
 
-export const getOriginalContent = async (entryId) =>
-  apiClient.get(`/v1/entries/${entryId}/fetch-content`)
+export const getOriginalContent = async (entryId) => {
+  const { updateContentOnFetch } = getSettings("updateContentOnFetch")
+  const queryParams = updateContentOnFetch ? "?update_content=true" : ""
+  return apiClient.get(`/v1/entries/${entryId}/fetch-content${queryParams}`)
+}
 
 export const saveToThirdPartyServices = async (entryId) =>
   apiClient.raw(`/v1/entries/${entryId}/save`, { method: "POST" })

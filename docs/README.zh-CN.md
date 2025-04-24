@@ -6,6 +6,8 @@
 
 ReactFlux 是 [Miniflux](https://github.com/miniflux/v2) 的第三方 Web 前端，旨在提供更加友好的阅读体验。
 
+支持的 Miniflux 版本：2.1.4 及更高版本。
+
 主要特性包括：
 
 - 现代化的界面设计
