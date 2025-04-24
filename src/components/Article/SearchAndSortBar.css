@@ -16,12 +16,9 @@
   white-space: nowrap;
   overflow: hidden;
   flex: 1;
-  justify-content: space-between;
 }
 
 .search-and-sort-bar .page-info .title-container {
-  flex: 1;
-  min-width: 0;
   overflow: hidden;
 }
 
@@ -35,14 +32,14 @@
 .search-and-sort-bar .page-info .count-label {
   color: var(--color-text-4);
   margin-left: 6px;
-  flex-shrink: 0;
+  flex: 0 0 auto;
   font-weight: 500;
-  text-align: right;
+  display: inline-block;
 }
 
 .search-and-sort-bar .button-group {
   display: flex;
-  flex-shrink: 0;
+  flex: 0 0 auto;
   gap: 8px;
   margin: 0 8px;
 }

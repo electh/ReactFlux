@@ -209,9 +209,9 @@ const SearchAndSortBar = () => {
   return (
     <div className="search-and-sort-bar" style={{ width: isBelowMedium ? "100%" : 370 }}>
       <SidebarTrigger />
-      {title && (
-        <div className="page-info">
-          <div className="title-container">
+      <div className="page-info">
+        <div className="title-container">
+          {title ? (
             <Typography.Ellipsis
               expandable={false}
               showTooltip={!isBelowMedium}
@@ -219,12 +219,14 @@ const SearchAndSortBar = () => {
             >
               {title}
             </Typography.Ellipsis>
-          </div>
-          {isArticleListReady && count > 0 && (
-            <Typography.Text className="count-label">({count})</Typography.Text>
+          ) : (
+            <div className="placeholder-title"></div>
           )}
         </div>
-      )}
+        {isArticleListReady && count > 0 && (
+          <Typography.Text className="count-label">({count})</Typography.Text>
+        )}
+      </div>
       <div className="button-group">
         <ActiveButton
           active={!!filterString}
