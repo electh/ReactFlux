@@ -7,6 +7,7 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
+import { useEffect } from "react"
 
 import { getCounters } from "@/apis"
 import CustomTooltip from "@/components/ui/CustomTooltip"
@@ -103,6 +104,12 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       </Radio>
     )
   }
+
+  useEffect(() => {
+    if (info.from === "starred" && showStatus !== "unread") {
+      updateSettings({ showStatus: "all" })
+    }
+  }, [info.from, showStatus])
 
   return (
     <div className="entry-panel">

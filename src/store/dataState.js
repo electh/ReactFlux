@@ -7,6 +7,7 @@ import createSetter from "@/utils/nanostores"
 const defaultValue = {
   isAppDataReady: false,
   unreadInfo: {},
+  unreadStarredCount: 0,
   unreadTodayCount: 0,
   starredCount: 0,
   historyCount: 0,
@@ -101,6 +102,7 @@ export const setHistoryCount = createSetter(dataState, "historyCount")
 export const setIsAppDataReady = createSetter(dataState, "isAppDataReady")
 export const setStarredCount = createSetter(dataState, "starredCount")
 export const setUnreadInfo = createSetter(dataState, "unreadInfo")
+export const setUnreadStarredCount = createSetter(dataState, "unreadStarredCount")
 export const setUnreadTodayCount = createSetter(dataState, "unreadTodayCount")
 export const setVersion = createSetter(dataState, "version")
 export const resetData = () => dataState.set(defaultValue)

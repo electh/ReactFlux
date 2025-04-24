@@ -13,6 +13,7 @@ import {
   setHistoryCount,
   setStarredCount,
   setUnreadInfo,
+  setUnreadStarredCount,
   setUnreadTodayCount,
 } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
@@ -71,7 +72,9 @@ const useArticleList = (info, getEntries) => {
             setHistoryCount(response.total)
             break
           case "starred":
-            if (showStatus !== "unread") {
+            if (showStatus === "unread") {
+              setUnreadStarredCount(response.total)
+            } else {
               setStarredCount(response.total)
             }
             break
