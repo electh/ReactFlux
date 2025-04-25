@@ -40,7 +40,7 @@
     "react-syntax-highlighter": "^15.6.1",
     "simplebar-react": "^3.3.0",
     "validator": "^13.15.0",
-    "virtua": "^0.40.3"
+    "virtua": "^0.40.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.1",
