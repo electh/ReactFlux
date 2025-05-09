@@ -63,7 +63,7 @@
     "prettier": "^3.5.3",
     "react-compiler-runtime": "19.1.0-rc.1",
     "rollup-plugin-visualizer": "^5.14.0",
-    "vite": "^6.3.4",
+    "vite": "^6.3.5",
     "vite-plugin-pwa": "^1.0.0",
     "workbox-window": "^7.3.0"
   },
