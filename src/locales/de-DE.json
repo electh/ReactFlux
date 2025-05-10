@@ -102,6 +102,10 @@
     "mark_all_as_read_tooltip": "Alles als gelesen markieren",
     "refresh_tooltip": "Neu laden"
   },
+  "article_toc": {
+    "tooltip": "Inhaltsverzeichnis",
+    "filter_headings": "Überschriften filtern"
+  },
   "content": {
     "mark_as_read_error": "Als gelesen markieren fehlgeschlagen, bitte später erneut versuchen"
   },

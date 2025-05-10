@@ -102,6 +102,10 @@
     "mark_all_as_read_tooltip": "Marcar todo como leído",
     "refresh_tooltip": "Actualizar"
   },
+  "article_toc": {
+    "tooltip": "Tabla de contenidos",
+    "filter_headings": "Filtrar títulos"
+  },
   "content": {
     "mark_as_read_error": "No se pudo marcar como leído, por favor intente de nuevo más tarde"
   },

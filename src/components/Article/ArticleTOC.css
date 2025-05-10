@@ -1,0 +1,27 @@
+.toc-droplist-container {
+  background-color: var(--color-neutral-1);
+  border: 1px solid var(--color-fill-3);
+  border-radius: var(--border-radius-medium);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.toc-filter-container {
+  padding: 16px 16px 0;
+}
+
+.toc-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.toc-menu-container {
+  max-height: 280px;
+  width: 260px;
+}
+
+.toc-menu-container .arco-menu,
+.toc-menu-container .arco-menu-item {
+  background-color: var(--color-neutral-1);
+}

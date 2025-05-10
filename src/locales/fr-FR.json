@@ -102,6 +102,10 @@
     "mark_all_as_read_tooltip": "Marquer tous les articles comme lus",
     "refresh_tooltip": "Rafraîchir"
   },
+  "article_toc": {
+    "tooltip": "Table des matières",
+    "filter_headings": "Filtrer les titres"
+  },
   "content": {
     "mark_as_read_error": "Impossible de marquer comme lu, veuillez réessayer plus tard"
   },

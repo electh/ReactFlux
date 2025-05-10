@@ -4,6 +4,7 @@ import { dataState, feedsState, hiddenFeedIdsState, unreadTotalState } from "./d
 import { getSettings, settingsState } from "./settingsState"
 
 import removeDuplicateEntries from "@/utils/deduplicate"
+import { extractHeadings } from "@/utils/dom"
 import { filterEntries } from "@/utils/filter"
 import createSetter from "@/utils/nanostores"
 import compareVersions from "@/utils/version"
@@ -24,6 +25,14 @@ const defaultValue = {
 }
 
 export const contentState = map(defaultValue)
+
+export const articleHeadingsState = computed([contentState], (content) => {
+  const { activeContent } = content
+  if (!activeContent?.content) {
+    return []
+  }
+  return extractHeadings(activeContent.content)
+})
 
 export const filteredEntriesState = computed(
   [contentState, dataState, hiddenFeedIdsState, settingsState],

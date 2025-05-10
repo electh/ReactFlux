@@ -102,6 +102,10 @@
     "mark_all_as_read_tooltip": "Mark all as read",
     "refresh_tooltip": "Refresh"
   },
+  "article_toc": {
+    "tooltip": "Table of Contents",
+    "filter_headings": "Filter headings"
+  },
   "content": {
     "mark_as_read_error": "Failed to mark as read, please try again later"
   },

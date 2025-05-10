@@ -20,12 +20,19 @@ import {
 import { useStore } from "@nanostores/react"
 import { memo, useEffect, useState } from "react"
 
+import ArticleTOC from "./ArticleTOC"
+
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import useEntryActions from "@/hooks/useEntryActions"
 import useKeyHandlers from "@/hooks/useKeyHandlers"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { contentState, nextContentState, prevContentState } from "@/store/contentState"
+import {
+  articleHeadingsState,
+  contentState,
+  nextContentState,
+  prevContentState,
+} from "@/store/contentState"
 import { dataState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import "./ActionButtons.css"
@@ -42,6 +49,7 @@ const DesktopButtons = memo(
         {commonButtons.status}
         {commonButtons.star}
         {commonButtons.fetch}
+        {commonButtons.toc}
         {hasIntegrations && (
           <CustomTooltip
             mini
@@ -57,14 +65,15 @@ const DesktopButtons = memo(
 )
 DesktopButtons.displayName = "DesktopButtons"
 
-const MobileButtons = memo(({ commonButtons }) => (
+const MobileButtons = memo(({ commonButtons, hasHeadings }) => (
   <div className="mobile-buttons">
     {commonButtons.status}
     {commonButtons.star}
     {commonButtons.prev}
     {commonButtons.close}
     {commonButtons.next}
-    {commonButtons.fetch}
+    {!hasHeadings && commonButtons.fetch}
+    {commonButtons.toc}
     {commonButtons.more}
   </div>
 ))
@@ -74,6 +83,7 @@ const ActionButtons = () => {
   const { activeContent } = useStore(contentState)
   const { hasIntegrations } = useStore(dataState)
   const { polyglot } = useStore(polyglotState)
+  const headings = useStore(articleHeadingsState)
 
   const {
     articleWidth,
@@ -89,6 +99,7 @@ const ActionButtons = () => {
 
   const [dropdownVisible, setDropdownVisible] = useState(false)
   const [isFetchedOriginal, setIsFetchedOriginal] = useState(false)
+  const hasHeadings = headings.length > 0
 
   const {
     handleFetchContent,
@@ -227,6 +238,7 @@ const ActionButtons = () => {
         />
       </CustomTooltip>
     ),
+    toc: hasHeadings ? <ArticleTOC /> : null,
     more: (
       <Dropdown
         popupVisible={dropdownVisible}
@@ -241,6 +253,22 @@ const ActionButtons = () => {
                 onClick={handleSaveToThirdPartyServices}
               >
                 <span>{polyglot.t("article_card.save_to_third_party_services_tooltip")}</span>
+              </Menu.Item>
+            )}
+
+            {isBelowMedium && hasHeadings && (
+              <Menu.Item
+                key="fetch_original"
+                disabled={isFetchedOriginal}
+                onClick={async () => {
+                  await handleFetchContent()
+                  setIsFetchedOriginal(true)
+                }}
+              >
+                <div className="settings-menu-item">
+                  <span>{polyglot.t("article_card.fetch_original_tooltip")}</span>
+                  <IconCloudDownload />
+                </div>
               </Menu.Item>
             )}
 
@@ -372,7 +400,7 @@ const ActionButtons = () => {
   return (
     <div className={`action-buttons ${isBelowMedium ? "mobile" : ""}`}>
       {isBelowMedium ? (
-        <MobileButtons commonButtons={commonButtons} />
+        <MobileButtons commonButtons={commonButtons} hasHeadings={hasHeadings} />
       ) : (
         <DesktopButtons
           commonButtons={commonButtons}

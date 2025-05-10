@@ -102,6 +102,10 @@
     "mark_all_as_read_tooltip": "标记所有文章为已读",
     "refresh_tooltip": "刷新"
   },
+  "article_toc": {
+    "tooltip": "目录大纲",
+    "filter_headings": "筛选标题"
+  },
   "content": {
     "mark_as_read_error": "标记为已读失败，请稍后再试"
   },
