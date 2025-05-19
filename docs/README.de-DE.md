@@ -73,7 +73,7 @@ location / {
 }
 ```
 
-Oder mit Caddy, müssen Sie die folgende Konfiguration hinzufügen:
+Wenn Caddy genutzt wird, muss möglicherweise diese Konfiguration hinzugefügt werden:
 
 ```caddyfile
 try_files {path} {path}/ /index.html
