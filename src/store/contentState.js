@@ -20,7 +20,6 @@ const defaultValue = {
   isArticleListReady: false, // 文章列表是否加载完成
   isArticleLoading: false, // 文章是否正在加载
   loadMoreVisible: false, // 加载更多元素可见性
-  offset: 0, // 文章分页参数
   total: 0, // 接口返回文章总数原始值，不受接口返回数据长度限制
 }
 
@@ -134,6 +133,5 @@ export const setInfoId = createSetter(contentState, "infoId")
 export const setIsArticleListReady = createSetter(contentState, "isArticleListReady")
 export const setIsArticleLoading = createSetter(contentState, "isArticleLoading")
 export const setLoadMoreVisible = createSetter(contentState, "loadMoreVisible")
-export const setOffset = createSetter(contentState, "offset")
 export const setTotal = createSetter(contentState, "total")
 export const resetContent = () => contentState.set(defaultValue)

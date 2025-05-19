@@ -21,13 +21,7 @@ import useEntryActions from "@/hooks/useEntryActions"
 import useKeyHandlers from "@/hooks/useKeyHandlers"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import {
-  contentState,
-  setActiveContent,
-  setInfoFrom,
-  setInfoId,
-  setOffset,
-} from "@/store/contentState"
+import { contentState, setActiveContent, setInfoFrom, setInfoId } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
 import { duplicateHotkeysState, hotkeysState } from "@/store/hotkeysState"
 import { settingsState } from "@/store/settingsState"
@@ -99,7 +93,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   }
 
   const refreshArticleList = async (getEntries) => {
-    setOffset(0)
     if (!isAppDataReady) {
       await fetchAppData()
     } else {

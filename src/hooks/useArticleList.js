@@ -48,10 +48,10 @@ const useArticleList = (info, getEntries) => {
 
       switch (showStatus) {
         case "starred":
-          response = await getEntries(0, null, true)
+          response = await getEntries(null, true)
           break
         case "unread":
-          response = await getEntries(0, "unread")
+          response = await getEntries("unread")
           break
         default:
           response = await getEntries()

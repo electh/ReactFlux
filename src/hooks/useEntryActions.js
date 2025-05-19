@@ -9,14 +9,13 @@ import {
   updateEntriesStatus,
 } from "@/apis"
 import { polyglotState } from "@/hooks/useLanguage"
-import { contentState, setActiveContent, setEntries, setOffset } from "@/store/contentState"
+import { contentState, setActiveContent, setEntries } from "@/store/contentState"
 import {
   setHistoryCount,
   setStarredCount,
   setUnreadInfo,
   setUnreadTodayCount,
 } from "@/store/dataState"
-import { settingsState } from "@/store/settingsState"
 import { checkIsInLast24Hours } from "@/utils/date"
 
 const updateEntries = (entries, updatedEntries) => {
@@ -38,17 +37,10 @@ export const handleEntriesStatusUpdate = (entries, newStatus) => {
     return
   }
 
-  const { showStatus } = settingsState.get()
   if (newStatus === "read") {
     setHistoryCount((prev) => prev + filteredEntries.length)
-    if (showStatus === "unread") {
-      setOffset((prev) => prev - filteredEntries.length)
-    }
   } else {
     setHistoryCount((prev) => Math.max(0, prev - filteredEntries.length))
-    if (showStatus === "unread") {
-      setOffset((prev) => prev + filteredEntries.length)
-    }
   }
 
   for (const entry of filteredEntries) {

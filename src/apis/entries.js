@@ -23,13 +23,13 @@ export const saveToThirdPartyServices = async (entryId) =>
   apiClient.raw(`/v1/entries/${entryId}/save`, { method: "POST" })
 
 export const buildEntriesUrl = (baseParams, extraParams = {}) => {
-  const { baseUrl, orderField, offset, limit, status } = baseParams
+  const { baseUrl, orderField, limit, status } = baseParams
   const { filterDate } = contentState.get()
   const orderDirection = getSettings("orderDirection")
+
   const queryParams = new URLSearchParams({
     order: orderField,
     direction: orderDirection,
-    offset,
     limit,
     ...extraParams,
   })
@@ -39,73 +39,97 @@ export const buildEntriesUrl = (baseParams, extraParams = {}) => {
   }
 
   if (filterDate) {
-    queryParams.append("published_after", getTimestamp(filterDate))
-    queryParams.append("published_before", getDayEndTimestamp(filterDate))
+    if (orderField === "changed_at") {
+      if (!queryParams.get("changed_after")) {
+        queryParams.append("changed_after", getTimestamp(filterDate))
+      }
+      if (!queryParams.get("changed_before")) {
+        queryParams.append("changed_before", getDayEndTimestamp(filterDate))
+      }
+    } else {
+      if (!queryParams.get("published_after")) {
+        queryParams.append("published_after", getTimestamp(filterDate))
+      }
+      if (!queryParams.get("published_before")) {
+        queryParams.append("published_before", getDayEndTimestamp(filterDate))
+      }
+    }
   }
 
   return `${baseUrl}?${queryParams}`
 }
 
-export const getAllEntries = async (offset = 0, status = null) => {
+export const getAllEntries = async (status = null, filterParams = {}) => {
   const orderBy = getSettings("orderBy")
   const pageSize = getSettings("pageSize")
   const showHiddenFeeds = getSettings("showHiddenFeeds")
+
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: orderBy,
-    offset,
     limit: pageSize,
     status,
   }
 
-  const extraParams = { globally_visible: !showHiddenFeeds }
+  const extraParams = {
+    globally_visible: !showHiddenFeeds,
+    ...filterParams,
+  }
 
   return apiClient.get(buildEntriesUrl(baseParams, extraParams))
 }
 
-export const getTodayEntries = async (offset = 0, status = null, limit = null) => {
+export const getTodayEntries = async (status = null, limit = null, filterParams = {}) => {
   const orderBy = getSettings("orderBy")
   const pageSize = limit ?? getSettings("pageSize")
   const showHiddenFeeds = getSettings("showHiddenFeeds")
   const timestamp = get24HoursAgoTimestamp()
+
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: orderBy,
-    offset,
     limit: pageSize,
     status,
   }
+
   const extraParams = {
     globally_visible: !showHiddenFeeds,
     published_after: timestamp,
+    ...filterParams,
   }
 
   return apiClient.get(buildEntriesUrl(baseParams, extraParams))
 }
 
-export const getStarredEntries = async (offset = 0, status = null) => {
+export const getStarredEntries = async (status = null, filterParams = {}) => {
   const pageSize = getSettings("pageSize")
+
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: "changed_at",
-    offset,
     limit: pageSize,
     status,
   }
-  const extraParams = { starred: "true" }
+
+  const extraParams = {
+    starred: "true",
+    ...filterParams,
+  }
 
   return apiClient.get(buildEntriesUrl(baseParams, extraParams))
 }
 
-export const getHistoryEntries = async (offset = 0) => {
+export const getHistoryEntries = async (_status, filterParams = {}) => {
   const pageSize = getSettings("pageSize")
+
   const baseParams = {
     baseUrl: "/v1/entries",
     orderField: "changed_at",
-    offset,
     limit: pageSize,
     status: "read",
   }
 
-  return apiClient.get(buildEntriesUrl(baseParams))
+  const extraParams = { ...filterParams }
+
+  return apiClient.get(buildEntriesUrl(baseParams, extraParams))
 }
