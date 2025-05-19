@@ -272,6 +272,7 @@
     "navigateToPreviousUnreadArticle": "Navigate to the previous unread article in the list",
     "openLinkExternally": "Open the current article's link in a new browser tab",
     "openPhotoSlider": "Open the photo slider for viewing all images in the current article",
+    "refreshArticleList": "Refresh the article list",
     "saveToThirdPartyServices": "Save the current article to third-party services",
     "showHotkeysSettings": "Show the hotkeys settings",
     "toggleReadStatus": "Toggle the read status of the current article",

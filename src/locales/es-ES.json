@@ -272,6 +272,7 @@
     "navigateToPreviousUnreadArticle": "Navegar al artículo previo no leído en la lista",
     "openLinkExternally": "Abrir el enlace del artículo actual en una nueva pestaña del navegador",
     "openPhotoSlider": "Abrir el control deslizante de fotos para ver todas las imágenes del artículo actual",
+    "refreshArticleList": "Actualizar la lista de artículos",
     "saveToThirdPartyServices": "Guardar el artículo actual en servicios de terceros",
     "showHotkeysSettings": "Mostrar los ajustes de los atajos de teclado",
     "toggleReadStatus": "Alternar el estado de lectura del artículo actual",

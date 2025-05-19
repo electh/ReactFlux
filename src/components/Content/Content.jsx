@@ -102,7 +102,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const removeConflictingKeys = (keys) => keys.filter((key) => !duplicateHotkeys.includes(key))
 
   for (const [key, action] of Object.entries(hotkeyActions)) {
-    useHotkeys(removeConflictingKeys(hotkeys[key]), action)
+    useHotkeys(removeConflictingKeys(hotkeys[key]), action, { useKey: true })
   }
 
   const handleSwiping = (eventData) => {

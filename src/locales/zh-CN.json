@@ -272,6 +272,7 @@
     "navigateToPreviousUnreadArticle": "在列表中导航到上一篇未读文章",
     "openLinkExternally": "在当前文章的链接中打开一个新浏览器标签",
     "openPhotoSlider": "打开当前文章的图片浏览器，查看所有图片",
+    "refreshArticleList": "刷新文章列表",
     "saveToThirdPartyServices": "保存当前文章到第三方服务",
     "showHotkeysSettings": "显示快捷键设置",
     "toggleReadStatus": "切换当前文章的阅读状态 (已读/未读)",
