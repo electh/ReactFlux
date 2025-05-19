@@ -12,6 +12,7 @@ const defaultValue = {
   navigateToPreviousUnreadArticle: ["shift+p", "shift+k", "ctrl+left"],
   openLinkExternally: ["v"],
   openPhotoSlider: ["i"],
+  refreshArticleList: ["r"],
   saveToThirdPartyServices: ["s"],
   showHotkeysSettings: ["shift+?"],
   toggleReadStatus: ["m"],

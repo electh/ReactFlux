@@ -71,6 +71,18 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     handleToggleStatus,
   } = useEntryActions()
 
+  const refreshArticleList = async (getEntries) => {
+    if (!isAppDataReady) {
+      await fetchAppData()
+    } else {
+      await fetchArticleList(getEntries)
+    }
+  }
+
+  const handleRefreshArticleList = () => {
+    refreshArticleList(getEntries)
+  }
+
   const hotkeyActions = {
     exitDetailView,
     fetchOriginalArticle: () => fetchOriginalArticle(handleFetchContent),
@@ -80,6 +92,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     navigateToPreviousUnreadArticle: () => navigateToPreviousUnreadArticle(),
     openLinkExternally,
     openPhotoSlider,
+    refreshArticleList: handleRefreshArticleList,
     saveToThirdPartyServices: () => saveToThirdPartyServices(handleSaveToThirdPartyServices),
     showHotkeysSettings,
     toggleReadStatus: () => toggleReadStatus(() => handleToggleStatus(activeContent)),
@@ -90,14 +103,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   for (const [key, action] of Object.entries(hotkeyActions)) {
     useHotkeys(removeConflictingKeys(hotkeys[key]), action)
-  }
-
-  const refreshArticleList = async (getEntries) => {
-    if (!isAppDataReady) {
-      await fetchAppData()
-    } else {
-      await fetchArticleList(getEntries)
-    }
   }
 
   const handleSwiping = (eventData) => {
