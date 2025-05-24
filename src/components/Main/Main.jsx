@@ -1,7 +1,7 @@
 import { Form, Input, Message, Modal, Select, Switch } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
-import { useState } from "react"
-import { Outlet, useNavigate } from "react-router"
+import { useEffect, useState } from "react"
+import { Outlet, useLocation, useNavigate } from "react-router"
 
 import { addFeed } from "@/apis"
 import { ContextProvider } from "@/components/Content/ContentContext"
@@ -9,6 +9,7 @@ import SettingsTabs from "@/components/Settings/SettingsTabs"
 import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
 import useModalToggle from "@/hooks/useModalToggle"
+import useScreenWidth from "@/hooks/useScreenWidth"
 import { categoriesState, feedsState } from "@/store/dataState"
 import { includesIgnoreCase } from "@/utils/filter"
 import "./Main.css"
@@ -18,12 +19,21 @@ const categoryRule = [{ required: true }]
 const crawlerRule = [{ type: "boolean" }]
 
 const SettingsModal = () => {
+  const location = useLocation()
+
+  const { isBelowMedium } = useScreenWidth()
   const {
     setSettingsModalVisible,
     setSettingsTabsActiveTab,
     settingsModalVisible,
     settingsTabsActiveTab,
   } = useModalToggle()
+
+  useEffect(() => {
+    if (isBelowMedium && settingsModalVisible) {
+      setSettingsModalVisible(false)
+    }
+  }, [location.pathname])
 
   return (
     <Modal
@@ -161,13 +171,13 @@ const AddFeedModal = () => {
 }
 
 const Main = () => (
-  <div className="main">
-    <ContextProvider>
-      <Outlet />
-    </ContextProvider>
-    <SettingsModal />
-    <AddFeedModal />
-  </div>
-)
+    <div className="main">
+      <ContextProvider>
+        <Outlet />
+      </ContextProvider>
+      <SettingsModal />
+      <AddFeedModal />
+    </div>
+  )
 
 export default Main

@@ -16,7 +16,7 @@ import FadeTransition from "@/components/ui/FadeTransition"
 import PlyrPlayer from "@/components/ui/PlyrPlayer"
 import usePhotoSlider from "@/hooks/usePhotoSlider"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { contentState, setFilterString, setFilterType } from "@/store/contentState"
+import { contentState, setActiveContent, setFilterString, setFilterType } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
 import { extractImageSources } from "@/utils/images"
@@ -243,6 +243,10 @@ const ArticleDetail = forwardRef((_, ref) => {
   const handleAuthorFilter = () => {
     setFilterType("author")
     setFilterString(activeContent.author)
+    console.log(isBelowMedium)
+    if (isBelowMedium) {
+      setActiveContent(null)
+    }
   }
 
   const togglePhotoSlider = (index) => {

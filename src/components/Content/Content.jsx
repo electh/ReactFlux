@@ -3,6 +3,7 @@ import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { AnimatePresence } from "framer-motion"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useLocation } from "react-router"
 import { useSwipeable } from "react-swipeable"
 
 import FooterPanel from "./FooterPanel"
@@ -38,6 +39,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
   const [isSwipingRight, setIsSwipingRight] = useState(false)
   const cardsRef = useRef(null)
+
+  const location = useLocation()
 
   useDocumentTitle()
 
@@ -147,6 +150,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   useEffect(() => {
     refreshArticleList(getEntries)
   }, [filterDate, orderDirection, showStatus])
+
+  useEffect(() => {
+    if (isBelowMedium && activeContent) {
+      setActiveContent(null)
+    }
+  }, [location.pathname])
 
   return (
     <>
