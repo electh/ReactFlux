@@ -423,7 +423,7 @@ const MoreOptionsDropdown = () => {
 
 const Sidebar = () => {
   const { homePage } = useStore(settingsState)
-  const { isAppDataReady } = useStore(dataState)
+  const { isCoreDataReady } = useStore(dataState)
   const { polyglot } = useStore(polyglotState)
 
   const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`])
@@ -469,8 +469,8 @@ const Sidebar = () => {
               <MoreOptionsDropdown />
             </div>
           </div>
-          <Skeleton animation={true} loading={!isAppDataReady} text={{ rows: 6 }} />
-          {isAppDataReady && (
+          <Skeleton animation={true} loading={!isCoreDataReady} text={{ rows: 6 }} />
+          {isCoreDataReady && (
             <Collapse bordered={false} triggerRegion="icon">
               <CategoryGroup />
             </Collapse>

@@ -14,6 +14,7 @@ import {
   setHasIntegrations,
   setHistoryCount,
   setIsAppDataReady,
+  setIsCoreDataReady,
   setUnreadInfo,
   setUnreadTodayCount,
   setVersion,
@@ -125,12 +126,18 @@ const useAppData = () => {
 
     isLoading.current = true
     setIsAppDataReady(false)
+    setIsCoreDataReady(false)
 
     try {
-      const [counters, feeds, categories, versionData, todayData] = await Promise.all([
-        fetchCounters(),
+      const [feeds, categories] = await Promise.all([
         fetchFeeds(),
         fetchCategories(),
+      ])
+      
+      setIsCoreDataReady(true)
+      
+      const [counters, versionData, todayData] = await Promise.all([
+        fetchCounters(),
         getVersion(),
         fetchUnreadToday(),
       ])
