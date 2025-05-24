@@ -53,7 +53,7 @@ const AddFeedModal = () => {
   const [feedModalLoading, setFeedModalLoading] = useState(false)
   const [feedForm] = Form.useForm()
 
-  const { fetchAppData } = useAppData()
+  const { fetchFeedRelatedData } = useAppData()
   const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle()
 
   const navigate = useNavigate()
@@ -71,7 +71,7 @@ const AddFeedModal = () => {
       const response = await addFeed(url, categoryId, isFullText)
       Message.loading({ id, duration: 0, content: polyglot.t("main.add_feed_loading") })
 
-      fetchAppData()
+      fetchFeedRelatedData()
         .then(() => {
           Message.success({ id, content: polyglot.t("main.add_feed_success") })
           setAddFeedModalVisible(false)
@@ -80,7 +80,7 @@ const AddFeedModal = () => {
           return null
         })
         .catch((error) => {
-          console.error("Failed to fetch app data: ", error)
+          console.error("Failed to fetch feed related data: ", error)
           Message.error({ id, content: polyglot.t("main.add_feed_error") })
         })
     } catch (error) {

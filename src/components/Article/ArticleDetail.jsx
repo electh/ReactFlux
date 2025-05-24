@@ -74,7 +74,7 @@ const decodeAndParseCodeContent = (preElement) => {
   return preElement.children
     .map((child) => {
       if (child.type === "tag" && child.name === "p") {
-        return (child.children[0]?.data ?? "") + "\n"
+        return `${child.children[0]?.data ?? ""}\n`
       }
       if (child.type === "tag" && child.name === "strong") {
         return child.children[0]?.data ?? ""

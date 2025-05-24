@@ -39,6 +39,7 @@ export default [
       ...js.configs.recommended.rules,
       curly: ["error", "all"],
       "no-unused-vars": "off",
+      "operator-assignment": "error",
       "prefer-destructuring": [
         "error",
         {
@@ -48,6 +49,7 @@ export default [
           },
         },
       ],
+      "prefer-template": "error",
 
       // Import rules
       "import/extensions": [
