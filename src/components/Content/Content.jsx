@@ -3,7 +3,7 @@ import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { AnimatePresence } from "framer-motion"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
+import { useLocation } from "react-router"
 import { useSwipeable } from "react-swipeable"
 
 import FooterPanel from "./FooterPanel"
@@ -16,14 +16,14 @@ import FadeTransition from "@/components/ui/FadeTransition"
 import useAppData from "@/hooks/useAppData"
 import useArticleList from "@/hooks/useArticleList"
 import useContentContext from "@/hooks/useContentContext"
+import useContentHotkeys from "@/hooks/useContentHotkeys"
 import useDocumentTitle from "@/hooks/useDocumentTitle"
-import useEntryActions from "@/hooks/useEntryActions"
 import useKeyHandlers from "@/hooks/useKeyHandlers"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { contentState, setActiveContent, setInfoFrom, setInfoId } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
-import { duplicateHotkeysState, hotkeysState } from "@/store/hotkeysState"
+import { duplicateHotkeysState } from "@/store/hotkeysState"
 import { settingsState } from "@/store/settingsState"
 
 import "./Content.css"
@@ -35,41 +35,22 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
   const duplicateHotkeys = useStore(duplicateHotkeysState)
-  const hotkeys = useStore(hotkeysState)
 
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
   const [isSwipingRight, setIsSwipingRight] = useState(false)
   const cardsRef = useRef(null)
 
+  const location = useLocation()
+
   useDocumentTitle()
 
   const { entryDetailRef, entryListRef, handleEntryClick } = useContentContext()
 
-  const {
-    exitDetailView,
-    fetchOriginalArticle,
-    navigateToNextArticle,
-    navigateToNextUnreadArticle,
-    navigateToPreviousArticle,
-    navigateToPreviousUnreadArticle,
-    openLinkExternally,
-    openPhotoSlider,
-    saveToThirdPartyServices,
-    showHotkeysSettings,
-    toggleReadStatus,
-    toggleStarStatus,
-  } = useKeyHandlers()
+  const { navigateToNextArticle, navigateToPreviousArticle, showHotkeysSettings } = useKeyHandlers()
 
   const { fetchAppData } = useAppData()
   const { fetchArticleList } = useArticleList(info, getEntries)
   const { isBelowMedium } = useScreenWidth()
-
-  const {
-    handleFetchContent,
-    handleSaveToThirdPartyServices,
-    handleToggleStarred,
-    handleToggleStatus,
-  } = useEntryActions()
 
   const refreshArticleList = async (getEntries) => {
     if (!isAppDataReady) {
@@ -83,27 +64,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     refreshArticleList(getEntries)
   }
 
-  const hotkeyActions = {
-    exitDetailView,
-    fetchOriginalArticle: () => fetchOriginalArticle(handleFetchContent),
-    navigateToNextArticle: () => navigateToNextArticle(),
-    navigateToNextUnreadArticle: () => navigateToNextUnreadArticle(),
-    navigateToPreviousArticle: () => navigateToPreviousArticle(),
-    navigateToPreviousUnreadArticle: () => navigateToPreviousUnreadArticle(),
-    openLinkExternally,
-    openPhotoSlider,
-    refreshArticleList: handleRefreshArticleList,
-    saveToThirdPartyServices: () => saveToThirdPartyServices(handleSaveToThirdPartyServices),
-    showHotkeysSettings,
-    toggleReadStatus: () => toggleReadStatus(() => handleToggleStatus(activeContent)),
-    toggleStarStatus: () => toggleStarStatus(() => handleToggleStarred(activeContent)),
-  }
-
-  const removeConflictingKeys = (keys) => keys.filter((key) => !duplicateHotkeys.includes(key))
-
-  for (const [key, action] of Object.entries(hotkeyActions)) {
-    useHotkeys(removeConflictingKeys(hotkeys[key]), action, { useKey: true })
-  }
+  useContentHotkeys({ handleRefreshArticleList })
 
   const handleSwiping = (eventData) => {
     setIsSwipingLeft(eventData.dir === "Left")
@@ -189,6 +150,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   useEffect(() => {
     refreshArticleList(getEntries)
   }, [filterDate, orderDirection, showStatus])
+
+  useEffect(() => {
+    if (isBelowMedium && activeContent) {
+      setActiveContent(null)
+    }
+  }, [location.pathname])
 
   return (
     <>

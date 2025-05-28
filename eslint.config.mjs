@@ -37,7 +37,19 @@ export default [
     rules: {
       // Base ESLint rules
       ...js.configs.recommended.rules,
+      curly: ["error", "all"],
       "no-unused-vars": "off",
+      "operator-assignment": "error",
+      "prefer-destructuring": [
+        "error",
+        {
+          VariableDeclarator: {
+            array: false,
+            object: true,
+          },
+        },
+      ],
+      "prefer-template": "error",
 
       // Import rules
       "import/extensions": [

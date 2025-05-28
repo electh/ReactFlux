@@ -20,7 +20,7 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
 
   const imgRef = useRef(null)
 
-  const fetchedIcon = useFeedIcons(iconId)
+  const fetchedIcon = useFeedIcons(iconId, feed)
   const fetchedIconURL = fetchedIcon?.url
 
   useEffect(() => {

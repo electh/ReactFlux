@@ -133,3 +133,48 @@ export const getHistoryEntries = async (_status, filterParams = {}) => {
 
   return apiClient.get(buildEntriesUrl(baseParams, extraParams))
 }
+
+export const getCategoryEntries = async (
+  categoryId,
+  status = null,
+  starred = false,
+  filterParams = {},
+) => {
+  const orderBy = getSettings("orderBy")
+  const pageSize = getSettings("pageSize")
+  const showHiddenFeeds = getSettings("showHiddenFeeds")
+
+  const baseParams = {
+    baseUrl: `/v1/categories/${categoryId}/entries`,
+    orderField: orderBy,
+    limit: pageSize,
+    status,
+  }
+
+  const extraParams = {
+    globally_visible: !showHiddenFeeds,
+    starred,
+    ...filterParams,
+  }
+
+  return apiClient.get(buildEntriesUrl(baseParams, extraParams))
+}
+
+export const getFeedEntries = async (feedId, status = null, starred = false, filterParams = {}) => {
+  const orderBy = getSettings("orderBy")
+  const pageSize = getSettings("pageSize")
+
+  const baseParams = {
+    baseUrl: `/v1/feeds/${feedId}/entries`,
+    orderField: orderBy,
+    limit: pageSize,
+    status,
+  }
+
+  const extraParams = {
+    starred,
+    ...filterParams,
+  }
+
+  return apiClient.get(buildEntriesUrl(baseParams, extraParams))
+}
