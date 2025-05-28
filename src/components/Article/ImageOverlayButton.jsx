@@ -10,31 +10,32 @@ import "./ImageOverlayButton.css"
 
 const ImageComponent = ({ imgNode, isIcon, isBigImage, index, togglePhotoSlider }) => {
   const { fontSize } = useStore(settingsState)
+  const altText = imgNode.attribs.alt
 
   return isIcon ? (
-    <img
-      {...imgNode.attribs}
-      alt={imgNode.attribs.alt ?? "image"}
-      className="icon-image"
-      style={{
-        height: `${fontSize}rem`,
-      }}
-    />
-  ) : (
-    <div style={{ position: "relative" }}>
+    <Tooltip content={altText} disabled={!altText}>
       <img
         {...imgNode.attribs}
-        alt={imgNode.attribs.alt ?? "image"}
-        className={isBigImage ? "big-image" : ""}
-      />
-      <button
-        className="image-overlay-button"
-        type="button"
-        onClick={(event) => {
-          event.preventDefault()
-          togglePhotoSlider(index)
+        alt={altText}
+        className="icon-image"
+        style={{
+          height: `${fontSize}rem`,
         }}
       />
+    </Tooltip>
+  ) : (
+    <div style={{ position: "relative" }}>
+      <img {...imgNode.attribs} alt={altText} className={isBigImage ? "big-image" : ""} />
+      <Tooltip content={altText} disabled={!altText}>
+        <button
+          className="image-overlay-button"
+          type="button"
+          onClick={(event) => {
+            event.preventDefault()
+            togglePhotoSlider(index)
+          }}
+        />
+      </Tooltip>
     </div>
   )
 }

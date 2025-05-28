@@ -133,6 +133,29 @@ const handleContentTable = (node) => {
   return node
 }
 
+// Helper function to process figcaption content
+const processFigcaptionContent = (children) => {
+  if (!children) {
+    return null
+  }
+
+  return children.map((child, index) => {
+    if (child.type === "text") {
+      return child.data
+    }
+    if (child.type === "tag") {
+      const Tag = child.name
+      const props = child.attribs || {}
+      return (
+        <Tag key={index} {...props}>
+          {child.children ? processFigcaptionContent(child.children) : null}
+        </Tag>
+      )
+    }
+    return null
+  })
+}
+
 const handleFigure = (node, imageSources, togglePhotoSlider) => {
   const firstChild = node.children[0]
   const hasImages = node.children.some((child) => child.name === "img")
@@ -149,19 +172,28 @@ const handleFigure = (node, imageSources, togglePhotoSlider) => {
     return codeContent ? <CodeBlock>{codeContent}</CodeBlock> : null
   }
 
-  // Handle multiple images in figure
+  // Handle multiple images in figure with figcaption support
   if (hasImages) {
     return (
-      <>
-        {node.children.map(
-          (child, index) =>
-            child.name === "img" && (
+      <figure>
+        {node.children.map((child, index) => {
+          if (child.name === "img") {
+            return (
               <div key={`figure-img-${index}`}>
                 {handleImage(child, imageSources, togglePhotoSlider)}
               </div>
-            ),
-        )}
-      </>
+            )
+          }
+          if (child.name === "figcaption") {
+            return (
+              <figcaption key={`figure-caption-${index}`}>
+                {processFigcaptionContent(child.children)}
+              </figcaption>
+            )
+          }
+          return null
+        })}
+      </figure>
     )
   }
 
