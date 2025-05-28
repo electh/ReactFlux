@@ -16,7 +16,12 @@ import FadeTransition from "@/components/ui/FadeTransition"
 import PlyrPlayer from "@/components/ui/PlyrPlayer"
 import usePhotoSlider from "@/hooks/usePhotoSlider"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { contentState, setActiveContent, setFilterString, setFilterType } from "@/store/contentState"
+import {
+  contentState,
+  setActiveContent,
+  setFilterString,
+  setFilterType,
+} from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
 import { extractImageSources } from "@/utils/images"
@@ -231,12 +236,13 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 })
 
 const ArticleDetail = forwardRef((_, ref) => {
-  const scrollContainerRef = useRef(null)
   const navigate = useNavigate()
   const { isBelowMedium } = useScreenWidth()
+
   const { activeContent } = useStore(contentState)
   const { articleWidth, edgeToEdgeImages, fontFamily, fontSize, titleAlignment } =
     useStore(settingsState)
+  const scrollContainerRef = useRef(null)
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, selectedIndex, setSelectedIndex } =
     usePhotoSlider()
@@ -278,21 +284,21 @@ const ArticleDetail = forwardRef((_, ref) => {
 
   // Focus the scrollable area when activeContent changes
   useEffect(() => {
-    if (scrollContainerRef.current && typeof scrollContainerRef.current.getScrollElement === 'function') {
-      const node = scrollContainerRef.current.getScrollElement();
-      if (node && typeof node.focus === 'function') {
-        node.focus();
-      }
+    if (scrollContainerRef.current) {
+      const scrollElement = scrollContainerRef.current.getScrollElement()
+      scrollElement?.focus()
     }
   }, [activeContent.id])
 
   return (
     <article
+      ref={ref}
       className={`article-content ${edgeToEdgeImages ? "edge-to-edge" : ""}`}
+      tabIndex={-1}
     >
       <SimpleBar
-        className="scroll-container"
         ref={scrollContainerRef}
+        className="scroll-container"
         scrollableNodeProps={{ tabIndex: -1 }}
       >
         <FadeTransition y={20}>
