@@ -378,7 +378,7 @@ const EditFeedModal = ({ visible, setVisible, feedForm, selectedFeed }) => {
 }
 
 const FeedList = () => {
-  const { isAppDataReady } = useStore(dataState)
+  const { isCoreDataReady } = useStore(dataState)
   const { showDetailedRelativeTime } = useStore(settingsState)
   const filterType = useStore(filterTypeState)
   const tableData = useStore(tableDataState)
@@ -635,7 +635,7 @@ const FeedList = () => {
         className="feed-table"
         columns={columns}
         data={tableData}
-        loading={!isAppDataReady}
+        loading={!isCoreDataReady}
         pagination={pagination}
         scroll={{ x: true }}
         size="small"

@@ -250,7 +250,6 @@ const ArticleDetail = forwardRef((_, ref) => {
   const handleAuthorFilter = () => {
     setFilterType("author")
     setFilterString(activeContent.author)
-    console.log(isBelowMedium)
     if (isBelowMedium) {
       setActiveContent(null)
     }
