@@ -2,7 +2,7 @@ import { Divider, Tag, Typography } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import ReactHtmlParser from "html-react-parser"
 import { littlefoot } from "littlefoot"
-import { forwardRef, useEffect } from "react"
+import { forwardRef, useEffect, useRef } from "react"
 import { PhotoSlider } from "react-photo-view"
 import { useNavigate } from "react-router"
 import "react-photo-view/dist/react-photo-view.css"
@@ -231,6 +231,7 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => ({
 })
 
 const ArticleDetail = forwardRef((_, ref) => {
+  const scrollContainerRef = useRef(null)
   const navigate = useNavigate()
   const { isBelowMedium } = useScreenWidth()
   const { activeContent } = useStore(contentState)
@@ -271,13 +272,25 @@ const ArticleDetail = forwardRef((_, ref) => {
     littlefoot()
   }, [])
 
+  // Focus the scrollable area when activeContent changes
+  useEffect(() => {
+    if (scrollContainerRef.current && typeof scrollContainerRef.current.getScrollElement === 'function') {
+      const node = scrollContainerRef.current.getScrollElement();
+      if (node && typeof node.focus === 'function') {
+        node.focus();
+      }
+    }
+  }, [activeContent.id])
+
   return (
     <article
-      ref={ref}
       className={`article-content ${edgeToEdgeImages ? "edge-to-edge" : ""}`}
-      tabIndex={-1}
     >
-      <SimpleBar className="scroll-container">
+      <SimpleBar
+        className="scroll-container"
+        ref={scrollContainerRef}
+        scrollableNodeProps={{ tabIndex: -1 }}
+      >
         <FadeTransition y={20}>
           <div
             className="article-header"
