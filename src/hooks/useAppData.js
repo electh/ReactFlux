@@ -38,7 +38,7 @@ const useAppData = () => {
 
   const fetchUnreadToday = useCallback(async () => {
     try {
-      const unreadTodayData = await getTodayEntries(0, "unread")
+      const unreadTodayData = await getTodayEntries("unread")
       setUnreadTodayCount(unreadTodayData.total ?? 0)
       return unreadTodayData
     } catch (error) {
@@ -129,13 +129,10 @@ const useAppData = () => {
     setIsCoreDataReady(false)
 
     try {
-      const [feeds, categories] = await Promise.all([
-        fetchFeeds(),
-        fetchCategories(),
-      ])
-      
+      const [feeds, categories] = await Promise.all([fetchFeeds(), fetchCategories()])
+
       setIsCoreDataReady(true)
-      
+
       const [counters, versionData, todayData] = await Promise.all([
         fetchCounters(),
         getVersion(),

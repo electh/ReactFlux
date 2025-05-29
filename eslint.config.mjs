@@ -1,6 +1,7 @@
 import globals from "globals"
-import js from "@eslint/js"
 import importPlugin from "eslint-plugin-import-x"
+import js from "@eslint/js"
+import prettier from "eslint-config-prettier"
 import promise from "eslint-plugin-promise"
 import react from "eslint-plugin-react"
 import reactCompiler from "eslint-plugin-react-compiler"
@@ -17,6 +18,8 @@ export default [
       "src/lib/utils.ts",
     ],
   },
+  js.configs.recommended,
+  prettier,
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
@@ -35,8 +38,6 @@ export default [
       "react-refresh": reactRefresh,
     },
     rules: {
-      // Base ESLint rules
-      ...js.configs.recommended.rules,
       curly: ["error", "all"],
       "no-unused-vars": "off",
       "operator-assignment": "error",

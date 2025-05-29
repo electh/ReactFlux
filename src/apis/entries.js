@@ -22,6 +22,23 @@ export const getOriginalContent = async (entryId) => {
 export const saveToThirdPartyServices = async (entryId) =>
   apiClient.raw(`/v1/entries/${entryId}/save`, { method: "POST" })
 
+const addTimeRangeParams = (queryParams, afterParam, beforeParam, filterDate) => {
+  if (!queryParams.get(afterParam)) {
+    queryParams.append(afterParam, getTimestamp(filterDate))
+  }
+  if (!queryParams.get(beforeParam)) {
+    queryParams.append(beforeParam, getDayEndTimestamp(filterDate))
+  }
+}
+
+const addDateFilters = (orderField, queryParams, filterDate) => {
+  if (orderField === "changed_at") {
+    addTimeRangeParams(queryParams, "changed_after", "changed_before", filterDate)
+  } else {
+    addTimeRangeParams(queryParams, "published_after", "published_before", filterDate)
+  }
+}
+
 export const buildEntriesUrl = (baseParams, extraParams = {}) => {
   const { baseUrl, orderField, limit, status } = baseParams
   const { filterDate } = contentState.get()
@@ -39,21 +56,7 @@ export const buildEntriesUrl = (baseParams, extraParams = {}) => {
   }
 
   if (filterDate) {
-    if (orderField === "changed_at") {
-      if (!queryParams.get("changed_after")) {
-        queryParams.append("changed_after", getTimestamp(filterDate))
-      }
-      if (!queryParams.get("changed_before")) {
-        queryParams.append("changed_before", getDayEndTimestamp(filterDate))
-      }
-    } else {
-      if (!queryParams.get("published_after")) {
-        queryParams.append("published_after", getTimestamp(filterDate))
-      }
-      if (!queryParams.get("published_before")) {
-        queryParams.append("published_before", getDayEndTimestamp(filterDate))
-      }
-    }
+    addDateFilters(orderField, queryParams, filterDate)
   }
 
   return `${baseUrl}?${queryParams}`
@@ -79,9 +82,9 @@ export const getAllEntries = async (status = null, filterParams = {}) => {
   return apiClient.get(buildEntriesUrl(baseParams, extraParams))
 }
 
-export const getTodayEntries = async (status = null, limit = null, filterParams = {}) => {
+export const getTodayEntries = async (status = null, filterParams = {}) => {
   const orderBy = getSettings("orderBy")
-  const pageSize = limit ?? getSettings("pageSize")
+  const pageSize = getSettings("pageSize")
   const showHiddenFeeds = getSettings("showHiddenFeeds")
   const timestamp = get24HoursAgoTimestamp()
 
