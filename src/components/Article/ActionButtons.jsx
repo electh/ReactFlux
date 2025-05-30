@@ -250,7 +250,7 @@ const ActionButtons = () => {
             {hasIntegrations && isBelowMedium && (
               <Menu.Item
                 key="save_to_third_party_services"
-                onClick={handleSaveToThirdPartyServices}
+                onClick={() => handleSaveToThirdPartyServices(activeContent)}
               >
                 <span>{polyglot.t("article_card.save_to_third_party_services_tooltip")}</span>
               </Menu.Item>
@@ -290,7 +290,7 @@ const ActionButtons = () => {
               </Menu.Item>
             )}
 
-            <Menu.Item key="open-in-browser" onClick={handleOpenLinkExternally}>
+            <Menu.Item key="open-in-browser" onClick={() => handleOpenLinkExternally(activeContent)}>
               <div className="settings-menu-item">
                 <span>{polyglot.t("article_card.open_link_externally_tooltip")}</span>
                 <IconLaunch />
@@ -404,7 +404,7 @@ const ActionButtons = () => {
       ) : (
         <DesktopButtons
           commonButtons={commonButtons}
-          handleSaveToThirdPartyServices={handleSaveToThirdPartyServices}
+          handleSaveToThirdPartyServices={() => handleSaveToThirdPartyServices(activeContent)}
           hasIntegrations={hasIntegrations}
           navigateToNextArticle={navigateToNextArticle}
           navigateToPreviousArticle={navigateToPreviousArticle}

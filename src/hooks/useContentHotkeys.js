@@ -62,7 +62,7 @@ const useContentHotkeys = ({ handleRefreshArticleList }) => {
   useHotkeys(removeConflictingKeys(hotkeys.refreshArticleList), handleRefreshArticleList)
 
   useHotkeys(removeConflictingKeys(hotkeys.saveToThirdPartyServices), () =>
-    saveToThirdPartyServices(handleSaveToThirdPartyServices),
+    saveToThirdPartyServices(() => handleSaveToThirdPartyServices(activeContent)),
   )
 
   useHotkeys(removeConflictingKeys(hotkeys.showHotkeysSettings), showHotkeysSettings, {
