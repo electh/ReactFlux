@@ -36,7 +36,7 @@ importers:
         specifier: ^11.11.1
         version: 11.11.1
       hls.js:
-        specifier: ^1.6.2
+        specifier: ^1.6.3
         version: 1.6.3
       html-react-parser:
         specifier: ^5.2.5
