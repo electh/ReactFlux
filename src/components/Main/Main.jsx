@@ -171,13 +171,13 @@ const AddFeedModal = () => {
 }
 
 const Main = () => (
-    <div className="main">
-      <ContextProvider>
-        <Outlet />
-      </ContextProvider>
-      <SettingsModal />
-      <AddFeedModal />
-    </div>
-  )
+  <div className="main">
+    <ContextProvider>
+      <Outlet />
+    </ContextProvider>
+    <SettingsModal />
+    <AddFeedModal />
+  </div>
+)
 
 export default Main
