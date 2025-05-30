@@ -30,7 +30,7 @@ importers:
         specifier: ^1.11.13
         version: 1.11.13
       framer-motion:
-        specifier: ^12.12.1
+        specifier: ^12.15.0
         version: 12.15.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       highlight.js:
         specifier: ^11.11.1
