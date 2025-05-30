@@ -142,7 +142,7 @@ importers:
         specifier: ^16.1.0
         version: 16.2.0
       lint-staged:
-        specifier: ^16.0.0
+        specifier: ^16.1.0
         version: 16.1.0
       prettier:
         specifier: ^3.5.3
