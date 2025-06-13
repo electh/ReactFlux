@@ -6,6 +6,7 @@ const defaultValue = {
   articleWidth: 75,
   coverDisplayMode: "auto",
   edgeToEdgeImages: false,
+  enableContextMenu: true,
   enableSwipeGesture: true,
   fontFamily: "system-ui",
   fontSize: 1.05,

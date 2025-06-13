@@ -227,6 +227,8 @@
     "mark_read_by_description": "Choisir comment les articles sont marqués comme lus :",
     "mark_read_manually": "Marquer",
     "mark_read_on_view": "Voir",
+    "enable_context_menu_label": "Activer le menu contextuel",
+    "enable_context_menu_description": "Activer le menu contextuel du clic droit sur les cartes d'articles",
     "enable_swipe_gesture_description": "Activer le geste de balayage pour changer d'article",
     "enable_swipe_gesture_label": "Activer le geste de balayage",
     "swipe_sensitivity_description": "Ajuster la sensibilité des gestes de balayage",

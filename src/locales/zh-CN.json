@@ -227,6 +227,8 @@
     "mark_read_by_description": "选择标记文章为已读的方式：",
     "mark_read_manually": "手动",
     "mark_read_on_view": "查看时自动",
+    "enable_context_menu_label": "启用右键菜单",
+    "enable_context_menu_description": "在文章卡片上启用右键菜单功能",
     "enable_swipe_gesture_description": "启用左右滑动手势来切换文章",
     "enable_swipe_gesture_label": "启用滑动手势",
     "swipe_sensitivity_description": "调整滑动手势的灵敏度",

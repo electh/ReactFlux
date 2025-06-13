@@ -227,6 +227,8 @@
     "mark_read_by_description": "Artikel automatisch bei Auswahl oder nur manuell als gelesen markieren?",
     "mark_read_manually": "Manuell",
     "mark_read_on_view": "Beim Ansehen",
+    "enable_context_menu_label": "Kontextmenü aktivieren",
+    "enable_context_menu_description": "Rechtsklick-Kontextmenü auf Artikelkarten aktivieren",
     "enable_swipe_gesture_description": "Erlaubt Wischen nach links und rechts zum Navigieren zwischen Artikeln",
     "enable_swipe_gesture_label": "Wischgeste aktivieren",
     "swipe_sensitivity_description": "Empfindlichkeit der Wischgesten anpassen",

@@ -290,7 +290,10 @@ const ActionButtons = () => {
               </Menu.Item>
             )}
 
-            <Menu.Item key="open-in-browser" onClick={() => handleOpenLinkExternally(activeContent)}>
+            <Menu.Item
+              key="open-in-browser"
+              onClick={() => handleOpenLinkExternally(activeContent)}
+            >
               <div className="settings-menu-item">
                 <span>{polyglot.t("article_card.open_link_externally_tooltip")}</span>
                 <IconLaunch />

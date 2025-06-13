@@ -70,11 +70,12 @@ const extractTextFromHtml = (html) => {
 
 const ArticleCard = ({ entry, handleEntryClick, children }) => {
   const {
+    coverDisplayMode,
+    enableContextMenu,
     markReadOnScroll,
-    showFeedIcon,
     showDetailedRelativeTime,
     showEstimatedReadingTime,
-    coverDisplayMode,
+    showFeedIcon,
   } = useStore(settingsState)
   const { activeContent } = useStore(contentState)
   const { hasIntegrations } = useStore(dataState)
@@ -187,6 +188,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
 
   return (
     <Dropdown
+      disabled={!enableContextMenu}
       position="bl"
       trigger="contextMenu"
       droplist={

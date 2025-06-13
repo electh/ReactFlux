@@ -227,6 +227,8 @@
     "mark_read_by_description": "Seleccionar cómo marcar los artículos como leídos:",
     "mark_read_manually": "Manual",
     "mark_read_on_view": "Ver",
+    "enable_context_menu_label": "Habilitar menú contextual",
+    "enable_context_menu_description": "Habilitar menú contextual de clic derecho en tarjetas de artículos",
     "enable_swipe_gesture_description": "Habilitar gesto de deslizamiento para cambiar artículos",
     "enable_swipe_gesture_label": "Habilitar gesto de deslizamiento",
     "swipe_sensitivity_description": "Ajustar la sensibilidad de los gestos de deslizamiento",
