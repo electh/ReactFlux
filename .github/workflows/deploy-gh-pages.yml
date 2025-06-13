@@ -17,6 +17,13 @@ on:
       - "eslint.config.mjs"
       - "README.md"
 
+  workflow_run:
+    workflows: ["Dependabot auto-merge"]
+    types:
+      - completed
+    branches:
+      - main
+
   workflow_dispatch:
 
 permissions:
@@ -26,6 +33,7 @@ jobs:
   build-and-deploy:
     concurrency: ci-${{github.ref}}
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == "success" || github.event_name != "workflow_run" }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -15,11 +15,19 @@ on:
       - "eslint.config.mjs"
       - "README.md"
 
+  workflow_run:
+    workflows: ["Dependabot auto-merge"]
+    types:
+      - completed
+    branches:
+      - main
+
   workflow_dispatch:
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == "success" || github.event_name != "workflow_run" }}
     steps:
       - uses: actions/checkout@v4
 
