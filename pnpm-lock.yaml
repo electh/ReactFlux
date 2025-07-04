@@ -84,8 +84,8 @@ importers:
         specifier: ^15.6.1
         version: 15.6.1(react@18.3.1)
       simplebar-react:
-        specifier: ^3.3.1
-        version: 3.3.1(react@18.3.1)
+        specifier: ^3.3.2
+        version: 3.3.2(react@18.3.1)
       validator:
         specifier: ^13.15.0
         version: 13.15.15
@@ -3227,11 +3227,11 @@ packages:
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
 
-  simplebar-core@1.3.1:
-    resolution: {integrity: sha512-d2JFNivCgxykWz9//MhUbpmxXmL4qDfZpUulmeY4KE1cq2amr+6rZhIOv6JyCprWP3yFlayYb0J5ApKV81r6Sg==}
+  simplebar-core@1.3.2:
+    resolution: {integrity: sha512-qKgTTuTqapjsFGkNhCjyPhysnbZGpQqNmjk0nOYjFN5ordC/Wjvg+RbYCyMSnW60l/Z0ZS82GbNltly6PMUH1w==}
 
-  simplebar-react@3.3.1:
-    resolution: {integrity: sha512-+jcY1Sd6HA2asoySOb5G+YTKboiNsQ0e0TP5JxoC3fw3PpiKTUx4sCj9fEr6Rz9CkViQmazLM4OipMFU18Mf4A==}
+  simplebar-react@3.3.2:
+    resolution: {integrity: sha512-ZsgcQhKLtt5ra0BRIJeApfkTBQCa1vUPA/WXI4HcYReFt+oCEOvdVz6rR/XsGJcKxTlCRPmdGx1uJIUChupo+A==}
     peerDependencies:
       react: '>=16.8.0'
 
@@ -7170,15 +7170,15 @@ snapshots:
     dependencies:
       is-arrayish: 0.3.2
 
-  simplebar-core@1.3.1:
+  simplebar-core@1.3.2:
     dependencies:
       lodash: 4.17.21
       lodash-es: 4.17.21
 
-  simplebar-react@3.3.1(react@18.3.1):
+  simplebar-react@3.3.2(react@18.3.1):
     dependencies:
       react: 18.3.1
-      simplebar-core: 1.3.1
+      simplebar-core: 1.3.2
 
   slice-ansi@5.0.0:
     dependencies:
