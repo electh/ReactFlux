@@ -16,7 +16,7 @@
   "dependencies": {
     "@arco-design/color": "^0.4.0",
     "@arco-design/web-react": "^2.66.1",
-    "@nanostores/persistent": "^1.0.0",
+    "@nanostores/persistent": "^1.1.0",
     "@nanostores/react": "^1.0.0",
     "canvas-confetti": "^1.9.3",
     "classnames": "^2.5.1",
