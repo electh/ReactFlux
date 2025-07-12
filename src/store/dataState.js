@@ -3,6 +3,7 @@ import { computed, map } from "nanostores"
 import { settingsState } from "./settingsState"
 
 import createSetter from "@/utils/nanostores"
+import { sortMixedLanguageArray } from "@/utils/locales"
 
 const defaultValue = {
   isAppDataReady: false,
@@ -20,29 +21,36 @@ const defaultValue = {
 
 export const dataState = map(defaultValue)
 
-export const feedsState = computed(dataState, (data) => {
+export const feedsState = computed([dataState, settingsState], (data, settings) => {
   const { unreadInfo, feedsData } = data
+  const { language } = settings
+
   const feedsWithUnread = feedsData.map((feed) => ({
     ...feed,
     unreadCount: unreadInfo[feed.id] ?? 0,
   }))
 
-  return feedsWithUnread.sort((a, b) => a.title.localeCompare(b.title, "en"))
+  return sortMixedLanguageArray(feedsWithUnread, "title", language)
 })
 
-export const categoriesState = computed([dataState, feedsState], (data, feeds) => {
-  const { categoriesData } = data
-  const categoriesWithUnread = categoriesData.map((category) => {
-    const feedsInCategory = feeds.filter((feed) => feed.category.id === category.id)
-    return {
-      ...category,
-      unreadCount: feedsInCategory.reduce((acc, feed) => acc + (feed.unreadCount ?? 0), 0),
-      feedCount: feedsInCategory.length,
-    }
-  })
+export const categoriesState = computed(
+  [dataState, feedsState, settingsState],
+  (data, feeds, settings) => {
+    const { categoriesData } = data
+    const { language } = settings
 
-  return categoriesWithUnread.sort((a, b) => a.title.localeCompare(b.title, "en"))
-})
+    const categoriesWithUnread = categoriesData.map((category) => {
+      const feedsInCategory = feeds.filter((feed) => feed.category.id === category.id)
+      return {
+        ...category,
+        unreadCount: feedsInCategory.reduce((acc, feed) => acc + (feed.unreadCount ?? 0), 0),
+        feedCount: feedsInCategory.length,
+      }
+    })
+
+    return sortMixedLanguageArray(categoriesWithUnread, "title", language)
+  },
+)
 
 export const hiddenCategoryIdsState = computed(categoriesState, (categories) => {
   return categories.filter((category) => category.hide_globally).map((category) => category.id)

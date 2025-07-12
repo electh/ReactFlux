@@ -3,12 +3,11 @@ const compareVersions = (version1, version2) => {
   const versionParts2 = version2.split(".")
 
   for (let i = 0; i < Math.max(versionParts1.length, versionParts2.length); i++) {
-    const part1 = versionParts1[i] || "0"
-    const part2 = versionParts2[i] || "0"
+    const part1 = parseInt(versionParts1[i] || "0", 10)
+    const part2 = parseInt(versionParts2[i] || "0", 10)
 
-    const comparison = part1.localeCompare(part2, undefined, { numeric: true })
-    if (comparison !== 0) {
-      return comparison
+    if (part1 !== part2) {
+      return part1 < part2 ? -1 : 1
     }
   }
 
