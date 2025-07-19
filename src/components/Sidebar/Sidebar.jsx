@@ -46,8 +46,8 @@ import {
   filteredCategoriesState,
   unreadTotalState,
 } from "@/store/dataState"
-import { expandedCategoriesState, setExpandedCategories } from "@/store/sidebarState"
 import { settingsState, updateSettings } from "@/store/settingsState"
+import { expandedCategoriesState, setExpandedCategories } from "@/store/sidebarState"
 
 import "./Sidebar.css"
 
@@ -476,8 +476,8 @@ const Sidebar = () => {
             <Collapse
               activeKey={expandedCategories}
               bordered={false}
-              onChange={(_key, keys) => setExpandedCategories(keys)}
               triggerRegion="icon"
+              onChange={(_key, keys) => setExpandedCategories(keys)}
             >
               <CategoryGroup />
             </Collapse>

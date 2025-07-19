@@ -115,7 +115,7 @@ export const getStarredEntries = async (status = null, filterParams = {}) => {
   }
 
   const extraParams = {
-    starred: "true",
+    starred: true,
     ...filterParams,
   }
 
@@ -156,8 +156,11 @@ export const getCategoryEntries = async (
 
   const extraParams = {
     globally_visible: !showHiddenFeeds,
-    starred,
     ...filterParams,
+  }
+
+  if (starred) {
+    extraParams.starred = starred
   }
 
   return apiClient.get(buildEntriesUrl(baseParams, extraParams))
@@ -174,9 +177,10 @@ export const getFeedEntries = async (feedId, status = null, starred = false, fil
     status,
   }
 
-  const extraParams = {
-    starred,
-    ...filterParams,
+  const extraParams = { ...filterParams }
+
+  if (starred) {
+    extraParams.starred = starred
   }
 
   return apiClient.get(buildEntriesUrl(baseParams, extraParams))

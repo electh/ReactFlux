@@ -2,8 +2,8 @@ import { computed, map } from "nanostores"
 
 import { settingsState } from "./settingsState"
 
-import createSetter from "@/utils/nanostores"
 import { sortMixedLanguageArray } from "@/utils/locales"
+import createSetter from "@/utils/nanostores"
 
 const defaultValue = {
   isAppDataReady: false,
