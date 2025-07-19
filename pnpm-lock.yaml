@@ -12,8 +12,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@arco-design/web-react':
-        specifier: ^2.66.1
-        version: 2.66.1(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^2.66.2
+        version: 2.66.2(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@nanostores/persistent':
         specifier: ^1.1.0
         version: 1.1.0(nanostores@1.0.1)
@@ -181,8 +181,8 @@ packages:
   '@arco-design/color@0.4.0':
     resolution: {integrity: sha512-s7p9MSwJgHeL8DwcATaXvWT3m2SigKpxx4JA1BGPHL4gfvaQsmQfrLBDpjOJFJuJ2jG2dMt3R3P8Pm9E65q18g==}
 
-  '@arco-design/web-react@2.66.1':
-    resolution: {integrity: sha512-A3KKlNFHXldFrB2hGzLGu+RIGPYwizNnkYk3ttXEN/TnbzqhC1eGQqdo53j4hpLL0/DrQbSkOZNzlQgEdeQcGA==}
+  '@arco-design/web-react@2.66.2':
+    resolution: {integrity: sha512-2GyBa+V1MX4HFkfTQSTv5gNtX7y3PZQQgcEpmae3SgEonz6elvuaPYDGZQ3g/kzSryJXDLRHw6zVjwWdFRZnHQ==}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
@@ -2898,8 +2898,8 @@ packages:
   rangetouch@2.0.1:
     resolution: {integrity: sha512-sln+pNSc8NGaHoLzwNBssFSf/rSYkqeBXzX1AtJlkJiUaVSJSbRAWJk+4omsXkN+EJalzkZhWQ3th1m0FpR5xA==}
 
-  react-clientside-effect@1.2.7:
-    resolution: {integrity: sha512-gce9m0Pk/xYYMEojRI9bgvqQAkl6hm7ozQvqWPyQx+kULiatdHgkNM1QG4DQRx5N9BAzWSCJmt9mMV8/KsdgVg==}
+  react-clientside-effect@1.2.8:
+    resolution: {integrity: sha512-ma2FePH0z3px2+WOu6h+YycZcEvFmmxIlAb62cF52bG86eMySciO/EQZeQMXd07kPCYB0a1dWDT5J+KE9mCDUw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
 
@@ -3700,10 +3700,10 @@ snapshots:
     dependencies:
       color: 3.2.1
 
-  '@arco-design/web-react@2.66.1(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@arco-design/web-react@2.66.2(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@arco-design/color': 0.4.0
-      '@babel/runtime': 7.27.0
+      '@babel/runtime': 7.27.6
       b-tween: 0.3.3
       b-validate: 1.5.3
       compute-scroll-into-view: 1.0.20
@@ -5505,7 +5505,7 @@ snapshots:
 
   dom-helpers@5.2.1:
     dependencies:
-      '@babel/runtime': 7.27.0
+      '@babel/runtime': 7.27.6
       csstype: 3.1.3
 
   dom-serializer@2.0.0:
@@ -6738,9 +6738,9 @@ snapshots:
 
   rangetouch@2.0.1: {}
 
-  react-clientside-effect@1.2.7(react@18.3.1):
+  react-clientside-effect@1.2.8(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.27.0
+      '@babel/runtime': 7.27.6
       react: 18.3.1
 
   react-compiler-runtime@19.1.0-rc.2(react@18.3.1):
@@ -6755,11 +6755,11 @@ snapshots:
 
   react-focus-lock@2.13.6(@types/react@18.3.23)(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.27.0
+      '@babel/runtime': 7.27.6
       focus-lock: 1.3.6
       prop-types: 15.8.1
       react: 18.3.1
-      react-clientside-effect: 1.2.7(react@18.3.1)
+      react-clientside-effect: 1.2.8(react@18.3.1)
       use-callback-ref: 1.3.3(@types/react@18.3.23)(react@18.3.1)
       use-sidecar: 1.1.3(@types/react@18.3.23)(react@18.3.1)
     optionalDependencies:
@@ -6813,7 +6813,7 @@ snapshots:
 
   react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.27.0
+      '@babel/runtime': 7.27.6
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
