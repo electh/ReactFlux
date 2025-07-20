@@ -19,7 +19,7 @@ import { atom, computed } from "nanostores"
 import { Fragment, useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 
-import { deleteFeed, refreshAllFeed, refreshFeed, updateFeed } from "@/apis"
+import { deleteFeed, getFeedEntries, refreshAllFeed, refreshFeed, updateFeed } from "@/apis"
 import CustomLink from "@/components/ui/CustomLink"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import { polyglotState } from "@/hooks/useLanguage"
@@ -413,18 +413,46 @@ const FeedList = () => {
     })
   }
 
-  const removeFeed = async (feed) => {
+  const deleteFeedDirectly = async (feed) => {
     try {
       const response = await deleteFeed(feed.key)
       if (response.status === 204) {
         setFeedsData((feeds) => feeds.filter((f) => f.id !== feed.key))
-        Message.success(polyglot.t("feed_table.remove_feed_success", { title: feed.title }))
+        Message.success(
+          polyglot.t("feed_table.remove_feed_success", {
+            title: feed.title,
+          }),
+        )
       } else {
-        Message.error(polyglot.t("feed_table.remove_feed_error", { title: feed.title }))
+        throw new Error(`Unexpected status: ${response.status}`)
       }
     } catch (error) {
-      console.error(`Failed to unfollow feed: ${feed.title}`, error)
-      Message.error(polyglot.t("feed_table.remove_feed_error", { title: feed.title }))
+      console.error(`Failed to delete feed: ${feed.title}`, error)
+      Message.error(
+        polyglot.t("feed_table.remove_feed_error", {
+          title: feed.title,
+        }),
+      )
+    }
+  }
+
+  const removeFeed = async (feed) => {
+    try {
+      const starredEntries = await getFeedEntries(feed.key, null, true)
+      if (starredEntries.total > 0) {
+        Modal.confirm({
+          title: polyglot.t("feed_table.remove_feed_confirm_title"),
+          content: polyglot.t("feed_table.remove_feed_confirm_content", {
+            count: starredEntries.total,
+          }),
+          onOk: () => deleteFeedDirectly(feed),
+        })
+      } else {
+        await deleteFeedDirectly(feed)
+      }
+    } catch (error) {
+      console.error("Failed to check starred entries:", error)
+      Message.error(polyglot.t("feed_table.check_starred_error"))
     }
   }
 
