@@ -48,11 +48,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const { navigateToNextArticle, navigateToPreviousArticle, showHotkeysSettings } = useKeyHandlers()
 
-  const { fetchAppData } = useAppData()
+  const { fetchAppData, fetchFeedRelatedData } = useAppData()
   const { fetchArticleList } = useArticleList(info, getEntries)
   const { isBelowMedium } = useScreenWidth()
 
-  const refreshArticleList = async (getEntries) => {
+  const refreshArticleListOnChange = async () => {
     if (!isAppDataReady) {
       await fetchAppData()
     } else {
@@ -60,11 +60,15 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   }
 
-  const handleRefreshArticleList = () => {
-    refreshArticleList(getEntries)
+  const handleManualRefresh = async () => {
+    if (!isAppDataReady) {
+      await fetchAppData()
+    } else {
+      await Promise.all([fetchArticleList(getEntries), fetchFeedRelatedData()])
+    }
   }
 
-  useContentHotkeys({ handleRefreshArticleList })
+  useContentHotkeys({ handleRefreshArticleList: handleManualRefresh })
 
   const handleSwiping = (eventData) => {
     setIsSwipingLeft(eventData.dir === "Left")
@@ -137,18 +141,18 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     if (activeContent) {
       setActiveContent(null)
     }
-    refreshArticleList(getEntries)
+    refreshArticleListOnChange()
   }, [info])
 
   useEffect(() => {
     if (["starred", "history"].includes(info.from)) {
       return
     }
-    refreshArticleList(getEntries)
+    refreshArticleListOnChange()
   }, [orderBy])
 
   useEffect(() => {
-    refreshArticleList(getEntries)
+    refreshArticleListOnChange()
   }, [filterDate, orderDirection, showStatus])
 
   useEffect(() => {
@@ -175,7 +179,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         <FooterPanel
           info={info}
           markAllAsRead={markAllAsRead}
-          refreshArticleList={() => refreshArticleList(getEntries)}
+          refreshArticleList={handleManualRefresh}
         />
       </div>
       {activeContent ? (
