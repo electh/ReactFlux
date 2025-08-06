@@ -122,7 +122,7 @@ export const getStarredEntries = async (status = null, filterParams = {}) => {
   return apiClient.get(buildEntriesUrl(baseParams, extraParams))
 }
 
-export const getHistoryEntries = async (_status, filterParams = {}) => {
+export const getHistoryEntries = async (filterParams = {}) => {
   const pageSize = getSettings("pageSize")
 
   const baseParams = {
