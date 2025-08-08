@@ -3,10 +3,14 @@ import { useStore } from "@nanostores/react"
 import ReactHtmlParser from "html-react-parser"
 import { littlefoot } from "littlefoot"
 import { forwardRef, useEffect, useRef } from "react"
-import { PhotoSlider } from "react-photo-view"
 import { useNavigate } from "react-router"
-import "react-photo-view/dist/react-photo-view.css"
 import SimpleBar from "simplebar-react"
+import Lightbox from "yet-another-react-lightbox"
+import Counter from "yet-another-react-lightbox/plugins/counter"
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen"
+import Zoom from "yet-another-react-lightbox/plugins/zoom"
+import "yet-another-react-lightbox/styles.css"
+import "yet-another-react-lightbox/plugins/counter.css"
 
 import CodeBlock from "./CodeBlock"
 import ImageOverlayButton from "./ImageOverlayButton"
@@ -398,16 +402,15 @@ const ArticleDetail = forwardRef((_, ref) => {
               />
             )}
             {parsedHtml}
-            <PhotoSlider
-              images={imageSources.map((item) => ({ src: item, key: item }))}
+            <Lightbox
+              carousel={{ finite: true }}
+              close={() => setIsPhotoSliderVisible(false)}
               index={selectedIndex}
-              loop={false}
-              maskClassName={"img-mask"}
-              maskOpacity={0.6}
-              visible={isPhotoSliderVisible}
-              onIndexChange={setSelectedIndex}
-              onClose={() => {
-                setIsPhotoSliderVisible(false)
+              open={isPhotoSliderVisible}
+              plugins={[Counter, Fullscreen, Zoom]}
+              slides={imageSources.map((item) => ({ src: item }))}
+              on={{
+                view: ({ index }) => setSelectedIndex(index),
               }}
             />
           </div>

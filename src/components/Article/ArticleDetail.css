@@ -148,11 +148,6 @@ p {
   max-width: 100%;
 }
 
-.img-mask {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
 @media screen and (max-width: 768px) {
   .edge-to-edge .article-body .big-image {
     border-radius: 0;
