@@ -5,6 +5,9 @@ import compareVersions from "@/utils/version"
 
 export const getCategories = async () => apiClient.get("/v1/categories")
 
+export const refreshCategoryFeed = async (id) =>
+  apiClient.raw(`/v1/categories/${id}/refresh`, { method: "PUT" })
+
 export const addCategory = async (title) => apiClient.post("/v1/categories", { title })
 
 export const deleteCategory = async (id) =>

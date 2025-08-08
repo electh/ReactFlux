@@ -161,7 +161,7 @@ const useAppData = () => {
     updateUnreadInfo,
   ])
 
-  return { fetchAppData, fetchFeedRelatedData }
+  return { fetchAppData, fetchCounters, fetchFeedRelatedData }
 }
 
 export default useAppData

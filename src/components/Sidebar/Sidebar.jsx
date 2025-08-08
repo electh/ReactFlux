@@ -4,6 +4,7 @@ import {
   Collapse,
   Divider,
   Dropdown,
+  Form,
   Menu,
   Notification,
   Skeleton,
@@ -12,13 +13,16 @@ import {
 import {
   IconBook,
   IconCalendar,
+  IconDelete,
   IconDownload,
+  IconEdit,
   IconEye,
   IconEyeInvisible,
   IconHistory,
   IconMinusCircle,
   IconMoreVertical,
   IconRecord,
+  IconRefresh,
   IconRight,
   IconStar,
   IconUnorderedList,
@@ -35,15 +39,21 @@ import AddFeed from "./AddFeed.jsx"
 import Profile from "./Profile.jsx"
 
 import { exportOPML, importOPML } from "@/apis"
+import { markCategoryAsRead, refreshCategoryFeed } from "@/apis/categories"
+import EditCategoryModal from "@/components/ui/EditCategoryModal"
+import EditFeedModal from "@/components/ui/EditFeedModal"
 import FeedIcon from "@/components/ui/FeedIcon"
 import useAppData from "@/hooks/useAppData"
+import useCategoryOperations from "@/hooks/useCategoryOperations"
+import { useFeedOperations } from "@/hooks/useFeedOperations"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { contentState, setActiveContent } from "@/store/contentState"
+import { contentState, setActiveContent, setEntries } from "@/store/contentState"
 import {
   dataState,
   feedsGroupedByIdState,
   filteredCategoriesState,
+  setUnreadInfo,
   unreadTotalState,
 } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
@@ -53,7 +63,14 @@ import "./Sidebar.css"
 
 const MenuItem = Menu.Item
 
-const CategoryTitle = ({ category, path }) => {
+const CategoryTitle = ({
+  category,
+  path,
+  onEditCategory,
+  onRefreshCategory,
+  onMarkAllAsRead,
+  onDeleteCategory,
+}) => {
   const feedsGroupedById = useStore(feedsGroupedByIdState)
   const unreadCount = feedsGroupedById[category.id]?.reduce(
     (acc, feed) => acc + feed.unreadCount,
@@ -61,6 +78,7 @@ const CategoryTitle = ({ category, path }) => {
   )
 
   const { isBelowMedium } = useScreenWidth()
+  const { polyglot } = useStore(polyglotState)
 
   const navigate = useNavigate()
 
@@ -69,42 +87,88 @@ const CategoryTitle = ({ category, path }) => {
     setActiveContent(null)
   }
 
+  const canDelete = !feedsGroupedById[category.id] || feedsGroupedById[category.id].length === 0
+
   return (
-    <div
-      role="button"
-      style={{ cursor: "pointer" }}
-      tabIndex={0}
-      className={classNames("category-title", {
-        "submenu-active": path === `/category/${category.id}`,
-        "submenu-inactive": path !== `/category/${category.id}`,
-      })}
-      onClick={handleNavigation}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          handleNavigation()
-        }
-      }}
+    <Dropdown
+      position="bl"
+      trigger="contextMenu"
+      droplist={
+        <Menu>
+          <MenuItem key="edit-category" onClick={() => onEditCategory(category)}>
+            <div className="settings-menu-item">
+              <span>{polyglot.t("sidebar.context_menu.edit_category")}</span>
+              <IconEdit />
+            </div>
+          </MenuItem>
+
+          <MenuItem key="refresh-category" onClick={() => onRefreshCategory(category)}>
+            <div className="settings-menu-item">
+              <span>{polyglot.t("sidebar.context_menu.refresh_category")}</span>
+              <IconRefresh />
+            </div>
+          </MenuItem>
+
+          <MenuItem key="mark-all-as-read" onClick={() => onMarkAllAsRead(category)}>
+            <div className="settings-menu-item">
+              <span>{polyglot.t("sidebar.context_menu.mark_all_as_read")}</span>
+              <IconMinusCircle />
+            </div>
+          </MenuItem>
+
+          {canDelete && (
+            <>
+              <Divider style={{ margin: "4px 0" }} />
+
+              <MenuItem key="delete-category" onClick={() => onDeleteCategory(category)}>
+                <div className="settings-menu-item">
+                  <span style={{ color: "var(--color-danger-light-4)" }}>
+                    {polyglot.t("sidebar.context_menu.delete_category")}
+                  </span>
+                  <IconDelete style={{ color: "var(--color-danger-light-4)" }} />
+                </div>
+              </MenuItem>
+            </>
+          )}
+        </Menu>
+      }
     >
-      <Typography.Ellipsis
-        expandable={false}
-        showTooltip={!isBelowMedium}
-        style={{
-          width: unreadCount ? "80%" : "100%",
-          fontWeight: 500,
+      <div
+        role="button"
+        style={{ cursor: "pointer" }}
+        tabIndex={0}
+        className={classNames("category-title", {
+          "submenu-active": path === `/category/${category.id}`,
+          "submenu-inactive": path !== `/category/${category.id}`,
+        })}
+        onClick={handleNavigation}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            handleNavigation()
+          }
         }}
       >
-        {category.title}
-      </Typography.Ellipsis>
-      {unreadCount > 0 && (
         <Typography.Ellipsis
-          className="unread-count"
           expandable={false}
-          style={{ fontWeight: 500 }}
+          showTooltip={!isBelowMedium}
+          style={{
+            width: unreadCount ? "80%" : "100%",
+            fontWeight: 500,
+          }}
         >
-          {unreadCount}
+          {category.title}
         </Typography.Ellipsis>
-      )}
-    </div>
+        {unreadCount > 0 && (
+          <Typography.Ellipsis
+            className="unread-count"
+            expandable={false}
+            style={{ fontWeight: 500 }}
+          >
+            {unreadCount}
+          </Typography.Ellipsis>
+        )}
+      </div>
+    </Dropdown>
   )
 }
 
@@ -181,8 +245,9 @@ const SidebarMenuItems = () => {
   )
 }
 
-const FeedMenuItem = ({ feed }) => {
+const FeedMenuItem = ({ feed, onEditFeed, onRefreshFeed, onMarkAllAsRead, onDeleteFeed }) => {
   const { showFeedIcon } = useStore(settingsState)
+  const { polyglot } = useStore(polyglotState)
 
   const { isBelowMedium } = useScreenWidth()
 
@@ -191,40 +256,86 @@ const FeedMenuItem = ({ feed }) => {
   const isSelected = location.pathname === `/feed/${feed.id}`
 
   return (
-    <MenuItem
-      key={`/feed/${feed.id}`}
-      className={classNames({ "arco-menu-selected": isSelected })}
-      style={{ position: "relative", overflow: "hidden" }}
-      onClick={(e) => {
-        e.stopPropagation()
-        navigate(`/feed/${feed.id}`)
-        setActiveContent(null)
-      }}
+    <Dropdown
+      position="bl"
+      trigger="contextMenu"
+      droplist={
+        <Menu>
+          <MenuItem key="edit-feed" onClick={() => onEditFeed(feed)}>
+            <div className="settings-menu-item">
+              <span>{polyglot.t("sidebar.context_menu.edit_feed")}</span>
+              <IconEdit />
+            </div>
+          </MenuItem>
+
+          <MenuItem key="refresh-feed" onClick={() => onRefreshFeed(feed)}>
+            <div className="settings-menu-item">
+              <span>{polyglot.t("sidebar.context_menu.refresh_feed")}</span>
+              <IconRefresh />
+            </div>
+          </MenuItem>
+
+          <MenuItem key="mark-all-as-read" onClick={() => onMarkAllAsRead(feed)}>
+            <div className="settings-menu-item">
+              <span>{polyglot.t("sidebar.context_menu.mark_all_as_read")}</span>
+              <IconMinusCircle />
+            </div>
+          </MenuItem>
+
+          <Divider style={{ margin: "4px 0" }} />
+
+          <MenuItem key="delete-feed" onClick={() => onDeleteFeed(feed)}>
+            <div className="settings-menu-item">
+              <span style={{ color: "var(--color-danger-light-4)" }}>
+                {polyglot.t("sidebar.context_menu.delete_feed")}
+              </span>
+              <IconDelete style={{ color: "var(--color-danger-light-4)" }} />
+            </div>
+          </MenuItem>
+        </Menu>
+      }
     >
-      <div className="custom-menu-item">
-        <Typography.Ellipsis
-          expandable={false}
-          showTooltip={!isBelowMedium}
-          style={{
-            width: feed.unreadCount ? "80%" : "100%",
-            paddingLeft: "20px",
-            boxSizing: "border-box",
-          }}
-        >
-          {showFeedIcon && <FeedIcon className="feed-icon-sidebar" feed={feed} />}
-          {feed.title}
-        </Typography.Ellipsis>
-        {feed.unreadCount !== 0 && (
-          <Typography.Ellipsis className="item-count" expandable={false}>
-            {feed.unreadCount}
+      <MenuItem
+        key={`/feed/${feed.id}`}
+        className={classNames({ "arco-menu-selected": isSelected })}
+        style={{ position: "relative", overflow: "hidden" }}
+        onClick={(e) => {
+          e.stopPropagation()
+          navigate(`/feed/${feed.id}`)
+          setActiveContent(null)
+        }}
+      >
+        <div className="custom-menu-item">
+          <Typography.Ellipsis
+            expandable={false}
+            showTooltip={!isBelowMedium}
+            style={{
+              width: feed.unreadCount ? "80%" : "100%",
+              paddingLeft: "20px",
+              boxSizing: "border-box",
+            }}
+          >
+            {showFeedIcon && <FeedIcon className="feed-icon-sidebar" feed={feed} />}
+            {feed.title}
           </Typography.Ellipsis>
-        )}
-      </div>
-    </MenuItem>
+          {feed.unreadCount !== 0 && (
+            <Typography.Ellipsis className="item-count" expandable={false}>
+              {feed.unreadCount}
+            </Typography.Ellipsis>
+          )}
+        </div>
+      </MenuItem>
+    </Dropdown>
   )
 }
 
-const FeedMenuGroup = ({ categoryId }) => {
+const FeedMenuGroup = ({
+  categoryId,
+  onEditFeed,
+  onRefreshFeed,
+  onMarkAllAsRead,
+  onDeleteFeed,
+}) => {
   const { showUnreadFeedsOnly } = useStore(settingsState)
   const feedsGroupedById = useStore(feedsGroupedByIdState)
 
@@ -250,14 +361,30 @@ const FeedMenuGroup = ({ categoryId }) => {
     >
       <Virtualizer overscan={10} scrollRef={scrollableNodeRef}>
         {filteredFeeds.map((feed) => (
-          <FeedMenuItem key={feed.id} feed={feed} />
+          <FeedMenuItem
+            key={feed.id}
+            feed={feed}
+            onDeleteFeed={onDeleteFeed}
+            onEditFeed={onEditFeed}
+            onMarkAllAsRead={onMarkAllAsRead}
+            onRefreshFeed={onRefreshFeed}
+          />
         ))}
       </Virtualizer>
     </SimpleBar>
   )
 }
 
-const CategoryGroup = () => {
+const CategoryGroup = ({
+  onEditCategory,
+  onRefreshCategory,
+  onMarkAllAsReadCategory,
+  onDeleteCategory,
+  onEditFeed,
+  onRefreshFeed,
+  onMarkAllAsReadFeed,
+  onDeleteFeed,
+}) => {
   const { showUnreadFeedsOnly } = useStore(settingsState)
   const feedsGroupedById = useStore(feedsGroupedByIdState)
   const filteredCategories = useStore(filteredCategoriesState)
@@ -266,23 +393,47 @@ const CategoryGroup = () => {
   const currentPath = location.pathname
 
   return filteredCategories
-    .filter((category) =>
-      feedsGroupedById[category.id]?.some((feed) => {
+    .filter((category) => {
+      const feedsInCategory = feedsGroupedById[category.id]
+
+      // If the category does not have a feed
+      if (!feedsInCategory || feedsInCategory.length === 0) {
+        // Display empty categories only if it is not "Show Unread Only" mode
+        return !showUnreadFeedsOnly
+      }
+
+      // If there is a feed, filter by settings
+      return feedsInCategory.some((feed) => {
         if (showUnreadFeedsOnly) {
           return feed.unreadCount > 0
         }
         return true
-      }),
-    )
+      })
+    })
     .map((category) => (
       <Collapse.Item
         key={category.id}
         expandIcon={<IconRight />}
-        header={<CategoryTitle category={category} path={currentPath} />}
         name={`/category/${category.id}`}
         style={{ position: "relative", overflow: "hidden" }}
+        header={
+          <CategoryTitle
+            category={category}
+            path={currentPath}
+            onDeleteCategory={onDeleteCategory}
+            onEditCategory={onEditCategory}
+            onMarkAllAsRead={onMarkAllAsReadCategory}
+            onRefreshCategory={onRefreshCategory}
+          />
+        }
       >
-        <FeedMenuGroup categoryId={category.id} />
+        <FeedMenuGroup
+          categoryId={category.id}
+          onDeleteFeed={onDeleteFeed}
+          onEditFeed={onEditFeed}
+          onMarkAllAsRead={onMarkAllAsReadFeed}
+          onRefreshFeed={onRefreshFeed}
+        />
       </Collapse.Item>
     ))
 }
@@ -429,13 +580,106 @@ const Sidebar = () => {
   const expandedCategories = useStore(expandedCategoriesState)
 
   const [selectedKeys, setSelectedKeys] = useState([`/${homePage}`])
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false)
+  const [feedModalVisible, setFeedModalVisible] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedFeed, setSelectedFeed] = useState(null)
+  const [categoryForm] = Form.useForm()
+  const [feedForm] = Form.useForm()
+
+  const { refreshSingleFeed, handleDeleteFeed, markFeedAsRead } = useFeedOperations(true)
+  const { handleDeleteCategory } = useCategoryOperations(true)
 
   const location = useLocation()
   const currentPath = location.pathname
 
+  const { fetchCounters } = useAppData()
+  const { infoFrom, infoId } = useStore(contentState)
+
   useEffect(() => {
     setSelectedKeys([currentPath])
   }, [currentPath])
+
+  const updateAllEntriesAsRead = () => {
+    setEntries((prev) => prev.map((entry) => ({ ...entry, status: "read" })))
+  }
+
+  const handleEditCategory = (category) => {
+    setSelectedCategory(category)
+    setCategoryModalVisible(true)
+    categoryForm.setFieldsValue({
+      title: category.title,
+      hidden: category.hide_globally,
+    })
+  }
+
+  const handleRefreshCategory = async (category) => {
+    try {
+      await refreshCategoryFeed(category.id)
+      Notification.success({
+        title: polyglot.t("sidebar.refresh_category_success"),
+      })
+      await fetchCounters()
+    } catch (error) {
+      Notification.error({
+        title: polyglot.t("sidebar.refresh_category_error"),
+      })
+    }
+  }
+
+  const handleMarkAllAsReadCategory = async (category) => {
+    try {
+      await markCategoryAsRead(category.id)
+      const feedsGroupedById = feedsGroupedByIdState.get()
+      const feedsInCategory = feedsGroupedById[category.id] || []
+
+      setUnreadInfo((prevUnreadInfo) => {
+        const newUnreadInfo = { ...prevUnreadInfo }
+        feedsInCategory.forEach((feed) => {
+          newUnreadInfo[feed.id] = 0
+        })
+        return newUnreadInfo
+      })
+
+      if (
+        (infoFrom === "category" && category.id === Number(infoId)) ||
+        (infoFrom === "feed" && feedsInCategory.some((feed) => feed.id === Number(infoId)))
+      ) {
+        updateAllEntriesAsRead()
+      }
+
+      Notification.success({
+        title: polyglot.t("article_list.mark_all_as_read_success"),
+      })
+    } catch (error) {
+      Notification.error({
+        title: polyglot.t("article_list.mark_all_as_read_error"),
+      })
+    }
+  }
+
+  const handleEditFeed = (feed) => {
+    setSelectedFeed(feed)
+    setFeedModalVisible(true)
+    feedForm.setFieldsValue({
+      title: feed.title,
+      categoryId: feed.category.id,
+      siteUrl: feed.site_url,
+      feedUrl: feed.feed_url,
+      hidden: feed.hide_globally,
+      disabled: feed.disabled,
+      crawler: feed.crawler,
+    })
+  }
+
+  const handleRefreshFeed = async (feed) => {
+    await refreshSingleFeed(feed)
+    await fetchCounters()
+  }
+
+  const handleMarkAllAsReadFeed = async (feed) => {
+    await markFeedAsRead(feed)
+  }
 
   return (
     <div className="sidebar-container">
@@ -479,11 +723,40 @@ const Sidebar = () => {
               triggerRegion="icon"
               onChange={(_key, keys) => setExpandedCategories(keys)}
             >
-              <CategoryGroup />
+              <CategoryGroup
+                onDeleteCategory={handleDeleteCategory}
+                onDeleteFeed={handleDeleteFeed}
+                onEditCategory={handleEditCategory}
+                onEditFeed={handleEditFeed}
+                onMarkAllAsReadCategory={handleMarkAllAsReadCategory}
+                onMarkAllAsReadFeed={handleMarkAllAsReadFeed}
+                onRefreshCategory={handleRefreshCategory}
+                onRefreshFeed={handleRefreshFeed}
+              />
             </Collapse>
           )}
         </Menu>
       </SimpleBar>
+
+      {selectedCategory && (
+        <EditCategoryModal
+          categoryForm={categoryForm}
+          selectedCategory={selectedCategory}
+          setVisible={setCategoryModalVisible}
+          useNotification={true}
+          visible={categoryModalVisible}
+        />
+      )}
+
+      {selectedFeed && (
+        <EditFeedModal
+          feedForm={feedForm}
+          selectedFeed={selectedFeed}
+          setVisible={setFeedModalVisible}
+          useNotification={true}
+          visible={feedModalVisible}
+        />
+      )}
     </div>
   )
 }

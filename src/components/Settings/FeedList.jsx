@@ -4,10 +4,8 @@ import {
   Input,
   Message,
   Modal,
-  Popconfirm,
   Select,
   Space,
-  Switch,
   Table,
   Tag,
   Tooltip,
@@ -19,14 +17,16 @@ import { atom, computed } from "nanostores"
 import { Fragment, useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 
-import { deleteFeed, getFeedEntries, refreshAllFeed, refreshFeed, updateFeed } from "@/apis"
+import { refreshAllFeed, updateFeed } from "@/apis"
 import CustomLink from "@/components/ui/CustomLink"
 import CustomTooltip from "@/components/ui/CustomTooltip"
+import EditFeedModal from "@/components/ui/EditFeedModal"
+import { handleFeedRefresh, updateFeedStatus, useFeedOperations } from "@/hooks/useFeedOperations"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { categoriesState, dataState, setFeedsData } from "@/store/dataState"
+import { dataState, setFeedsData } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
-import { generateRelativeTime, getUTCDate } from "@/utils/date"
+import { generateRelativeTime } from "@/utils/date"
 import { filterByQuery } from "@/utils/kmp"
 import createSetter from "@/utils/nanostores"
 import sleep from "@/utils/time"
@@ -76,58 +76,15 @@ const tableDataState = computed(filteredFeedsState, (filteredFeeds) => {
   }))
 })
 
-const updateFeedStatus = (feed, isSuccessful, targetFeedId = null) => {
-  if (targetFeedId === null || targetFeedId === feed.id) {
-    return {
-      ...feed,
-      parsing_error_count: isSuccessful ? 0 : feed.parsing_error_count + 1,
-      checked_at: getUTCDate(),
-    }
-  }
-  return feed
-}
-
-const handleFeedRefresh = async (refreshFunc, feedUpdater, displayMessage = true) => {
-  const { polyglot } = polyglotState.get()
-
-  try {
-    const response = await refreshFunc()
-    const isSuccessful = response.status === 204
-
-    if (displayMessage) {
-      isSuccessful
-        ? Message.success(polyglot.t("feed_table.refresh_success"))
-        : Message.error(polyglot.t("feed_table.refresh_error"))
-    }
-
-    setFeedsData((feeds) => feeds.map((feed) => feedUpdater(feed, isSuccessful)))
-    return isSuccessful
-  } catch (error) {
-    console.error("Failed to refresh feed: ", error)
-    if (displayMessage) {
-      Message.error(polyglot.t("feed_table.refresh_error"))
-    }
-    setFeedsData((feeds) => feeds.map((feed) => feedUpdater(feed, false)))
-    return false
-  }
-}
-
-const refreshSingleFeed = async (feed, displayMessage = true) => {
-  const feedId = feed.id || feed.key
-  return handleFeedRefresh(
-    () => refreshFeed(feedId),
-    (feed, isSuccessful) => updateFeedStatus(feed, isSuccessful, feedId),
-    displayMessage,
-  )
-}
-
 const RefreshModal = ({ visible, setVisible }) => {
   const { polyglot } = useStore(polyglotState)
   const filteredFeeds = useStore(filteredFeedsState)
 
+  const { refreshSingleFeed } = useFeedOperations(false)
+
   const refreshAllFeeds = async () => {
     setVisible(false)
-    await handleFeedRefresh(refreshAllFeed, updateFeedStatus)
+    await handleFeedRefresh(refreshAllFeed, updateFeedStatus, true, false)
   }
 
   const refreshErrorFeeds = async () => {
@@ -257,126 +214,6 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
   )
 }
 
-const EditFeedModal = ({ visible, setVisible, feedForm, selectedFeed }) => {
-  const { polyglot } = useStore(polyglotState)
-  const categories = useStore(categoriesState)
-
-  const editFeed = async (feedId, newDetails) => {
-    try {
-      const data = await updateFeed(feedId, newDetails)
-      setFeedsData((feeds) =>
-        feeds.map((feed) => (feed.id === feedId ? { ...feed, ...data } : feed)),
-      )
-      Message.success(polyglot.t("feed_table.update_feed_success"))
-      setVisible(false)
-      feedForm.resetFields()
-    } catch (error) {
-      console.error("Failed to update feed: ", error)
-      Message.error(polyglot.t("feed_table.update_feed_error"))
-    }
-  }
-
-  return (
-    <Modal
-      unmountOnExit
-      className="edit-modal"
-      title={polyglot.t("feed_table.modal_edit_feed_title")}
-      visible={visible}
-      onOk={feedForm.submit}
-      onCancel={() => {
-        setVisible(false)
-        feedForm.resetFields()
-      }}
-    >
-      <Form
-        form={feedForm}
-        labelCol={{ span: 7 }}
-        layout="vertical"
-        wrapperCol={{ span: 17 }}
-        onSubmit={async (values) => {
-          const newDetails = {
-            categoryId: values.category,
-            title: values.title,
-            siteUrl: values.siteUrl.trim(),
-            feedUrl: values.feedUrl.trim(),
-            hidden: values.hidden,
-            disabled: values.disabled,
-            isFullText: values.crawler,
-          }
-          if (newDetails.feedUrl) {
-            await editFeed(selectedFeed.key, newDetails)
-          } else {
-            Message.error(polyglot.t("feed_table.modal_edit_feed_submit_error"))
-          }
-        }}
-      >
-        <Form.Item
-          required
-          field="category"
-          label={polyglot.t("feed_table.modal_edit_feed_category_label")}
-          rules={[{ required: true }]}
-        >
-          <Select>
-            {categories.map((category) => (
-              <Select.Option key={category.id} value={category.id}>
-                {category.title}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item
-          field="title"
-          label={polyglot.t("feed_table.modal_edit_feed_title_label")}
-          rules={[{ required: true }]}
-        >
-          <Input placeholder={polyglot.t("feed_table.modal_edit_feed_title_placeholder")} />
-        </Form.Item>
-        <Form.Item
-          field="siteUrl"
-          label={polyglot.t("feed_table.modal_edit_feed_site_url_label")}
-          rules={[{ required: true }]}
-        >
-          <Input placeholder={polyglot.t("feed_table.modal_edit_feed_site_url_placeholder")} />
-        </Form.Item>
-        <Form.Item
-          field="feedUrl"
-          label={polyglot.t("feed_table.modal_edit_feed_feed_url_label")}
-          rules={[{ required: true }]}
-        >
-          <Input placeholder={polyglot.t("feed_table.modal_edit_feed_feed_url_placeholder")} />
-        </Form.Item>
-        <Form.Item
-          field="hidden"
-          initialValue={selectedFeed.hidden}
-          label={polyglot.t("feed_table.modal_edit_feed_hidden_label")}
-          rules={[{ type: "boolean" }]}
-          triggerPropName="checked"
-        >
-          <Switch />
-        </Form.Item>
-        <Form.Item
-          field="disabled"
-          initialValue={selectedFeed.disabled}
-          label={polyglot.t("feed_table.modal_edit_feed_disabled_label")}
-          rules={[{ type: "boolean" }]}
-          triggerPropName="checked"
-        >
-          <Switch />
-        </Form.Item>
-        <Form.Item
-          field="crawler"
-          label={polyglot.t("feed_table.modal_edit_feed_crawler_label")}
-          rules={[{ type: "boolean" }]}
-          tooltip={<div>{polyglot.t("feed_table.modal_edit_feed_crawler_tooltip")}</div>}
-          triggerPropName="checked"
-        >
-          <Switch />
-        </Form.Item>
-      </Form>
-    </Modal>
-  )
-}
-
 const FeedList = () => {
   const { isCoreDataReady } = useStore(dataState)
   const { showDetailedRelativeTime } = useStore(settingsState)
@@ -392,6 +229,7 @@ const FeedList = () => {
   const [selectedFeed, setSelectedFeed] = useState(null)
 
   const { isBelowMedium } = useScreenWidth()
+  const { refreshSingleFeed, handleDeleteFeed } = useFeedOperations(false)
 
   const navigate = useNavigate()
 
@@ -403,7 +241,7 @@ const FeedList = () => {
     setSelectedFeed(feed)
     setEditFeedModalVisible(true)
     feedForm.setFieldsValue({
-      category: feed.category.id,
+      categoryId: feed.category.id,
       title: feed.title,
       siteUrl: feed.site_url,
       feedUrl: feed.feed_url,
@@ -411,49 +249,6 @@ const FeedList = () => {
       disabled: feed.disabled,
       crawler: feed.crawler,
     })
-  }
-
-  const deleteFeedDirectly = async (feed) => {
-    try {
-      const response = await deleteFeed(feed.key)
-      if (response.status === 204) {
-        setFeedsData((feeds) => feeds.filter((f) => f.id !== feed.key))
-        Message.success(
-          polyglot.t("feed_table.remove_feed_success", {
-            title: feed.title,
-          }),
-        )
-      } else {
-        throw new Error(`Unexpected status: ${response.status}`)
-      }
-    } catch (error) {
-      console.error(`Failed to delete feed: ${feed.title}`, error)
-      Message.error(
-        polyglot.t("feed_table.remove_feed_error", {
-          title: feed.title,
-        }),
-      )
-    }
-  }
-
-  const removeFeed = async (feed) => {
-    try {
-      const starredEntries = await getFeedEntries(feed.key, null, true)
-      if (starredEntries.total > 0) {
-        Modal.confirm({
-          title: polyglot.t("feed_table.remove_feed_confirm_title"),
-          content: polyglot.t("feed_table.remove_feed_confirm_content", {
-            count: starredEntries.total,
-          }),
-          onOk: () => deleteFeedDirectly(feed),
-        })
-      } else {
-        await deleteFeedDirectly(feed)
-      }
-    } catch (error) {
-      console.error("Failed to check starred entries:", error)
-      Message.error(polyglot.t("feed_table.check_starred_error"))
-    }
   }
 
   const columns = [
@@ -552,16 +347,14 @@ const FeedList = () => {
               onClick={() => refreshSingleFeed(record)}
             />
           </CustomTooltip>
-          <Popconfirm
-            focusLock
-            position="left"
-            title={polyglot.t("feed_table.table_feed_remove_confirm")}
-            onOk={() => removeFeed(record)}
-          >
-            <CustomTooltip mini content={polyglot.t("feed_table.table_feed_remove_tooltip")}>
-              <Button icon={<IconDelete />} shape="circle" size="mini" />
-            </CustomTooltip>
-          </Popconfirm>
+          <CustomTooltip mini content={polyglot.t("feed_table.table_feed_remove_tooltip")}>
+            <Button
+              icon={<IconDelete />}
+              shape="circle"
+              size="mini"
+              onClick={() => handleDeleteFeed(record)}
+            />
+          </CustomTooltip>
         </Space>
       ),
     },
