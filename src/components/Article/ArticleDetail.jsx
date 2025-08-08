@@ -405,6 +405,7 @@ const ArticleDetail = forwardRef((_, ref) => {
             <Lightbox
               carousel={{ finite: true }}
               close={() => setIsPhotoSliderVisible(false)}
+              controller={{ closeOnBackdropClick: true }}
               index={selectedIndex}
               open={isPhotoSliderVisible}
               plugins={[Counter, Fullscreen, Zoom]}
