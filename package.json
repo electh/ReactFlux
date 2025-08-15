@@ -65,7 +65,7 @@
     "react-compiler-runtime": "19.1.0-rc.2",
     "rollup-plugin-visualizer": "^6.0.3",
     "simple-git-hooks": "2.13.1",
-    "vite": "^7.1.1",
+    "vite": "^7.1.2",
     "vite-plugin-pwa": "^1.0.2",
     "workbox-window": "^7.3.0"
   },
