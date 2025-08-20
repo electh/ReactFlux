@@ -14,11 +14,20 @@ export const getBrowserLanguage = () => {
   return browserLanguage
 }
 
-const isStartsWithEnglishLetter = (text) => {
-  return /^[a-zA-Z]/.test(text)
+// Determine priority type for sorting text
+const getTextType = (text) => {
+  if (/^[0-9]/.test(text)) {
+    return 0
+  }
+  if (/^[a-zA-Z]/.test(text)) {
+    return 1
+  }
+  return 2
 }
 
+// Sorts array with mixed language content using a multi-level comparison
 export const sortMixedLanguageArray = (array, keyOrGetter, locale) => {
+  // Create value extractor based on parameter type
   const getValueFromItem =
     typeof keyOrGetter === "function" ? keyOrGetter : (item) => item[keyOrGetter]
 
@@ -26,30 +35,15 @@ export const sortMixedLanguageArray = (array, keyOrGetter, locale) => {
     const valueA = getValueFromItem(itemA)
     const valueB = getValueFromItem(itemB)
 
-    const isAEnglish = isStartsWithEnglishLetter(valueA)
-    const isBEnglish = isStartsWithEnglishLetter(valueB)
+    const typeA = getTextType(valueA)
+    const typeB = getTextType(valueB)
 
-    // Prioritize English-starting items
-    if (isAEnglish !== isBEnglish) {
-      return isAEnglish ? -1 : 1
+    // First sort by type priority
+    if (typeA !== typeB) {
+      return typeA - typeB
     }
 
-    // Both start with English: compare English parts first, then remaining parts
-    if (isAEnglish && isBEnglish) {
-      const englishPartA = valueA.match(/^[a-zA-Z]+/)[0]
-      const englishPartB = valueB.match(/^[a-zA-Z]+/)[0]
-
-      const englishCompare = englishPartA.localeCompare(englishPartB, "en")
-      if (englishCompare !== 0) {
-        return englishCompare
-      }
-
-      const restA = valueA.substring(englishPartA.length).trim()
-      const restB = valueB.substring(englishPartB.length).trim()
-
-      return restA.localeCompare(restB, locale, { numeric: true })
-    }
-
+    // Then sort by locale rules within the same type
     return valueA.localeCompare(valueB, locale, { numeric: true })
   })
 }
