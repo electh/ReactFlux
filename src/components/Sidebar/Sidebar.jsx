@@ -138,8 +138,10 @@ const CategoryTitle = ({
         style={{ cursor: "pointer" }}
         tabIndex={0}
         className={classNames("category-title", {
-          "submenu-active": path === `/category/${category.id}`,
-          "submenu-inactive": path !== `/category/${category.id}`,
+          "submenu-active":
+            path === `/category/${category.id}` || path.startsWith(`/category/${category.id}/`),
+          "submenu-inactive":
+            path !== `/category/${category.id}` && !path.startsWith(`/category/${category.id}/`),
         })}
         onClick={handleNavigation}
         onKeyDown={(e) => {
@@ -183,7 +185,7 @@ const CountDisplay = ({ count }) => {
 const CustomMenuItem = ({ path, Icon, label, count }) => {
   const location = useLocation()
   const navigate = useNavigate()
-  const isSelected = location.pathname === path
+  const isSelected = location.pathname === path || location.pathname.startsWith(`${path}/`)
 
   const handleNavigation = () => {
     navigate(path)
@@ -253,7 +255,8 @@ const FeedMenuItem = ({ feed, onEditFeed, onRefreshFeed, onMarkAllAsRead, onDele
 
   const navigate = useNavigate()
   const location = useLocation()
-  const isSelected = location.pathname === `/feed/${feed.id}`
+  const isSelected =
+    location.pathname === `/feed/${feed.id}` || location.pathname.startsWith(`/feed/${feed.id}/`)
 
   return (
     <Dropdown

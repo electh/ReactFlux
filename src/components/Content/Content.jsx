@@ -3,11 +3,12 @@ import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { AnimatePresence } from "framer-motion"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useLocation } from "react-router"
+import { useLocation, useParams } from "react-router"
 import { useSwipeable } from "react-swipeable"
 
 import FooterPanel from "./FooterPanel"
 
+import { getEntry } from "@/apis"
 import ActionButtons from "@/components/Article/ActionButtons"
 import ArticleDetail from "@/components/Article/ArticleDetail"
 import ArticleList from "@/components/Article/ArticleList"
@@ -21,7 +22,13 @@ import useDocumentTitle from "@/hooks/useDocumentTitle"
 import useKeyHandlers from "@/hooks/useKeyHandlers"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { contentState, setActiveContent, setInfoFrom, setInfoId } from "@/store/contentState"
+import {
+  contentState,
+  setActiveContent,
+  setInfoFrom,
+  setInfoId,
+  setIsArticleLoading,
+} from "@/store/contentState"
 import { dataState } from "@/store/dataState"
 import { duplicateHotkeysState } from "@/store/hotkeysState"
 import { settingsState } from "@/store/settingsState"
@@ -29,7 +36,7 @@ import { settingsState } from "@/store/settingsState"
 import "./Content.css"
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const { activeContent, filterDate, isArticleLoading } = useStore(contentState)
+  const { activeContent, entries, filterDate, isArticleLoading } = useStore(contentState)
   const { isAppDataReady } = useStore(dataState)
   const { enableSwipeGesture, orderBy, orderDirection, showStatus, swipeSensitivity } =
     useStore(settingsState)
@@ -41,6 +48,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const cardsRef = useRef(null)
 
   const location = useLocation()
+  const params = useParams()
 
   useDocumentTitle()
 
@@ -65,6 +73,25 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       await fetchAppData()
     } else {
       await Promise.all([fetchArticleList(getEntries), fetchFeedRelatedData()])
+    }
+  }
+
+  const fetchSingleEntry = async (entryId) => {
+    const existingEntry = entries.find((entry) => entry.id === Number(entryId))
+
+    if (existingEntry) {
+      setActiveContent(existingEntry)
+      return
+    }
+
+    try {
+      setIsArticleLoading(true)
+      const entry = await getEntry(entryId)
+      setActiveContent(entry)
+    } catch (error) {
+      console.error("Failed to fetch entry:", error)
+    } finally {
+      setIsArticleLoading(false)
     }
   }
 
@@ -161,9 +188,23 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   useEffect(() => {
     if (isBelowMedium && activeContent) {
-      setActiveContent(null)
+      const { entryId } = params
+      if (!entryId) {
+        setActiveContent(null)
+      }
     }
   }, [location.pathname])
+
+  useEffect(() => {
+    const { entryId } = params
+    if (entryId) {
+      if (!activeContent || activeContent.id !== Number(entryId)) {
+        fetchSingleEntry(entryId)
+      }
+    } else if (activeContent) {
+      setActiveContent(null)
+    }
+  }, [params])
 
   return (
     <>

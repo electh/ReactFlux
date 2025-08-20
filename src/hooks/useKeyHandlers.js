@@ -25,7 +25,7 @@ const useKeyHandlers = () => {
   const prevContent = useStore(prevContentState)
   const nextContent = useStore(nextContentState)
 
-  const { entryListRef, handleEntryClick } = useContentContext()
+  const { entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
 
   const scrollSelectedCardIntoView = () => {
     if (entryListRef.current) {
@@ -61,7 +61,7 @@ const useKeyHandlers = () => {
 
   const exitDetailView = withActiveContent(
     withPhotoSliderCheck(() => {
-      setActiveContent(null)
+      closeActiveContent()
       if (entryListRef.current) {
         entryListRef.current.contentWrapperEl.focus()
       }

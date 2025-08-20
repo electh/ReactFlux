@@ -1,6 +1,7 @@
 import { Message } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import { createContext, useCallback, useMemo, useRef } from "react"
+import { useLocation, useNavigate } from "react-router"
 
 import { updateEntriesStatus } from "@/apis"
 import useEntryActions from "@/hooks/useEntryActions"
@@ -17,8 +18,19 @@ export const ContextProvider = ({ children }) => {
 
   const entryDetailRef = useRef(null)
   const entryListRef = useRef(null)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const { handleEntryStatusUpdate } = useEntryActions()
+
+  const closeActiveContent = useCallback(() => {
+    setActiveContent(null)
+    const currentPath = location.pathname
+    const basePath = currentPath.replace(/\/entry\/\d+$/, "")
+    if (basePath !== currentPath && basePath !== "") {
+      navigate(basePath)
+    }
+  }, [location.pathname, navigate])
 
   const handleEntryClick = useCallback(
     async (entry) => {
@@ -28,6 +40,11 @@ export const ContextProvider = ({ children }) => {
       const updatedEntry = shouldAutoMarkAsRead ? { ...entry, status: "read" } : { ...entry }
 
       setActiveContent(updatedEntry)
+
+      const currentPath = location.pathname
+      const basePath = currentPath.replace(/\/entry\/\d+$/, "")
+      const newPath = `${basePath}/entry/${entry.id}`
+      navigate(newPath)
 
       setTimeout(() => {
         const articleContent = entryDetailRef.current
@@ -59,8 +76,9 @@ export const ContextProvider = ({ children }) => {
       entryListRef,
       handleEntryClick,
       setActiveContent,
+      closeActiveContent,
     }),
-    [handleEntryClick],
+    [handleEntryClick, closeActiveContent],
   )
 
   return <Context.Provider value={value}>{children}</Context.Provider>

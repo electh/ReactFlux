@@ -14,14 +14,19 @@ import { getSettings } from "./store/settingsState"
 
 const homePage = getSettings("homePage")
 
-const children = [
-  { path: "/all", element: <All /> },
-  { path: "/today", element: <Today /> },
-  { path: "/starred", element: <Starred /> },
-  { path: "/history", element: <History /> },
-  { path: "/category/:id", element: <Category /> },
-  { path: "/feed/:id", element: <Feed /> },
-]
+const pageRoutes = {
+  all: <All />,
+  today: <Today />,
+  starred: <Starred />,
+  history: <History />,
+  "category/:id": <Category />,
+  "feed/:id": <Feed />,
+}
+
+const routes = Object.entries(pageRoutes).flatMap(([path, element]) => [
+  { path: `/${path}`, element },
+  { path: `/${path}/entry/:entryId`, element },
+])
 
 const router = createBrowserRouter(
   [
@@ -33,10 +38,7 @@ const router = createBrowserRouter(
       children: [
         {
           element: <RouterProtect />,
-          children: [
-            ...children,
-            { index: true, element: <Navigate replace to={`/${homePage}`} /> },
-          ],
+          children: [...routes, { index: true, element: <Navigate replace to={`/${homePage}`} /> }],
         },
       ],
     },

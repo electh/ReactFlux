@@ -4,6 +4,8 @@ import { contentState } from "@/store/contentState"
 import { getSettings } from "@/store/settingsState"
 import { get24HoursAgoTimestamp, getDayEndTimestamp, getTimestamp } from "@/utils/date"
 
+export const getEntry = async (entryId) => apiClient.get(`/v1/entries/${entryId}`)
+
 export const updateEntriesStatus = async (entryIds, newStatus) =>
   apiClient.put("/v1/entries", {
     entry_ids: entryIds,
