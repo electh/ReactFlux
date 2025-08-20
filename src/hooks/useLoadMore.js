@@ -99,9 +99,9 @@ const useLoadMore = () => {
       let response
 
       if (infoFrom === "starred") {
-        response = await getEntries(showStatus === "unread" ? "unread" : null, filterParams)
+        response = await getEntries(showStatus === "unread" ? "unread" : null, null, filterParams)
       } else if (infoFrom === "history") {
-        response = await getEntries(null, filterParams)
+        response = await getEntries(null, null, filterParams)
       } else {
         switch (showStatus) {
           case "starred":
