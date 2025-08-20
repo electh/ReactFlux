@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/react"
 import { atom } from "nanostores"
 
-import { contentState, setEntries, setLoadMoreVisible } from "@/store/contentState"
+import { contentState, setEntriesWithDeduplication, setLoadMoreVisible } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import { getTimestamp } from "@/utils/date"
 import { parseCoverImage } from "@/utils/images"
@@ -20,7 +20,8 @@ const useLoadMore = () => {
 
   const updateEntries = (newEntries) => {
     const uniqueNewEntries = newEntries.filter((entry) => isUniqueEntry(entry, entries))
-    setEntries((prev) => [...prev, ...uniqueNewEntries])
+    const combinedEntries = [...entries, ...uniqueNewEntries]
+    setEntriesWithDeduplication(combinedEntries)
   }
 
   const getFilterParams = () => {

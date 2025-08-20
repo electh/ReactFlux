@@ -40,18 +40,14 @@ export const filteredEntriesState = computed(
     const filteredEntries = filterEntries(entries, filterType, filterString)
 
     const { version } = data
-    const { removeDuplicates, showHiddenFeeds } = settings
+    const { showHiddenFeeds } = settings
     const isValidFilter = !["starred", "history"].includes(infoFrom)
     const isVisible = (entry) =>
       compareVersions(version, "2.2.0") >= 0 ||
       showHiddenFeeds ||
       !hiddenFeedIds.includes(entry.feed.id)
-    const visibleEntries = isValidFilter ? filteredEntries.filter(isVisible) : filteredEntries
 
-    if (removeDuplicates === "none" || ["starred", "history"].includes(infoFrom)) {
-      return visibleEntries
-    }
-    return removeDuplicateEntries(visibleEntries, removeDuplicates)
+    return isValidFilter ? filteredEntries.filter(isVisible) : filteredEntries
   },
 )
 
@@ -135,3 +131,19 @@ export const setIsArticleLoading = createSetter(contentState, "isArticleLoading"
 export const setLoadMoreVisible = createSetter(contentState, "loadMoreVisible")
 export const setTotal = createSetter(contentState, "total")
 export const resetContent = () => contentState.set(defaultValue)
+
+// Entries setter function with deduplication capability
+export const setEntriesWithDeduplication = (newEntries) => {
+  const { infoFrom } = contentState.get()
+  const { removeDuplicates } = settingsState.get()
+
+  // Skip deduplication when disabled or for specific sources (starred/history)
+  if (removeDuplicates === "none" || ["starred", "history"].includes(infoFrom)) {
+    setEntries(newEntries)
+    return
+  }
+
+  // Apply deduplication based on selected strategy and update entries
+  const deduplicatedEntries = removeDuplicateEntries(newEntries, removeDuplicates)
+  setEntries(deduplicatedEntries)
+}

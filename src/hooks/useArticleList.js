@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react"
 
 import {
   contentState,
-  setEntries,
+  setEntriesWithDeduplication,
   setIsArticleListReady,
   setLoadMoreVisible,
   setTotal,
@@ -22,7 +22,7 @@ import { parseCoverImage } from "@/utils/images"
 const handleResponses = (response) => {
   if (response?.total >= 0) {
     const articles = response.entries.map(parseCoverImage)
-    setEntries(articles)
+    setEntriesWithDeduplication(articles)
     setTotal(response.total)
     setLoadMoreVisible(articles.length < response.total)
   }
