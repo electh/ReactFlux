@@ -11,11 +11,12 @@ import "./Appearance.css"
 
 const Appearance = () => {
   const {
+    coverDisplayMode,
+    lightboxSlideAnimation,
     showDetailedRelativeTime,
     showEstimatedReadingTime,
     showFeedIcon,
     themeColor,
-    coverDisplayMode,
   } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
 
@@ -86,6 +87,22 @@ const Appearance = () => {
             {polyglot.t("appearance.cover_display_mode_thumbnail")}
           </Select.Option>
         </Select>
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("appearance.lightbox_animation_description")}
+        title={polyglot.t("appearance.lightbox_animation_label")}
+      >
+        <Switch
+          checked={lightboxSlideAnimation}
+          onChange={(checked) =>
+            handleConfigChange({
+              lightboxSlideAnimation: checked,
+            })
+          }
+        />
       </SettingItem>
 
       <Divider />

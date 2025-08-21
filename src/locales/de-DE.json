@@ -267,6 +267,8 @@
     "show_estimated_reading_time_description": "Geschätzte Lesedauer in Artikelkarte anzeigen",
     "show_feed_icon_label": "Abonnementsymbol anzeigen",
     "show_feed_icon_description": "Symbol des jeweiligen Abonnements in Abonnementliste und Artikelkarte anzeigen",
+    "lightbox_animation_label": "Lightbox-Animation",
+    "lightbox_animation_description": "Gleitanimationen für Bildwechsel aktivieren",
     "language_label": "Sprache",
     "language_description": "Sprache wählen:",
     "font_size_label": "Schriftgröße",

@@ -267,6 +267,8 @@
     "show_estimated_reading_time_description": "Mostrar tiempo estimado de lectura en la tarjeta de artículo",
     "show_feed_icon_label": "Mostar el icono del feed",
     "show_feed_icon_description": "Mostar el icono del feed en la lista de de feeds y la tarjeta de artículo",
+    "lightbox_animation_label": "Animación del lightbox",
+    "lightbox_animation_description": "Activar animaciones de deslizamiento para el cambio de imágenes",
     "language_label": "Idioma",
     "language_description": "Escoger su idioma:",
     "font_size_label": "Tamaño de la fuente",

@@ -267,6 +267,8 @@
     "show_estimated_reading_time_description": "Afficher le temps de lecture estimé dans la carte d'article",
     "show_feed_icon_label": "Afficher l'icône du flux",
     "show_feed_icon_description": "Afficher l'icône du flux dans la liste des flux et la carte d'article",
+    "lightbox_animation_label": "Animation de la lightbox",
+    "lightbox_animation_description": "Activer les animations de glissement pour le changement d'images",
     "language_label": "Langue",
     "language_description": "Choisir votre langue :",
     "font_size_label": "Taille de la police",

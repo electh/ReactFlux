@@ -267,6 +267,8 @@
     "show_estimated_reading_time_description": "在文章卡片中显示预计阅读时间",
     "show_feed_icon_label": "显示订阅源图标",
     "show_feed_icon_description": "在订阅源列表和文章卡片中显示订阅源图标",
+    "lightbox_animation_label": "图片浏览器动画",
+    "lightbox_animation_description": "启用图片切换滑动动画",
     "language_label": "语言",
     "language_description": "选择您的语言：",
     "font_size_label": "字体大小",

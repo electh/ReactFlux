@@ -267,6 +267,8 @@
     "show_estimated_reading_time_description": "Show estimated reading time in article card",
     "show_feed_icon_label": "Show feed icon",
     "show_feed_icon_description": "Show feed icon in feed list and article card",
+    "lightbox_animation_label": "Lightbox animation",
+    "lightbox_animation_description": "Enable slide animations for image switching",
     "language_label": "Language",
     "language_description": "Choose your language:",
     "font_size_label": "Font size",

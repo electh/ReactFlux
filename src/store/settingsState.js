@@ -12,6 +12,7 @@ const defaultValue = {
   fontSize: 1.05,
   homePage: "all",
   language: getBrowserLanguage(),
+  lightboxSlideAnimation: true,
   markReadBy: "view",
   markReadOnScroll: false,
   orderBy: "created_at",

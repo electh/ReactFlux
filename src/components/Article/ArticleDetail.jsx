@@ -281,8 +281,14 @@ const ArticleDetail = forwardRef((_, ref) => {
   const { isBelowMedium } = useScreenWidth()
 
   const { activeContent } = useStore(contentState)
-  const { articleWidth, edgeToEdgeImages, fontFamily, fontSize, titleAlignment } =
-    useStore(settingsState)
+  const {
+    articleWidth,
+    edgeToEdgeImages,
+    fontFamily,
+    fontSize,
+    lightboxSlideAnimation,
+    titleAlignment,
+  } = useStore(settingsState)
   const scrollContainerRef = useRef(null)
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, selectedIndex, setSelectedIndex } =
@@ -299,6 +305,10 @@ const ArticleDetail = forwardRef((_, ref) => {
   const togglePhotoSlider = (index) => {
     setSelectedIndex(index)
     setIsPhotoSliderVisible((prev) => !prev)
+  }
+
+  const getLightboxAnimationConfig = () => {
+    return lightboxSlideAnimation ? { fade: 250 } : { fade: 250, navigation: 0 }
   }
 
   const imageSources = extractImageSources(activeContent.content)
@@ -403,6 +413,7 @@ const ArticleDetail = forwardRef((_, ref) => {
             )}
             {parsedHtml}
             <Lightbox
+              animation={getLightboxAnimationConfig()}
               carousel={{ finite: true, padding: 0 }}
               close={() => setIsPhotoSliderVisible(false)}
               controller={{ closeOnBackdropClick: true }}
