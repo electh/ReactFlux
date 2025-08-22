@@ -72,8 +72,8 @@ importers:
         specifier: ^9.16.0
         version: 9.16.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router:
-        specifier: ^7.8.0
-        version: 7.8.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^7.8.1
+        version: 7.8.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-swipeable:
         specifier: ^7.0.2
         version: 7.0.2(react@18.3.1)
@@ -756,6 +756,10 @@ packages:
 
   '@babel/runtime@7.27.0':
     resolution: {integrity: sha512-VtPOkrdPHZsKc/clNqyi9WUA8TINkZ4cGk63UUE3u4pmB2k+ZMQRDuIOagv8UVd6j7k0T3+RRIb7beKTebNbcw==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/runtime@7.28.3':
+    resolution: {integrity: sha512-9uIQ10o0WGdpP6GDhXcdOJPJuDgFtIDtN/9+ArJQ2NAfAmiuhTQdzkaTGR33v43GYS2UrSA0eX2pPPHoFVvpxA==}
     engines: {node: '>=6.9.0'}
 
   '@babel/runtime@7.28.3':
@@ -3004,8 +3008,8 @@ packages:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
     engines: {node: '>=0.10.0'}
 
-  react-router@7.8.0:
-    resolution: {integrity: sha512-r15M3+LHKgM4SOapNmsH3smAizWds1vJ0Z9C4mWaKnT9/wD7+d/0jYcj6LmOvonkrO4Rgdyp4KQ/29gWN2i1eg==}
+  react-router@7.8.1:
+    resolution: {integrity: sha512-5cy/M8DHcG51/KUIka1nfZ2QeylS4PJRs6TT8I4PF5axVsI5JUxp0hC0NZ/AEEj8Vw7xsEoD7L/6FY+zoYaOGA==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=18'
@@ -4570,6 +4574,8 @@ snapshots:
   '@babel/runtime@7.27.0':
     dependencies:
       regenerator-runtime: 0.14.1
+
+  '@babel/runtime@7.28.3': {}
 
   '@babel/runtime@7.28.3': {}
 
@@ -6925,7 +6931,7 @@ snapshots:
 
   react-refresh@0.17.0: {}
 
-  react-router@7.8.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-router@7.8.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       cookie: 1.0.2
       react: 18.3.1
