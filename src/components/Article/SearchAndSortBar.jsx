@@ -15,7 +15,7 @@ import {
   IconSortDescending,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { Fragment, memo, useEffect, useMemo, useState } from "react"
+import { Fragment, memo, useEffect, useMemo, useRef, useState } from "react"
 import { useLocation, useParams } from "react-router"
 
 import SidebarTrigger from "./SidebarTrigger.jsx"
@@ -33,6 +33,7 @@ import {
 import { categoriesState, feedsState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { getStartOfToday } from "@/utils/date"
+import { extractBasePath } from "@/utils/url"
 
 import "./SearchAndSortBar.css"
 
@@ -155,6 +156,8 @@ const SearchAndSortBar = () => {
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [modalInputValue, setModalInputValue] = useState("")
 
+  const prevBasePathRef = useRef()
+
   const { title, count } = useMemo(() => {
     if (id) {
       if (infoFrom === "category") {
@@ -208,9 +211,15 @@ const SearchAndSortBar = () => {
   }
 
   useEffect(() => {
-    setFilterDate(null)
-    setFilterType("title")
-    setFilterString("")
+    const currentBasePath = extractBasePath(location.pathname)
+
+    if (prevBasePathRef?.current !== currentBasePath) {
+      setFilterDate(null)
+      setFilterType("title")
+      setFilterString("")
+    }
+
+    prevBasePathRef.current = currentBasePath
   }, [location.pathname, showStatus])
 
   return (

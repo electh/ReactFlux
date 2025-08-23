@@ -9,6 +9,7 @@ import { polyglotState } from "@/hooks/useLanguage"
 import { setActiveContent, setIsArticleLoading } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
+import { buildEntryDetailPath, extractBasePath, isEntryDetailPath } from "@/utils/url"
 
 const Context = createContext()
 
@@ -25,9 +26,11 @@ export const ContextProvider = ({ children }) => {
 
   const closeActiveContent = useCallback(() => {
     setActiveContent(null)
+
     const currentPath = location.pathname
-    const basePath = currentPath.replace(/\/entry\/\d+$/, "")
-    if (basePath !== currentPath && basePath !== "") {
+    const basePath = extractBasePath(currentPath)
+
+    if (isEntryDetailPath(currentPath) && basePath) {
       navigate(basePath)
     }
   }, [location.pathname, navigate])
@@ -42,9 +45,10 @@ export const ContextProvider = ({ children }) => {
       setActiveContent(updatedEntry)
 
       const currentPath = location.pathname
-      const basePath = currentPath.replace(/\/entry\/\d+$/, "")
-      const newPath = `${basePath}/entry/${entry.id}`
-      navigate(newPath)
+      const basePath = extractBasePath(currentPath)
+      const entryDetailPath = buildEntryDetailPath(basePath, entry.id)
+
+      navigate(entryDetailPath)
 
       setTimeout(() => {
         const articleContent = entryDetailRef.current

@@ -17,3 +17,20 @@ export const getSecondHostname = (url) => {
   }
   return null
 }
+
+export const extractBasePath = (pathname) => {
+  return pathname.replace(/\/entry\/\d+$/, "")
+}
+
+export const buildEntryDetailPath = (basePath, entryId) => {
+  return `${basePath}/entry/${entryId}`
+}
+
+export const isEntryDetailPath = (pathname) => {
+  return /\/entry\/\d+$/.test(pathname)
+}
+
+export const extractEntryIdFromPath = (pathname) => {
+  const match = pathname.match(/\/entry\/(\d+)$/)
+  return match ? match[1] : null
+}
