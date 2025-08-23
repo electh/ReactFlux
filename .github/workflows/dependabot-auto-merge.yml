@@ -15,11 +15,59 @@ jobs:
         uses: dependabot/fetch-metadata@v2
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      # Checkout PR and validate pnpm lock file
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "pnpm"
+
+      - name: Validate pnpm-lock.yaml
+        id: validate_lock
+        run: |
+          echo "Validating pnpm-lock.yaml file..."
+          if pnpm install --frozen-lockfile; then
+            echo "lock_file_valid=true" >> $GITHUB_OUTPUT
+            echo "✅ pnpm-lock.yaml validation passed"
+          else
+            echo "lock_file_valid=false" >> $GITHUB_OUTPUT
+            echo "❌ pnpm-lock.yaml validation failed"
+          fi
+
+      # Auto-merge only if lock file is valid and meets criteria
       - name: Enable auto-merge for Dependabot PRs
         if: |
-          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-          steps.metadata.outputs.dependency-type == 'direct:development'
+          steps.validate_lock.outputs.lock_file_valid == 'true' &&
+          (steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+           steps.metadata.outputs.dependency-type == 'direct:development')
         run: gh pr merge --auto --squash "$PR_URL"
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Add comment if lock file validation fails
+      - name: Comment on invalid lock file
+        if: steps.validate_lock.outputs.lock_file_valid == 'false'
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --body "❌ **Automatic merge failed**
+
+          Validation of pnpm-lock.yaml failed. Possible reasons:
+          - Dependency conflicts with other PRs
+          - Corrupted or inconsistent lock file
+
+          Please manually check and fix this PR, or wait for other PRs to merge first and then retry.
+
+          You can try running \`@dependabot recreate\` to regenerate this PR."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
