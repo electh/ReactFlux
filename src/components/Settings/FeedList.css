@@ -6,6 +6,10 @@
   width: 100%;
 }
 
+.feed-table .arco-checkbox-mask {
+  border-radius: 0 !important;
+}
+
 .feed-table-action-bar {
   display: flex;
   align-items: center;

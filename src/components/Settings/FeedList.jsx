@@ -42,22 +42,16 @@ const filteredFeedsState = computed(
   [dataState, filterStringState, filterTypeState],
   (data, filterString, filterType) => {
     const { feedsData } = data
-    const feeds = [...feedsData]
+    const sortedFeeds = [...feedsData]
       .sort((a, b) => {
-        if (a.disabled && !b.disabled) {
-          return 1
-        }
-        if (!a.disabled && b.disabled) {
-          return -1
+        if (a.disabled !== b.disabled) {
+          return a.disabled ? 1 : -1
         }
         return 0
       })
       .sort((a, b) => b.parsing_error_count - a.parsing_error_count)
 
-    if (!filterString) {
-      return feeds
-    }
-    return filterByQuery(feeds, filterString, [filterType])
+    return filterString ? filterByQuery(sortedFeeds, filterString, [filterType]) : sortedFeeds
   },
 )
 
@@ -89,10 +83,10 @@ const RefreshModal = ({ visible, setVisible }) => {
 
   const refreshErrorFeeds = async () => {
     setVisible(false)
-    const errorFeeds = filteredFeeds.filter((feed) => feed.parsing_error_count > 0)
-    const id = "bulk-refresh-error-feeds"
+    const feedsWithErrors = filteredFeeds.filter((feed) => feed.parsing_error_count > 0)
+    const messageId = "bulk-refresh-error-feeds"
     Message.loading({
-      id,
+      id: messageId,
       duration: 0,
       content: polyglot.t("feed_table.bulk_refresh_error_feeds_message"),
     })
@@ -100,18 +94,14 @@ const RefreshModal = ({ visible, setVisible }) => {
     let successCount = 0
     let failureCount = 0
 
-    for (const feed of errorFeeds) {
+    for (const feed of feedsWithErrors) {
       const isSuccessful = await refreshSingleFeed(feed, false)
-      if (isSuccessful) {
-        successCount++
-      } else {
-        failureCount++
-      }
+      isSuccessful ? successCount++ : failureCount++
       await sleep(500)
     }
 
     Message.success({
-      id,
+      id: messageId,
       content: polyglot.t("feed_table.bulk_refresh_error_feeds_result", {
         success: successCount,
         failure: failureCount,
@@ -154,6 +144,150 @@ const RefreshModal = ({ visible, setVisible }) => {
   )
 }
 
+const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete }) => {
+  const { polyglot } = useStore(polyglotState)
+  const { categoriesData } = useStore(dataState)
+
+  const [operationType, setOperationType] = useState("")
+  const [newCategoryId, setNewCategoryId] = useState("")
+  const [newStatus, setNewStatus] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleBulkOperation = async () => {
+    if (!operationType) {
+      return
+    }
+
+    setLoading(true)
+    try {
+      let updateData = null
+
+      if (operationType === "category" && newCategoryId) {
+        updateData = { categoryId: Number(newCategoryId) }
+      } else if (operationType === "status" && newStatus) {
+        const statusUpdateMap = {
+          hide: { hidden: true },
+          show: { hidden: false },
+          disable: { disabled: true },
+          enable: { disabled: false },
+        }
+        updateData = statusUpdateMap[newStatus]
+      }
+
+      if (!updateData) {
+        return
+      }
+
+      const updatedFeeds = await Promise.all(
+        selectedFeeds.map(async (feed) => {
+          const data = await updateFeed(feed.key, updateData)
+          return { ...feed, ...data }
+        }),
+      )
+
+      setFeedsData((feeds) =>
+        feeds.map((feed) => {
+          const updatedFeed = updatedFeeds.find((f) => f.id === feed.id)
+          return updatedFeed || feed
+        }),
+      )
+
+      Message.success(polyglot.t("feed_table.bulk_operation_success"))
+      onComplete()
+      setVisible(false)
+    } catch (error) {
+      console.error("Failed to bulk update feeds:", error)
+      Message.error(polyglot.t("feed_table.bulk_operation_error"))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const resetForm = () => {
+    setOperationType("")
+    setNewCategoryId("")
+    setNewStatus("")
+    setLoading(false)
+  }
+
+  const handleCancel = () => {
+    setVisible(false)
+    resetForm()
+  }
+
+  return (
+    <Modal
+      className="edit-modal"
+      confirmLoading={loading}
+      title={polyglot.t("feed_table.bulk_operations_title")}
+      visible={visible}
+      onCancel={handleCancel}
+      onOk={handleBulkOperation}
+    >
+      <div style={{ marginBottom: 16 }}>
+        <p>{polyglot.t("feed_table.bulk_operations_selected", { count: selectedFeeds.length })}</p>
+      </div>
+
+      <Form.Item label={polyglot.t("feed_table.bulk_operations_type")}>
+        <Select
+          value={operationType}
+          onChange={(value) => {
+            setOperationType(value)
+            setNewCategoryId("")
+            setNewStatus("")
+          }}
+        >
+          <Select.Option value="category">
+            {polyglot.t("feed_table.bulk_operations_change_category")}
+          </Select.Option>
+          <Select.Option value="status">
+            {polyglot.t("feed_table.bulk_operations_change_status")}
+          </Select.Option>
+        </Select>
+      </Form.Item>
+
+      {operationType === "category" && (
+        <Form.Item label={polyglot.t("feed_table.bulk_operations_new_category")}>
+          <Select
+            placeholder={polyglot.t("feed_table.bulk_operations_select_category")}
+            value={newCategoryId}
+            onChange={setNewCategoryId}
+          >
+            {categoriesData.map((category) => (
+              <Select.Option key={category.id} value={category.id}>
+                {category.title}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      )}
+
+      {operationType === "status" && (
+        <Form.Item label={polyglot.t("feed_table.bulk_operations_new_status")}>
+          <Select
+            placeholder={polyglot.t("feed_table.bulk_operations_select_status")}
+            value={newStatus}
+            onChange={setNewStatus}
+          >
+            <Select.Option value="hide">
+              {polyglot.t("feed_table.bulk_operations_hide")}
+            </Select.Option>
+            <Select.Option value="show">
+              {polyglot.t("feed_table.bulk_operations_show")}
+            </Select.Option>
+            <Select.Option value="disable">
+              {polyglot.t("feed_table.bulk_operations_disable")}
+            </Select.Option>
+            <Select.Option value="enable">
+              {polyglot.t("feed_table.bulk_operations_enable")}
+            </Select.Option>
+          </Select>
+        </Form.Item>
+      )}
+    </Modal>
+  )
+}
+
 const BulkUpdateModal = ({ visible, setVisible }) => {
   const { polyglot } = useStore(polyglotState)
   const filteredFeeds = useStore(filteredFeedsState)
@@ -175,11 +309,12 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
         }),
       )
 
-      const getUpdatedFeed = (feed, updatedFeeds) => {
-        const updatedFeed = updatedFeeds.find((f) => f.id === feed.id)
-        return updatedFeed || feed
-      }
-      setFeedsData((feeds) => feeds.map((feed) => getUpdatedFeed(feed, updatedFeeds)))
+      setFeedsData((feeds) =>
+        feeds.map((feed) => {
+          const updatedFeed = updatedFeeds.find((f) => f.id === feed.id)
+          return updatedFeed || feed
+        }),
+      )
 
       Message.success(polyglot.t("feed_table.bulk_update_success"))
       setVisible(false)
@@ -223,10 +358,12 @@ const FeedList = () => {
   const tooltipLines = polyglot.t("search.tooltip").split("\n")
 
   const [bulkUpdateModalVisible, setBulkUpdateModalVisible] = useState(false)
+  const [bulkOperationsModalVisible, setBulkOperationsModalVisible] = useState(false)
   const [refreshModalVisible, setRefreshModalVisible] = useState(false)
   const [editFeedModalVisible, setEditFeedModalVisible] = useState(false)
   const [feedForm] = Form.useForm()
   const [selectedFeed, setSelectedFeed] = useState(null)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
   const { isBelowMedium } = useScreenWidth()
   const { refreshSingleFeed, handleDeleteFeed } = useFeedOperations(false)
@@ -236,6 +373,12 @@ const FeedList = () => {
   useEffect(() => {
     setFilterString("")
   }, [])
+
+  const getSelectedFeeds = () => tableData.filter((feed) => selectedRowKeys.includes(feed.key))
+
+  const handleBulkOperationsComplete = () => {
+    setSelectedRowKeys([])
+  }
 
   const handleSelectFeed = (feed) => {
     setSelectedFeed(feed)
@@ -257,19 +400,22 @@ const FeedList = () => {
       dataIndex: "title",
       sorter: (a, b) => a.title.localeCompare(b.title, "en"),
       render: (title, feed) => {
-        const parsingErrorCount = feed.parsing_error_count
-        let displayText = feed.disabled ? `🚫 ${title}` : title
-        if (parsingErrorCount > 0) {
+        const { parsing_error_count: errorCount, disabled, key } = feed
+
+        let displayText = title
+        if (errorCount > 0) {
           displayText = `⚠️ ${title}`
+        } else if (disabled) {
+          displayText = `🚫 ${title}`
         }
 
         const tooltipContent = (
           <div>
             {title}
-            {parsingErrorCount > 0 && (
+            {errorCount > 0 && (
               <>
                 <br />
-                ⚠️ Parsing error count: {parsingErrorCount}
+                ⚠️ Parsing error count: {errorCount}
               </>
             )}
           </div>
@@ -278,7 +424,7 @@ const FeedList = () => {
         return (
           <Typography.Ellipsis expandable={false}>
             <CustomTooltip mini content={tooltipContent}>
-              <CustomLink text={displayText} url={`/feed/${feed.key}`} />
+              <CustomLink text={displayText} url={`/feed/${key}`} />
             </CustomTooltip>
           </Typography.Ellipsis>
         )
@@ -290,7 +436,7 @@ const FeedList = () => {
       dataIndex: "feed_url",
       sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
       render: (feedUrl) => (
-        <Typography.Ellipsis expandable={false} showTooltip={true}>
+        <Typography.Ellipsis showTooltip expandable={false}>
           {feedUrl}
         </Typography.Ellipsis>
       ),
@@ -329,7 +475,7 @@ const FeedList = () => {
       dataIndex: "op",
       fixed: "right",
       width: 100,
-      render: (_col, record) => (
+      render: (_, record) => (
         <Space style={{ marginLeft: -10 }}>
           <CustomTooltip mini content={polyglot.t("feed_table.table_feed_edit_tooltip")}>
             <Button
@@ -436,6 +582,17 @@ const FeedList = () => {
           />
         </div>
         <div className="button-group">
+          <CustomTooltip mini content={polyglot.t("feed_table.bulk_operations_tooltip")}>
+            <Button
+              disabled={selectedRowKeys.length === 0}
+              size="small"
+              type={selectedRowKeys.length > 0 ? "primary" : "default"}
+              onClick={() => setBulkOperationsModalVisible(true)}
+            >
+              {polyglot.t("feed_table.bulk_operations")}
+              {selectedRowKeys.length > 0 && ` (${selectedRowKeys.length})`}
+            </Button>
+          </CustomTooltip>
           <CustomTooltip mini content={polyglot.t("feed_table.table_feed_bulk_update_tooltip")}>
             <Button
               icon={<IconEdit />}
@@ -444,6 +601,12 @@ const FeedList = () => {
               onClick={() => setBulkUpdateModalVisible(true)}
             />
           </CustomTooltip>
+          <BulkOperationsModal
+            selectedFeeds={getSelectedFeeds()}
+            setVisible={setBulkOperationsModalVisible}
+            visible={bulkOperationsModalVisible}
+            onComplete={handleBulkOperationsComplete}
+          />
           <BulkUpdateModal
             setVisible={setBulkUpdateModalVisible}
             visible={bulkUpdateModalVisible}
@@ -471,6 +634,12 @@ const FeedList = () => {
             {paginationNode}
           </div>
         )}
+        rowSelection={{
+          type: "checkbox",
+          selectedRowKeys,
+          onChange: setSelectedRowKeys,
+          checkCrossPage: true,
+        }}
         onChange={handleTableChange}
       />
       {selectedFeed && (
