@@ -40,7 +40,7 @@
     "react-syntax-highlighter": "^15.6.6",
     "simplebar-react": "^3.3.2",
     "validator": "^13.15.0",
-    "virtua": "^0.41.5",
+    "virtua": "^0.42.3",
     "yet-another-react-lightbox": "^3.25.0"
   },
   "devDependencies": {
