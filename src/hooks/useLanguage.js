@@ -30,23 +30,25 @@ const loadLanguage = async (language, polyglot) => {
   let locale = language
 
   try {
-    phrases = (await import(`../locales/${language}.json`)).default
+    const phrasesModule = await import(`../locales/${language}.json`)
+    phrases = phrasesModule.default
   } catch (error) {
-    console.error("Failed to load language: ", error)
-    phrases = (await import("@/locales/en-US.json")).default
+    console.error("Failed to load language:", error)
+    const fallbackModule = await import("@/locales/en-US.json")
+    phrases = fallbackModule.default
     locale = "en-US"
   }
 
-  if (!polyglot) {
+  if (polyglot) {
+    polyglot.replace(phrases)
+    polyglot.locale(locale)
+    setPolyglot(polyglot)
+  } else {
     const newPolyglot = new Polyglot({
       phrases: phrases,
       locale: locale,
     })
     setPolyglot(newPolyglot)
-  } else {
-    polyglot.replace(phrases)
-    polyglot.locale(locale)
-    setPolyglot(polyglot)
   }
 }
 
@@ -54,16 +56,16 @@ const useLanguage = () => {
   const { language } = useStore(settingsState)
 
   useEffect(() => {
-    if (!language) {
-      updateSettings({ language: getBrowserLanguage() })
-    } else {
+    if (language) {
       loadLanguage(language)
 
       const locale =
         language.startsWith("de-") || language.startsWith("es-") || language.startsWith("fr-")
-          ? language.substring(0, 2)
+          ? language.slice(0, 2)
           : languageToLocale[language] || "en"
       dayjs.locale(locale)
+    } else {
+      updateSettings({ language: getBrowserLanguage() })
     }
   }, [language])
 }

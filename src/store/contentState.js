@@ -47,7 +47,7 @@ export const filteredEntriesState = computed(
       showHiddenFeeds ||
       !hiddenFeedIds.includes(entry.feed.id)
 
-    return isValidFilter ? filteredEntries.filter(isVisible) : filteredEntries
+    return isValidFilter ? filteredEntries.filter((entry) => isVisible(entry)) : filteredEntries
   },
 )
 
@@ -68,10 +68,12 @@ export const dynamicCountState = computed(
 
     if (showStatus === "unread") {
       switch (infoFrom) {
-        case "all":
+        case "all": {
           return unreadTotal
-        case "today":
+        }
+        case "today": {
           return unreadTodayCount
+        }
         case "feed": {
           const id = content.infoId
           if (id) {

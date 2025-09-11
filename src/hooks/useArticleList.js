@@ -21,7 +21,7 @@ import { parseCoverImage } from "@/utils/images"
 
 const handleResponses = (response) => {
   if (response?.total >= 0) {
-    const articles = response.entries.map(parseCoverImage)
+    const articles = response.entries.map((entry) => parseCoverImage(entry))
     setEntriesWithDeduplication(articles)
     setTotal(response.total)
     setLoadMoreVisible(articles.length < response.total)
@@ -47,20 +47,23 @@ const useArticleList = (info, getEntries) => {
       let response
 
       switch (showStatus) {
-        case "starred":
+        case "starred": {
           response = await getEntries(null, true)
           break
-        case "unread":
+        }
+        case "unread": {
           response = await getEntries("unread")
           break
-        default:
+        }
+        default: {
           response = await getEntries()
           break
+        }
       }
 
       if (!filterDate) {
         switch (info.from) {
-          case "feed":
+          case "feed": {
             if (showStatus === "unread") {
               setUnreadInfo((prev) => ({
                 ...prev,
@@ -68,27 +71,31 @@ const useArticleList = (info, getEntries) => {
               }))
             }
             break
-          case "history":
+          }
+          case "history": {
             setHistoryCount(response.total)
             break
-          case "starred":
+          }
+          case "starred": {
             if (showStatus === "unread") {
               setUnreadStarredCount(response.total)
             } else {
               setStarredCount(response.total)
             }
             break
-          case "today":
+          }
+          case "today": {
             if (showStatus === "unread") {
               setUnreadTodayCount(response.total)
             }
             break
+          }
         }
       }
 
       handleResponses(response)
     } catch (error) {
-      console.error("Error fetching articles: ", error)
+      console.error("Error fetching articles:", error)
     } finally {
       isLoading.current = false
       setIsArticleListReady(true)

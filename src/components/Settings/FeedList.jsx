@@ -43,13 +43,13 @@ const filteredFeedsState = computed(
   (data, filterString, filterType) => {
     const { feedsData } = data
     const sortedFeeds = [...feedsData]
-      .sort((a, b) => {
+      .toSorted((a, b) => {
         if (a.disabled !== b.disabled) {
           return a.disabled ? 1 : -1
         }
         return 0
       })
-      .sort((a, b) => b.parsing_error_count - a.parsing_error_count)
+      .toSorted((a, b) => b.parsing_error_count - a.parsing_error_count)
 
     return filterString ? filterByQuery(sortedFeeds, filterString, [filterType]) : sortedFeeds
   },
@@ -319,7 +319,7 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
       Message.success(polyglot.t("feed_table.bulk_update_success"))
       setVisible(false)
     } catch (error) {
-      console.error("Failed to bulk update feeds: ", error)
+      console.error("Failed to bulk update feeds:", error)
       Message.error(polyglot.t("feed_table.bulk_update_error"))
     }
   }

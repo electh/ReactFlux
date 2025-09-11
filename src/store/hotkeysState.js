@@ -21,12 +21,14 @@ const defaultValue = {
 
 export const hotkeysState = persistentAtom("hotkeys", defaultValue, {
   encode: (value) => {
-    const filteredValue = Object.keys(value).reduce((acc, key) => {
+    const filteredValue = {}
+
+    for (const key of Object.keys(value)) {
       if (key in defaultValue) {
-        acc[key] = value[key]
+        filteredValue[key] = value[key]
       }
-      return acc
-    }, {})
+    }
+
     return JSON.stringify(filteredValue)
   },
   decode: (str) => {
@@ -37,10 +39,11 @@ export const hotkeysState = persistentAtom("hotkeys", defaultValue, {
 
 export const duplicateHotkeysState = computed(hotkeysState, (hotkeys) => {
   const allKeys = Object.values(hotkeys).flat()
-  const keyCount = allKeys.reduce((acc, key) => {
-    acc[key] = (acc[key] || 0) + 1
-    return acc
-  }, {})
+  const keyCount = {}
+
+  for (const key of allKeys) {
+    keyCount[key] = (keyCount[key] || 0) + 1
+  }
 
   return Object.entries(keyCount)
     .filter(([_key, count]) => count > 1)

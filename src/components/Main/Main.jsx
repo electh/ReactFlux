@@ -90,11 +90,11 @@ const AddFeedModal = () => {
           return null
         })
         .catch((error) => {
-          console.error("Failed to fetch feed related data: ", error)
+          console.error("Failed to fetch feed related data:", error)
           Message.error({ id, content: polyglot.t("main.add_feed_error") })
         })
     } catch (error) {
-      console.error("Failed to add a feed: ", error)
+      console.error("Failed to add a feed:", error)
       Message.error({ id, content: polyglot.t("main.add_feed_error") })
     } finally {
       setFeedModalLoading(false)

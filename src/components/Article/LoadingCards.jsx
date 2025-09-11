@@ -19,8 +19,8 @@ const LoadingCards = () => {
 
   return (
     !isArticleListReady &&
-    Array.from({ length: 4 }, (_, i) => (
-      <LoadingCard key={i} isArticleListReady={isArticleListReady} />
+    Array.from({ length: 4 }, (_, index) => (
+      <LoadingCard key={index} isArticleListReady={isArticleListReady} />
     ))
   )
 }

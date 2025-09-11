@@ -18,7 +18,10 @@ const processKeyName = (keys) =>
         .replace("up", "↑")
         .replace("down", "↓")
       return modifiedKey.includes("+")
-        ? modifiedKey.split("+").map(capitalizeFirstLetter).join(" + ")
+        ? modifiedKey
+            .split("+")
+            .map((k) => capitalizeFirstLetter(k))
+            .join(" + ")
         : capitalizeFirstLetter(modifiedKey)
     })
     .join(" / ")
@@ -56,18 +59,18 @@ const EditableTagGroup = ({ keys, record }) => {
     <div ref={groupRef}>
       {isEditing ? (
         <Space wrap style={{ marginBottom: -8 }}>
-          {keys.map((key, index) => (
+          {keys.map((key, keyIndex) => (
             <EditableTag
               key={`${record.action}-${key}`}
               editOnMount={key === ""}
               value={key}
               onChange={(newKey) => {
                 const newKeys = [...keys]
-                newKeys[index] = newKey
+                newKeys[keyIndex] = newKey
                 updateHotkey(record.action, newKeys)
               }}
               onRemove={() => {
-                const newKeys = keys.filter((_, i) => i !== index)
+                const newKeys = keys.filter((_, filterIndex) => filterIndex !== keyIndex)
                 updateHotkey(record.action, newKeys)
               }}
             />

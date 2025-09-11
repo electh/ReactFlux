@@ -32,12 +32,14 @@ const EditableTag = ({ value, onChange, onRemove, editOnMount = false }) => {
           case "ArrowLeft":
           case "ArrowRight":
           case "ArrowUp":
-          case "ArrowDown":
+          case "ArrowDown": {
             keyName = key.replace("Arrow", "").toLowerCase()
             break
-          case " ":
+          }
+          case " ": {
             keyName = "space"
             break
+          }
         }
 
         const modifiers = []
@@ -63,9 +65,9 @@ const EditableTag = ({ value, onChange, onRemove, editOnMount = false }) => {
   )
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown)
+    globalThis.addEventListener("keydown", handleKeyDown)
     return () => {
-      window.removeEventListener("keydown", handleKeyDown)
+      globalThis.removeEventListener("keydown", handleKeyDown)
     }
   }, [handleKeyDown])
 

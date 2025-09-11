@@ -7,21 +7,17 @@ import react from "eslint-plugin-react"
 import reactCompiler from "eslint-plugin-react-compiler"
 import reactHooks from "eslint-plugin-react-hooks"
 import reactRefresh from "eslint-plugin-react-refresh"
+import unicorn from "eslint-plugin-unicorn"
 
 export default [
   {
-    ignores: [
-      "build",
-      "dev-dist",
-      "src/components/ui/*.tsx",
-      "src/hooks/use-mobile.tsx",
-      "src/lib/utils.ts",
-    ],
+    ignores: ["build", "dev-dist"],
   },
   js.configs.recommended,
+  unicorn.configs.recommended,
   prettier,
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: ["**/*.{js,jsx}"],
     languageOptions: {
       globals: globals.browser,
       parserOptions: {
@@ -115,15 +111,31 @@ export default [
       "react/no-unused-state": "warn",
       "react/prop-types": "off",
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+
+      // unicorn rules
+      "unicorn/no-null": "off",
+      "unicorn/prevent-abbreviations": "off",
     },
     settings: {
       react: { version: "detect" },
     },
   },
   {
-    files: ["src/utils/**/*.ts"],
+    files: ["src/**/*.jsx"],
     rules: {
-      "import/prefer-default-export": "off",
+      "unicorn/filename-case": ["error", { case: "pascalCase" }],
+    },
+  },
+  {
+    files: ["src/components/Article/ArticleTOC.jsx", "src/main.jsx", "src/routes.jsx"],
+    rules: {
+      "unicorn/filename-case": "off",
+    },
+  },
+  {
+    files: ["src/hooks/**/*.js", "src/store/**/*.js"],
+    rules: {
+      "unicorn/filename-case": ["error", { case: "camelCase" }],
     },
   },
 ]

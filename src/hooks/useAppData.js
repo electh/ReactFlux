@@ -31,7 +31,7 @@ const useAppData = () => {
       setHistoryCount(historyCount)
       return countersData
     } catch (error) {
-      console.error("Error fetching counters: ", error)
+      console.error("Error fetching counters:", error)
       return { reads: {}, unreads: {} }
     }
   }, [])
@@ -42,7 +42,7 @@ const useAppData = () => {
       setUnreadTodayCount(unreadTodayData.total ?? 0)
       return unreadTodayData
     } catch (error) {
-      console.error("Error fetching unread today entries: ", error)
+      console.error("Error fetching unread today entries:", error)
       setUnreadTodayCount(0)
       return { total: 0 }
     }
@@ -54,7 +54,7 @@ const useAppData = () => {
       setFeedsData(feedsData)
       return feedsData
     } catch (error) {
-      console.error("Error fetching feeds: ", error)
+      console.error("Error fetching feeds:", error)
       return []
     }
   }, [])
@@ -65,7 +65,7 @@ const useAppData = () => {
       setCategoriesData(categoriesData)
       return categoriesData
     } catch (error) {
-      console.error("Error fetching categories: ", error)
+      console.error("Error fetching categories:", error)
       return []
     }
   }, [])
@@ -75,10 +75,10 @@ const useAppData = () => {
       return
     }
 
-    const unreadInfo = feeds.reduce((acc, feed) => {
-      acc[feed.id] = counters.unreads[feed.id] ?? 0
-      return acc
-    }, {})
+    const unreadInfo = {}
+    for (const feed of feeds) {
+      unreadInfo[feed.id] = counters.unreads[feed.id] ?? 0
+    }
     setUnreadInfo(unreadInfo)
   }, [])
 
@@ -93,7 +93,7 @@ const useAppData = () => {
       setHasIntegrations(hasIntegrations)
       return hasIntegrations
     } catch (error) {
-      console.error("Error fetching integration status: ", error)
+      console.error("Error fetching integration status:", error)
       return false
     }
   }, [])
@@ -113,7 +113,7 @@ const useAppData = () => {
 
       return { counters, feeds }
     } catch (error) {
-      console.error("Error fetching feed related data: ", error)
+      console.error("Error fetching feed related data:", error)
     } finally {
       isLoading.current = false
     }
@@ -148,7 +148,7 @@ const useAppData = () => {
       setIsAppDataReady(true)
       return { counters, feeds, categories, version, todayData }
     } catch (error) {
-      console.error("Error fetching app data: ", error)
+      console.error("Error fetching app data:", error)
     } finally {
       isLoading.current = false
     }

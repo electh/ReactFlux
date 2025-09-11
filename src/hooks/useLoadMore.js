@@ -40,24 +40,24 @@ const useLoadMore = () => {
   const sortProperty = ["starred", "history"].includes(infoFrom) ? "changed_at" : orderBy
 
   const getReferenceEntry = () => {
-    const sortedEntries = [...entries].sort((a, b) => {
+    const sortedEntries = [...entries].toSorted((a, b) => {
       const aValue = getTimestamp(a[sortProperty])
       const bValue = getTimestamp(b[sortProperty])
       return orderDirection === "desc" ? bValue - aValue : aValue - bValue
     })
 
-    const entriesByTimestamp = sortedEntries.reduce((groups, entry) => {
+    const entriesByTimestamp = {}
+    for (const entry of sortedEntries) {
       const timestamp = getTimestamp(entry[sortProperty])
-      if (!groups[timestamp]) {
-        groups[timestamp] = []
+      if (!entriesByTimestamp[timestamp]) {
+        entriesByTimestamp[timestamp] = []
       }
-      groups[timestamp].push(entry)
-      return groups
-    }, {})
+      entriesByTimestamp[timestamp].push(entry)
+    }
 
     const timestamps = Object.keys(entriesByTimestamp)
       .map(Number)
-      .sort((a, b) => (orderDirection === "desc" ? b - a : a - b))
+      .toSorted((a, b) => (orderDirection === "desc" ? b - a : a - b))
 
     if (timestamps.length === 0) {
       return null
@@ -67,7 +67,7 @@ const useLoadMore = () => {
     const referenceTimestamp = timestamps[referenceTimestampIndex]
 
     const timestampEntries = entriesByTimestamp[referenceTimestamp]
-    return timestampEntries[timestampEntries.length - 1]
+    return timestampEntries.at(-1)
   }
 
   const buildFilterParams = (referenceEntry) => {
@@ -105,27 +105,30 @@ const useLoadMore = () => {
         response = await getEntries(null, null, filterParams)
       } else {
         switch (showStatus) {
-          case "starred":
+          case "starred": {
             response = await getEntries(null, true, filterParams)
             break
-          case "unread":
+          }
+          case "unread": {
             response = await getEntries("unread", false, filterParams)
             break
-          default:
+          }
+          default: {
             response = await getEntries(null, false, filterParams)
             break
+          }
         }
       }
 
       if (response?.entries?.length > 0) {
-        const newEntries = response.entries.map(parseCoverImage)
+        const newEntries = response.entries.map((entry) => parseCoverImage(entry))
         updateEntries(newEntries)
       }
       if (response.total < pageSize) {
         setLoadMoreVisible(false)
       }
     } catch (error) {
-      console.error("Error fetching more articles: ", error)
+      console.error("Error fetching more articles:", error)
     } finally {
       setLoadingMore(false)
     }

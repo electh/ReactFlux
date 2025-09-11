@@ -7,11 +7,11 @@ import { applyColor } from "@/utils/colors"
 const useTheme = () => {
   const { themeColor, themeMode } = useStore(settingsState)
   const [isSystemDark, setIsSystemDark] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches,
+    globalThis.matchMedia("(prefers-color-scheme: dark)").matches,
   )
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)")
     const updateSystemDarkMode = (event) => setIsSystemDark(event.matches)
 
     mediaQuery.addEventListener("change", updateSystemDarkMode)

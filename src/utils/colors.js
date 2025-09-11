@@ -12,7 +12,7 @@ export const colors = {
 }
 
 const isDarkMode = () => {
-  const isSystemDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+  const isSystemDark = globalThis.matchMedia("(prefers-color-scheme: dark)").matches
   const themeMode = getSettings("themeMode")
   return themeMode === "system" ? isSystemDark : themeMode === "dark"
 }
@@ -27,9 +27,11 @@ const getColorValue = (colorName) => getColorFromPalette(colors, colorName)
 export const getDisplayColorValue = (colorName) => getColorFromPalette(colors, colorName)
 
 export const applyColor = (colorName) => {
-  const colorPalette = generate(getColorValue(colorName), { list: true }).map(getRgbStr)
-  colorPalette.forEach((color, index) => {
+  const colorPalette = generate(getColorValue(colorName), { list: true }).map((color) =>
+    getRgbStr(color),
+  )
+  for (const [index, color] of colorPalette.entries()) {
     document.body.style.setProperty(`--primary-${index + 1}`, color)
-  })
+  }
   document.body.setAttribute("color-name", colorName)
 }

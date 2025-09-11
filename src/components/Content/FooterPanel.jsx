@@ -27,6 +27,10 @@ const updateAllEntriesAsRead = () => {
   setEntries((prev) => prev.map((entry) => ({ ...entry, status: "read" })))
 }
 
+const handleFilterChange = (value) => {
+  updateSettings({ showStatus: value })
+}
+
 const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const { filterDate, isArticleListReady } = useStore(contentState)
   const { feedsData } = useStore(dataState)
@@ -35,15 +39,11 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
 
   const handleMarkAllAsRead = async () => {
     try {
-      if (filterDate && info.from !== "today") {
-        await handleFilteredMarkAsRead()
-      } else {
-        await markAllAsRead()
-      }
+      await (filterDate && info.from !== "today" ? handleFilteredMarkAsRead() : markAllAsRead())
 
       await updateUIAfterMarkAsRead()
     } catch (error) {
-      console.error("Failed to mark all as read: ", error)
+      console.error("Failed to mark all as read:", error)
       Notification.error({
         title: polyglot.t("article_list.mark_all_as_read_error"),
         content: error.message,
@@ -80,10 +80,10 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
     updateAllEntriesAsRead()
 
     const countersData = await getCounters()
-    const unreadInfo = feedsData.reduce((acc, feed) => {
-      acc[feed.id] = countersData.unreads[feed.id] ?? 0
-      return acc
-    }, {})
+    const unreadInfo = {}
+    for (const feed of feedsData) {
+      unreadInfo[feed.id] = countersData.unreads[feed.id] ?? 0
+    }
 
     setUnreadInfo(unreadInfo)
 
@@ -94,10 +94,6 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
     Notification.success({
       title: polyglot.t("article_list.mark_all_as_read_success"),
     })
-  }
-
-  const handleFilterChange = (value) => {
-    updateSettings({ showStatus: value })
   }
 
   const baseFilterOptions = [

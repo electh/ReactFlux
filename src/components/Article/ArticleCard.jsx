@@ -51,10 +51,10 @@ const extractTextFromHtml = (html) => {
   }
 
   return html
-    .replace(/<[^>]*>/g, "") // Remove all HTML tags
-    .replace(/&nbsp;/g, " ") // Replace space entities
-    .replace(/&#(\d+);/g, (_match, dec) => String.fromCharCode(dec)) // Handle numeric HTML entities
-    .replace(/&([a-z]+);/g, (_match, entity) => {
+    .replaceAll(/<[^>]*>/g, "") // Remove all HTML tags
+    .replaceAll("&nbsp;", " ") // Replace space entities
+    .replaceAll(/&#(\d+);/g, (_match, dec) => String.fromCodePoint(dec)) // Handle numeric HTML entities
+    .replaceAll(/&([a-z]+);/g, (_match, entity) => {
       // Handle named HTML entities
       const entities = {
         amp: "&",
@@ -146,35 +146,47 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
       const img = new Image()
       img.src = entry.coverSource
 
-      img.onload = () => {
+      const handleLoad = () => {
         if (isSubscribed) {
           const aspectRatio = img.naturalWidth / img.naturalHeight
           const isThumbnailSize = Math.max(img.width, img.height) <= 250
 
           // Determine image display mode based on user settings
-          if (coverDisplayMode === "auto") {
-            setIsWideImage(aspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize)
-          } else if (coverDisplayMode === "banner") {
-            setIsWideImage(true)
-          } else if (coverDisplayMode === "thumbnail") {
-            setIsWideImage(false)
+          switch (coverDisplayMode) {
+            case "auto": {
+              setIsWideImage(aspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize)
+              break
+            }
+            case "banner": {
+              setIsWideImage(true)
+              break
+            }
+            case "thumbnail": {
+              setIsWideImage(false)
+              break
+            }
+            // No default
           }
 
           setIsImageLoaded(true)
         }
       }
 
-      img.onerror = () => {
+      img.addEventListener("load", handleLoad)
+
+      const handleError = () => {
         if (isSubscribed) {
           setHasError(true)
         }
       }
 
+      img.addEventListener("error", handleError)
+
       return () => {
         isSubscribed = false
         img.src = ""
-        img.onload = null
-        img.onerror = null
+        img.removeEventListener("load", handleLoad)
+        img.removeEventListener("error", handleError)
       }
     }
   }, [entry.coverSource, coverDisplayMode])

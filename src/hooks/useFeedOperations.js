@@ -48,7 +48,7 @@ export const handleFeedRefresh = async (
     setFeedsData((feeds) => feeds.map((feed) => feedUpdater(feed, isSuccessful)))
     return isSuccessful
   } catch (error) {
-    console.error("Failed to refresh feed: ", error)
+    console.error("Failed to refresh feed:", error)
     if (displayMessage) {
       showMessage(polyglot.t("feed_table.refresh_error"), "error")
     }

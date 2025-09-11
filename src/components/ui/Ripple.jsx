@@ -27,17 +27,14 @@ const Ripple = ({ duration, color }) => {
 
   const addRipple = (event) => {
     const rippleContainer = event.currentTarget.getBoundingClientRect()
-    const size =
-      rippleContainer.width > rippleContainer.height
-        ? rippleContainer.width
-        : rippleContainer.height
+    const size = Math.max(rippleContainer.width, rippleContainer.height)
     const x = event.pageX - rippleContainer.x - size / 2
     const y = event.pageY - rippleContainer.y - size / 2
     const newRipple = {
       x,
       y,
       size,
-      id: `${new Date().getTime()}-${x}-${y}`,
+      id: `${Date.now()}-${x}-${y}`,
     }
 
     setRippleArray([...rippleArray, newRipple])

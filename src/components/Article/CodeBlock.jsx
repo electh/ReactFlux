@@ -34,7 +34,7 @@ const CodeBlock = ({ children }) => {
       if (SUPPORTED_LANGUAGES.includes(detectedLanguage)) {
         setLanguage(detectedLanguage)
       } else {
-        console.info("detectedLanguage not supported: ", detectedLanguage)
+        console.info("detectedLanguage not supported:", detectedLanguage)
       }
     }, ANIMATION_DURATION_MS)
 

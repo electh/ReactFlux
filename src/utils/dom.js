@@ -5,11 +5,11 @@ export const extractHeadings = (content) => {
 
   const parser = new DOMParser()
   const doc = parser.parseFromString(content, "text/html")
-  const headings = Array.from(doc.querySelectorAll("h1, h2, h3, h4, h5, h6"))
+  const headings = [...doc.querySelectorAll("h1, h2, h3, h4, h5, h6")]
 
   return headings.map((heading, index) => {
     const text = heading.textContent.trim()
-    const level = parseInt(heading.tagName.substring(1))
+    const level = Number.parseInt(heading.tagName.slice(1))
     const id = `heading-${index}`
 
     return {

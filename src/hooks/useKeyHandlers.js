@@ -17,6 +17,15 @@ import {
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { extractImageSources } from "@/utils/images"
 
+const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
+  const isSearchingBackward = direction === "prev"
+  const searchRange = isSearchingBackward
+    ? entries.slice(0, currentIndex).toReversed()
+    : entries.slice(currentIndex + 1)
+
+  return searchRange.find((entry) => entry.status === "unread")
+}
+
 const useKeyHandlers = () => {
   const { activeContent } = useStore(contentState)
   const { polyglot } = useStore(polyglotState)
@@ -86,15 +95,6 @@ const useKeyHandlers = () => {
     }
   })
 
-  const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
-    const isSearchingBackward = direction === "prev"
-    const searchRange = isSearchingBackward
-      ? entries.slice(0, currentIndex).toReversed()
-      : entries.slice(currentIndex + 1)
-
-    return searchRange.find((entry) => entry.status === "unread")
-  }
-
   const navigateToAdjacentUnreadArticle = withPhotoSliderCheck((direction) => {
     const adjacentUnreadEntry = findAdjacentUnreadEntry(
       activeEntryIndex,
@@ -146,7 +146,7 @@ const useKeyHandlers = () => {
     }
 
     const imageSources = extractImageSources(activeContent.content)
-    if (!imageSources.length) {
+    if (imageSources.length === 0) {
       return
     }
 

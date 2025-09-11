@@ -28,7 +28,7 @@ const useCategoryOperations = (useNotification = false) => {
       showMessage(successMessage)
       return true
     } catch (error) {
-      console.error(`${polyglot.t("category_list.add_category_error")}: `, error)
+      console.error(`${polyglot.t("category_list.add_category_error")}:`, error)
 
       const errorMessage = polyglot.t("category_list.add_category_error")
       showMessage(errorMessage, "error")

@@ -37,6 +37,10 @@ import { extractBasePath } from "@/utils/url"
 
 import "./SearchAndSortBar.css"
 
+const handleFilterTypeChange = (value) => {
+  setFilterType(value)
+}
+
 const SearchModal = memo(({ initialValue, visible, onCancel, onConfirm }) => {
   const { filterType } = useStore(contentState)
   const { polyglot } = useStore(polyglotState)
@@ -49,10 +53,6 @@ const SearchModal = memo(({ initialValue, visible, onCancel, onConfirm }) => {
       setInputValue(initialValue)
     }
   }, [initialValue, visible])
-
-  const handleFilterTypeChange = (value) => {
-    setFilterType(value)
-  }
 
   const handleConfirm = () => {
     onConfirm(inputValue)

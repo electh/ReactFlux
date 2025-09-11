@@ -9,6 +9,13 @@ import { applyColor, colors, getDisplayColorValue } from "@/utils/colors"
 
 import "./Appearance.css"
 
+const handleConfigChange = (settingsChanges) => {
+  updateSettings(settingsChanges)
+  if (settingsChanges.themeColor) {
+    applyColor(settingsChanges.themeColor)
+  }
+}
+
 const Appearance = () => {
   const {
     coverDisplayMode,
@@ -19,13 +26,6 @@ const Appearance = () => {
     themeColor,
   } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
-
-  const handleConfigChange = (settingsChanges) => {
-    updateSettings(settingsChanges)
-    if (settingsChanges.themeColor) {
-      applyColor(settingsChanges.themeColor)
-    }
-  }
 
   return (
     <>

@@ -1,11 +1,11 @@
 export const extractImageSources = (htmlString) => {
   const doc = new DOMParser().parseFromString(htmlString, "text/html")
   const images = doc.querySelectorAll("img")
-  return Array.from(images).map((img) => img.getAttribute("src"))
+  return [...images].map((img) => img.getAttribute("src"))
 }
 
-const getWeiboFirstImage = (doc) => {
-  const allImages = Array.from(doc.querySelectorAll("img"))
+const getWeiboFirstImage = (docs) => {
+  const allImages = [...docs.querySelectorAll("img")]
   const filteredImages = allImages.filter((img) => {
     return !img.closest("a") && !(img.hasAttribute("alt") && /\[.+]/.test(img.getAttribute("alt")))
   })

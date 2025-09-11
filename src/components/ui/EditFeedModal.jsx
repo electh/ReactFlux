@@ -38,7 +38,7 @@ const EditFeedModal = ({
         onSuccess(data)
       }
     } catch (error) {
-      console.error("Failed to update feed: ", error)
+      console.error("Failed to update feed:", error)
 
       const errorMessage = polyglot.t("feed_table.update_feed_error")
 

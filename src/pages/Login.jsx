@@ -80,7 +80,7 @@ const Login = () => {
   }, [])
 
   useEffect(() => {
-    const url = new URL(window.location.href)
+    const url = new URL(globalThis.location.href)
     const { server, token, username, password } = Object.fromEntries(url.searchParams)
     if (server) {
       if (username) {

@@ -21,36 +21,39 @@ const removeDuplicateEntries = (entries, option) => {
   const seenURLs = new Map()
   const duplicateEntries = []
 
-  const uniqueEntries = entries
-    .slice()
-    .sort((a, b) => a.id - b.id)
+  const uniqueEntries = [...entries]
+    .toSorted((a, b) => a.id - b.id)
     .filter((entry) => {
       const { hash, title, url, id } = entry
 
       switch (option) {
-        case "hash":
+        case "hash": {
           if (seenHashes.has(hash)) {
             duplicateEntries.push(entry)
             return false
           }
           seenHashes.set(hash, id)
           break
-        case "title":
+        }
+        case "title": {
           if (seenTitles.has(title)) {
             duplicateEntries.push(entry)
             return false
           }
           seenTitles.set(title, id)
           break
-        case "url":
+        }
+        case "url": {
           if (seenURLs.has(url)) {
             duplicateEntries.push(entry)
             return false
           }
           seenURLs.set(url, id)
           break
-        default:
+        }
+        default: {
           return true
+        }
       }
       return true
     })
@@ -66,7 +69,7 @@ const removeDuplicateEntries = (entries, option) => {
     })
   }
 
-  return uniqueEntries.sort((a, b) => {
+  return uniqueEntries.toSorted((a, b) => {
     const indexA = originalOrder.find((order) => order.id === a.id).index
     const indexB = originalOrder.find((order) => order.id === b.id).index
     return indexA - indexB

@@ -21,7 +21,7 @@ const createApiClient = () => {
     },
     onRequestError({ _request, _options, error }) {
       // 处理请求错误
-      console.error("Request error: ", error)
+      console.error("Request error:", error)
     },
     async onResponseError({ _request, response, _options }) {
       const statusCode = response.status
@@ -31,7 +31,7 @@ const createApiClient = () => {
       }
       // 处理响应错误
       const errorMessage = response._data?.error_message ?? response.statusText
-      console.error("Response error: ", errorMessage)
+      console.error("Response error:", errorMessage)
       throw new Error(errorMessage)
     },
   })

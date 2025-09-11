@@ -92,7 +92,7 @@ const initHls = async (mediaRef, src, onError) => {
 
 const PlyrPlayer = ({
   src,
-  sourceType = undefined,
+  sourceType,
   elementType = "video",
   plyrOptions = {},
   poster = "",

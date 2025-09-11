@@ -29,7 +29,7 @@ const getLocale = () => localMap[getPreferredLanguage()] || enUS
 registerSW({ immediate: true })
 registerLanguages()
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.querySelector("#root")).render(
   <ConfigProvider locale={getLocale()}>
     <RouterProvider router={router} />
   </ConfigProvider>,

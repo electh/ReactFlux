@@ -34,12 +34,14 @@ const defaultValue = {
 
 export const settingsState = persistentAtom("settings", defaultValue, {
   encode: (value) => {
-    const filteredValue = Object.keys(value).reduce((acc, key) => {
+    const filteredValue = {}
+
+    for (const key in value) {
       if (key in defaultValue) {
-        acc[key] = value[key]
+        filteredValue[key] = value[key]
       }
-      return acc
-    }, {})
+    }
+
     return JSON.stringify(filteredValue)
   },
   decode: (str) => {

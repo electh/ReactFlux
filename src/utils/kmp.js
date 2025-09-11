@@ -1,49 +1,50 @@
 // 计算 LPS 数组
 const computeLPSArray = (pattern) => {
-  const lps = new Array(pattern.length).fill(0)
-  let len = 0
-  let i = 1
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++
-      lps[i] = len
-      i++
-    } else if (len !== 0) {
-      len = lps[len - 1]
+  const lpsArray = Array.from({ length: pattern.length }).fill(0)
+  let prevLongestPrefixLength = 0
+  let currentIndex = 1
+
+  while (currentIndex < pattern.length) {
+    if (pattern[currentIndex] === pattern[prevLongestPrefixLength]) {
+      prevLongestPrefixLength++
+      lpsArray[currentIndex] = prevLongestPrefixLength
+      currentIndex++
+    } else if (prevLongestPrefixLength === 0) {
+      lpsArray[currentIndex] = 0
+      currentIndex++
     } else {
-      lps[i] = 0
-      i++
+      prevLongestPrefixLength = lpsArray[prevLongestPrefixLength - 1]
     }
   }
-  return lps
+  return lpsArray
 }
 
 // KMP 搜索主体算法
 export const kmpSearch = (text, pattern, ignoreCase = true) => {
   // TODO: ignoreCase 添加为可配置项
-  const adjustedText = ignoreCase ? text.toLowerCase() : text
-  const adjustedPattern = ignoreCase ? pattern.toLowerCase() : pattern
+  const processedText = ignoreCase ? text.toLowerCase() : text
+  const processedPattern = ignoreCase ? pattern.toLowerCase() : pattern
 
-  if (adjustedPattern.length === 0) {
+  if (processedPattern.length === 0) {
     return 0 // 处理空模式
   }
 
-  const lps = computeLPSArray(adjustedPattern) // 预计算 lps 数组
-  let i = 0
-  let j = 0
+  const lpsArray = computeLPSArray(processedPattern) // 预计算 lps 数组
+  let textIndex = 0
+  let patternIndex = 0
 
-  while (i < adjustedText.length) {
-    if (adjustedText[i] === adjustedPattern[j]) {
-      i++
-      j++
-    } else if (j !== 0) {
-      j = lps[j - 1] // 利用 lps 进行回溯
+  while (textIndex < processedText.length) {
+    if (processedText[textIndex] === processedPattern[patternIndex]) {
+      textIndex++
+      patternIndex++
+    } else if (patternIndex === 0) {
+      textIndex++
     } else {
-      i++
+      patternIndex = lpsArray[patternIndex - 1] // 利用 lps 进行回溯
     }
 
-    if (j === adjustedPattern.length) {
-      return i - j // 找到匹配位置
+    if (patternIndex === processedPattern.length) {
+      return textIndex - patternIndex // 找到匹配位置
     }
   }
   return -1 // 未找到匹配
@@ -67,25 +68,29 @@ export const parseQuery = (query) => {
 
       // 根据前缀处理不同的逻辑
       switch (prefix) {
-        case "-":
+        case "-": {
           excludeTerms.push(phrase)
           break
-        case "+":
+        }
+        case "+": {
           includeTerms.push(phrase)
           break
-        case "|":
+        }
+        case "|": {
           orConditions.push([phrase])
           break
-        default:
+        }
+        default: {
           includeTerms.push(phrase)
           break
+        }
       }
 
       return phrase
     })
 
     // 从查询字符串中移除已处理的带引号短语
-    queryCopy = query.replace(/([-+|]?)\s*"([^"]+)"/g, "")
+    queryCopy = query.replaceAll(/([-+|]?)\s*"([^"]+)"/g, "")
   }
 
   // 处理剩余的不带引号的部分
@@ -97,7 +102,7 @@ export const parseQuery = (query) => {
     } else if (term.startsWith("+") && strippedTerm) {
       includeTerms.push(strippedTerm)
     } else if (term.includes("|")) {
-      const subTerms = term.split("|").filter((t) => t) // 过滤空字符串
+      const subTerms = term.split("|").filter(Boolean) // 过滤空字符串
       if (subTerms.length > 0) {
         orConditions.push(subTerms)
       }

@@ -19,9 +19,9 @@ import {
 import { checkIsInLast24Hours } from "@/utils/date"
 
 const updateEntries = (entries, updatedEntries) => {
-  const updatedEntryIds = updatedEntries.map((entry) => entry.id)
+  const updatedEntryIds = new Set(updatedEntries.map((entry) => entry.id))
   return entries.map((entry) => {
-    if (updatedEntryIds.includes(entry.id)) {
+    if (updatedEntryIds.has(entry.id)) {
       const updatedEntry = updatedEntries.find((e) => e.id === entry.id)
       return updatedEntry || entry
     }
@@ -76,13 +76,17 @@ export const handleEntriesStatusUpdate = (entries, newStatus) => {
   setEntries((prev) => updateEntries(prev, updatedEntries))
 }
 
+const handleEntryStatusUpdate = (entry, newStatus) => {
+  handleEntriesStatusUpdate([entry], newStatus)
+}
+
+const handleOpenLinkExternally = (entry) => {
+  window.open(entry.url, "_blank")
+}
+
 const useEntryActions = () => {
   const { activeContent } = useStore(contentState)
   const { polyglot } = useStore(polyglotState)
-
-  const handleEntryStatusUpdate = (entry, newStatus) => {
-    handleEntriesStatusUpdate([entry], newStatus)
-  }
 
   const handleEntryStarredUpdate = (entry, newStarred) => {
     if (newStarred) {
@@ -139,7 +143,7 @@ const useEntryActions = () => {
       const newReadingTime = response.reading_time ?? activeContent.reading_time
       setActiveContent({ ...activeContent, content: newContent, readingTime: newReadingTime })
     } catch (error) {
-      console.error("Failed to fetch content: ", error)
+      console.error("Failed to fetch content:", error)
       Message.error(polyglot.t("actions.fetched_content_error"))
     }
   }
@@ -157,16 +161,12 @@ const useEntryActions = () => {
         })
       }
     } catch (error) {
-      console.error("Failed to save to third-party services: ", error)
+      console.error("Failed to save to third-party services:", error)
       Notification.error({
         title: polyglot.t("actions.saved_to_third-party_services_error"),
         content: error.message,
       })
     }
-  }
-
-  const handleOpenLinkExternally = (entry) => {
-    window.open(entry.url, "_blank")
   }
 
   return {

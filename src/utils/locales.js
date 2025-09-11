@@ -31,7 +31,7 @@ export const sortMixedLanguageArray = (array, keyOrGetter, locale) => {
   const getValueFromItem =
     typeof keyOrGetter === "function" ? keyOrGetter : (item) => item[keyOrGetter]
 
-  return [...array].sort((itemA, itemB) => {
+  return [...array].toSorted((itemA, itemB) => {
     const valueA = getValueFromItem(itemA)
     const valueB = getValueFromItem(itemB)
 

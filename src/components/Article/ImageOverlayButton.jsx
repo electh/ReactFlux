@@ -57,7 +57,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
     const img = new Image()
     img.src = imgSrc
 
-    img.onload = () => {
+    const handleLoad = () => {
       if (isSubscribed) {
         const isSmall = Math.max(img.width, img.height) <= MIN_THUMBNAIL_SIZE
         const isLarge = img.width > 768
@@ -67,10 +67,12 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
       }
     }
 
+    img.addEventListener("load", handleLoad)
+
     return () => {
       isSubscribed = false
       img.src = ""
-      img.onload = null
+      img.removeEventListener("load", handleLoad)
     }
   }, [node, isLinkWrapper])
 

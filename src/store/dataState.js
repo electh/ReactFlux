@@ -84,24 +84,32 @@ export const filteredCategoriesState = computed(
 )
 
 export const feedsGroupedByIdState = computed(filteredFeedsState, (filteredFeeds) => {
-  return filteredFeeds.reduce((groupedFeeds, feed) => {
+  const groupedFeeds = {}
+
+  for (const feed of filteredFeeds) {
     const { id } = feed.category
+
     if (!groupedFeeds[id]) {
       groupedFeeds[id] = []
     }
+
     groupedFeeds[id].push(feed)
-    return groupedFeeds
-  }, {})
+  }
+
+  return groupedFeeds
 })
 
 export const unreadTotalState = computed([dataState, filteredFeedsState], (data, filteredFeeds) => {
   const { unreadInfo } = data
-  return Object.entries(unreadInfo).reduce((acc, [id, count]) => {
+  let total = 0
+
+  for (const [id, count] of Object.entries(unreadInfo)) {
     if (filteredFeeds.some((feed) => feed.id === Number(id))) {
-      return acc + count
+      total += count
     }
-    return acc
-  }, 0)
+  }
+
+  return total
 })
 
 export const setCategoriesData = createSetter(dataState, "categoriesData")

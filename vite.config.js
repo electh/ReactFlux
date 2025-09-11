@@ -1,4 +1,4 @@
-import { dirname, resolve } from "node:path"
+import path from "node:path"
 import { fileURLToPath } from "node:url"
 
 import viteReact from "@vitejs/plugin-react"
@@ -6,6 +6,7 @@ import viteReact from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { VitePWA } from "vite-plugin-pwa"
 
+const { dirname, resolve } = path
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
