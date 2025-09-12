@@ -71,7 +71,7 @@ export const ContextProvider = ({ children }) => {
         }
       }, ANIMATION_DURATION_MS)
     },
-    [polyglot, handleEntryStatusUpdate, markReadBy],
+    [polyglot, handleEntryStatusUpdate, markReadBy, location.pathname],
   )
 
   const value = useMemo(
