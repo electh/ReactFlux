@@ -142,8 +142,8 @@ importers:
         specifier: ^61.0.2
         version: 61.0.2(eslint@9.34.0(jiti@1.21.6))
       globals:
-        specifier: ^16.3.0
-        version: 16.3.0
+        specifier: ^16.4.0
+        version: 16.4.0
       lint-staged:
         specifier: ^16.1.6
         version: 16.1.6
@@ -2284,8 +2284,8 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
-  globals@16.3.0:
-    resolution: {integrity: sha512-bqWEnJ1Nt3neqx2q5SFfGS8r/ahumIakg3HcwtNlrVlwXIeNumWn/c7Pn/wKzGhf6SaW6H6uWXLqC30STCMchQ==}
+  globals@16.4.0:
+    resolution: {integrity: sha512-ob/2LcVVaVGCYN+r14cnwnoDPUufjiYgSqRhiFD0Q1iI4Odora5RE8Iv1D24hAz5oMophRGkGz+yuvQmmUMnMw==}
     engines: {node: '>=18'}
 
   globalthis@1.0.4:
@@ -6013,7 +6013,7 @@ snapshots:
       eslint: 9.34.0(jiti@1.21.6)
       esquery: 1.6.0
       find-up-simple: 1.0.1
-      globals: 16.3.0
+      globals: 16.4.0
       indent-string: 5.0.0
       is-builtin-module: 5.0.0
       jsesc: 3.1.0
@@ -6283,7 +6283,7 @@ snapshots:
 
   globals@14.0.0: {}
 
-  globals@16.3.0: {}
+  globals@16.4.0: {}
 
   globalthis@1.0.4:
     dependencies:
