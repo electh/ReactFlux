@@ -1,7 +1,8 @@
-import { Tag, Tooltip } from "@arco-design/web-react"
-import { IconLink } from "@arco-design/web-react/icon"
+import { Tooltip } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import { useEffect, useState } from "react"
+
+import ImageLinkTag from "./ImageLinkTag"
 
 import { settingsState } from "@/store/settingsState"
 import { MIN_THUMBNAIL_SIZE } from "@/utils/constants"
@@ -111,20 +112,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
               isIcon={isIcon}
               togglePhotoSlider={togglePhotoSlider}
             />
-            {node.attribs.href !== "#" && (
-              <Tooltip content={node.attribs.href}>
-                <Tag
-                  className="link-tag"
-                  icon={<IconLink />}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    window.open(node.attribs.href, "_blank")
-                  }}
-                >
-                  {node.attribs.href}
-                </Tag>
-              </Tooltip>
-            )}
+            <ImageLinkTag href={node.attribs.href} />
           </div>
         ) : (
           <ImageComponent

@@ -1,0 +1,4 @@
+.link-tag {
+  cursor: pointer;
+  max-width: calc(100% - 32px);
+}

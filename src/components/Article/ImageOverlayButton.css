@@ -29,8 +29,3 @@
   position: relative;
   width: 100%;
 }
-
-.link-tag {
-  cursor: pointer;
-  max-width: calc(100% - 32px);
-}
