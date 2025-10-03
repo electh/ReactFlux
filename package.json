@@ -64,7 +64,7 @@
     "lint-staged": "^16.2.1",
     "prettier": "^3.6.2",
     "react-compiler-runtime": "19.1.0-rc.3",
-    "rollup-plugin-visualizer": "^6.0.3",
+    "rollup-plugin-visualizer": "^6.0.4",
     "simple-git-hooks": "2.13.1",
     "vite": "^7.1.7",
     "vite-plugin-pwa": "^1.0.3",
