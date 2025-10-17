@@ -154,8 +154,8 @@ importers:
         specifier: 19.1.0-rc.3
         version: 19.1.0-rc.3(react@18.3.1)
       rollup-plugin-visualizer:
-        specifier: ^6.0.4
-        version: 6.0.4(rollup@2.79.2)
+        specifier: ^6.0.5
+        version: 6.0.5(rollup@2.79.2)
       simple-git-hooks:
         specifier: 2.13.1
         version: 2.13.1
@@ -1901,8 +1901,8 @@ packages:
   electron-to-chromium@1.5.230:
     resolution: {integrity: sha512-A6A6Fd3+gMdaed9wX83CvHYJb4UuapPD5X5SLq72VZJzxHSY0/LUweGXRWmQlh2ln7KV7iw7jnwXK7dlPoOnHQ==}
 
-  emoji-regex@10.5.0:
-    resolution: {integrity: sha512-lb49vf1Xzfx080OKA0o6l8DQQpV+6Vg95zyCJX9VB/BqKYlhG7N4wgROUUHRA+ZPUefLnteQOad7z1kT2bV7bg==}
+  emoji-regex@10.6.0:
+    resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3159,8 +3159,8 @@ packages:
   rfdc@1.4.1:
     resolution: {integrity: sha512-q1b3N5QkRUWUl7iyylaaj3kOpIT0N2i9MqIEQXP73GVsN9cw3fdx8X63cEmWhJGi2PPCF23Ijp7ktmd39rawIA==}
 
-  rollup-plugin-visualizer@6.0.4:
-    resolution: {integrity: sha512-q8Q7J/6YofkmaGW1sH/fPRAz37x/+pd7VBuaUU7lwvOS/YikuiiEU9jeb9PH8XHiq50XFrUsBbOxeAMYQ7KZkg==}
+  rollup-plugin-visualizer@6.0.5:
+    resolution: {integrity: sha512-9+HlNgKCVbJDs8tVtjQ43US12eqaiHyyiLMdBwQ7vSZPiHMysGNo2E88TAp1si5wx8NAoYriI2A5kuKfIakmJg==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
@@ -5720,7 +5720,7 @@ snapshots:
 
   electron-to-chromium@1.5.230: {}
 
-  emoji-regex@10.5.0: {}
+  emoji-regex@10.6.0: {}
 
   emoji-regex@8.0.0: {}
 
@@ -7132,7 +7132,7 @@ snapshots:
 
   rfdc@1.4.1: {}
 
-  rollup-plugin-visualizer@6.0.4(rollup@2.79.2):
+  rollup-plugin-visualizer@6.0.5(rollup@2.79.2):
     dependencies:
       open: 8.4.2
       picomatch: 4.0.3
@@ -7349,7 +7349,7 @@ snapshots:
 
   string-width@7.2.0:
     dependencies:
-      emoji-regex: 10.5.0
+      emoji-regex: 10.6.0
       get-east-asian-width: 1.4.0
       strip-ansi: 7.1.2
 
