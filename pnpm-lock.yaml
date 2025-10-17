@@ -87,8 +87,8 @@ importers:
         specifier: ^13.15.0
         version: 13.15.15
       virtua:
-        specifier: ^0.45.2
-        version: 0.45.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.45.3
+        version: 0.45.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       yet-another-react-lightbox:
         specifier: ^3.25.0
         version: 3.25.0(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3555,8 +3555,8 @@ packages:
     resolution: {integrity: sha512-BgWVbCI72aIQy937xbawcs+hrVaN/CZ2UwutgaJ36hGqRrLNM+f5LUT/YPRbo8IV/ASeFzXszezV+y2+rq3l8A==}
     engines: {node: '>= 0.10'}
 
-  virtua@0.45.2:
-    resolution: {integrity: sha512-kqger1ZZICN7qW164MboRDId+z7Odaxre+9ph8/67AlTI/3hyOEiUV9c9fnRumtKqnRqzwtI9BloOWE1Tb+qEg==}
+  virtua@0.45.3:
+    resolution: {integrity: sha512-+nW3VOwXhlte3m4jbS9gVMked/cZo95IKChH0qol+XUApQVZpPaLDGee1BC/rVng0tsMfxs0vJPEPEUAAfKpkw==}
     peerDependencies:
       react: '>=16.14.0'
       react-dom: '>=16.14.0'
@@ -7604,7 +7604,7 @@ snapshots:
 
   validator@13.15.15: {}
 
-  virtua@0.45.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  virtua@0.45.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     optionalDependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
