@@ -24,7 +24,7 @@
     "framer-motion": "^12.23.23",
     "highlight.js": "^11.11.1",
     "hls.js": "^1.6.13",
-    "html-react-parser": "^5.2.6",
+    "html-react-parser": "^5.2.7",
     "littlefoot": "^4.1.2",
     "lodash-es": "^4.17.21",
     "nanostores": "^1.0.1",
