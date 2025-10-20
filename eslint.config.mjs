@@ -138,4 +138,11 @@ export default [
       "unicorn/filename-case": ["error", { case: "camelCase" }],
     },
   },
+  {
+    files: ["scripts/update-fonts.js"],
+    languageOptions: { globals: globals.node },
+    rules: {
+      "unicorn/no-process-exit": "off",
+    },
+  },
 ]

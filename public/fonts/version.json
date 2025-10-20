@@ -1,0 +1,225 @@
+{
+  "lastUpdate": "2025-10-20T08:02:26.751Z",
+  "fonts": {
+    "Fira Sans": {
+      "dir": "fira-sans",
+      "files": 7,
+      "hashes": [
+        {
+          "filename": "va9E4kDNxMZdWfMOD5VvmojLeTY.woff2",
+          "hash": "34d63f54cb610e0f"
+        },
+        {
+          "filename": "va9E4kDNxMZdWfMOD5Vvk4jLeTY.woff2",
+          "hash": "2ce9f91ccd598790"
+        },
+        {
+          "filename": "va9E4kDNxMZdWfMOD5Vvm4jLeTY.woff2",
+          "hash": "a7d3e976d604e8ea"
+        },
+        {
+          "filename": "va9E4kDNxMZdWfMOD5VvlIjLeTY.woff2",
+          "hash": "d4801a135e38149f"
+        },
+        {
+          "filename": "va9E4kDNxMZdWfMOD5VvmIjLeTY.woff2",
+          "hash": "bce982a23325eeb0"
+        },
+        {
+          "filename": "va9E4kDNxMZdWfMOD5VvmYjLeTY.woff2",
+          "hash": "ed4d0b738d93612b"
+        },
+        {
+          "filename": "va9E4kDNxMZdWfMOD5Vvl4jL.woff2",
+          "hash": "3e38d8c01fe97529"
+        }
+      ]
+    },
+    "Noto Sans": {
+      "dir": "noto-sans",
+      "files": 8,
+      "hashes": [
+        {
+          "filename": "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9X6VLKzA.woff2",
+          "hash": "fa8331498f2c20fe"
+        },
+        {
+          "filename": "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9e6VLKzA.woff2",
+          "hash": "05af9e705d3b63ae"
+        },
+        {
+          "filename": "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9b6VLKzA.woff2",
+          "hash": "1ccb720178c307d1"
+        },
+        {
+          "filename": "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9W6VLKzA.woff2",
+          "hash": "cf9669423c4b33c0"
+        },
+        {
+          "filename": "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9Z6VLKzA.woff2",
+          "hash": "c7c42b4b60ab0553"
+        },
+        {
+          "filename": "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9V6VLKzA.woff2",
+          "hash": "0f0c8a4858f1f5b2"
+        },
+        {
+          "filename": "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9U6VLKzA.woff2",
+          "hash": "c8e6bf928ae88c94"
+        },
+        {
+          "filename": "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9a6VI.woff2",
+          "hash": "09aee8065d25508f"
+        }
+      ]
+    },
+    "Noto Serif": {
+      "dir": "noto-serif",
+      "files": 8,
+      "hashes": [
+        {
+          "filename": "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTyscKtq8.woff2",
+          "hash": "0755b43b6a12ecbc"
+        },
+        {
+          "filename": "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTw8cKtq8.woff2",
+          "hash": "8deaf453448fb06f"
+        },
+        {
+          "filename": "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTy8cKtq8.woff2",
+          "hash": "82791822ba505972"
+        },
+        {
+          "filename": "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTxMcKtq8.woff2",
+          "hash": "4f87b0a2fc2f0a9c"
+        },
+        {
+          "filename": "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTu8cKtq8.woff2",
+          "hash": "4c33efa73f0b53a2"
+        },
+        {
+          "filename": "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTyMcKtq8.woff2",
+          "hash": "207dac0723db2e38"
+        },
+        {
+          "filename": "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTyccKtq8.woff2",
+          "hash": "536857e8de0e3b12"
+        },
+        {
+          "filename": "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTx8cK.woff2",
+          "hash": "4c0cbe3eec50d260"
+        }
+      ]
+    },
+    "Open Sans": {
+      "dir": "open-sans",
+      "files": 10,
+      "hashes": [
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4taVIGxA.woff2",
+          "hash": "d18e67d924951d19"
+        },
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4kaVIGxA.woff2",
+          "hash": "dbb0be746ac93089"
+        },
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4saVIGxA.woff2",
+          "hash": "944d5844f65414cc"
+        },
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4jaVIGxA.woff2",
+          "hash": "8e22e3852c3c18cd"
+        },
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4iaVIGxA.woff2",
+          "hash": "953b3b71db3d7946"
+        },
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B5caVIGxA.woff2",
+          "hash": "3604db99ff4f144a"
+        },
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B5OaVIGxA.woff2",
+          "hash": "c6c1ab23bf9b597a"
+        },
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4vaVIGxA.woff2",
+          "hash": "e65e991fc802db51"
+        },
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4uaVIGxA.woff2",
+          "hash": "c260ffc9d1acb022"
+        },
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVI.woff2",
+          "hash": "0e44026ad31376af"
+        }
+      ]
+    },
+    "Source Sans Pro": {
+      "dir": "source-sans-pro",
+      "files": 7,
+      "hashes": [
+        {
+          "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qNa7lqDY.woff2",
+          "hash": "d58dafd8f0b43c7b"
+        },
+        {
+          "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qPK7lqDY.woff2",
+          "hash": "a5984c2e2d01b200"
+        },
+        {
+          "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qNK7lqDY.woff2",
+          "hash": "300aa5a91d8d582a"
+        },
+        {
+          "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qO67lqDY.woff2",
+          "hash": "fa58f80d5251de70"
+        },
+        {
+          "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qN67lqDY.woff2",
+          "hash": "26d1dbd047f3e316"
+        },
+        {
+          "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qNq7lqDY.woff2",
+          "hash": "f61f863b7dcf4f83"
+        },
+        {
+          "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7l.woff2",
+          "hash": "691491f1fc8badab"
+        }
+      ]
+    },
+    "Source Serif Pro": {
+      "dir": "source-serif-pro",
+      "files": 6,
+      "hashes": [
+        {
+          "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXk-oBOL.woff2",
+          "hash": "b3316205d99a3efb"
+        },
+        {
+          "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXA-oBOL.woff2",
+          "hash": "e0ed59ebe251c686"
+        },
+        {
+          "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXc-oBOL.woff2",
+          "hash": "4ad6c509f5378925"
+        },
+        {
+          "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXs-oBOL.woff2",
+          "hash": "9086e45da52706fb"
+        },
+        {
+          "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXo-oBOL.woff2",
+          "hash": "0fdc666ecbc14cb4"
+        },
+        {
+          "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXQ-oA.woff2",
+          "hash": "1647670822e9a715"
+        }
+      ]
+    }
+  }
+}

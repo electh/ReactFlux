@@ -11,7 +11,8 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "prepare": "simple-git-hooks",
-    "prebuild": "node src/scripts/version-info.js"
+    "prebuild": "node src/scripts/version-info.js",
+    "update-fonts": "node scripts/update-fonts.js"
   },
   "dependencies": {
     "@arco-design/color": "^0.4.0",
