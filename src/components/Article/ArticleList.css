@@ -3,13 +3,6 @@
   contain: strict;
   padding: 10px;
   height: 100%;
-
-  /**
-   * When using this style, strange scrollbar appears, while be packaged as MacOS App with Tauri2.
-   * Removing this style does not affect other behaviors.
-   */
-  /* overflow-x: hidden; */
-
   overscroll-behavior-y: contain;
 }
 
