@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 
 import useFeedIcons from "@/hooks/useFeedIcons"
 import { updateFeedIcon } from "@/store/feedIconsState"
@@ -15,7 +15,7 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
   const { icon_id: iconId } = feed.icon
   const fallbackIconURL = getFallbackIconURL(feed)
 
-  const [iconURL, setIconURL] = useState(iconId === 0 ? fallbackIconURL : DEFAULT_ICON_URL)
+  const [useFallback, setUseFallback] = useState(false)
   const [fallbackFailed, setFallbackFailed] = useState(false)
 
   const imgRef = useRef(null)
@@ -23,13 +23,18 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
   const fetchedIcon = useFeedIcons(iconId, feed)
   const fetchedIconURL = fetchedIcon?.url
 
-  useEffect(() => {
-    if (fetchedIconURL) {
-      setIconURL(fetchedIconURL)
-    } else if (iconId === 0 && !fallbackFailed) {
-      setIconURL(fallbackIconURL)
+  const iconURL = (() => {
+    if (fallbackFailed) {
+      return DEFAULT_ICON_URL
     }
-  }, [fetchedIconURL, iconId, fallbackFailed, fallbackIconURL])
+    if (fetchedIconURL && !useFallback) {
+      return fetchedIconURL
+    }
+    if (iconId === 0 || useFallback) {
+      return fallbackIconURL
+    }
+    return DEFAULT_ICON_URL
+  })()
 
   const handleImageLoad = () => {
     if (imgRef.current) {
@@ -37,8 +42,8 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
       if (naturalWidth > 200 && naturalHeight > 200 && fetchedIcon.width === null) {
         updateFeedIcon(iconId, { width: naturalWidth, height: naturalHeight })
       }
-      if ((naturalWidth !== naturalHeight || naturalWidth === 0) && !fallbackFailed) {
-        setIconURL(fallbackIconURL)
+      if ((naturalWidth !== naturalHeight || naturalWidth === 0) && !useFallback) {
+        setUseFallback(true)
       }
     }
   }
@@ -46,12 +51,11 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
   const handleError = () => {
     if (iconURL === fallbackIconURL && !fallbackFailed) {
       setFallbackFailed(true)
-      setIconURL(DEFAULT_ICON_URL)
       return
     }
 
-    if (!fallbackFailed) {
-      setIconURL(fallbackIconURL)
+    if (!fallbackFailed && !useFallback) {
+      setUseFallback(true)
     }
   }
 

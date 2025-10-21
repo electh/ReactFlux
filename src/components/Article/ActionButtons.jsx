@@ -18,7 +18,7 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { memo, useEffect, useState } from "react"
+import { memo, useState } from "react"
 
 import ArticleTOC from "./ArticleTOC"
 
@@ -99,6 +99,13 @@ const ActionButtons = () => {
 
   const [dropdownVisible, setDropdownVisible] = useState(false)
   const [isFetchedOriginal, setIsFetchedOriginal] = useState(false)
+  const [lastActiveContentId, setLastActiveContentId] = useState(activeContent?.id)
+
+  if (activeContent?.id !== lastActiveContentId) {
+    setLastActiveContentId(activeContent?.id)
+    setIsFetchedOriginal(false)
+  }
+
   const hasHeadings = headings.length > 0
 
   const {
@@ -395,10 +402,6 @@ const ActionButtons = () => {
       </Dropdown>
     ),
   }
-
-  useEffect(() => {
-    setIsFetchedOriginal(false)
-  }, [activeContent])
 
   return (
     <div className={`action-buttons ${isBelowMedium ? "mobile" : ""}`}>

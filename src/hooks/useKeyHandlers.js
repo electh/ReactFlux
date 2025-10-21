@@ -12,7 +12,6 @@ import {
   filteredEntriesState,
   nextContentState,
   prevContentState,
-  setActiveContent,
 } from "@/store/contentState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { extractImageSources } from "@/utils/images"
@@ -69,6 +68,7 @@ const useKeyHandlers = () => {
     }
 
   const exitDetailView = withActiveContent(
+    // eslint-disable-next-line react-hooks/refs
     withPhotoSliderCheck(() => {
       closeActiveContent()
       if (entryListRef.current) {
@@ -77,6 +77,7 @@ const useKeyHandlers = () => {
     }),
   )
 
+  // eslint-disable-next-line react-hooks/refs
   const navigateToPreviousArticle = withPhotoSliderCheck(() => {
     if (prevContent) {
       handleEntryClick(prevContent)
@@ -86,6 +87,7 @@ const useKeyHandlers = () => {
     }
   })
 
+  // eslint-disable-next-line react-hooks/refs
   const navigateToNextArticle = withPhotoSliderCheck(() => {
     if (nextContent) {
       handleEntryClick(nextContent)
@@ -95,6 +97,7 @@ const useKeyHandlers = () => {
     }
   })
 
+  // eslint-disable-next-line react-hooks/refs
   const navigateToAdjacentUnreadArticle = withPhotoSliderCheck((direction) => {
     const adjacentUnreadEntry = findAdjacentUnreadEntry(
       activeEntryIndex,

@@ -1,17 +1,23 @@
 import { Button, Drawer } from "@arco-design/web-react"
 import { IconMenu } from "@arco-design/web-react/icon"
-import { useEffect, useState } from "react"
+import { useStore } from "@nanostores/react"
+import { atom } from "nanostores"
+import { useEffect } from "react"
 import { useLocation } from "react-router"
 
 import Sidebar from "@/components/Sidebar/Sidebar"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import "./SidebarTrigger.css"
+import createSetter from "@/utils/nanostores"
+
+const sidebarVisibleState = atom(false)
+const setSidebarVisible = createSetter(sidebarVisibleState)
 
 export default function SidebarTrigger() {
   const currentPath = useLocation().pathname
   const { isBelowLarge } = useScreenWidth()
 
-  const [sidebarVisible, setSidebarVisible] = useState(false)
+  const sidebarVisible = useStore(sidebarVisibleState)
 
   useEffect(() => {
     if (!isBelowLarge) {

@@ -12,8 +12,8 @@ import useForm from "@arco-design/web-react/es/Form/useForm"
 import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { ofetch } from "ofetch"
-import { useEffect, useState } from "react"
-import { Navigate, useLocation, useNavigate } from "react-router"
+import { useEffect, useMemo, useState } from "react"
+import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router"
 
 import useLanguage, { polyglotState } from "@/hooks/useLanguage"
 import useTheme from "@/hooks/useTheme"
@@ -34,7 +34,10 @@ const Login = () => {
 
   const [loginForm] = useForm()
   const [loading, setLoading] = useState(false)
-  const [authMethod, setAuthMethod] = useState("token")
+
+  const [searchParams] = useSearchParams()
+  const urlParamsObj = useMemo(() => Object.fromEntries(searchParams), [])
+  const [authMethod, setAuthMethod] = useState(urlParamsObj.username ? "user" : "token")
   /* token or user */
   const location = useLocation()
   const navigate = useNavigate()
@@ -83,9 +86,6 @@ const Login = () => {
     const url = new URL(globalThis.location.href)
     const { server, token, username, password } = Object.fromEntries(url.searchParams)
     if (server) {
-      if (username) {
-        setAuthMethod("user")
-      }
       loginForm.setFieldsValue({ server, token, username, password })
       loginForm.submit()
     }

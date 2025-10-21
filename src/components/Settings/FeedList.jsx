@@ -14,7 +14,7 @@ import {
 import { IconDelete, IconEdit, IconQuestionCircle, IconRefresh } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { atom, computed } from "nanostores"
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
 import { refreshAllFeed, updateFeed } from "@/apis"
@@ -359,6 +359,7 @@ const FeedList = () => {
 
   const [bulkUpdateModalVisible, setBulkUpdateModalVisible] = useState(false)
   const [bulkOperationsModalVisible, setBulkOperationsModalVisible] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
   const [refreshModalVisible, setRefreshModalVisible] = useState(false)
   const [editFeedModalVisible, setEditFeedModalVisible] = useState(false)
   const [feedForm] = Form.useForm()
@@ -506,28 +507,21 @@ const FeedList = () => {
     },
   ].filter(Boolean)
 
-  const [pagination, setPagination] = useState({
-    showJumper: true,
-    showTotal: true,
-    total: tableData.length,
-    pageSize: 15,
-    current: 1,
-    sizeCanChange: false,
-  })
-
-  const handleTableChange = (pagination) => {
-    setPagination((prev) => ({
-      ...prev,
-      current: pagination.current,
-    }))
-  }
-
-  useEffect(() => {
-    setPagination((prev) => ({
-      ...prev,
+  const pagination = useMemo(
+    () => ({
+      showJumper: true,
+      showTotal: true,
       total: tableData.length,
-    }))
-  }, [tableData.length])
+      pageSize: 15,
+      current: currentPage,
+      sizeCanChange: false,
+    }),
+    [tableData.length, currentPage],
+  )
+
+  const handleTableChange = (newPagination) => {
+    setCurrentPage(newPagination.current)
+  }
 
   return (
     <>

@@ -41,21 +41,13 @@ const handleFilterTypeChange = (value) => {
   setFilterType(value)
 }
 
-const SearchModal = memo(({ initialValue, visible, onCancel, onConfirm }) => {
+const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => {
   const { filterType } = useStore(contentState)
   const { polyglot } = useStore(polyglotState)
   const tooltipLines = polyglot.t("search.tooltip").split("\n")
 
-  const [inputValue, setInputValue] = useState(initialValue)
-
-  useEffect(() => {
-    if (visible) {
-      setInputValue(initialValue)
-    }
-  }, [initialValue, visible])
-
   const handleConfirm = () => {
-    onConfirm(inputValue)
+    onConfirm(value)
   }
 
   const handleKeyDown = (event) => {
@@ -83,7 +75,7 @@ const SearchModal = memo(({ initialValue, visible, onCancel, onConfirm }) => {
         <Input.Search
           allowClear
           placeholder={polyglot.t("search.placeholder")}
-          value={inputValue}
+          value={value}
           addBefore={
             <Select
               style={{ width: "auto" }}
@@ -117,7 +109,7 @@ const SearchModal = memo(({ initialValue, visible, onCancel, onConfirm }) => {
               <IconQuestionCircle />
             </Tooltip>
           }
-          onChange={setInputValue}
+          onChange={onChange}
           onKeyDown={handleKeyDown}
         />
       </div>
@@ -297,9 +289,10 @@ const SearchAndSortBar = () => {
         </CustomTooltip>
       </div>
       <SearchModal
-        initialValue={modalInputValue}
+        value={modalInputValue}
         visible={searchModalVisible}
         onCancel={closeSearchModal}
+        onChange={setModalInputValue}
         onConfirm={handleConfirmSearch}
       />
     </div>
