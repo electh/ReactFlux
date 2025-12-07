@@ -1,10 +1,12 @@
 # Stage 1: Build the React application
 # Specify the version to ensure consistent builds
-FROM node:22-alpine AS build
+FROM --platform=$BUILDPLATFORM node:22-alpine AS build
 
-# Install git and pnpm
-RUN apk add --no-cache git && \
-    npm install -g pnpm
+# Install git
+RUN apk add --no-cache git
+
+# enable corepack to use pnpm
+RUN corepack enable
 
 # Set the working directory in the container
 WORKDIR /app
