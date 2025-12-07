@@ -14,7 +14,7 @@ import { buildEntryDetailPath, extractBasePath, isEntryDetailPath } from "@/util
 const Context = createContext()
 
 export const ContextProvider = ({ children }) => {
-  const polyglot = useStore(polyglotState)
+  const { polyglot } = useStore(polyglotState)
   const { markReadBy } = useStore(settingsState)
 
   const entryDetailRef = useRef(null)
