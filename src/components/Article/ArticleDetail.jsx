@@ -267,6 +267,17 @@ const handleVideo = (node) => {
   )
 }
 
+const handleIframe = (node) => {
+  const src = node.attribs?.src
+
+  // Check if it's a YouTube iframe
+  if (src && (src.includes("youtube.com") || src.includes("youtube-nocookie.com"))) {
+    return <iframe {...node.attribs} referrerPolicy="strict-origin-when-cross-origin" />
+  }
+
+  return node
+}
+
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => {
   const options = {
     replace: (node) => {
@@ -291,6 +302,9 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => {
         }
         case "video": {
           return handleVideo(node)
+        }
+        case "iframe": {
+          return handleIframe(node)
         }
         case "table": {
           return handleContentTable(node)
