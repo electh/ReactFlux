@@ -36,27 +36,39 @@
 
 @media screen and (display-mode: fullscreen) {
   * {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: transparent;
   }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--color-bg-1);
+  }
+
   .app {
     display: grid;
     grid-template-columns: 240px 1fr;
     grid-template-areas: "sidebar main";
     border-radius: var(--border-radius-medium);
-    padding-right: env(safe-area-inset-right);
-    padding-left: env(safe-area-inset-left);
     height: 100%;
     overflow: hidden;
   }
-  .main {
-    padding-top: env(safe-area-inset-top);
-  }
-  .arco-menu-light {
-    padding-top: env(safe-area-inset-top);
-    padding-left: env(safe-area-inset-left);
-  }
-  body {
-    min-height: 100vh;
+}
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  @media screen and (display-mode: fullscreen) {
+    .app {
+      padding-right: env(safe-area-inset-right);
+      padding-left: env(safe-area-inset-left);
+    }
+
+    .arco-menu-light {
+      padding-top: max(env(safe-area-inset-top), 20px);
+      padding-left: env(safe-area-inset-left);
+    }
+
+    .main {
+      padding-top: max(env(safe-area-inset-top), 20px);
+    }
   }
 }
 
