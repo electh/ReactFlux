@@ -3,6 +3,7 @@
   contain: strict;
   padding: 10px;
   height: 100%;
+  overflow-x: hidden;
   overscroll-behavior-y: contain;
 }
 
