@@ -262,6 +262,8 @@
     "mark_read_on_view": "Ver",
     "enable_context_menu_label": "Habilitar menú contextual",
     "enable_context_menu_description": "Habilitar menú contextual de clic derecho en tarjetas de artículos",
+    "compact_sidebar_groups_label": "Grupos de barra lateral compactos",
+    "compact_sidebar_groups_description": "Limitar la altura del grupo de feeds para evitar listas de desplazamiento largas (recomendado para rendimiento con muchos feeds)",
     "enable_swipe_gesture_description": "Habilitar gesto de deslizamiento para cambiar artículos",
     "enable_swipe_gesture_label": "Habilitar gesto de deslizamiento",
     "swipe_sensitivity_description": "Ajustar la sensibilidad de los gestos de deslizamiento",

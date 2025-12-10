@@ -262,6 +262,8 @@
     "mark_read_on_view": "Beim Ansehen",
     "enable_context_menu_label": "Kontextmenü aktivieren",
     "enable_context_menu_description": "Rechtsklick-Kontextmenü auf Artikelkarten aktivieren",
+    "compact_sidebar_groups_label": "Kompakte Seitenleistengruppen",
+    "compact_sidebar_groups_description": "Feed-Gruppenhöhe begrenzen, um lange Scroll-Listen zu vermeiden (empfohlen für Leistung bei vielen Feeds)",
     "enable_swipe_gesture_description": "Erlaubt Wischen nach links und rechts zum Navigieren zwischen Artikeln",
     "enable_swipe_gesture_label": "Wischgeste aktivieren",
     "swipe_sensitivity_description": "Empfindlichkeit der Wischgesten anpassen",

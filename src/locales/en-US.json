@@ -262,6 +262,8 @@
     "mark_read_on_view": "View",
     "enable_context_menu_label": "Enable context menu",
     "enable_context_menu_description": "Enable right-click context menu on article cards",
+    "compact_sidebar_groups_label": "Compact sidebar groups",
+    "compact_sidebar_groups_description": "Limit feed group height to prevent long scroll lists (recommended for performance with many feeds)",
     "enable_swipe_gesture_description": "Enable swipe gesture to switch articles",
     "enable_swipe_gesture_label": "Enable swipe gesture",
     "swipe_sensitivity_description": "Adjust the sensitivity of swipe gestures",

@@ -20,6 +20,7 @@ const languageOptions = [
 const General = () => {
   const { version } = useStore(dataState)
   const {
+    compactSidebarGroups,
     enableContextMenu,
     enableSwipeGesture,
     homePage,
@@ -204,6 +205,18 @@ const General = () => {
         <Switch
           checked={enableContextMenu}
           onChange={(value) => updateSettings({ enableContextMenu: value })}
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.compact_sidebar_groups_description")}
+        title={polyglot.t("settings.compact_sidebar_groups_label")}
+      >
+        <Switch
+          checked={compactSidebarGroups}
+          onChange={(value) => updateSettings({ compactSidebarGroups: value })}
         />
       </SettingItem>
 
