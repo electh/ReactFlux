@@ -16,10 +16,10 @@ importers:
         version: 2.66.8(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@nanostores/persistent':
         specifier: ^1.2.0
-        version: 1.2.0(nanostores@1.0.1)
+        version: 1.2.0(nanostores@1.1.0)
       '@nanostores/react':
         specifier: ^1.0.0
-        version: 1.0.0(nanostores@1.0.1)(react@18.3.1)
+        version: 1.0.0(nanostores@1.1.0)(react@18.3.1)
       canvas-confetti:
         specifier: ^1.9.4
         version: 1.9.4
@@ -48,8 +48,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       nanostores:
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       node-polyglot:
         specifier: ^2.6.0
         version: 2.6.0
@@ -2803,8 +2803,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanostores@1.0.1:
-    resolution: {integrity: sha512-kNZ9xnoJYKg/AfxjrVL4SS0fKX++4awQReGqWnwTRHxeHGZ1FJFVgTqr/eMrNQdp0Tz7M7tG/TDaX8QfHDwVCw==}
+  nanostores@1.1.0:
+    resolution: {integrity: sha512-yJBmDJr18xy47dbNVlHcgdPrulSn1nhSE6Ns9vTG+Nx9VPT6iV1MD6aQFp/t52zpf82FhLLTXAXr30NuCnxvwA==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   napi-postinstall@0.2.4:
@@ -4961,13 +4961,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@nanostores/persistent@1.2.0(nanostores@1.0.1)':
+  '@nanostores/persistent@1.2.0(nanostores@1.1.0)':
     dependencies:
-      nanostores: 1.0.1
+      nanostores: 1.1.0
 
-  '@nanostores/react@1.0.0(nanostores@1.0.1)(react@18.3.1)':
+  '@nanostores/react@1.0.0(nanostores@1.1.0)(react@18.3.1)':
     dependencies:
-      nanostores: 1.0.1
+      nanostores: 1.1.0
       react: 18.3.1
 
   '@napi-rs/wasm-runtime@0.2.11':
@@ -6836,7 +6836,7 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  nanostores@1.0.1: {}
+  nanostores@1.1.0: {}
 
   napi-postinstall@0.2.4: {}
 
