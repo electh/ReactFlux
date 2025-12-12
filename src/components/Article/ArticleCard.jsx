@@ -77,7 +77,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
     showEstimatedReadingTime,
     showFeedIcon,
   } = useStore(settingsState)
-  const { activeContent } = useStore(contentState)
+  const { activeContent, infoFrom } = useStore(contentState)
   const { hasIntegrations } = useStore(dataState)
   const { polyglot } = useStore(polyglotState)
   const isSelected = activeContent?.id === entry.id
@@ -100,29 +100,29 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
 
   useEffect(() => {
     // If the article is read or scroll marking is not enabled, no observation needed
-    if (!isUnread || !markReadOnScroll) {
+    if (!isUnread || !markReadOnScroll || infoFrom === "history") {
       return
     }
 
-    const markAsRead = async () => await handleToggleStatus(entry)
-
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        const { boundingClientRect, rootBounds, isIntersecting } = entry
+      (entries) => {
+        for (const observerEntry of entries) {
+          const { boundingClientRect, rootBounds, isIntersecting } = observerEntry
 
-        // Record status when the article enters the viewport
-        if (isIntersecting) {
-          wasVisible.current = true
-        } else if (wasVisible.current && boundingClientRect.top < rootBounds.top) {
-          // Only mark as read when the card is completely above the viewport top and was previously visible
-          markAsRead()
-          observer.unobserve(entry.target)
+          // Record status when the article enters the viewport
+          if (isIntersecting) {
+            wasVisible.current = true
+          } else if (wasVisible.current && boundingClientRect.top < rootBounds.top) {
+            // Only mark as read when the card is completely above the viewport top and was previously visible
+            handleToggleStatus(entry)
+            observer.unobserve(observerEntry.target)
+          }
         }
       },
       {
         // Set the root element as the scroll container
         root: document.querySelector(".entry-list"),
-        // Set threshold to 0, triggered when completely leaving the viewport
+        // Set threshold to 0.2
         threshold: 0.2,
       },
     )
@@ -137,7 +137,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
         observer.unobserve(element)
       }
     }
-  }, [entry, markReadOnScroll, handleToggleStatus, isUnread])
+  }, [entry, markReadOnScroll, infoFrom, isUnread, isImageLoaded, isWideImage])
 
   useEffect(() => {
     let isSubscribed = true
