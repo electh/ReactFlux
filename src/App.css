@@ -66,9 +66,9 @@
       padding-left: env(safe-area-inset-left);
     }
 
-    .main {
+    /* .main {
       padding-top: max(env(safe-area-inset-top), 20px);
-    }
+    } */
   }
 }
 
