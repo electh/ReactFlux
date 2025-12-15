@@ -133,7 +133,7 @@
     "clear_date": "Clear",
     "select_date": "Select date",
     "today": "Today",
-    "tooltip": "Search syntax:\n• Text: apple banana\n• Exact text: \"red apple\"\n• Exclude: -text or -\"text\"\n• Must include: +text or +\"text\"\n• OR search: text1|text2\nExample: \"red apple\" +fresh -rotten banana|orange",
+    "tooltip": "Search syntax:\n• Text: apple banana\n• Exact text: \"red apple\"\n• Exclude: -text or -\"text\"\n• Must include: +text or +\"text\"\nExample: \"red apple\" +fresh -rotten",
     "type_title": "Title",
     "type_content": "Content",
     "type_author": "Author",

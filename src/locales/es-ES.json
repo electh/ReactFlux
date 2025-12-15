@@ -133,7 +133,7 @@
     "clear_date": "Limpiar",
     "select_date": "Seleccionar fecha",
     "today": "Hoy",
-    "tooltip": "Sintaxis de búsqueda:\n• Texto: manzana plátano\n• Texto exacto: \"manzana roja\"\n• Excluir: -texto o -\"texto\"\n• Debe incluir: +texto o +\"texto\"\n• Búsqueda OR: texto1|texto2\nEjemplo: \"manzana roja\" +fresca -podrida plátano|naranja",
+    "tooltip": "Sintaxis de búsqueda:\n• Texto: manzana plátano\n• Texto exacto: \"manzana roja\"\n• Excluir: -texto o -\"texto\"\n• Debe incluir: +texto o +\"texto\"\nEjemplo: \"manzana roja\" +fresca -podrida",
     "type_title": "Título",
     "type_content": "Contenido",
     "type_author": "Autor",

@@ -133,7 +133,7 @@
     "clear_date": "Leeren",
     "select_date": "Datum wählen",
     "today": "Heute",
-    "tooltip": "Suchsyntax:\n• Text: Apfel Banane\n• Exakter Text: \"Roter Apfel\"\n• Ausschließen: -Text oder -\"Text\"\n• Zwingend einschließen: +Text oder +\"Text\"\n• Entweder-Oder-Suche: Text1|Text2\nBeispiel: \"Roter Apfel\" +frisch -vergammelt Banane|Apfelsine",
+    "tooltip": "Suchsyntax:\n• Text: Apfel Banane\n• Exakter Text: \"Roter Apfel\"\n• Ausschließen: -Text oder -\"Text\"\n• Zwingend einschließen: +Text oder +\"Text\"\nBeispiel: \"Roter Apfel\" +frisch -vergammelt",
     "type_title": "Titel",
     "type_content": "Inhalt",
     "type_author": "Autor",
