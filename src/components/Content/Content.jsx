@@ -179,11 +179,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   useEffect(() => {
     fetchArticleListOnly()
-  }, [filterDate, orderDirection, showStatus])
-
-  useEffect(() => {
-    fetchArticleListOnly()
-  }, [filterString])
+  }, [filterDate, filterString, orderDirection, showStatus])
 
   useEffect(() => {
     if (isBelowMedium && activeContent) {
