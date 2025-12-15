@@ -175,3 +175,16 @@ export const filterByQuery = (data, query, fields = [], ignoreCase = true) => {
   }
   return filterData(data, query, fields, ignoreCase)
 }
+
+// Extract basic search terms for server-side search (excluding advanced syntax)
+export const extractBasicSearchTerms = (query) => {
+  if (!query || typeof query !== "string" || !query.trim()) {
+    return ""
+  }
+
+  const { includeTerms } = parseQuery(query)
+
+  // Return only the words that must be included, connected with spaces
+  // Excludes excludeTerms (-prefix) and orConditions (| delimited)
+  return includeTerms.join(" ").trim()
+}

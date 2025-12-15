@@ -15,6 +15,7 @@ import {
   IconSortDescending,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
+import { atom } from "nanostores"
 import { Fragment, memo, useEffect, useMemo, useRef, useState } from "react"
 import { useLocation, useParams } from "react-router"
 
@@ -33,20 +34,21 @@ import {
 import { categoriesState, feedsState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { getStartOfToday } from "@/utils/date"
+import createSetter from "@/utils/nanostores"
 import { extractBasePath } from "@/utils/url"
 
 import "./SearchAndSortBar.css"
 
-const handleFilterTypeChange = (value) => {
-  setFilterType(value)
-}
+const draftFilterTypeState = atom("title")
+const setDraftFilterType = createSetter(draftFilterTypeState)
 
 const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => {
-  const { filterType } = useStore(contentState)
+  const draftFilterType = useStore(draftFilterTypeState)
   const { polyglot } = useStore(polyglotState)
   const tooltipLines = polyglot.t("search.tooltip").split("\n")
 
   const handleConfirm = () => {
+    setFilterType(draftFilterType)
     onConfirm(value)
   }
 
@@ -79,13 +81,13 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
           addBefore={
             <Select
               style={{ width: "auto" }}
-              value={filterType}
+              value={draftFilterType}
               triggerProps={{
                 autoAlignPopupWidth: false,
                 autoAlignPopupMinWidth: true,
                 position: "bl",
               }}
-              onChange={handleFilterTypeChange}
+              onChange={setDraftFilterType}
             >
               <Select.Option value="title">{polyglot.t("search.type_title")}</Select.Option>
               <Select.Option value="content">{polyglot.t("search.type_content")}</Select.Option>
@@ -133,7 +135,8 @@ const ActiveButton = ({ active, icon, tooltip, onClick }) => (
 )
 
 const SearchAndSortBar = () => {
-  const { filterDate, filterString, infoFrom, isArticleListReady } = useStore(contentState)
+  const { filterDate, filterString, filterType, infoFrom, isArticleListReady } =
+    useStore(contentState)
   const { orderDirection, showStatus } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
   const feeds = useStore(feedsState)
@@ -180,6 +183,7 @@ const SearchAndSortBar = () => {
 
   const openSearchModal = () => {
     setModalInputValue(filterString)
+    setDraftFilterType(filterType)
     setSearchModalVisible(true)
   }
 

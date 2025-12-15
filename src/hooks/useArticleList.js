@@ -18,6 +18,7 @@ import {
 } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
 import { parseCoverImage } from "@/utils/images"
+import { extractBasicSearchTerms } from "@/utils/kmp"
 
 const handleResponses = (response) => {
   if (response?.total >= 0) {
@@ -29,7 +30,7 @@ const handleResponses = (response) => {
 }
 
 const useArticleList = (info, getEntries) => {
-  const { filterDate } = useStore(contentState)
+  const { filterDate, filterString } = useStore(contentState)
   const { isAppDataReady } = useStore(dataState)
   const { showStatus } = useStore(settingsState)
 
@@ -46,17 +47,25 @@ const useArticleList = (info, getEntries) => {
     try {
       let response
 
+      // Build filter params with search query
+      // Extract basic search terms
+      const filterParams = {}
+      const basicSearchTerms = extractBasicSearchTerms(filterString)
+      if (basicSearchTerms) {
+        filterParams.search = basicSearchTerms
+      }
+
       switch (showStatus) {
         case "starred": {
-          response = await getEntries(null, true)
+          response = await getEntries(null, true, filterParams)
           break
         }
         case "unread": {
-          response = await getEntries("unread")
+          response = await getEntries("unread", false, filterParams)
           break
         }
         default: {
-          response = await getEntries()
+          response = await getEntries(null, false, filterParams)
           break
         }
       }

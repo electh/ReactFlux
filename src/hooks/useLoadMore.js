@@ -5,6 +5,7 @@ import { contentState, setEntriesWithDeduplication, setLoadMoreVisible } from "@
 import { settingsState } from "@/store/settingsState"
 import { getTimestamp } from "@/utils/date"
 import { parseCoverImage } from "@/utils/images"
+import { extractBasicSearchTerms } from "@/utils/kmp"
 import createSetter from "@/utils/nanostores"
 
 const loadingMoreState = atom(false)
@@ -14,7 +15,7 @@ const isUniqueEntry = (entry, existingEntries) =>
   !existingEntries.some((existing) => existing.id === entry.id)
 
 const useLoadMore = () => {
-  const { entries, infoFrom } = useStore(contentState)
+  const { entries, filterString, infoFrom } = useStore(contentState)
   const { pageSize, showStatus, orderBy, orderDirection } = useStore(settingsState)
   const loadingMore = useStore(loadingMoreState)
 
@@ -97,6 +98,14 @@ const useLoadMore = () => {
 
     try {
       const filterParams = getFilterParams()
+
+      // Add search query to filter params if present
+      // Extract basic search terms
+      const basicSearchTerms = extractBasicSearchTerms(filterString)
+      if (basicSearchTerms) {
+        filterParams.search = basicSearchTerms
+      }
+
       let response
 
       if (infoFrom === "starred") {

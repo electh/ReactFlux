@@ -36,7 +36,8 @@ import { settingsState } from "@/store/settingsState"
 import "./Content.css"
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const { activeContent, entries, filterDate, isArticleLoading } = useStore(contentState)
+  const { activeContent, entries, filterDate, filterString, isArticleLoading } =
+    useStore(contentState)
   const { isAppDataReady } = useStore(dataState)
   const { enableSwipeGesture, orderBy, orderDirection, showStatus, swipeSensitivity } =
     useStore(settingsState)
@@ -179,6 +180,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   useEffect(() => {
     fetchArticleListOnly()
   }, [filterDate, orderDirection, showStatus])
+
+  useEffect(() => {
+    fetchArticleListOnly()
+  }, [filterString])
 
   useEffect(() => {
     if (isBelowMedium && activeContent) {
