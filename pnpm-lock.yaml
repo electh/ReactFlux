@@ -84,8 +84,8 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2(react@18.3.1)
       validator:
-        specifier: ^13.15.23
-        version: 13.15.23
+        specifier: ^13.15.26
+        version: 13.15.26
       virtua:
         specifier: ^0.48.2
         version: 0.48.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2119,8 +2119,8 @@ packages:
   fast-uri@3.1.0:
     resolution: {integrity: sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA==}
 
-  fastq@1.19.1:
-    resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
+  fastq@1.20.1:
+    resolution: {integrity: sha512-GGToxJ/w1x32s/D2EKND7kTil4n8OVk/9mycTc4VDza13lOvpUZTGX3mFSCtV9ksdGBVzvsyAVLM6mHFThxXxw==}
 
   fault@1.0.4:
     resolution: {integrity: sha512-CJ0HCB5tL5fYTEA7ToAq5+kTwd++Borf1/bifxd9iT70QcXr4MRrO3Llf8Ifs70q+SJcGHFtnIE/Nw6giCtECA==}
@@ -3539,8 +3539,8 @@ packages:
       '@types/react':
         optional: true
 
-  validator@13.15.23:
-    resolution: {integrity: sha512-4yoz1kEWqUjzi5zsPbAS/903QXSYp0UOtHsPpp7p9rHAw/W+dkInskAE386Fat3oKRROwO98d9ZB0G4cObgUyw==}
+  validator@13.15.26:
+    resolution: {integrity: sha512-spH26xU080ydGggxRyR1Yhcbgx+j3y5jbNXk/8L+iRvdIEQ4uTRH2Sgf2dokud6Q4oAtsbNvJ1Ft+9xmm6IZcA==}
     engines: {node: '>= 0.10'}
 
   virtua@0.48.2:
@@ -4925,7 +4925,7 @@ snapshots:
   '@nodelib/fs.walk@1.2.8':
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
-      fastq: 1.19.1
+      fastq: 1.20.1
     optional: true
 
   '@rolldown/pluginutils@1.0.0-beta.53': {}
@@ -6099,7 +6099,7 @@ snapshots:
 
   fast-uri@3.1.0: {}
 
-  fastq@1.19.1:
+  fastq@1.20.1:
     dependencies:
       reusify: 1.1.0
     optional: true
@@ -7601,7 +7601,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.27
 
-  validator@13.15.23: {}
+  validator@13.15.26: {}
 
   virtua@0.48.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     optionalDependencies:
