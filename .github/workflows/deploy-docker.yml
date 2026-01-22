@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "v*"
     paths-ignore:
       - ".editorconfig"
       - ".github/**"
@@ -44,8 +46,9 @@ jobs:
         with:
           images: electh/reactflux
           tags: |
-            type=raw,value=latest,enable=true
-            type=sha,format=long,prefix=,enable=true
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=long,prefix=,enable={{is_default_branch}}
+            type=match,pattern=v(.*),group=1,enable=${{ startsWith(github.ref, 'refs/tags/') }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
