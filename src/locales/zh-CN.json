@@ -199,6 +199,7 @@
     "modal_edit_feed_disabled_label": "禁用",
     "modal_edit_feed_crawler_label": "获取原文",
     "modal_edit_feed_crawler_tooltip": "仅影响新获取的文章",
+    "modal_edit_feed_miniflux_link": "在 Miniflux 中查看更多选项",
     "bulk_operations": "批量操作",
     "bulk_operations_tooltip": "对选定的订阅源执行批量操作",
     "bulk_operations_title": "批量操作",

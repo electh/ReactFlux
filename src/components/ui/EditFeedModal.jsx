@@ -1,8 +1,18 @@
-import { Form, Input, Message, Modal, Notification, Select, Switch } from "@arco-design/web-react"
+import {
+  Form,
+  Input,
+  Link,
+  Message,
+  Modal,
+  Notification,
+  Select,
+  Switch,
+} from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 
 import { updateFeed } from "@/apis"
 import { polyglotState } from "@/hooks/useLanguage"
+import { authState } from "@/store/authState"
 import { categoriesState, setFeedsData } from "@/store/dataState"
 
 const EditFeedModal = ({
@@ -14,9 +24,13 @@ const EditFeedModal = ({
   useNotification = false,
 }) => {
   const { polyglot } = useStore(polyglotState)
+  const auth = useStore(authState)
   const categories = useStore(categoriesState)
 
-  const editFeed = async (feedId, newDetails) => {
+  const feedId = selectedFeed?.id || selectedFeed?.key
+  const minifluxEditUrl = `${auth.server}/feed/${feedId}/edit`
+
+  const editFeed = async (newDetails) => {
     try {
       const data = await updateFeed(feedId, newDetails)
       setFeedsData((feeds) =>
@@ -67,7 +81,7 @@ const EditFeedModal = ({
     }
 
     if (newDetails.feedUrl) {
-      await editFeed(selectedFeed?.id || selectedFeed?.key, newDetails)
+      await editFeed(newDetails)
     } else {
       const errorMessage = polyglot.t("feed_table.modal_edit_feed_submit_error")
 
@@ -169,6 +183,9 @@ const EditFeedModal = ({
           <Switch />
         </Form.Item>
       </Form>
+      <Link href={minifluxEditUrl} target="_blank">
+        {polyglot.t("feed_table.modal_edit_feed_miniflux_link")}
+      </Link>
     </Modal>
   )
 }

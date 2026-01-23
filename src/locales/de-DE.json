@@ -199,6 +199,7 @@
     "modal_edit_feed_disabled_label": "Deaktiviert",
     "modal_edit_feed_crawler_label": "Originalinhalt herunterladen",
     "modal_edit_feed_crawler_tooltip": "Betrifft nur neu abgerufene Artikel",
+    "modal_edit_feed_miniflux_link": "Weitere Optionen in Miniflux",
     "bulk_operations": "Massenvorgänge",
     "bulk_operations_tooltip": "Massenvorgänge für ausgewählte Feeds durchführen",
     "bulk_operations_title": "Massenvorgänge",

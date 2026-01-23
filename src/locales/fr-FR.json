@@ -199,6 +199,7 @@
     "modal_edit_feed_disabled_label": "Désactivé",
     "modal_edit_feed_crawler_label": "Récupérer le contenu original",
     "modal_edit_feed_crawler_tooltip": "Seulement affecte les articles nouvellement récupérés",
+    "modal_edit_feed_miniflux_link": "Plus d'options dans Miniflux",
     "bulk_operations": "Opérations en lot",
     "bulk_operations_tooltip": "Effectuer des opérations en lot sur les flux sélectionnés",
     "bulk_operations_title": "Opérations en lot",
