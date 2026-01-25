@@ -42,6 +42,8 @@ const Login = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
+  const [redirectTo] = useState(() => location.state?.from)
+
   const performHealthCheck = async (auth) => {
     setLoading(true)
     const { server, token, username, password } = auth
@@ -57,8 +59,7 @@ const Login = () => {
           title: polyglot.t("login.success"),
         })
         setAuth({ server, token, username, password })
-        const from = location.state?.from || `/${homePage}`
-        navigate(from, { replace: true })
+        navigate(redirectTo || `/${homePage}`, { replace: true })
       }
     } catch (error) {
       console.error(error)
@@ -92,7 +93,7 @@ const Login = () => {
   }, [loginForm, polyglot])
 
   if (isValidAuth(auth)) {
-    return <Navigate to={`/${homePage}`} />
+    return <Navigate to={redirectTo || `/${homePage}`} />
   }
 
   return (
@@ -109,7 +110,7 @@ const Login = () => {
               layout="vertical"
               onSubmit={async () => {
                 if (validateAndFormatFormFields(loginForm)) {
-                  history.replaceState(null, "", "/login")
+                  history.replaceState(history.state, "", "/login")
                   await handleLogin(loginForm.getFieldsValue())
                 } else {
                   Message.error(polyglot.t("login.submit_error"))
