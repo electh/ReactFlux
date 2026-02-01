@@ -163,12 +163,10 @@ const PlyrPlayer = ({
     initPlayer()
 
     return () => {
-      if (!activeContent) {
-        playerRef.current?.destroy()
-        hlsRef.current?.destroy()
-        playerRef.current = null
-        hlsRef.current = null
-      }
+      playerRef.current?.destroy()
+      hlsRef.current?.destroy()
+      playerRef.current = null
+      hlsRef.current = null
     }
   }, [src])
 

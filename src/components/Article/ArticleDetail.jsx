@@ -371,8 +371,11 @@ const ArticleDetail = forwardRef((_, ref) => {
 
   // pretty footnotes
   useEffect(() => {
-    littlefoot()
-  }, [])
+    const lf = littlefoot()
+    return () => {
+      lf.unmount()
+    }
+  }, [activeContent.id])
 
   // Focus the scrollable area when activeContent changes
   useEffect(() => {
