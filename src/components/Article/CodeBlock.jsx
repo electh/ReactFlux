@@ -47,12 +47,7 @@ const CodeBlock = ({ children }) => {
         <LanguageSelector language={language} setLanguage={setLanguage} />
         <CopyButton onClick={copyToClipboard} />
       </div>
-      <SyntaxHighlighter
-        language={language}
-        showLineNumbers={true}
-        style={atomOneDark}
-        wrapLines={true}
-      >
+      <SyntaxHighlighter language={language} showLineNumbers={true} style={atomOneDark}>
         {code}
       </SyntaxHighlighter>
     </div>
