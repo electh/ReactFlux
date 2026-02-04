@@ -121,16 +121,27 @@ const handleTableBasedCode = (node) => {
   }
 
   const tr = tbody.children.find((child) => child.name === "tr")
-  if (!tr || tr.children.length !== 2) {
+  if (!tr) {
     return null
   }
 
-  const [, codeTd] = tr.children
+  // Filter for td elements to handle whitespace text nodes
+  const tdElements = tr.children.filter((child) => child.name === "td")
+  if (tdElements.length !== 2) {
+    return null
+  }
 
+  const [, codeTd] = tdElements
   const codePre = codeTd.children.find((child) => child.name === "pre")
 
   if (!codePre) {
     return null
+  }
+
+  // Check if there's a <code> element inside the pre
+  const codeElement = codePre.children?.find((child) => child.name === "code")
+  if (codeElement) {
+    return decodeAndParseCodeContent(codeElement)
   }
 
   return decodeAndParseCodeContent(codePre)
