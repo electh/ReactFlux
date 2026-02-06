@@ -39,8 +39,8 @@ importers:
         specifier: ^1.6.15
         version: 1.6.15
       html-react-parser:
-        specifier: ^5.2.14
-        version: 5.2.14(@types/react@18.3.27)(react@18.3.1)
+        specifier: ^5.2.16
+        version: 5.2.16(@types/react@18.3.27)(react@18.3.1)
       littlefoot:
         specifier: ^4.1.3
         version: 4.1.3
@@ -2431,11 +2431,11 @@ packages:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
     engines: {node: '>=0.10.0'}
 
-  html-dom-parser@5.1.4:
-    resolution: {integrity: sha512-UGjp7y8jSrDU2RdN2J9FDOo3X+WBu+LkS/I3TjjFW020ocZWjPvave+RKk1zeuY2sUWy5fh6zHgXHthzDGlFNQ==}
+  html-dom-parser@5.1.7:
+    resolution: {integrity: sha512-Sn+6S3Z8P3P12qqUm4+9wnchC3Bjc4DHp60fgnUdgeiy6e3EbECFWdrmyTBuphxJA5Is7V400+v7ct/Ix2pJFw==}
 
-  html-react-parser@5.2.14:
-    resolution: {integrity: sha512-yiSZHuJq6LwQc450IhpLApug8bKTpHv5oVsClpVS1jEDepifXYcJu0Sw0r7pqEl89q/ZpO0nth6LEDWtz5n6qg==}
+  html-react-parser@5.2.16:
+    resolution: {integrity: sha512-1S6KLse1hKWOXYL/PSnZhsARJBE6eIO93CjPlDKMneO0wz8YTnzTfc9Yw4mWsCk2kcB9IrU+R0W6Rdi4N7YfJw==}
     peerDependencies:
       '@types/react': 0.14 || 15 || 16 || 17 || 18 || 19
       react: 0.14 || 15 || 16 || 17 || 18 || 19
@@ -6538,15 +6538,15 @@ snapshots:
     dependencies:
       parse-passwd: 1.0.0
 
-  html-dom-parser@5.1.4:
+  html-dom-parser@5.1.7:
     dependencies:
       domhandler: 5.0.3
       htmlparser2: 10.1.0
 
-  html-react-parser@5.2.14(@types/react@18.3.27)(react@18.3.1):
+  html-react-parser@5.2.16(@types/react@18.3.27)(react@18.3.1):
     dependencies:
       domhandler: 5.0.3
-      html-dom-parser: 5.1.4
+      html-dom-parser: 5.1.7
       react: 18.3.1
       react-property: 2.0.2
       style-to-js: 1.1.21
