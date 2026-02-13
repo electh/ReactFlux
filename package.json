@@ -22,7 +22,7 @@
     "canvas-confetti": "^1.9.4",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.19",
-    "framer-motion": "^12.29.2",
+    "framer-motion": "^12.34.0",
     "highlight.js": "^11.11.1",
     "hls.js": "^1.6.15",
     "html-react-parser": "^5.2.16",
