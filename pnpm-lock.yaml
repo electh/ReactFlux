@@ -90,8 +90,8 @@ importers:
         specifier: ^0.48.6
         version: 0.48.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       yet-another-react-lightbox:
-        specifier: ^3.28.0
-        version: 3.28.0(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^3.29.1
+        version: 3.29.1(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.2
@@ -3848,8 +3848,8 @@ packages:
     resolution: {integrity: sha512-4UEqdc2RYGHZc7Doyqkrqiln3p9X2DZVxaGbwhn2pi7MrRagKaOcIKe8L3OxYcbhXLgLFUS3zAYuQjKBQgmuNg==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=23}
 
-  yet-another-react-lightbox@3.28.0:
-    resolution: {integrity: sha512-bHjG1/DS4aWPkKb/6hNp0+zcgjda27wQlXBpJvb9TcblC1U1dY3Ih0pe85O8/ZLz+OIy+ZvLxN2gmsbDW0Q/QQ==}
+  yet-another-react-lightbox@3.29.1:
+    resolution: {integrity: sha512-0cpa+wlleiy2cWNjS9qrcY0+SgZQH/4PDx2uupLMI9Ofip1f7pCgZ95PlVp/EsFsO4ufwOTea51bkLhcEXJJSg==}
     engines: {node: '>=14'}
     peerDependencies:
       '@types/react': ^16 || ^17 || ^18 || ^19
@@ -8037,7 +8037,7 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 22.0.0
 
-  yet-another-react-lightbox@3.28.0(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  yet-another-react-lightbox@3.29.1(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
