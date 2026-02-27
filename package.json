@@ -59,7 +59,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.5.0",
+    "eslint-plugin-react-refresh": "^0.5.2",
     "eslint-plugin-unicorn": "^63.0.0",
     "globals": "^17.3.0",
     "lint-staged": "^16.2.7",
