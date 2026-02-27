@@ -28,7 +28,7 @@
     "html-react-parser": "^5.2.17",
     "littlefoot": "^4.1.3",
     "lodash-es": "^4.17.23",
-    "nanostores": "^1.1.0",
+    "nanostores": "^1.1.1",
     "node-polyglot": "^2.6.0",
     "ofetch": "^1.5.1",
     "plyr": "^3.8.4",
