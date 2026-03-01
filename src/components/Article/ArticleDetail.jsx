@@ -2,7 +2,7 @@ import { Divider, Tag, Typography } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import ReactHtmlParser, { domToReact } from "html-react-parser"
 import { littlefoot } from "littlefoot"
-import { forwardRef, useEffect, useRef } from "react"
+import { forwardRef, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import SimpleBar from "simplebar-react"
 import Lightbox from "yet-another-react-lightbox"
@@ -278,15 +278,218 @@ const handleVideo = (node) => {
   )
 }
 
+const isSafeIframeSrc = (src) => /^https?:\/\//i.test(src)
+const isValidCid = (cid) => /^[0-9]+$/.test(`${cid || ""}`)
+
+const parseBilibiliIframeInfo = (src) => {
+  try {
+    const url = new URL(src)
+    const isBilibiliHost = /(^|\.)bilibili\.com$/i.test(url.hostname)
+    const isBilibiliPlayerHost = /(^|\.)player\.bilibili\.com$/i.test(url.hostname)
+    const isMobilePlayerPath = /\/blackboard\/html5mobileplayer\.html$/i.test(url.pathname)
+    const isPlayerPath = /\/player\.html$/i.test(url.pathname)
+
+    if (!((isBilibiliHost && isMobilePlayerPath) || (isBilibiliPlayerHost && isPlayerPath))) {
+      return null
+    }
+
+    return {
+      aid: url.searchParams.get("aid") || "",
+      bvid: url.searchParams.get("bvid") || "",
+      cid: url.searchParams.get("cid") || "",
+      page: url.searchParams.get("p") || url.searchParams.get("page") || "1",
+    }
+  } catch {
+    return null
+  }
+}
+
+const buildBilibiliEmbedSrc = ({ aid, bvid, cid, page }) => {
+  const playerUrl = new URL("https://player.bilibili.com/player.html")
+  playerUrl.searchParams.set("isOutside", "true")
+  playerUrl.searchParams.set("autoplay", "0")
+  playerUrl.searchParams.set("page", page || "1")
+  playerUrl.searchParams.set("high_quality", "1")
+  playerUrl.searchParams.set("as_wide", "1")
+  playerUrl.searchParams.set("danmaku", "0")
+  playerUrl.searchParams.set("refer", "1")
+  if (aid) {
+    playerUrl.searchParams.set("aid", aid)
+  }
+  if (bvid) {
+    playerUrl.searchParams.set("bvid", bvid)
+  }
+  if (isValidCid(cid)) {
+    playerUrl.searchParams.set("cid", cid)
+  }
+  return playerUrl.toString()
+}
+
+const parseBilibiliVideoUrl = (urlString) => {
+  try {
+    const url = new URL(urlString)
+    if (!/(^|\.)bilibili\.com$/i.test(url.hostname)) {
+      return null
+    }
+
+    const videoMatch = url.pathname.match(/\/video\/(BV[0-9A-Za-z]+|av[0-9]+)/i)
+    if (!videoMatch) {
+      return null
+    }
+
+    const rawVideoId = videoMatch[1]
+    const isAv = /^av/i.test(rawVideoId)
+    return {
+      aid: isAv ? rawVideoId.replace(/^av/i, "") : "",
+      bvid: isAv ? "" : rawVideoId,
+      cid: "",
+      page: url.searchParams.get("p") || url.searchParams.get("page") || "1",
+    }
+  } catch {
+    return null
+  }
+}
+
+const resolveBilibiliCidByBvid = (bvid) => {
+  return new Promise((resolve, reject) => {
+    if (!bvid || globalThis.window === undefined) {
+      reject(new Error("Bilibili bvid is required"))
+      return
+    }
+
+    const callbackName = `__rfBiliCb_${Date.now()}_${Math.random().toString(36).slice(2)}`
+    const script = document.createElement("script")
+    const timeout = globalThis.window.setTimeout(() => {
+      cleanup()
+      reject(new Error("Resolve bilibili cid timeout"))
+    }, 8000)
+
+    const cleanup = () => {
+      globalThis.window.clearTimeout(timeout)
+      delete globalThis.window[callbackName]
+      script.remove()
+    }
+
+    globalThis.window[callbackName] = (payload) => {
+      const cid = payload?.data?.pages?.[0]?.cid || payload?.data?.cid
+      cleanup()
+      if (isValidCid(cid)) {
+        resolve(`${cid}`)
+        return
+      }
+      reject(new Error("Resolve bilibili cid failed"))
+    }
+
+    script.addEventListener("error", () => {
+      cleanup()
+      reject(new Error("Load bilibili jsonp failed"))
+    })
+    script.src = `https://api.bilibili.com/x/web-interface/view?bvid=${encodeURIComponent(
+      bvid,
+    )}&jsonp=jsonp&callback=${callbackName}`
+    script.async = true
+    document.body.append(script)
+  })
+}
+
+const BilibiliIframe = ({ src, attribs }) => {
+  const initialInfo = parseBilibiliIframeInfo(src)
+  const [resolvedCid, setResolvedCid] = useState(
+    isValidCid(initialInfo?.cid) ? initialInfo.cid : "",
+  )
+
+  useEffect(() => {
+    let cancelled = false
+    const info = parseBilibiliIframeInfo(src)
+    if (!info || isValidCid(info.cid) || !info.bvid) {
+      return
+    }
+
+    resolveBilibiliCidByBvid(info.bvid)
+      .then((cid) => {
+        if (!cancelled) {
+          setResolvedCid(cid)
+        }
+        return cid
+      })
+      .catch(() => null)
+
+    return () => {
+      cancelled = true
+    }
+  }, [src])
+
+  const info = parseBilibiliIframeInfo(src)
+  const normalizedSrc = info
+    ? buildBilibiliEmbedSrc({ ...info, cid: resolvedCid || info.cid })
+    : src
+  const { allowfullscreen, frameborder, ...restAttribs } = attribs || {}
+  const iframeTitle = restAttribs.title || "Bilibili video"
+
+  return (
+    <iframe
+      {...restAttribs}
+      allow={
+        restAttribs.allow ||
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      }
+      allowFullScreen={allowfullscreen !== "false"}
+      frameBorder={frameborder || "0"}
+      loading="lazy"
+      referrerPolicy="origin"
+      src={normalizedSrc}
+      title={iframeTitle}
+    />
+  )
+}
+
 const handleIframe = (node) => {
   const src = node.attribs?.src
-
-  // Check if it's a YouTube iframe
-  if (src && (src.includes("youtube.com") || src.includes("youtube-nocookie.com"))) {
-    return <iframe {...node.attribs} referrerPolicy="strict-origin-when-cross-origin" />
+  if (!src || !isSafeIframeSrc(src)) {
+    return null
   }
 
-  return node
+  if (parseBilibiliIframeInfo(src)) {
+    return <BilibiliIframe attribs={node.attribs} src={src} />
+  }
+
+  const { allowfullscreen, frameborder, ...restAttribs } = node.attribs || {}
+  const iframeTitle = restAttribs.title || "Embedded content"
+
+  // Check if it's a YouTube iframe
+  if (src.includes("youtube.com") || src.includes("youtube-nocookie.com")) {
+    return (
+      <iframe
+        {...restAttribs}
+        allow={
+          restAttribs.allow ||
+          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        }
+        allowFullScreen={allowfullscreen !== "false"}
+        frameBorder={frameborder || "0"}
+        loading="lazy"
+        referrerPolicy="strict-origin-when-cross-origin"
+        src={src}
+        title={iframeTitle}
+      />
+    )
+  }
+
+  return (
+    <iframe
+      {...restAttribs}
+      allow={
+        restAttribs.allow ||
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      }
+      allowFullScreen={allowfullscreen !== "false"}
+      frameBorder={frameborder || "0"}
+      loading="lazy"
+      referrerPolicy="strict-origin-when-cross-origin"
+      src={src}
+      title={iframeTitle}
+    />
+  )
 }
 
 const getHtmlParserOptions = (imageSources, togglePhotoSlider) => {
@@ -368,6 +571,10 @@ const ArticleDetail = forwardRef((_, ref) => {
   const htmlParserOptions = getHtmlParserOptions(imageSources, togglePhotoSlider)
 
   const parsedHtml = ReactHtmlParser(activeContent.content, htmlParserOptions)
+  const hasIframeTag = /<iframe[\s>]/i.test(activeContent.content || "")
+  const bilibiliLinkInfo = parseBilibiliVideoUrl(activeContent.url)
+  const fallbackBilibiliSrc =
+    !hasIframeTag && bilibiliLinkInfo ? buildBilibiliEmbedSrc(bilibiliLinkInfo) : ""
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category
   const { id: feedId, title: feedTitle } = activeContent.feed
 
@@ -464,6 +671,16 @@ const ArticleDetail = forwardRef((_, ref) => {
                 src={mediaPlayerEnclosure.url}
                 style={{
                   maxWidth: mediaPlayerEnclosure.mime_type.startsWith("video/") ? "100%" : "400px",
+                }}
+              />
+            )}
+            {fallbackBilibiliSrc && (
+              <BilibiliIframe
+                src={fallbackBilibiliSrc}
+                attribs={{
+                  title: activeContent.title || "Bilibili video",
+                  width: "640",
+                  height: "360",
                 }}
               />
             )}
