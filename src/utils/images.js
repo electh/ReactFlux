@@ -14,17 +14,21 @@ const getWeiboFirstImage = (docs) => {
 
 const findMediaEnclosure = (enclosures) => {
   return enclosures?.find(
-    (enclosure) =>
-      enclosure.url !== "" &&
-      (enclosure.mime_type.startsWith("video/") || enclosure.mime_type.startsWith("audio/")),
+    (enclosure) => {
+      const mimeType = enclosure.mime_type || ""
+      return (
+        enclosure.url !== "" && (mimeType.startsWith("video/") || mimeType.startsWith("audio/"))
+      )
+    },
   )
 }
 
 const findImageEnclosure = (enclosures) => {
   return enclosures?.find(
-    (enclosure) =>
-      enclosure.mime_type.toLowerCase().startsWith("image/") ||
-      /\.(jpg|jpeg|png|gif)$/i.test(enclosure.url),
+    (enclosure) => {
+      const mimeType = (enclosure.mime_type || "").toLowerCase()
+      return mimeType.startsWith("image/") || /\.(jpg|jpeg|png|gif)$/i.test(enclosure.url)
+    },
   )
 }
 
@@ -37,8 +41,8 @@ export const parseCoverImage = (entry) => {
   const firstImage = isWeiboFeed ? getWeiboFirstImage(doc) : doc.querySelector("img")
 
   let coverSource = firstImage?.getAttribute("src")
-  let isMedia = false
-  let mediaPlayerEnclosure = null
+  const mediaPlayerEnclosure = findMediaEnclosure(entry.enclosures)
+  let isMedia = !!mediaPlayerEnclosure
 
   // If no cover image is found, try to get from other sources
   if (!coverSource) {
@@ -47,16 +51,12 @@ export const parseCoverImage = (entry) => {
     if (video) {
       coverSource = video.getAttribute("poster")
       isMedia = true
-    } else {
-      // Check media attachments
-      mediaPlayerEnclosure = findMediaEnclosure(entry.enclosures)
-      isMedia = !!mediaPlayerEnclosure
+    }
 
-      // Check image attachments
-      const imageEnclosure = findImageEnclosure(entry.enclosures)
-      if (imageEnclosure) {
-        coverSource = imageEnclosure.url
-      }
+    // Check image attachments
+    const imageEnclosure = findImageEnclosure(entry.enclosures)
+    if (imageEnclosure && !coverSource) {
+      coverSource = imageEnclosure.url
     }
 
     // Check iframe
