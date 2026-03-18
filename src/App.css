@@ -34,7 +34,7 @@
   min-height: 30px;
 }
 
-@media screen and (display-mode: fullscreen) {
+@media screen and (display-mode: fullscreen), screen and (display-mode: standalone) {
   * {
     -webkit-tap-highlight-color: transparent;
   }
@@ -55,7 +55,7 @@
 }
 
 @supports (padding-top: env(safe-area-inset-top)) {
-  @media screen and (display-mode: fullscreen) {
+  @media screen and (display-mode: fullscreen), screen and (display-mode: standalone) {
     .app {
       padding-right: env(safe-area-inset-right);
       padding-left: env(safe-area-inset-left);
@@ -65,10 +65,6 @@
       padding-top: max(env(safe-area-inset-top), 20px);
       padding-left: env(safe-area-inset-left);
     }
-
-    /* .main {
-      padding-top: max(env(safe-area-inset-top), 20px);
-    } */
   }
 }
 

@@ -68,3 +68,13 @@
     width: 95%;
   }
 }
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  @media screen and (display-mode: fullscreen), screen and (display-mode: standalone) {
+    @media screen and (max-width: 992px) {
+      .search-and-sort-bar {
+        padding-top: calc(env(safe-area-inset-top) + 8px);
+      }
+    }
+  }
+}
