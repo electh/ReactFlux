@@ -35,6 +35,18 @@ import { settingsState } from "@/store/settingsState"
 
 import "./Content.css"
 
+const isInHorizontalScrollable = (element) => {
+  let el = element
+  while (el && el !== document.body) {
+    const { overflowX } = globalThis.getComputedStyle(el)
+    if ((overflowX === "auto" || overflowX === "scroll") && el.scrollWidth > el.clientWidth) {
+      return true
+    }
+    el = el.parentElement
+  }
+  return false
+}
+
 const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, entries, filterDate, filterString, isArticleLoading } =
     useStore(contentState)
@@ -113,15 +125,30 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     delta: 50 / swipeSensitivity,
     onSwiping: enableSwipeGesture
       ? (eventData) => {
-          if (globalThis.getSelection().toString()) {
+          if (
+            globalThis.getSelection().toString() ||
+            isInHorizontalScrollable(eventData.event.target)
+          ) {
             return
           }
           handleSwiping(eventData)
         }
       : undefined,
     onSwiped: enableSwipeGesture ? handleSwiped : undefined,
-    onSwipedLeft: enableSwipeGesture ? handleSwipeLeft : undefined,
-    onSwipedRight: enableSwipeGesture ? handleSwipeRight : undefined,
+    onSwipedLeft: enableSwipeGesture
+      ? (eventData) => {
+          if (!isInHorizontalScrollable(eventData.event.target)) {
+            handleSwipeLeft()
+          }
+        }
+      : undefined,
+    onSwipedRight: enableSwipeGesture
+      ? (eventData) => {
+          if (!isInHorizontalScrollable(eventData.event.target)) {
+            handleSwipeRight()
+          }
+        }
+      : undefined,
   })
 
   useEffect(() => {
