@@ -25,11 +25,13 @@ const General = () => {
     enableSwipeGesture,
     homePage,
     language,
+    markAllReadJumpToNext,
     markReadBy,
     markReadOnScroll,
     orderBy,
     pageSize,
     removeDuplicates,
+    skipMarkAllReadConfirmation,
     swipeSensitivity,
     updateContentOnFetch,
   } = useStore(settingsState)
@@ -193,6 +195,30 @@ const General = () => {
         <Switch
           checked={markReadOnScroll}
           onChange={(value) => updateSettings({ markReadOnScroll: value })}
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.skip_mark_all_read_confirmation_description")}
+        title={polyglot.t("settings.skip_mark_all_read_confirmation_label")}
+      >
+        <Switch
+          checked={skipMarkAllReadConfirmation}
+          onChange={(value) => updateSettings({ skipMarkAllReadConfirmation: value })}
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.mark_all_read_jump_to_next_description")}
+        title={polyglot.t("settings.mark_all_read_jump_to_next_label")}
+      >
+        <Switch
+          checked={markAllReadJumpToNext}
+          onChange={(value) => updateSettings({ markAllReadJumpToNext: value })}
         />
       </SettingItem>
 

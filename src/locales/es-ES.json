@@ -270,7 +270,11 @@
     "swipe_sensitivity_description": "Ajustar la sensibilidad de los gestos de deslizamiento",
     "swipe_sensitivity_label": "Sensibilidad de deslizamiento",
     "update_content_on_fetch_label": "Guardar automáticamente el contenido obtenido",
-    "update_content_on_fetch_description": "Actualizar y guardar automáticamente el contenido obtenido en la base de datos"
+    "update_content_on_fetch_description": "Actualizar y guardar automáticamente el contenido obtenido en la base de datos",
+    "skip_mark_all_read_confirmation_label": "Omitir confirmación al marcar todo como leído",
+    "skip_mark_all_read_confirmation_description": "Marcar todos los artículos como leídos sin mostrar un diálogo de confirmación",
+    "mark_all_read_jump_to_next_label": "Saltar al siguiente no leído después de marcar todo como leído",
+    "mark_all_read_jump_to_next_description": "Navegar automáticamente al siguiente feed o categoría con artículos no leídos después de marcar todo como leído"
   },
   "appearance": {
     "theme_color_label": "Color del tema",

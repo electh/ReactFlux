@@ -270,7 +270,11 @@
     "swipe_sensitivity_description": "Empfindlichkeit der Wischgesten anpassen",
     "swipe_sensitivity_label": "Wischempfindlichkeit",
     "update_content_on_fetch_label": "Abgerufene Inhalte automatisch speichern",
-    "update_content_on_fetch_description": "Abgerufene Inhalte automatisch aktualisieren und in der Datenbank speichern"
+    "update_content_on_fetch_description": "Abgerufene Inhalte automatisch aktualisieren und in der Datenbank speichern",
+    "skip_mark_all_read_confirmation_label": "Bestätigung beim Alles-als-gelesen-Markieren überspringen",
+    "skip_mark_all_read_confirmation_description": "Alle Artikel ohne Bestätigungsdialog als gelesen markieren",
+    "mark_all_read_jump_to_next_label": "Nach Alles-als-gelesen-Markieren zum nächsten Ungelesenen springen",
+    "mark_all_read_jump_to_next_description": "Nach dem Markieren aller Artikel als gelesen automatisch zum nächsten Feed oder zur nächsten Kategorie mit ungelesenen Artikeln navigieren"
   },
   "appearance": {
     "theme_color_label": "Farbthema",

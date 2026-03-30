@@ -8,6 +8,7 @@ import {
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { useEffect } from "react"
+import { useNavigate } from "react-router"
 
 import {
   getAllEntries,
@@ -19,7 +20,13 @@ import {
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import { polyglotState } from "@/hooks/useLanguage"
 import { contentState, setEntries } from "@/store/contentState"
-import { dataState, setUnreadInfo, setUnreadTodayCount } from "@/store/dataState"
+import {
+  dataState,
+  filteredCategoriesState,
+  filteredFeedsState,
+  setUnreadInfo,
+  setUnreadTodayCount,
+} from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import "./FooterPanel.css"
 
@@ -31,17 +38,83 @@ const handleFilterChange = (value) => {
   updateSettings({ showStatus: value })
 }
 
+const MarkAllReadButton = ({ from, onConfirm }) => {
+  const { polyglot } = useStore(polyglotState)
+  const { skipMarkAllReadConfirmation } = useStore(settingsState)
+
+  const isHidden = ["starred", "history"].includes(from)
+
+  const button = (
+    <CustomTooltip mini content={polyglot.t("article_list.mark_all_as_read_tooltip")}>
+      <Button
+        icon={<IconCheck />}
+        shape="circle"
+        style={{ visibility: isHidden ? "hidden" : "visible" }}
+        onClick={skipMarkAllReadConfirmation ? onConfirm : undefined}
+      />
+    </CustomTooltip>
+  )
+
+  if (skipMarkAllReadConfirmation) {
+    return button
+  }
+
+  return (
+    <Popconfirm
+      focusLock
+      title={polyglot.t("article_list.mark_all_as_read_confirm")}
+      onOk={onConfirm}
+    >
+      {button}
+    </Popconfirm>
+  )
+}
+
 const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const { filterDate, isArticleListReady } = useStore(contentState)
   const { feedsData } = useStore(dataState)
-  const { showStatus } = useStore(settingsState)
+  const { markAllReadJumpToNext, showStatus, skipMarkAllReadConfirmation } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
+  const filteredCategories = useStore(filteredCategoriesState)
+  const filteredFeeds = useStore(filteredFeedsState)
+  const navigate = useNavigate()
+
+  const jumpToNext = () => {
+    if (info.from === "category") {
+      const currentIndex = filteredCategories.findIndex((c) => c.id === Number(info.id))
+      const searchOrder = [
+        ...filteredCategories.slice(currentIndex + 1),
+        ...filteredCategories.slice(0, currentIndex),
+      ]
+      const next = searchOrder.find((c) => c.unreadCount > 0)
+      if (next) {
+        navigate(`/category/${next.id}`)
+      }
+    } else if (info.from === "feed") {
+      const orderedFeeds = filteredCategories.flatMap((cat) =>
+        filteredFeeds.filter((f) => f.category.id === cat.id),
+      )
+      const currentIndex = orderedFeeds.findIndex((f) => f.id === Number(info.id))
+      const searchOrder = [
+        ...orderedFeeds.slice(currentIndex + 1),
+        ...orderedFeeds.slice(0, currentIndex),
+      ]
+      const next = searchOrder.find((f) => f.unreadCount > 0)
+      if (next) {
+        navigate(`/feed/${next.id}`)
+      }
+    }
+  }
 
   const handleMarkAllAsRead = async () => {
     try {
       await (filterDate && info.from !== "today" ? handleFilteredMarkAsRead() : markAllAsRead())
 
       await updateUIAfterMarkAsRead()
+
+      if (markAllReadJumpToNext) {
+        jumpToNext()
+      }
     } catch (error) {
       console.error("Failed to mark all as read:", error)
       Notification.error({
@@ -137,21 +210,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
 
   return (
     <div className="entry-panel">
-      <Popconfirm
-        focusLock
-        title={polyglot.t("article_list.mark_all_as_read_confirm")}
-        onOk={handleMarkAllAsRead}
-      >
-        <CustomTooltip mini content={polyglot.t("article_list.mark_all_as_read_tooltip")}>
-          <Button
-            icon={<IconCheck />}
-            shape="circle"
-            style={{
-              visibility: ["starred", "history"].includes(info.from) ? "hidden" : "visible",
-            }}
-          />
-        </CustomTooltip>
-      </Popconfirm>
+      <MarkAllReadButton from={info.from} onConfirm={handleMarkAllAsRead} />
       <Radio.Group
         style={{ visibility: info.from === "history" ? "hidden" : "visible" }}
         type="button"

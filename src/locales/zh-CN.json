@@ -270,7 +270,11 @@
     "swipe_sensitivity_description": "调整滑动手势的灵敏度",
     "swipe_sensitivity_label": "滑动灵敏度",
     "update_content_on_fetch_label": "获取原文时自动保存",
-    "update_content_on_fetch_description": "获取原文时自动更新并保存到数据库"
+    "update_content_on_fetch_description": "获取原文时自动更新并保存到数据库",
+    "skip_mark_all_read_confirmation_label": "跳过全部标为已读的确认",
+    "skip_mark_all_read_confirmation_description": "点击全部标为已读时不显示确认对话框",
+    "mark_all_read_jump_to_next_label": "标记已读后自动跳转下一个未读",
+    "mark_all_read_jump_to_next_description": "全部标为已读后自动跳转到下一个含有未读文章的订阅源或分类"
   },
   "appearance": {
     "theme_color_label": "主题颜色",

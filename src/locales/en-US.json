@@ -270,7 +270,11 @@
     "swipe_sensitivity_description": "Adjust the sensitivity of swipe gestures",
     "swipe_sensitivity_label": "Swipe sensitivity",
     "update_content_on_fetch_label": "Auto-save fetched content",
-    "update_content_on_fetch_description": "Automatically update and save fetched content to database"
+    "update_content_on_fetch_description": "Automatically update and save fetched content to database",
+    "skip_mark_all_read_confirmation_label": "Skip mark all as read confirmation",
+    "skip_mark_all_read_confirmation_description": "Mark all articles as read without showing a confirmation dialog",
+    "mark_all_read_jump_to_next_label": "Jump to next unread after marking all as read",
+    "mark_all_read_jump_to_next_description": "Automatically navigate to the next unread feed or category after marking all as read"
   },
   "appearance": {
     "theme_color_label": "Theme color",

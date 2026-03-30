@@ -270,7 +270,11 @@
     "swipe_sensitivity_description": "Ajuster la sensibilité des gestes de balayage",
     "swipe_sensitivity_label": "Sensibilité du balayage",
     "update_content_on_fetch_label": "Enregistrer automatiquement le contenu récupéré",
-    "update_content_on_fetch_description": "Mettre à jour et enregistrer automatiquement le contenu récupéré dans la base de données"
+    "update_content_on_fetch_description": "Mettre à jour et enregistrer automatiquement le contenu récupéré dans la base de données",
+    "skip_mark_all_read_confirmation_label": "Ignorer la confirmation pour tout marquer comme lu",
+    "skip_mark_all_read_confirmation_description": "Marquer tous les articles comme lus sans afficher de boîte de dialogue de confirmation",
+    "mark_all_read_jump_to_next_label": "Passer au suivant non lu après tout marquer comme lu",
+    "mark_all_read_jump_to_next_description": "Naviguer automatiquement vers le flux ou la catégorie suivante contenant des articles non lus après avoir tout marqué comme lu"
   },
   "appearance": {
     "theme_color_label": "Couleur du thème",
