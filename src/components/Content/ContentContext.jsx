@@ -9,6 +9,7 @@ import { contentState, setActiveContent, setIsArticleLoading } from "@/store/con
 import { settingsState } from "@/store/settingsState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { Message } from "@/utils/feedback"
+import { getEntryImageSources, preloadImageMetadata } from "@/utils/images"
 import { buildEntryDetailPath, extractBasePath, isEntryDetailPath } from "@/utils/url"
 
 const Context = createContext()
@@ -132,6 +133,16 @@ export const ContextProvider = ({ children }) => {
     async (entry) => {
       setIsArticleLoading(true)
       flushPendingMarkAsRead()
+
+      if (settingsState.get().layoutMode === "stream") {
+        const imageSources = getEntryImageSources(entry)
+
+        if (imageSources.length > 0) {
+          await Promise.allSettled(
+            imageSources.map((imageSource) => preloadImageMetadata(imageSource)),
+          )
+        }
+      }
 
       const shouldAutoMarkAsRead = markReadBy === "view"
       setActiveContent(entry)

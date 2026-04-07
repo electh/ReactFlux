@@ -262,7 +262,6 @@ const useKeyHandlers = () => {
 
       ensureResizeObserver()
       observeElement(selectedCard)
-      observeElement(scrollElement.querySelector(".simplebar-content"))
 
       for (const observedEntryId of observedEntryIds) {
         observeElement(getSelectedCard(observedEntryId))

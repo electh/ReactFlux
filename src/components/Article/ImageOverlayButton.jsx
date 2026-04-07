@@ -11,15 +11,46 @@ import { getCachedImageMetadata, preloadImageMetadata } from "@/utils/images"
 
 import "./ImageOverlayButton.css"
 
-const ImageComponent = ({ imgNode, isIcon, isBigImage, index, togglePhotoSlider }) => {
+const getReservedDimensions = (imgNode, metadata) => {
+  const widthFromNode = Number.parseInt(imgNode.attribs.width, 10)
+  const heightFromNode = Number.parseInt(imgNode.attribs.height, 10)
+
+  const width = Number.isFinite(widthFromNode) ? widthFromNode : (metadata?.width ?? null)
+  const height = Number.isFinite(heightFromNode) ? heightFromNode : (metadata?.height ?? null)
+
+  if (!width || !height) {
+    return null
+  }
+
+  return { width, height }
+}
+
+const ImageComponent = ({ imgNode, isIcon, isBigImage, index, metadata, togglePhotoSlider }) => {
   const { fontSize } = useStore(settingsState)
   const altText = imgNode.attribs.alt
   const imageProps = htmlAttributesToProps(imgNode.attribs, "img")
+  const reservedDimensions = getReservedDimensions(imgNode, metadata)
+  const imageStyle = {
+    ...imageProps.style,
+    ...(isBigImage
+      ? {
+          height: "auto",
+          width: "100%",
+        }
+      : {}),
+  }
+  const reservedProps = reservedDimensions
+    ? {
+        height: reservedDimensions.height,
+        width: reservedDimensions.width,
+      }
+    : {}
 
   return isIcon ? (
     <Tooltip content={altText} disabled={!altText}>
       <img
         {...imageProps}
+        {...reservedProps}
         alt={altText}
         className="icon-image"
         style={{
@@ -28,8 +59,23 @@ const ImageComponent = ({ imgNode, isIcon, isBigImage, index, togglePhotoSlider 
       />
     </Tooltip>
   ) : (
-    <div className="image-overlay-target">
-      <img {...imageProps} alt={altText} className={isBigImage ? "big-image" : ""} />
+    <div
+      className="image-overlay-target"
+      style={
+        reservedDimensions && isBigImage
+          ? {
+              aspectRatio: `${reservedDimensions.width} / ${reservedDimensions.height}`,
+            }
+          : undefined
+      }
+    >
+      <img
+        {...imageProps}
+        {...reservedProps}
+        alt={altText}
+        className={isBigImage ? "big-image" : ""}
+        style={imageStyle}
+      />
       <Tooltip content={altText} disabled={!altText}>
         <button
           className="image-overlay-button"
@@ -60,6 +106,9 @@ const getImagePresentation = (metadata) => {
 const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = false }) => {
   const [isIcon, setIsIcon] = useState(false)
   const [isBigImage, setIsBigImage] = useState(false)
+  const [metadata, setMetadata] = useState(() =>
+    getReservedDimensions(findImageNode(node, isLinkWrapper)),
+  )
 
   const imgNode = findImageNode(node, isLinkWrapper)
 
@@ -70,6 +119,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
     const imgSrc = imgNode.attribs.src
 
     const applyMetadata = (metadata) => {
+      setMetadata(metadata)
       const presentation = getImagePresentation(metadata)
       setIsIcon(presentation.isIcon)
       setIsBigImage(presentation.isBigImage)
@@ -104,6 +154,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
           index={index}
           isBigImage={isBigImage}
           isIcon={isIcon}
+          metadata={metadata}
           togglePhotoSlider={togglePhotoSlider}
         />
         {node.children[1]?.data}
@@ -114,6 +165,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
         index={index}
         isBigImage={isBigImage}
         isIcon={isIcon}
+        metadata={metadata}
         togglePhotoSlider={togglePhotoSlider}
       />
     )
@@ -129,6 +181,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
               index={index}
               isBigImage={isBigImage}
               isIcon={isIcon}
+              metadata={metadata}
               togglePhotoSlider={togglePhotoSlider}
             />
             <ImageLinkTag href={node.attribs.href} />
@@ -139,6 +192,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
             index={index}
             isBigImage={isBigImage}
             isIcon={isIcon}
+            metadata={metadata}
             togglePhotoSlider={togglePhotoSlider}
           />
         )}
