@@ -608,8 +608,8 @@ const Sidebar = ({ dismissUpdate, hasUpdate }) => {
             <Avatar className="avatar" size={32}>
               <IconBook style={{ color: "var(--color-bg-1)" }} />
             </Avatar>
-            <Typography.Title heading={6} style={{ margin: 0 }}>
-              ::ReloadedFlux
+            <Typography.Title heading={6} style={{ margin: 0, fontWeight: 300 }}>
+              ::<span style={{ fontWeight: 700 }}>Reloaded</span>Flux
             </Typography.Title>
           </span>
           <div className="menu-header-actions">

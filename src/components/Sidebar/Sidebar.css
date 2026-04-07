@@ -30,8 +30,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: -4px;
-  height: 48px;
+  margin-top: 0;
+  height: 44px;
 }
 
 .menu-header-actions {
@@ -204,7 +204,7 @@
 
 .sidebar-pinned-header {
   flex: 0 0 auto;
-  padding: 0 12px;
+  padding: 10px 12px 0;
   background-color: var(--color-neutral-2);
   z-index: 1;
 }

@@ -11,7 +11,7 @@
   justify-content: space-between;
   background-color: rgb(var(--color-bg-1));
   min-height: 44px;
-  padding: 8px 0;
+  padding: 0 0 8px;
 }
 
 .search-and-sort-bar.stream-toolbar {
@@ -165,7 +165,7 @@
 .search-and-sort-bar.classic-toolbar .layout-selector-slot {
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: 8px;
   left: 50%;
   z-index: 1;
   display: flex;
