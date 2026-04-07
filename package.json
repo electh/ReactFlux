@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "pnpm run build && vite preview",
+    "test": "node --test src/scripts/version-info.test.js src/utils/version.test.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint",

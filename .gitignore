@@ -33,7 +33,7 @@ dist-ssr
 /coverage
 
 # production
-# /build
+/build
 
 # development
 /dev-dist

@@ -80,10 +80,16 @@ export default function Profile() {
             <strong>Author:</strong> Pete &quot;Kombatant&quot; Vagiakos
           </div>
           <div>
-            <b>Build number:</b> {buildInfo.gitHash}
+            <b>Build version:</b> {buildInfo.buildVersion ?? buildInfo.gitHash}
           </div>
           <div>
-            <b>Build date:</b> {buildInfo.gitDate}
+            <b>Build channel:</b> {buildInfo.channel ?? "local"}
+          </div>
+          <div>
+            <b>Build commit:</b> {buildInfo.gitHash}
+          </div>
+          <div>
+            <b>Build date:</b> {buildInfo.gitCommitDate ?? buildInfo.gitDate}
           </div>
           <div>
             <b>Github:</b>{" "}

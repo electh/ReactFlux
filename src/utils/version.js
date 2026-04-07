@@ -14,4 +14,42 @@ const compareVersions = (version1, version2) => {
   return 0
 }
 
+export const parseBuildVersion = (buildVersion) => {
+  if (typeof buildVersion !== "string") {
+    return null
+  }
+
+  const normalizedBuildVersion = buildVersion.trim()
+  const match = normalizedBuildVersion.match(/^(\d{8})\.(\d+)$/)
+
+  if (!match) {
+    return null
+  }
+
+  const [, datePart, sequencePart] = match
+  return {
+    datePart,
+    sequencePart: Number.parseInt(sequencePart, 10),
+  }
+}
+
+export const compareBuildVersions = (version1, version2) => {
+  const parsedVersion1 = parseBuildVersion(version1)
+  const parsedVersion2 = parseBuildVersion(version2)
+
+  if (!parsedVersion1 || !parsedVersion2) {
+    return null
+  }
+
+  if (parsedVersion1.datePart !== parsedVersion2.datePart) {
+    return parsedVersion1.datePart < parsedVersion2.datePart ? -1 : 1
+  }
+
+  if (parsedVersion1.sequencePart !== parsedVersion2.sequencePart) {
+    return parsedVersion1.sequencePart < parsedVersion2.sequencePart ? -1 : 1
+  }
+
+  return 0
+}
+
 export default compareVersions

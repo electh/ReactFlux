@@ -1,4 +1,4 @@
-name: Build and Deploy to gh-pages
+name: Build and Deploy to build branch
 
 on:
   push:
@@ -35,6 +35,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Compute build version metadata
+        run: |
+          BUILD_DATE=$(TZ=UTC date +'%Y-%m-%d')
+          BUILD_SEQUENCE=$(git rev-list --count --since="${BUILD_DATE}T00:00:00Z" HEAD)
+
+          echo "VERSION_BUILD_DATE=${BUILD_DATE}" >> $GITHUB_ENV
+          echo "VERSION_BUILD_SEQUENCE=${BUILD_SEQUENCE}" >> $GITHUB_ENV
+          echo "VERSION_CHANNEL=main" >> $GITHUB_ENV
+          echo "VERSION_GIT_BRANCH=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+          echo "VERSION_IS_CANONICAL=true" >> $GITHUB_ENV
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -47,7 +60,7 @@ jobs:
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.8.0
         with:
-          branch: gh-pages
+          branch: build
           folder: build
           git-config-name: github-actions[bot]
           git-config-email: 41898282+github-actions[bot]@users.noreply.github.com

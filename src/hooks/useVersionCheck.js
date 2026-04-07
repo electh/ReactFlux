@@ -5,9 +5,10 @@ import { useEffect, useState } from "react"
 import { dataState } from "@/store/dataState"
 import { GITHUB_REPO_PATH, UPDATE_NOTIFICATION_KEY } from "@/utils/constants"
 import { checkIsInLast24Hours, getTimestamp } from "@/utils/date"
+import { compareBuildVersions } from "@/utils/version"
 import buildInfo from "@/version-info.json"
 
-const DEFAULT_REMOTE_VERSION_INFO_URL = `https://raw.githubusercontent.com/${GITHUB_REPO_PATH}/main/build/version-info.json`
+const DEFAULT_REMOTE_VERSION_INFO_URL = `https://raw.githubusercontent.com/${GITHUB_REPO_PATH}/build/version-info.json`
 const DEFAULT_LATEST_COMMIT_URL = `https://api.github.com/repos/${GITHUB_REPO_PATH}/commits/main`
 
 const isVersionCheckDebugEnabled = () => {
@@ -84,8 +85,28 @@ function useVersionCheck() {
             cache: "no-store",
           })
 
-          const currentGitTimestamp = getTimestamp(buildInfo.gitDate)
-          const latestGitTimestamp = getTimestamp(remoteBuildInfo.gitDate)
+          const buildVersionComparison = compareBuildVersions(
+            buildInfo.buildVersion,
+            remoteBuildInfo.buildVersion,
+          )
+
+          if (buildVersionComparison !== null) {
+            const hasUpdateByBuildVersion = buildVersionComparison < 0
+            setHasUpdate(hasUpdateByBuildVersion)
+            logVersionCheckDebug({
+              reason: "build_version_comparison",
+              hasUpdate: hasUpdateByBuildVersion,
+              remoteVersionInfoUrl,
+              local: buildInfo,
+              remote: remoteBuildInfo,
+            })
+            return
+          }
+
+          const currentGitTimestamp = getTimestamp(buildInfo.gitCommitDate ?? buildInfo.gitDate)
+          const latestGitTimestamp = getTimestamp(
+            remoteBuildInfo.gitCommitDate ?? remoteBuildInfo.gitDate,
+          )
           const hasValidDates =
             Number.isFinite(currentGitTimestamp) && Number.isFinite(latestGitTimestamp)
 
@@ -138,7 +159,7 @@ function useVersionCheck() {
         const latestCommitDate = latestCommit?.commit?.committer?.date
         const latestCommitHash = latestCommit?.sha?.slice?.(0, buildInfo.gitHash.length)
 
-        const currentGitTimestamp = getTimestamp(buildInfo.gitDate)
+        const currentGitTimestamp = getTimestamp(buildInfo.gitCommitDate ?? buildInfo.gitDate)
         const latestGitTimestamp = getTimestamp(latestCommitDate)
         const hasValidDates =
           Number.isFinite(currentGitTimestamp) && Number.isFinite(latestGitTimestamp)
