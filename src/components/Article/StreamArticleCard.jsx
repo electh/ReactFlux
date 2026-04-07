@@ -85,6 +85,9 @@ const StreamArticleCard = ({ activeEntry, entry, handleEntryClick, isSelected, s
   const isSummarizing = summarizingEntryId === currentEntry.id
   const contentMaxWidth = isBelowMedium ? "100%" : `${articleWidth}%`
   const previewText = useMemo(() => currentEntry.previewText || "", [currentEntry.previewText])
+  const titleClassName = isUnread
+    ? "stream-story-title"
+    : "stream-story-title stream-story-title-read"
   const cardRef = useRef(null)
   const wasVisible = useRef(false)
 
@@ -202,17 +205,29 @@ const StreamArticleCard = ({ activeEntry, entry, handleEntryClick, isSelected, s
       }}
     >
       <div className="stream-story-topline">
-        <div className="stream-story-source">
-          {showFeedIcon && <FeedIcon className="feed-icon-mini" feed={currentEntry.feed} />}
-          <span className="stream-story-source-title">{currentEntry.feed.title}</span>
-          {currentEntry.author ? (
-            <span className="stream-story-author">{currentEntry.author}</span>
-          ) : null}
-        </div>
+        {showFeedIcon && <FeedIcon className="feed-icon-topline" feed={currentEntry.feed} />}
+        <Typography.Title
+          className={titleClassName}
+          heading={4}
+          style={{ maxWidth: contentMaxWidth }}
+        >
+          <button
+            className="stream-story-title-link"
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation()
+
+              if (hasExpandedSelection()) {
+                return
+              }
+
+              handleOpenLinkExternally(currentEntry)
+            }}
+          >
+            {currentEntry.title}
+          </button>
+        </Typography.Title>
         <div className="stream-story-actions">
-          <span className="stream-story-time">
-            {generateRelativeTime(currentEntry.published_at, showDetailedRelativeTime)}
-          </span>
           <CustomTooltip
             mini
             content={
@@ -293,44 +308,42 @@ const StreamArticleCard = ({ activeEntry, entry, handleEntryClick, isSelected, s
           </CustomTooltip>
         </div>
       </div>
-
-      <Typography.Title
-        className={isUnread ? "stream-story-title" : "stream-story-title stream-story-title-read"}
-        heading={4}
-        style={{ maxWidth: contentMaxWidth, textAlign: titleAlignment }}
-      >
-        <button
-          className="stream-story-title-link"
-          type="button"
-          onClick={(event) => {
-            event.stopPropagation()
-
-            if (hasExpandedSelection()) {
-              return
-            }
-
-            handleOpenLinkExternally(currentEntry)
-          }}
-        >
-          {currentEntry.title}
-        </button>
-      </Typography.Title>
       <div className="stream-story-expanded">
-        <div className="stream-story-meta" style={{ maxWidth: contentMaxWidth }}>
-          <Tag
-            className="stream-story-category"
-            size="small"
-            onClick={(event) => {
-              event.stopPropagation()
-              navigate(`/category/${currentEntry.feed.category.id}`)
-            }}
-          >
-            {currentEntry.feed.category.title}
-          </Tag>
-          <span>{generateReadableDate(currentEntry.published_at)}</span>
-          {showEstimatedReadingTime ? (
-            <span>{generateReadingTime(currentEntry.reading_time)}</span>
+        <div
+          className="stream-story-meta"
+          style={{ maxWidth: contentMaxWidth, textAlign: titleAlignment }}
+        >
+          <div className="stream-story-source">
+            <span className="stream-story-source-title">{currentEntry.feed.title}</span>
+            {currentEntry.author ? (
+              <span className="stream-story-author">{currentEntry.author}</span>
+            ) : null}
+          </div>
+          {currentEntry.feed.category?.title ? (
+            <span className="stream-story-meta-item">
+              <Tag
+                className="stream-story-category"
+                size="small"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  navigate(`/category/${currentEntry.feed.category.id}`)
+                }}
+              >
+                {currentEntry.feed.category.title}
+              </Tag>
+            </span>
           ) : null}
+          <span className="stream-story-meta-item">
+            {generateReadableDate(currentEntry.published_at)}
+          </span>
+          {showEstimatedReadingTime ? (
+            <span className="stream-story-meta-item">
+              {generateReadingTime(currentEntry.reading_time)}
+            </span>
+          ) : null}
+          <span className="stream-story-meta-item">
+            {generateRelativeTime(currentEntry.published_at, showDetailedRelativeTime)}
+          </span>
         </div>
         {isSelected || !streamRenderSelectedOnly ? (
           <ArticleBodyRenderer entry={currentEntry} maxWidth={contentMaxWidth} />

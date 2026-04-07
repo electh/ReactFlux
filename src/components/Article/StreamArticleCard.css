@@ -35,11 +35,17 @@
   gap: 16px;
 }
 
+.feed-icon-topline {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
 .stream-story-source {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
-  min-width: 0;
   color: var(--color-text-3);
   font-size: 0.9rem;
 }
@@ -49,6 +55,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.stream-story-source-title {
+  font-weight: 600;
 }
 
 .stream-story-author::before {
@@ -61,6 +71,7 @@
 .stream-story-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
   flex-shrink: 0;
 }
@@ -69,16 +80,11 @@
   background: transparent;
 }
 
-.stream-story-time {
-  color: var(--color-text-4);
-  font-size: 0.85rem;
-  margin-right: 6px;
-}
-
 .stream-story-title.arco-typography {
-  margin: 16px 0 14px;
+  flex: 1;
+  margin: 0;
   color: var(--color-text-1);
-  margin-inline: auto;
+  min-width: 0;
 }
 
 .stream-story-title-read.arco-typography {
@@ -92,8 +98,9 @@
   cursor: pointer;
   display: inline;
   font: inherit;
+  line-height: 1.25;
   padding: 0;
-  text-align: inherit;
+  text-align: left;
   user-select: text;
   -webkit-user-select: text;
 }
@@ -116,20 +123,31 @@
 }
 
 .stream-story-expanded {
-  margin-top: 4px;
-  padding-top: 18px;
-  border-top: 1px solid var(--color-border-2);
+  margin-top: 14px;
 }
 
 .stream-story-meta {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px 14px;
+  gap: 10px 6px;
   color: var(--color-text-4);
   font-size: 0.85rem;
   margin-bottom: 8px;
   margin-inline: auto;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border-2);
+}
+
+.stream-story-meta > span {
+  white-space: nowrap;
+}
+
+.stream-story-meta-item::before {
+  content: "\2022";
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--color-text-4);
 }
 
 .stream-story-category {
@@ -182,6 +200,10 @@
   .stream-story-topline {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .stream-story-title.arco-typography {
+    width: 100%;
   }
 
   .stream-story-actions {
