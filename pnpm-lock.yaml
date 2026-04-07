@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  lodash: 4.18.1
   serialize-javascript: ^7.0.5
 
 importers:
@@ -2489,9 +2490,6 @@ packages:
 
   lodash.sortby@4.7.0:
     resolution: {integrity: sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==}
-
-  lodash@4.17.23:
-    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
 
   lodash@4.18.1:
     resolution: {integrity: sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==}
@@ -5140,7 +5138,7 @@ snapshots:
       is-core-module: 2.16.1
       js-yaml: 3.14.2
       json5: 2.2.3
-      lodash: 4.17.23
+      lodash: 4.18.1
       minimatch: 7.4.9
       multimatch: 5.0.0
       please-upgrade-node: 3.2.0
@@ -6065,8 +6063,6 @@ snapshots:
   lodash.merge@4.6.2: {}
 
   lodash.sortby@4.7.0: {}
-
-  lodash@4.17.23: {}
 
   lodash@4.18.1: {}
 
