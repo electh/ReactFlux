@@ -8,7 +8,7 @@ import { getTimestamp } from "@/utils/date"
 import { compareBuildVersions } from "@/utils/version"
 import buildInfo from "@/version-info.json"
 
-const DEFAULT_REMOTE_VERSION_INFO_URL = `https://raw.githubusercontent.com/${GITHUB_REPO_PATH}/build/version-info.json`
+const DEFAULT_REMOTE_VERSION_INFO_URL = `https://raw.githubusercontent.com/${GITHUB_REPO_PATH}/main/public/version-info.json`
 const DEFAULT_LATEST_COMMIT_URL = `https://api.github.com/repos/${GITHUB_REPO_PATH}/commits/main`
 
 const isVersionCheckDebugEnabled = () => {
