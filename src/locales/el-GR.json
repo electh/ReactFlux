@@ -65,7 +65,13 @@
     "settings_reset_description": "Είστε σίγουροι ότι θέλετε να επαναφέρετε τις ρυθμίσεις; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.",
     "logout_confirm": "Επιβεβαίωση αποσύνδεσης",
     "logout_description": "Είστε σίγουροι ότι θέλετε να αποσυνδεθείτε; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.",
-    "update_available_tooltip": "Διαθέσιμη ενημερωμένη έκδοση"
+    "update_available_tooltip": "Διαθέσιμη ενημερωμένη έκδοση",
+    "update_available_title": "Διαθέσιμη ενημέρωση",
+    "update_available_description": "Βρέθηκε νεότερο build στο GitHub.",
+    "current_build_label": "Τρέχουσα εγκατάσταση",
+    "github_build_label": "Build GitHub",
+    "view_on_github": "Άνοιγμα GitHub",
+    "unknown_build": "Άγνωστο"
   },
   "actions": {
     "check": "Έλεγχος",

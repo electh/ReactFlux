@@ -65,7 +65,13 @@
     "settings_reset_description": "您确定要重置您的设置吗？此操作无法撤消。",
     "logout_confirm": "确认登出",
     "logout_description": "您确定要登出吗？此操作无法撤消。",
-    "update_available_tooltip": "有可用更新"
+    "update_available_tooltip": "有可用更新",
+    "update_available_title": "有可用更新",
+    "update_available_description": "GitHub 上发现了更新的构建版本。",
+    "current_build_label": "当前部署",
+    "github_build_label": "GitHub 构建",
+    "view_on_github": "打开 GitHub",
+    "unknown_build": "未知"
   },
   "actions": {
     "check": "查看",

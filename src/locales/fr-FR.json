@@ -65,7 +65,13 @@
     "settings_reset_description": "Êtes-vous sûr de vouloir réinitialiser vos paramètres ? Cette action est irréversible.",
     "logout_confirm": "Confirmer la déconnexion",
     "logout_description": "Êtes-vous sûr de vouloir vous déconnecter ? Cette action est irréversible.",
-    "update_available_tooltip": "Version mise à jour disponible"
+    "update_available_tooltip": "Version mise à jour disponible",
+    "update_available_title": "Mise à jour disponible",
+    "update_available_description": "Une build plus récente a été trouvée sur GitHub.",
+    "current_build_label": "Déploiement actuel",
+    "github_build_label": "Build GitHub",
+    "view_on_github": "Ouvrir GitHub",
+    "unknown_build": "Inconnue"
   },
   "actions": {
     "check": "Vérifier",

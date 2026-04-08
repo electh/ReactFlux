@@ -35,7 +35,7 @@ const App = () => {
   useTheme()
   useFeedIconsSync()
 
-  const { hasUpdate, dismissUpdate } = useVersionCheck()
+  const { hasUpdate, dismissUpdate, remoteBuildInfo } = useVersionCheck()
 
   const { isBelowLarge } = useScreenWidth()
 
@@ -120,7 +120,11 @@ const App = () => {
               trigger={null}
               width={sidebarWidth}
             >
-              <Sidebar dismissUpdate={dismissUpdate} hasUpdate={hasUpdate} />
+              <Sidebar
+                dismissUpdate={dismissUpdate}
+                hasUpdate={hasUpdate}
+                remoteBuildInfo={remoteBuildInfo}
+              />
             </Layout.Sider>
           )}
           {isBelowLarge ? null : (

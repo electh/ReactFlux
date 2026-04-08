@@ -65,7 +65,13 @@
     "settings_reset_description": "Sicher, dass die Einstellungen zurückgesetzt werden sollen? Diese Aktion kann nicht rückgängig gemacht werden.",
     "logout_confirm": "Ausloggen bestätigen",
     "logout_description": "Sicher, dass sich ausgeloggt werden soll? Diese Aktion kann nicht rückgängig gemacht werden.",
-    "update_available_tooltip": "Aktualisierte Version verfügbar"
+    "update_available_tooltip": "Aktualisierte Version verfügbar",
+    "update_available_title": "Update verfügbar",
+    "update_available_description": "Auf GitHub wurde ein neuerer Build gefunden.",
+    "current_build_label": "Aktuelle Bereitstellung",
+    "github_build_label": "GitHub-Build",
+    "view_on_github": "GitHub öffnen",
+    "unknown_build": "Unbekannt"
   },
   "actions": {
     "check": "Ansehen",

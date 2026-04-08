@@ -57,6 +57,7 @@ function useVersionCheck() {
   const { isAppDataReady } = useStore(dataState)
 
   const [hasUpdate, setHasUpdate] = useState(false)
+  const [remoteBuildInfo, setRemoteBuildInfo] = useState(null)
 
   const dismissUpdate = () => {
     setHasUpdate(false)
@@ -83,6 +84,7 @@ function useVersionCheck() {
           if (buildVersionComparison !== null) {
             const hasUpdateByBuildVersion = buildVersionComparison < 0
             setHasUpdate(hasUpdateByBuildVersion)
+            setRemoteBuildInfo(hasUpdateByBuildVersion ? remoteBuildInfo : null)
             logVersionCheckDebug({
               reason: "build_version_comparison",
               hasUpdate: hasUpdateByBuildVersion,
@@ -103,6 +105,7 @@ function useVersionCheck() {
           if (hasValidDates) {
             const hasUpdateByDate = currentGitTimestamp < latestGitTimestamp
             setHasUpdate(hasUpdateByDate)
+            setRemoteBuildInfo(hasUpdateByDate ? remoteBuildInfo : null)
             logVersionCheckDebug({
               reason: "date_comparison",
               hasUpdate: hasUpdateByDate,
@@ -118,6 +121,7 @@ function useVersionCheck() {
           if (buildInfo.gitHash && remoteBuildInfo.gitHash) {
             const hasUpdateByHash = buildInfo.gitHash !== remoteBuildInfo.gitHash
             setHasUpdate(hasUpdateByHash)
+            setRemoteBuildInfo(hasUpdateByHash ? remoteBuildInfo : null)
             logVersionCheckDebug({
               reason: "hash_fallback",
               hasUpdate: hasUpdateByHash,
@@ -157,6 +161,15 @@ function useVersionCheck() {
         if (hasValidDates) {
           const hasUpdateByCommitDate = currentGitTimestamp < latestGitTimestamp
           setHasUpdate(hasUpdateByCommitDate)
+          setRemoteBuildInfo(
+            hasUpdateByCommitDate
+              ? {
+                  gitCommitDate: latestCommitDate,
+                  gitDate: latestCommitDate,
+                  gitHash: latestCommitHash,
+                }
+              : null,
+          )
           logVersionCheckDebug({
             reason: "commit_date_fallback",
             hasUpdate: hasUpdateByCommitDate,
@@ -175,6 +188,15 @@ function useVersionCheck() {
         if (buildInfo.gitHash && latestCommitHash) {
           const hasUpdateByCommitHash = buildInfo.gitHash !== latestCommitHash
           setHasUpdate(hasUpdateByCommitHash)
+          setRemoteBuildInfo(
+            hasUpdateByCommitHash
+              ? {
+                  gitCommitDate: latestCommitDate,
+                  gitDate: latestCommitDate,
+                  gitHash: latestCommitHash,
+                }
+              : null,
+          )
           logVersionCheckDebug({
             reason: "commit_hash_fallback",
             hasUpdate: hasUpdateByCommitHash,
@@ -189,6 +211,7 @@ function useVersionCheck() {
         }
 
         setHasUpdate(false)
+        setRemoteBuildInfo(null)
         logVersionCheckDebug({
           reason: "insufficient_version_data",
           hasUpdate: false,
@@ -202,6 +225,7 @@ function useVersionCheck() {
         })
       } catch (error) {
         console.error("Check update failed", error)
+        setRemoteBuildInfo(null)
         logVersionCheckDebug({
           reason: "request_failed",
           error: error instanceof Error ? error.message : String(error),
@@ -212,7 +236,7 @@ function useVersionCheck() {
     checkUpdate()
   }, [isAppDataReady])
 
-  return { hasUpdate, dismissUpdate }
+  return { hasUpdate, dismissUpdate, remoteBuildInfo }
 }
 
 export default useVersionCheck

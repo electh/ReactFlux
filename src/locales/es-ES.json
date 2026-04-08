@@ -81,7 +81,13 @@
     "settings_reset_description": "¿Está seguro de que desea restablecer su configuración? Esta acción no se puede deshacer.",
     "logout_confirm": "Confirmar el cierre de sesión",
     "logout_description": "¿Está seguro de que desea cerrar sesión? Esta acción no se puede deshacer.",
-    "update_available_tooltip": "Actualización disponible"
+    "update_available_tooltip": "Actualización disponible",
+    "update_available_title": "Actualización disponible",
+    "update_available_description": "Se encontró una compilación más reciente en GitHub.",
+    "current_build_label": "Despliegue actual",
+    "github_build_label": "Compilación de GitHub",
+    "view_on_github": "Abrir GitHub",
+    "unknown_build": "Desconocida"
   },
   "actions": {
     "check": "Comprobar",

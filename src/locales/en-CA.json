@@ -65,7 +65,13 @@
     "settings_reset_description": "Are you sure you want to reset your settings? This action cannot be undone.",
     "logout_confirm": "Confirm Logout",
     "logout_description": "Are you sure you want to logout? This action cannot be undone.",
-    "update_available_tooltip": "Updated build available"
+    "update_available_tooltip": "Updated build available",
+    "update_available_title": "Update available",
+    "update_available_description": "A newer build was found on GitHub.",
+    "current_build_label": "Current deployment",
+    "github_build_label": "GitHub build",
+    "view_on_github": "Open GitHub",
+    "unknown_build": "Unknown"
   },
   "actions": {
     "check": "Check",

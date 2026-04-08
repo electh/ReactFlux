@@ -6,6 +6,7 @@ import {
   Dropdown,
   Form,
   Menu,
+  Modal,
   Skeleton,
   Typography,
 } from "@arco-design/web-react"
@@ -61,6 +62,7 @@ import { settingsState, updateSettings } from "@/store/settingsState"
 import { expandedCategoriesState, setExpandedCategories } from "@/store/sidebarState"
 import { GITHUB_REPO_PATH } from "@/utils/constants"
 import { Notification } from "@/utils/feedback"
+import buildInfo from "@/version-info.json"
 
 import "./Sidebar.css"
 
@@ -501,13 +503,14 @@ const updateAllEntriesAsRead = () => {
   setEntries((prev) => prev.map((entry) => ({ ...entry, status: "read" })))
 }
 
-const Sidebar = ({ dismissUpdate, hasUpdate }) => {
+const Sidebar = ({ dismissUpdate, hasUpdate, remoteBuildInfo }) => {
   const { isCoreDataReady } = useStore(dataState)
   const { polyglot } = useStore(polyglotState)
   const expandedCategories = useStore(expandedCategoriesState)
 
   const [categoryModalVisible, setCategoryModalVisible] = useState(false)
   const [feedModalVisible, setFeedModalVisible] = useState(false)
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [selectedFeed, setSelectedFeed] = useState(null)
   const [categoryForm] = Form.useForm()
@@ -600,6 +603,23 @@ const Sidebar = ({ dismissUpdate, hasUpdate }) => {
     await markFeedAsRead(feed)
   }
 
+  const currentBuildLabel = buildInfo.buildVersion ?? buildInfo.gitHash ?? "-"
+  const remoteBuildLabel =
+    remoteBuildInfo?.buildVersion ?? remoteBuildInfo?.gitHash ?? polyglot.t("sidebar.unknown_build")
+
+  const handleOpenUpdateDialog = () => {
+    setIsUpdateModalVisible(true)
+  }
+
+  const handleCloseUpdateDialog = () => {
+    setIsUpdateModalVisible(false)
+  }
+
+  const handleDismissUpdate = () => {
+    dismissUpdate()
+    setIsUpdateModalVisible(false)
+  }
+
   return (
     <div className="sidebar-container">
       <div className="sidebar-pinned-header">
@@ -620,10 +640,7 @@ const Sidebar = ({ dismissUpdate, hasUpdate }) => {
                   icon={<IconDownload />}
                   shape="circle"
                   size="small"
-                  onClick={() => {
-                    dismissUpdate()
-                    globalThis.open(`https://github.com/${GITHUB_REPO_PATH}`, "_blank")
-                  }}
+                  onClick={handleOpenUpdateDialog}
                 />
               </CustomTooltip>
             ) : null}
@@ -700,6 +717,34 @@ const Sidebar = ({ dismissUpdate, hasUpdate }) => {
           visible={feedModalVisible}
         />
       )}
+
+      <Modal
+        title={polyglot.t("sidebar.update_available_title")}
+        visible={isUpdateModalVisible}
+        footer={[
+          <Button key="dismiss" onClick={handleDismissUpdate}>
+            {polyglot.t("actions.dismiss")}
+          </Button>,
+          <Button
+            key="github"
+            type="primary"
+            onClick={() => globalThis.open(`https://github.com/${GITHUB_REPO_PATH}`, "_blank")}
+          >
+            {polyglot.t("sidebar.view_on_github")}
+          </Button>,
+        ]}
+        onCancel={handleCloseUpdateDialog}
+      >
+        <Typography.Paragraph type="secondary">
+          {polyglot.t("sidebar.update_available_description")}
+        </Typography.Paragraph>
+        <div>
+          <strong>{polyglot.t("sidebar.current_build_label")}:</strong> {currentBuildLabel}
+        </div>
+        <div>
+          <strong>{polyglot.t("sidebar.github_build_label")}:</strong> {remoteBuildLabel}
+        </div>
+      </Modal>
     </div>
   )
 }
