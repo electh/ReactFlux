@@ -3,8 +3,8 @@ import { ofetch } from "ofetch"
 import { useEffect, useState } from "react"
 
 import { dataState } from "@/store/dataState"
-import { GITHUB_REPO_PATH, UPDATE_NOTIFICATION_KEY } from "@/utils/constants"
-import { checkIsInLast24Hours, getTimestamp } from "@/utils/date"
+import { GITHUB_REPO_PATH } from "@/utils/constants"
+import { getTimestamp } from "@/utils/date"
 import { compareBuildVersions } from "@/utils/version"
 import buildInfo from "@/version-info.json"
 
@@ -59,7 +59,6 @@ function useVersionCheck() {
   const [hasUpdate, setHasUpdate] = useState(false)
 
   const dismissUpdate = () => {
-    localStorage.setItem(UPDATE_NOTIFICATION_KEY, getTimestamp().toString())
     setHasUpdate(false)
   }
 
@@ -70,15 +69,6 @@ function useVersionCheck() {
 
     const checkUpdate = async () => {
       try {
-        const lastDismissed = localStorage.getItem(UPDATE_NOTIFICATION_KEY)
-        if (lastDismissed && checkIsInLast24Hours(lastDismissed)) {
-          logVersionCheckDebug({
-            reason: "dismissed_in_last_24_hours",
-            lastDismissed,
-          })
-          return
-        }
-
         const remoteVersionInfoUrl = getRemoteVersionInfoUrl()
         try {
           const remoteBuildInfo = await ofetch(remoteVersionInfoUrl, {

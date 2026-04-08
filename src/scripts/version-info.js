@@ -75,8 +75,15 @@ const getBuildSequenceFromGitHistory = (buildDate) => {
     return 0
   }
 
-  const commitCount = safeExec(`git rev-list --count --since="${buildDate}T00:00:00Z" HEAD`)
-  return toInteger(commitCount) ?? 0
+  const commitDateIso = safeExec("git log -1 --format=%cI")
+  if (!commitDateIso) {
+    return 0
+  }
+
+  const commitDate = new Date(commitDateIso)
+  const dayStart = new Date(`${buildDate}T00:00:00Z`)
+  const elapsedMinutes = Math.floor((commitDate.getTime() - dayStart.getTime()) / 60_000)
+  return Math.max(0, elapsedMinutes)
 }
 
 export const createVersionInfo = (environment = process.env) => {
