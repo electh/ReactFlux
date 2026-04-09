@@ -195,7 +195,9 @@ const ToolbarMenuButton = ({ icon, label, tooltip, children, className = "" }) =
         <span className="toolbar-button-label">
           {icon}
           <span>{label}</span>
-          <IconDown className="toolbar-button-caret" />
+          <span className="toolbar-button-caret-wrap">
+            <IconDown className="toolbar-button-caret" />
+          </span>
         </span>
       </Button>
     </CustomTooltip>
@@ -265,7 +267,7 @@ const updateEntriesAsRead = (publishedBeforeUnix = null) => {
   )
 }
 
-const MarkReadControl = ({ info, markAllAsRead }) => {
+const MarkReadControl = ({ info, markAllAsRead, variant = "classic" }) => {
   const { filterDate } = useStore(contentState)
   const { feedsData } = useStore(dataState)
   const { showStatus } = useStore(settingsState)
@@ -523,7 +525,22 @@ const MarkReadControl = ({ info, markAllAsRead }) => {
         onVisibleChange={handleConfirmVisibleChange}
       >
         <CustomTooltip mini content={polyglot.t("article_list.mark_as_read_options_tooltip")}>
-          <Button icon={<DoubleCheck />} shape="circle" size="small" />
+          {variant === "stream" ? (
+            <Button
+              className="toolbar-action-button toolbar-menu-button toolbar-icon-menu-button"
+              size="small"
+              type="text"
+            >
+              <span className="toolbar-button-label">
+                <DoubleCheck />
+                <span className="toolbar-button-caret-wrap">
+                  <IconDown className="toolbar-button-caret" />
+                </span>
+              </span>
+            </Button>
+          ) : (
+            <Button icon={<DoubleCheck />} shape="circle" size="small" />
+          )}
         </CustomTooltip>
       </Popconfirm>
     </Dropdown>
@@ -725,6 +742,33 @@ const SearchAndSortBar = ({ info, markAllAsRead, refreshArticleList, variant = "
               tooltip={polyglot.t("search.search")}
               onClick={openSearchModal}
             />
+            <div className="stream-mark-read-control">
+              <MarkReadControl info={info} markAllAsRead={markAllAsRead} variant="stream" />
+            </div>
+          </div>
+          <div className="stream-secondary-controls">
+            <div className="stream-view-control">
+              <ToolbarMenuButton
+                icon={currentLayout.icon}
+                label={viewControlLabel}
+                tooltip={viewControlLabel}
+              >
+                {layoutOptions.map((option) => (
+                  <Menu.Item
+                    key={option.value}
+                    className="toolbar-menu-item"
+                    onClick={() => updateSettings({ layoutMode: option.value })}
+                  >
+                    <span className="toolbar-menu-item-label">
+                      {option.icon}
+                      <span>
+                        {polyglot.t("article_list.view_label")}: {option.label}
+                      </span>
+                    </span>
+                  </Menu.Item>
+                ))}
+              </ToolbarMenuButton>
+            </div>
             {infoFrom === "history" ? null : (
               <ToolbarMenuButton
                 className={showStatus === "unread" ? "is-active" : ""}
@@ -783,59 +827,6 @@ const SearchAndSortBar = ({ info, markAllAsRead, refreshArticleList, variant = "
                   </span>
                 </span>
               </Menu.Item>
-            </ToolbarMenuButton>
-          </div>
-          <div className="stream-secondary-controls">
-            <DatePicker
-              popupVisible={calendarVisible}
-              position="bottom"
-              showNowBtn={false}
-              value={filterDate}
-              extra={
-                <div className="calendar-actions">
-                  <Button long size="mini" type="primary" onClick={handleSetToday}>
-                    {polyglot.t("search.today")}
-                  </Button>
-                  <Button long size="mini" onClick={handleClearDate}>
-                    {polyglot.t("search.clear_date")}
-                  </Button>
-                </div>
-              }
-              triggerElement={
-                <CustomTooltip mini content={polyglot.t("search.select_date")}>
-                  <Button
-                    icon={<IconCalendar />}
-                    shape="circle"
-                    size="small"
-                    style={{
-                      backgroundColor: filterDate ? "rgb(var(--primary-6))" : "inherit",
-                    }}
-                  />
-                </CustomTooltip>
-              }
-              onChange={(v) => setFilterDate(v)}
-              onVisibleChange={setCalendarVisible}
-            />
-            <MarkReadControl info={info} markAllAsRead={markAllAsRead} />
-            <ToolbarMenuButton
-              icon={currentLayout.icon}
-              label={viewControlLabel}
-              tooltip={viewControlLabel}
-            >
-              {layoutOptions.map((option) => (
-                <Menu.Item
-                  key={option.value}
-                  className="toolbar-menu-item"
-                  onClick={() => updateSettings({ layoutMode: option.value })}
-                >
-                  <span className="toolbar-menu-item-label">
-                    {option.icon}
-                    <span>
-                      {polyglot.t("article_list.view_label")}: {option.label}
-                    </span>
-                  </span>
-                </Menu.Item>
-              ))}
             </ToolbarMenuButton>
           </div>
         </div>
