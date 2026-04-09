@@ -20,7 +20,6 @@ const computeLPSArray = (pattern) => {
 
 // Main KMP search algorithm
 export const kmpSearch = (text, pattern, ignoreCase = true) => {
-  // TODO: Make ignoreCase configurable
   const processedText = ignoreCase ? text.toLowerCase() : text
   const processedPattern = ignoreCase ? pattern.toLowerCase() : pattern
 
