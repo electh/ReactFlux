@@ -470,12 +470,25 @@ const MarkReadControl = ({ info, markAllAsRead, variant = "classic" }) => {
         onVisibleChange={handleConfirmVisibleChange}
       >
         <CustomTooltip mini content={polyglot.t("article_list.mark_today_as_read_tooltip")}>
-          <Button
-            icon={<DoubleCheck />}
-            shape="circle"
-            size="small"
-            onClick={() => openConfirm("all")}
-          />
+          {variant === "stream" ? (
+            <Button
+              className="toolbar-action-button toolbar-icon-action-button"
+              size="small"
+              type="text"
+              onClick={() => openConfirm("all")}
+            >
+              <span className="toolbar-button-label">
+                <DoubleCheck />
+              </span>
+            </Button>
+          ) : (
+            <Button
+              icon={<DoubleCheck />}
+              shape="circle"
+              size="small"
+              onClick={() => openConfirm("all")}
+            />
+          )}
         </CustomTooltip>
       </Popconfirm>
     )

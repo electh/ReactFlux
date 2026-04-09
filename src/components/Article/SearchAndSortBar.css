@@ -321,6 +321,11 @@
   padding: 0 10px !important;
 }
 
+.search-and-sort-bar.stream-toolbar .toolbar-icon-action-button {
+  min-width: 0;
+  padding: 0 10px !important;
+}
+
 .search-and-sort-bar.stream-toolbar .toolbar-icon-menu-button .toolbar-button-label {
   gap: 6px;
 }
