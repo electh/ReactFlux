@@ -330,6 +330,11 @@
   gap: 6px;
 }
 
+.search-and-sort-bar.stream-toolbar .toolbar-icon-action-button .toolbar-button-label svg,
+.search-and-sort-bar.stream-toolbar .toolbar-icon-menu-button .toolbar-button-label svg {
+  transform: translate(1px, 2px);
+}
+
 .search-and-sort-bar.stream-toolbar .toolbar-button-label > span:last-child {
   white-space: nowrap;
 }
