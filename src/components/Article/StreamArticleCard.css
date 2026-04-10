@@ -11,6 +11,7 @@
     border-color 0.18s ease,
     box-shadow 0.18s ease,
     transform 0.18s ease;
+  cursor: default;
   user-select: text;
   -webkit-user-select: text;
 }

@@ -177,6 +177,10 @@ const StreamArticleCard = ({ activeEntry, entry, handleEntryClick, isSelected, s
   }
 
   const handleCardClick = (event) => {
+    if (isSelected) {
+      return
+    }
+
     if (isInteractiveTarget(event.target)) {
       return
     }
@@ -192,12 +196,16 @@ const StreamArticleCard = ({ activeEntry, entry, handleEntryClick, isSelected, s
     <article
       ref={cardRef}
       data-entry-id={entry.id}
-      tabIndex={0}
+      tabIndex={isSelected ? -1 : 0}
       className={
         isSelected ? "card-wrapper stream-story-card selected" : "card-wrapper stream-story-card"
       }
       onClick={handleCardClick}
       onKeyDown={(event) => {
+        if (isSelected) {
+          return
+        }
+
         if ((event.key === "Enter" || event.key === " ") && !isInteractiveTarget(event.target)) {
           event.preventDefault()
           selectEntry()
