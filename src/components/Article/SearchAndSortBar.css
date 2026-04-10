@@ -91,7 +91,7 @@
   color: var(--color-text-1);
   font-size: 1.2rem;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.15;
   letter-spacing: -0.01em;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -176,7 +176,7 @@
 .search-and-sort-bar.stream-toolbar .count-label {
   font-size: 1.2rem;
   font-weight: 600;
-  line-height: 1;
+  line-height: 1.15;
 }
 
 .search-and-sort-bar .layout-selector-slot {
