@@ -1,5 +1,5 @@
 .card-author {
-  color: var(--color-text-3);
+  color: var(--article-card-subtle-color);
   margin-top: -3px;
   font-size: 0.7rem;
   font-weight: normal;
@@ -53,7 +53,7 @@
 }
 
 .card-preview {
-  color: var(--color-text-2);
+  color: var(--article-card-preview-color);
   font-size: 0.9rem;
   margin: 0;
   display: -webkit-box;
@@ -65,7 +65,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: var(--color-text-3);
+  color: var(--article-card-subtle-color);
   font-size: 0.75rem;
   margin-bottom: 2px;
 }
@@ -85,7 +85,7 @@
 }
 
 .card-source-title {
-  color: var(--color-text-3);
+  color: var(--article-card-meta-color);
   font-size: 0.75rem;
   font-weight: bold;
 }
@@ -120,7 +120,7 @@
 }
 
 .card-time-wrapper {
-  color: var(--color-text-3);
+  color: var(--article-card-subtle-color);
   font-size: 0.75rem;
   display: flex;
   align-items: center;
@@ -128,7 +128,7 @@
 }
 
 .card-title {
-  color: var(--color-text-2);
+  color: var(--article-card-title-color);
   font-size: 1rem;
   font-weight: bold;
   margin: 0;
@@ -140,7 +140,7 @@
 }
 
 .card-title-read {
-  color: var(--color-text-3);
+  color: var(--article-card-title-read-color);
 }
 
 .card-wrapper {
