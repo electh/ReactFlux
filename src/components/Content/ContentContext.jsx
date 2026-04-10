@@ -27,6 +27,14 @@ export const ContextProvider = ({ children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
+  // Ref keeps location.pathname readable without adding it to useCallback deps.
+  // This prevents handleEntryClick / closeActiveContent from getting new references
+  // on every navigation, which would defeat memo() on every StreamArticleCard.
+  const locationPathnameRef = useRef(location.pathname)
+  useEffect(() => {
+    locationPathnameRef.current = location.pathname
+  }, [location.pathname])
+
   const { handleEntryStatusUpdate } = useEntryActions()
 
   const clearPendingMarkAsRead = useCallback(() => {
@@ -121,13 +129,13 @@ export const ContextProvider = ({ children }) => {
     flushPendingMarkAsRead()
     setActiveContent(null)
 
-    const currentPath = location.pathname
+    const currentPath = locationPathnameRef.current
     const basePath = extractBasePath(currentPath)
 
     if (isEntryDetailPath(currentPath) && basePath) {
       navigate(basePath)
     }
-  }, [flushPendingMarkAsRead, location.pathname, navigate])
+  }, [flushPendingMarkAsRead, navigate])
 
   const handleEntryClick = useCallback(
     async (entry) => {
@@ -147,7 +155,7 @@ export const ContextProvider = ({ children }) => {
       const shouldAutoMarkAsRead = markReadBy === "view"
       setActiveContent(entry)
 
-      const currentPath = location.pathname
+      const currentPath = locationPathnameRef.current
       const basePath = extractBasePath(currentPath)
       const entryDetailPath = buildEntryDetailPath(basePath, entry.id)
 
@@ -169,7 +177,7 @@ export const ContextProvider = ({ children }) => {
         }
       }, ANIMATION_DURATION_MS)
     },
-    [flushPendingMarkAsRead, location.pathname, markReadBy, navigate, scheduleMarkAsRead],
+    [flushPendingMarkAsRead, markReadBy, navigate, scheduleMarkAsRead],
   )
 
   const value = useMemo(

@@ -28,7 +28,7 @@ const StoryStream = ({
   refreshArticleList,
   streamVirtualizerRef,
 }) => {
-  const { activeContent, isArticleListReady, loadMoreVisible } = useStore(contentState)
+  const { activeContent, infoFrom, isArticleListReady, loadMoreVisible } = useStore(contentState)
   const filteredEntries = useStore(filteredEntriesState)
   const { animationsEnabled } = useStore(settingsState)
   const { loadingMore, handleLoadMore } = useLoadMore()
@@ -43,6 +43,7 @@ const StoryStream = ({
 
         const threshold = element.scrollHeight * 0.82
         const scrolledDistance = element.scrollTop + element.clientHeight
+
         if (scrolledDistance >= threshold) {
           handleLoadMore(getEntries)
         }
@@ -113,6 +114,7 @@ const StoryStream = ({
                 activeEntry={activeContent?.id === entry.id ? activeContent : null}
                 entry={entry}
                 handleEntryClick={handleEntryClick}
+                infoFrom={infoFrom}
                 isSelected={activeContent?.id === entry.id}
                 shouldPreload={
                   activeEntryIndex !== -1 &&

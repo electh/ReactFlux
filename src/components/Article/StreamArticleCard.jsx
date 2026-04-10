@@ -9,7 +9,7 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { memo, useEffect, useMemo, useRef, useState } from "react"
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
 import ArticleBodyRenderer from "./ArticleBodyRenderer"
@@ -21,9 +21,9 @@ import FeedIcon from "@/components/ui/FeedIcon"
 import useEntryActions from "@/hooks/useEntryActions"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { contentState } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
+import { freezeMediaLoading, unfreezeMediaLoading } from "@/utils/content-freeze"
 import { generateReadableDate, generateReadingTime, generateRelativeTime } from "@/utils/date"
 import { Message } from "@/utils/feedback"
 import { getEntryImageSources, preloadImageMetadata } from "@/utils/images"
@@ -47,10 +47,16 @@ const hasExpandedSelection = () => {
   return Boolean(selection && !selection.isCollapsed && selection.toString().trim())
 }
 
-const StreamArticleCard = ({ activeEntry, entry, handleEntryClick, isSelected, shouldPreload }) => {
+const StreamArticleCard = ({
+  activeEntry,
+  entry,
+  handleEntryClick,
+  infoFrom,
+  isSelected,
+  shouldPreload,
+}) => {
   const navigate = useNavigate()
   const { hasIntegrations } = useStore(dataState)
-  const { infoFrom } = useStore(contentState)
   const {
     aiProvider,
     articleWidth,
@@ -89,6 +95,7 @@ const StreamArticleCard = ({ activeEntry, entry, handleEntryClick, isSelected, s
     ? "stream-story-title"
     : "stream-story-title stream-story-title-read"
   const cardRef = useRef(null)
+  const wasEverSelectedRef = useRef(false)
   const wasVisible = useRef(false)
 
   useEffect(() => {
@@ -158,7 +165,7 @@ const StreamArticleCard = ({ activeEntry, entry, handleEntryClick, isSelected, s
       wasVisible.current = false
       observer.disconnect()
     }
-  }, [currentEntry, handleEntryStatusUpdate, infoFrom, markReadOnScroll, polyglot])
+  }, [currentEntry, handleEntryStatusUpdate, infoFrom, isSelected, markReadOnScroll, polyglot])
 
   useEffect(() => {
     if (!shouldPreload || isSelected) {
@@ -169,6 +176,33 @@ const StreamArticleCard = ({ activeEntry, entry, handleEntryClick, isSelected, s
       void preloadImageMetadata(imageSource)
     }
   }, [entry, isSelected, shouldPreload])
+
+  // Freeze/unfreeze media loading when navigating away from / back to this card.
+  // When the user presses J/K to move past a card, this cancels incomplete image
+  // downloads and iframe loading. Prevents wasted bandwidth and layout shifts from
+  // images loading in cards the user has already scrolled past.
+  // Only applies to cards that were previously selected — cards that were never
+  // active are left alone so their content can load normally.
+  useEffect(() => {
+    if (isSelected) {
+      wasEverSelectedRef.current = true
+    }
+  }, [isSelected])
+
+  useLayoutEffect(() => {
+    if (isSelected || !wasEverSelectedRef.current) {
+      return
+    }
+
+    // Scope to .article-content to avoid freezing the feed icon in the header
+    const body = cardRef.current?.querySelector(".article-content")
+    if (!body) {
+      return
+    }
+
+    freezeMediaLoading(body)
+    return () => unfreezeMediaLoading(body)
+  }, [isSelected])
 
   const selectEntry = () => {
     if (!isSelected) {

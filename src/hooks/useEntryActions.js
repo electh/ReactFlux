@@ -1,4 +1,3 @@
-import { useStore } from "@nanostores/react"
 import Confetti from "canvas-confetti"
 
 import {
@@ -88,175 +87,178 @@ const handleOpenLinkExternally = (entry) => {
   window.open(entry.url, "_blank")
 }
 
-const useEntryActions = () => {
-  const { activeContent } = useStore(contentState)
-  const { polyglot } = useStore(polyglotState)
-
-  const handleEntryStarredUpdate = (entry, newStarred) => {
-    if (newStarred) {
-      setStarredCount((prev) => prev + 1)
-      Confetti({
-        particleCount: 100,
-        angle: 120,
-        spread: 70,
-        origin: { x: 1, y: 1 },
-      })
-    } else {
-      setStarredCount((prev) => Math.max(0, prev - 1))
-    }
-
-    const updatedEntry = { ...entry, starred: newStarred }
-    if (activeContent?.id === entry.id) {
-      setActiveContent(updatedEntry)
-    }
-    setEntries((prev) => updateEntries(prev, [updatedEntry]))
-  }
-
-  const handleToggleStatus = async (entry) => {
-    const prevStatus = entry.status
-    const newStatus = prevStatus === "read" ? "unread" : "read"
-    handleEntryStatusUpdate(entry, newStatus)
-
-    updateEntriesStatus([entry.id], newStatus).catch(() => {
-      Message.error(
-        newStatus === "read"
-          ? polyglot.t("actions.mark_as_read_error")
-          : polyglot.t("actions.mark_as_unread_error"),
-      )
-      handleEntryStatusUpdate(entry, prevStatus)
+const handleEntryStarredUpdate = (entry, newStarred) => {
+  const { activeContent } = contentState.get()
+  if (newStarred) {
+    setStarredCount((prev) => prev + 1)
+    Confetti({
+      particleCount: 100,
+      angle: 120,
+      spread: 70,
+      origin: { x: 1, y: 1 },
     })
+  } else {
+    setStarredCount((prev) => Math.max(0, prev - 1))
   }
 
-  const handleToggleStarred = async (entry) => {
-    const newStarred = !entry.starred
-    handleEntryStarredUpdate(entry, newStarred)
+  const updatedEntry = { ...entry, starred: newStarred }
+  if (activeContent?.id === entry.id) {
+    setActiveContent(updatedEntry)
+  }
+  setEntries((prev) => updateEntries(prev, [updatedEntry]))
+}
 
-    toggleEntryStarred(entry.id).catch(() => {
-      Message.error(
-        newStarred ? polyglot.t("actions.star_error") : polyglot.t("actions.unstar_error"),
-      )
-      handleEntryStarredUpdate(entry, !newStarred)
-    })
+const handleToggleStatus = async (entry) => {
+  const prevStatus = entry.status
+  const newStatus = prevStatus === "read" ? "unread" : "read"
+  handleEntryStatusUpdate(entry, newStatus)
+
+  updateEntriesStatus([entry.id], newStatus).catch(() => {
+    const { polyglot } = polyglotState.get()
+    Message.error(
+      newStatus === "read"
+        ? polyglot.t("actions.mark_as_read_error")
+        : polyglot.t("actions.mark_as_unread_error"),
+    )
+    handleEntryStatusUpdate(entry, prevStatus)
+  })
+}
+
+const handleToggleStarred = async (entry) => {
+  const newStarred = !entry.starred
+  handleEntryStarredUpdate(entry, newStarred)
+
+  toggleEntryStarred(entry.id).catch(() => {
+    const { polyglot } = polyglotState.get()
+    Message.error(
+      newStarred ? polyglot.t("actions.star_error") : polyglot.t("actions.unstar_error"),
+    )
+    handleEntryStarredUpdate(entry, !newStarred)
+  })
+}
+
+const updateEntryContent = (entry, updates) => {
+  const updatedEntry = parseCoverImage({ ...entry, ...updates })
+  const { activeContent } = contentState.get()
+
+  if (activeContent?.id === entry.id) {
+    setActiveContent(updatedEntry)
   }
 
-  const updateEntryContent = (entry, updates) => {
-    const updatedEntry = parseCoverImage({ ...entry, ...updates })
+  setEntries((prev) => updateEntries(prev, [updatedEntry]))
+  return updatedEntry
+}
 
-    if (activeContent?.id === entry.id) {
-      setActiveContent(updatedEntry)
-    }
-
-    setEntries((prev) => updateEntries(prev, [updatedEntry]))
-    return updatedEntry
+const handleFetchContent = async (entry = contentState.get().activeContent) => {
+  if (!entry) {
+    return null
   }
 
-  const handleFetchContent = async (entry = activeContent) => {
-    if (!entry) {
-      return null
-    }
-
-    try {
-      const response = await getOriginalContent(entry.id)
-      Message.success(polyglot.t("actions.fetched_content_success"))
-      const newContent = response.content
-      const newReadingTime = response.reading_time ?? entry.reading_time
-      return updateEntryContent(entry, { content: newContent, reading_time: newReadingTime })
-    } catch (error) {
-      console.error("Failed to fetch content:", error)
-      Message.error(polyglot.t("actions.fetched_content_error"))
-      return null
-    }
-  }
-
-  const handleSummarizeContent = async (entry = activeContent) => {
-    const aiProvider = getSettings("aiProvider")
-    const aiApiKeys = getSettings("aiApiKeys") || {}
-    const aiApiKey = aiApiKeys?.[aiProvider] || ""
-    const aiModel = getSettings("aiModel")
-
-    if (!entry) {
-      return null
-    }
-
-    if (aiProvider === AI_PROVIDERS.NONE) {
-      Message.warning(polyglot.t("actions.ai_summary_provider_missing"))
-      return null
-    }
-
-    if (!aiApiKey) {
-      Message.warning(polyglot.t("actions.ai_summary_api_key_missing"))
-      return null
-    }
-
-    if (!aiModel) {
-      Message.warning(polyglot.t("actions.ai_summary_model_missing"))
-      return null
-    }
-
-    const textContent = extractTextFromHtml(entry.content)
-    if (!textContent) {
-      Message.error(polyglot.t("actions.ai_summary_error"))
-      return null
-    }
-
-    const trimmedContent = textContent.slice(0, 12_000)
-
-    try {
-      const summary = await summarizeWithProvider({
-        provider: aiProvider,
-        apiKey: aiApiKey,
-        model: aiModel,
-        title: entry.title,
-        content: trimmedContent,
-      })
-
-      const summaryHtml = formatSummaryHtml(summary, polyglot.t("article_card.ai_summary_heading"))
-
-      if (!summaryHtml) {
-        Message.error(polyglot.t("actions.ai_summary_error"))
-        return null
-      }
-
-      updateEntryContent(entry, { content: summaryHtml })
-      Message.success(polyglot.t("actions.ai_summary_success"))
-      return summaryHtml
-    } catch (error) {
-      console.error("Failed to summarize content:", error)
-      Message.error(polyglot.t("actions.ai_summary_error"))
-      return null
-    }
-  }
-
-  const handleSaveToThirdPartyServices = async (entry) => {
-    try {
-      const response = await saveToThirdPartyServices(entry.id)
-      if (response.status === 202) {
-        Notification.success({
-          title: polyglot.t("actions.saved_to_third-party_services_success"),
-        })
-      } else {
-        Notification.error({
-          title: polyglot.t("actions.saved_to_third-party_services_error"),
-        })
-      }
-    } catch (error) {
-      console.error("Failed to save to third-party services:", error)
-      Notification.error({
-        title: polyglot.t("actions.saved_to_third-party_services_error"),
-        content: error.message,
-      })
-    }
-  }
-
-  return {
-    handleEntryStatusUpdate,
-    handleFetchContent,
-    handleSummarizeContent,
-    handleOpenLinkExternally,
-    handleSaveToThirdPartyServices,
-    handleToggleStarred,
-    handleToggleStatus,
+  try {
+    const response = await getOriginalContent(entry.id)
+    const { polyglot } = polyglotState.get()
+    Message.success(polyglot.t("actions.fetched_content_success"))
+    const newContent = response.content
+    const newReadingTime = response.reading_time ?? entry.reading_time
+    return updateEntryContent(entry, { content: newContent, reading_time: newReadingTime })
+  } catch (error) {
+    console.error("Failed to fetch content:", error)
+    const { polyglot } = polyglotState.get()
+    Message.error(polyglot.t("actions.fetched_content_error"))
+    return null
   }
 }
+
+const handleSummarizeContent = async (entry = contentState.get().activeContent) => {
+  const aiProvider = getSettings("aiProvider")
+  const aiApiKeys = getSettings("aiApiKeys") || {}
+  const aiApiKey = aiApiKeys?.[aiProvider] || ""
+  const aiModel = getSettings("aiModel")
+  const { polyglot } = polyglotState.get()
+
+  if (!entry) {
+    return null
+  }
+
+  if (aiProvider === AI_PROVIDERS.NONE) {
+    Message.warning(polyglot.t("actions.ai_summary_provider_missing"))
+    return null
+  }
+
+  if (!aiApiKey) {
+    Message.warning(polyglot.t("actions.ai_summary_api_key_missing"))
+    return null
+  }
+
+  if (!aiModel) {
+    Message.warning(polyglot.t("actions.ai_summary_model_missing"))
+    return null
+  }
+
+  const textContent = extractTextFromHtml(entry.content)
+  if (!textContent) {
+    Message.error(polyglot.t("actions.ai_summary_error"))
+    return null
+  }
+
+  const trimmedContent = textContent.slice(0, 12_000)
+
+  try {
+    const summary = await summarizeWithProvider({
+      provider: aiProvider,
+      apiKey: aiApiKey,
+      model: aiModel,
+      title: entry.title,
+      content: trimmedContent,
+    })
+
+    const summaryHtml = formatSummaryHtml(summary, polyglot.t("article_card.ai_summary_heading"))
+
+    if (!summaryHtml) {
+      Message.error(polyglot.t("actions.ai_summary_error"))
+      return null
+    }
+
+    updateEntryContent(entry, { content: summaryHtml })
+    Message.success(polyglot.t("actions.ai_summary_success"))
+    return summaryHtml
+  } catch (error) {
+    console.error("Failed to summarize content:", error)
+    Message.error(polyglot.t("actions.ai_summary_error"))
+    return null
+  }
+}
+
+const handleSaveToThirdPartyServices = async (entry) => {
+  const { polyglot } = polyglotState.get()
+  try {
+    const response = await saveToThirdPartyServices(entry.id)
+    if (response.status === 202) {
+      Notification.success({
+        title: polyglot.t("actions.saved_to_third-party_services_success"),
+      })
+    } else {
+      Notification.error({
+        title: polyglot.t("actions.saved_to_third-party_services_error"),
+      })
+    }
+  } catch (error) {
+    console.error("Failed to save to third-party services:", error)
+    Notification.error({
+      title: polyglot.t("actions.saved_to_third-party_services_error"),
+      content: error.message,
+    })
+  }
+}
+
+const useEntryActions = () => ({
+  handleEntryStatusUpdate,
+  handleFetchContent,
+  handleOpenLinkExternally,
+  handleSaveToThirdPartyServices,
+  handleSummarizeContent,
+  handleToggleStarred,
+  handleToggleStatus,
+})
 
 export default useEntryActions
