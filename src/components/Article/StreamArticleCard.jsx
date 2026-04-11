@@ -255,29 +255,7 @@ const StreamArticleCard = ({
         }
       }}
     >
-      <div className="stream-story-topline">
-        <Typography.Title
-          className={titleClassName}
-          heading={4}
-          style={{ maxWidth: contentMaxWidth }}
-        >
-          <button
-            className="stream-story-title-link"
-            type="button"
-            onClick={(event) => {
-              event.stopPropagation()
-
-              if (hasExpandedSelection()) {
-                return
-              }
-
-              handleOpenLinkExternally(currentEntry)
-            }}
-          >
-            {showFeedIcon && <FeedIcon className="feed-icon-topline" feed={currentEntry.feed} />}
-            <span className="stream-story-title-text">{currentEntry.title}</span>
-          </button>
-        </Typography.Title>
+      <div className="stream-story-actions-row">
         <div className="stream-story-actions">
           <CustomTooltip
             mini
@@ -359,10 +337,44 @@ const StreamArticleCard = ({
           </CustomTooltip>
         </div>
       </div>
-      <div className="stream-story-expanded">
+      <Typography.Title
+        className={titleClassName}
+        heading={4}
+        style={{ maxWidth: contentMaxWidth, textAlign: titleAlignment }}
+      >
+        <button
+          className="stream-story-title-link"
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation()
+
+            if (hasExpandedSelection()) {
+              return
+            }
+
+            handleOpenLinkExternally(currentEntry)
+          }}
+        >
+          {showFeedIcon && <FeedIcon className="feed-icon-topline" feed={currentEntry.feed} />}
+          <span className="stream-story-title-text">{currentEntry.title}</span>
+        </button>
+      </Typography.Title>
+      <div
+        className={
+          showFeedIcon && titleAlignment !== "center"
+            ? "stream-story-expanded stream-story-expanded-indented"
+            : "stream-story-expanded"
+        }
+        style={showFeedIcon && titleAlignment !== "center" ? { paddingLeft: 34 } : undefined}
+      >
+        {" "}
         <div
           className="stream-story-meta"
-          style={{ maxWidth: contentMaxWidth, textAlign: titleAlignment }}
+          style={{
+            maxWidth: contentMaxWidth,
+            justifyContent: titleAlignment === "center" ? "center" : undefined,
+            marginInline: titleAlignment === "center" ? "auto" : 0,
+          }}
         >
           <div className="stream-story-source">
             <span className="stream-story-source-title">{currentEntry.feed.title}</span>

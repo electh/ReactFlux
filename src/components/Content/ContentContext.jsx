@@ -9,7 +9,6 @@ import { contentState, setActiveContent, setIsArticleLoading } from "@/store/con
 import { settingsState } from "@/store/settingsState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { Message } from "@/utils/feedback"
-import { getEntryImageSources, preloadImageMetadata } from "@/utils/images"
 import { buildEntryDetailPath, extractBasePath, isEntryDetailPath } from "@/utils/url"
 
 const Context = createContext()
@@ -20,7 +19,6 @@ export const ContextProvider = ({ children }) => {
 
   const entryDetailRef = useRef(null)
   const entryListRef = useRef(null)
-  const streamVirtualizerRef = useRef(null)
   const pendingReadTimerRef = useRef(null)
   const pendingReadEntryRef = useRef(null)
   const pendingReadEntryIdRef = useRef(null)
@@ -142,16 +140,6 @@ export const ContextProvider = ({ children }) => {
       setIsArticleLoading(true)
       flushPendingMarkAsRead()
 
-      if (settingsState.get().layoutMode === "stream") {
-        const imageSources = getEntryImageSources(entry)
-
-        if (imageSources.length > 0) {
-          await Promise.allSettled(
-            imageSources.map((imageSource) => preloadImageMetadata(imageSource)),
-          )
-        }
-      }
-
       const shouldAutoMarkAsRead = markReadBy === "view"
       setActiveContent(entry)
 
@@ -184,7 +172,6 @@ export const ContextProvider = ({ children }) => {
     () => ({
       entryDetailRef,
       entryListRef,
-      streamVirtualizerRef,
       scheduleMarkAsRead,
       flushPendingMarkAsRead,
       cancelPendingMarkAsRead,

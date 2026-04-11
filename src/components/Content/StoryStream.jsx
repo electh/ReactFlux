@@ -7,8 +7,8 @@ import SimpleBar from "simplebar-react"
 import { Virtualizer } from "virtua"
 
 import LoadingCards from "@/components/Article/LoadingCards"
-import SearchAndSortBar from "@/components/Article/SearchAndSortBar"
 import StreamArticleCard from "@/components/Article/StreamArticleCard"
+import StreamSearchBar from "@/components/Article/StreamSearchBar"
 import useLoadMore from "@/hooks/useLoadMore"
 import { contentState, filteredEntriesState } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
@@ -74,11 +74,11 @@ const StoryStream = ({
   return (
     <div className="article-container story-stream-layout">
       <div className="story-stream-toolbar">
-        <SearchAndSortBar
+        <StreamSearchBar
           info={info}
           markAllAsRead={markAllAsRead}
           refreshArticleList={refreshArticleList}
-          variant="stream"
+          streamVirtualizerRef={streamVirtualizerRef}
         />
       </div>
       <SimpleBar

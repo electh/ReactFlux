@@ -2,11 +2,11 @@ import { useStore } from "@nanostores/react"
 import { useHotkeys } from "react-hotkeys-hook"
 
 import useEntryActions from "@/hooks/useEntryActions"
-import useKeyHandlers from "@/hooks/useKeyHandlers"
+import useStreamKeyHandlers from "@/hooks/useStreamKeyHandlers"
 import { contentState } from "@/store/contentState"
 import { duplicateHotkeysState, hotkeysState } from "@/store/hotkeysState"
 
-const useContentHotkeys = ({ handleRefreshArticleList }) => {
+const useStreamHotkeys = ({ handleRefreshArticleList, streamVirtualizerRef }) => {
   const { activeContent } = useStore(contentState)
   const duplicateHotkeys = useStore(duplicateHotkeysState)
   const hotkeys = useStore(hotkeysState)
@@ -24,7 +24,7 @@ const useContentHotkeys = ({ handleRefreshArticleList }) => {
     showHotkeysSettings,
     toggleReadStatus,
     toggleStarStatus,
-  } = useKeyHandlers()
+  } = useStreamKeyHandlers({ streamVirtualizerRef })
 
   const {
     handleFetchContent,
@@ -78,4 +78,4 @@ const useContentHotkeys = ({ handleRefreshArticleList }) => {
   )
 }
 
-export default useContentHotkeys
+export default useStreamHotkeys

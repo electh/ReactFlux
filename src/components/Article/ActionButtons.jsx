@@ -23,8 +23,8 @@ import ArticleTOC from "./ArticleTOC"
 
 import AiSpark from "@/components/icons/AiSpark"
 import CustomTooltip from "@/components/ui/CustomTooltip"
+import useClassicKeyHandlers from "@/hooks/useClassicKeyHandlers"
 import useEntryActions from "@/hooks/useEntryActions"
-import useKeyHandlers from "@/hooks/useKeyHandlers"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import {
@@ -114,7 +114,8 @@ const ActionButtons = () => {
     handleOpenLinkExternally,
   } = useEntryActions()
 
-  const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } = useKeyHandlers()
+  const { exitDetailView, navigateToNextArticle, navigateToPreviousArticle } =
+    useClassicKeyHandlers()
 
   const { isBelowMedium } = useScreenWidth()
 

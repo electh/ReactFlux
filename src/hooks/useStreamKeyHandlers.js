@@ -8,7 +8,6 @@ import usePhotoSlider from "./usePhotoSlider"
 import useContentContext from "@/hooks/useContentContext"
 import { contentState, filteredEntriesState } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
-import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { Message } from "@/utils/feedback"
 import { extractImageSources } from "@/utils/images"
 
@@ -79,12 +78,11 @@ const findAdjacentUnreadEntry = (currentEntryId, direction, entries) => {
   return searchRange.find((entry) => entry.status === "unread")
 }
 
-const useKeyHandlers = () => {
+const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
   const { activeContent } = useStore(contentState)
   const { polyglot } = useStore(polyglotState)
 
-  const { entryListRef, handleEntryClick, closeActiveContent, streamVirtualizerRef } =
-    useContentContext()
+  const { entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
   const streamAlignmentTaskRef = useRef({
     delayTimeoutId: null,
     frameId: null,
@@ -332,9 +330,8 @@ const useKeyHandlers = () => {
       const scrollElement = getEntryListScrollElement()
       const topOffset = scrollElement ? getStreamCardTopOffset(scrollElement) : 0
       const selectedCard = getSelectedCard(targetEntryId)
-      const isStreamLayout = settingsState.get().layoutMode === "stream"
 
-      if (isStreamLayout && scrollElement) {
+      if (scrollElement) {
         if (!selectedCard && targetEntryId !== null && streamVirtualizerRef.current) {
           const targetIndex = filteredEntriesState
             .get()
@@ -352,14 +349,6 @@ const useKeyHandlers = () => {
         alignSelectedStreamCard(targetEntryId, {
           relatedEntryIds,
           skipInitialScroll: skipInitialScroll || !selectedCard,
-        })
-        return
-      }
-
-      if (selectedCard) {
-        selectedCard.scrollIntoView({
-          behavior: getAnimationScrollBehavior(),
-          block: "center",
         })
       }
     }
@@ -403,15 +392,11 @@ const useKeyHandlers = () => {
     if (previousContent) {
       handleEntryClick(previousContent)
 
-      if (settingsState.get().layoutMode === "stream") {
-        globalThis.requestAnimationFrame(() =>
-          scrollSelectedCardIntoView(previousContent.id, {
-            relatedEntryIds: [latestActiveContent?.id],
-          }),
-        )
-      } else {
-        globalThis.setTimeout(() => scrollSelectedCardIntoView(), ANIMATION_DURATION_MS)
-      }
+      globalThis.requestAnimationFrame(() =>
+        scrollSelectedCardIntoView(previousContent.id, {
+          relatedEntryIds: [latestActiveContent?.id],
+        }),
+      )
     } else {
       Message.info(polyglot.t("actions.no_previous_article"))
     }
@@ -425,15 +410,11 @@ const useKeyHandlers = () => {
     if (nextContent) {
       handleEntryClick(nextContent)
 
-      if (settingsState.get().layoutMode === "stream") {
-        globalThis.requestAnimationFrame(() =>
-          scrollSelectedCardIntoView(nextContent.id, {
-            relatedEntryIds: [latestActiveContent?.id],
-          }),
-        )
-      } else {
-        globalThis.setTimeout(() => scrollSelectedCardIntoView(), ANIMATION_DURATION_MS)
-      }
+      globalThis.requestAnimationFrame(() =>
+        scrollSelectedCardIntoView(nextContent.id, {
+          relatedEntryIds: [latestActiveContent?.id],
+        }),
+      )
     } else {
       Message.info(polyglot.t("actions.no_next_article"))
     }
@@ -455,15 +436,11 @@ const useKeyHandlers = () => {
     if (adjacentUnreadEntry) {
       handleEntryClick(adjacentUnreadEntry)
 
-      if (settingsState.get().layoutMode === "stream") {
-        globalThis.requestAnimationFrame(() =>
-          scrollSelectedCardIntoView(adjacentUnreadEntry.id, {
-            relatedEntryIds: [latestActiveContent.id],
-          }),
-        )
-      } else {
-        globalThis.setTimeout(scrollSelectedCardIntoView, ANIMATION_DURATION_MS)
-      }
+      globalThis.requestAnimationFrame(() =>
+        scrollSelectedCardIntoView(adjacentUnreadEntry.id, {
+          relatedEntryIds: [latestActiveContent.id],
+        }),
+      )
     } else if (direction === "prev") {
       Message.info(polyglot.t("actions.no_previous_unread_article"))
     } else {
@@ -530,4 +507,4 @@ const useKeyHandlers = () => {
   }
 }
 
-export default useKeyHandlers
+export default useStreamKeyHandlers
