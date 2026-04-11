@@ -401,7 +401,11 @@ const ArticleBodyRenderer = ({ entry, lightboxState = null, maxWidth = "100%" })
   }, [entry.id, lightboxState])
 
   return (
-    <div className={`article-content ${edgeToEdgeImages ? "edge-to-edge" : ""}`}>
+    <div
+      className={["article-content", "article-body-shell", edgeToEdgeImages ? "edge-to-edge" : ""]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <div
         key={entry.id}
         className="article-body"

@@ -200,6 +200,11 @@
   transform: translateX(-50%);
 }
 
+.search-and-sort-bar.classic-toolbar .layout-selector-slot .toolbar-menu-button {
+  width: 100%;
+  max-width: none;
+}
+
 .layout-mode-option {
   display: inline-flex;
   align-items: center;
@@ -272,6 +277,32 @@
   color: var(--color-text-2);
 }
 
+.search-and-sort-bar.classic-toolbar .layout-selector-slot .toolbar-action-button {
+  min-height: 32px;
+  border: 1px solid var(--color-border-2);
+  border-radius: 999px;
+  padding: 0 12px !important;
+  background-color: rgb(var(--color-fill-2));
+  color: var(--color-text-2);
+  font-size: 0.875rem;
+}
+
+.search-and-sort-bar.classic-toolbar .layout-selector-slot .toolbar-button-label {
+  gap: 8px;
+}
+
+.search-and-sort-bar.classic-toolbar .layout-selector-slot .toolbar-button-label svg {
+  font-size: 0.875rem;
+}
+
+.search-and-sort-bar.classic-toolbar .layout-selector-slot .toolbar-button-caret {
+  font-size: 11px;
+}
+
+.search-and-sort-bar.classic-toolbar .layout-selector-slot .toolbar-button-label > span:last-child {
+  white-space: nowrap;
+}
+
 .search-and-sort-bar.stream-toolbar .toolbar-action-button.is-active {
   border-color: rgb(var(--primary-6));
   background-color: rgb(var(--primary-6));
@@ -290,6 +321,15 @@
 }
 
 .search-and-sort-bar.stream-toolbar .toolbar-button-caret-wrap {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 2px;
+  padding-left: 8px;
+  border-left: 1px solid currentColor;
+  opacity: 0.72;
+}
+
+.search-and-sort-bar.classic-toolbar .layout-selector-slot .toolbar-button-caret-wrap {
   display: inline-flex;
   align-items: center;
   margin-left: 2px;
@@ -380,6 +420,16 @@
 
 .search-and-sort-bar.stream-toolbar .toolbar-action-button:not(.arco-btn-disabled):hover,
 .search-and-sort-bar.stream-toolbar .toolbar-action-button:not(.arco-btn-disabled):focus {
+  border-color: var(--color-border-3);
+  background-color: rgb(var(--color-fill-3)) !important;
+}
+
+.search-and-sort-bar.classic-toolbar
+  .layout-selector-slot
+  .toolbar-action-button:not(.arco-btn-disabled):hover,
+.search-and-sort-bar.classic-toolbar
+  .layout-selector-slot
+  .toolbar-action-button:not(.arco-btn-disabled):focus {
   border-color: var(--color-border-3);
   background-color: rgb(var(--color-fill-3)) !important;
 }

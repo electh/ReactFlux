@@ -1,25 +1,15 @@
-import {
-  Button,
-  DatePicker,
-  Input,
-  Menu,
-  Modal,
-  Select,
-  Tooltip,
-  Typography,
-} from "@arco-design/web-react"
+import { Button, DatePicker, Menu, Typography } from "@arco-design/web-react"
 import {
   IconCalendar,
-  IconQuestionCircle,
   IconSearch,
   IconSortAscending,
   IconSortDescending,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { Fragment, memo, useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useParams } from "react-router"
 
-import { ActiveButton, LayoutModeSelect, MarkReadControl, SearchModal } from "./SearchBarShared"
+import { ActiveButton, SearchModal, ToolbarMenuButton } from "./SearchBarShared"
 import SidebarTrigger from "./SidebarTrigger.jsx"
 
 import { LayoutColumnIcon, LayoutExpandedIcon } from "@/components/icons/LayoutModeIcons"
@@ -127,6 +117,9 @@ const ClassicSearchBar = ({ info, markAllAsRead, refreshArticleList }) => {
     ],
     [polyglot],
   )
+  const currentLayout =
+    layoutOptions.find((option) => option.value === layoutMode) ?? layoutOptions[0]
+  const viewControlLabel = `${polyglot.t("article_list.view_label")}: ${currentLayout.label}`
 
   return (
     <div className="search-and-sort-bar classic-toolbar" style={{ width: "100%" }}>
@@ -150,7 +143,27 @@ const ClassicSearchBar = ({ info, markAllAsRead, refreshArticleList }) => {
         )}
       </div>
       <div className="layout-selector-slot">
-        <LayoutModeSelect layoutMode={layoutMode} layoutOptions={layoutOptions} />
+        <ToolbarMenuButton
+          className="classic-layout-menu-button"
+          icon={currentLayout.icon}
+          label={viewControlLabel}
+          tooltip={viewControlLabel}
+        >
+          {layoutOptions.map((option) => (
+            <Menu.Item
+              key={option.value}
+              className="toolbar-menu-item"
+              onClick={() => updateSettings({ layoutMode: option.value })}
+            >
+              <span className="toolbar-menu-item-label">
+                {option.icon}
+                <span>
+                  {polyglot.t("article_list.view_label")}: {option.label}
+                </span>
+              </span>
+            </Menu.Item>
+          ))}
+        </ToolbarMenuButton>
       </div>
       <div className="button-group">
         <ActiveButton

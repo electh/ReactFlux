@@ -87,6 +87,80 @@ p {
   line-height: 2 !important;
 }
 
+.article-detail-meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  gap: 10px 6px;
+  overflow: hidden;
+}
+
+.article-detail-source {
+  display: flex;
+  align-items: baseline;
+  flex: 0 1 auto;
+  flex-wrap: nowrap;
+  gap: 10px;
+  color: var(--color-text-3);
+  font-size: 0.85rem;
+  min-width: 0;
+}
+
+.article-detail-source-title,
+.article-detail-author {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.article-detail-source-title {
+  font-weight: 600;
+}
+
+.article-detail-source-title a,
+.article-detail-source-title .arco-link {
+  color: inherit;
+}
+
+.article-detail-author {
+  color: var(--color-text-3);
+  cursor: pointer;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.article-detail-author::before {
+  content: "by";
+  margin-right: 6px;
+  color: var(--color-text-3);
+  text-transform: lowercase;
+}
+
+.article-detail-meta-item {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+  color: var(--color-text-3);
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.article-detail-meta-item::before {
+  content: "\2022";
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--color-text-3);
+}
+
+.article-detail-category {
+  cursor: pointer;
+}
+
+.article-detail-category.arco-tag {
+  line-height: 1.2;
+  vertical-align: baseline;
+}
+
 .article-title,
 .article-meta,
 .article-date {
@@ -218,6 +292,10 @@ p {
   padding: 8px 10px;
   color: var(--color-text-2);
   background: transparent;
+}
+
+.article-content.article-body-shell {
+  padding: 0;
 }
 
 /* 文章内容引用样式 */

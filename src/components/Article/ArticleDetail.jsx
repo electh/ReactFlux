@@ -17,7 +17,7 @@ import {
   setFilterType,
 } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
-import { generateReadableDate, generateReadingTime } from "@/utils/date"
+import { generateReadableDate, generateReadingTime, generateRelativeTime } from "@/utils/date"
 import "./ArticleDetail.css"
 
 const ArticleDetail = forwardRef((_, ref) => {
@@ -25,7 +25,13 @@ const ArticleDetail = forwardRef((_, ref) => {
   const { isBelowMedium } = useScreenWidth()
 
   const { activeContent } = useStore(contentState)
-  const { articleWidth, fontFamily, titleAlignment } = useStore(settingsState)
+  const {
+    articleWidth,
+    fontFamily,
+    showDetailedRelativeTime,
+    showEstimatedReadingTime,
+    titleAlignment,
+  } = useStore(settingsState)
   const scrollContainerRef = useRef(null)
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, selectedIndex, setSelectedIndex } =
@@ -78,30 +84,43 @@ const ArticleDetail = forwardRef((_, ref) => {
                 {activeContent.title}
               </a>
             </Typography.Title>
-            <div className="article-meta">
-              <Typography.Text>
-                <CustomLink text={feedTitle} url={`/feed/${feedId}`} />
-              </Typography.Text>
-              <Typography.Text style={{ cursor: "pointer" }} onClick={handleAuthorFilter}>
-                {` - ${activeContent.author}`}
-              </Typography.Text>
-              <Typography.Text>
-                <Tag
-                  size="small"
-                  style={{ marginLeft: "10px", cursor: "pointer" }}
-                  onClick={() => navigate(`/category/${categoryId}`)}
-                >
-                  {categoryTitle}
-                </Tag>
-              </Typography.Text>
+            <div
+              className="article-meta article-detail-meta"
+              style={{ justifyContent: titleAlignment === "center" ? "center" : undefined }}
+            >
+              <div className="article-detail-source">
+                <span className="article-detail-source-title">
+                  <CustomLink text={feedTitle} url={`/feed/${feedId}`} />
+                </span>
+                {activeContent.author ? (
+                  <span className="article-detail-author" onClick={handleAuthorFilter}>
+                    {activeContent.author}
+                  </span>
+                ) : null}
+              </div>
+              {categoryTitle ? (
+                <span className="article-detail-meta-item">
+                  <Tag
+                    className="article-detail-category"
+                    size="small"
+                    onClick={() => navigate(`/category/${categoryId}`)}
+                  >
+                    {categoryTitle}
+                  </Tag>
+                </span>
+              ) : null}
+              <span className="article-detail-meta-item">
+                {generateReadableDate(activeContent.published_at)}
+              </span>
+              <span className="article-detail-meta-item">
+                {generateRelativeTime(activeContent.published_at, showDetailedRelativeTime)}
+              </span>
+              {showEstimatedReadingTime ? (
+                <span className="article-detail-meta-item">
+                  {generateReadingTime(activeContent.reading_time)}
+                </span>
+              ) : null}
             </div>
-            <Typography.Text className="article-date">
-              {generateReadableDate(activeContent.published_at)}
-            </Typography.Text>
-            <br />
-            <Typography.Text className="article-date">
-              {generateReadingTime(activeContent.reading_time)}
-            </Typography.Text>
             <Divider />
           </div>
           <ArticleBodyRenderer
