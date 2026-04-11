@@ -247,7 +247,6 @@ const StreamArticleCard = ({
       }}
     >
       <div className="stream-story-topline">
-        {showFeedIcon && <FeedIcon className="feed-icon-topline" feed={currentEntry.feed} />}
         <Typography.Title
           className={titleClassName}
           heading={4}
@@ -266,7 +265,8 @@ const StreamArticleCard = ({
               handleOpenLinkExternally(currentEntry)
             }}
           >
-            {currentEntry.title}
+            {showFeedIcon && <FeedIcon className="feed-icon-topline" feed={currentEntry.feed} />}
+            <span className="stream-story-title-text">{currentEntry.title}</span>
           </button>
         </Typography.Title>
         <div className="stream-story-actions">
