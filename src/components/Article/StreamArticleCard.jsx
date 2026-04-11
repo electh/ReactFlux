@@ -378,14 +378,14 @@ const StreamArticleCard = ({
           <span className="stream-story-meta-item">
             {generateReadableDate(currentEntry.published_at)}
           </span>
+          <span className="stream-story-meta-item">
+            {generateRelativeTime(currentEntry.published_at, showDetailedRelativeTime)}
+          </span>
           {showEstimatedReadingTime ? (
             <span className="stream-story-meta-item">
               {generateReadingTime(currentEntry.reading_time)}
             </span>
           ) : null}
-          <span className="stream-story-meta-item">
-            {generateRelativeTime(currentEntry.published_at, showDetailedRelativeTime)}
-          </span>
         </div>
         {isSelected || !streamRenderSelectedOnly ? (
           <ArticleBodyRenderer entry={currentEntry} maxWidth={contentMaxWidth} />
