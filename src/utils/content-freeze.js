@@ -14,6 +14,48 @@
 const FROZEN_PLACEHOLDER =
   "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
 
+const IFRAME_LOADED_DATASET_KEY = "mediaLoaded"
+const IFRAME_LOAD_TRACKED_DATASET_KEY = "mediaLoadTracked"
+
+/**
+ * Track iframe load completion so freezeMediaLoading() only cancels embeds
+ * that are still mid-load. This avoids tearing down initialized players.
+ */
+export const observeIframeLoadState = (container) => {
+  if (!container) {
+    return () => {}
+  }
+
+  const cleanups = []
+
+  for (const iframe of container.querySelectorAll("iframe")) {
+    if (
+      iframe.dataset[IFRAME_LOADED_DATASET_KEY] === "true" ||
+      iframe.dataset[IFRAME_LOAD_TRACKED_DATASET_KEY] === "true"
+    ) {
+      continue
+    }
+
+    const markLoaded = () => {
+      iframe.dataset[IFRAME_LOADED_DATASET_KEY] = "true"
+      delete iframe.dataset[IFRAME_LOAD_TRACKED_DATASET_KEY]
+    }
+
+    iframe.dataset[IFRAME_LOAD_TRACKED_DATASET_KEY] = "true"
+    iframe.addEventListener("load", markLoaded, { once: true })
+    cleanups.push(() => {
+      iframe.removeEventListener("load", markLoaded)
+      delete iframe.dataset[IFRAME_LOAD_TRACKED_DATASET_KEY]
+    })
+  }
+
+  return () => {
+    for (const cleanup of cleanups) {
+      cleanup()
+    }
+  }
+}
+
 /**
  * Cancel incomplete image and iframe loading inside a container.
  * Already-loaded images (img.complete) and data-URI sources are left untouched.
@@ -36,7 +78,7 @@ export const freezeMediaLoading = (container) => {
 
   for (const iframe of container.querySelectorAll("iframe:not([data-frozen-src])")) {
     const src = iframe.getAttribute("src")
-    if (!src) {
+    if (!src || iframe.dataset[IFRAME_LOADED_DATASET_KEY] === "true") {
       continue
     }
 

@@ -23,7 +23,11 @@ import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { dataState } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
-import { freezeMediaLoading, unfreezeMediaLoading } from "@/utils/content-freeze"
+import {
+  freezeMediaLoading,
+  observeIframeLoadState,
+  unfreezeMediaLoading,
+} from "@/utils/content-freeze"
 import { generateReadableDate, generateReadingTime, generateRelativeTime } from "@/utils/date"
 import { Message } from "@/utils/feedback"
 import { getEntryImageSources, preloadImageMetadata } from "@/utils/images"
@@ -188,6 +192,11 @@ const StreamArticleCard = ({
       wasEverSelectedRef.current = true
     }
   }, [isSelected])
+
+  useEffect(() => {
+    const body = cardRef.current?.querySelector(".article-content")
+    return observeIframeLoadState(body)
+  }, [currentEntry.id, isSelected, streamRenderSelectedOnly])
 
   useLayoutEffect(() => {
     if (isSelected || !wasEverSelectedRef.current) {
