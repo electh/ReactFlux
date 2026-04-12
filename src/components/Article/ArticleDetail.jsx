@@ -52,7 +52,7 @@ const ArticleDetail = forwardRef((_, ref) => {
     if (isBelowMedium) {
       return "90%"
     }
-    return `${articleWidth}%`
+    return `min(${articleWidth}%, calc(100% - (var(--article-side-gutter) * 2)))`
   }
 
   // Focus the scrollable area when activeContent changes

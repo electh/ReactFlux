@@ -287,6 +287,7 @@ p {
 
 /* 文章内容文本样式 */
 .article-content {
+  --article-side-gutter: clamp(20px, 3vw, 40px);
   flex: 1;
   min-height: 0;
   padding: 8px 10px;
@@ -296,6 +297,12 @@ p {
 
 .article-content.article-body-shell {
   padding: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .article-content {
+    --article-side-gutter: 16px;
+  }
 }
 
 /* 文章内容引用样式 */

@@ -227,9 +227,31 @@ const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtua
           <div className="stream-mark-read-control">
             <MarkReadControl info={info} markAllAsRead={markAllAsRead} variant="stream" />
           </div>
+          <div className="stream-view-control mobile-only-view-control">
+            <ToolbarMenuButton
+              icon={currentLayout.icon}
+              label={viewControlLabel}
+              tooltip={viewControlLabel}
+            >
+              {layoutOptions.map((option) => (
+                <Menu.Item
+                  key={option.value}
+                  className="toolbar-menu-item"
+                  onClick={() => updateSettings({ layoutMode: option.value })}
+                >
+                  <span className="toolbar-menu-item-label">
+                    {option.icon}
+                    <span>
+                      {polyglot.t("article_list.view_label")}: {option.label}
+                    </span>
+                  </span>
+                </Menu.Item>
+              ))}
+            </ToolbarMenuButton>
+          </div>
         </div>
         <div className="stream-secondary-controls">
-          <div className="stream-view-control">
+          <div className="stream-view-control desktop-view-control">
             <ToolbarMenuButton
               icon={currentLayout.icon}
               label={viewControlLabel}
