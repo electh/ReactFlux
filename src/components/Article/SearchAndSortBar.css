@@ -550,10 +550,10 @@
 }
 
 .search-and-sort-bar.stream-toolbar .toolbar-action-button.stream-search-button--condensed {
-  width: 40px;
-  min-width: 40px;
-  height: 40px;
-  min-height: 40px;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  min-height: 32px;
   padding: 0 !important;
   justify-content: center;
 }
