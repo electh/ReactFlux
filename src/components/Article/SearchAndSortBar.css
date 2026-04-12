@@ -206,17 +206,6 @@
   display: none;
 }
 
-.search-and-sort-bar .stream-view-control::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 0;
-  width: 1px;
-  height: 24px;
-  background-color: var(--color-border-2);
-  transform: translateY(-50%);
-}
-
 .search-and-sort-bar .count-label {
   color: var(--color-text-4);
   flex: 0 0 auto;
@@ -598,12 +587,6 @@
 
   .search-modal {
     width: 95%;
-  }
-}
-
-@media screen and (max-width: 1180px) {
-  .search-and-sort-bar.stream-toolbar.stream-toolbar--compact .button-group {
-    flex-wrap: nowrap;
   }
 }
 
