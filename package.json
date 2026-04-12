@@ -6,6 +6,7 @@
     "predev": "node src/scripts/version-info.js",
     "dev": "vite",
     "build": "vite build",
+    "postbuild": "node scripts/deploy-build-branch.js",
     "preview": "pnpm run build && vite preview",
     "test": "node --test src/scripts/version-info.test.js src/utils/version.test.js",
     "format": "prettier --write .",

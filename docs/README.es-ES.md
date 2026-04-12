@@ -61,7 +61,7 @@ Puede desplegarlo en Cloudflare Pages seleccionando `Framework preset` como `Cre
 
 ### Usando archivos preconstruidos
 
-Puede descargar los archivos preconstruidos de la rama `gh-pages` y desplegarlos en cualquier servicio de alojamiento estático que soporte aplicaciones de una sola página (SPA).
+Puede descargar los archivos preconstruidos de la rama `build` y desplegarlos en cualquier servicio de alojamiento estático que soporte aplicaciones de una sola página (SPA).
 
 Asegúrese de configurar la reescritura de URL para redirigir todas las solicitudes a `index.html`.
 

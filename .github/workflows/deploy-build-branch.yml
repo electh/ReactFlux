@@ -53,6 +53,8 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install and Build
+        env:
+          SKIP_BUILD_BRANCH_DEPLOY: "1"
         run: |
           pnpm install --frozen-lockfile
           pnpm run build

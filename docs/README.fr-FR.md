@@ -61,7 +61,7 @@ Vous pouvez le déployer sur Cloudflare Pages en sélectionnant `Framework prese
 
 ### Utilisation des fichiers pré-construits
 
-Vous pouvez télécharger les fichiers pré-construits à partir de la branche `gh-pages` et les déployer sur n'importe quel service d'hébergement statique qui prend en charge les applications monopages (SPA).
+Vous pouvez télécharger les fichiers pré-construits à partir de la branche `build` et les déployer sur n'importe quel service d'hébergement statique qui prend en charge les applications monopages (SPA).
 
 Assurez-vous de configurer la réécriture des URL pour rediriger toutes les requêtes vers `index.html`.
 

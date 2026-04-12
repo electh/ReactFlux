@@ -61,7 +61,7 @@ ReloadedFlux kann auf Cloudflare Pages eingerichtet werden, indem man `Framework
 
 ### Vorgenerierte Dateien verwenden
 
-Fertige Dateien können aus dem `gh-pages`-Zweig heruntergeladen und bei jedem statischen Hosting-Service eingesetzt werden, der Single-Page-Webanwendungen (SPA: _single-page applications_) unterstützt.
+Fertige Dateien können aus dem `build`-Zweig heruntergeladen und bei jedem statischen Hosting-Service eingesetzt werden, der Single-Page-Webanwendungen (SPA: _single-page applications_) unterstützt.
 
 Es sollte sichergestellt werden, dass das URL-Rewriting so konfiguriert ist, dass alle Anfragen auf `index.html` umgeleitet werden.
 
