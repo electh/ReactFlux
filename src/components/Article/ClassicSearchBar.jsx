@@ -1,4 +1,4 @@
-import { Button, DatePicker, Menu, Typography } from "@arco-design/web-react"
+import { Button, DatePicker, Dropdown, Menu, Typography } from "@arco-design/web-react"
 import {
   IconCalendar,
   IconSearch,
@@ -9,7 +9,7 @@ import { useStore } from "@nanostores/react"
 import { useMemo, useState } from "react"
 import { useParams } from "react-router"
 
-import { ActiveButton, SearchModal, ToolbarMenuButton } from "./SearchBarShared"
+import { ActiveButton, SearchForm, ToolbarMenuButton } from "./SearchBarShared"
 import SidebarTrigger from "./SidebarTrigger.jsx"
 
 import { LayoutColumnIcon, LayoutExpandedIcon } from "@/components/icons/LayoutModeIcons"
@@ -46,7 +46,7 @@ const ClassicSearchBar = ({ info, markAllAsRead, refreshArticleList }) => {
   const { isBelowMedium } = useScreenWidth()
 
   const [calendarVisible, setCalendarVisible] = useState(false)
-  const [searchModalVisible, setSearchModalVisible] = useState(false)
+  const [searchDropdownVisible, setSearchDropdownVisible] = useState(false)
   const [modalInputValue, setModalInputValue] = useState("")
 
   const { title, count } = useMemo(() => {
@@ -77,19 +77,18 @@ const ClassicSearchBar = ({ info, markAllAsRead, refreshArticleList }) => {
     updateSettings({ orderDirection: newOrderDirection })
   }
 
-  const openSearchModal = () => {
-    setModalInputValue(filterString)
-    setDraftFilterType(filterType)
-    setSearchModalVisible(true)
-  }
+  const handleSearchDropdownVisibleChange = (visible) => {
+    if (visible) {
+      setModalInputValue(filterString)
+      setDraftFilterType(filterType)
+    }
 
-  const closeSearchModal = () => {
-    setSearchModalVisible(false)
+    setSearchDropdownVisible(visible)
   }
 
   const handleConfirmSearch = (value) => {
     setFilterString(value)
-    closeSearchModal()
+    setSearchDropdownVisible(false)
   }
 
   const handleSetToday = () => {
@@ -166,12 +165,46 @@ const ClassicSearchBar = ({ info, markAllAsRead, refreshArticleList }) => {
         </ToolbarMenuButton>
       </div>
       <div className="button-group">
-        <ActiveButton
-          active={!!filterString}
-          icon={<IconSearch />}
-          tooltip={polyglot.t("search.search")}
-          onClick={openSearchModal}
-        />
+        <Dropdown
+          popupVisible={searchDropdownVisible}
+          position="bl"
+          trigger="click"
+          unmountOnExit={false}
+          droplist={
+            <div className="toolbar-search-dropdown classic-search-dropdown">
+              <div className="toolbar-search-dropdown-header">
+                <span>{polyglot.t("search.search")}</span>
+              </div>
+              <SearchForm
+                value={modalInputValue}
+                onChange={setModalInputValue}
+                onConfirm={handleConfirmSearch}
+              />
+              <div className="toolbar-search-dropdown-actions">
+                <Button size="small" onClick={() => setSearchDropdownVisible(false)}>
+                  {polyglot.t("search.cancel")}
+                </Button>
+                <Button
+                  size="small"
+                  type="primary"
+                  onClick={() => handleConfirmSearch(modalInputValue)}
+                >
+                  {polyglot.t("search.confirm")}
+                </Button>
+              </div>
+            </div>
+          }
+          onVisibleChange={handleSearchDropdownVisibleChange}
+        >
+          <div className="classic-search-trigger">
+            <ActiveButton
+              active={!!filterString || searchDropdownVisible}
+              icon={<IconSearch />}
+              tooltip={polyglot.t("search.search")}
+              onClick={() => {}}
+            />
+          </div>
+        </Dropdown>
         <DatePicker
           popupVisible={calendarVisible}
           position="bottom"
@@ -218,13 +251,6 @@ const ClassicSearchBar = ({ info, markAllAsRead, refreshArticleList }) => {
           />
         </CustomTooltip>
       </div>
-      <SearchModal
-        value={modalInputValue}
-        visible={searchModalVisible}
-        onCancel={closeSearchModal}
-        onChange={setModalInputValue}
-        onConfirm={handleConfirmSearch}
-      />
     </div>
   )
 }

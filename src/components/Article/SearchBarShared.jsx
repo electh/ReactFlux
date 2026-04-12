@@ -71,14 +71,14 @@ const updateEntriesAsRead = (publishedBeforeUnix = null) => {
   )
 }
 
-export const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => {
+export const SearchForm = memo(({ value, onConfirm, onChange }) => {
   const draftFilterType = useStore(draftFilterTypeState)
   const { polyglot } = useStore(polyglotState)
   const tooltipLines = polyglot.t("search.tooltip").split("\n")
 
   const handleConfirm = () => {
     setFilterType(draftFilterType)
-    onConfirm(value)
+    onConfirm?.(value)
   }
 
   const handleKeyDown = (event) => {
@@ -88,61 +88,73 @@ export const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange
   }
 
   return (
+    <div className="search-modal-content">
+      <Input.Search
+        allowClear
+        placeholder={polyglot.t("search.placeholder")}
+        value={value}
+        addBefore={
+          <Select
+            style={{ width: "auto" }}
+            value={draftFilterType}
+            triggerProps={{
+              autoAlignPopupWidth: false,
+              autoAlignPopupMinWidth: true,
+              position: "bl",
+            }}
+            onChange={(v) => draftFilterTypeState.set(v)}
+          >
+            <Select.Option value="title">{polyglot.t("search.type_title")}</Select.Option>
+            <Select.Option value="content">{polyglot.t("search.type_content")}</Select.Option>
+            <Select.Option value="author">{polyglot.t("search.type_author")}</Select.Option>
+          </Select>
+        }
+        prefix={
+          <Tooltip
+            mini
+            content={
+              <div>
+                {tooltipLines.map((line, index) => (
+                  <Fragment key={`tooltip-line-${index}`}>
+                    {line}
+                    {index < tooltipLines.length - 1 && <br />}
+                  </Fragment>
+                ))}
+              </div>
+            }
+          >
+            <IconQuestionCircle />
+          </Tooltip>
+        }
+        onChange={onChange}
+        onKeyDown={handleKeyDown}
+      />
+    </div>
+  )
+})
+SearchForm.displayName = "SearchForm"
+
+export const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => {
+  const { polyglot } = useStore(polyglotState)
+  const handleConfirm = () => {
+    setFilterType(draftFilterTypeState.get())
+    onConfirm(value)
+  }
+
+  return (
     <Modal
       className="search-modal"
+      footer={null}
       title={polyglot.t("search.search")}
       visible={visible}
-      footer={
-        <>
-          <Button onClick={onCancel}>{polyglot.t("search.cancel")}</Button>
-          <Button type="primary" onClick={handleConfirm}>
-            {polyglot.t("search.confirm")}
-          </Button>
-        </>
-      }
       onCancel={onCancel}
     >
-      <div className="search-modal-content">
-        <Input.Search
-          allowClear
-          placeholder={polyglot.t("search.placeholder")}
-          value={value}
-          addBefore={
-            <Select
-              style={{ width: "auto" }}
-              value={draftFilterType}
-              triggerProps={{
-                autoAlignPopupWidth: false,
-                autoAlignPopupMinWidth: true,
-                position: "bl",
-              }}
-              onChange={(v) => draftFilterTypeState.set(v)}
-            >
-              <Select.Option value="title">{polyglot.t("search.type_title")}</Select.Option>
-              <Select.Option value="content">{polyglot.t("search.type_content")}</Select.Option>
-              <Select.Option value="author">{polyglot.t("search.type_author")}</Select.Option>
-            </Select>
-          }
-          prefix={
-            <Tooltip
-              mini
-              content={
-                <div>
-                  {tooltipLines.map((line, index) => (
-                    <Fragment key={`tooltip-line-${index}`}>
-                      {line}
-                      {index < tooltipLines.length - 1 && <br />}
-                    </Fragment>
-                  ))}
-                </div>
-              }
-            >
-              <IconQuestionCircle />
-            </Tooltip>
-          }
-          onChange={onChange}
-          onKeyDown={handleKeyDown}
-        />
+      <SearchForm value={value} onChange={onChange} onConfirm={onConfirm} />
+      <div className="search-modal-actions">
+        <Button onClick={onCancel}>{polyglot.t("search.cancel")}</Button>
+        <Button type="primary" onClick={handleConfirm}>
+          {polyglot.t("search.confirm")}
+        </Button>
       </div>
     </Modal>
   )

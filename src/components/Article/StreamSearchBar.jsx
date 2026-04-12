@@ -1,4 +1,4 @@
-import { Button, Menu, Tooltip } from "@arco-design/web-react"
+import { Button, Dropdown, Menu, Tooltip } from "@arco-design/web-react"
 import {
   IconAlignLeft,
   IconArrowLeft,
@@ -16,7 +16,7 @@ import { useParams } from "react-router"
 
 import {
   MarkReadControl,
-  SearchModal,
+  SearchForm,
   ToolbarActionButton,
   ToolbarMenuButton,
 } from "./SearchBarShared"
@@ -85,7 +85,7 @@ const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtua
     streamVirtualizerRef,
   })
 
-  const [searchModalVisible, setSearchModalVisible] = useState(false)
+  const [searchDropdownVisible, setSearchDropdownVisible] = useState(false)
   const [modalInputValue, setModalInputValue] = useState("")
   const [isCompactToolbar, setIsCompactToolbar] = useState(false)
 
@@ -118,19 +118,22 @@ const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtua
     return { title: info.key ? polyglot.t(info.key) : "", count: info.count }
   }, [infoFrom, id, categories, feeds, dynamicCount, polyglot])
 
-  const openSearchModal = () => {
-    setModalInputValue(filterString)
-    setDraftFilterType(filterType)
-    setSearchModalVisible(true)
+  const closeSearchDropdown = () => {
+    setSearchDropdownVisible(false)
   }
 
-  const closeSearchModal = () => {
-    setSearchModalVisible(false)
+  const handleSearchDropdownVisibleChange = (visible) => {
+    if (visible) {
+      setModalInputValue(filterString)
+      setDraftFilterType(filterType)
+    }
+
+    setSearchDropdownVisible(visible)
   }
 
   const handleConfirmSearch = (value) => {
     setFilterString(value)
-    closeSearchModal()
+    closeSearchDropdown()
   }
 
   const statusOptions = useMemo(() => {
@@ -326,13 +329,48 @@ const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtua
       </div>
       <div ref={buttonGroupRef} className="button-group">
         <div className="stream-primary-controls">
-          <ToolbarActionButton
-            active={!!filterString}
-            icon={<IconSearch />}
-            label={polyglot.t("search.search")}
-            tooltip={polyglot.t("search.search")}
-            onClick={openSearchModal}
-          />
+          <Dropdown
+            popupVisible={searchDropdownVisible}
+            position="bl"
+            trigger="click"
+            unmountOnExit={false}
+            droplist={
+              <div className="toolbar-search-dropdown stream-search-dropdown">
+                <div className="toolbar-search-dropdown-header">
+                  <span>{polyglot.t("search.search")}</span>
+                </div>
+                <SearchForm
+                  value={modalInputValue}
+                  onChange={setModalInputValue}
+                  onConfirm={handleConfirmSearch}
+                />
+                <div className="toolbar-search-dropdown-actions">
+                  <Button size="small" onClick={closeSearchDropdown}>
+                    {polyglot.t("search.cancel")}
+                  </Button>
+                  <Button
+                    size="small"
+                    type="primary"
+                    onClick={() => handleConfirmSearch(modalInputValue)}
+                  >
+                    {polyglot.t("search.confirm")}
+                  </Button>
+                </div>
+              </div>
+            }
+            onVisibleChange={handleSearchDropdownVisibleChange}
+          >
+            <div className="stream-search-trigger">
+              <ToolbarActionButton
+                active={!!filterString || searchDropdownVisible}
+                className="stream-search-button stream-search-button--condensed"
+                icon={<IconSearch />}
+                label={polyglot.t("search.search")}
+                tooltip={polyglot.t("search.search")}
+                onClick={() => {}}
+              />
+            </div>
+          </Dropdown>
           <div className="stream-mark-read-control">
             <MarkReadControl info={info} markAllAsRead={markAllAsRead} variant="stream" />
           </div>
@@ -443,13 +481,6 @@ const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtua
           </ToolbarMenuButton>
         </div>
       </div>
-      <SearchModal
-        value={modalInputValue}
-        visible={searchModalVisible}
-        onCancel={closeSearchModal}
-        onChange={setModalInputValue}
-        onConfirm={handleConfirmSearch}
-      />
     </div>
   )
 }
