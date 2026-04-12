@@ -170,9 +170,11 @@ export const ToolbarActionButton = ({
   tooltip,
   onClick,
   className = "",
+  ariaLabel = label,
 }) => (
   <CustomTooltip mini content={tooltip}>
     <Button
+      aria-label={ariaLabel}
       className={`toolbar-action-button ${active ? "is-active" : ""} ${className}`.trim()}
       size="small"
       type="text"
@@ -186,7 +188,14 @@ export const ToolbarActionButton = ({
   </CustomTooltip>
 )
 
-export const ToolbarMenuButton = ({ icon, label, tooltip, children, className = "" }) => (
+export const ToolbarMenuButton = ({
+  icon,
+  label,
+  tooltip,
+  children,
+  className = "",
+  ariaLabel = label,
+}) => (
   <Dropdown
     droplist={<Menu className="toolbar-dropdown-menu">{children}</Menu>}
     position="bl"
@@ -194,6 +203,7 @@ export const ToolbarMenuButton = ({ icon, label, tooltip, children, className = 
   >
     <CustomTooltip mini content={tooltip}>
       <Button
+        aria-label={ariaLabel}
         className={`toolbar-action-button toolbar-menu-button ${className}`.trim()}
         size="small"
         type="text"
@@ -437,6 +447,7 @@ export const MarkReadControl = ({ info, markAllAsRead, variant = "classic" }) =>
         <CustomTooltip mini content={polyglot.t("article_list.mark_today_as_read_tooltip")}>
           {variant === "stream" ? (
             <Button
+              aria-label={polyglot.t("article_list.mark_today_as_read_tooltip")}
               className="toolbar-action-button toolbar-icon-action-button"
               size="small"
               type="text"
@@ -505,6 +516,7 @@ export const MarkReadControl = ({ info, markAllAsRead, variant = "classic" }) =>
         <CustomTooltip mini content={polyglot.t("article_list.mark_as_read_options_tooltip")}>
           {variant === "stream" ? (
             <Button
+              aria-label={polyglot.t("article_list.mark_as_read_options_tooltip")}
               className="toolbar-action-button toolbar-menu-button toolbar-icon-menu-button"
               size="small"
               type="text"

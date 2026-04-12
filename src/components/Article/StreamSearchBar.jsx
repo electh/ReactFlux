@@ -11,7 +11,7 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { useParams } from "react-router"
 
 import {
@@ -43,6 +43,31 @@ import createSetter from "@/utils/nanostores"
 import "./StreamSearchBar.css"
 
 const setDraftFilterType = createSetter(draftFilterTypeState)
+const MAX_PAGE_INFO_INLINE_WIDTH = 220
+const getHorizontalMargin = (element) => {
+  const style = globalThis.getComputedStyle(element)
+  return (Number.parseFloat(style.marginLeft) || 0) + (Number.parseFloat(style.marginRight) || 0)
+}
+
+const getHorizontalGap = (element) =>
+  Number.parseFloat(globalThis.getComputedStyle(element).columnGap) || 0
+
+const getPageInfoRequiredWidth = (pageInfo, titleRow) => {
+  const minWidth = Number.parseFloat(globalThis.getComputedStyle(pageInfo).minWidth) || 0
+  const titleRowWidth = titleRow ? Math.min(titleRow.scrollWidth, MAX_PAGE_INFO_INLINE_WIDTH) : 0
+  return Math.max(minWidth, titleRowWidth)
+}
+
+const getToolbarMainRequiredWidth = (toolbarMain, pageInfo, titleRow) => {
+  const toolbarMainRect = toolbarMain.getBoundingClientRect()
+  const pageInfoRect = pageInfo.getBoundingClientRect()
+  const fixedWidth = Math.max(0, pageInfoRect.left - toolbarMainRect.left)
+
+  return fixedWidth + getPageInfoRequiredWidth(pageInfo, titleRow)
+}
+
+const getInlineControlsWidth = (buttonGroup) =>
+  buttonGroup.scrollWidth + getHorizontalMargin(buttonGroup)
 
 const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtualizerRef }) => {
   const { filterString, filterType, infoFrom, isArticleListReady } = useStore(contentState)
@@ -62,6 +87,13 @@ const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtua
 
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [modalInputValue, setModalInputValue] = useState("")
+  const [isCompactToolbar, setIsCompactToolbar] = useState(false)
+
+  const toolbarRef = useRef(null)
+  const toolbarMainRef = useRef(null)
+  const buttonGroupRef = useRef(null)
+  const pageInfoRef = useRef(null)
+  const titleRowRef = useRef(null)
 
   const { title, count } = useMemo(() => {
     if (id) {
@@ -165,9 +197,86 @@ const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtua
     }
   }, [infoFrom, showStatus])
 
+  useLayoutEffect(() => {
+    const toolbar = toolbarRef.current
+    const toolbarMain = toolbarMainRef.current
+    const buttonGroup = buttonGroupRef.current
+    const pageInfo = pageInfoRef.current
+    const titleRow = titleRowRef.current
+
+    if (
+      !toolbar ||
+      !toolbarMain ||
+      !buttonGroup ||
+      !pageInfo ||
+      !titleRow ||
+      typeof ResizeObserver === "undefined"
+    ) {
+      return
+    }
+
+    let frameId = null
+
+    const applyToolbarClasses = (isCompact) => {
+      toolbar.classList.toggle("stream-toolbar--compact", isCompact)
+    }
+
+    const updateToolbarLayout = () => {
+      if (frameId != null) {
+        cancelAnimationFrame(frameId)
+      }
+
+      frameId = requestAnimationFrame(() => {
+        const availableWidth = toolbar.clientWidth
+
+        applyToolbarClasses(false)
+        const toolbarMainRequiredWidth = getToolbarMainRequiredWidth(
+          toolbarMain,
+          pageInfo,
+          titleRow,
+        )
+        const toolbarGap = getHorizontalGap(toolbar)
+        const fullControlsWidth = getInlineControlsWidth(buttonGroup)
+
+        let nextIsCompact = false
+
+        if (toolbarMainRequiredWidth + fullControlsWidth + toolbarGap > availableWidth + 1) {
+          applyToolbarClasses(true)
+          nextIsCompact = true
+        }
+
+        setIsCompactToolbar((prev) => (prev === nextIsCompact ? prev : nextIsCompact))
+      })
+    }
+
+    const resizeObserver = new ResizeObserver(updateToolbarLayout)
+    resizeObserver.observe(toolbar)
+    resizeObserver.observe(toolbarMain)
+    resizeObserver.observe(buttonGroup)
+    resizeObserver.observe(pageInfo)
+    resizeObserver.observe(titleRow)
+
+    updateToolbarLayout()
+
+    return () => {
+      if (frameId != null) {
+        cancelAnimationFrame(frameId)
+      }
+      resizeObserver.disconnect()
+    }
+  }, [])
+
+  const toolbarClassName = [
+    "search-and-sort-bar",
+    "stream-toolbar",
+    isCompactToolbar ? "stream-toolbar--compact" : "",
+  ]
+    .filter(Boolean)
+    .join(" ")
+
   return (
-    <div className="search-and-sort-bar stream-toolbar" style={{ width: "100%" }}>
-      <div className="toolbar-main">
+    <div ref={toolbarRef} className={toolbarClassName} style={{ width: "100%" }}>
+      <div ref={toolbarMainRef} className="toolbar-main">
         <SidebarTrigger />
         <div className="stream-nav-group">
           <CustomTooltip mini content={polyglot.t("article_card.previous_tooltip")}>
@@ -198,9 +307,9 @@ const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtua
             />
           </CustomTooltip>
         </div>
-        <div className="page-info">
+        <div ref={pageInfoRef} className="page-info">
           <div className="title-container">
-            <div className="title-row">
+            <div ref={titleRowRef} className="title-row">
               {title ? (
                 <Tooltip content={title} disabled={isBelowMedium}>
                   <span className="toolbar-title">{title}</span>
@@ -215,7 +324,7 @@ const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtua
           </div>
         </div>
       </div>
-      <div className="button-group">
+      <div ref={buttonGroupRef} className="button-group">
         <div className="stream-primary-controls">
           <ToolbarActionButton
             active={!!filterString}
