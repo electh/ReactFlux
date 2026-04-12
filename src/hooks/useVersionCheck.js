@@ -8,7 +8,10 @@ import { getTimestamp } from "@/utils/date"
 import { compareBuildVersions } from "@/utils/version"
 import buildInfo from "@/version-info.json"
 
-const DEFAULT_REMOTE_VERSION_INFO_URL = `https://raw.githubusercontent.com/${GITHUB_REPO_PATH}/main/public/version-info.json`
+// The GitHub Pages deployment publishes the built app from the `build` branch.
+// Checking `main/public/version-info.json` reads a source file that CI does not
+// write back to `main`, so it can drift from the actual deployed artifact.
+const DEFAULT_REMOTE_VERSION_INFO_URL = `https://raw.githubusercontent.com/${GITHUB_REPO_PATH}/build/version-info.json`
 const DEFAULT_LATEST_COMMIT_URL = `https://api.github.com/repos/${GITHUB_REPO_PATH}/commits/main`
 
 const isVersionCheckDebugEnabled = () => {
