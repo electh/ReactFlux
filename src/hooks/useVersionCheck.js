@@ -12,6 +12,7 @@ import buildInfo from "@/version-info.json"
 // Checking `main/public/version-info.json` reads a source file that CI does not
 // write back to `main`, so it can drift from the actual deployed artifact.
 const DEFAULT_REMOTE_VERSION_INFO_URL = `https://raw.githubusercontent.com/${GITHUB_REPO_PATH}/build/version-info.json`
+const DEFAULT_REMOTE_VERSION_INFO_API_URL = `https://api.github.com/repos/${GITHUB_REPO_PATH}/contents/version-info.json?ref=build`
 const DEFAULT_LATEST_COMMIT_URL = `https://api.github.com/repos/${GITHUB_REPO_PATH}/commits/main`
 
 const isVersionCheckDebugEnabled = () => {
@@ -56,6 +57,41 @@ const getLatestCommitUrl = () => {
   }
 }
 
+const getRemoteVersionInfoApiUrl = () => {
+  try {
+    const url = new URL(DEFAULT_REMOTE_VERSION_INFO_API_URL)
+    url.searchParams.set("_", Date.now().toString())
+    return url.toString()
+  } catch {
+    return `${DEFAULT_REMOTE_VERSION_INFO_API_URL}&_=${Date.now()}`
+  }
+}
+
+const parseRemoteVersionInfoApiPayload = (payload) => {
+  const encodedContent = payload?.content
+
+  if (typeof encodedContent !== "string" || typeof globalThis.atob !== "function") {
+    return null
+  }
+
+  try {
+    const normalizedContent = encodedContent.replaceAll("\n", "")
+    return JSON.parse(globalThis.atob(normalizedContent))
+  } catch {
+    return null
+  }
+}
+
+const getShortHashLength = () => {
+  if (typeof buildInfo.gitHash === "string" && buildInfo.gitHash.length > 0) {
+    return buildInfo.gitHash.length
+  }
+
+  return 7
+}
+
+const hasComparableBuildVersion = (value) => compareBuildVersions(value, value) !== null
+
 function useVersionCheck() {
   const { isAppDataReady } = useStore(dataState)
 
@@ -74,11 +110,22 @@ function useVersionCheck() {
     const checkUpdate = async () => {
       try {
         const remoteVersionInfoUrl = getRemoteVersionInfoUrl()
+        const remoteVersionInfoApiUrl = getRemoteVersionInfoApiUrl()
         try {
-          const remoteBuildInfo = await ofetch(remoteVersionInfoUrl, {
+          let remoteBuildInfo = await ofetch(remoteVersionInfoUrl, {
             cache: "no-store",
           })
 
+          if (!remoteBuildInfo?.buildVersion && !remoteBuildInfo?.gitHash) {
+            const remoteVersionInfoApiPayload = await ofetch(remoteVersionInfoApiUrl, {
+              cache: "no-store",
+            })
+            remoteBuildInfo =
+              parseRemoteVersionInfoApiPayload(remoteVersionInfoApiPayload) ?? remoteBuildInfo
+          }
+
+          const hasLocalBuildVersion = hasComparableBuildVersion(buildInfo.buildVersion)
+          const hasRemoteBuildVersion = hasComparableBuildVersion(remoteBuildInfo?.buildVersion)
           const buildVersionComparison = compareBuildVersions(
             buildInfo.buildVersion,
             remoteBuildInfo.buildVersion,
@@ -92,6 +139,21 @@ function useVersionCheck() {
               reason: "build_version_comparison",
               hasUpdate: hasUpdateByBuildVersion,
               remoteVersionInfoUrl,
+              remoteVersionInfoApiUrl,
+              local: buildInfo,
+              remote: remoteBuildInfo,
+            })
+            return
+          }
+
+          if (hasLocalBuildVersion && !hasRemoteBuildVersion) {
+            setHasUpdate(false)
+            setRemoteBuildInfo(null)
+            logVersionCheckDebug({
+              reason: "local_build_version_without_remote_build_version",
+              hasUpdate: false,
+              remoteVersionInfoUrl,
+              remoteVersionInfoApiUrl,
               local: buildInfo,
               remote: remoteBuildInfo,
             })
@@ -113,6 +175,7 @@ function useVersionCheck() {
               reason: "date_comparison",
               hasUpdate: hasUpdateByDate,
               remoteVersionInfoUrl,
+              remoteVersionInfoApiUrl,
               local: buildInfo,
               remote: remoteBuildInfo,
               currentGitTimestamp,
@@ -129,6 +192,7 @@ function useVersionCheck() {
               reason: "hash_fallback",
               hasUpdate: hasUpdateByHash,
               remoteVersionInfoUrl,
+              remoteVersionInfoApiUrl,
               local: buildInfo,
               remote: remoteBuildInfo,
             })
@@ -138,6 +202,7 @@ function useVersionCheck() {
           logVersionCheckDebug({
             reason: "insufficient_version_data",
             remoteVersionInfoUrl,
+            remoteVersionInfoApiUrl,
             local: buildInfo,
             remote: remoteBuildInfo,
           })
@@ -145,6 +210,7 @@ function useVersionCheck() {
           logVersionCheckDebug({
             reason: "version_info_request_failed",
             remoteVersionInfoUrl,
+            remoteVersionInfoApiUrl,
             error: error instanceof Error ? error.message : String(error),
           })
         }
@@ -154,7 +220,7 @@ function useVersionCheck() {
           cache: "no-store",
         })
         const latestCommitDate = latestCommit?.commit?.committer?.date
-        const latestCommitHash = latestCommit?.sha?.slice?.(0, buildInfo.gitHash.length)
+        const latestCommitHash = latestCommit?.sha?.slice?.(0, getShortHashLength())
 
         const currentGitTimestamp = getTimestamp(buildInfo.gitCommitDate ?? buildInfo.gitDate)
         const latestGitTimestamp = getTimestamp(latestCommitDate)

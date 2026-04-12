@@ -605,7 +605,11 @@ const Sidebar = ({ dismissUpdate, hasUpdate, remoteBuildInfo }) => {
 
   const currentBuildLabel = buildInfo.buildVersion ?? buildInfo.gitHash ?? "-"
   const remoteBuildLabel =
-    remoteBuildInfo?.buildVersion ?? remoteBuildInfo?.gitHash ?? polyglot.t("sidebar.unknown_build")
+    remoteBuildInfo?.buildVersion ??
+    remoteBuildInfo?.gitHash ??
+    remoteBuildInfo?.gitCommitDate ??
+    remoteBuildInfo?.gitDate ??
+    polyglot.t("sidebar.unknown_build")
 
   const handleOpenUpdateDialog = () => {
     setIsUpdateModalVisible(true)
