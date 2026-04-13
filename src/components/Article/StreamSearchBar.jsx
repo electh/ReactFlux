@@ -4,7 +4,6 @@ import {
   IconArrowLeft,
   IconArrowRight,
   IconRecord,
-  IconRefresh,
   IconSearch,
   IconSortAscending,
   IconSortDescending,
@@ -69,7 +68,7 @@ const getToolbarMainRequiredWidth = (toolbarMain, pageInfo, titleRow) => {
 const getInlineControlsWidth = (buttonGroup) =>
   buttonGroup.scrollWidth + getHorizontalMargin(buttonGroup)
 
-const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtualizerRef }) => {
+const StreamSearchBar = ({ info, markAllAsRead, streamVirtualizerRef }) => {
   const { filterString, filterType, infoFrom, isArticleListReady } = useStore(contentState)
   const { layoutMode, orderDirection, showStatus } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
@@ -298,15 +297,6 @@ const StreamSearchBar = ({ info, markAllAsRead, refreshArticleList, streamVirtua
               shape="circle"
               size="small"
               onClick={navigateToNextArticle}
-            />
-          </CustomTooltip>
-          <CustomTooltip mini content={polyglot.t("article_list.refresh_tooltip")}>
-            <Button
-              icon={<IconRefresh />}
-              loading={!isArticleListReady}
-              shape="circle"
-              size="small"
-              onClick={refreshArticleList}
             />
           </CustomTooltip>
         </div>

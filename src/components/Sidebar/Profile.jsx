@@ -172,7 +172,7 @@ export default function Profile() {
             </Menu>
           }
         >
-          <Button icon={<IconUser />} shape="circle" size="small" style={{ marginRight: 8 }} />
+          <Button icon={<IconUser />} shape="circle" size="small" />
         </Dropdown>
       </div>
     </div>

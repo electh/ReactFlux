@@ -25,7 +25,6 @@ const StoryStream = ({
   handleEntryClick,
   info,
   markAllAsRead,
-  refreshArticleList,
   streamVirtualizerRef,
 }) => {
   const { activeContent, infoFrom, isArticleListReady, loadMoreVisible } = useStore(contentState)
@@ -77,7 +76,6 @@ const StoryStream = ({
         <StreamSearchBar
           info={info}
           markAllAsRead={markAllAsRead}
-          refreshArticleList={refreshArticleList}
           streamVirtualizerRef={streamVirtualizerRef}
         />
       </div>

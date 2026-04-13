@@ -1,5 +1,5 @@
 import { Button, Dropdown, Menu, Popconfirm, Radio } from "@arco-design/web-react"
-import { IconAlignLeft, IconRecord, IconRefresh, IconStarFill } from "@arco-design/web-react/icon"
+import { IconAlignLeft, IconRecord, IconStarFill } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { useMemo, useState } from "react"
 
@@ -66,8 +66,8 @@ const handleFilterChange = (value) => {
   updateSettings({ showStatus: value })
 }
 
-const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
-  const { filterDate, isArticleListReady } = useStore(contentState)
+const FooterPanel = ({ info, markAllAsRead }) => {
+  const { filterDate } = useStore(contentState)
   const { feedsData } = useStore(dataState)
   const { showStatus } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
@@ -371,15 +371,6 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       >
         {filterOptions.map((option) => renderRadioButton(option))}
       </Radio.Group>
-
-      <CustomTooltip mini content={polyglot.t("article_list.refresh_tooltip")}>
-        <Button
-          icon={<IconRefresh />}
-          loading={!isArticleListReady}
-          shape="circle"
-          onClick={refreshArticleList}
-        />
-      </CustomTooltip>
     </div>
   )
 }

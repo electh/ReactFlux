@@ -344,11 +344,7 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
           getEntries={getEntries}
           handleEntryClick={handleEntryClick}
         />
-        <FooterPanel
-          info={info}
-          markAllAsRead={markAllAsRead}
-          refreshArticleList={fetchArticleListWithRelatedData}
-        />
+        <FooterPanel info={info} markAllAsRead={markAllAsRead} />
       </div>
       {isBelowMedium ? null : (
         <div

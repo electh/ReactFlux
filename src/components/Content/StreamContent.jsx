@@ -280,7 +280,6 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
         handleEntryClick={handleEntryClick}
         info={info}
         markAllAsRead={markAllAsRead}
-        refreshArticleList={fetchArticleListWithRelatedData}
         streamVirtualizerRef={streamVirtualizerRef}
       />
     </div>

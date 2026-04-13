@@ -526,6 +526,18 @@ const Sidebar = ({ dismissUpdate, hasUpdate, remoteBuildInfo }) => {
   const { fetchCounters } = useAppData()
   const { infoFrom, infoId } = useStore(contentState)
 
+  const handleRefreshCurrentView = () => {
+    globalThis.dispatchEvent(
+      new CustomEvent("reloadedflux:refresh", {
+        detail: {
+          from: infoFrom,
+          id: infoId ?? "",
+        },
+      }),
+    )
+    setActiveContent(null)
+  }
+
   const handleEditCategory = (category) => {
     setSelectedCategory(category)
     setCategoryModalVisible(true)
@@ -648,6 +660,14 @@ const Sidebar = ({ dismissUpdate, hasUpdate, remoteBuildInfo }) => {
                 />
               </CustomTooltip>
             ) : null}
+            <CustomTooltip mini content={polyglot.t("article_list.refresh_tooltip")}>
+              <Button
+                icon={<IconRefresh />}
+                shape="circle"
+                size="small"
+                onClick={handleRefreshCurrentView}
+              />
+            </CustomTooltip>
             <Profile />
           </div>
         </div>
