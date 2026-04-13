@@ -347,7 +347,7 @@
       "article_label": "Άρθρο",
       "article_description": "Επιλογές εμφάνισης άρθρου: στοίχιση τίτλου, μέγεθος γραμματοσειράς και πλάτος άρθρου.",
       "stream_render_selected_only_label": "Πλήρες περιεχόμενο μόνο για το επιλεγμένο άρθρο",
-      "stream_render_selected_only_description": "Στην εκτεταμένη διάταξη εμφανίζει πλήρες περιεχόμενο μόνο για το επιλεγμένο άρθρο.",
+      "stream_render_selected_only_description": "Στη συνδυασμένη διάταξη εμφανίζει πλήρες περιεχόμενο μόνο για το επιλεγμένο άρθρο.",
       "article_font_size_label": "Μέγεθος γραμματοσειράς άρθρου",
       "title_alignment_description": "Επιλέξτε την στοίχιση του τίτλου του άρθρου."
     }
@@ -357,9 +357,9 @@
     "theme_color_description": "Επιλέξτε το χρώμα του θέματος",
     "theme_color_aria_label": "Αλλαγή χρώματος σε %{color}",
     "layout_mode_label": "Διάταξη ανάγνωσης",
-    "layout_mode_description": "Εναλλαγή ανάμεσα στη διάταξη στηλών και την εκτεταμένη διάταξη.",
+    "layout_mode_description": "Εναλλαγή ανάμεσα στη διάταξη στηλών και τη συνδυασμένη διάταξη.",
     "layout_mode_classic": "Στήλες",
-    "layout_mode_stream": "Εκτεταμένη",
+    "layout_mode_stream": "Συνδυασμένη",
     "cover_display_mode_label": "Τρόπος εμφάνισης εξώφυλλου άρθρου",
     "cover_display_mode_description": "Επιλέξτε πώς εμφανίζονται οι εικόνες εξωφύλλου",
     "cover_display_mode_auto": "Αυτόματο",

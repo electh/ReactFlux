@@ -6,7 +6,7 @@ const iconProps = {
   strokeWidth: 1.8,
 }
 
-export const LayoutExpandedIcon = ({ className }) => (
+export const LayoutCombinedIcon = ({ className }) => (
   <svg aria-hidden="true" className={className} height="1em" viewBox="0 0 20 20" width="1em">
     <rect height="8.5" rx="1.8" width="13.5" x="3.25" y="4" {...iconProps} />
     <path d="M2.75 15.5h14.5" {...iconProps} />

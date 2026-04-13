@@ -348,7 +348,7 @@
       "article_label": "Article",
       "article_description": "Options d'affichage des articles : alignement du titre, taille de la police et largeur de l'article.",
       "stream_render_selected_only_label": "Afficher le contenu complet pour l’article sélectionné",
-      "stream_render_selected_only_description": "Dans la vue étendue, affiche le contenu complet seulement pour l’article sélectionné.",
+      "stream_render_selected_only_description": "Dans la vue combinée, affiche le contenu complet seulement pour l’article sélectionné.",
       "article_font_size_label": "Taille de la police de l'article",
       "title_alignment_description": "Choisissez l'alignement du titre de l'article."
     }
@@ -358,9 +358,9 @@
     "theme_color_description": "Choisissez votre couleur de thème",
     "theme_color_aria_label": "Changer la couleur du thème en %{color}",
     "layout_mode_label": "Disposition de lecture",
-    "layout_mode_description": "Basculer entre la vue en colonnes et la vue étendue.",
+    "layout_mode_description": "Basculer entre la vue en colonnes et la vue combinée.",
     "layout_mode_classic": "Colonnes",
-    "layout_mode_stream": "Étendu",
+    "layout_mode_stream": "Combinée",
     "cover_display_mode_label": "Mode d'affichage des couvertures",
     "cover_display_mode_description": "Choisissez comment les images de couverture sont affichées",
     "cover_display_mode_auto": "Auto",

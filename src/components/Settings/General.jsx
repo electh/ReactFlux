@@ -38,7 +38,7 @@ const General = () => {
   } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
   const { isBelowMedium } = useScreenWidth()
-  const isExpandedLayout = layoutMode === "stream"
+  const isCombinedLayout = layoutMode === "stream"
 
   const homePageOptions = [
     {
@@ -231,7 +231,7 @@ const General = () => {
 
       <SettingItem
         description={polyglot.t("settings.enable_context_menu_description")}
-        disabled={isExpandedLayout}
+        disabled={isCombinedLayout}
         disabledLabel={polyglot.t("settings.disabled_label")}
         title={polyglot.t("settings.enable_context_menu_label")}
         disabledReason={polyglot.t("settings.only_available_in_layout", {
@@ -240,7 +240,7 @@ const General = () => {
       >
         <Switch
           checked={enableContextMenu}
-          disabled={isExpandedLayout}
+          disabled={isCombinedLayout}
           onChange={(value) => updateSettings({ enableContextMenu: value })}
         />
       </SettingItem>

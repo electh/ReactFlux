@@ -42,7 +42,7 @@ const withStopPropagation = (callback) => (event) => {
   callback()
 }
 
-const hasExpandedSelection = () => {
+const hasCombinedSelection = () => {
   if (globalThis.window === undefined) {
     return false
   }
@@ -228,7 +228,7 @@ const StreamArticleCard = ({
       return
     }
 
-    if (hasExpandedSelection()) {
+    if (hasCombinedSelection()) {
       return
     }
 
@@ -348,7 +348,7 @@ const StreamArticleCard = ({
           onClick={(event) => {
             event.stopPropagation()
 
-            if (hasExpandedSelection()) {
+            if (hasCombinedSelection()) {
               return
             }
 
@@ -360,12 +360,12 @@ const StreamArticleCard = ({
         </button>
       </Typography.Title>
       <div
+        style={showFeedIcon && titleAlignment !== "center" ? { paddingLeft: 34 } : undefined}
         className={
           showFeedIcon && titleAlignment !== "center"
-            ? "stream-story-expanded stream-story-expanded-indented"
-            : "stream-story-expanded"
+            ? "stream-story-combined stream-story-combined-indented"
+            : "stream-story-combined"
         }
-        style={showFeedIcon && titleAlignment !== "center" ? { paddingLeft: 34 } : undefined}
       >
         {" "}
         <div

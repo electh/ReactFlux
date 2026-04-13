@@ -6,7 +6,7 @@
 This fork was initially created to add some stuff that I was sorely missing from the original excellent work the ReactFlux devs had already done. It now continues as ReloadedFlux, since the scope of the changes has expanded significantly. Here are some note worthy additions:
 
 - A second layout option with a left sidebar for feeds and categories, and a right sidebar for article content. The original layout is still available as an option.
-  ![](images/reloadedflux_expanded.png)
+  ![](images/reloadedflux_combined.png)
 
 - Resizable panes
 - Mark as read functionality based on days

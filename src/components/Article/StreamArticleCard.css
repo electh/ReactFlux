@@ -123,7 +123,7 @@
   text-decoration: underline;
 }
 
-.stream-story-expanded {
+.stream-story-combined {
   margin-top: 14px;
 }
 
@@ -155,7 +155,7 @@
   cursor: pointer;
 }
 
-.stream-story-expanded .article-content {
+.stream-story-combined .article-content {
   padding: 0;
 }
 
@@ -169,17 +169,17 @@
   -webkit-line-clamp: 5;
 }
 
-.stream-story-expanded .article-body {
+.stream-story-combined .article-body {
   line-height: 1.85;
   padding-bottom: 12px;
 }
 
-.stream-story-expanded-indented .stream-story-preview {
+.stream-story-combined-indented .stream-story-preview {
   margin-left: 0;
   margin-right: 0;
 }
 
-.stream-story-expanded-indented .article-body {
+.stream-story-combined-indented .article-body {
   margin-left: 0;
   margin-right: 0;
 }

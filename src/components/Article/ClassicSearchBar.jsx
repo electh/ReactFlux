@@ -12,7 +12,7 @@ import { useParams } from "react-router"
 import { ActiveButton, SearchForm, ToolbarMenuButton } from "./SearchBarShared"
 import SidebarTrigger from "./SidebarTrigger.jsx"
 
-import { LayoutColumnIcon, LayoutExpandedIcon } from "@/components/icons/LayoutModeIcons"
+import { LayoutColumnIcon, LayoutCombinedIcon } from "@/components/icons/LayoutModeIcons"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
@@ -109,7 +109,7 @@ const ClassicSearchBar = ({ info, markAllAsRead, refreshArticleList }) => {
         value: "classic",
       },
       {
-        icon: <LayoutExpandedIcon />,
+        icon: <LayoutCombinedIcon />,
         label: polyglot.t("appearance.layout_mode_stream"),
         value: "stream",
       },

@@ -348,7 +348,7 @@
       "article_label": "Artikel",
       "article_description": "Anzeigeoptionen für Artikel: Titelausrichtung, Schriftgröße und Artikelbreite.",
       "stream_render_selected_only_label": "Vollständigen Inhalt für ausgewählten Artikel anzeigen",
-      "stream_render_selected_only_description": "Im erweiterten Layout wird vollständiger Inhalt nur für den ausgewählten Artikel angezeigt.",
+      "stream_render_selected_only_description": "Im kombinierten Layout wird vollständiger Inhalt nur für den ausgewählten Artikel angezeigt.",
       "article_font_size_label": "Schriftgröße des Artikels",
       "title_alignment_description": "Wählen Sie die Ausrichtung des Artikeltitels."
     }
@@ -358,9 +358,9 @@
     "theme_color_description": "Farbthema wählen",
     "theme_color_aria_label": "Farbthema auf %{color} ändern",
     "layout_mode_label": "Leselayout",
-    "layout_mode_description": "Zwischen der Spaltenansicht und der erweiterten Ansicht wechseln.",
+    "layout_mode_description": "Zwischen der Spaltenansicht und der kombinierten Ansicht wechseln.",
     "layout_mode_classic": "Spalten",
-    "layout_mode_stream": "Erweitert",
+    "layout_mode_stream": "Kombiniert",
     "cover_display_mode_label": "Titelbild-Anzeigemodus",
     "cover_display_mode_description": "Wählen, wie Artikeltitelbilder angezeigt werden",
     "cover_display_mode_auto": "Automatisch",

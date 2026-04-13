@@ -3,7 +3,7 @@ import { useStore } from "@nanostores/react"
 
 import SettingItem from "./SettingItem"
 
-import { LayoutColumnIcon, LayoutExpandedIcon } from "@/components/icons/LayoutModeIcons"
+import { LayoutColumnIcon, LayoutCombinedIcon } from "@/components/icons/LayoutModeIcons"
 import { polyglotState } from "@/hooks/useLanguage"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { applyColor, colors, getDisplayColorValue } from "@/utils/colors"
@@ -29,7 +29,7 @@ const Appearance = () => {
     themeColor,
   } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
-  const isExpandedLayout = layoutMode === "stream"
+  const isCombinedLayout = layoutMode === "stream"
 
   const fontFamilyOptions = [
     { label: polyglot.t("appearance.font_family_system"), value: "system-ui" },
@@ -62,7 +62,7 @@ const Appearance = () => {
       value: "classic",
     },
     {
-      icon: <LayoutExpandedIcon />,
+      icon: <LayoutCombinedIcon />,
       label: polyglot.t("appearance.layout_mode_stream"),
       value: "stream",
     },
@@ -157,7 +157,7 @@ const Appearance = () => {
 
       <SettingItem
         description={polyglot.t("appearance.cover_display_mode_description")}
-        disabled={isExpandedLayout}
+        disabled={isCombinedLayout}
         disabledLabel={polyglot.t("settings.disabled_label")}
         title={polyglot.t("appearance.cover_display_mode_label")}
         disabledReason={polyglot.t("settings.only_available_in_layout", {
@@ -166,7 +166,7 @@ const Appearance = () => {
       >
         <Select
           className="input-select"
-          disabled={isExpandedLayout}
+          disabled={isCombinedLayout}
           value={coverDisplayMode}
           onChange={(value) => handleConfigChange({ coverDisplayMode: value })}
         >
