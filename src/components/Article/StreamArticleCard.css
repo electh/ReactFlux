@@ -62,6 +62,14 @@
   font-weight: 600;
 }
 
+.stream-story-source-title a {
+  color: inherit;
+}
+
+.stream-story-author {
+  cursor: pointer;
+}
+
 .stream-story-author::before {
   content: "by";
   margin-right: 6px;

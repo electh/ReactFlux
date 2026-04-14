@@ -16,11 +16,13 @@ import ArticleBodyRenderer from "./ArticleBodyRenderer"
 
 import { updateEntriesStatus } from "@/apis"
 import AiSpark from "@/components/icons/AiSpark"
+import CustomLink from "@/components/ui/CustomLink"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import FeedIcon from "@/components/ui/FeedIcon"
 import useEntryActions from "@/hooks/useEntryActions"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
+import { setActiveContent, setFilterString, setFilterType } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
 import {
@@ -219,6 +221,14 @@ const StreamArticleCard = ({
     }
   }
 
+  const handleAuthorFilter = () => {
+    setFilterType("author")
+    setFilterString(currentEntry.author)
+    if (isBelowMedium) {
+      setActiveContent(null)
+    }
+  }
+
   const handleCardClick = (event) => {
     if (isSelected) {
       return
@@ -377,9 +387,24 @@ const StreamArticleCard = ({
           }}
         >
           <div className="stream-story-source">
-            <span className="stream-story-source-title">{currentEntry.feed.title}</span>
+            <span
+              className="stream-story-source-title"
+              onClick={(event) => {
+                event.stopPropagation()
+              }}
+            >
+              <CustomLink text={currentEntry.feed.title} url={`/feed/${currentEntry.feed.id}`} />
+            </span>
             {currentEntry.author ? (
-              <span className="stream-story-author">{currentEntry.author}</span>
+              <span
+                className="stream-story-author"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  handleAuthorFilter()
+                }}
+              >
+                {currentEntry.author}
+              </span>
             ) : null}
           </div>
           {currentEntry.feed.category?.title ? (
