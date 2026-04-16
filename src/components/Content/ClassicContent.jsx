@@ -24,7 +24,6 @@ import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import {
   contentState,
-  filteredEntriesState,
   setActiveContent,
   setInfoFrom,
   setInfoId,
@@ -62,8 +61,7 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
 
   useDocumentTitle()
 
-  const { entryDetailRef, entryListRef, flushPendingMarkAsRead, handleEntryClick } =
-    useContentContext()
+  const { entryDetailRef, entryListRef, handleEntryClick } = useContentContext()
   const { navigateToNextArticle, navigateToPreviousArticle, showHotkeysSettings } =
     useClassicKeyHandlers()
 
@@ -333,11 +331,7 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
           width: isBelowMedium ? undefined : entryListWidth,
         }}
       >
-        <ClassicSearchBar
-          info={info}
-          markAllAsRead={markAllAsRead}
-          refreshArticleList={fetchArticleListWithRelatedData}
-        />
+        <ClassicSearchBar />
         <ArticleList
           ref={entryListRef}
           cardsRef={cardsRef}

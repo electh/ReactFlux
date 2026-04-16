@@ -2,7 +2,6 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 
 import viteReact from "@vitejs/plugin-react"
-// import {visualizer} from "rollup-plugin-visualizer"
 import { defineConfig } from "vite"
 import { VitePWA } from "vite-plugin-pwa"
 
@@ -22,9 +21,6 @@ export default defineConfig({
         skipWaiting: true,
       },
     }),
-    // visualizer({
-    //   gzipSize: true,
-    // }),
   ],
   resolve: {
     dedupe: ["react", "react-dom", "react-router"],

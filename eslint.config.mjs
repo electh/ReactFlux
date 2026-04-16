@@ -35,7 +35,18 @@ export default [
     },
     rules: {
       curly: ["error", "all"],
-      "no-unused-vars": "off",
+      "no-unused-vars": [
+        "error",
+        {
+          args: "all",
+          argsIgnorePattern: "^_",
+          caughtErrors: "all",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
       "operator-assignment": "error",
       "prefer-destructuring": [
         "error",

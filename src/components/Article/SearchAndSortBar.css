@@ -508,11 +508,6 @@
   color: var(--color-text-1);
 }
 
-.search-modal {
-  width: 400px;
-}
-
-.search-modal-actions,
 .toolbar-search-dropdown-actions {
   display: flex;
   justify-content: flex-end;
@@ -642,10 +637,6 @@
 
   .search-and-sort-bar .toolbar-menu-button {
     max-width: none;
-  }
-
-  .search-modal {
-    width: 95%;
   }
 }
 

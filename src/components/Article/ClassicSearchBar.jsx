@@ -21,7 +21,6 @@ import {
   dynamicCountState,
   setFilterDate,
   setFilterString,
-  setFilterType,
 } from "@/store/contentState"
 import { categoriesState, feedsState } from "@/store/dataState"
 import { draftFilterTypeState } from "@/store/searchBarState"
@@ -33,7 +32,7 @@ import "./ClassicSearchBar.css"
 
 const setDraftFilterType = createSetter(draftFilterTypeState)
 
-const ClassicSearchBar = ({ info, markAllAsRead, refreshArticleList }) => {
+const ClassicSearchBar = () => {
   const { filterDate, filterString, filterType, infoFrom, isArticleListReady } =
     useStore(contentState)
   const { layoutMode, orderDirection } = useStore(settingsState)

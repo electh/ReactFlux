@@ -33,14 +33,6 @@ const useClassicKeyHandlers = () => {
 
   const { entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
 
-  const getEntryListScrollElement = () => {
-    if (!entryListRef.current) {
-      return null
-    }
-
-    return entryListRef.current.getScrollElement?.() || entryListRef.current.contentWrapperEl
-  }
-
   const getSelectedCard = (targetEntryId = null) => {
     if (!entryListRef.current?.el) {
       return null

@@ -30,7 +30,7 @@ import { parseCoverImage } from "@/utils/images"
 import "./Content.css"
 
 const StreamContent = ({ info, getEntries, markAllAsRead }) => {
-  const { entries, filterDate, filterString, isArticleLoading } = useStore(contentState)
+  const { entries, filterDate, filterString } = useStore(contentState)
   const { isAppDataReady } = useStore(dataState)
   const { orderBy, orderDirection, showStatus } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)

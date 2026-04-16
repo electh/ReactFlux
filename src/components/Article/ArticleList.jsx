@@ -1,7 +1,7 @@
 import { Divider, Spin } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import { throttle } from "lodash-es"
-import { forwardRef, useCallback, useEffect, useMemo } from "react"
+import { forwardRef, useEffect, useMemo } from "react"
 import { useInView } from "react-intersection-observer"
 import SimpleBar from "simplebar-react"
 import { Virtualizer } from "virtua"

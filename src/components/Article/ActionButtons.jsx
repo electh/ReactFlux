@@ -1,7 +1,5 @@
-import { Button, Dropdown, InputNumber, Menu, Radio, Switch } from "@arco-design/web-react"
+import { Button, Dropdown, Menu } from "@arco-design/web-react"
 import {
-  IconAlignCenter,
-  IconAlignLeft,
   IconArrowLeft,
   IconArrowRight,
   IconClose,
@@ -34,7 +32,7 @@ import {
   prevContentState,
 } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
-import { settingsState, updateSettings } from "@/store/settingsState"
+import { settingsState } from "@/store/settingsState"
 import "./ActionButtons.css"
 
 const DesktopButtons = memo(
@@ -300,8 +298,6 @@ const ActionButtons = () => {
                 <IconLaunch />
               </div>
             </Menu.Item>
-
-            {/* Divider removed — no additional menu items below */}
           </Menu>
         }
         onVisibleChange={setDropdownVisible}

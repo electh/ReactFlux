@@ -1,13 +1,4 @@
-import {
-  Button,
-  Dropdown,
-  Input,
-  Menu,
-  Modal,
-  Popconfirm,
-  Select,
-  Tooltip,
-} from "@arco-design/web-react"
+import { Button, Dropdown, Input, Menu, Popconfirm, Select, Tooltip } from "@arco-design/web-react"
 import { IconDown, IconQuestionCircle } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { Fragment, memo, useMemo, useState } from "react"
@@ -133,33 +124,6 @@ export const SearchForm = memo(({ value, onConfirm, onChange }) => {
   )
 })
 SearchForm.displayName = "SearchForm"
-
-export const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => {
-  const { polyglot } = useStore(polyglotState)
-  const handleConfirm = () => {
-    setFilterType(draftFilterTypeState.get())
-    onConfirm(value)
-  }
-
-  return (
-    <Modal
-      className="search-modal"
-      footer={null}
-      title={polyglot.t("search.search")}
-      visible={visible}
-      onCancel={onCancel}
-    >
-      <SearchForm value={value} onChange={onChange} onConfirm={onConfirm} />
-      <div className="search-modal-actions">
-        <Button onClick={onCancel}>{polyglot.t("search.cancel")}</Button>
-        <Button type="primary" onClick={handleConfirm}>
-          {polyglot.t("search.confirm")}
-        </Button>
-      </div>
-    </Modal>
-  )
-})
-SearchModal.displayName = "SearchModal"
 
 export const ActiveButton = ({ active, icon, tooltip, onClick }) => (
   <CustomTooltip mini content={tooltip}>

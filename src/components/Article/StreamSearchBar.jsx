@@ -32,7 +32,6 @@ import {
   nextContentState,
   prevContentState,
   setFilterString,
-  setFilterType,
 } from "@/store/contentState"
 import { categoriesState, feedsState } from "@/store/dataState"
 import { draftFilterTypeState } from "@/store/searchBarState"

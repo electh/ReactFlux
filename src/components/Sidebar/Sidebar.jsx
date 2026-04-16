@@ -16,17 +16,12 @@ import {
   IconDelete,
   IconDownload,
   IconEdit,
-  IconEye,
-  IconEyeInvisible,
   IconHistory,
   IconMinusCircle,
-  IconMoreVertical,
-  IconRecord,
   IconRefresh,
   IconRight,
   IconStar,
   IconUnorderedList,
-  IconUpload,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import classNames from "classnames"
@@ -38,7 +33,6 @@ import { Virtualizer } from "virtua"
 import AddFeed from "./AddFeed.jsx"
 import Profile from "./Profile.jsx"
 
-// import OPML APIs moved to Settings Content
 import { markCategoryAsRead, refreshCategoryFeed } from "@/apis/categories"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import EditCategoryModal from "@/components/ui/EditCategoryModal"
@@ -48,7 +42,6 @@ import useAppData from "@/hooks/useAppData"
 import useCategoryOperations from "@/hooks/useCategoryOperations"
 import { useFeedOperations } from "@/hooks/useFeedOperations"
 import { polyglotState } from "@/hooks/useLanguage"
-import useModalToggle from "@/hooks/useModalToggle"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { contentState, setActiveContent, setEntries } from "@/store/contentState"
 import {
@@ -58,7 +51,7 @@ import {
   setUnreadInfo,
   unreadTotalState,
 } from "@/store/dataState"
-import { settingsState, updateSettings } from "@/store/settingsState"
+import { settingsState } from "@/store/settingsState"
 import { expandedCategoriesState, setExpandedCategories } from "@/store/sidebarState"
 import { GITHUB_REPO_PATH } from "@/utils/constants"
 import { Notification } from "@/utils/feedback"
@@ -476,28 +469,6 @@ const CategoryGroup = ({
       </Collapse.Item>
     ))
 }
-
-const readFileAsText = async (file) => {
-  try {
-    return await file.text()
-  } catch (error) {
-    throw new Error(`Failed to read file: ${error.message}`)
-  }
-}
-
-const downloadFile = (content, filename, type) => {
-  const blob = new Blob([content], { type })
-  const url = globalThis.URL.createObjectURL(blob)
-  const link = document.createElement("a")
-  link.href = url
-  link.download = filename
-  document.body.append(link)
-  link.click()
-  link.remove()
-  globalThis.URL.revokeObjectURL(url)
-}
-
-// Removed the three-dot options dropdown; Content settings are accessible via Settings.
 
 const updateAllEntriesAsRead = () => {
   setEntries((prev) => prev.map((entry) => ({ ...entry, status: "read" })))

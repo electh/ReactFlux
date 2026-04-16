@@ -173,7 +173,8 @@ const handleSummarizeContent = async (entry = contentState.get().activeContent) 
   const aiProvider = getSettings("aiProvider")
   const aiApiKeys = getSettings("aiApiKeys") || {}
   const aiApiKey = aiApiKeys?.[aiProvider] || ""
-  const aiModel = getSettings("aiModel")
+  const aiModels = getSettings("aiModels") || {}
+  const aiModel = aiModels?.[aiProvider] || ""
   const { polyglot } = polyglotState.get()
 
   if (!entry) {
