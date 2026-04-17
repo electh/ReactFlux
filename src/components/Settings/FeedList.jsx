@@ -591,54 +591,6 @@ const FeedList = () => {
 
   return (
     <>
-      <SettingItem
-        description={polyglot.t("settings.content.show_hidden_description")}
-        title={polyglot.t("sidebar.show_hidden_feeds")}
-      >
-        <Switch
-          checked={showHiddenFeeds}
-          onChange={(value) => updateSettings({ showHiddenFeeds: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.content.feeds_show_unread_description")}
-        title={polyglot.t("settings.content.feeds_show_unread_label")}
-      >
-        <Switch
-          checked={showUnreadFeedsOnly}
-          onChange={(value) => updateSettings({ showUnreadFeedsOnly: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem title={polyglot.t("settings.content.import_export_label")}>
-        <div style={{ display: "flex", gap: 8 }}>
-          <Button
-            icon={<IconUpload />}
-            onClick={() => document.querySelector("#feedListOpmlInput").click()}
-          >
-            {polyglot.t("sidebar.import_opml")}
-          </Button>
-          <input
-            accept=".opml,.xml"
-            disabled={importing}
-            id="feedListOpmlInput"
-            style={{ display: "none" }}
-            type="file"
-            onChange={handleOpmlImport}
-          />
-          <Button icon={<IconDownload />} onClick={handleOpmlExport}>
-            {polyglot.t("sidebar.export_opml")}
-          </Button>
-        </div>
-      </SettingItem>
-
-      <Divider />
-
       <div className="feed-table-action-bar">
         <div
           style={{
@@ -750,6 +702,55 @@ const FeedList = () => {
         }}
         onChange={handleTableChange}
       />
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.content.show_hidden_description")}
+        title={polyglot.t("sidebar.show_hidden_feeds")}
+      >
+        <Switch
+          checked={showHiddenFeeds}
+          onChange={(value) => updateSettings({ showHiddenFeeds: value })}
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.content.feeds_show_unread_description")}
+        title={polyglot.t("settings.content.feeds_show_unread_label")}
+      >
+        <Switch
+          checked={showUnreadFeedsOnly}
+          onChange={(value) => updateSettings({ showUnreadFeedsOnly: value })}
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem title={polyglot.t("settings.content.import_export_label")}>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Button
+            icon={<IconUpload />}
+            onClick={() => document.querySelector("#feedListOpmlInput").click()}
+          >
+            {polyglot.t("sidebar.import_opml")}
+          </Button>
+          <input
+            accept=".opml,.xml"
+            disabled={importing}
+            id="feedListOpmlInput"
+            style={{ display: "none" }}
+            type="file"
+            onChange={handleOpmlImport}
+          />
+          <Button icon={<IconDownload />} onClick={handleOpmlExport}>
+            {polyglot.t("sidebar.export_opml")}
+          </Button>
+        </div>
+      </SettingItem>
+
       {selectedFeed && (
         <EditFeedModal
           feedForm={feedForm}
