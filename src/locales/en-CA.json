@@ -360,6 +360,8 @@
     "theme_color_label": "Theme colour",
     "theme_color_description": "Choose your theme colour",
     "theme_color_aria_label": "Change theme colour to %{color}",
+    "theme_color_oled_description": "OLED-friendly",
+    "theme_color_gray_description": "Paper-friendly",
     "layout_mode_label": "Reading layout",
     "layout_mode_description": "Switch between the column layout and the combined layout.",
     "layout_mode_classic": "Column",

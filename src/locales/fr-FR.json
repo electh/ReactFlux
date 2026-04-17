@@ -360,6 +360,8 @@
     "theme_color_label": "Couleur du thème",
     "theme_color_description": "Choisissez votre couleur de thème",
     "theme_color_aria_label": "Changer la couleur du thème en %{color}",
+    "theme_color_oled_description": "Compatible OLED",
+    "theme_color_gray_description": "Aspect papier",
     "layout_mode_label": "Disposition de lecture",
     "layout_mode_description": "Basculer entre la vue en colonnes et la vue combinée.",
     "layout_mode_classic": "Colonnes",

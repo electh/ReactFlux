@@ -364,3 +364,79 @@ body[arco-theme="dark"][color-name="YInMn Blue"] .content-empty::before {
 body[arco-theme="dark"] .arco-radio-button::after {
   background-color: transparent;
 }
+
+/* Gray: neutral paper-like light theme. Light-only — no dark variant. */
+body[color-name="Gray"] {
+  --gray-1: 250 250 250;
+  --gray-2: 244 244 245;
+  --gray-3: 228 228 231;
+  --gray-4: 212 212 216;
+  --gray-5: 161 161 170;
+  --gray-6: 113 113 122;
+  --gray-7: 82 82 91;
+  --gray-8: 63 63 70;
+  --gray-9: 39 39 42;
+  --gray-10: 24 24 27;
+
+  --color-bg-1: rgb(250 250 250);
+  --color-bg-2: rgb(244 244 245);
+  --color-bg-3: rgb(228 228 231);
+  --color-bg-4: rgb(212 212 216);
+  --color-bg-5: rgb(161 161 170);
+  --color-bg-popup: var(--color-bg-2);
+}
+
+body[color-name="Gray"] .article-container,
+body[color-name="Gray"] .content-empty {
+  background-color: #fafafa;
+}
+
+body[color-name="Gray"] .article-container::before,
+body[color-name="Gray"] .content-empty::before {
+  background-image: linear-gradient(
+    180deg,
+    rgb(244 244 245) 0%,
+    #fafafa 5%,
+    #fafafa 95%,
+    rgb(244 244 245) 100%
+  ) !important;
+}
+
+/* OLED-friendly: pure black backgrounds for OLED panels (power savings, deep contrast).
+   Dark-only theme — no light variant. */
+body[arco-theme="dark"][color-name="OLED"] {
+  --gray-1: 10 10 10;
+  --gray-2: 18 18 18;
+  --gray-3: 30 30 30;
+  --gray-4: 48 48 48;
+  --gray-5: 72 72 72;
+  --gray-6: 110 110 110;
+  --gray-7: 150 150 150;
+  --gray-8: 190 190 190;
+  --gray-9: 220 220 220;
+  --gray-10: 240 240 240;
+
+  --color-bg-1: rgb(0 0 0);
+  --color-bg-2: rgb(0 0 0);
+  --color-bg-3: rgb(12 12 12);
+  --color-bg-4: rgb(24 24 24);
+  --color-bg-5: rgb(40 40 40);
+  --color-bg-popup: var(--color-bg-3);
+  --color-menu-dark-bg: var(--color-bg-popup);
+}
+
+body[arco-theme="dark"][color-name="OLED"] .article-container,
+body[arco-theme="dark"][color-name="OLED"] .content-empty {
+  background-color: #000;
+}
+
+body[arco-theme="dark"][color-name="OLED"] .article-container::before,
+body[arco-theme="dark"][color-name="OLED"] .content-empty::before {
+  background-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 1) 5%,
+    rgba(0, 0, 0, 1) 95%,
+    rgba(0, 0, 0, 0) 100%
+  ) !important;
+}

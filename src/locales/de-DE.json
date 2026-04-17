@@ -360,6 +360,8 @@
     "theme_color_label": "Farbthema",
     "theme_color_description": "Farbthema wählen",
     "theme_color_aria_label": "Farbthema auf %{color} ändern",
+    "theme_color_oled_description": "OLED-freundlich",
+    "theme_color_gray_description": "Papier-freundlich",
     "layout_mode_label": "Leselayout",
     "layout_mode_description": "Zwischen der Spaltenansicht und der kombinierten Ansicht wechseln.",
     "layout_mode_classic": "Spalten",

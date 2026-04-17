@@ -1,8 +1,8 @@
 import { useStore } from "@nanostores/react"
 import { useEffect, useState } from "react"
 
-import { settingsState } from "@/store/settingsState"
-import { applyColor } from "@/utils/colors"
+import { settingsState, updateSettings } from "@/store/settingsState"
+import { applyColor, getModeFallbackColor, isModeRestrictedColor } from "@/utils/colors"
 
 const useTheme = () => {
   const { themeColor, themeMode } = useStore(settingsState)
@@ -22,18 +22,20 @@ const useTheme = () => {
 
   useEffect(() => {
     const applyColorScheme = (isDarkMode) => {
-      const themeMode = isDarkMode ? "dark" : "light"
-      document.body.setAttribute("arco-theme", themeMode)
-      document.body.style.colorScheme = themeMode
+      const mode = isDarkMode ? "dark" : "light"
+      document.body.setAttribute("arco-theme", mode)
+      document.body.style.colorScheme = mode
+    }
+
+    const effectiveDark = themeMode === "system" ? isSystemDark : themeMode === "dark"
+
+    if (isModeRestrictedColor(themeColor, effectiveDark)) {
+      updateSettings({ themeColor: getModeFallbackColor(themeColor) })
+      return
     }
 
     applyColor(themeColor)
-
-    if (themeMode === "system") {
-      applyColorScheme(isSystemDark)
-    } else {
-      applyColorScheme(themeMode === "dark")
-    }
+    applyColorScheme(effectiveDark)
   }, [isSystemDark, themeMode, themeColor])
 }
 

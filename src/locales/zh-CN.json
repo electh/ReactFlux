@@ -362,6 +362,8 @@
     "theme_color_label": "主题颜色",
     "theme_color_description": "选择您的主题颜色",
     "theme_color_aria_label": "将主题颜色更改为 %{color}",
+    "theme_color_oled_description": "OLED 友好",
+    "theme_color_gray_description": "纸质风格",
     "layout_mode_label": "阅读布局",
     "layout_mode_description": "在分栏布局和组合布局之间切换。",
     "layout_mode_classic": "分栏",

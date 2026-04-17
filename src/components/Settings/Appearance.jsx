@@ -1,12 +1,20 @@
 import { Divider, Select, Switch, Tooltip } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
+import { useEffect, useState } from "react"
 
 import SettingItem from "./SettingItem"
 
 import { LayoutColumnIcon, LayoutCombinedIcon } from "@/components/icons/LayoutModeIcons"
 import { polyglotState } from "@/hooks/useLanguage"
 import { settingsState, updateSettings } from "@/store/settingsState"
-import { applyColor, colors, getDisplayColorValue } from "@/utils/colors"
+import {
+  applyColor,
+  colors,
+  getDisplayColorValue,
+  isDarkOnlyColor,
+  isLightOnlyColor,
+  isModeRestrictedColor,
+} from "@/utils/colors"
 
 import "./Appearance.css"
 
@@ -17,10 +25,27 @@ const handleConfigChange = (settingsChanges) => {
   }
 }
 
+const useEffectiveDarkMode = () => {
+  const { themeMode } = useStore(settingsState)
+  const [isSystemDark, setIsSystemDark] = useState(
+    globalThis.matchMedia("(prefers-color-scheme: dark)").matches,
+  )
+
+  useEffect(() => {
+    const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)")
+    const onChange = (event) => setIsSystemDark(event.matches)
+    mediaQuery.addEventListener("change", onChange)
+    return () => mediaQuery.removeEventListener("change", onChange)
+  }, [])
+
+  return themeMode === "system" ? isSystemDark : themeMode === "dark"
+}
+
 const Appearance = () => {
   const { animationsEnabled, compactSidebarGroups, fontFamily, layoutMode, themeColor } =
     useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
+  const isDark = useEffectiveDarkMode()
 
   const fontFamilyOptions = [
     { label: polyglot.t("appearance.font_family_system"), value: "system-ui" },
@@ -66,40 +91,47 @@ const Appearance = () => {
         title={polyglot.t("appearance.theme_color_label")}
       >
         <div style={{ display: "flex" }}>
-          {Object.keys(colors).map((colorName) => {
-            const hex = colors[colorName]?.light || getDisplayColorValue(colorName)
-            const tooltip = `${colorName} — ${hex}`
-            return (
-              <Tooltip key={colorName} content={tooltip} position="tl">
-                <div
-                  role="button"
-                  tabIndex={0}
-                  aria-label={polyglot.t("appearance.theme_color_aria_label", {
-                    color: colorName,
-                  })}
-                  style={{
-                    width: "18px",
-                    height: "18px",
-                    borderRadius: "50%",
-                    margin: "2px",
-                    backgroundColor: getDisplayColorValue(colorName),
-                    cursor: "pointer",
-                    border: "3px solid var(--color-bg-3)",
-                    outline:
-                      colorName === themeColor
-                        ? `1px solid ${getDisplayColorValue(colorName)}`
-                        : "none",
-                  }}
-                  onClick={() => handleConfigChange({ themeColor: colorName })}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      handleConfigChange({ themeColor: colorName })
-                    }
-                  }}
-                />
-              </Tooltip>
-            )
-          })}
+          {Object.keys(colors)
+            .filter((colorName) => !isModeRestrictedColor(colorName, isDark))
+            .map((colorName) => {
+              const hex = colors[colorName]?.light || getDisplayColorValue(colorName)
+              let tooltip = `${colorName} — ${hex}`
+              if (isDarkOnlyColor(colorName)) {
+                tooltip = polyglot.t("appearance.theme_color_oled_description")
+              } else if (isLightOnlyColor(colorName)) {
+                tooltip = polyglot.t("appearance.theme_color_gray_description")
+              }
+              return (
+                <Tooltip key={colorName} content={tooltip} position="tl">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label={polyglot.t("appearance.theme_color_aria_label", {
+                      color: colorName,
+                    })}
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      borderRadius: "50%",
+                      margin: "2px",
+                      backgroundColor: getDisplayColorValue(colorName),
+                      cursor: "pointer",
+                      border: "3px solid var(--color-bg-3)",
+                      outline:
+                        colorName === themeColor
+                          ? `1px solid ${getDisplayColorValue(colorName)}`
+                          : "none",
+                    }}
+                    onClick={() => handleConfigChange({ themeColor: colorName })}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        handleConfigChange({ themeColor: colorName })
+                      }
+                    }}
+                  />
+                </Tooltip>
+              )
+            })}
         </div>
       </SettingItem>
 

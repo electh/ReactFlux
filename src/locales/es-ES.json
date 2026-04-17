@@ -374,6 +374,8 @@
     "theme_color_label": "Color del tema",
     "theme_color_description": "Elija su color de tema",
     "theme_color_aria_label": "Cambiar el color del tema a %{color}",
+    "theme_color_oled_description": "Compatible con OLED",
+    "theme_color_gray_description": "Estilo papel",
     "layout_mode_label": "Diseño de lectura",
     "layout_mode_description": "Alterna entre el diseño en columnas y el diseño combinado.",
     "layout_mode_classic": "Columnas",

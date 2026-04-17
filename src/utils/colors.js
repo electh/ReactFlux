@@ -10,7 +10,29 @@ export const colors = {
   Blue: { light: "#2563EB", dark: "#3B82F6" },
   "YInMn Blue": { light: "#306AC0", dark: "#2B5AA8" },
   Violet: { light: "#722ED1", dark: "#8E51DA" },
+  OLED: { dark: "#000000", darkOnly: true, swatch: "#000000" },
+  Gray: { light: "#4B5563", lightOnly: true, swatch: "#9CA3AF" },
 }
+
+export const isDarkOnlyColor = (colorName) => Boolean(colors[colorName]?.darkOnly)
+export const isLightOnlyColor = (colorName) => Boolean(colors[colorName]?.lightOnly)
+export const isModeRestrictedColor = (colorName, isDark) => {
+  if (isDarkOnlyColor(colorName) && !isDark) {
+    return true
+  }
+  if (isLightOnlyColor(colorName) && isDark) {
+    return true
+  }
+  return false
+}
+
+const modeColorPairs = {
+  OLED: "Gray",
+  Gray: "OLED",
+}
+
+export const getModeFallbackColor = (colorName, defaultColor = "Blue") =>
+  modeColorPairs[colorName] ?? defaultColor
 
 const isDarkMode = () => {
   const isSystemDark = globalThis.matchMedia("(prefers-color-scheme: dark)").matches
@@ -20,15 +42,35 @@ const isDarkMode = () => {
 
 const getColorFromPalette = (palette, colorName, defaultColor = "Blue") => {
   const color = palette[colorName] || palette[defaultColor]
-  return isDarkMode() ? color.dark : color.light
+  const dark = isDarkMode()
+  if ((color?.darkOnly && !dark) || (color?.lightOnly && dark)) {
+    return palette[defaultColor][dark ? "dark" : "light"]
+  }
+  return dark ? color.dark : color.light
 }
 
 const getColorValue = (colorName) => getColorFromPalette(colors, colorName)
 
-export const getDisplayColorValue = (colorName) => getColorFromPalette(colors, colorName)
+export const getDisplayColorValue = (colorName) => {
+  const color = colors[colorName]
+  if (color?.swatch) {
+    return color.swatch
+  }
+  return getColorFromPalette(colors, colorName)
+}
+
+const getPrimaryGenerationColor = (colorName) => {
+  if (colorName === "OLED" && isDarkMode()) {
+    return "#6B7280"
+  }
+  if (colorName === "Gray" && !isDarkMode()) {
+    return "#6B7280"
+  }
+  return getColorValue(colorName)
+}
 
 export const applyColor = (colorName) => {
-  const colorPalette = generate(getColorValue(colorName), { list: true }).map((color) =>
+  const colorPalette = generate(getPrimaryGenerationColor(colorName), { list: true }).map((color) =>
     getRgbStr(color),
   )
   for (const [index, color] of colorPalette.entries()) {

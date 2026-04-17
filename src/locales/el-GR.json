@@ -359,6 +359,8 @@
     "theme_color_label": "Χρώμα θέματος",
     "theme_color_description": "Επιλέξτε το χρώμα του θέματος",
     "theme_color_aria_label": "Αλλαγή χρώματος σε %{color}",
+    "theme_color_oled_description": "Φιλικό προς OLED",
+    "theme_color_gray_description": "Στιλ χαρτιού",
     "layout_mode_label": "Διάταξη ανάγνωσης",
     "layout_mode_description": "Εναλλαγή ανάμεσα στη διάταξη στηλών και τη συνδυασμένη διάταξη.",
     "layout_mode_classic": "Στήλες",
