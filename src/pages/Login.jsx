@@ -28,7 +28,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
 
   const [searchParams] = useSearchParams()
-  const urlParamsObj = useMemo(() => Object.fromEntries(searchParams), [])
+  const urlParamsObj = useMemo(() => Object.fromEntries(searchParams), [searchParams])
   const [authMethod, setAuthMethod] = useState(urlParamsObj.username ? "user" : "token")
   /* token or user */
   const location = useLocation()

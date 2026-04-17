@@ -136,24 +136,27 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
     return () => globalThis.removeEventListener("reloadedflux:refresh", handler)
   }, [info, fetchArticleListOnly, fetchArticleListWithRelatedData])
 
-  const fetchSingleEntry = async (entryId) => {
-    const existingEntry = entries.find((entry) => entry.id === Number(entryId))
+  const fetchSingleEntry = useCallback(
+    async (entryId) => {
+      const existingEntry = entries.find((entry) => entry.id === Number(entryId))
 
-    if (existingEntry) {
-      setActiveContent(existingEntry)
-      return
-    }
+      if (existingEntry) {
+        setActiveContent(existingEntry)
+        return
+      }
 
-    try {
-      setIsArticleLoading(true)
-      const entry = parseCoverImage(await getEntry(entryId))
-      setActiveContent(entry)
-    } catch (error) {
-      console.error("Failed to fetch entry:", error)
-    } finally {
-      setIsArticleLoading(false)
-    }
-  }
+      try {
+        setIsArticleLoading(true)
+        const entry = parseCoverImage(await getEntry(entryId))
+        setActiveContent(entry)
+      } catch (error) {
+        console.error("Failed to fetch entry:", error)
+      } finally {
+        setIsArticleLoading(false)
+      }
+    },
+    [entries],
+  )
 
   useClassicHotkeys({ handleRefreshArticleList: fetchArticleListWithRelatedData })
 
@@ -261,7 +264,7 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
         setActiveContent(null)
       }
     }
-  }, [location.pathname])
+  }, [location.pathname, activeContent, isBelowMedium, params])
 
   useEffect(() => {
     const { entryId } = params
@@ -272,7 +275,7 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
     } else if (activeContent) {
       setActiveContent(null)
     }
-  }, [params])
+  }, [params, activeContent, fetchSingleEntry])
 
   const handleEntryListSplitterPointerDown = (event) => {
     if (isBelowMedium) {

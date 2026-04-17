@@ -175,24 +175,27 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
     return () => globalThis.removeEventListener("reloadedflux:refresh", handler)
   }, [info, fetchArticleListOnly, fetchArticleListWithRelatedData])
 
-  const fetchSingleEntry = async (entryId) => {
-    const existingEntry = entries.find((entry) => entry.id === Number(entryId))
+  const fetchSingleEntry = useCallback(
+    async (entryId) => {
+      const existingEntry = entries.find((entry) => entry.id === Number(entryId))
 
-    if (existingEntry) {
-      setActiveContent(existingEntry)
-      return
-    }
+      if (existingEntry) {
+        setActiveContent(existingEntry)
+        return
+      }
 
-    try {
-      setIsArticleLoading(true)
-      const entry = parseCoverImage(await getEntry(entryId))
-      setActiveContent(entry)
-    } catch (error) {
-      console.error("Failed to fetch entry:", error)
-    } finally {
-      setIsArticleLoading(false)
-    }
-  }
+      try {
+        setIsArticleLoading(true)
+        const entry = parseCoverImage(await getEntry(entryId))
+        setActiveContent(entry)
+      } catch (error) {
+        console.error("Failed to fetch entry:", error)
+      } finally {
+        setIsArticleLoading(false)
+      }
+    },
+    [entries],
+  )
 
   useStreamHotkeys({
     handleRefreshArticleList: fetchArticleListWithRelatedData,
@@ -269,7 +272,7 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
     if (entryId && !entries.some((entry) => entry.id === Number(entryId))) {
       fetchSingleEntry(entryId)
     }
-  }, [params])
+  }, [params, entries, fetchSingleEntry])
 
   return (
     <div ref={contentSplitRef} className="content-split">

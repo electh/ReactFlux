@@ -168,7 +168,7 @@ const PlyrPlayer = ({
       playerRef.current = null
       hlsRef.current = null
     }
-  }, [src])
+  }, [src, activeContent, elementType, enclosure, onError, onPlayerInit, plyrOptions, sourceType])
 
   const renderMedia = () => {
     const mediaProps = {

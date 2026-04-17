@@ -167,7 +167,7 @@ const useClassicKeyHandlers = () => {
   })
 
   const showHotkeysSettings = () => {
-    setSettingsTabsActiveTab("6")
+    setSettingsTabsActiveTab("8")
     setSettingsModalVisible(true)
   }
 

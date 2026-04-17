@@ -34,7 +34,7 @@ const SettingsModal = () => {
     if (isBelowMedium && settingsModalVisible) {
       setSettingsModalVisible(false)
     }
-  }, [location.pathname])
+  }, [location.pathname, isBelowMedium, settingsModalVisible, setSettingsModalVisible])
 
   return (
     <Modal

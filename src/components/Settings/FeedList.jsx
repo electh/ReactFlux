@@ -1,22 +1,33 @@
 import {
   Button,
+  Divider,
   Form,
   Input,
   Modal,
   Select,
   Space,
+  Switch,
   Table,
   Tag,
   Tooltip,
   Typography,
 } from "@arco-design/web-react"
-import { IconDelete, IconEdit, IconQuestionCircle, IconRefresh } from "@arco-design/web-react/icon"
+import {
+  IconDelete,
+  IconDownload,
+  IconEdit,
+  IconQuestionCircle,
+  IconRefresh,
+  IconUpload,
+} from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { atom, computed } from "nanostores"
 import { Fragment, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
-import { refreshAllFeed, updateFeed } from "@/apis"
+import SettingItem from "./SettingItem"
+
+import { exportOPML, importOPML, refreshAllFeed, updateFeed } from "@/apis"
 import CustomLink from "@/components/ui/CustomLink"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import EditFeedModal from "@/components/ui/EditFeedModal"
@@ -24,9 +35,9 @@ import { handleFeedRefresh, updateFeedStatus, useFeedOperations } from "@/hooks/
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { dataState, setFeedsData } from "@/store/dataState"
-import { settingsState } from "@/store/settingsState"
+import { settingsState, updateSettings } from "@/store/settingsState"
 import { generateRelativeTime } from "@/utils/date"
-import { Message } from "@/utils/feedback"
+import { Message, Notification } from "@/utils/feedback"
 import { filterByQuery } from "@/utils/kmp"
 import createSetter from "@/utils/nanostores"
 import sleep from "@/utils/time"
@@ -349,9 +360,29 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
   )
 }
 
+const readFileAsText = async (file) => {
+  try {
+    return await file.text()
+  } catch (error) {
+    throw new Error(`Failed to read file: ${error.message}`)
+  }
+}
+
+const downloadFile = (content, filename, type) => {
+  const blob = new Blob([content], { type })
+  const url = globalThis.URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = filename
+  document.body.append(link)
+  link.click()
+  link.remove()
+  globalThis.URL.revokeObjectURL(url)
+}
+
 const FeedList = () => {
   const { isCoreDataReady } = useStore(dataState)
-  const { showDetailedRelativeTime } = useStore(settingsState)
+  const { showDetailedRelativeTime, showHiddenFeeds, showUnreadFeedsOnly } = useStore(settingsState)
   const filterType = useStore(filterTypeState)
   const tableData = useStore(tableDataState)
   const { polyglot } = useStore(polyglotState)
@@ -365,9 +396,44 @@ const FeedList = () => {
   const [feedForm] = Form.useForm()
   const [selectedFeed, setSelectedFeed] = useState(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [importing, setImporting] = useState(false)
 
   const { isBelowMedium } = useScreenWidth()
   const { refreshSingleFeed, handleDeleteFeed } = useFeedOperations(false)
+
+  const handleOpmlExport = async () => {
+    try {
+      const opmlContent = await exportOPML()
+      downloadFile(opmlContent, "feeds.opml", "text/xml")
+      Notification.success({ title: polyglot.t("sidebar.export_opml_success") })
+    } catch {
+      Notification.error({ title: polyglot.t("sidebar.export_opml_error") })
+    }
+  }
+
+  const handleOpmlImport = async (e) => {
+    const file = e.target.files[0]
+    if (!file) {
+      return
+    }
+    setImporting(true)
+    try {
+      const fileContent = await readFileAsText(file)
+      const response = await importOPML(fileContent)
+      if (response.status === 201) {
+        Notification.success({ title: polyglot.t("sidebar.import_opml_success") })
+      } else {
+        Notification.error({ title: polyglot.t("sidebar.import_opml_error") })
+      }
+    } catch (error) {
+      Notification.error({
+        title: polyglot.t("sidebar.import_opml_error"),
+        content: error.message,
+      })
+    } finally {
+      setImporting(false)
+    }
+  }
 
   const navigate = useNavigate()
 
@@ -525,6 +591,54 @@ const FeedList = () => {
 
   return (
     <>
+      <SettingItem
+        description={polyglot.t("settings.content.show_hidden_description")}
+        title={polyglot.t("sidebar.show_hidden_feeds")}
+      >
+        <Switch
+          checked={showHiddenFeeds}
+          onChange={(value) => updateSettings({ showHiddenFeeds: value })}
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.content.feeds_show_unread_description")}
+        title={polyglot.t("settings.content.feeds_show_unread_label")}
+      >
+        <Switch
+          checked={showUnreadFeedsOnly}
+          onChange={(value) => updateSettings({ showUnreadFeedsOnly: value })}
+        />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem title={polyglot.t("settings.content.import_export_label")}>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Button
+            icon={<IconUpload />}
+            onClick={() => document.querySelector("#feedListOpmlInput").click()}
+          >
+            {polyglot.t("sidebar.import_opml")}
+          </Button>
+          <input
+            accept=".opml,.xml"
+            disabled={importing}
+            id="feedListOpmlInput"
+            style={{ display: "none" }}
+            type="file"
+            onChange={handleOpmlImport}
+          />
+          <Button icon={<IconDownload />} onClick={handleOpmlExport}>
+            {polyglot.t("sidebar.export_opml")}
+          </Button>
+        </div>
+      </SettingItem>
+
+      <Divider />
+
       <div className="feed-table-action-bar">
         <div
           style={{

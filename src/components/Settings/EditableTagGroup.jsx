@@ -53,7 +53,7 @@ const EditableTagGroup = ({ keys, record }) => {
         updateHotkey(record.action, newKeys)
       }
     }
-  }, [isEditing])
+  }, [isEditing, keys, record.action])
 
   return (
     <div ref={groupRef}>

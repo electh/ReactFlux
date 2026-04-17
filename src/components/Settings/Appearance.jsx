@@ -18,18 +18,9 @@ const handleConfigChange = (settingsChanges) => {
 }
 
 const Appearance = () => {
-  const {
-    animationsEnabled,
-    coverDisplayMode,
-    fontFamily,
-    layoutMode,
-    showDetailedRelativeTime,
-    showEstimatedReadingTime,
-    showFeedIcon,
-    themeColor,
-  } = useStore(settingsState)
+  const { animationsEnabled, compactSidebarGroups, fontFamily, layoutMode, themeColor } =
+    useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
-  const isCombinedLayout = layoutMode === "stream"
 
   const fontFamilyOptions = [
     { label: polyglot.t("appearance.font_family_system"), value: "system-ui" },
@@ -156,35 +147,6 @@ const Appearance = () => {
       <Divider />
 
       <SettingItem
-        description={polyglot.t("appearance.cover_display_mode_description")}
-        disabled={isCombinedLayout}
-        disabledLabel={polyglot.t("settings.disabled_label")}
-        title={polyglot.t("appearance.cover_display_mode_label")}
-        disabledReason={polyglot.t("settings.only_available_in_layout", {
-          layout: polyglot.t("appearance.layout_mode_classic"),
-        })}
-      >
-        <Select
-          className="input-select"
-          disabled={isCombinedLayout}
-          value={coverDisplayMode}
-          onChange={(value) => handleConfigChange({ coverDisplayMode: value })}
-        >
-          <Select.Option value="auto">
-            {polyglot.t("appearance.cover_display_mode_auto")}
-          </Select.Option>
-          <Select.Option value="banner">
-            {polyglot.t("appearance.cover_display_mode_banner")}
-          </Select.Option>
-          <Select.Option value="thumbnail">
-            {polyglot.t("appearance.cover_display_mode_thumbnail")}
-          </Select.Option>
-        </Select>
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
         description={polyglot.t("appearance.lightbox_animation_description")}
         title={polyglot.t("appearance.lightbox_animation_label")}
       >
@@ -201,36 +163,12 @@ const Appearance = () => {
       <Divider />
 
       <SettingItem
-        description={polyglot.t("appearance.show_detailed_relative_time_description")}
-        title={polyglot.t("appearance.show_detailed_relative_time_label")}
+        description={polyglot.t("settings.compact_sidebar_groups_description")}
+        title={polyglot.t("settings.compact_sidebar_groups_label")}
       >
         <Switch
-          checked={showDetailedRelativeTime}
-          onChange={(value) => handleConfigChange({ showDetailedRelativeTime: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("appearance.show_estimated_reading_time_description")}
-        title={polyglot.t("appearance.show_estimated_reading_time_label")}
-      >
-        <Switch
-          checked={showEstimatedReadingTime}
-          onChange={(value) => handleConfigChange({ showEstimatedReadingTime: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("appearance.show_feed_icon_description")}
-        title={polyglot.t("appearance.show_feed_icon_label")}
-      >
-        <Switch
-          checked={showFeedIcon}
-          onChange={(value) => handleConfigChange({ showFeedIcon: value })}
+          checked={compactSidebarGroups}
+          onChange={(value) => handleConfigChange({ compactSidebarGroups: value })}
         />
       </SettingItem>
     </>

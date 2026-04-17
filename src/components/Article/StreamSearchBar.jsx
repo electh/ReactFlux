@@ -34,7 +34,7 @@ import {
   setFilterString,
 } from "@/store/contentState"
 import { categoriesState, feedsState } from "@/store/dataState"
-import { draftFilterTypeState } from "@/store/searchBarState"
+import draftFilterTypeState from "@/store/searchBarState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import createSetter from "@/utils/nanostores"
 

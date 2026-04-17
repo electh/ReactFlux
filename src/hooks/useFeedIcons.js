@@ -39,7 +39,7 @@ const useFeedIcons = (id, feed = null) => {
     return () => {
       loadingIcons.delete(id)
     }
-  }, [id])
+  }, [id, auth.server, feed?.icon?.external_icon_id, feedIcons])
 
   return feedIcons[id]
 }

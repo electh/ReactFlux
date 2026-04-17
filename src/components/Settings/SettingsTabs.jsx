@@ -1,8 +1,10 @@
 import { Tabs } from "@arco-design/web-react"
 import {
   IconCommand,
+  IconEye,
   IconFile,
   IconFolder,
+  IconRobot,
   IconSkin,
   IconStorage,
   IconUnorderedList,
@@ -10,12 +12,14 @@ import {
 import { useStore } from "@nanostores/react"
 import SimpleBar from "simplebar-react"
 
+import Ai from "./Ai"
 import Appearance from "./Appearance"
+import ArticleDisplay from "./ArticleDisplay"
 import CategoryList from "./CategoryList"
-import Content from "./Content"
 import FeedList from "./FeedList"
 import General from "./General"
 import Hotkeys from "./Hotkeys"
+import Reading from "./Reading"
 
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
@@ -92,15 +96,26 @@ const SettingsTabs = ({ activeTab, onTabChange }) => {
           key="4"
           title={
             <CustomTabTitle
-              icon={<IconFile style={{ fontSize: "20px" }} />}
-              title={polyglot.t("settings.content.label")}
+              icon={<IconEye style={{ fontSize: "20px" }} />}
+              title={polyglot.t("settings.reading")}
             />
           }
         >
-          <Content />
+          <Reading />
         </Tabs.TabPane>
         <Tabs.TabPane
           key="5"
+          title={
+            <CustomTabTitle
+              icon={<IconFile style={{ fontSize: "20px" }} />}
+              title={polyglot.t("settings.article_display")}
+            />
+          }
+        >
+          <ArticleDisplay />
+        </Tabs.TabPane>
+        <Tabs.TabPane
+          key="6"
           title={
             <CustomTabTitle
               icon={<IconSkin style={{ fontSize: "20px" }} />}
@@ -110,9 +125,20 @@ const SettingsTabs = ({ activeTab, onTabChange }) => {
         >
           <Appearance />
         </Tabs.TabPane>
+        <Tabs.TabPane
+          key="7"
+          title={
+            <CustomTabTitle
+              icon={<IconRobot style={{ fontSize: "20px" }} />}
+              title={polyglot.t("settings.ai")}
+            />
+          }
+        >
+          <Ai />
+        </Tabs.TabPane>
         {!isBelowMedium && (
           <Tabs.TabPane
-            key="6"
+            key="8"
             title={
               <CustomTabTitle
                 icon={<IconCommand style={{ fontSize: "20px" }} />}
