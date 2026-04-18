@@ -434,7 +434,11 @@ const StreamArticleCard = ({
           ) : null}
         </div>
         {isSelected || !streamRenderSelectedOnly ? (
-          <ArticleBodyRenderer entry={currentEntry} maxWidth={contentMaxWidth} />
+          <ArticleBodyRenderer
+            key={currentEntry.id}
+            entry={currentEntry}
+            maxWidth={contentMaxWidth}
+          />
         ) : (
           <p className="stream-story-preview" style={{ maxWidth: contentMaxWidth }}>
             {previewText}

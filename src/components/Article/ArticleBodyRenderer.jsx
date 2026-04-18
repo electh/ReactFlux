@@ -393,13 +393,6 @@ const ArticleBodyRenderer = ({ entry, lightboxState = null, maxWidth = "100%" })
     }
   }, [entry.id])
 
-  useEffect(() => {
-    if (!lightboxState) {
-      setLocalPhotoSliderVisible(false)
-      setLocalSelectedIndex(0)
-    }
-  }, [entry.id, lightboxState])
-
   return (
     <div
       className={["article-content", "article-body-shell", edgeToEdgeImages ? "edge-to-edge" : ""]
