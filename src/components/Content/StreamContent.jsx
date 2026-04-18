@@ -30,7 +30,9 @@ import { parseCoverImage } from "@/utils/images"
 import "./Content.css"
 
 const StreamContent = ({ info, getEntries, markAllAsRead }) => {
-  const { entries, filterDate, filterString } = useStore(contentState)
+  const { activeContent, entries, filterDate, filterString, isArticleListReady } =
+    useStore(contentState)
+  const filteredEntries = useStore(filteredEntriesState)
   const { isAppDataReady } = useStore(dataState)
   const { orderBy, orderDirection, showStatus } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
@@ -273,6 +275,21 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
       fetchSingleEntry(entryId)
     }
   }, [params, entries, fetchSingleEntry])
+
+  useEffect(() => {
+    if (!isArticleListReady) {
+      return
+    }
+    if (activeContent || params.entryId) {
+      return
+    }
+    const firstEntry = filteredEntries[0]
+    if (!firstEntry) {
+      return
+    }
+    setActiveContent(firstEntry)
+    scheduleMarkAsRead(firstEntry)
+  }, [isArticleListReady, activeContent, params.entryId, filteredEntries, scheduleMarkAsRead])
 
   return (
     <div ref={contentSplitRef} className="content-split">

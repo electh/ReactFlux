@@ -24,6 +24,7 @@ import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import {
   contentState,
+  filteredEntriesState,
   setActiveContent,
   setInfoFrom,
   setInfoId,
@@ -38,8 +39,9 @@ import { parseCoverImage } from "@/utils/images"
 import "./Content.css"
 
 const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
-  const { activeContent, entries, filterDate, filterString, isArticleLoading } =
+  const { activeContent, entries, filterDate, filterString, isArticleListReady, isArticleLoading } =
     useStore(contentState)
+  const filteredEntries = useStore(filteredEntriesState)
   const { isAppDataReady } = useStore(dataState)
   const {
     enableSwipeGesture,
@@ -276,6 +278,27 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
       setActiveContent(null)
     }
   }, [params, activeContent, fetchSingleEntry])
+
+  useEffect(() => {
+    if (!isArticleListReady || isBelowMedium) {
+      return
+    }
+    if (activeContent || params.entryId) {
+      return
+    }
+    const firstEntry = filteredEntries[0]
+    if (!firstEntry) {
+      return
+    }
+    handleEntryClick(firstEntry)
+  }, [
+    isArticleListReady,
+    isBelowMedium,
+    activeContent,
+    params.entryId,
+    filteredEntries,
+    handleEntryClick,
+  ])
 
   const handleEntryListSplitterPointerDown = (event) => {
     if (isBelowMedium) {
