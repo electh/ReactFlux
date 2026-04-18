@@ -147,7 +147,9 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
     }
 
     const entries = filteredEntriesState.get()
-    const currentIndex = entries.findIndex((entry) => entry.id === latestActiveContent.id)
+    const currentIndex = entries.findIndex(
+      (entry) => Number(entry.id) === Number(latestActiveContent.id),
+    )
     if (currentIndex === -1) {
       return null
     }

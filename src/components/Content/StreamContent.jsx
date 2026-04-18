@@ -26,8 +26,14 @@ import { duplicateHotkeysState } from "@/store/hotkeysState"
 import { settingsState } from "@/store/settingsState"
 import { Notification } from "@/utils/feedback"
 import { parseCoverImage } from "@/utils/images"
+import { extractEntryIdFromPath } from "@/utils/url"
 
 import "./Content.css"
+
+const getFilteredEntryIndex = (entryId) =>
+  filteredEntriesState.get().findIndex((entry) => Number(entry.id) === Number(entryId))
+
+const isEntryInFilteredEntries = (entryId) => getFilteredEntryIndex(entryId) !== -1
 
 const StreamContent = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, entries, filterDate, filterString, isArticleListReady } =
@@ -41,7 +47,7 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
   const cardsRef = useRef(null)
   const streamVirtualizerRef = useRef(null)
 
-  const params = useParams()
+  const { entryId } = useParams()
 
   useDocumentTitle()
 
@@ -58,6 +64,74 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
   const infoFromRef = useRef(info.from)
   const fetchArticleListOnlyRef = useRef(null)
   const fetchArticleListWithRelatedDataRef = useRef(null)
+  const autoFocusedEntryRef = useRef(null)
+  const pendingSingleEntryIdRef = useRef(null)
+
+  const revealStreamCard = useCallback(
+    (entryId) => {
+      const entryList = entryListRef.current
+      if (!entryList) {
+        return
+      }
+
+      const scrollElement = entryList.getScrollElement?.() || entryList.contentWrapperEl
+      const targetIndex = getFilteredEntryIndex(entryId)
+
+      if (targetIndex === 0 && scrollElement) {
+        scrollElement.scrollTo({ top: 0, behavior: "auto" })
+        return
+      }
+
+      if (targetIndex !== -1) {
+        streamVirtualizerRef.current?.scrollToIndex(targetIndex, {
+          align: "start",
+          smooth: false,
+        })
+      }
+    },
+    [entryListRef],
+  )
+
+  const focusStreamCard = useCallback(
+    (entryId, { reveal = false } = {}) => {
+      const targetId = String(entryId)
+      let stableFrames = 0
+
+      const focusCard = (attempt = 0) => {
+        const scrollElement =
+          entryListRef.current?.getScrollElement?.() || entryListRef.current?.contentWrapperEl
+        const card = entryListRef.current?.el?.querySelector(`[data-entry-id="${targetId}"]`)
+
+        if (!card) {
+          if (reveal) {
+            revealStreamCard(entryId)
+          }
+
+          scrollElement?.focus?.({ preventScroll: true })
+
+          if (attempt < 60) {
+            globalThis.requestAnimationFrame(() => focusCard(attempt + 1))
+          }
+          return
+        }
+
+        if (document.activeElement === card) {
+          stableFrames += 1
+        } else {
+          document.activeElement?.blur?.()
+          card.focus({ preventScroll: true })
+          stableFrames = 0
+        }
+
+        if (stableFrames < 3 && attempt < 60) {
+          globalThis.requestAnimationFrame(() => focusCard(attempt + 1))
+        }
+      }
+
+      globalThis.requestAnimationFrame(() => focusCard())
+    },
+    [entryListRef, revealStreamCard],
+  )
 
   const focusFirstStreamCard = useCallback(() => {
     const firstEntry = filteredEntriesState.get()[0]
@@ -69,34 +143,8 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
 
     setActiveContent(firstEntry)
     scheduleMarkAsRead(firstEntry)
-
-    const focusSelectedCard = (attempt = 0) => {
-      const entryList = entryListRef.current
-      if (!entryList) {
-        if (attempt < 8) {
-          globalThis.requestAnimationFrame(() => focusSelectedCard(attempt + 1))
-        }
-        return
-      }
-
-      const scrollElement = entryList.getScrollElement?.() || entryList.contentWrapperEl
-      if (scrollElement) {
-        scrollElement.scrollTo({ top: 0, behavior: "auto" })
-      }
-
-      const selectedCard = entryList.el?.querySelector(".card-wrapper.selected")
-      if (selectedCard) {
-        selectedCard.focus({ preventScroll: true })
-        return
-      }
-
-      if (attempt < 8) {
-        globalThis.requestAnimationFrame(() => focusSelectedCard(attempt + 1))
-      }
-    }
-
-    globalThis.requestAnimationFrame(() => focusSelectedCard())
-  }, [entryListRef, flushPendingMarkAsRead, scheduleMarkAsRead])
+    focusStreamCard(firstEntry.id, { reveal: true })
+  }, [flushPendingMarkAsRead, focusStreamCard, scheduleMarkAsRead])
 
   const fetchArticleListOnly = useCallback(
     async (options = {}) => {
@@ -179,20 +227,49 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
 
   const fetchSingleEntry = useCallback(
     async (entryId) => {
+      // Prevent repeated URL-entry fetches while contentState updates re-run effects.
+      if (String(pendingSingleEntryIdRef.current) === String(entryId)) {
+        return
+      }
+
+      const { activeContent: latestActiveContent } = contentState.get()
+      if (Number(latestActiveContent?.id) === Number(entryId)) {
+        return
+      }
+
       const existingEntry = entries.find((entry) => entry.id === Number(entryId))
 
       if (existingEntry) {
+        const { isArticleListReady: latestIsArticleListReady } = contentState.get()
+        if (latestIsArticleListReady && !isEntryInFilteredEntries(entryId)) {
+          return
+        }
+
         setActiveContent(existingEntry)
         return
       }
 
       try {
+        pendingSingleEntryIdRef.current = entryId
         setIsArticleLoading(true)
         const entry = parseCoverImage(await getEntry(entryId))
+        const currentEntryId = extractEntryIdFromPath(globalThis.location?.pathname || "")
+        if (String(currentEntryId) !== String(entryId)) {
+          return
+        }
+
+        const { isArticleListReady: latestIsArticleListReady } = contentState.get()
+        if (latestIsArticleListReady && !isEntryInFilteredEntries(entryId)) {
+          return
+        }
+
         setActiveContent(entry)
       } catch (error) {
         console.error("Failed to fetch entry:", error)
       } finally {
+        if (String(pendingSingleEntryIdRef.current) === String(entryId)) {
+          pendingSingleEntryIdRef.current = null
+        }
         setIsArticleLoading(false)
       }
     },
@@ -241,6 +318,7 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
     setInfoFrom(info.from)
     setInfoId(info.id)
     setActiveContent(null)
+    autoFocusedEntryRef.current = null
     if (info.from === "category") {
       fetchArticleListWithRelatedDataRef.current?.({ focusFirstInStream: true })
     } else {
@@ -270,26 +348,69 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
   }, [filterDate, filterString, orderDirection, showStatus])
 
   useEffect(() => {
-    const { entryId } = params
-    if (entryId && !entries.some((entry) => entry.id === Number(entryId))) {
+    if (!entryId) {
+      return
+    }
+
+    const entryIdNumber = Number(entryId)
+    if (Number(activeContent?.id) === entryIdNumber) {
+      return
+    }
+
+    const entryInEntries = entries.some((entry) => Number(entry.id) === entryIdNumber)
+    const entryInFilteredEntries = filteredEntries.some(
+      (entry) => Number(entry.id) === entryIdNumber,
+    )
+
+    if (!entryInEntries && (!isArticleListReady || entryInFilteredEntries)) {
       fetchSingleEntry(entryId)
     }
-  }, [params, entries, fetchSingleEntry])
+  }, [entryId, activeContent?.id, entries, filteredEntries, isArticleListReady, fetchSingleEntry])
 
   useEffect(() => {
     if (!isArticleListReady) {
+      autoFocusedEntryRef.current = null
       return
     }
-    if (activeContent || params.entryId) {
-      return
-    }
+
     const firstEntry = filteredEntries[0]
     if (!firstEntry) {
       return
     }
-    setActiveContent(firstEntry)
-    scheduleMarkAsRead(firstEntry)
-  }, [isArticleListReady, activeContent, params.entryId, filteredEntries, scheduleMarkAsRead])
+
+    const urlEntryId = entryId ? Number(entryId) : null
+    const urlEntryInList = urlEntryId
+      ? filteredEntries.find((entry) => Number(entry.id) === urlEntryId)
+      : null
+
+    const activeEntryInList = activeContent
+      ? filteredEntries.some((entry) => Number(entry.id) === Number(activeContent.id))
+      : false
+    const target = urlEntryInList || (activeEntryInList ? null : firstEntry)
+
+    if (!target) {
+      return
+    }
+
+    if (!activeContent || activeContent.id !== target.id) {
+      setActiveContent(target)
+      scheduleMarkAsRead(target)
+    }
+
+    if (autoFocusedEntryRef.current !== target.id) {
+      autoFocusedEntryRef.current = target.id
+      focusStreamCard(target.id, { reveal: true })
+    }
+  }, [
+    info.from,
+    info.id,
+    isArticleListReady,
+    activeContent,
+    focusStreamCard,
+    entryId,
+    filteredEntries,
+    scheduleMarkAsRead,
+  ])
 
   return (
     <div ref={contentSplitRef} className="content-split">

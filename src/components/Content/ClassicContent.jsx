@@ -79,6 +79,7 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
   const infoFromRef = useRef(info.from)
   const fetchArticleListOnlyRef = useRef(null)
   const fetchArticleListWithRelatedDataRef = useRef(null)
+  const autoSelectAppliedRef = useRef(null)
 
   const fetchArticleListOnly = useCallback(async () => {
     if (!isAppDataReady) {
@@ -231,6 +232,7 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
     setInfoFrom(info.from)
     setInfoId(info.id)
     setActiveContent(null)
+    autoSelectAppliedRef.current = null
     if (info.from === "category") {
       fetchArticleListWithRelatedDataRef.current?.()
     } else {
@@ -281,24 +283,31 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
 
   useEffect(() => {
     if (!isArticleListReady || isBelowMedium) {
+      if (!isArticleListReady) {
+        autoSelectAppliedRef.current = null
+      }
       return
     }
-    if (activeContent || params.entryId) {
+    if (autoSelectAppliedRef.current) {
       return
     }
     const firstEntry = filteredEntries[0]
     if (!firstEntry) {
       return
     }
+
+    const urlEntryId = params.entryId ? Number(params.entryId) : null
+    const urlEntryInList = urlEntryId
+      ? filteredEntries.some((entry) => entry.id === urlEntryId)
+      : false
+
+    if (urlEntryId && urlEntryInList) {
+      autoSelectAppliedRef.current = urlEntryId
+      return
+    }
+    autoSelectAppliedRef.current = firstEntry.id
     handleEntryClick(firstEntry)
-  }, [
-    isArticleListReady,
-    isBelowMedium,
-    activeContent,
-    params.entryId,
-    filteredEntries,
-    handleEntryClick,
-  ])
+  }, [isArticleListReady, isBelowMedium, params.entryId, filteredEntries, handleEntryClick])
 
   const handleEntryListSplitterPointerDown = (event) => {
     if (isBelowMedium) {

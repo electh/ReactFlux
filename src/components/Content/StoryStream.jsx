@@ -84,6 +84,7 @@ const StoryStream = ({
         className={`entry-list story-stream-list ${animationsEnabled ? "animations-enabled" : ""}`}
         scrollableNodeProps={{
           ref: cardsRef,
+          tabIndex: -1,
         }}
       >
         <LoadingCards />
