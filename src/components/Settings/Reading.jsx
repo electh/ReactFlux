@@ -40,6 +40,7 @@ const Reading = () => {
       >
         <Select
           className="input-select"
+          getPopupContainer={() => document.body}
           value={orderBy}
           onChange={(value) => updateSettings({ orderBy: value })}
         >
@@ -76,6 +77,7 @@ const Reading = () => {
       >
         <Select
           className="input-select"
+          getPopupContainer={() => document.body}
           value={removeDuplicates}
           onChange={(value) => updateSettings({ removeDuplicates: value })}
         >
@@ -95,6 +97,7 @@ const Reading = () => {
       >
         <Select
           className="input-select"
+          getPopupContainer={() => document.body}
           value={markReadBy}
           onChange={(value) => updateSettings({ markReadBy: value })}
         >

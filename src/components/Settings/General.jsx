@@ -37,6 +37,7 @@ const General = () => {
       >
         <Select
           className="input-select"
+          getPopupContainer={() => document.body}
           value={language}
           onChange={(value) => updateSettings({ language: value })}
         >
@@ -56,6 +57,7 @@ const General = () => {
       >
         <Select
           className="input-select"
+          getPopupContainer={() => document.body}
           value={homePage}
           onChange={(value) => updateSettings({ homePage: value })}
         >

@@ -28,6 +28,7 @@ const ArticleDisplay = () => {
       >
         <Select
           className="input-select"
+          getPopupContainer={() => document.body}
           value={titleAlignment}
           onChange={(value) => updateSettings({ titleAlignment: value })}
         >
@@ -91,6 +92,7 @@ const ArticleDisplay = () => {
         <Select
           className="input-select"
           disabled={isCombinedLayout}
+          getPopupContainer={() => document.body}
           value={coverDisplayMode}
           onChange={(value) => updateSettings({ coverDisplayMode: value })}
         >

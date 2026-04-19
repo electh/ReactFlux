@@ -147,6 +147,7 @@ const Ai = () => {
       >
         <Select
           className="input-select"
+          getPopupContainer={() => document.body}
           value={settings.aiProvider}
           onChange={handleAiProviderChange}
         >
@@ -201,6 +202,7 @@ const Ai = () => {
         <Select
           className="input-select"
           disabled={isProviderNone || modelIds.length === 0}
+          getPopupContainer={() => document.body}
           loading={modelsLoading}
           placeholder={polyglot.t("settings.content.ai_models_empty")}
           style={{ width: "30ch" }}

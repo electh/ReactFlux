@@ -143,6 +143,7 @@ const Appearance = () => {
       >
         <Select
           className="input-select"
+          getPopupContainer={() => document.body}
           value={fontFamily}
           onChange={(value) => handleConfigChange({ fontFamily: value })}
         >
@@ -162,6 +163,7 @@ const Appearance = () => {
       >
         <Select
           className="input-select"
+          getPopupContainer={() => document.body}
           value={layoutMode}
           onChange={(value) => handleConfigChange({ layoutMode: value })}
         >

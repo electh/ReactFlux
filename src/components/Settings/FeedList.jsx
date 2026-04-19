@@ -241,6 +241,7 @@ const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete })
 
       <Form.Item label={polyglot.t("feed_table.bulk_operations_type")}>
         <Select
+          getPopupContainer={() => document.body}
           value={operationType}
           onChange={(value) => {
             setOperationType(value)
@@ -260,6 +261,7 @@ const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete })
       {operationType === "category" && (
         <Form.Item label={polyglot.t("feed_table.bulk_operations_new_category")}>
           <Select
+            getPopupContainer={() => document.body}
             placeholder={polyglot.t("feed_table.bulk_operations_select_category")}
             value={newCategoryId}
             onChange={setNewCategoryId}
@@ -276,6 +278,7 @@ const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete })
       {operationType === "status" && (
         <Form.Item label={polyglot.t("feed_table.bulk_operations_new_status")}>
           <Select
+            getPopupContainer={() => document.body}
             placeholder={polyglot.t("feed_table.bulk_operations_select_status")}
             value={newStatus}
             onChange={setNewStatus}
