@@ -85,7 +85,7 @@
     "unstar_error": "Impossible de démarquer comme favori, veuillez réessayer plus tard",
     "fetched_content_success": "Contenu récupéré avec succès",
     "fetched_content_error": "Impossible de récupérer le contenu, veuillez réessayer plus tard",
-    "ai_summary_success": "Article résumé",
+    "ai_summary_success": "Article résumé par %{model} en %{seconds} secondes",
     "ai_summary_error": "Échec du résumé de l’article, réessayez plus tard",
     "ai_summary_provider_missing": "Le fournisseur IA n’est pas configuré",
     "ai_summary_api_key_missing": "Ajoutez une clé API pour le fournisseur sélectionné",

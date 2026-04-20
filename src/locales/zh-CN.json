@@ -85,7 +85,7 @@
     "unstar_error": "取消收藏失败，请稍后再试",
     "fetched_content_success": "原文获取成功",
     "fetched_content_error": "原文获取失败，请稍后再试",
-    "ai_summary_success": "文章已摘要",
+    "ai_summary_success": "文章已由 %{model} 在 %{seconds} 秒内完成摘要",
     "ai_summary_error": "摘要失败，请稍后再试",
     "ai_summary_provider_missing": "AI 提供商未配置",
     "ai_summary_api_key_missing": "请为所选 AI 提供商添加 API 密钥",

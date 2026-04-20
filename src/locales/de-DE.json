@@ -85,7 +85,7 @@
     "unstar_error": "Lesezeichen entfernen fehlgeschlagen, bitte später erneut versuchen",
     "fetched_content_success": "Inhalt erfolgreich heruntergeladen",
     "fetched_content_error": "Inhalt herunterladen fehlgeschlagen, bitte später erneut versuchen",
-    "ai_summary_success": "Artikel zusammengefasst",
+    "ai_summary_success": "Artikel von %{model} in %{seconds} Sekunden zusammengefasst",
     "ai_summary_error": "Artikel konnte nicht zusammengefasst werden, bitte später erneut versuchen",
     "ai_summary_provider_missing": "KI-Anbieter ist nicht konfiguriert",
     "ai_summary_api_key_missing": "Bitte einen API-Schlüssel für den ausgewählten KI-Anbieter hinzufügen",

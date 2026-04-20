@@ -101,7 +101,7 @@
     "unstar_error": "Error al desmarcar como favorito, por favor intente de nuevo más tarde",
     "fetched_content_success": "Contenido obtenido con éxito",
     "fetched_content_error": "Error al obtener el contenido, por favor intente de nuevo más tarde",
-    "ai_summary_success": "Artículo resumido",
+    "ai_summary_success": "Artículo resumido por %{model} en %{seconds} segundos",
     "ai_summary_error": "No se pudo resumir el artículo, inténtalo más tarde",
     "ai_summary_provider_missing": "El proveedor de IA no está configurado",
     "ai_summary_api_key_missing": "Agrega una clave de API para el proveedor seleccionado",

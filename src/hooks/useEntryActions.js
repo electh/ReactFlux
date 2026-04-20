@@ -205,6 +205,7 @@ const handleSummarizeContent = async (entry = contentState.get().activeContent) 
   const trimmedContent = textContent.slice(0, 12_000)
 
   try {
+    const startTime = performance.now()
     const summary = await summarizeWithProvider({
       provider: aiProvider,
       apiKey: aiApiKey,
@@ -212,6 +213,7 @@ const handleSummarizeContent = async (entry = contentState.get().activeContent) 
       title: entry.title,
       content: trimmedContent,
     })
+    const elapsedSeconds = ((performance.now() - startTime) / 1000).toFixed(1)
 
     const summaryHtml = formatSummaryHtml(summary, polyglot.t("article_card.ai_summary_heading"))
 
@@ -221,7 +223,12 @@ const handleSummarizeContent = async (entry = contentState.get().activeContent) 
     }
 
     updateEntryContent(entry, { content: summaryHtml })
-    Message.success(polyglot.t("actions.ai_summary_success"))
+    Message.success(
+      polyglot.t("actions.ai_summary_success", {
+        model: aiModel,
+        seconds: elapsedSeconds,
+      }),
+    )
     return summaryHtml
   } catch (error) {
     console.error("Failed to summarize content:", error)
