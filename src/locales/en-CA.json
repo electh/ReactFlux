@@ -115,7 +115,7 @@
     "unstar_tooltip": "Unstar",
     "fetch_original_tooltip": "Fetch original content",
     "summarize_tooltip": "Summarize article",
-    "ai_summary_heading": "AI Summary",
+    "ai_summary_heading": "Article Summary created by %{model}",
     "save_to_third_party_services_tooltip": "Save to third-party services",
     "share_tooltip": "Share",
     "view_comments_tooltip": "View comments"

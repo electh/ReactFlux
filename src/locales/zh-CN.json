@@ -115,7 +115,7 @@
     "unstar_tooltip": "取消收藏",
     "fetch_original_tooltip": "获取原文",
     "summarize_tooltip": "AI 摘要",
-    "ai_summary_heading": "AI 摘要",
+    "ai_summary_heading": "由 %{model} 创建的文章摘要",
     "save_to_third_party_services_tooltip": "保存到第三方服务",
     "share_tooltip": "分享",
     "view_comments_tooltip": "查看评论"

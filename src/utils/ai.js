@@ -330,15 +330,23 @@ const escapeHtml = (value) =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;")
 
+const applyInlineMarkdown = (escaped) =>
+  escaped
+    .replaceAll(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replaceAll(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, "$1<em>$2</em>")
+    .replaceAll(/`([^`]+)`/g, "<code>$1</code>")
+
+const renderInline = (text) => applyInlineMarkdown(escapeHtml(text))
+
 const buildListFromLines = (lines) =>
-  `<ul>${lines.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>`
+  `<ul>${lines.map((line) => `<li>${renderInline(line)}</li>`).join("")}</ul>`
 
 const buildParagraphs = (text) =>
   text
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.replaceAll("\n", " ").trim())
     .filter(Boolean)
-    .map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`)
+    .map((paragraph) => `<p>${renderInline(paragraph)}</p>`)
     .join("")
 
 export const formatSummaryHtml = (summaryText, heading) => {

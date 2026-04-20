@@ -131,7 +131,7 @@
     "unstar_tooltip": "Desmarcar como favorito",
     "fetch_original_tooltip": "Obtener contenido original",
     "summarize_tooltip": "Resumir artículo",
-    "ai_summary_heading": "Resumen de IA",
+    "ai_summary_heading": "Resumen de artículo creado por %{model}",
     "save_to_third_party_services_tooltip": "Guardar en servicios de terceros",
     "share_tooltip": "Compartir",
     "view_comments_tooltip": "Ver comentarios"

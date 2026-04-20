@@ -115,7 +115,7 @@
     "unstar_tooltip": "Αφαίρεση από αγαπημένα",
     "fetch_original_tooltip": "Ανάκτηση πρωτότυπου περιεχομένου",
     "summarize_tooltip": "Σύνοψη άρθρου",
-    "ai_summary_heading": "Σύνοψη AI",
+    "ai_summary_heading": "Σύνοψη άρθρου από %{model}",
     "save_to_third_party_services_tooltip": "Αποθήκευση σε τρίτες υπηρεσίες",
     "share_tooltip": "Κοινοποίηση",
     "view_comments_tooltip": "Προβολή σχολίων"

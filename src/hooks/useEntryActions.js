@@ -215,7 +215,10 @@ const handleSummarizeContent = async (entry = contentState.get().activeContent) 
     })
     const elapsedSeconds = ((performance.now() - startTime) / 1000).toFixed(1)
 
-    const summaryHtml = formatSummaryHtml(summary, polyglot.t("article_card.ai_summary_heading"))
+    const summaryHtml = formatSummaryHtml(
+      summary,
+      polyglot.t("article_card.ai_summary_heading", { model: aiModel }),
+    )
 
     if (!summaryHtml) {
       Message.error(polyglot.t("actions.ai_summary_error"))

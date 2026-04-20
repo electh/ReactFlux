@@ -115,7 +115,7 @@
     "unstar_tooltip": "Lesezeichen entfernen",
     "fetch_original_tooltip": "Originalinhalt herunterladen",
     "summarize_tooltip": "Artikel zusammenfassen",
-    "ai_summary_heading": "KI-Zusammenfassung",
+    "ai_summary_heading": "Artikelzusammenfassung erstellt von %{model}",
     "save_to_third_party_services_tooltip": "Bei Drittanbieter speichern",
     "share_tooltip": "Teilen",
     "view_comments_tooltip": "Kommentare anzeigen"
