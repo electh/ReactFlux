@@ -8,6 +8,15 @@ import { polyglotState } from "@/hooks/useLanguage"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { AI_PROVIDERS, fetchProviderModels } from "@/utils/ai"
 
+const summaryLanguageOptions = [
+  { label: "English", value: "en-CA" },
+  { label: "Deutsch", value: "de-DE" },
+  { label: "Español", value: "es-ES" },
+  { label: "Français", value: "fr-FR" },
+  { label: "简体中文", value: "zh-CN" },
+  { label: "Ελληνικά", value: "el-GR" },
+]
+
 const Ai = () => {
   const { polyglot } = useStore(polyglotState)
   const settings = useStore(settingsState)
@@ -220,6 +229,50 @@ const Ai = () => {
           {normalizedModelOptions.map((model) => (
             <Select.Option key={model.id} value={model.id}>
               {model.label}
+            </Select.Option>
+          ))}
+        </Select>
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.content.ai_summary_language_description")}
+        title={polyglot.t("settings.content.ai_summary_language_label")}
+      >
+        <Select
+          className="input-select"
+          getPopupContainer={() => document.body}
+          style={{ width: "30ch" }}
+          value={settings.aiSummaryLanguage}
+          onChange={(value) => updateSettings({ aiSummaryLanguage: value })}
+        >
+          {summaryLanguageOptions.map((option) => (
+            <Select.Option key={option.value} value={option.value}>
+              {option.label}
+            </Select.Option>
+          ))}
+        </Select>
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.content.ai_summary_excluded_language_description")}
+        title={polyglot.t("settings.content.ai_summary_excluded_language_label")}
+      >
+        <Select
+          allowClear
+          className="input-select"
+          getPopupContainer={() => document.body}
+          placeholder={polyglot.t("settings.content.ai_summary_excluded_language_none")}
+          style={{ width: "30ch" }}
+          value={settings.aiSummaryExcludedLanguage || undefined}
+          onChange={(value) => updateSettings({ aiSummaryExcludedLanguage: value || "" })}
+        >
+          {summaryLanguageOptions.map((option) => (
+            <Select.Option key={option.value} value={option.value}>
+              {option.label}
             </Select.Option>
           ))}
         </Select>

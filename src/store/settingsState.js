@@ -20,6 +20,8 @@ const defaultValue = {
   },
   aiModel: "",
   aiProvider: "none",
+  aiSummaryLanguage: "en-CA",
+  aiSummaryExcludedLanguage: "",
   animationsEnabled: true,
   articleWidth: 75,
   sidebarWidth: 240,

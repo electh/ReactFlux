@@ -175,12 +175,30 @@ export const fetchProviderModels = async (provider, apiKey) => {
   return []
 }
 
-const buildSummaryPrompt = (title, content) => {
+const LANGUAGE_NAMES = {
+  "en-CA": "English",
+  "de-DE": "German",
+  "es-ES": "Spanish",
+  "fr-FR": "French",
+  "zh-CN": "Simplified Chinese",
+  "el-GR": "Greek",
+}
+
+const getLanguageName = (code) => LANGUAGE_NAMES[code] || code
+
+const buildSummaryPrompt = (title, content, { targetLanguage, excludedLanguage } = {}) => {
   const trimmedTitle = title?.trim()
   const titleLine = trimmedTitle ? `Title: ${trimmedTitle}\n` : ""
+  const targetName = getLanguageName(targetLanguage || "en-CA")
+  let languageInstruction = `Write the summary in ${targetName}.`
+  if (excludedLanguage) {
+    const excludedName = getLanguageName(excludedLanguage)
+    languageInstruction += ` However, if the article is written in ${excludedName}, keep the summary in ${excludedName} instead of translating it.`
+  }
   return (
     "Summarize the following article in 5-7 concise bullet points. " +
-    "Focus on key facts and outcomes.\n\n" +
+    "Focus on key facts and outcomes. " +
+    `${languageInstruction}\n\n` +
     `${titleLine}Content:\n${content}`
   )
 }
@@ -207,7 +225,16 @@ const extractOllamaText = (data) => data?.response || data?.message?.content || 
 
 const extractLmStudioText = (data) => data?.choices?.[0]?.message?.content || ""
 
-export const summarizeWithProvider = async ({ provider, apiKey, model, title, content }) => {
+export const summarizeWithProvider = async ({
+  provider,
+  apiKey,
+  model,
+  title,
+  content,
+  targetLanguage,
+  excludedLanguage,
+}) => {
+  const promptOptions = { targetLanguage, excludedLanguage }
   if (provider === AI_PROVIDERS.ANTHROPIC) {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -219,7 +246,7 @@ export const summarizeWithProvider = async ({ provider, apiKey, model, title, co
       body: JSON.stringify({
         model,
         max_tokens: 1800,
-        messages: [{ role: "user", content: buildSummaryPrompt(title, content) }],
+        messages: [{ role: "user", content: buildSummaryPrompt(title, content, promptOptions) }],
       }),
     })
     const data = await parseJsonSafely(response)
@@ -241,7 +268,7 @@ export const summarizeWithProvider = async ({ provider, apiKey, model, title, co
           contents: [
             {
               role: "user",
-              parts: [{ text: buildSummaryPrompt(title, content) }],
+              parts: [{ text: buildSummaryPrompt(title, content, promptOptions) }],
             },
           ],
           generationConfig: { maxOutputTokens: 1800 },
@@ -267,7 +294,7 @@ export const summarizeWithProvider = async ({ provider, apiKey, model, title, co
         max_tokens: 1800,
         messages: [
           { role: "system", content: "You are a helpful assistant." },
-          { role: "user", content: buildSummaryPrompt(title, content) },
+          { role: "user", content: buildSummaryPrompt(title, content, promptOptions) },
         ],
       }),
     })
@@ -286,7 +313,7 @@ export const summarizeWithProvider = async ({ provider, apiKey, model, title, co
       },
       body: JSON.stringify({
         model,
-        prompt: buildSummaryPrompt(title, content),
+        prompt: buildSummaryPrompt(title, content, promptOptions),
         stream: false,
       }),
     })
@@ -308,7 +335,7 @@ export const summarizeWithProvider = async ({ provider, apiKey, model, title, co
         max_tokens: 1800,
         messages: [
           { role: "system", content: "You are a helpful assistant." },
-          { role: "user", content: buildSummaryPrompt(title, content) },
+          { role: "user", content: buildSummaryPrompt(title, content, promptOptions) },
         ],
       }),
     })

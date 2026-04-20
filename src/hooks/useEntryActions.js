@@ -175,6 +175,8 @@ const handleSummarizeContent = async (entry = contentState.get().activeContent) 
   const aiApiKey = aiApiKeys?.[aiProvider] || ""
   const aiModels = getSettings("aiModels") || {}
   const aiModel = aiModels?.[aiProvider] || ""
+  const aiSummaryLanguage = getSettings("aiSummaryLanguage") || "en-CA"
+  const aiSummaryExcludedLanguage = getSettings("aiSummaryExcludedLanguage") || ""
   const { polyglot } = polyglotState.get()
 
   if (!entry) {
@@ -212,6 +214,8 @@ const handleSummarizeContent = async (entry = contentState.get().activeContent) 
       model: aiModel,
       title: entry.title,
       content: trimmedContent,
+      targetLanguage: aiSummaryLanguage,
+      excludedLanguage: aiSummaryExcludedLanguage,
     })
     const elapsedSeconds = ((performance.now() - startTime) / 1000).toFixed(1)
 
