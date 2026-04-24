@@ -40,7 +40,7 @@
     "react-swipeable": "^7.0.2",
     "react-syntax-highlighter": "^16.1.1",
     "simplebar-react": "^3.3.2",
-    "validator": "^13.15.26",
+    "validator": "^13.15.35",
     "virtua": "^0.49.0",
     "yet-another-react-lightbox": "^3.30.1"
   },
