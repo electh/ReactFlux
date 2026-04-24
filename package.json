@@ -42,7 +42,7 @@
     "simplebar-react": "^3.3.2",
     "validator": "^13.15.35",
     "virtua": "^0.49.1",
-    "yet-another-react-lightbox": "^3.30.1"
+    "yet-another-react-lightbox": "^3.31.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
