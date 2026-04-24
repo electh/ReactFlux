@@ -42,8 +42,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1(@types/react@18.3.27)(react@18.3.1)
       littlefoot:
-        specifier: ^4.1.3
-        version: 4.1.3
+        specifier: ^4.1.4
+        version: 4.1.4
       lodash-es:
         specifier: ^4.18.1
         version: 4.18.1
@@ -2670,8 +2670,8 @@ packages:
     resolution: {integrity: sha512-ME4Fb83LgEgwNw96RKNvKV4VTLuXfoKudAmm2lP8Kk87KaMK0/Xrx/aAkMWmT8mDb+3MlFDspfbCs7adjRxA2g==}
     engines: {node: '>=20.0.0'}
 
-  littlefoot@4.1.3:
-    resolution: {integrity: sha512-mFerfBtJCAbgsbquiLRfetvqgQUYtFXfPmgSiWsadbYAX90YR16FdiStgAPvhpgYHSlX47Z+NyQB0mf9Az3d0Q==}
+  littlefoot@4.1.4:
+    resolution: {integrity: sha512-BK006qX71Nv/IRhzrETXctMz50xyIuzGNag9zB96vJub1+540zI2umXSCv8esvLBgvN6kOtuFBzVz+jGNtsMGw==}
 
   loadjs@4.3.0:
     resolution: {integrity: sha512-vNX4ZZLJBeDEOBvdr2v/F+0aN5oMuPu7JTqrMwp+DtgK+AryOlpy6Xtm2/HpNr+azEa828oQjOtWsB6iDtSfSQ==}
@@ -6585,7 +6585,7 @@ snapshots:
       rfdc: 1.4.1
       wrap-ansi: 9.0.2
 
-  littlefoot@4.1.3: {}
+  littlefoot@4.1.4: {}
 
   loadjs@4.3.0: {}
 
