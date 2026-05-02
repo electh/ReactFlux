@@ -1,14 +1,22 @@
-const toCategoryId = (value) => {
+const toExpandedCategoryKey = (value) => {
   if (typeof value === "number" && Number.isInteger(value) && value > 0) {
-    return value
+    return `/category/${value}`
   }
 
-  if (typeof value !== "string" || !/^\d+$/.test(value.trim())) {
+  if (typeof value !== "string") {
     return null
   }
 
-  const parsedValue = Number.parseInt(value, 10)
-  return parsedValue > 0 ? parsedValue : null
+  const trimmedValue = value.trim()
+  if (!trimmedValue) {
+    return null
+  }
+
+  if (/^\d+$/.test(trimmedValue)) {
+    return `/category/${trimmedValue}`
+  }
+
+  return trimmedValue
 }
 
 export const sanitizeExpandedCategories = (value) => {
@@ -19,14 +27,14 @@ export const sanitizeExpandedCategories = (value) => {
   const seen = new Set()
   const sanitizedCategories = []
 
-  for (const categoryId of value) {
-    const normalizedId = toCategoryId(categoryId)
-    if (normalizedId === null || seen.has(normalizedId)) {
+  for (const categoryKey of value) {
+    const normalizedKey = toExpandedCategoryKey(categoryKey)
+    if (normalizedKey === null || seen.has(normalizedKey)) {
       continue
     }
 
-    seen.add(normalizedId)
-    sanitizedCategories.push(normalizedId)
+    seen.add(normalizedKey)
+    sanitizedCategories.push(normalizedKey)
   }
 
   return sanitizedCategories

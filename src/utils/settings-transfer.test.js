@@ -74,8 +74,21 @@ test("sanitizeHotkeys keeps known actions and sanitizeExpandedCategories dedupli
   assert.deepEqual(sanitizedHotkeys.navigateToNextArticle, ["j", "right"])
   assert.deepEqual(sanitizedHotkeys.toggleReadStatus, defaultHotkeys.toggleReadStatus)
 
-  const expandedCategories = sanitizeExpandedCategories([1, "2", "02", -3, "abc", 1])
-  assert.deepEqual(expandedCategories, [1, 2])
+  const expandedCategories = sanitizeExpandedCategories([
+    1,
+    "2",
+    "/category/02",
+    "  /category/3  ",
+    -3,
+    "",
+    1,
+  ])
+  assert.deepEqual(expandedCategories, [
+    "/category/1",
+    "/category/2",
+    "/category/02",
+    "/category/3",
+  ])
 })
 
 test("formatSettingsExportFilename uses local timestamp segments", () => {
@@ -96,7 +109,7 @@ test("build and parse settings transfer XML round-trip exportable settings", () 
       ...defaultHotkeys,
       navigateToNextArticle: ["j", "n"],
     },
-    expandedCategories: [5, "2", 5],
+    expandedCategories: ["/category/5", "2", "/category/5"],
   })
 
   assert.equal(xmlContent.includes("aiProvider"), false)
@@ -106,7 +119,7 @@ test("build and parse settings transfer XML round-trip exportable settings", () 
   assert.equal(parsedSnapshot.settings.themeColor, "Red")
   assert.equal(parsedSnapshot.settings.homePage, "starred")
   assert.deepEqual(parsedSnapshot.hotkeys.navigateToNextArticle, ["j", "n"])
-  assert.deepEqual(parsedSnapshot.expandedCategories, [5, 2])
+  assert.deepEqual(parsedSnapshot.expandedCategories, ["/category/5", "/category/2"])
 })
 
 test("mergeImportedSettingsPreservingAi overwrites non-AI scope and keeps local AI settings", () => {
@@ -163,7 +176,7 @@ test("parseSettingsImportXml ignores unknown and AI keys and rejects unsupported
     </hotkey>
   </hotkeys>
   <sidebar>
-    <expandedCategory id="7" />
+    <expandedCategory key="/category/7" />
   </sidebar>
 </reloadedflux-settings>`
 
@@ -171,7 +184,7 @@ test("parseSettingsImportXml ignores unknown and AI keys and rejects unsupported
   assert.equal(parsedSnapshot.settings.themeColor, "Orange")
   assert.equal("aiProvider" in parsedSnapshot.settings, false)
   assert.deepEqual(parsedSnapshot.hotkeys.navigateToNextArticle, ["j"])
-  assert.deepEqual(parsedSnapshot.expandedCategories, [7])
+  assert.deepEqual(parsedSnapshot.expandedCategories, ["/category/7"])
 
   assert.throws(
     () => parseSettingsImportXml(xmlContent.replace('schemaVersion="1"', 'schemaVersion="99"')),

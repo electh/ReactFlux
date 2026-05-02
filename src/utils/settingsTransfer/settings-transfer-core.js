@@ -132,7 +132,7 @@ export const buildSettingsExportXmlFromSnapshot = (snapshot, metadata = {}) => {
   })
 
   const expandedCategoryLines = normalizedSnapshot.expandedCategories.map(
-    (categoryId) => `    <expandedCategory id="${categoryId}" />`,
+    (categoryKey) => `    <expandedCategory key="${escapeXml(categoryKey)}" />`,
   )
 
   return [
@@ -216,7 +216,13 @@ export const parseSettingsImportXml = (xmlText) => {
   const expandedCategories = [...sidebarSection.matchAll(/<expandedCategory\b([^>]*)\/>/gi)]
     .map((match) => {
       const attributes = parseAttributes(match[1] ?? "")
-      return attributes.id
+      if (attributes.key) {
+        return attributes.key
+      }
+      if (attributes.id) {
+        return `/category/${attributes.id}`
+      }
+      return null
     })
     .filter(Boolean)
 
