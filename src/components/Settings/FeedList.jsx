@@ -38,6 +38,7 @@ import { dataState, setFeedsData } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { generateRelativeTime } from "@/utils/date"
 import { Message, Notification } from "@/utils/feedback"
+import { downloadFile, readFileAsText } from "@/utils/file"
 import { filterByQuery } from "@/utils/kmp"
 import createSetter from "@/utils/nanostores"
 import sleep from "@/utils/time"
@@ -363,26 +364,6 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
   )
 }
 
-const readFileAsText = async (file) => {
-  try {
-    return await file.text()
-  } catch (error) {
-    throw new Error(`Failed to read file: ${error.message}`)
-  }
-}
-
-const downloadFile = (content, filename, type) => {
-  const blob = new Blob([content], { type })
-  const url = globalThis.URL.createObjectURL(blob)
-  const link = document.createElement("a")
-  link.href = url
-  link.download = filename
-  document.body.append(link)
-  link.click()
-  link.remove()
-  globalThis.URL.revokeObjectURL(url)
-}
-
 const FeedList = () => {
   const { isCoreDataReady } = useStore(dataState)
   const { showDetailedRelativeTime, showHiddenFeeds, showUnreadFeedsOnly } = useStore(settingsState)
@@ -416,6 +397,8 @@ const FeedList = () => {
 
   const handleOpmlImport = async (e) => {
     const file = e.target.files[0]
+    e.target.value = ""
+
     if (!file) {
       return
     }

@@ -2,39 +2,21 @@ import { persistentAtom } from "@nanostores/persistent"
 import { computed } from "nanostores"
 
 import createSetter from "@/utils/nanostores"
+import { defaultHotkeys, sanitizeHotkeys } from "@/utils/settingsTransfer/hotkeys-config"
 
-const defaultValue = {
-  exitDetailView: ["esc"],
-  fetchOriginalArticle: ["d"],
-  navigateToNextArticle: ["n", "j", "right"],
-  navigateToNextUnreadArticle: ["shift+n", "shift+j", "ctrl+right"],
-  navigateToPreviousArticle: ["p", "k", "left"],
-  navigateToPreviousUnreadArticle: ["shift+p", "shift+k", "ctrl+left"],
-  openLinkExternally: ["v"],
-  openPhotoSlider: ["i"],
-  refreshArticleList: ["r"],
-  saveToThirdPartyServices: ["s"],
-  showHotkeysSettings: ["shift+?"],
-  toggleReadStatus: ["m"],
-  toggleStarStatus: ["f"],
-}
-
-export const hotkeysState = persistentAtom("hotkeys", defaultValue, {
+export const hotkeysState = persistentAtom("hotkeys", defaultHotkeys, {
   encode: (value) => {
     const filteredValue = {}
 
     for (const key of Object.keys(value)) {
-      if (key in defaultValue) {
+      if (key in defaultHotkeys) {
         filteredValue[key] = value[key]
       }
     }
 
     return JSON.stringify(filteredValue)
   },
-  decode: (str) => {
-    const storedValue = JSON.parse(str)
-    return { ...defaultValue, ...storedValue }
-  },
+  decode: (str) => sanitizeHotkeys(JSON.parse(str), defaultHotkeys),
 })
 
 export const duplicateHotkeysState = computed(hotkeysState, (hotkeys) => {
@@ -54,4 +36,8 @@ export const updateHotkey = (action, keys) => {
   const setter = createSetter(hotkeysState, action)
   setter(keys)
 }
-export const resetHotkey = (action) => updateHotkey(action, defaultValue[action])
+export const resetHotkey = (action) => updateHotkey(action, defaultHotkeys[action])
+export const replaceHotkeys = (hotkeys) =>
+  hotkeysState.set(sanitizeHotkeys(hotkeys, defaultHotkeys))
+
+export { defaultHotkeys, sanitizeHotkeys } from "@/utils/settingsTransfer/hotkeys-config"

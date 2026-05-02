@@ -8,7 +8,7 @@
     "build": "vite build",
     "postbuild": "node scripts/deploy-build-branch.js",
     "preview": "pnpm run build && vite preview",
-    "test": "node --test src/scripts/version-info.test.js src/utils/version.test.js",
+    "test": "node --test src/scripts/version-info.test.js src/utils/version.test.js src/utils/settings-transfer.test.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint",
