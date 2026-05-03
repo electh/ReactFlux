@@ -71,15 +71,16 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
     (entryId) => {
       const entryList = entryListRef.current
       if (!entryList) {
-        return
+        return false
       }
 
       const scrollElement = entryList.getScrollElement?.() || entryList.contentWrapperEl
       const targetIndex = getFilteredEntryIndex(entryId)
 
       if (targetIndex === 0 && scrollElement) {
-        scrollElement.scrollTo({ top: 0, behavior: "auto" })
-        return
+        // Direct assignment bypasses CSS scroll-behavior: smooth on the stream scroller.
+        scrollElement.scrollTop = 0
+        return true
       }
 
       if (targetIndex !== -1) {
@@ -87,7 +88,10 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
           align: "start",
           smooth: false,
         })
+        return true
       }
+
+      return false
     },
     [entryListRef],
   )
@@ -96,6 +100,15 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
     (entryId, { reveal = false } = {}) => {
       const targetId = String(entryId)
       let stableFrames = 0
+      let hasRevealed = false
+
+      const revealTarget = () => {
+        if (!reveal || hasRevealed) {
+          return
+        }
+
+        hasRevealed = revealStreamCard(entryId)
+      }
 
       const focusCard = (attempt = 0) => {
         const scrollElement =
@@ -103,9 +116,7 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
         const card = entryListRef.current?.el?.querySelector(`[data-entry-id="${targetId}"]`)
 
         if (!card) {
-          if (reveal) {
-            revealStreamCard(entryId)
-          }
+          revealTarget()
 
           scrollElement?.focus?.({ preventScroll: true })
 
@@ -114,6 +125,8 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
           }
           return
         }
+
+        revealTarget()
 
         if (document.activeElement === card) {
           stableFrames += 1
