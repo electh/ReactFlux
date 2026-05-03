@@ -34,6 +34,26 @@ const getFilteredEntryIndex = (entryId) =>
   filteredEntriesState.get().findIndex((entry) => Number(entry.id) === Number(entryId))
 
 const isEntryInFilteredEntries = (entryId) => getFilteredEntryIndex(entryId) !== -1
+const STREAM_FOCUS_MAX_ATTEMPTS = 120
+const STREAM_FOCUS_STABLE_FRAMES = 6
+const STREAM_REVEAL_ALIGNMENT_TOLERANCE = 2
+
+const getStreamTopOffset = (scrollElement) => {
+  const computedStyle = globalThis.getComputedStyle(scrollElement)
+  const scrollPaddingTop =
+    computedStyle.scrollPaddingTop || computedStyle.scrollPaddingBlockStart || ""
+  const parsedOffset = Number.parseFloat(scrollPaddingTop)
+
+  return Number.isFinite(parsedOffset) ? parsedOffset : 0
+}
+
+const isStreamCardTopAligned = (card, scrollElement) => {
+  const cardRect = card.getBoundingClientRect()
+  const scrollRect = scrollElement.getBoundingClientRect()
+  const topOffset = getStreamTopOffset(scrollElement)
+
+  return Math.abs(cardRect.top - scrollRect.top - topOffset) <= STREAM_REVEAL_ALIGNMENT_TOLERANCE
+}
 
 const StreamContent = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, entries, filterDate, filterString, isArticleListReady } =
@@ -66,6 +86,15 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
   const fetchArticleListWithRelatedDataRef = useRef(null)
   const autoFocusedEntryRef = useRef(null)
   const pendingSingleEntryIdRef = useRef(null)
+
+  const resetStreamScrollPosition = useCallback(() => {
+    const scrollElement =
+      entryListRef.current?.getScrollElement?.() || entryListRef.current?.contentWrapperEl
+
+    if (scrollElement) {
+      scrollElement.scrollTop = 0
+    }
+  }, [entryListRef])
 
   const revealStreamCard = useCallback(
     (entryId) => {
@@ -100,15 +129,6 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
     (entryId, { reveal = false } = {}) => {
       const targetId = String(entryId)
       let stableFrames = 0
-      let hasRevealed = false
-
-      const revealTarget = () => {
-        if (!reveal || hasRevealed) {
-          return
-        }
-
-        hasRevealed = revealStreamCard(entryId)
-      }
 
       const focusCard = (attempt = 0) => {
         const scrollElement =
@@ -116,17 +136,21 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
         const card = entryListRef.current?.el?.querySelector(`[data-entry-id="${targetId}"]`)
 
         if (!card) {
-          revealTarget()
+          if (reveal) {
+            revealStreamCard(entryId)
+          }
 
           scrollElement?.focus?.({ preventScroll: true })
 
-          if (attempt < 60) {
+          if (attempt < STREAM_FOCUS_MAX_ATTEMPTS) {
             globalThis.requestAnimationFrame(() => focusCard(attempt + 1))
           }
           return
         }
 
-        revealTarget()
+        if (reveal) {
+          revealStreamCard(entryId)
+        }
 
         if (document.activeElement === card) {
           stableFrames += 1
@@ -136,7 +160,11 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
           stableFrames = 0
         }
 
-        if (stableFrames < 3 && attempt < 60) {
+        if (reveal && scrollElement && !isStreamCardTopAligned(card, scrollElement)) {
+          stableFrames = 0
+        }
+
+        if (stableFrames < STREAM_FOCUS_STABLE_FRAMES && attempt < STREAM_FOCUS_MAX_ATTEMPTS) {
           globalThis.requestAnimationFrame(() => focusCard(attempt + 1))
         }
       }
@@ -165,12 +193,22 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
       if (!isAppDataReady) {
         await fetchAppData()
       }
+      if (focusFirstInStream) {
+        resetStreamScrollPosition()
+      }
       await fetchArticleList(getEntries)
       if (focusFirstInStream) {
         focusFirstStreamCard()
       }
     },
-    [isAppDataReady, fetchArticleList, getEntries, fetchAppData, focusFirstStreamCard],
+    [
+      isAppDataReady,
+      fetchArticleList,
+      getEntries,
+      fetchAppData,
+      focusFirstStreamCard,
+      resetStreamScrollPosition,
+    ],
   )
 
   const fetchArticleListWithRelatedData = useCallback(
@@ -182,6 +220,9 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
         await fetchAppData()
       }
 
+      if (focusFirstInStream) {
+        resetStreamScrollPosition()
+      }
       await fetchArticleList(getEntries)
       if (!needsAppData) {
         await fetchFeedRelatedData()
@@ -197,6 +238,7 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
       getEntries,
       fetchFeedRelatedData,
       focusFirstStreamCard,
+      resetStreamScrollPosition,
     ],
   )
 
