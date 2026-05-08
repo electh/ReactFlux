@@ -92,7 +92,7 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
       entryListRef.current?.getScrollElement?.() || entryListRef.current?.contentWrapperEl
 
     if (scrollElement) {
-      scrollElement.scrollTop = 0
+      scrollElement.scrollTo({ top: 0, behavior: "auto" })
     }
   }, [entryListRef])
 
@@ -107,8 +107,8 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
       const targetIndex = getFilteredEntryIndex(entryId)
 
       if (targetIndex === 0 && scrollElement) {
-        // Direct assignment bypasses CSS scroll-behavior: smooth on the stream scroller.
-        scrollElement.scrollTop = 0
+        // scrollTo with behavior "auto" bypasses CSS scroll-behavior: smooth on the stream scroller.
+        scrollElement.scrollTo({ top: 0, behavior: "auto" })
         return true
       }
 
