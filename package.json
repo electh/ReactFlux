@@ -68,7 +68,7 @@
     "simple-git-hooks": "2.13.1",
     "vite": "^7.3.2",
     "vite-plugin-pwa": "^1.2.0",
-    "workbox-window": "^7.4.0"
+    "workbox-window": "^7.4.1"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"
