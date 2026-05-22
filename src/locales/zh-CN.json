@@ -80,8 +80,10 @@
     "saved_to_third-party_services_error": "保存到第三方服务失败，请稍后再试，或检查您的集成设置",
     "no_previous_article": "没有上一篇文章",
     "no_previous_unread_article": "没有上一篇未读文章",
+    "no_previous_category": "没有上一个分类",
     "no_next_article": "没有下一篇文章",
-    "no_next_unread_article": "没有下一篇未读文章"
+    "no_next_unread_article": "没有下一篇未读文章",
+    "no_next_category": "没有下一个分类"
   },
   "article_card": {
     "reading_time": "阅读时间：%{time}",
@@ -315,8 +317,10 @@
     "exitDetailView": "退出文章视图并返回列表",
     "fetchOriginalArticle": "获取并显示当前文章的原文",
     "navigateToNextArticle": "在列表中导航到下一篇文章",
+    "navigateToNextCategory": "导航到下一个分类",
     "navigateToNextUnreadArticle": "在列表中导航到下一篇未读文章",
     "navigateToPreviousArticle": "在列表中导航到上一篇文章",
+    "navigateToPreviousCategory": "导航到上一个分类",
     "navigateToPreviousUnreadArticle": "在列表中导航到上一篇未读文章",
     "openLinkExternally": "在当前文章的链接中打开一个新浏览器标签",
     "openPhotoSlider": "打开当前文章的图片浏览器，查看所有图片",

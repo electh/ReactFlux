@@ -80,8 +80,10 @@
     "saved_to_third-party_services_error": "Bei Drittanbieter speichern fehlgeschlagen, bitte später erneut versuchen oder Dienst-Einstellungen überprüfen",
     "no_previous_article": "Kein voriger Artikel",
     "no_previous_unread_article": "Kein vorheriger ungelesener Artikel",
+    "no_previous_category": "Keine vorherige Kategorie",
     "no_next_article": "Kein weiterer Artikel",
-    "no_next_unread_article": "Kein weiterer ungelesener Artikel"
+    "no_next_unread_article": "Kein weiterer ungelesener Artikel",
+    "no_next_category": "Keine nächste Kategorie"
   },
   "article_card": {
     "reading_time": "%{time} zu lesen",
@@ -315,8 +317,10 @@
     "exitDetailView": "Artikelansicht verlassen und zur Liste zurückkehren",
     "fetchOriginalArticle": "Den Originalinhalt des derzeitigen Artikels herunterladen und anzeigen",
     "navigateToNextArticle": "Zu nächstem Artikel in der Liste navigieren",
+    "navigateToNextCategory": "Zur nächsten Kategorie navigieren",
     "navigateToNextUnreadArticle": "Zu nächstem ungelesenen Artikel in der Liste navigieren",
     "navigateToPreviousArticle": "Zu vorigem Artikel in der Liste navigieren",
+    "navigateToPreviousCategory": "Zur vorherigen Kategorie navigieren",
     "navigateToPreviousUnreadArticle": "Zu vohergehendem ungelesenen Artikel in der Liste navigieren",
     "openLinkExternally": "Den Link des derzeitigen Artikels in neuem Browser-Tab öffnen",
     "openPhotoSlider": "Diashow öffnen, um alle Bilder des Artikels anzusehen",

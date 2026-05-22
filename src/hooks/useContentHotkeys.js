@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/react"
+import { useMemo } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 
 import useEntryActions from "@/hooks/useEntryActions"
@@ -11,12 +12,25 @@ const useContentHotkeys = ({ handleRefreshArticleList }) => {
   const duplicateHotkeys = useStore(duplicateHotkeysState)
   const hotkeys = useStore(hotkeysState)
 
+  const filteredHotkeys = useMemo(() => {
+    const duplicateHotkeySet = new Set(duplicateHotkeys)
+
+    return Object.fromEntries(
+      Object.entries(hotkeys).map(([action, keys]) => [
+        action,
+        keys.filter((key) => !duplicateHotkeySet.has(key)),
+      ]),
+    )
+  }, [duplicateHotkeys, hotkeys])
+
   const {
     exitDetailView,
     fetchOriginalArticle,
     navigateToNextArticle,
+    navigateToNextCategory,
     navigateToNextUnreadArticle,
     navigateToPreviousArticle,
+    navigateToPreviousCategory,
     navigateToPreviousUnreadArticle,
     openLinkExternally,
     openPhotoSlider,
@@ -33,47 +47,43 @@ const useContentHotkeys = ({ handleRefreshArticleList }) => {
     handleToggleStatus,
   } = useEntryActions()
 
-  const removeConflictingKeys = (keys) => keys.filter((key) => !duplicateHotkeys.includes(key))
+  useHotkeys(filteredHotkeys.exitDetailView, exitDetailView)
 
-  useHotkeys(removeConflictingKeys(hotkeys.exitDetailView), exitDetailView)
+  useHotkeys(filteredHotkeys.fetchOriginalArticle, () => fetchOriginalArticle(handleFetchContent))
 
-  useHotkeys(removeConflictingKeys(hotkeys.fetchOriginalArticle), () =>
-    fetchOriginalArticle(handleFetchContent),
-  )
+  useHotkeys(filteredHotkeys.navigateToNextArticle, () => navigateToNextArticle())
 
-  useHotkeys(removeConflictingKeys(hotkeys.navigateToNextArticle), () => navigateToNextArticle())
+  useHotkeys(filteredHotkeys.navigateToNextCategory, () => navigateToNextCategory())
 
-  useHotkeys(removeConflictingKeys(hotkeys.navigateToNextUnreadArticle), () =>
-    navigateToNextUnreadArticle(),
-  )
+  useHotkeys(filteredHotkeys.navigateToNextUnreadArticle, () => navigateToNextUnreadArticle())
 
-  useHotkeys(removeConflictingKeys(hotkeys.navigateToPreviousArticle), () =>
-    navigateToPreviousArticle(),
-  )
+  useHotkeys(filteredHotkeys.navigateToPreviousArticle, () => navigateToPreviousArticle())
 
-  useHotkeys(removeConflictingKeys(hotkeys.navigateToPreviousUnreadArticle), () =>
+  useHotkeys(filteredHotkeys.navigateToPreviousCategory, () => navigateToPreviousCategory())
+
+  useHotkeys(filteredHotkeys.navigateToPreviousUnreadArticle, () =>
     navigateToPreviousUnreadArticle(),
   )
 
-  useHotkeys(removeConflictingKeys(hotkeys.openLinkExternally), openLinkExternally)
+  useHotkeys(filteredHotkeys.openLinkExternally, openLinkExternally)
 
-  useHotkeys(removeConflictingKeys(hotkeys.openPhotoSlider), openPhotoSlider)
+  useHotkeys(filteredHotkeys.openPhotoSlider, openPhotoSlider)
 
-  useHotkeys(removeConflictingKeys(hotkeys.refreshArticleList), handleRefreshArticleList)
+  useHotkeys(filteredHotkeys.refreshArticleList, handleRefreshArticleList)
 
-  useHotkeys(removeConflictingKeys(hotkeys.saveToThirdPartyServices), () =>
+  useHotkeys(filteredHotkeys.saveToThirdPartyServices, () =>
     saveToThirdPartyServices(() => handleSaveToThirdPartyServices(activeContent)),
   )
 
-  useHotkeys(removeConflictingKeys(hotkeys.showHotkeysSettings), showHotkeysSettings, {
+  useHotkeys(filteredHotkeys.showHotkeysSettings, showHotkeysSettings, {
     useKey: true,
   })
 
-  useHotkeys(removeConflictingKeys(hotkeys.toggleReadStatus), () =>
+  useHotkeys(filteredHotkeys.toggleReadStatus, () =>
     toggleReadStatus(() => handleToggleStatus(activeContent)),
   )
 
-  useHotkeys(removeConflictingKeys(hotkeys.toggleStarStatus), () =>
+  useHotkeys(filteredHotkeys.toggleStarStatus, () =>
     toggleStarStatus(() => handleToggleStarred(activeContent)),
   )
 }

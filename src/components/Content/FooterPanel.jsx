@@ -28,6 +28,7 @@ import {
   setUnreadTodayCount,
 } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
+import findAdjacentItem from "@/utils/navigation"
 import "./FooterPanel.css"
 
 const updateAllEntriesAsRead = () => {
@@ -82,11 +83,10 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const jumpToNext = () => {
     if (info.from === "category") {
       const currentIndex = filteredCategories.findIndex((c) => c.id === Number(info.id))
-      const searchOrder = [
-        ...filteredCategories.slice(currentIndex + 1),
-        ...filteredCategories.slice(0, currentIndex),
-      ]
-      const next = searchOrder.find((c) => c.unreadCount > 0)
+      const next = findAdjacentItem(filteredCategories, currentIndex, "next", {
+        predicate: (category) => category.unreadCount > 0,
+        wrap: true,
+      })
       if (next) {
         navigate(`/category/${next.id}`)
       }
@@ -95,11 +95,10 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
         filteredFeeds.filter((f) => f.category.id === cat.id),
       )
       const currentIndex = orderedFeeds.findIndex((f) => f.id === Number(info.id))
-      const searchOrder = [
-        ...orderedFeeds.slice(currentIndex + 1),
-        ...orderedFeeds.slice(0, currentIndex),
-      ]
-      const next = searchOrder.find((f) => f.unreadCount > 0)
+      const next = findAdjacentItem(orderedFeeds, currentIndex, "next", {
+        predicate: (feed) => feed.unreadCount > 0,
+        wrap: true,
+      })
       if (next) {
         navigate(`/feed/${next.id}`)
       }

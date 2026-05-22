@@ -1,5 +1,6 @@
 import { Message } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
+import { useNavigate } from "react-router"
 
 import { polyglotState } from "./useLanguage"
 import useModalToggle from "./useModalToggle"
@@ -12,9 +13,12 @@ import {
   filteredEntriesState,
   nextContentState,
   prevContentState,
+  setActiveContent,
 } from "@/store/contentState"
+import { filteredCategoriesState } from "@/store/dataState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { extractImageSources } from "@/utils/images"
+import findAdjacentItem from "@/utils/navigation"
 
 const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
   const isSearchingBackward = direction === "prev"
@@ -26,12 +30,14 @@ const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
 }
 
 const useKeyHandlers = () => {
-  const { activeContent } = useStore(contentState)
+  const { activeContent, infoFrom, infoId } = useStore(contentState)
   const { polyglot } = useStore(polyglotState)
   const activeEntryIndex = useStore(activeEntryIndexState)
+  const filteredCategories = useStore(filteredCategoriesState)
   const filteredEntries = useStore(filteredEntriesState)
   const prevContent = useStore(prevContentState)
   const nextContent = useStore(nextContentState)
+  const navigate = useNavigate()
 
   const { entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
 
@@ -117,6 +123,27 @@ const useKeyHandlers = () => {
   const navigateToPreviousUnreadArticle = () => navigateToAdjacentUnreadArticle("prev")
   const navigateToNextUnreadArticle = () => navigateToAdjacentUnreadArticle("next")
 
+  const navigateToAdjacentCategory = withPhotoSliderCheck((direction) => {
+    if (infoFrom !== "category") {
+      return
+    }
+
+    const currentIndex = filteredCategories.findIndex((category) => category.id === Number(infoId))
+    const adjacentCategory = findAdjacentItem(filteredCategories, currentIndex, direction)
+
+    if (adjacentCategory) {
+      navigate(`/category/${adjacentCategory.id}`)
+      setActiveContent(null)
+    } else if (direction === "prev") {
+      Message.info(polyglot.t("actions.no_previous_category"))
+    } else {
+      Message.info(polyglot.t("actions.no_next_category"))
+    }
+  })
+
+  const navigateToPreviousCategory = () => navigateToAdjacentCategory("prev")
+  const navigateToNextCategory = () => navigateToAdjacentCategory("next")
+
   const openLinkExternally = withActiveContent(() => {
     window.open(activeContent.url, "_blank")
   })
@@ -161,8 +188,10 @@ const useKeyHandlers = () => {
     exitDetailView,
     fetchOriginalArticle,
     navigateToNextArticle,
+    navigateToNextCategory,
     navigateToNextUnreadArticle,
     navigateToPreviousArticle,
+    navigateToPreviousCategory,
     navigateToPreviousUnreadArticle,
     openLinkExternally,
     openPhotoSlider,

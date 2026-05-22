@@ -80,8 +80,10 @@
     "saved_to_third-party_services_error": "Impossible de sauvegarder dans les services tiers, veuillez réessayer plus tard ou vérifier vos paramètres d'intégration",
     "no_previous_article": "Aucun article précédent",
     "no_previous_unread_article": "Aucun article précédent non lu",
+    "no_previous_category": "Aucune catégorie précédente",
     "no_next_article": "Aucun article suivant",
-    "no_next_unread_article": "Aucun article suivant non lu"
+    "no_next_unread_article": "Aucun article suivant non lu",
+    "no_next_category": "Aucune catégorie suivante"
   },
   "article_card": {
     "reading_time": "%{time} de lecture",
@@ -315,8 +317,10 @@
     "exitDetailView": "Quitter la vue détaillée et revenir à la liste",
     "fetchOriginalArticle": "Récupérer et afficher le contenu original de l'article actuel",
     "navigateToNextArticle": "Naviguer vers l'article suivant dans la liste",
+    "navigateToNextCategory": "Naviguer vers la catégorie suivante",
     "navigateToNextUnreadArticle": "Naviguer vers l'article suivant non lu dans la liste",
     "navigateToPreviousArticle": "Naviguer vers l'article précédent dans la liste",
+    "navigateToPreviousCategory": "Naviguer vers la catégorie précédente",
     "navigateToPreviousUnreadArticle": "Naviguer vers l'article précédent non lu dans la liste",
     "openLinkExternally": "Ouvrir le lien de l'article actuel dans un nouvel onglet du navigateur",
     "openPhotoSlider": "Ouvrir le diaporama de photos pour afficher toutes les images de l'article actuel",

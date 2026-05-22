@@ -13,8 +13,10 @@ const Hotkeys = () => {
   const hotkeyActions = [
     "navigateToPreviousArticle",
     "navigateToPreviousUnreadArticle",
+    "navigateToPreviousCategory",
     "navigateToNextArticle",
     "navigateToNextUnreadArticle",
+    "navigateToNextCategory",
     "openLinkExternally",
     "toggleReadStatus",
     "fetchOriginalArticle",
