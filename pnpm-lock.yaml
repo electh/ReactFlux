@@ -39,8 +39,8 @@ importers:
         specifier: ^1.6.16
         version: 1.6.16
       html-react-parser:
-        specifier: ^6.1.0
-        version: 6.1.0(@types/react@18.3.27)(react@18.3.1)
+        specifier: ^6.1.1
+        version: 6.1.1(@types/react@18.3.27)(react@18.3.1)
       littlefoot:
         specifier: ^4.1.4
         version: 4.1.4
@@ -2408,8 +2408,8 @@ packages:
   html-dom-parser@7.1.0:
     resolution: {integrity: sha512-83BgaFSW/Sj6QTotGenvPvKfGxFzpFfrJNYes77mzqnq+YjVm12d4qeG0+108w4ejnam/+nCnnLuyyJlXkuPtA==}
 
-  html-react-parser@6.1.0:
-    resolution: {integrity: sha512-FoFY2aZrSAMcPPhUmb4R87gwfhwvYT6luJIQ++Xl9qm2x/4IDGjf+B2F+wcdrhMVOe/o44Nq7IEbvsKfq6fq+Q==}
+  html-react-parser@6.1.1:
+    resolution: {integrity: sha512-TitVBqKNyZYGVutHdALEtaNZV29QmuBgJcqeWnF4voLunG6YBlMpnm5XCVHQhxhUPW14nw1LW27NReGbCfPU0A==}
     peerDependencies:
       '@types/react': 0.14 || 15 || 16 || 17 || 18 || 19
       react: 0.14 || 15 || 16 || 17 || 18 || 19
@@ -6219,7 +6219,7 @@ snapshots:
       domhandler: 6.0.1
       htmlparser2: 12.0.0
 
-  html-react-parser@6.1.0(@types/react@18.3.27)(react@18.3.1):
+  html-react-parser@6.1.1(@types/react@18.3.27)(react@18.3.1):
     dependencies:
       domhandler: 6.0.1
       html-dom-parser: 7.1.0
