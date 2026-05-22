@@ -7,6 +7,8 @@ updates:
       day: friday
       time: "18:00"
       timezone: Asia/Shanghai
+    cooldown:
+      default-days: 1
     ignore:
       - dependency-name: react
         versions: [">=19.0.0"]
