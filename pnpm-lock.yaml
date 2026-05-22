@@ -39,8 +39,8 @@ importers:
         specifier: ^1.6.16
         version: 1.6.16
       html-react-parser:
-        specifier: ^6.1.0
-        version: 6.1.0(@types/react@18.3.27)(react@18.3.1)
+        specifier: ^6.1.2
+        version: 6.1.2(@types/react@18.3.27)(react@18.3.1)
       littlefoot:
         specifier: ^4.1.4
         version: 4.1.4
@@ -2408,8 +2408,8 @@ packages:
   html-dom-parser@7.1.0:
     resolution: {integrity: sha512-83BgaFSW/Sj6QTotGenvPvKfGxFzpFfrJNYes77mzqnq+YjVm12d4qeG0+108w4ejnam/+nCnnLuyyJlXkuPtA==}
 
-  html-react-parser@6.1.0:
-    resolution: {integrity: sha512-FoFY2aZrSAMcPPhUmb4R87gwfhwvYT6luJIQ++Xl9qm2x/4IDGjf+B2F+wcdrhMVOe/o44Nq7IEbvsKfq6fq+Q==}
+  html-react-parser@6.1.2:
+    resolution: {integrity: sha512-mV2hG5kvuC7tqND9kWwzOqlnWue8KLf8/OtT46WFsH9qvk/4t3D3SQTBgGRykzmroRUA8md63965DFzljNjHQQ==}
     peerDependencies:
       '@types/react': 0.14 || 15 || 16 || 17 || 18 || 19
       react: 0.14 || 15 || 16 || 17 || 18 || 19
@@ -3447,8 +3447,8 @@ packages:
     resolution: {integrity: sha512-1tB5mhVo7U+ETBKNf92xT4hrQa3pm0MZ0PQvuDnWgAAGHDsfp4lPSpiS6psrSiet87wyGPh9ft6wmhOMQ0hDiw==}
     engines: {node: '>=14.16'}
 
-  style-to-js@1.1.21:
-    resolution: {integrity: sha512-RjQetxJrrUJLQPHbLku6U/ocGtzyjbJMP9lCNK7Ag0CNh690nSH8woqWH9u16nMjYBAok+i7JO1NP2pOy8IsPQ==}
+  style-to-js@2.0.0:
+    resolution: {integrity: sha512-amkl/SwHF/Gb430+eOiN+XToZ6VsD2nota1kCXps4k1xagZOniEVNm8zKYm7RrGm2Q6d6hjnZdqebFIunoSJng==}
 
   style-to-object@1.0.14:
     resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
@@ -6219,13 +6219,13 @@ snapshots:
       domhandler: 6.0.1
       htmlparser2: 12.0.0
 
-  html-react-parser@6.1.0(@types/react@18.3.27)(react@18.3.1):
+  html-react-parser@6.1.2(@types/react@18.3.27)(react@18.3.1):
     dependencies:
       domhandler: 6.0.1
       html-dom-parser: 7.1.0
       react: 18.3.1
       react-property: 2.0.2
-      style-to-js: 1.1.21
+      style-to-js: 2.0.0
     optionalDependencies:
       '@types/react': 18.3.27
 
@@ -7329,7 +7329,7 @@ snapshots:
 
   strip-json-comments@5.0.3: {}
 
-  style-to-js@1.1.21:
+  style-to-js@2.0.0:
     dependencies:
       style-to-object: 1.0.14
 
