@@ -233,7 +233,7 @@ p {
 }
 
 @media screen and (max-width: 768px) {
-  .edge-to-edge .article-body .big-image {
+  .edge-to-edge .article-body .image-overlay-target-big {
     border-radius: 0;
     display: block;
     margin: 10px var(--image-margin);
@@ -241,20 +241,23 @@ p {
     max-width: var(--image-scale);
   }
 
-  .article-body .big-image {
-    border-radius: var(--border-radius-medium);
+  .article-body .image-overlay-target-big {
     display: block;
     margin: 10px auto;
     width: 100%;
     max-width: 100%;
   }
 
-  .article-body .image-overlay-button {
-    border-radius: 0;
+  .article-body .big-image {
+    border-radius: var(--border-radius-medium);
     display: block;
-    margin: 0 var(--image-margin);
-    width: var(--image-scale);
-    max-width: var(--image-scale);
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .edge-to-edge .article-body .big-image {
+    border-radius: 0;
   }
 
   .article-body table {
@@ -277,8 +280,7 @@ p {
     width: 100%;
   }
 
-  .article-body td .big-image,
-  .article-body td .image-overlay-button {
+  .article-body td .image-overlay-target-big {
     margin: 10px 0;
     width: 100%;
     max-width: 100%;

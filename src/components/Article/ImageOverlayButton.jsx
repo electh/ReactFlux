@@ -60,7 +60,9 @@ const ImageComponent = ({ imgNode, isIcon, isBigImage, index, metadata, togglePh
     </Tooltip>
   ) : (
     <div
-      className="image-overlay-target"
+      className={
+        isBigImage ? "image-overlay-target image-overlay-target-big" : "image-overlay-target"
+      }
       style={
         reservedDimensions && isBigImage
           ? {

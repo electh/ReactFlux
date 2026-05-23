@@ -6,13 +6,20 @@
 
 .image-overlay-target {
   display: inline-block;
+  margin: 10px auto;
   max-width: 100%;
   position: relative;
+  vertical-align: middle;
+}
+
+.image-overlay-target-big {
   width: 100%;
 }
 
+.article-body .image-overlay-target img:not(.icon-image),
 .image-overlay-target img {
   display: block;
+  margin: 0;
   max-width: 100%;
 }
 
