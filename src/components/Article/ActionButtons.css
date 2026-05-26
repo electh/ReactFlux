@@ -24,6 +24,7 @@
 .action-buttons.mobile {
   padding-left: 30px;
   padding-right: 30px;
+  background-color: var(--color-bg-1);
 }
 
 .mobile-buttons {

@@ -56,11 +56,12 @@
   .article-container {
     position: absolute !important;
     z-index: 3 !important;
+    inset: 0;
     height: 100% !important;
+    width: 100%;
     border-radius: 0;
     box-shadow: none;
     margin: 0;
-    padding-bottom: env(safe-area-inset-bottom) !important;
   }
   .content-empty {
     display: none;
