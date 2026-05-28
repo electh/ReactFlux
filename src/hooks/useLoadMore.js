@@ -3,6 +3,7 @@ import { atom } from "nanostores"
 
 import { contentState, setEntriesWithDeduplication, setLoadMoreVisible } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
+import createArticleListRequestKey from "@/utils/article-list-request-key"
 import { getTimestamp } from "@/utils/date"
 import { parseCoverImage } from "@/utils/images"
 import { extractBasicSearchTerms } from "@/utils/kmp"
@@ -20,8 +21,9 @@ const useLoadMore = () => {
   const loadingMore = useStore(loadingMoreState)
 
   const updateEntries = (newEntries) => {
-    const uniqueNewEntries = newEntries.filter((entry) => isUniqueEntry(entry, entries))
-    const combinedEntries = [...entries, ...uniqueNewEntries]
+    const currentEntries = contentState.get().entries
+    const uniqueNewEntries = newEntries.filter((entry) => isUniqueEntry(entry, currentEntries))
+    const combinedEntries = [...currentEntries, ...uniqueNewEntries]
     setEntriesWithDeduplication(combinedEntries)
   }
 
@@ -93,7 +95,14 @@ const useLoadMore = () => {
     return {}
   }
 
+  const getCurrentArticleListRequestKey = () =>
+    createArticleListRequestKey({
+      content: contentState.get(),
+      settings: settingsState.get(),
+    })
+
   const handleLoadMore = async (getEntries) => {
+    const requestKey = getCurrentArticleListRequestKey()
     setLoadingMore(true)
 
     try {
@@ -127,6 +136,10 @@ const useLoadMore = () => {
             break
           }
         }
+      }
+
+      if (requestKey !== getCurrentArticleListRequestKey()) {
+        return
       }
 
       if (response?.entries?.length > 0) {

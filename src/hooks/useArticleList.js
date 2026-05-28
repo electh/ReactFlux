@@ -17,6 +17,7 @@ import {
   setUnreadTodayCount,
 } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
+import createArticleListRequestKey from "@/utils/article-list-request-key"
 import { parseCoverImage } from "@/utils/images"
 import { extractBasicSearchTerms } from "@/utils/kmp"
 
@@ -30,18 +31,25 @@ const handleResponses = (response) => {
 }
 
 const useArticleList = (info, getEntries) => {
-  const { filterDate, filterString } = useStore(contentState)
+  const content = useStore(contentState)
+  const { filterDate, filterString } = content
   const { isAppDataReady } = useStore(dataState)
-  const { showStatus } = useStore(settingsState)
+  const settings = useStore(settingsState)
+  const { showStatus } = settings
 
-  const isLoading = useRef(false)
+  const latestRequestId = useRef(0)
+  const loadingRequestKey = useRef(null)
 
   const fetchArticleList = async (getEntries) => {
-    if (isLoading.current) {
+    const requestKey = createArticleListRequestKey({ content, settings, info })
+    if (loadingRequestKey.current === requestKey) {
       return
     }
 
-    isLoading.current = true
+    loadingRequestKey.current = requestKey
+    const requestId = ++latestRequestId.current
+    const isLatestRequest = () => requestId === latestRequestId.current
+
     setIsArticleListReady(false)
 
     try {
@@ -102,12 +110,18 @@ const useArticleList = (info, getEntries) => {
         }
       }
 
+      if (!isLatestRequest()) {
+        return
+      }
+
       handleResponses(response)
     } catch (error) {
       console.error("Error fetching articles:", error)
     } finally {
-      isLoading.current = false
-      setIsArticleListReady(true)
+      if (isLatestRequest()) {
+        loadingRequestKey.current = null
+        setIsArticleListReady(true)
+      }
     }
   }
 
@@ -116,6 +130,13 @@ const useArticleList = (info, getEntries) => {
       fetchArticleList(getEntries)
     }
   }, [isAppDataReady])
+
+  useEffect(() => {
+    return () => {
+      latestRequestId.current += 1
+      loadingRequestKey.current = null
+    }
+  }, [])
 
   return { fetchArticleList }
 }
