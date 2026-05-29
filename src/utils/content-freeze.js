@@ -16,6 +16,33 @@ const FROZEN_PLACEHOLDER =
 
 const IFRAME_LOADED_DATASET_KEY = "mediaLoaded"
 const IFRAME_LOAD_TRACKED_DATASET_KEY = "mediaLoadTracked"
+const FROZEN_STYLE_HEIGHT_DATASET_KEY = "frozenStyleHeight"
+const FROZEN_STYLE_WIDTH_DATASET_KEY = "frozenStyleWidth"
+
+const preserveRenderedMediaSize = (element) => {
+  const rect = element.getBoundingClientRect()
+
+  if (rect.width <= 0 || rect.height <= 0) {
+    return
+  }
+
+  element.dataset[FROZEN_STYLE_WIDTH_DATASET_KEY] = element.style.width
+  element.dataset[FROZEN_STYLE_HEIGHT_DATASET_KEY] = element.style.height
+  element.style.width = `${rect.width}px`
+  element.style.height = `${rect.height}px`
+}
+
+const restoreRenderedMediaSize = (element) => {
+  if (FROZEN_STYLE_WIDTH_DATASET_KEY in element.dataset) {
+    element.style.width = element.dataset[FROZEN_STYLE_WIDTH_DATASET_KEY]
+    delete element.dataset[FROZEN_STYLE_WIDTH_DATASET_KEY]
+  }
+
+  if (FROZEN_STYLE_HEIGHT_DATASET_KEY in element.dataset) {
+    element.style.height = element.dataset[FROZEN_STYLE_HEIGHT_DATASET_KEY]
+    delete element.dataset[FROZEN_STYLE_HEIGHT_DATASET_KEY]
+  }
+}
 
 /**
  * Track iframe load completion so freezeMediaLoading() only cancels embeds
@@ -73,6 +100,7 @@ export const freezeMediaLoading = (container) => {
     }
 
     img.dataset.frozenSrc = src
+    preserveRenderedMediaSize(img)
     img.src = FROZEN_PLACEHOLDER
   }
 
@@ -83,6 +111,7 @@ export const freezeMediaLoading = (container) => {
     }
 
     iframe.dataset.frozenSrc = src
+    preserveRenderedMediaSize(iframe)
     iframe.removeAttribute("src")
   }
 }
@@ -99,5 +128,6 @@ export const unfreezeMediaLoading = (container) => {
   for (const el of container.querySelectorAll("[data-frozen-src]")) {
     el.src = el.dataset.frozenSrc
     delete el.dataset.frozenSrc
+    restoreRenderedMediaSize(el)
   }
 }

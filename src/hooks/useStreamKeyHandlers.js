@@ -15,8 +15,12 @@ const STREAM_CARD_TOP_OFFSET_FALLBACK = 18
 const STREAM_SCROLL_ALIGNMENT_TOLERANCE = 4
 const STREAM_SCROLL_INITIAL_ALIGNMENT_DELAY_MS = 220
 const STREAM_SCROLL_MAX_SETTLE_TIME_MS = 2600
+const STREAM_SCROLL_POST_SMOOTH_POSITION_TOLERANCE = 1
+const STREAM_SCROLL_POST_SMOOTH_STABLE_FRAME_TARGET = 16
 const STREAM_SCROLL_QUIET_FRAME_TARGET = 20
+const STREAM_SCROLL_POSITION_STABLE_FRAME_TARGET = 3
 const STREAM_SCROLL_STABLE_FRAME_TARGET = 6
+const STREAM_SCROLL_VISIBLE_CLEANUP_DISTANCE = 16
 
 const getStreamCardTopOffset = (scrollElement) => {
   const computedStyle = globalThis.getComputedStyle(scrollElement)
@@ -172,9 +176,13 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
         .map(String),
     )
     let stableFrameCount = 0
+    let scrollPositionStableFrameCount = 0
+    let lastObservedScrollTop = null
     let lastTargetScrollTop = null
     let quietFrameCount = 0
     let shouldSkipNextScroll = skipInitialScroll
+    let hasIssuedSmoothScroll = skipInitialScroll && settingsState.get().animationsEnabled
+    let smoothCleanupCount = 0
 
     task.sessionId = sessionId
 
@@ -199,6 +207,7 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
         }
 
         stableFrameCount = 0
+        scrollPositionStableFrameCount = 0
         quietFrameCount = 0
 
         if (streamAlignmentTaskRef.current.delayTimeoutId !== null) {
@@ -272,6 +281,10 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
       const targetScrollTop = getStreamCardScrollTop(selectedCard, scrollElement)
       const targetScrollDelta =
         lastTargetScrollTop === null ? 0 : Math.abs(targetScrollTop - lastTargetScrollTop)
+      const scrollPositionDelta =
+        lastObservedScrollTop === null
+          ? 0
+          : Math.abs(scrollElement.scrollTop - lastObservedScrollTop)
       const topDelta = getStreamCardTopDelta(selectedCard, scrollElement)
       const maxScrollTop = Math.max(0, scrollElement.scrollHeight - scrollElement.clientHeight)
       const isClampedToStart =
@@ -283,12 +296,26 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
       const effectiveTopDelta = isClampedToStart || isClampedToEnd ? 0 : topDelta
 
       lastTargetScrollTop = targetScrollTop
+      lastObservedScrollTop = scrollElement.scrollTop
       quietFrameCount += 1
 
       if (targetScrollDelta > STREAM_SCROLL_ALIGNMENT_TOLERANCE) {
         stableFrameCount = 0
       } else {
         stableFrameCount += 1
+      }
+
+      const scrollSettleTolerance = hasIssuedSmoothScroll
+        ? STREAM_SCROLL_POST_SMOOTH_POSITION_TOLERANCE
+        : STREAM_SCROLL_ALIGNMENT_TOLERANCE
+      const scrollSettleFrameTarget = hasIssuedSmoothScroll
+        ? STREAM_SCROLL_POST_SMOOTH_STABLE_FRAME_TARGET
+        : STREAM_SCROLL_POSITION_STABLE_FRAME_TARGET
+
+      if (scrollPositionDelta > scrollSettleTolerance) {
+        scrollPositionStableFrameCount = 0
+      } else {
+        scrollPositionStableFrameCount += 1
       }
 
       if (effectiveTopDelta <= STREAM_SCROLL_ALIGNMENT_TOLERANCE) {
@@ -308,7 +335,13 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
         return
       }
 
+      if (scrollPositionStableFrameCount < scrollSettleFrameTarget) {
+        streamAlignmentTaskRef.current.frameId = globalThis.requestAnimationFrame(settleAlignment)
+        return
+      }
+
       stableFrameCount = 0
+      scrollPositionStableFrameCount = 0
 
       if (shouldSkipNextScroll) {
         shouldSkipNextScroll = false
@@ -316,7 +349,25 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
         return
       }
 
-      scrollStreamCardIntoView(selectedCard, scrollElement)
+      const isCleanupCorrection = hasIssuedSmoothScroll
+      const cleanupDistance = Math.abs(
+        getStreamCardScrollTop(selectedCard, scrollElement) - scrollElement.scrollTop,
+      )
+      const shouldSmoothCleanup =
+        isCleanupCorrection &&
+        settingsState.get().animationsEnabled &&
+        cleanupDistance > STREAM_SCROLL_VISIBLE_CLEANUP_DISTANCE &&
+        smoothCleanupCount === 0
+      const correctionBehavior = isCleanupCorrection
+        ? shouldSmoothCleanup
+          ? "smooth"
+          : "auto"
+        : getAnimationScrollBehavior()
+      if (shouldSmoothCleanup) {
+        smoothCleanupCount += 1
+      }
+      hasIssuedSmoothScroll ||= correctionBehavior === "smooth"
+      scrollStreamCardIntoView(selectedCard, scrollElement, correctionBehavior)
       quietFrameCount = 0
       scheduleAlignmentRetry()
     }
