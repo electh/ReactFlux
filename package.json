@@ -23,7 +23,7 @@
     "@nanostores/react": "^1.1.0",
     "canvas-confetti": "^1.9.4",
     "classnames": "^2.5.1",
-    "dayjs": "^1.11.20",
+    "dayjs": "^1.11.21",
     "framer-motion": "^12.40.0",
     "highlight.js": "^11.11.1",
     "hls.js": "^1.6.16",
