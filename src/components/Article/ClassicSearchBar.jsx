@@ -140,29 +140,31 @@ const ClassicSearchBar = () => {
           <Typography.Text className="count-label">({count})</Typography.Text>
         )}
       </div>
-      <div className="layout-selector-slot">
-        <ToolbarMenuButton
-          className="classic-layout-menu-button"
-          icon={currentLayout.icon}
-          label={viewControlLabel}
-          tooltip={viewControlLabel}
-        >
-          {layoutOptions.map((option) => (
-            <Menu.Item
-              key={option.value}
-              className="toolbar-menu-item"
-              onClick={() => updateSettings({ layoutMode: option.value })}
-            >
-              <span className="toolbar-menu-item-label">
-                {option.icon}
-                <span>
-                  {polyglot.t("article_list.view_label")}: {option.label}
+      {isBelowMedium ? null : (
+        <div className="layout-selector-slot">
+          <ToolbarMenuButton
+            className="classic-layout-menu-button"
+            icon={currentLayout.icon}
+            label={viewControlLabel}
+            tooltip={viewControlLabel}
+          >
+            {layoutOptions.map((option) => (
+              <Menu.Item
+                key={option.value}
+                className="toolbar-menu-item"
+                onClick={() => updateSettings({ layoutMode: option.value })}
+              >
+                <span className="toolbar-menu-item-label">
+                  {option.icon}
+                  <span>
+                    {polyglot.t("article_list.view_label")}: {option.label}
+                  </span>
                 </span>
-              </span>
-            </Menu.Item>
-          ))}
-        </ToolbarMenuButton>
-      </div>
+              </Menu.Item>
+            ))}
+          </ToolbarMenuButton>
+        </div>
+      )}
       <div className="button-group">
         <Dropdown
           popupVisible={searchDropdownVisible}
