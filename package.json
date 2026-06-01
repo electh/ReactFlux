@@ -73,12 +73,6 @@
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"
   },
-  "pnpm": {
-    "overrides": {
-      "lodash": "4.18.1",
-      "serialize-javascript": "^7.0.5"
-    }
-  },
   "lint-staged": {
     "*.{js,ts,mjs,jsx,tsx}": [
       "eslint --fix --no-warn-ignored",

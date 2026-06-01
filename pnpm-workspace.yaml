@@ -1,6 +1,10 @@
 packages:
   - .
 
+overrides:
+  lodash: 4.18.1
+  serialize-javascript: ^7.0.5
+
 allowBuilds:
   core-js: true
   esbuild: true
