@@ -34,26 +34,6 @@ const getFilteredEntryIndex = (entryId) =>
   filteredEntriesState.get().findIndex((entry) => Number(entry.id) === Number(entryId))
 
 const isEntryInFilteredEntries = (entryId) => getFilteredEntryIndex(entryId) !== -1
-const STREAM_FOCUS_MAX_ATTEMPTS = 120
-const STREAM_FOCUS_STABLE_FRAMES = 6
-const STREAM_REVEAL_ALIGNMENT_TOLERANCE = 2
-
-const getStreamTopOffset = (scrollElement) => {
-  const computedStyle = globalThis.getComputedStyle(scrollElement)
-  const scrollPaddingTop =
-    computedStyle.scrollPaddingTop || computedStyle.scrollPaddingBlockStart || ""
-  const parsedOffset = Number.parseFloat(scrollPaddingTop)
-
-  return Number.isFinite(parsedOffset) ? parsedOffset : 0
-}
-
-const isStreamCardTopAligned = (card, scrollElement) => {
-  const cardRect = card.getBoundingClientRect()
-  const scrollRect = scrollElement.getBoundingClientRect()
-  const topOffset = getStreamTopOffset(scrollElement)
-
-  return Math.abs(cardRect.top - scrollRect.top - topOffset) <= STREAM_REVEAL_ALIGNMENT_TOLERANCE
-}
 
 const StreamContent = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, entries, filterDate, filterString, isArticleListReady } =
@@ -73,7 +53,9 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
 
   const { entryListRef, flushPendingMarkAsRead, handleEntryClick, scheduleMarkAsRead } =
     useContentContext()
-  const { showHotkeysSettings } = useStreamKeyHandlers({ streamVirtualizerRef })
+  const { scrollSelectedCardIntoView, showHotkeysSettings } = useStreamKeyHandlers({
+    streamVirtualizerRef,
+  })
 
   const { fetchAppData, fetchFeedRelatedData } = useAppData()
   const { fetchArticleList } = useArticleList(info)
@@ -107,7 +89,8 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
       const targetIndex = getFilteredEntryIndex(entryId)
 
       if (targetIndex === 0 && scrollElement) {
-        // scrollTo with behavior "auto" bypasses CSS scroll-behavior: smooth on the stream scroller.
+        // behavior "auto" reveals instantly; smoothness is owned by the JS
+        // alignment loop (getAnimationScrollBehavior), not CSS.
         scrollElement.scrollTo({ top: 0, behavior: "auto" })
         return true
       }
@@ -125,53 +108,15 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
     [entryListRef],
   )
 
+  // Single owner: reveal the card instantly (so virtua mounts it), then delegate
+  // focus + alignment to the same loop the keyboard nav uses. No bespoke
+  // multi-frame focus loop, so no concurrent reflow or focus fights.
   const focusStreamCard = useCallback(
-    (entryId, { reveal = false } = {}) => {
-      const targetId = String(entryId)
-      let stableFrames = 0
-
-      const focusCard = (attempt = 0) => {
-        const scrollElement =
-          entryListRef.current?.getScrollElement?.() || entryListRef.current?.contentWrapperEl
-        const card = entryListRef.current?.el?.querySelector(`[data-entry-id="${targetId}"]`)
-
-        if (!card) {
-          if (reveal) {
-            revealStreamCard(entryId)
-          }
-
-          scrollElement?.focus?.({ preventScroll: true })
-
-          if (attempt < STREAM_FOCUS_MAX_ATTEMPTS) {
-            globalThis.requestAnimationFrame(() => focusCard(attempt + 1))
-          }
-          return
-        }
-
-        if (reveal) {
-          revealStreamCard(entryId)
-        }
-
-        if (document.activeElement === card) {
-          stableFrames += 1
-        } else {
-          document.activeElement?.blur?.()
-          card.focus({ preventScroll: true })
-          stableFrames = 0
-        }
-
-        if (reveal && scrollElement && !isStreamCardTopAligned(card, scrollElement)) {
-          stableFrames = 0
-        }
-
-        if (stableFrames < STREAM_FOCUS_STABLE_FRAMES && attempt < STREAM_FOCUS_MAX_ATTEMPTS) {
-          globalThis.requestAnimationFrame(() => focusCard(attempt + 1))
-        }
-      }
-
-      globalThis.requestAnimationFrame(() => focusCard())
+    (entryId) => {
+      revealStreamCard(entryId)
+      scrollSelectedCardIntoView(entryId, { skipInitialScroll: true })
     },
-    [entryListRef, revealStreamCard],
+    [revealStreamCard, scrollSelectedCardIntoView],
   )
 
   const focusFirstStreamCard = useCallback(() => {
@@ -184,7 +129,7 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
 
     setActiveContent(firstEntry)
     scheduleMarkAsRead(firstEntry)
-    focusStreamCard(firstEntry.id, { reveal: true })
+    focusStreamCard(firstEntry.id)
   }, [flushPendingMarkAsRead, focusStreamCard, scheduleMarkAsRead])
 
   const fetchArticleListOnly = useCallback(
@@ -441,7 +386,12 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
     const activeEntryInList = activeContent
       ? filteredEntries.some((entry) => Number(entry.id) === Number(activeContent.id))
       : false
-    const target = urlEntryInList || (activeEntryInList ? null : firstEntry)
+    // When activeContent is already a valid in-list entry (e.g. keyboard nav
+    // just set it), it wins — the URL param updates a tick later and must not
+    // revert active back to the previous entry, which would drop rapid
+    // keystrokes. The URL only drives selection on deep-link / refresh, when
+    // active is null or no longer in the list.
+    const target = activeEntryInList ? null : urlEntryInList || firstEntry
 
     if (!target) {
       return
@@ -454,7 +404,7 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
 
     if (autoFocusedEntryRef.current !== target.id) {
       autoFocusedEntryRef.current = target.id
-      focusStreamCard(target.id, { reveal: true })
+      focusStreamCard(target.id)
     }
   }, [
     info.from,

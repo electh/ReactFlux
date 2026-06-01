@@ -6,7 +6,7 @@ import useEntryActions from "@/hooks/useEntryActions"
 import { contentState } from "@/store/contentState"
 import { duplicateHotkeysState, hotkeysState } from "@/store/hotkeysState"
 
-const useClassicHotkeys = ({ handleRefreshArticleList }) => {
+const useClassicHotkeys = ({ handleRefreshArticleList, classicVirtualizerRef }) => {
   const { activeContent } = useStore(contentState)
   const duplicateHotkeys = useStore(duplicateHotkeysState)
   const hotkeys = useStore(hotkeysState)
@@ -24,7 +24,7 @@ const useClassicHotkeys = ({ handleRefreshArticleList }) => {
     showHotkeysSettings,
     toggleReadStatus,
     toggleStarStatus,
-  } = useClassicKeyHandlers()
+  } = useClassicKeyHandlers({ classicVirtualizerRef })
 
   const {
     handleFetchContent,

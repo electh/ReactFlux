@@ -57,6 +57,7 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
   const [isSwipingRight, setIsSwipingRight] = useState(false)
   const cardsRef = useRef(null)
+  const classicVirtualizerRef = useRef(null)
 
   const location = useLocation()
   const params = useParams()
@@ -161,7 +162,10 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
     [entries],
   )
 
-  useClassicHotkeys({ handleRefreshArticleList: fetchArticleListWithRelatedData })
+  useClassicHotkeys({
+    handleRefreshArticleList: fetchArticleListWithRelatedData,
+    classicVirtualizerRef,
+  })
 
   const handleSwiping = (eventData) => {
     setIsSwipingLeft(eventData.dir === "Left")
@@ -274,12 +278,22 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
     const { entryId } = params
     if (entryId) {
       if (!activeContent || activeContent.id !== Number(entryId)) {
-        fetchSingleEntry(entryId)
+        // The URL param updates a tick after keyboard nav sets activeContent. If
+        // the current activeContent is already a valid in-list entry, the URL is
+        // simply lagging — do NOT revert active to it, or rapid keystrokes get
+        // dropped. Only fetch when active is absent or no longer in the list
+        // (genuine deep-link / refresh).
+        const activeInList =
+          activeContent &&
+          filteredEntries.some((entry) => Number(entry.id) === Number(activeContent.id))
+        if (!activeInList) {
+          fetchSingleEntry(entryId)
+        }
       }
     } else if (activeContent) {
       setActiveContent(null)
     }
-  }, [params, activeContent, fetchSingleEntry])
+  }, [params, activeContent, filteredEntries, fetchSingleEntry])
 
   useEffect(() => {
     if (!isArticleListReady || isBelowMedium) {
@@ -372,6 +386,7 @@ const ClassicContent = ({ info, getEntries, markAllAsRead }) => {
           cardsRef={cardsRef}
           getEntries={getEntries}
           handleEntryClick={handleEntryClick}
+          virtualizerRef={classicVirtualizerRef}
         />
         <FooterPanel info={info} markAllAsRead={markAllAsRead} />
       </div>

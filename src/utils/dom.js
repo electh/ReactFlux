@@ -1,3 +1,5 @@
+import { getAnimationScrollBehavior } from "@/utils/scroll"
+
 export const extractHeadings = (content) => {
   if (!content) {
     return []
@@ -26,7 +28,7 @@ export const scrollToHeading = (heading) => {
 
   for (const element of headingElements) {
     if (element.textContent.trim() === heading.text) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
+      element.scrollIntoView({ behavior: getAnimationScrollBehavior(), block: "start" })
       break
     }
   }

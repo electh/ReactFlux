@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/react"
+import { useRef } from "react"
 
 import { polyglotState } from "./useLanguage"
 import useModalToggle from "./useModalToggle"
@@ -7,11 +8,21 @@ import usePhotoSlider from "./usePhotoSlider"
 import useContentContext from "@/hooks/useContentContext"
 import { contentState, filteredEntriesState } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
-import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { Message } from "@/utils/feedback"
 import { extractImageSources } from "@/utils/images"
+import { getAnimationScrollBehavior } from "@/utils/scroll"
 
-const getAnimationScrollBehavior = () => (settingsState.get().animationsEnabled ? "smooth" : "auto")
+// If consecutive navigations land within this window, the user is hammering the
+// key faster than a smooth scroll completes — animate instantly so the middle
+// pane jumps cleanly card-to-card instead of jerking between interrupted smooth
+// scrolls. A lone press animates normally.
+const CLASSIC_RAPID_NAV_WINDOW_MS = 350
+
+// Run after React commit + layout (next paint), so the DOM node exists and is
+// positioned. Two frames: first commits, second lets layout settle. Replaces a
+// magic 250ms timer and is refresh-rate-safe.
+const scrollAfterCommit = (callback) =>
+  globalThis.requestAnimationFrame(() => globalThis.requestAnimationFrame(callback))
 
 const findAdjacentUnreadEntry = (currentEntryId, direction, entries) => {
   const currentIndex = entries.findIndex((entry) => entry.id === currentEntryId)
@@ -27,11 +38,12 @@ const findAdjacentUnreadEntry = (currentEntryId, direction, entries) => {
   return searchRange.find((entry) => entry.status === "unread")
 }
 
-const useClassicKeyHandlers = () => {
+const useClassicKeyHandlers = ({ classicVirtualizerRef } = {}) => {
   const { activeContent } = useStore(contentState)
   const { polyglot } = useStore(polyglotState)
 
   const { entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
+  const lastNavAtRef = useRef(0)
 
   const getSelectedCard = (targetEntryId = null) => {
     if (!entryListRef.current?.el) {
@@ -61,14 +73,44 @@ const useClassicKeyHandlers = () => {
     return entries[currentIndex + step] ?? null
   }
 
-  const scrollSelectedCardIntoView = () => {
-    if (entryListRef.current) {
-      const selectedCard = getSelectedCard()
+  const scrollSelectedCardIntoView = (targetEntryId = null) => {
+    if (!entryListRef.current) {
+      return
+    }
 
-      if (selectedCard) {
-        selectedCard.scrollIntoView({
-          behavior: getAnimationScrollBehavior(),
-          block: "center",
+    // Rapid nav: each new smooth scroll interrupts the prior one mid-flight,
+    // which reads as a jerky middle pane on Chromium. Detect a fast streak and
+    // scroll instantly so it jumps cleanly card-to-card; a lone press animates.
+    // This only runs from a keypress-driven rAF callback, never during render.
+    // eslint-disable-next-line react-hooks/purity
+    const now = Date.now()
+    const rapidNav = now - lastNavAtRef.current < CLASSIC_RAPID_NAV_WINDOW_MS
+    lastNavAtRef.current = now
+    const animate = settingsState.get().animationsEnabled && !rapidNav
+
+    const selectedCard = getSelectedCard(targetEntryId)
+
+    if (selectedCard) {
+      selectedCard.scrollIntoView({
+        behavior: animate ? getAnimationScrollBehavior() : "auto",
+        block: "center",
+      })
+      return
+    }
+
+    // The card isn't mounted — rapid nav outran the virtualizer's rendered
+    // window, so scrollIntoView has no node to target (this left the middle pane
+    // behind). Reveal it by index via the virtua handle instead, which works
+    // regardless of mount state.
+    if (targetEntryId !== null && classicVirtualizerRef?.current) {
+      const targetIndex = filteredEntriesState
+        .get()
+        .findIndex((entry) => Number(entry.id) === Number(targetEntryId))
+
+      if (targetIndex !== -1) {
+        classicVirtualizerRef.current.scrollToIndex(targetIndex, {
+          align: "center",
+          smooth: animate,
         })
       }
     }
@@ -110,7 +152,7 @@ const useClassicKeyHandlers = () => {
 
     if (previousContent) {
       handleEntryClick(previousContent)
-      globalThis.setTimeout(() => scrollSelectedCardIntoView(), ANIMATION_DURATION_MS)
+      scrollAfterCommit(() => scrollSelectedCardIntoView(previousContent.id))
     } else {
       Message.info(polyglot.t("actions.no_previous_article"))
     }
@@ -122,7 +164,7 @@ const useClassicKeyHandlers = () => {
 
     if (nextContent) {
       handleEntryClick(nextContent)
-      globalThis.setTimeout(() => scrollSelectedCardIntoView(), ANIMATION_DURATION_MS)
+      scrollAfterCommit(() => scrollSelectedCardIntoView(nextContent.id))
     } else {
       Message.info(polyglot.t("actions.no_next_article"))
     }
@@ -143,7 +185,7 @@ const useClassicKeyHandlers = () => {
     )
     if (adjacentUnreadEntry) {
       handleEntryClick(adjacentUnreadEntry)
-      globalThis.setTimeout(scrollSelectedCardIntoView, ANIMATION_DURATION_MS)
+      scrollAfterCommit(() => scrollSelectedCardIntoView(adjacentUnreadEntry.id))
     } else if (direction === "prev") {
       Message.info(polyglot.t("actions.no_previous_unread_article"))
     } else {

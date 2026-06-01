@@ -1,13 +1,21 @@
 import { persistentAtom } from "@nanostores/persistent"
 
 import { getBrowserLanguage } from "@/utils/locales"
+import { prefersReducedMotion } from "@/utils/scroll"
 import {
   createDefaultSettings,
   mergeImportedSettingsPreservingAi,
   sanitizeSettings,
 } from "@/utils/settingsTransfer/settings-config"
 
-export const defaultValue = createDefaultSettings(getBrowserLanguage())
+// First-run only: seed `animationsEnabled` from the OS reduced-motion hint. The
+// base default stays pure (`true`); once the user toggles it, the persisted
+// value wins (decode/sanitize respect stored values). `resetSettings()` reuses
+// this module-load value, so reset does not re-query the OS.
+export const defaultValue = {
+  ...createDefaultSettings(getBrowserLanguage()),
+  animationsEnabled: !prefersReducedMotion(),
+}
 
 export const settingsState = persistentAtom("settings", defaultValue, {
   encode: (value) => {

@@ -22,9 +22,9 @@
   scroll-padding-block: 18px;
 }
 
-.story-stream-list.animations-enabled .simplebar-content-wrapper {
-  scroll-behavior: smooth;
-}
+/* Scroll smoothness is driven entirely by JS via getAnimationScrollBehavior();
+   no CSS scroll-behavior here so per-call `behavior` is the single source of
+   truth (older WebKit ignores a per-call "auto" override of CSS smooth). */
 
 .story-stream-empty {
   display: flex;

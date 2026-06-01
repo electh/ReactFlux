@@ -10,17 +10,25 @@ import { contentState, filteredEntriesState } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import { Message } from "@/utils/feedback"
 import { extractImageSources } from "@/utils/images"
+import {
+  getAnimationScrollBehavior,
+  quickScrollTo,
+  STREAM_SCROLL_ALIGNMENT_TOLERANCE,
+  STREAM_SCROLL_END_TIMEOUT_MS,
+  STREAM_SCROLL_STABLE_WINDOW_MS,
+  waitForElement,
+  waitForScrollEnd,
+} from "@/utils/scroll"
 
 const STREAM_CARD_TOP_OFFSET_FALLBACK = 18
-const STREAM_SCROLL_ALIGNMENT_TOLERANCE = 4
-const STREAM_SCROLL_INITIAL_ALIGNMENT_DELAY_MS = 220
 const STREAM_SCROLL_MAX_SETTLE_TIME_MS = 2600
-const STREAM_SCROLL_POST_SMOOTH_POSITION_TOLERANCE = 1
-const STREAM_SCROLL_POST_SMOOTH_STABLE_FRAME_TARGET = 16
-const STREAM_SCROLL_QUIET_FRAME_TARGET = 20
-const STREAM_SCROLL_POSITION_STABLE_FRAME_TARGET = 3
-const STREAM_SCROLL_STABLE_FRAME_TARGET = 6
-const STREAM_SCROLL_VISIBLE_CLEANUP_DISTANCE = 16
+const STREAM_ALIGNMENT_MAX_CORRECTIONS = 3
+const STREAM_CARD_WAIT_TIMEOUT_MS = 800
+// If a new navigation interrupts an in-flight smooth scroll within this window,
+// the user is hammering the key faster than a smooth scroll completes. Animating
+// each step would just creep a few hundred px then jump — so catch up instantly
+// and only animate once the keypresses stop.
+const STREAM_RAPID_NAV_WINDOW_MS = 350
 
 const getStreamCardTopOffset = (scrollElement) => {
   const computedStyle = globalThis.getComputedStyle(scrollElement)
@@ -31,33 +39,41 @@ const getStreamCardTopOffset = (scrollElement) => {
   return Number.isFinite(parsedOffset) ? parsedOffset : STREAM_CARD_TOP_OFFSET_FALLBACK
 }
 
-const getStreamCardScrollTop = (selectedCard, scrollElement) => {
+// Single layout read per alignment pass: returns the target scrollTop plus the
+// delta needed to decide "already aligned", accounting for clamp at start/end.
+const measureStreamCardAlignment = (selectedCard, scrollElement) => {
   const containerRect = scrollElement.getBoundingClientRect()
   const selectedRect = selectedCard.getBoundingClientRect()
   const topOffset = getStreamCardTopOffset(scrollElement)
 
-  return Math.max(0, scrollElement.scrollTop + selectedRect.top - containerRect.top - topOffset)
-}
+  const targetScrollTop = Math.max(
+    0,
+    scrollElement.scrollTop + selectedRect.top - containerRect.top - topOffset,
+  )
+  const topDelta = Math.abs(selectedRect.top - containerRect.top - topOffset)
+  const maxScrollTop = Math.max(0, scrollElement.scrollHeight - scrollElement.clientHeight)
+  const isClampedToStart =
+    targetScrollTop <= STREAM_SCROLL_ALIGNMENT_TOLERANCE &&
+    scrollElement.scrollTop <= STREAM_SCROLL_ALIGNMENT_TOLERANCE
+  const isClampedToEnd =
+    targetScrollTop >= maxScrollTop - STREAM_SCROLL_ALIGNMENT_TOLERANCE &&
+    scrollElement.scrollTop >= maxScrollTop - STREAM_SCROLL_ALIGNMENT_TOLERANCE
+  const effectiveTopDelta = isClampedToStart || isClampedToEnd ? 0 : topDelta
 
-const getAnimationScrollBehavior = () => (settingsState.get().animationsEnabled ? "smooth" : "auto")
+  return { targetScrollTop, topDelta, effectiveTopDelta }
+}
 
 const scrollStreamCardIntoView = (
   selectedCard,
   scrollElement,
   behavior = getAnimationScrollBehavior(),
+  measuredTargetScrollTop = null,
 ) => {
-  scrollElement.scrollTo({
-    behavior,
-    top: getStreamCardScrollTop(selectedCard, scrollElement),
-  })
-}
+  const top =
+    measuredTargetScrollTop ??
+    measureStreamCardAlignment(selectedCard, scrollElement).targetScrollTop
 
-const getStreamCardTopDelta = (selectedCard, scrollElement) => {
-  const containerRect = scrollElement.getBoundingClientRect()
-  const selectedRect = selectedCard.getBoundingClientRect()
-  const topOffset = getStreamCardTopOffset(scrollElement)
-
-  return Math.abs(selectedRect.top - containerRect.top - topOffset)
+  scrollElement.scrollTo({ behavior, top })
 }
 
 const focusStreamCard = (cardElement) => {
@@ -88,26 +104,33 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
 
   const { entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
   const streamAlignmentTaskRef = useRef({
-    delayTimeoutId: null,
-    frameId: null,
-    maxTimeoutId: null,
-    observedElements: new Set(),
+    controller: null,
+    waitController: null,
     resizeObserver: null,
-    sessionId: 0,
+    observedElements: new Map(),
+    maxTimeoutId: null,
+    restartRequested: false,
+    scrollInFlight: false,
+    lastInterruptedAt: 0,
   })
 
   const clearPendingStreamAlignment = () => {
     const task = streamAlignmentTaskRef.current
 
-    if (task.frameId !== null) {
-      globalThis.cancelAnimationFrame(task.frameId)
-      task.frameId = null
+    // If we're tearing down while a scroll was still animating, the user
+    // interrupted it (rapid nav). Stamp it so the next alignment catches up
+    // instantly instead of starting another doomed smooth scroll.
+    if (task.scrollInFlight) {
+      task.lastInterruptedAt = Date.now()
+      task.scrollInFlight = false
     }
 
-    if (task.delayTimeoutId !== null) {
-      globalThis.clearTimeout(task.delayTimeoutId)
-      task.delayTimeoutId = null
-    }
+    // Aborting the session signal propagates into every pending await
+    // (waitForScrollEnd / waitForElement), so no stale callback runs.
+    task.controller?.abort()
+    task.controller = null
+    task.waitController?.abort()
+    task.waitController = null
 
     if (task.maxTimeoutId !== null) {
       globalThis.clearTimeout(task.maxTimeoutId)
@@ -119,7 +142,8 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
       task.resizeObserver = null
     }
 
-    task.observedElements = new Set()
+    task.observedElements = new Map()
+    task.restartRequested = false
   }
 
   useEffect(() => clearPendingStreamAlignment, [])
@@ -162,6 +186,60 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
     return entries[currentIndex + step] ?? null
   }
 
+  const ensureResizeObserver = (signal, requestRestart) => {
+    const task = streamAlignmentTaskRef.current
+    if (task.resizeObserver || typeof ResizeObserver !== "function") {
+      return
+    }
+
+    // ResizeObserver fires once immediately on observe() and again for every
+    // reflow our own scroll causes. Only a *genuine height change* of an
+    // already-known element (after its first, baseline report) should restart
+    // alignment — otherwise the initial fire aborts the in-flight smooth scroll
+    // and the loop snaps with an "auto" correction.
+    task.resizeObserver = new ResizeObserver((entries) => {
+      if (signal.aborted) {
+        return
+      }
+
+      let meaningfulChange = false
+      for (const entry of entries) {
+        const previousHeight = task.observedElements.get(entry.target)
+        const currentHeight = entry.contentRect.height
+
+        if (previousHeight === undefined) {
+          // Baseline report (initial observe) — record, do not restart.
+          task.observedElements.set(entry.target, currentHeight)
+          continue
+        }
+
+        if (Math.abs(currentHeight - previousHeight) > STREAM_SCROLL_ALIGNMENT_TOLERANCE) {
+          task.observedElements.set(entry.target, currentHeight)
+          meaningfulChange = true
+        }
+      }
+
+      if (meaningfulChange) {
+        requestRestart()
+      }
+    })
+  }
+
+  const observeElement = (element) => {
+    const task = streamAlignmentTaskRef.current
+    if (!element || !(element instanceof Element) || task.observedElements.has(element)) {
+      return
+    }
+
+    task.observedElements.set(element, undefined)
+    task.resizeObserver?.observe(element)
+  }
+
+  // Event-driven alignment: top-align the selected card to scroll-padding, then
+  // wait for the scroll to actually finish (scrollend event or a wall-clock
+  // stability window — never frame counts) before re-measuring. virtua may
+  // remeasure mid-scroll and shift the target, so we allow a bounded number of
+  // correction passes. A ResizeObserver re-arms alignment on layout changes.
   const alignSelectedStreamCard = (
     targetEntryId = null,
     { relatedEntryIds = [], skipInitialScroll = false } = {},
@@ -169,242 +247,199 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
     clearPendingStreamAlignment()
 
     const task = streamAlignmentTaskRef.current
-    const sessionId = task.sessionId + 1
+    const controller = new AbortController()
+    const { signal } = controller
+    task.controller = controller
+
     const observedEntryIds = new Set(
       [targetEntryId, ...relatedEntryIds]
         .filter((entryId) => entryId !== null && entryId !== undefined)
         .map(String),
     )
-    let stableFrameCount = 0
-    let scrollPositionStableFrameCount = 0
-    let lastObservedScrollTop = null
-    let lastTargetScrollTop = null
-    let quietFrameCount = 0
-    let shouldSkipNextScroll = skipInitialScroll
-    let hasIssuedSmoothScroll = skipInitialScroll && settingsState.get().animationsEnabled
-    let smoothCleanupCount = 0
 
-    task.sessionId = sessionId
-
-    const isCurrentSession = () => streamAlignmentTaskRef.current.sessionId === sessionId
-
+    // Hard safety cap for buggy/noisy engines: tear everything down on fire.
     task.maxTimeoutId = globalThis.setTimeout(() => {
-      if (!isCurrentSession()) {
-        return
-      }
-
       clearPendingStreamAlignment()
     }, STREAM_SCROLL_MAX_SETTLE_TIME_MS)
 
-    const ensureResizeObserver = () => {
-      if (streamAlignmentTaskRef.current.resizeObserver || typeof ResizeObserver !== "function") {
+    const requestRestart = () => {
+      // Layout changed: re-arm alignment within the same session by aborting
+      // only the current wait, never the session controller.
+      task.restartRequested = true
+      task.waitController?.abort()
+    }
+
+    ensureResizeObserver(signal, requestRestart)
+
+    const revealCard = () => {
+      if (targetEntryId === null || !streamVirtualizerRef.current) {
         return
       }
 
-      const observer = new ResizeObserver(() => {
-        if (!isCurrentSession()) {
-          return
-        }
-
-        stableFrameCount = 0
-        scrollPositionStableFrameCount = 0
-        quietFrameCount = 0
-
-        if (streamAlignmentTaskRef.current.delayTimeoutId !== null) {
-          globalThis.clearTimeout(streamAlignmentTaskRef.current.delayTimeoutId)
-          streamAlignmentTaskRef.current.delayTimeoutId = null
-        }
-
-        if (streamAlignmentTaskRef.current.frameId !== null) {
-          globalThis.cancelAnimationFrame(streamAlignmentTaskRef.current.frameId)
-        }
-
-        streamAlignmentTaskRef.current.frameId = globalThis.requestAnimationFrame(settleAlignment)
-      })
-
-      streamAlignmentTaskRef.current.resizeObserver = observer
-    }
-
-    const observeElement = (element) => {
-      if (
-        !element ||
-        !(element instanceof Element) ||
-        streamAlignmentTaskRef.current.observedElements.has(element)
-      ) {
-        return
-      }
-
-      streamAlignmentTaskRef.current.observedElements.add(element)
-
-      if (streamAlignmentTaskRef.current.resizeObserver) {
-        streamAlignmentTaskRef.current.resizeObserver.observe(element)
-      }
-    }
-
-    const scheduleAlignmentRetry = () => {
-      if (streamAlignmentTaskRef.current.delayTimeoutId !== null) {
-        globalThis.clearTimeout(streamAlignmentTaskRef.current.delayTimeoutId)
-      }
-
-      streamAlignmentTaskRef.current.delayTimeoutId = globalThis.setTimeout(() => {
-        if (!isCurrentSession()) {
-          return
-        }
-
-        streamAlignmentTaskRef.current.delayTimeoutId = null
-        streamAlignmentTaskRef.current.frameId = globalThis.requestAnimationFrame(settleAlignment)
-      }, STREAM_SCROLL_INITIAL_ALIGNMENT_DELAY_MS)
-    }
-
-    function settleAlignment() {
-      if (!isCurrentSession()) {
-        return
-      }
-
-      const selectedCard = getSelectedCard(targetEntryId)
       const scrollElement = getEntryListScrollElement()
+      const topOffset = scrollElement ? getStreamCardTopOffset(scrollElement) : 0
+      const targetIndex = filteredEntriesState
+        .get()
+        .findIndex((entry) => entry.id === Number(targetEntryId))
 
-      if (!selectedCard || !scrollElement) {
-        streamAlignmentTaskRef.current.frameId = globalThis.requestAnimationFrame(settleAlignment)
-        return
+      if (targetIndex !== -1) {
+        streamVirtualizerRef.current.scrollToIndex(targetIndex, {
+          align: "start",
+          offset: -topOffset,
+          smooth: settingsState.get().animationsEnabled,
+        })
       }
-
-      ensureResizeObserver()
-      observeElement(selectedCard)
-
-      for (const observedEntryId of observedEntryIds) {
-        observeElement(getSelectedCard(observedEntryId))
-      }
-
-      focusStreamCard(selectedCard)
-
-      const targetScrollTop = getStreamCardScrollTop(selectedCard, scrollElement)
-      const targetScrollDelta =
-        lastTargetScrollTop === null ? 0 : Math.abs(targetScrollTop - lastTargetScrollTop)
-      const scrollPositionDelta =
-        lastObservedScrollTop === null
-          ? 0
-          : Math.abs(scrollElement.scrollTop - lastObservedScrollTop)
-      const topDelta = getStreamCardTopDelta(selectedCard, scrollElement)
-      const maxScrollTop = Math.max(0, scrollElement.scrollHeight - scrollElement.clientHeight)
-      const isClampedToStart =
-        targetScrollTop <= STREAM_SCROLL_ALIGNMENT_TOLERANCE &&
-        scrollElement.scrollTop <= STREAM_SCROLL_ALIGNMENT_TOLERANCE
-      const isClampedToEnd =
-        targetScrollTop >= maxScrollTop - STREAM_SCROLL_ALIGNMENT_TOLERANCE &&
-        scrollElement.scrollTop >= maxScrollTop - STREAM_SCROLL_ALIGNMENT_TOLERANCE
-      const effectiveTopDelta = isClampedToStart || isClampedToEnd ? 0 : topDelta
-
-      lastTargetScrollTop = targetScrollTop
-      lastObservedScrollTop = scrollElement.scrollTop
-      quietFrameCount += 1
-
-      if (targetScrollDelta > STREAM_SCROLL_ALIGNMENT_TOLERANCE) {
-        stableFrameCount = 0
-      } else {
-        stableFrameCount += 1
-      }
-
-      const scrollSettleTolerance = hasIssuedSmoothScroll
-        ? STREAM_SCROLL_POST_SMOOTH_POSITION_TOLERANCE
-        : STREAM_SCROLL_ALIGNMENT_TOLERANCE
-      const scrollSettleFrameTarget = hasIssuedSmoothScroll
-        ? STREAM_SCROLL_POST_SMOOTH_STABLE_FRAME_TARGET
-        : STREAM_SCROLL_POSITION_STABLE_FRAME_TARGET
-
-      if (scrollPositionDelta > scrollSettleTolerance) {
-        scrollPositionStableFrameCount = 0
-      } else {
-        scrollPositionStableFrameCount += 1
-      }
-
-      if (effectiveTopDelta <= STREAM_SCROLL_ALIGNMENT_TOLERANCE) {
-        if (
-          stableFrameCount >= STREAM_SCROLL_STABLE_FRAME_TARGET &&
-          quietFrameCount >= STREAM_SCROLL_QUIET_FRAME_TARGET
-        ) {
-          clearPendingStreamAlignment()
-        } else {
-          streamAlignmentTaskRef.current.frameId = globalThis.requestAnimationFrame(settleAlignment)
-        }
-        return
-      }
-
-      if (stableFrameCount < STREAM_SCROLL_STABLE_FRAME_TARGET) {
-        streamAlignmentTaskRef.current.frameId = globalThis.requestAnimationFrame(settleAlignment)
-        return
-      }
-
-      if (scrollPositionStableFrameCount < scrollSettleFrameTarget) {
-        streamAlignmentTaskRef.current.frameId = globalThis.requestAnimationFrame(settleAlignment)
-        return
-      }
-
-      stableFrameCount = 0
-      scrollPositionStableFrameCount = 0
-
-      if (shouldSkipNextScroll) {
-        shouldSkipNextScroll = false
-        scheduleAlignmentRetry()
-        return
-      }
-
-      const isCleanupCorrection = hasIssuedSmoothScroll
-      const cleanupDistance = Math.abs(
-        getStreamCardScrollTop(selectedCard, scrollElement) - scrollElement.scrollTop,
-      )
-      const shouldSmoothCleanup =
-        isCleanupCorrection &&
-        settingsState.get().animationsEnabled &&
-        cleanupDistance > STREAM_SCROLL_VISIBLE_CLEANUP_DISTANCE &&
-        smoothCleanupCount === 0
-      const correctionBehavior = isCleanupCorrection
-        ? shouldSmoothCleanup
-          ? "smooth"
-          : "auto"
-        : getAnimationScrollBehavior()
-      if (shouldSmoothCleanup) {
-        smoothCleanupCount += 1
-      }
-      hasIssuedSmoothScroll ||= correctionBehavior === "smooth"
-      scrollStreamCardIntoView(selectedCard, scrollElement, correctionBehavior)
-      quietFrameCount = 0
-      scheduleAlignmentRetry()
     }
 
-    streamAlignmentTaskRef.current.frameId = globalThis.requestAnimationFrame(settleAlignment)
+    let correctionCount = 0
+    let firstScrollSkipped = false
+
+    const alignOnce = async () => {
+      while (!signal.aborted) {
+        const scrollElement = getEntryListScrollElement()
+        let selectedCard = getSelectedCard(targetEntryId)
+
+        // Card not mounted yet (virtua): reveal it, then wait for the node.
+        if (!selectedCard || !scrollElement) {
+          if (!scrollElement) {
+            return
+          }
+
+          revealCard()
+
+          try {
+            await waitForElement(entryListRef.current.el, `[data-entry-id="${targetEntryId}"]`, {
+              signal,
+              timeout: STREAM_CARD_WAIT_TIMEOUT_MS,
+            })
+          } catch {
+            // Aborted or never appeared — let the loop re-check / exit.
+          }
+
+          if (signal.aborted) {
+            return
+          }
+          selectedCard = getSelectedCard(targetEntryId)
+          if (!selectedCard) {
+            return
+          }
+        }
+
+        observeElement(selectedCard)
+        for (const observedEntryId of observedEntryIds) {
+          observeElement(getSelectedCard(observedEntryId))
+        }
+
+        // Single focus owner (Step 4): focus the card here, once per pass.
+        focusStreamCard(selectedCard)
+
+        const { effectiveTopDelta, targetScrollTop } = measureStreamCardAlignment(
+          selectedCard,
+          scrollElement,
+        )
+
+        // Already aligned: never issue a no-op scroll (scrollend would not fire
+        // and the stability fallback would just spin).
+        if (effectiveTopDelta <= STREAM_SCROLL_ALIGNMENT_TOLERANCE) {
+          clearPendingStreamAlignment()
+          return
+        }
+
+        if (correctionCount >= STREAM_ALIGNMENT_MAX_CORRECTIONS) {
+          clearPendingStreamAlignment()
+          return
+        }
+
+        // When the user just interrupted an in-flight scroll, they're navigating
+        // faster than a full native smooth scroll completes. Use a short manual
+        // tween ("quick scroll") instead of either a slow smooth scroll (which
+        // would creep + jump) or an instant jump (which feels jarring).
+        const rapidNav = Date.now() - task.lastInterruptedAt < STREAM_RAPID_NAV_WINDOW_MS
+
+        if (skipInitialScroll && !firstScrollSkipped) {
+          // A reveal scroll was already issued by the caller (or revealCard).
+          // Wait for it to settle once before correcting, rather than firing an
+          // immediate competing scroll.
+          firstScrollSkipped = true
+        } else if (rapidNav && correctionCount === 0) {
+          const waitController = new AbortController()
+          task.waitController = waitController
+          const onAbort = () => waitController.abort()
+          signal.addEventListener("abort", onAbort, { once: true })
+
+          task.scrollInFlight = true
+          const reason = await quickScrollTo(scrollElement, targetScrollTop, {
+            signal: waitController.signal,
+          })
+
+          signal.removeEventListener("abort", onAbort)
+          task.waitController = null
+          if (reason !== "aborted") {
+            task.scrollInFlight = false
+          }
+          if (signal.aborted) {
+            return
+          }
+          correctionCount += 1
+          task.restartRequested = false
+          continue
+        } else {
+          // Pass 0 of an unhurried nav animates via the toggle; later passes snap
+          // "auto" to avoid a double animation while correcting reflow.
+          const behavior = correctionCount === 0 ? getAnimationScrollBehavior() : "auto"
+          scrollStreamCardIntoView(selectedCard, scrollElement, behavior, targetScrollTop)
+          correctionCount += 1
+          task.scrollInFlight = true
+        }
+
+        const waitController = new AbortController()
+        task.waitController = waitController
+        const onAbort = () => waitController.abort()
+        signal.addEventListener("abort", onAbort, { once: true })
+
+        const reason = await waitForScrollEnd(scrollElement, {
+          signal: waitController.signal,
+          timeout: STREAM_SCROLL_END_TIMEOUT_MS,
+          stableWindow: STREAM_SCROLL_STABLE_WINDOW_MS,
+          expectedTop: targetScrollTop,
+        })
+
+        signal.removeEventListener("abort", onAbort)
+        task.waitController = null
+        // Scroll completed normally (not interrupted) — clear in-flight so a
+        // later, unhurried nav animates again.
+        if (reason !== "aborted") {
+          task.scrollInFlight = false
+        }
+
+        if (signal.aborted) {
+          return
+        }
+
+        // A ResizeObserver restart aborts only the wait; clear the flag and
+        // re-measure under the same session.
+        task.restartRequested = false
+        // Loop back: re-measure (virtua may have shifted the target).
+      }
+    }
+
+    alignOnce()
   }
 
   const scrollSelectedCardIntoView = (
     targetEntryId = null,
     { relatedEntryIds = [], skipInitialScroll = false } = {},
   ) => {
-    if (entryListRef.current) {
-      const scrollElement = getEntryListScrollElement()
-      const topOffset = scrollElement ? getStreamCardTopOffset(scrollElement) : 0
-      const selectedCard = getSelectedCard(targetEntryId)
-
-      if (scrollElement) {
-        if (!selectedCard && targetEntryId !== null && streamVirtualizerRef.current) {
-          const targetIndex = filteredEntriesState
-            .get()
-            .findIndex((entry) => entry.id === Number(targetEntryId))
-
-          if (targetIndex !== -1) {
-            streamVirtualizerRef.current.scrollToIndex(targetIndex, {
-              align: "start",
-              offset: -topOffset,
-              smooth: settingsState.get().animationsEnabled,
-            })
-          }
-        }
-
-        alignSelectedStreamCard(targetEntryId, {
-          relatedEntryIds,
-          skipInitialScroll: skipInitialScroll || !selectedCard,
-        })
-      }
+    if (!entryListRef.current || !getEntryListScrollElement()) {
+      return
     }
+
+    const selectedCard = getSelectedCard(targetEntryId)
+
+    alignSelectedStreamCard(targetEntryId, {
+      relatedEntryIds,
+      skipInitialScroll: skipInitialScroll || !selectedCard,
+    })
   }
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } = usePhotoSlider()
@@ -554,6 +589,7 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
     openLinkExternally,
     openPhotoSlider,
     saveToThirdPartyServices,
+    scrollSelectedCardIntoView,
     showHotkeysSettings,
     toggleReadStatus,
     toggleStarStatus,
