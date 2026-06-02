@@ -356,12 +356,21 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
         // would creep + jump) or an instant jump (which feels jarring).
         const rapidNav = Date.now() - task.lastInterruptedAt < STREAM_RAPID_NAV_WINDOW_MS
 
+        // Pass 0 with animations on is the only pass that animates; later passes
+        // snap "auto" to clean up sub-pixel reflow without a second animation.
+        const animateThisPass = correctionCount === 0 && getAnimationScrollBehavior() === "smooth"
+
         if (skipInitialScroll && !firstScrollSkipped) {
           // A reveal scroll was already issued by the caller (or revealCard).
           // Wait for it to settle once before correcting, rather than firing an
           // immediate competing scroll.
           firstScrollSkipped = true
-        } else if (rapidNav && correctionCount === 0) {
+        } else if (animateThisPass && rapidNav) {
+          // Rapid nav: short fixed JS tween. virtua's native smooth is too slow
+          // to keep up with fast keypresses, so we accept the per-frame cost for
+          // the brief catch-up. The tween also survives virtua's height-
+          // compensation write (it re-asserts scrollTop every frame) where a
+          // native smooth scroll would be silently cancelled by it.
           const waitController = new AbortController()
           task.waitController = waitController
           const onAbort = () => waitController.abort()
@@ -383,11 +392,37 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
           correctionCount += 1
           task.restartRequested = false
           continue
+        } else if (animateThisPass) {
+          // Unhurried nav: let virtua own the smooth scroll. Its scrollToIndex
+          // uses native (compositor-driven) behavior:"smooth" AND coordinates its
+          // own reflow with it, so there's no per-frame main-thread tween fighting
+          // virtua's height compensation — which is what made the JS tween judder
+          // (dropped frames from forcing a virtua reflow every frame). We then
+          // wait for the scroll to settle via the usual event-driven detector.
+          const topOffset = getStreamCardTopOffset(scrollElement)
+          const targetIndex = filteredEntriesState
+            .get()
+            .findIndex((entry) => entry.id === Number(targetEntryId))
+
+          if (targetIndex !== -1 && streamVirtualizerRef.current) {
+            task.scrollInFlight = true
+            streamVirtualizerRef.current.scrollToIndex(targetIndex, {
+              align: "start",
+              offset: -topOffset,
+              smooth: true,
+            })
+          }
+          // Fall through to waitForScrollEnd below (do NOT continue): the same
+          // settle-detector handles virtua's smooth scroll, and the loop then
+          // re-measures for any sub-pixel correction.
+          correctionCount += 1
         } else {
-          // Pass 0 of an unhurried nav animates via the toggle; later passes snap
-          // "auto" to avoid a double animation while correcting reflow.
-          const behavior = correctionCount === 0 ? getAnimationScrollBehavior() : "auto"
-          scrollStreamCardIntoView(selectedCard, scrollElement, behavior, targetScrollTop)
+          // Reached only when the JS tween / virtua smooth didn't run: either
+          // animations are off (instant nav by design) or this is a correction
+          // pass (correctionCount > 0) cleaning up sub-pixel reflow. Both snap
+          // "auto" — a correction must not re-animate, animations-off wants the
+          // instant jump.
+          scrollStreamCardIntoView(selectedCard, scrollElement, "auto", targetScrollTop)
           correctionCount += 1
           task.scrollInFlight = true
         }

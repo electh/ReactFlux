@@ -354,6 +354,11 @@ const ArticleBodyRenderer = ({ entry, lightboxState = null, maxWidth = "100%" })
 
   const [localPhotoSliderVisible, setLocalPhotoSliderVisible] = useState(false)
   const [localSelectedIndex, setLocalSelectedIndex] = useState(0)
+  // The Lightbox widget is heavy and, in the stream's full-body mode, one is
+  // mounted per card — dozens at once, tanking scroll paint/composite. Defer
+  // mounting it until this card's slider is first opened; a closed-but-never-
+  // opened lightbox renders nothing and stays out of the scroll DOM.
+  const [lightboxEverOpened, setLightboxEverOpened] = useState(false)
 
   const isPhotoSliderVisible = lightboxState?.isPhotoSliderVisible ?? localPhotoSliderVisible
   const selectedIndex = lightboxState?.selectedIndex ?? localSelectedIndex
@@ -363,11 +368,18 @@ const ArticleBodyRenderer = ({ entry, lightboxState = null, maxWidth = "100%" })
 
   const togglePhotoSlider = useCallback(
     (index) => {
+      setLightboxEverOpened(true)
       setSelectedIndex(index)
       setIsPhotoSliderVisible((prev) => !prev)
     },
     [setIsPhotoSliderVisible, setSelectedIndex],
   )
+
+  // Mount the Lightbox once this card's slider has ever been opened — either via
+  // a local image click (lightboxEverOpened) or an external owner driving
+  // visibility (isPhotoSliderVisible), so keyboard/photo-slider entry points
+  // still work. Until then it stays out of the DOM to keep the stream light.
+  const shouldMountLightbox = lightboxEverOpened || isPhotoSliderVisible
 
   const imageSources = useMemo(
     () => entry.imageSources ?? extractImageSources(entry.content),
@@ -420,7 +432,7 @@ const ArticleBodyRenderer = ({ entry, lightboxState = null, maxWidth = "100%" })
           />
         )}
         {parsedHtml}
-        {hasImages ? (
+        {hasImages && shouldMountLightbox ? (
           <Lightbox
             animation={lightboxAnimationConfig}
             carousel={{ finite: true, padding: 0 }}
