@@ -29,6 +29,12 @@ const STREAM_CARD_WAIT_TIMEOUT_MS = 800
 // each step would just creep a few hundred px then jump — so catch up instantly
 // and only animate once the keypresses stop.
 const STREAM_RAPID_NAV_WINDOW_MS = 350
+// virtua's scrollToIndex lands ~scroll-padding short of our measured target, so a
+// correction always fires. A residual within this bound is tweened (not snapped)
+// so the tail of an animated nav reads as one continuous motion, not a glide +
+// little jerk.
+const STREAM_SMOOTH_RESIDUAL_MAX_PX = 64
+const STREAM_SMOOTH_RESIDUAL_DURATION_MS = 120
 
 const getStreamCardTopOffset = (scrollElement) => {
   const computedStyle = globalThis.getComputedStyle(scrollElement)
@@ -399,7 +405,14 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
           // virtua's height compensation — which is what made the JS tween judder
           // (dropped frames from forcing a virtua reflow every frame). We then
           // wait for the scroll to settle via the usual event-driven detector.
-          const topOffset = getStreamCardTopOffset(scrollElement)
+          //
+          // offset:0 (NOT -topOffset): our measured targetScrollTop already
+          // subtracts the scroll-padding (see measureStreamCardAlignment), and
+          // virtua's align:"start" lands the card at that same padded position.
+          // Passing -topOffset double-counted the padding and left virtua ~18px
+          // short, which forced a correction pass that read as a little snap at
+          // the end of the glide. With offset:0 virtua lands within tolerance and
+          // no correction fires.
           const targetIndex = filteredEntriesState
             .get()
             .findIndex((entry) => entry.id === Number(targetEntryId))
@@ -408,7 +421,7 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
             task.scrollInFlight = true
             streamVirtualizerRef.current.scrollToIndex(targetIndex, {
               align: "start",
-              offset: -topOffset,
+              offset: 0,
               smooth: true,
             })
           }
@@ -419,9 +432,42 @@ const useStreamKeyHandlers = ({ streamVirtualizerRef }) => {
         } else {
           // Reached only when the JS tween / virtua smooth didn't run: either
           // animations are off (instant nav by design) or this is a correction
-          // pass (correctionCount > 0) cleaning up sub-pixel reflow. Both snap
-          // "auto" — a correction must not re-animate, animations-off wants the
-          // instant jump.
+          // pass (correctionCount > 0) cleaning up residual misalignment.
+          //
+          // virtua's scrollToIndex lands ~topOffset (scroll-padding, ~18px) short
+          // of our measured target, so a correction always fires. Snapping it
+          // "auto" produces a visible little jerk at the end of an otherwise
+          // smooth glide. When animations are on and the residual is small, tween
+          // it instead so the tail reads as one continuous motion.
+          const residual = Math.abs(targetScrollTop - scrollElement.scrollTop)
+          const animateResidual =
+            getAnimationScrollBehavior() === "smooth" && residual <= STREAM_SMOOTH_RESIDUAL_MAX_PX
+
+          if (animateResidual) {
+            const waitController = new AbortController()
+            task.waitController = waitController
+            const onAbort = () => waitController.abort()
+            signal.addEventListener("abort", onAbort, { once: true })
+
+            task.scrollInFlight = true
+            const reason = await quickScrollTo(scrollElement, targetScrollTop, {
+              signal: waitController.signal,
+              duration: STREAM_SMOOTH_RESIDUAL_DURATION_MS,
+            })
+
+            signal.removeEventListener("abort", onAbort)
+            task.waitController = null
+            if (reason !== "aborted") {
+              task.scrollInFlight = false
+            }
+            if (signal.aborted) {
+              return
+            }
+            correctionCount += 1
+            task.restartRequested = false
+            continue
+          }
+
           scrollStreamCardIntoView(selectedCard, scrollElement, "auto", targetScrollTop)
           correctionCount += 1
           task.scrollInFlight = true
