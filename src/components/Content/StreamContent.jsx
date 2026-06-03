@@ -19,6 +19,7 @@ import {
   setActiveContent,
   setInfoFrom,
   setInfoId,
+  setIsArticleListReady,
   setIsArticleLoading,
 } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
@@ -76,15 +77,6 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
     if (scrollElement) {
       scrollElement.scrollTo({ top: 0, behavior: "auto" })
     }
-
-    // Reset virtua's *internal* scroll offset too, not just the DOM scrollTop.
-    // On a category swap the old list unmounts and the new one mounts while
-    // virtua still believes it is scrolled to the previous (deep) offset, so it
-    // paints the item that lived at that offset — a stale card floating at the
-    // top for 1-2 frames until its ResizeObserver remeasures the shorter list.
-    // scrollToIndex(0) forces virtua's own offset back to the top so the first
-    // render of the new list is already aligned.
-    streamVirtualizerRef.current?.scrollToIndex(0, { align: "start" })
   }, [entryListRef])
 
   const revealStreamCard = useCallback(
@@ -101,12 +93,6 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
         // behavior "auto" reveals instantly; smoothness is owned by the JS
         // alignment loop (getAnimationScrollBehavior), not CSS.
         scrollElement.scrollTo({ top: 0, behavior: "auto" })
-        // Also reset virtua's internal offset. After a category swap the new
-        // list mounts while virtua still holds the previous (deep) offset, so it
-        // briefly paints the item that lived there — a stale card floating at the
-        // top until its ResizeObserver remeasures. The DOM scrollTo above does
-        // not reset that internal state; scrollToIndex(0) does.
-        streamVirtualizerRef.current?.scrollToIndex(0, { align: "start" })
         return true
       }
 
@@ -330,6 +316,15 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
   }, [duplicateHotkeys, polyglot, showHotkeysSettings])
 
   useEffect(() => {
+    // Mark the list not-ready *synchronously* before changing infoFrom. The
+    // filteredEntries computed re-derives the instant infoFrom changes — with the
+    // OLD entries under the NEW category's visibility filter — and would render
+    // the Virtualizer with that mismatched list (a stale card) for several frames
+    // until fetchArticleList eventually flips ready false. fetchArticleList may
+    // first `await fetchAppData()`, so its own setIsArticleListReady(false) lands
+    // too late. Gating the Virtualizer off here unmounts it immediately so no
+    // stale render happens.
+    setIsArticleListReady(false)
     setInfoFrom(info.from)
     setInfoId(info.id)
     setActiveContent(null)

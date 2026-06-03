@@ -26,6 +26,37 @@
    no CSS scroll-behavior here so per-call `behavior` is the single source of
    truth (older WebKit ignores a per-call "auto" override of CSS smooth). */
 
+.story-stream-settling {
+  display: flex;
+  min-height: 280px;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-stream-settling-icon {
+  background: rgba(var(--primary-6), 1);
+  animation: story-stream-settling-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes story-stream-settling-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .story-stream-settling-icon {
+    animation: none;
+    opacity: 0.8;
+  }
+}
+
 .story-stream-empty {
   display: flex;
   min-height: 280px;
