@@ -63,10 +63,11 @@ jobs:
           gh pr comment ${{ github.event.pull_request.number }} --body "❌ **Automatic merge failed**
 
           Validation of pnpm-lock.yaml failed. Possible reasons:
+          - pnpm supply-chain policy blocked a package that is too new (for example, \`ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION\`)
           - Dependency conflicts with other PRs
           - Corrupted or inconsistent lock file
 
-          Please manually check and fix this PR, or wait for other PRs to merge first and then retry.
+          If this is a minimum release age failure, wait until the package is outside the policy window, then rerun the workflow. Otherwise, manually check and fix this PR, or wait for other PRs to merge first and then retry.
 
           You can try running \`@dependabot recreate\` to regenerate this PR."
         env:
