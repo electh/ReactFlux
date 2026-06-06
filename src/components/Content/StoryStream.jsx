@@ -183,7 +183,7 @@ const StoryStream = ({
         {polyglot.t("article_list.stream_end_refresh")}
       </Button>
       {infoFrom === "all" ? null : (
-        <Button long onClick={() => navigate("/all")}>
+        <Button long type="outline" onClick={() => navigate("/all")}>
           {polyglot.t("article_list.stream_end_see_all")}
         </Button>
       )}
