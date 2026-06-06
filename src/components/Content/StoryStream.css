@@ -57,16 +57,6 @@
   }
 }
 
-.story-stream-empty {
-  display: flex;
-  min-height: 280px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  color: var(--color-text-3);
-}
-
 .story-stream-load-more {
   margin-top: 12px;
 }
@@ -74,7 +64,14 @@
 .story-stream-end {
   display: flex;
   justify-content: center;
-  padding-top: 56px;
+  padding-top: 64px;
+}
+
+/* Empty feed (no unread at all): no cards above, so centre vertically. */
+.story-stream-end-empty {
+  min-height: 60vh;
+  align-items: center;
+  padding-top: 0;
 }
 
 .story-stream-end-inner {
@@ -89,6 +86,23 @@
 .story-stream-end-label {
   margin-bottom: 8px;
   color: var(--color-text-3);
+  text-align: center;
+}
+
+.story-stream-end-brandblock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.story-stream-end-icon {
+  background: var(--color-text-3);
+}
+
+.story-stream-end-brand {
+  font-weight: 600;
   text-align: center;
 }
 

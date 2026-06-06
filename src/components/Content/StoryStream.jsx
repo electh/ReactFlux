@@ -1,5 +1,5 @@
 import { Avatar, Button, Typography } from "@arco-design/web-react"
-import { IconBook, IconEmpty } from "@arco-design/web-react/icon"
+import { IconBook } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { throttle } from "lodash-es"
 import { useEffect, useMemo, useState } from "react"
@@ -162,6 +162,40 @@ const StoryStream = ({
     )
   }, [activeEntryIndex, filteredEntries.length])
 
+  // End-of-feed content: brand icon + caption + actions. Shown both when the feed
+  // is empty (no unread at all) and when scrolling past the last loaded card.
+  const streamEndContent = (
+    <div className="story-stream-end-inner">
+      <Typography.Text className="story-stream-end-label">
+        {polyglot.t("article_list.stream_end_label")}
+      </Typography.Text>
+      <Button
+        long
+        type="primary"
+        onClick={() =>
+          globalThis.dispatchEvent(
+            new CustomEvent("reloadedflux:refresh", {
+              detail: { from: info.from, id: info.id },
+            }),
+          )
+        }
+      >
+        {polyglot.t("article_list.stream_end_refresh")}
+      </Button>
+      {infoFrom === "all" ? null : (
+        <Button long onClick={() => navigate("/all")}>
+          {polyglot.t("article_list.stream_end_see_all")}
+        </Button>
+      )}
+      <div className="story-stream-end-brandblock">
+        <Avatar className="story-stream-end-icon" size={64}>
+          <IconBook style={{ color: "var(--color-bg-1)" }} />
+        </Avatar>
+        <Typography.Text className="story-stream-end-brand">ReloadedFlux</Typography.Text>
+      </div>
+    </div>
+  )
+
   return (
     <div className="article-container story-stream-layout">
       <div className="story-stream-toolbar">
@@ -192,10 +226,7 @@ const StoryStream = ({
           </div>
         ) : null}
         {isArticleListReady && !hasEntries ? (
-          <div className="story-stream-empty">
-            <IconEmpty style={{ fontSize: 44 }} />
-            <Typography.Text>ReloadedFlux</Typography.Text>
-          </div>
+          <div className="story-stream-end story-stream-end-empty">{streamEndContent}</div>
         ) : null}
         {isArticleListReady && hasEntries ? (
           <div
@@ -247,29 +278,7 @@ const StoryStream = ({
                 </div>
               ) : (
                 <div className="story-stream-end" style={{ minHeight: spacerHeight || undefined }}>
-                  <div className="story-stream-end-inner">
-                    <Typography.Text className="story-stream-end-label">
-                      {polyglot.t("article_list.stream_end_label")}
-                    </Typography.Text>
-                    <Button
-                      long
-                      type="primary"
-                      onClick={() =>
-                        globalThis.dispatchEvent(
-                          new CustomEvent("reloadedflux:refresh", {
-                            detail: { from: info.from, id: info.id },
-                          }),
-                        )
-                      }
-                    >
-                      {polyglot.t("article_list.stream_end_refresh")}
-                    </Button>
-                    {infoFrom === "all" ? null : (
-                      <Button long onClick={() => navigate("/all")}>
-                        {polyglot.t("article_list.stream_end_see_all")}
-                      </Button>
-                    )}
-                  </div>
+                  {streamEndContent}
                 </div>
               )}
             </Virtualizer>
