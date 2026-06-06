@@ -71,6 +71,27 @@
   margin-top: 12px;
 }
 
+.story-stream-end {
+  display: flex;
+  justify-content: center;
+  padding-top: 56px;
+}
+
+.story-stream-end-inner {
+  display: flex;
+  width: 100%;
+  max-width: 340px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.story-stream-end-label {
+  margin-bottom: 8px;
+  color: var(--color-text-3);
+  text-align: center;
+}
+
 @media screen and (max-width: 768px) {
   .story-stream-toolbar {
     padding: 10px 12px;

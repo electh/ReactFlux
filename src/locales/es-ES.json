@@ -168,7 +168,10 @@
     "mark_older_than_three_days_confirm": "¿Marcar como leídos los artículos de hace más de tres días?",
     "mark_older_than_week_confirm": "¿Marcar como leídos los artículos de hace más de una semana?",
     "mark_older_than_two_weeks_confirm": "¿Marcar como leídos los artículos de hace más de dos semanas?",
-    "refresh_tooltip": "Actualizar"
+    "refresh_tooltip": "Actualizar",
+    "stream_end_label": "No hay más artículos sin leer aquí.",
+    "stream_end_refresh": "Actualizar feed",
+    "stream_end_see_all": "Ver todos los artículos"
   },
   "article_toc": {
     "tooltip": "Tabla de contenidos",

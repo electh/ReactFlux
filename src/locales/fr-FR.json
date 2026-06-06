@@ -152,7 +152,10 @@
     "mark_older_than_three_days_confirm": "Marquer comme lus les articles datant de plus de trois jours ?",
     "mark_older_than_week_confirm": "Marquer comme lus les articles datant de plus d’une semaine ?",
     "mark_older_than_two_weeks_confirm": "Marquer comme lus les articles datant de plus de deux semaines ?",
-    "refresh_tooltip": "Rafraîchir"
+    "refresh_tooltip": "Rafraîchir",
+    "stream_end_label": "Plus aucun article non lu ici.",
+    "stream_end_refresh": "Rafraîchir le flux",
+    "stream_end_see_all": "Voir tous les articles"
   },
   "article_toc": {
     "tooltip": "Table des matières",

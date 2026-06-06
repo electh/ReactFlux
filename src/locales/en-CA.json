@@ -152,7 +152,10 @@
     "mark_older_than_three_days_confirm": "Mark articles older than three days as read?",
     "mark_older_than_week_confirm": "Mark articles older than a week as read?",
     "mark_older_than_two_weeks_confirm": "Mark articles older than two weeks as read?",
-    "refresh_tooltip": "Refresh"
+    "refresh_tooltip": "Refresh",
+    "stream_end_label": "No more unread articles here.",
+    "stream_end_refresh": "Refresh feed",
+    "stream_end_see_all": "See all articles"
   },
   "article_toc": {
     "tooltip": "Table of Contents",

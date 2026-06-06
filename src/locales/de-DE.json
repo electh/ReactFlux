@@ -152,7 +152,10 @@
     "mark_older_than_three_days_confirm": "Artikel, die älter als drei Tage sind, als gelesen markieren?",
     "mark_older_than_week_confirm": "Artikel, die älter als eine Woche sind, als gelesen markieren?",
     "mark_older_than_two_weeks_confirm": "Artikel, die älter als zwei Wochen sind, als gelesen markieren?",
-    "refresh_tooltip": "Neu laden"
+    "refresh_tooltip": "Neu laden",
+    "stream_end_label": "Keine weiteren ungelesenen Artikel hier.",
+    "stream_end_refresh": "Feed aktualisieren",
+    "stream_end_see_all": "Alle Artikel anzeigen"
   },
   "article_toc": {
     "tooltip": "Inhaltsverzeichnis",

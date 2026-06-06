@@ -3,12 +3,14 @@ import { IconBook, IconEmpty } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { throttle } from "lodash-es"
 import { useEffect, useMemo, useState } from "react"
+import { useNavigate } from "react-router"
 import SimpleBar from "simplebar-react"
 import { Virtualizer } from "virtua"
 
 import LoadingCards from "@/components/Article/LoadingCards"
 import StreamArticleCard from "@/components/Article/StreamArticleCard"
 import StreamSearchBar from "@/components/Article/StreamSearchBar"
+import { polyglotState } from "@/hooks/useLanguage"
 import useLoadMore from "@/hooks/useLoadMore"
 import { contentState, filteredEntriesState } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
@@ -30,6 +32,8 @@ const StoryStream = ({
   const { activeContent, infoFrom, isArticleListReady, loadMoreVisible } = useStore(contentState)
   const filteredEntries = useStore(filteredEntriesState)
   const { animationsEnabled } = useStore(settingsState)
+  const { polyglot } = useStore(polyglotState)
+  const navigate = useNavigate()
   const { loadingMore, handleLoadMore } = useLoadMore()
   const canLoadMore = loadMoreVisible && isArticleListReady && !loadingMore
 
@@ -125,6 +129,23 @@ const StoryStream = ({
       cancelAnimationFrame(raf)
     }
   }, [settleKey, isArticleListReady, hasEntries, entryListRef])
+
+  // End-of-feed footer min-height so the last few cards can still top-align: at the
+  // end of the feed, selecting the final cards must move them to the top. Without
+  // trailing room virtua can't scroll a low card up. The footer fills the scroll
+  // viewport height → any card reaches the top, footer content shown below it.
+  const [spacerHeight, setSpacerHeight] = useState(0)
+  useEffect(() => {
+    const element = cardsRef.current
+    if (!element) {
+      return
+    }
+    const update = () => setSpacerHeight(element.clientHeight)
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [cardsRef, isArticleListReady])
 
   const activeEntryIndex = useMemo(
     () => filteredEntries.findIndex((entry) => entry.id === activeContent?.id),
@@ -224,7 +245,33 @@ const StoryStream = ({
                     Loading more ...
                   </Button>
                 </div>
-              ) : null}
+              ) : (
+                <div className="story-stream-end" style={{ minHeight: spacerHeight || undefined }}>
+                  <div className="story-stream-end-inner">
+                    <Typography.Text className="story-stream-end-label">
+                      {polyglot.t("article_list.stream_end_label")}
+                    </Typography.Text>
+                    <Button
+                      long
+                      type="primary"
+                      onClick={() =>
+                        globalThis.dispatchEvent(
+                          new CustomEvent("reloadedflux:refresh", {
+                            detail: { from: info.from, id: info.id },
+                          }),
+                        )
+                      }
+                    >
+                      {polyglot.t("article_list.stream_end_refresh")}
+                    </Button>
+                    {infoFrom === "all" ? null : (
+                      <Button long onClick={() => navigate("/all")}>
+                        {polyglot.t("article_list.stream_end_see_all")}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
             </Virtualizer>
           </div>
         ) : null}

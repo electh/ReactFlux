@@ -152,7 +152,10 @@
     "mark_older_than_three_days_confirm": "Σημειώστε τα άρθρα παλαιότερα των τριών ημερών ως αναγνωσμένα;",
     "mark_older_than_week_confirm": "Σημειώστε τα άρθρα παλαιότερα της εβδομάδας ως αναγνωσμένα;",
     "mark_older_than_two_weeks_confirm": "Σημειώστε τα άρθρα παλαιότερα των δύο εβδομάδων ως αναγνωσμένα;",
-    "refresh_tooltip": "Ανανέωση"
+    "refresh_tooltip": "Ανανέωση",
+    "stream_end_label": "Δεν υπάρχουν άλλα μη αναγνωσμένα άρθρα εδώ.",
+    "stream_end_refresh": "Ανανέωση ροής",
+    "stream_end_see_all": "Προβολή όλων των άρθρων"
   },
   "article_toc": {
     "tooltip": "Πίνακας περιεχομένων",

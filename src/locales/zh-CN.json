@@ -152,7 +152,10 @@
     "mark_older_than_three_days_confirm": "将三天前的文章标记为已读？",
     "mark_older_than_week_confirm": "将一周前的文章标记为已读？",
     "mark_older_than_two_weeks_confirm": "将两周前的文章标记为已读？",
-    "refresh_tooltip": "刷新"
+    "refresh_tooltip": "刷新",
+    "stream_end_label": "这里没有更多未读文章了。",
+    "stream_end_refresh": "刷新订阅源",
+    "stream_end_see_all": "查看所有文章"
   },
   "article_toc": {
     "tooltip": "目录大纲",
