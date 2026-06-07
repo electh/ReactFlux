@@ -3,7 +3,7 @@ packages:
 
 overrides:
   lodash: 4.18.1
-  postcss: ">=8.5.10"
+  postcss: ^8.5.10
   serialize-javascript: ^7.0.5
 
 allowBuilds:
