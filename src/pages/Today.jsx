@@ -4,15 +4,23 @@ import Content from "@/components/Content/Content"
 const getEntries = (status, _starred, filterParams) => getTodayEntries(status, filterParams)
 const info = { from: "today", id: "" }
 
-const markTodayAsRead = async () => {
-  const unreadResponse = await getTodayEntries("unread")
-  const unreadCount = unreadResponse.total
-  let unreadEntries = unreadResponse.entries
+const MAX_ENTRIES_PER_REQUEST = 1000
 
-  if (unreadCount > unreadEntries.length) {
-    unreadEntries = getTodayEntries("unread", { limit: unreadCount }).then(
-      (response) => response.entries,
-    )
+const markTodayAsRead = async () => {
+  const firstResponse = await getTodayEntries("unread")
+  const unreadCount = firstResponse.total
+  let unreadEntries = firstResponse.entries
+
+  // Miniflux caps `limit` at 1000, so page through the results with offset.
+  while (unreadEntries.length < unreadCount) {
+    const response = await getTodayEntries("unread", {
+      limit: MAX_ENTRIES_PER_REQUEST,
+      offset: unreadEntries.length,
+    })
+    if (response.entries.length === 0) {
+      break
+    }
+    unreadEntries = [...unreadEntries, ...response.entries]
   }
 
   const unreadEntryIds = unreadEntries.map((entry) => entry.id)

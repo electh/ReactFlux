@@ -32,14 +32,24 @@ const getUnixSecondsFromDateString = (dateString) => {
   return Number.isFinite(timeMs) ? Math.floor(timeMs / 1000) : null
 }
 
-const fetchAllUnreadEntries = async (fetchEntries) => {
-  let unreadResponse = await fetchEntries()
-  const unreadCount = unreadResponse.total
-  let unreadEntries = unreadResponse.entries
+const MAX_ENTRIES_PER_REQUEST = 1000
 
-  if (unreadCount > unreadEntries.length) {
-    const fullResponse = await fetchEntries({ limit: unreadCount })
-    unreadEntries = fullResponse.entries
+const fetchAllUnreadEntries = async (fetchEntries) => {
+  const firstResponse = await fetchEntries()
+  const unreadCount = firstResponse.total
+  let unreadEntries = firstResponse.entries
+
+  // Miniflux caps `limit` at 1000, so page through the results with offset
+  // instead of requesting `unreadCount` in a single call.
+  while (unreadEntries.length < unreadCount) {
+    const response = await fetchEntries({
+      limit: MAX_ENTRIES_PER_REQUEST,
+      offset: unreadEntries.length,
+    })
+    if (response.entries.length === 0) {
+      break
+    }
+    unreadEntries = [...unreadEntries, ...response.entries]
   }
 
   return unreadEntries
