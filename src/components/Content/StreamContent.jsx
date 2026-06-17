@@ -396,6 +396,19 @@ const StreamContent = ({ info, getEntries, markAllAsRead }) => {
     const activeEntryInList = activeContent
       ? filteredEntries.some((entry) => Number(entry.id) === Number(activeContent.id))
       : false
+
+    // The active card can leave the list because it was just marked read while
+    // the unread filter is on (mark-read-on-view). That is not a deep-link/
+    // refresh — the user is still on this article (URL still points at it) — so
+    // we must NOT fall back to firstEntry, which would yank focus to the top a
+    // few seconds after navigating. Keep the current card focused; the next nav
+    // moves on naturally.
+    const activeIsUrlEntry =
+      activeContent && urlEntryId !== null && Number(activeContent.id) === urlEntryId
+    if (!activeEntryInList && activeIsUrlEntry) {
+      return
+    }
+
     // When activeContent is already a valid in-list entry (e.g. keyboard nav
     // just set it), it wins — the URL param updates a tick later and must not
     // revert active back to the previous entry, which would drop rapid
