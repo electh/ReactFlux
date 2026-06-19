@@ -75,6 +75,7 @@
   },
   "actions": {
     "check": "Έλεγχος",
+    "reload": "Επαναφόρτωση",
     "dismiss": "Απόρριψη",
     "copy_to_clipboard_tooltip": "Αντιγραφή στο πρόχειρο",
     "copied": "Αντιγράφηκε!",

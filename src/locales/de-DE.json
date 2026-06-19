@@ -75,6 +75,7 @@
   },
   "actions": {
     "check": "Ansehen",
+    "reload": "Neu laden",
     "dismiss": "Verwerfen",
     "copy_to_clipboard_tooltip": "In die Zwischenablage kopieren",
     "copied": "Kopiert!",

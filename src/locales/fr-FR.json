@@ -75,6 +75,7 @@
   },
   "actions": {
     "check": "Vérifier",
+    "reload": "Recharger",
     "dismiss": "Ignorer",
     "copy_to_clipboard_tooltip": "Copier dans le presse-papiers",
     "copied": "Copié !",

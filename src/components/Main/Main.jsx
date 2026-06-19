@@ -5,6 +5,7 @@ import { Outlet, useLocation, useNavigate } from "react-router"
 
 import { addFeed } from "@/apis"
 import { ContextProvider } from "@/components/Content/ContentContext"
+import UpdatePrompt from "@/components/Main/UpdatePrompt"
 import SettingsTabs from "@/components/Settings/SettingsTabs"
 import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
@@ -178,6 +179,7 @@ const Main = () => (
     </ContextProvider>
     <SettingsModal />
     <AddFeedModal />
+    <UpdatePrompt />
   </div>
 )
 

@@ -75,6 +75,7 @@
   },
   "actions": {
     "check": "Check",
+    "reload": "Reload",
     "dismiss": "Dismiss",
     "copy_to_clipboard_tooltip": "Copy to clipboard",
     "copied": "Copied!",

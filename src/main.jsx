@@ -19,7 +19,19 @@ if ("serviceWorker" in navigator) {
       console.error("Failed to unregister service workers in development:", error)
     }
   } else {
-    registerSW({ immediate: true })
+    // Do NOT auto-reload: a new SW deployed while a tab sat idle would otherwise
+    // hijack the next F5 and reload the page a second time, mid feed-load. Surface
+    // a prompt instead and let the user choose when to apply the update.
+    const updateSW = registerSW({
+      immediate: true,
+      onNeedRefresh() {
+        globalThis.dispatchEvent(
+          new CustomEvent("reloadedflux:sw-need-refresh", {
+            detail: { updateSW },
+          }),
+        )
+      },
+    })
   }
 }
 

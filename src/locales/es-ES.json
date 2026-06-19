@@ -91,6 +91,7 @@
   },
   "actions": {
     "check": "Comprobar",
+    "reload": "Recargar",
     "dismiss": "Descartar",
     "copy_to_clipboard_tooltip": "Copiar al portapapeles",
     "copied": "Copiado!",

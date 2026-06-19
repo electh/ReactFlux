@@ -75,6 +75,7 @@
   },
   "actions": {
     "check": "查看",
+    "reload": "重新加载",
     "dismiss": "关闭",
     "copy_to_clipboard_tooltip": "复制到剪贴板",
     "copied": "已复制！",

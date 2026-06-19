@@ -13,12 +13,9 @@ export default defineConfig({
   plugins: [
     viteReact(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       devOptions: {
         enabled: false,
-      },
-      workbox: {
-        skipWaiting: true,
       },
     }),
   ],
