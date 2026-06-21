@@ -62,7 +62,7 @@
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
-    "eslint-plugin-unicorn": "^64.0.0",
+    "eslint-plugin-unicorn": "^65.0.1",
     "globals": "^17.6.0",
     "knip": "^6.17.1",
     "lefthook": "^2.1.9",
