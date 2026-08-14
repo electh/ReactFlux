@@ -15,7 +15,7 @@ export default defineConfig({
   plugins: [
     react(),
     babel({
-      presets: [reactCompilerPreset({ target: "18" })],
+      presets: [reactCompilerPreset()],
     }),
     VitePWA({
       registerType: "autoUpdate",

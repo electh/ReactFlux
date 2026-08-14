@@ -1,3 +1,4 @@
+import "@arco-design/web-react/es/_util/react-19-adapter"
 import "@arco-design/web-react/dist/css/arco.css"
 import ReactDOM from "react-dom/client"
 import { RouterProvider } from "react-router/dom"

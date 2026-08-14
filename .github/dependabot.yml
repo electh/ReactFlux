@@ -9,15 +9,6 @@ updates:
       timezone: Asia/Shanghai
     cooldown:
       default-days: 1
-    ignore:
-      - dependency-name: react
-        versions: [">=19.0.0"]
-      - dependency-name: react-dom
-        versions: [">=19.0.0"]
-      - dependency-name: "@types/react"
-        versions: [">=19.0.0"]
-      - dependency-name: "@types/react-dom"
-        versions: [">=19.0.0"]
 
   - package-ecosystem: github-actions
     directory: /
