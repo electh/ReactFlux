@@ -1,3 +1,6 @@
+# Delay newly published packages for 24 hours.
+minimumReleaseAge: 1440
+
 allowBuilds:
   core-js: false
   esbuild: true
