@@ -62,7 +62,7 @@ export const parseCoverImage = (entry) => {
     // Check iframe
     if (!isMedia) {
       const iframe = doc.querySelector("iframe")
-      const iframeHost = iframe?.getAttribute("src")?.split("/")[2]
+      const iframeHost = iframe?.getAttribute("src")?.split("/", 3)[2]
       isMedia = !!iframeHost
     }
   }

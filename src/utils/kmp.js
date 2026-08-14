@@ -1,5 +1,5 @@
 const computeLPSArray = (pattern) => {
-  const lpsArray = Array.from({ length: pattern.length }).fill(0)
+  const lpsArray = Array.from({ length: pattern.length }, () => 0)
   let prevLongestPrefixLength = 0
   let currentIndex = 1
 

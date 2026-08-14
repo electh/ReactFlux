@@ -123,7 +123,7 @@ export default [
   {
     files: ["src/**/*.jsx"],
     rules: {
-      "unicorn/filename-case": ["error", { case: "pascalCase" }],
+      "unicorn/filename-case": ["error", { case: "pascalCase", checkDirectories: false }],
     },
   },
   {
@@ -135,7 +135,17 @@ export default [
   {
     files: ["src/hooks/**/*.js", "src/store/**/*.js"],
     rules: {
-      "unicorn/filename-case": ["error", { case: "camelCase" }],
+      "unicorn/filename-case": ["error", { case: "camelCase", checkDirectories: false }],
+    },
+  },
+  {
+    // html-react-parser nodes expose array children, not browser DOM traversal APIs.
+    files: [
+      "src/components/Article/ArticleDetail.jsx",
+      "src/components/Article/ImageOverlayButton.jsx",
+    ],
+    rules: {
+      "unicorn/better-dom-traversing": "off",
     },
   },
   {
