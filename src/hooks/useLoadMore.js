@@ -5,7 +5,7 @@ import { contentState, setEntriesWithDeduplication, setLoadMoreVisible } from "@
 import { settingsState } from "@/store/settingsState"
 import createArticleListRequestKey from "@/utils/article-list-request-key"
 import { getTimestamp } from "@/utils/date"
-import { parseCoverImage } from "@/utils/images"
+import prepareEntry from "@/utils/entry-presentation"
 import { extractBasicSearchTerms } from "@/utils/kmp"
 import createSetter from "@/utils/nanostores"
 
@@ -143,7 +143,7 @@ const useLoadMore = () => {
       }
 
       if (response?.entries?.length > 0) {
-        const newEntries = response.entries.map((entry) => parseCoverImage(entry))
+        const newEntries = response.entries.map((entry) => prepareEntry(entry))
         updateEntries(newEntries)
       }
       if (response.total < pageSize) {

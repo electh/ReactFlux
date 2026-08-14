@@ -32,6 +32,7 @@ import {
 import { dataState } from "@/store/dataState"
 import { duplicateHotkeysState } from "@/store/hotkeysState"
 import { settingsState } from "@/store/settingsState"
+import prepareEntry from "@/utils/entry-presentation"
 
 import "./Content.css"
 
@@ -46,6 +47,9 @@ const isInHorizontalScrollable = (element) => {
   }
   return false
 }
+
+const shouldIgnoreSwipe = (element) =>
+  isInHorizontalScrollable(element) || Boolean(element?.closest?.(".plyr, audio, video"))
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, entries, filterDate, filterString, isArticleLoading } =
@@ -94,7 +98,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     try {
       setIsArticleLoading(true)
       const entry = await getEntry(entryId)
-      setActiveContent(entry)
+      setActiveContent(prepareEntry(entry))
     } catch (error) {
       console.error("Failed to fetch entry:", error)
     } finally {
@@ -125,10 +129,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     delta: 50 / swipeSensitivity,
     onSwiping: enableSwipeGesture
       ? (eventData) => {
-          if (
-            globalThis.getSelection().toString() ||
-            isInHorizontalScrollable(eventData.event.target)
-          ) {
+          if (globalThis.getSelection().toString() || shouldIgnoreSwipe(eventData.event.target)) {
             return
           }
           handleSwiping(eventData)
@@ -137,14 +138,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     onSwiped: enableSwipeGesture ? handleSwiped : undefined,
     onSwipedLeft: enableSwipeGesture
       ? (eventData) => {
-          if (!isInHorizontalScrollable(eventData.event.target)) {
+          if (!shouldIgnoreSwipe(eventData.event.target)) {
             handleSwipeLeft()
           }
         }
       : undefined,
     onSwipedRight: enableSwipeGesture
       ? (eventData) => {
-          if (!isInHorizontalScrollable(eventData.event.target)) {
+          if (!shouldIgnoreSwipe(eventData.event.target)) {
             handleSwipeRight()
           }
         }

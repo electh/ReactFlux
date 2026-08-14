@@ -121,6 +121,14 @@
     "tooltip": "Table des matières",
     "filter_headings": "Filtrer les titres"
   },
+  "article_attachments": {
+    "title": "Pièces jointes (%{count})",
+    "fallback_name": "Pièce jointe %{index}",
+    "unknown_type": "Type inconnu",
+    "unsupported_url": "Lien non pris en charge",
+    "preview_image": "Aperçu de %{name}",
+    "media_error": "Ce média ne peut pas être lu ici. Utilisez le lien de la pièce jointe ci-dessous."
+  },
   "content": {
     "mark_as_read_error": "Impossible de marquer comme lu, veuillez réessayer plus tard"
   },

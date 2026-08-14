@@ -121,6 +121,14 @@
     "tooltip": "目录大纲",
     "filter_headings": "筛选标题"
   },
+  "article_attachments": {
+    "title": "附件 (%{count})",
+    "fallback_name": "附件 %{index}",
+    "unknown_type": "未知类型",
+    "unsupported_url": "不支持的链接",
+    "preview_image": "预览 %{name}",
+    "media_error": "无法在此播放该媒体，请使用下方的附件链接。"
+  },
   "content": {
     "mark_as_read_error": "标记为已读失败，请稍后再试"
   },

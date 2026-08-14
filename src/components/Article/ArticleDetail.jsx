@@ -12,7 +12,9 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom"
 import "yet-another-react-lightbox/styles.css"
 import "yet-another-react-lightbox/plugins/counter.css"
 
+import ArticleEnclosures from "./ArticleEnclosures"
 import CodeBlock from "./CodeBlock"
+import EnclosurePlayer from "./EnclosurePlayer"
 import ImageLinkTag from "./ImageLinkTag"
 import ImageOverlayButton from "./ImageOverlayButton"
 
@@ -29,7 +31,7 @@ import {
 } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
-import { extractImageSources } from "@/utils/images"
+import extractImageSources from "@/utils/images"
 import "./ArticleDetail.css"
 import "./littlefoot.css"
 
@@ -364,14 +366,21 @@ const ArticleDetail = forwardRef((_, ref) => {
     return lightboxSlideAnimation ? { fade: 250 } : { fade: 250, navigation: 0 }
   }
 
-  const imageSources = extractImageSources(activeContent.content)
+  const attachments = activeContent.attachments ?? {
+    images: [],
+    items: [],
+    primaryMedia: null,
+  }
+  const { images: attachmentImages, items: attachmentItems, primaryMedia } = attachments
+  const bodyImageSources = extractImageSources(activeContent.content)
+  const imageSources = [...bodyImageSources, ...attachmentImages.map(({ url }) => url)]
   const htmlParserOptions = getHtmlParserOptions(imageSources, togglePhotoSlider)
 
   const parsedHtml = ReactHtmlParser(activeContent.content, htmlParserOptions)
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category
   const { id: feedId, title: feedTitle } = activeContent.feed
 
-  const { coverSource, mediaPlayerEnclosure, isMedia } = activeContent
+  const { coverSource } = activeContent
 
   const getResponsiveMaxWidth = () => {
     if (isBelowMedium) {
@@ -457,17 +466,18 @@ const ArticleDetail = forwardRef((_, ref) => {
               "--article-width": articleWidth,
             }}
           >
-            {isMedia && mediaPlayerEnclosure && (
-              <PlyrPlayer
-                enclosure={mediaPlayerEnclosure}
+            {primaryMedia && (
+              <EnclosurePlayer
+                key={primaryMedia.id ?? primaryMedia.url}
+                enclosure={primaryMedia}
                 poster={coverSource}
-                src={mediaPlayerEnclosure.url}
-                style={{
-                  maxWidth: mediaPlayerEnclosure.mime_type.startsWith("video/") ? "100%" : "400px",
-                }}
               />
             )}
             {parsedHtml}
+            <ArticleEnclosures
+              items={attachmentItems}
+              onImagePreview={(index) => togglePhotoSlider(bodyImageSources.length + index)}
+            />
             <Lightbox
               animation={getLightboxAnimationConfig()}
               carousel={{ finite: true, padding: 0 }}

@@ -121,6 +121,14 @@
     "tooltip": "Tabla de contenidos",
     "filter_headings": "Filtrar títulos"
   },
+  "article_attachments": {
+    "title": "Archivos adjuntos (%{count})",
+    "fallback_name": "Archivo adjunto %{index}",
+    "unknown_type": "Tipo desconocido",
+    "unsupported_url": "Enlace no compatible",
+    "preview_image": "Vista previa de %{name}",
+    "media_error": "Este contenido multimedia no se puede reproducir aquí. Usa el enlace del archivo adjunto que aparece abajo."
+  },
   "content": {
     "mark_as_read_error": "No se pudo marcar como leído, por favor intente de nuevo más tarde"
   },

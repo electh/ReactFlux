@@ -121,6 +121,14 @@
     "tooltip": "Inhaltsverzeichnis",
     "filter_headings": "Überschriften filtern"
   },
+  "article_attachments": {
+    "title": "Anhänge (%{count})",
+    "fallback_name": "Anhang %{index}",
+    "unknown_type": "Unbekannter Typ",
+    "unsupported_url": "Nicht unterstützter Link",
+    "preview_image": "Vorschau von %{name}",
+    "media_error": "Dieses Medium kann hier nicht wiedergegeben werden. Verwenden Sie den Anhang-Link unten."
+  },
   "content": {
     "mark_as_read_error": "Als gelesen markieren fehlgeschlagen, bitte später erneut versuchen"
   },

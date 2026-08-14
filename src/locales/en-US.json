@@ -121,6 +121,14 @@
     "tooltip": "Table of Contents",
     "filter_headings": "Filter headings"
   },
+  "article_attachments": {
+    "title": "Attachments (%{count})",
+    "fallback_name": "Attachment %{index}",
+    "unknown_type": "Unknown type",
+    "unsupported_url": "Unsupported link",
+    "preview_image": "Preview %{name}",
+    "media_error": "This media cannot be played here. Use the attachment link below."
+  },
   "content": {
     "mark_as_read_error": "Failed to mark as read, please try again later"
   },

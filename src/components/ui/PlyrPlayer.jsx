@@ -1,12 +1,18 @@
 import { useStore } from "@nanostores/react"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { saveEnclosureProgression } from "@/apis"
-import { contentState } from "@/store/contentState"
+import { authState } from "@/store/authState"
+import { dataState } from "@/store/dataState"
+import compareVersions from "@/utils/version"
 import "plyr/dist/plyr.css"
 import "./PlyrPlayer.css"
 
 const PlyrPromise = import("plyr")
+const NOOP = () => {}
+const DEFAULT_PLYR_OPTIONS = {}
+// Preserve the latest position when an entry is reopened before its API payload refreshes.
+const progressionCache = new Map()
 
 const MEDIA_TYPES = {
   HLS: "hls",
@@ -16,6 +22,7 @@ const MEDIA_TYPES = {
 
 const MIME_TYPES = {
   mp4: "video/mp4",
+  m4v: "video/x-m4v",
   webm: "video/webm",
   ogv: "video/ogg",
   m3u8: "application/x-mpegURL",
@@ -40,23 +47,30 @@ const DEFAULT_CONTROLS = [
   "fullscreen",
 ]
 
+const normalizeMimeType = (mimeType) => {
+  if (!mimeType) {
+    return ""
+  }
+  return mimeType.toLowerCase() === "video/m4v" ? "video/x-m4v" : mimeType
+}
+
 const getMimeType = (src, sourceType) => {
   if (sourceType) {
-    return sourceType
+    return normalizeMimeType(sourceType)
   }
-
   if (!src) {
     return ""
   }
 
-  const extension = src.split(".").pop()?.toLowerCase()
+  const sourceWithoutQuery = src.split(/[?#]/, 1)[0]
+  const extension = sourceWithoutQuery.split(".").at(-1)?.toLowerCase()
   return MIME_TYPES[extension] || ""
 }
 
 const getMediaType = (src, sourceType, elementType) => {
-  const mimeType = sourceType || getMimeType(src, sourceType)
+  const mimeType = getMimeType(src, sourceType).toLowerCase()
 
-  if (mimeType.includes("mpegURL") || mimeType.includes("mpegurl")) {
+  if (mimeType.includes("mpegurl")) {
     return MEDIA_TYPES.HLS
   }
   if (mimeType.startsWith("video/")) {
@@ -69,22 +83,24 @@ const getMediaType = (src, sourceType, elementType) => {
   return elementType === "audio" ? MEDIA_TYPES.AUDIO : MEDIA_TYPES.VIDEO
 }
 
-const initHls = async (mediaRef, src, onError) => {
+const initHls = async (mediaElement, src, onError) => {
   const { default: Hls } = await import("hls.js")
 
   if (!Hls.isSupported()) {
-    if (mediaRef.current.canPlayType("application/vnd.apple.mpegurl")) {
-      mediaRef.current.src = src
-      return true
+    if (mediaElement.canPlayType("application/vnd.apple.mpegurl")) {
+      mediaElement.src = src
+      return null
     }
     throw new Error("HLS is not supported in this browser.")
   }
 
   const hls = new Hls()
   hls.loadSource(src)
-  hls.attachMedia(mediaRef.current)
+  hls.attachMedia(mediaElement)
   hls.on(Hls.Events.ERROR, (event, data) => {
-    onError({ type: "hls", event, data })
+    if (data.fatal) {
+      onError({ type: "hls", event, data })
+    }
   })
 
   return hls
@@ -94,67 +110,106 @@ const PlyrPlayer = ({
   src,
   sourceType,
   elementType = "video",
-  plyrOptions = {},
+  plyrOptions = DEFAULT_PLYR_OPTIONS,
   poster = "",
   style = {},
   enclosure = null,
-  onPlayerInit = () => {},
-  onError = () => {},
+  onPlayerInit = NOOP,
+  onError = NOOP,
 }) => {
-  const { activeContent } = useStore(contentState)
-
+  const { server } = useStore(authState)
+  const { version } = useStore(dataState)
   const mediaRef = useRef(null)
   const playerRef = useRef(null)
   const hlsRef = useRef(null)
   const lastSavedTimeRef = useRef(0)
 
+  const enclosureId = enclosure?.id
+  const progressionCacheKey = enclosureId
+    ? `${server}:${enclosure?.user_id ?? ""}:${enclosureId}`
+    : ""
+  const serverProgression = Number(enclosure?.media_progression) || 0
+  const [initialProgression] = useState(
+    () => progressionCache.get(progressionCacheKey) ?? serverProgression,
+  )
+  const resolvedSourceType = sourceType || enclosure?.mime_type || ""
+  const mediaType = getMediaType(src, resolvedSourceType, elementType)
+  const resolvedElementType = mediaType === MEDIA_TYPES.AUDIO ? "audio" : "video"
+  const canSaveProgression = Boolean(enclosureId) && compareVersions(version || "0", "2.2.0") >= 0
+
   useEffect(() => {
-    if (!src || !activeContent) {
+    const mediaElement = mediaRef.current
+    if (!src || !mediaElement) {
       return
     }
 
+    let isCancelled = false
+
+    const handleMediaError = () => {
+      onError({ type: "media", error: mediaElement.error })
+    }
+    mediaElement.addEventListener("error", handleMediaError)
+
     const initPlayer = async () => {
       try {
-        const mediaType = getMediaType(src, sourceType, elementType)
-
         const { default: Plyr } = await PlyrPromise
+        if (isCancelled) {
+          return
+        }
 
-        playerRef.current = new Plyr(mediaRef.current, {
+        const player = new Plyr(mediaElement, {
           controls: DEFAULT_CONTROLS,
           loadSprite: true,
           ...plyrOptions,
         })
+        playerRef.current = player
+        lastSavedTimeRef.current = initialProgression
 
-        if (mediaType === MEDIA_TYPES.HLS) {
-          hlsRef.current = await initHls(mediaRef, src, onError)
-        } else {
-          mediaRef.current.src = src
-        }
-
-        if (enclosure) {
-          playerRef.current.on("loadeddata", () => {
-            playerRef.current.currentTime = enclosure.media_progression
-            lastSavedTimeRef.current = enclosure.media_progression
-          })
-
-          const updateProgression = () => {
-            const { currentTime } = playerRef.current
-            saveEnclosureProgression(enclosure.id, Math.floor(currentTime))
-            lastSavedTimeRef.current = currentTime
+        if (canSaveProgression) {
+          const restoreProgression = () => {
+            if (initialProgression > 0) {
+              player.currentTime = initialProgression
+            }
           }
 
-          playerRef.current.on("timeupdate", () => {
-            const { currentTime } = playerRef.current
-            if (currentTime - lastSavedTimeRef.current >= 10) {
-              updateProgression()
+          const saveProgression = () => {
+            const currentTime = Math.floor(player.currentTime)
+            if (!Number.isFinite(currentTime) || currentTime === lastSavedTimeRef.current) {
+              return
+            }
+
+            lastSavedTimeRef.current = currentTime
+            progressionCache.set(progressionCacheKey, currentTime)
+            saveEnclosureProgression(enclosureId, currentTime).catch((error) => {
+              console.error("Failed to save enclosure progression:", error)
+            })
+          }
+
+          player.on("loadedmetadata", restoreProgression)
+          if (mediaElement.readyState >= 1) {
+            restoreProgression()
+          }
+          player.on("timeupdate", () => {
+            if (Math.abs(player.currentTime - lastSavedTimeRef.current) >= 10) {
+              saveProgression()
             }
           })
-
-          playerRef.current.on("pause", updateProgression)
-          playerRef.current.on("ended", updateProgression)
+          player.on("pause", saveProgression)
+          player.on("ended", saveProgression)
         }
 
-        onPlayerInit(playerRef.current)
+        if (mediaType === MEDIA_TYPES.HLS) {
+          const hls = await initHls(mediaElement, src, onError)
+          if (isCancelled) {
+            hls?.destroy()
+            return
+          }
+          hlsRef.current = hls
+        } else {
+          mediaElement.src = src
+        }
+
+        onPlayerInit(player)
       } catch (error) {
         onError({ type: "init", error })
       }
@@ -163,37 +218,46 @@ const PlyrPlayer = ({
     initPlayer()
 
     return () => {
+      isCancelled = true
+      mediaElement.removeEventListener("error", handleMediaError)
       playerRef.current?.destroy()
       hlsRef.current?.destroy()
       playerRef.current = null
       hlsRef.current = null
     }
-  }, [src])
+  }, [
+    canSaveProgression,
+    enclosureId,
+    initialProgression,
+    mediaType,
+    onError,
+    onPlayerInit,
+    plyrOptions,
+    progressionCacheKey,
+    src,
+  ])
 
-  const renderMedia = () => {
-    const mediaProps = {
-      ref: mediaRef,
-      className: "plyr-react plyr",
-      poster: poster,
-    }
-
-    const sourceProps = {
-      src,
-      type: getMimeType(src, sourceType),
-    }
-
-    return elementType === "audio" ? (
-      <audio {...mediaProps}>
-        <source {...sourceProps} />
-      </audio>
-    ) : (
-      <video {...mediaProps}>
-        <source {...sourceProps} />
-      </video>
-    )
+  const MediaElement = resolvedElementType
+  const mediaProps = {
+    ref: mediaRef,
+    className: "plyr-react plyr",
+    controls: true,
+    preload: "metadata",
+    ...(resolvedElementType === "video" && poster ? { poster } : {}),
+  }
+  const mimeType = getMimeType(src, resolvedSourceType)
+  const sourceProps = {
+    src,
+    ...(mimeType ? { type: mimeType } : {}),
   }
 
-  return <div style={{ ...style, margin: "0 auto" }}>{renderMedia()}</div>
+  return (
+    <div style={{ ...style, margin: "0 auto" }}>
+      <MediaElement {...mediaProps}>
+        <source {...sourceProps} />
+      </MediaElement>
+    </div>
+  )
 }
 
 export default PlyrPlayer

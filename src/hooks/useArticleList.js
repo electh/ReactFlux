@@ -18,12 +18,12 @@ import {
 } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
 import createArticleListRequestKey from "@/utils/article-list-request-key"
-import { parseCoverImage } from "@/utils/images"
+import prepareEntry from "@/utils/entry-presentation"
 import { extractBasicSearchTerms } from "@/utils/kmp"
 
 const handleResponses = (response) => {
   if (response?.total >= 0) {
-    const articles = response.entries.map((entry) => parseCoverImage(entry))
+    const articles = response.entries.map((entry) => prepareEntry(entry))
     setEntriesWithDeduplication(articles)
     setTotal(response.total)
     setLoadMoreVisible(articles.length < response.total)

@@ -26,6 +26,13 @@
   margin: 10px auto;
 }
 
+.enclosure-player-error {
+  margin: 8px auto 16px;
+  color: rgb(var(--danger-6));
+  font-size: 0.875rem;
+  text-align: center;
+}
+
 .article-body iframe {
   max-width: 100%;
   width: 100%;
