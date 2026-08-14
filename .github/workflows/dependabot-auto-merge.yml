@@ -2,13 +2,18 @@ name: Dependabot auto-merge
 on: pull_request
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
-  dependabot:
+  validate:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'dependabot[bot]'
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      dependency-type: ${{ steps.metadata.outputs.dependency-type }}
+      update-type: ${{ steps.metadata.outputs.update-type }}
     steps:
       - name: Dependabot metadata
         id: metadata
@@ -19,7 +24,7 @@ jobs:
       - name: Checkout PR
         uses: actions/checkout@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -31,27 +36,10 @@ jobs:
           cache: "pnpm"
 
       - name: Validate pnpm-lock.yaml
-        id: validate_lock
         run: |
           echo "Validating pnpm-lock.yaml file..."
           pnpm install --frozen-lockfile --ignore-scripts
           echo "✅ pnpm-lock.yaml validation passed"
-
-      - name: Comment on invalid lock file
-        if: failure() && steps.validate_lock.outcome == 'failure'
-        run: |
-          gh pr comment ${{ github.event.pull_request.number }} --body "❌ **Automatic merge failed**
-
-          Validation of pnpm-lock.yaml failed. Possible reasons:
-          - pnpm supply-chain policy blocked a package that is too new (for example, \`ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION\`)
-          - Dependency conflicts with other PRs
-          - Corrupted or inconsistent lock file
-
-          If this is a minimum release age failure, keep this PR unchanged and rerun the workflow after the policy window expires. Recreating the PR may select newer transitive dependencies and restart the waiting period.
-
-          Otherwise, manually inspect and repair the lock file."
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run ESLint check
         run: pnpm lint
@@ -59,12 +47,43 @@ jobs:
       - name: Run Prettier check
         run: pnpm format:check
 
-      - name: Merge eligible Dependabot PR
-        if: |
-          success() &&
-          (steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-           steps.metadata.outputs.dependency-type == 'direct:development')
-        run: gh pr merge --auto --squash "$PR_URL"
+  comment:
+    needs: validate
+    if: always() && needs.validate.result == 'failure' && github.run_attempt == 1
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Comment on failed validation
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --body "❌ **Automatic merge failed**
+
+          Validation of this dependency update failed. Possible reasons include:
+          - pnpm's minimum release age policy blocked a newly published package
+          - Dependency conflicts with other PRs
+          - A lint or formatting error
+          - A corrupted or inconsistent lock file
+
+          Runs blocked by the minimum release age policy are retried automatically every six hours, up to five times. Keep this PR unchanged while it waits; recreating it may select newer transitive dependencies and restart the waiting period.
+
+          Other validation failures require manual inspection and repair."
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  merge:
+    needs: validate
+    if: |
+      needs.validate.result == 'success' &&
+      (needs.validate.outputs.update-type == 'version-update:semver-patch' ||
+       needs.validate.outputs.dependency-type == 'direct:development')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Merge eligible Dependabot PR
+        run: gh pr merge --auto --squash --match-head-commit "$EXPECTED_HEAD" "$PR_URL"
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
