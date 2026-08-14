@@ -16,7 +16,6 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-      # Checkout PR and validate pnpm lock file
       - name: Checkout PR
         uses: actions/checkout@v7
         with:
@@ -24,8 +23,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
-        with:
-          version: latest
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -37,28 +34,11 @@ jobs:
         id: validate_lock
         run: |
           echo "Validating pnpm-lock.yaml file..."
-          if pnpm install --frozen-lockfile --ignore-scripts; then
-            echo "lock_file_valid=true" >> $GITHUB_OUTPUT
-            echo "✅ pnpm-lock.yaml validation passed"
-          else
-            echo "lock_file_valid=false" >> $GITHUB_OUTPUT
-            echo "❌ pnpm-lock.yaml validation failed"
-          fi
+          pnpm install --frozen-lockfile --ignore-scripts
+          echo "✅ pnpm-lock.yaml validation passed"
 
-      # Auto-merge only if lock file is valid and meets criteria
-      - name: Enable auto-merge for Dependabot PRs
-        if: |
-          steps.validate_lock.outputs.lock_file_valid == 'true' &&
-          (steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-           steps.metadata.outputs.dependency-type == 'direct:development')
-        run: gh pr merge --auto --squash "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Add comment if lock file validation fails
       - name: Comment on invalid lock file
-        if: steps.validate_lock.outputs.lock_file_valid == 'false'
+        if: failure() && steps.validate_lock.outcome == 'failure'
         run: |
           gh pr comment ${{ github.event.pull_request.number }} --body "❌ **Automatic merge failed**
 
@@ -67,8 +47,24 @@ jobs:
           - Dependency conflicts with other PRs
           - Corrupted or inconsistent lock file
 
-          If this is a minimum release age failure, wait until the package is outside the policy window, then rerun the workflow. Otherwise, manually check and fix this PR, or wait for other PRs to merge first and then retry.
+          If this is a minimum release age failure, keep this PR unchanged and rerun the workflow after the policy window expires. Recreating the PR may select newer transitive dependencies and restart the waiting period.
 
-          You can try running \`@dependabot recreate\` to regenerate this PR."
+          Otherwise, manually inspect and repair the lock file."
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run ESLint check
+        run: pnpm lint
+
+      - name: Run Prettier check
+        run: pnpm format:check
+
+      - name: Merge eligible Dependabot PR
+        if: |
+          success() &&
+          (steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+           steps.metadata.outputs.dependency-type == 'direct:development')
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
