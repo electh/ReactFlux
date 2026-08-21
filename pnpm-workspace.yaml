@@ -1,5 +1,5 @@
-# Delay newly published packages for 24 hours.
-minimumReleaseAge: 1440
+# Delay newly published packages for 7 days.
+minimumReleaseAge: 10080
 
 allowBuilds:
   core-js: false
