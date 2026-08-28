@@ -126,9 +126,13 @@ const Login = () => {
                 }}
               >
                 <Input
+                  autoCapitalize="none"
+                  autoCorrect="off"
                   disabled={loading}
+                  inputMode="url"
                   placeholder={polyglot.t("login.server_placeholder")}
-                  prefix={<IconHome />}
+                  prefix={<IconHome aria-hidden="true" />}
+                  spellCheck={false}
                 />
               </Form.Item>
               {authMethod === "token" && (
@@ -141,9 +145,12 @@ const Login = () => {
                   }}
                 >
                   <Input.Password
+                    autoCapitalize="none"
+                    autoCorrect="off"
                     disabled={loading}
                     placeholder={polyglot.t("login.token_placeholder")}
-                    prefix={<IconLock />}
+                    prefix={<IconLock aria-hidden="true" />}
+                    spellCheck={false}
                   />
                 </Form.Item>
               )}
@@ -158,9 +165,12 @@ const Login = () => {
                     }}
                   >
                     <Input
+                      autoCapitalize="none"
+                      autoCorrect="off"
                       disabled={loading}
                       placeholder={polyglot.t("login.username_placeholder")}
-                      prefix={<IconUser />}
+                      prefix={<IconUser aria-hidden="true" />}
+                      spellCheck={false}
                     />
                   </Form.Item>
                   <Form.Item
@@ -172,9 +182,12 @@ const Login = () => {
                     }}
                   >
                     <Input.Password
+                      autoCapitalize="none"
+                      autoCorrect="off"
                       disabled={loading}
                       placeholder={polyglot.t("login.password_placeholder")}
-                      prefix={<IconLock />}
+                      prefix={<IconLock aria-hidden="true" />}
+                      spellCheck={false}
                     />
                   </Form.Item>
                 </>
@@ -200,7 +213,7 @@ const Login = () => {
                 ? polyglot.t("login.another_login_button")
                 : polyglot.t("login.token_label")}
             </Button>
-            <div style={{ display: "flex", marginTop: "40px" }}>
+            <div className="login-help">
               <Typography.Text disabled>{polyglot.t("login.need_help")}</Typography.Text>
               <Link
                 href={"https://miniflux.app/docs/api.html#authentication"}

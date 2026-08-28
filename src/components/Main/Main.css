@@ -16,6 +16,10 @@
   overflow-y: auto;
 }
 
+.add-feed-modal {
+  width: 400px;
+}
+
 @media screen and (max-width: 992px) {
   .main {
     margin: 0;
@@ -29,5 +33,109 @@
   .settings-modal {
     top: 8%;
     width: 95%;
+  }
+
+  .add-feed-modal {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 16px);
+    max-width: 400px;
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+
+  .add-feed-modal .arco-modal-header,
+  .add-feed-modal .arco-modal-footer {
+    flex: 0 0 auto;
+  }
+
+  .add-feed-modal .arco-modal-title {
+    font-size: 18px;
+  }
+
+  .add-feed-modal .arco-modal-content {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .add-feed-modal .arco-form-label-item {
+    font-size: var(--mobile-form-font-size);
+    line-height: 24px;
+  }
+
+  .add-feed-modal .arco-form-label-item > label {
+    font-size: var(--mobile-form-font-size);
+  }
+
+  .add-feed-modal .arco-input,
+  .add-feed-modal .arco-select-size-default.arco-select-single .arco-select-view {
+    height: var(--mobile-form-control-size);
+    font-size: var(--mobile-form-font-size);
+  }
+
+  .add-feed-modal .arco-select-size-default.arco-select-single .arco-select-view-input {
+    font-size: var(--mobile-form-font-size);
+  }
+
+  .add-feed-modal .arco-select-suffix .arco-icon {
+    width: var(--mobile-form-icon-size);
+    height: var(--mobile-form-icon-size);
+    font-size: var(--mobile-form-icon-size);
+  }
+
+  .add-feed-modal .arco-form-message {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .add-feed-modal .add-feed-switch {
+    margin: 10px 2px;
+    overflow: visible;
+    touch-action: manipulation;
+  }
+
+  .add-feed-modal .add-feed-switch::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--mobile-form-control-size);
+    height: var(--mobile-form-control-size);
+    border-radius: 50%;
+    content: "";
+    transform: translate(-50%, -50%);
+  }
+
+  .add-feed-modal .arco-modal-footer .arco-btn {
+    min-width: 88px;
+    height: var(--mobile-form-control-size);
+    font-size: var(--mobile-form-font-size);
+  }
+
+  .add-feed-modal .arco-modal-close-icon {
+    display: inline-flex;
+    top: 2px;
+    right: 2px;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--mobile-form-icon-size);
+    line-height: 0;
+  }
+
+  .add-feed-modal .arco-modal-close-icon,
+  .add-feed-modal .arco-modal-close-icon::before {
+    width: var(--mobile-form-control-size);
+    height: var(--mobile-form-control-size);
+  }
+
+  .add-feed-category-select-popup {
+    max-width: calc(100vw - 16px);
+  }
+
+  .add-feed-category-select-popup .arco-select-option {
+    box-sizing: border-box;
+    min-height: var(--mobile-form-control-size);
+    font-size: var(--mobile-form-font-size);
+    line-height: var(--mobile-form-control-size);
   }
 }

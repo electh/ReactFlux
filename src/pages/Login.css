@@ -23,15 +23,100 @@
   width: 340px;
 }
 
+.login-help {
+  display: flex;
+  margin-top: 40px;
+}
+
 .page-layout {
   display: flex;
   height: 100%;
 }
 
 @media screen and (max-width: 768px) {
+  .page-layout {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+  }
+
   .form-panel {
     position: absolute !important;
+    inset: 0;
+    justify-content: flex-start;
+    box-sizing: border-box;
     z-index: 2 !important;
     width: 100% !important;
+    padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
+      max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    overscroll-behavior: contain;
+  }
+
+  .login-form {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 340px;
+    margin-block: auto;
+  }
+
+  .login-form .arco-form-label-item {
+    font-size: var(--mobile-form-font-size);
+    line-height: 24px;
+  }
+
+  .login-form .arco-form-label-item > label {
+    font-size: var(--mobile-form-font-size);
+  }
+
+  .login-form .arco-input-group-wrapper {
+    height: var(--mobile-form-control-size);
+  }
+
+  .login-form .arco-input-group,
+  .login-form .arco-input-inner-wrapper {
+    height: 100%;
+  }
+
+  .login-form .arco-input {
+    font-size: var(--mobile-form-font-size);
+  }
+
+  .login-form .arco-input-group-prefix .arco-icon {
+    width: var(--mobile-form-icon-size);
+    height: var(--mobile-form-icon-size);
+    font-size: var(--mobile-form-icon-size);
+  }
+
+  .login-form .arco-input-password-visibility-icon {
+    box-sizing: border-box;
+    width: var(--mobile-utility-control-size);
+    height: var(--mobile-utility-control-size);
+    padding: 10px;
+  }
+
+  .login-form .arco-form-message {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .login-form > .arco-btn {
+    height: var(--mobile-form-control-size);
+    font-size: var(--mobile-form-font-size);
+  }
+
+  .login-help {
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 8px;
+    margin-top: 32px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .login-help .arco-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--mobile-form-control-size);
+    font-size: 14px;
   }
 }

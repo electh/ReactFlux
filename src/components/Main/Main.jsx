@@ -1,6 +1,6 @@
 import { Form, Input, Message, Modal, Select, Switch } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router"
 
 import { addFeed } from "@/apis"
@@ -59,14 +59,18 @@ const AddFeedModal = () => {
   const { polyglot } = useStore(polyglotState)
   const categories = useStore(categoriesState)
   const feeds = useStore(feedsState)
+  const { isBelowMedium } = useScreenWidth()
 
   const [feedModalLoading, setFeedModalLoading] = useState(false)
   const [feedForm] = Form.useForm()
+  const feedUrlInputRef = useRef(null)
 
   const { fetchFeedRelatedData } = useAppData()
   const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle()
 
   const navigate = useNavigate()
+
+  const handleAfterOpen = () => feedUrlInputRef.current?.focus()
 
   const handleAddFeed = async (url, categoryId, isFullText) => {
     setFeedModalLoading(true)
@@ -104,8 +108,9 @@ const AddFeedModal = () => {
   return (
     <Modal
       unmountOnExit
+      afterOpen={handleAfterOpen}
+      className="add-feed-modal"
       confirmLoading={feedModalLoading}
-      style={{ width: "400px", maxWidth: "95%" }}
       title={polyglot.t("main.add_feed_modal_title")}
       visible={addFeedModalVisible}
       onOk={feedForm.submit}
@@ -133,7 +138,14 @@ const AddFeedModal = () => {
           label={polyglot.t("main.add_feed_modal_feed_url_label")}
           rules={urlRule}
         >
-          <Input placeholder={polyglot.t("main.add_feed_modal_feed_url_placeholder")} />
+          <Input
+            ref={feedUrlInputRef}
+            autoCapitalize="none"
+            autoCorrect="off"
+            inputMode="url"
+            placeholder={polyglot.t("main.add_feed_modal_feed_url_placeholder")}
+            spellCheck={false}
+          />
         </Form.Item>
         <Form.Item
           required
@@ -143,10 +155,15 @@ const AddFeedModal = () => {
         >
           <Select
             showSearch
+            getPopupContainer={isBelowMedium ? () => document.body : undefined}
             placeholder={polyglot.t("main.add_feed_modal_category_placeholder")}
             filterOption={(inputValue, option) =>
               includesIgnoreCase(option.props.children, inputValue)
             }
+            triggerProps={{
+              boundaryDistance: { bottom: 8, left: 8, right: 8, top: 8 },
+              className: "add-feed-category-select-popup",
+            }}
           >
             {categories.map((category) => (
               <Select.Option key={category.id} value={category.id}>
@@ -163,7 +180,7 @@ const AddFeedModal = () => {
           style={{ marginBottom: 0 }}
           triggerPropName="checked"
         >
-          <Switch />
+          <Switch className="add-feed-switch" />
         </Form.Item>
       </Form>
     </Modal>
