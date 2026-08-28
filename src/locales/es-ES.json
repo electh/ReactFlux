@@ -101,6 +101,7 @@
     "star_tooltip": "Marcar como favorito",
     "unstar_tooltip": "Desmarcar como favorito",
     "fetch_original_tooltip": "Obtener contenido original",
+    "more_actions_tooltip": "Más acciones",
     "save_to_third_party_services_tooltip": "Guardar en servicios de terceros",
     "share_tooltip": "Compartir",
     "view_comments_tooltip": "Ver comentarios"
@@ -119,7 +120,8 @@
   },
   "article_toc": {
     "tooltip": "Tabla de contenidos",
-    "filter_headings": "Filtrar títulos"
+    "filter_headings": "Filtrar títulos",
+    "back_to_actions": "Volver a más acciones"
   },
   "article_attachments": {
     "title": "Archivos adjuntos (%{count})",

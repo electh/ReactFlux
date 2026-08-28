@@ -101,6 +101,7 @@
     "star_tooltip": "Star",
     "unstar_tooltip": "Unstar",
     "fetch_original_tooltip": "Fetch original content",
+    "more_actions_tooltip": "More actions",
     "save_to_third_party_services_tooltip": "Save to third-party services",
     "share_tooltip": "Share",
     "view_comments_tooltip": "View comments"
@@ -119,7 +120,8 @@
   },
   "article_toc": {
     "tooltip": "Table of Contents",
-    "filter_headings": "Filter headings"
+    "filter_headings": "Filter headings",
+    "back_to_actions": "Back to more actions"
   },
   "article_attachments": {
     "title": "Attachments (%{count})",

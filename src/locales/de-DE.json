@@ -101,6 +101,7 @@
     "star_tooltip": "Lesezeichen hinzufügen",
     "unstar_tooltip": "Lesezeichen entfernen",
     "fetch_original_tooltip": "Originalinhalt herunterladen",
+    "more_actions_tooltip": "Weitere Aktionen",
     "save_to_third_party_services_tooltip": "Bei Drittanbieter speichern",
     "share_tooltip": "Teilen",
     "view_comments_tooltip": "Kommentare anzeigen"
@@ -119,7 +120,8 @@
   },
   "article_toc": {
     "tooltip": "Inhaltsverzeichnis",
-    "filter_headings": "Überschriften filtern"
+    "filter_headings": "Überschriften filtern",
+    "back_to_actions": "Zurück zu weiteren Aktionen"
   },
   "article_attachments": {
     "title": "Anhänge (%{count})",

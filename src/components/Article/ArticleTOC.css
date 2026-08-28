@@ -10,6 +10,30 @@
   padding: 16px 16px 0;
 }
 
+.toc-filter-container-with-back {
+  display: flex;
+  align-items: center;
+  gap: var(--mobile-edge-spacing);
+  padding: var(--mobile-edge-spacing) var(--mobile-edge-spacing) 0;
+}
+
+.toc-filter-container-with-back .arco-input-inner-wrapper {
+  min-width: 0;
+}
+
+.toc-back-button.arco-btn-shape-circle {
+  display: inline-flex;
+  flex: 0 0 var(--mobile-edge-control-size);
+  align-items: center;
+  justify-content: center;
+  width: var(--mobile-edge-control-size);
+  height: var(--mobile-edge-control-size);
+  margin-bottom: var(--mobile-edge-spacing);
+  padding: 0;
+  font-size: 24px;
+  line-height: 0;
+}
+
 .toc-menu-item {
   display: flex;
   align-items: center;
@@ -24,4 +48,50 @@
 .toc-menu-container .arco-menu,
 .toc-menu-container .arco-menu-item {
   background-color: var(--color-neutral-1);
+}
+
+@media screen and (max-width: 768px) {
+  .toc-droplist-container {
+    box-sizing: border-box;
+    width: min(var(--mobile-overlay-panel-width), calc(100vw - 16px));
+  }
+
+  .toc-filter-container .arco-input-inner-wrapper {
+    height: var(--mobile-form-control-size);
+  }
+
+  .toc-filter-container .arco-input {
+    font-size: var(--mobile-form-font-size);
+  }
+
+  .toc-filter-container .arco-input-clear-icon {
+    display: inline-flex;
+    flex: 0 0 var(--mobile-utility-control-size);
+    align-items: center;
+    justify-content: center;
+    width: var(--mobile-utility-control-size);
+    height: var(--mobile-utility-control-size);
+    font-size: var(--mobile-form-icon-size);
+    line-height: 0;
+    visibility: visible;
+  }
+
+  .toc-filter-container .arco-input-clear-icon::before {
+    width: var(--mobile-utility-control-size);
+    height: var(--mobile-utility-control-size);
+  }
+
+  .toc-menu-container {
+    width: 100%;
+    max-height: min(280px, calc(100vh - 86px));
+    max-height: min(280px, calc(100dvh - 86px));
+  }
+
+  .toc-menu-container .arco-menu-item {
+    box-sizing: border-box;
+    min-height: var(--mobile-form-control-size);
+    height: auto;
+    font-size: 15px;
+    line-height: 20px;
+  }
 }

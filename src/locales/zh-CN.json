@@ -101,6 +101,7 @@
     "star_tooltip": "收藏",
     "unstar_tooltip": "取消收藏",
     "fetch_original_tooltip": "获取原文",
+    "more_actions_tooltip": "更多操作",
     "save_to_third_party_services_tooltip": "保存到第三方服务",
     "share_tooltip": "分享",
     "view_comments_tooltip": "查看评论"
@@ -119,7 +120,8 @@
   },
   "article_toc": {
     "tooltip": "目录大纲",
-    "filter_headings": "筛选标题"
+    "filter_headings": "筛选标题",
+    "back_to_actions": "返回更多操作"
   },
   "article_attachments": {
     "title": "附件 (%{count})",

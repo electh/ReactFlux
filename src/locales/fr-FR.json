@@ -101,6 +101,7 @@
     "star_tooltip": "Marquer comme favori",
     "unstar_tooltip": "Démarquer comme favori",
     "fetch_original_tooltip": "Récupérer le contenu original",
+    "more_actions_tooltip": "Plus d’actions",
     "save_to_third_party_services_tooltip": "Sauvegarder dans les services tiers",
     "share_tooltip": "Partager",
     "view_comments_tooltip": "Voir les commentaires"
@@ -119,7 +120,8 @@
   },
   "article_toc": {
     "tooltip": "Table des matières",
-    "filter_headings": "Filtrer les titres"
+    "filter_headings": "Filtrer les titres",
+    "back_to_actions": "Retour aux autres actions"
   },
   "article_attachments": {
     "title": "Pièces jointes (%{count})",
