@@ -272,6 +272,17 @@ p {
 }
 
 @media screen and (max-width: 768px) {
+  .article-date,
+  .article-meta .arco-typography,
+  .article-meta .arco-tag {
+    font-size: 14px;
+  }
+
+  .article-meta .arco-tag {
+    height: 32px;
+    line-height: 30px;
+  }
+
   .article-lightbox {
     --yarl__button_padding: var(--mobile-edge-spacing);
     --yarl__counter_line_height: var(--mobile-edge-icon-size);

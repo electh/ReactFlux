@@ -200,11 +200,11 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
       position="bl"
       trigger="contextMenu"
       droplist={
-        <Menu>
+        <Menu className="mobile-action-menu">
           <Menu.Item key="open-in-browser" onClick={() => handleOpenLinkExternally(entry)}>
             <div className="settings-menu-item">
               <span>{polyglot.t("article_card.open_link_externally_tooltip")}</span>
-              <IconLaunch />
+              <IconLaunch aria-hidden="true" />
             </div>
           </Menu.Item>
 
@@ -217,7 +217,11 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
                   ? polyglot.t("article_card.mark_as_read_tooltip")
                   : polyglot.t("article_card.mark_as_unread_tooltip")}
               </span>
-              {isUnread ? <IconMinusCircle /> : <IconRecord />}
+              {isUnread ? (
+                <IconMinusCircle aria-hidden="true" />
+              ) : (
+                <IconRecord aria-hidden="true" />
+              )}
             </div>
           </Menu.Item>
 
@@ -228,7 +232,11 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
                   ? polyglot.t("article_card.unstar_tooltip")
                   : polyglot.t("article_card.star_tooltip")}
               </span>
-              {isStarred ? <IconStarFill style={{ color: "#ffcd00" }} /> : <IconStar />}
+              {isStarred ? (
+                <IconStarFill aria-hidden="true" style={{ color: "#ffcd00" }} />
+              ) : (
+                <IconStar aria-hidden="true" />
+              )}
             </div>
           </Menu.Item>
 
@@ -239,7 +247,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
             >
               <div className="settings-menu-item">
                 <span>{polyglot.t("article_card.save_to_third_party_services_tooltip")}</span>
-                <IconSave />
+                <IconSave aria-hidden="true" />
               </div>
             </Menu.Item>
           )}
@@ -258,12 +266,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
           }
         }}
       >
-        <div
-          className="card-content"
-          style={{
-            opacity: isUnread ? 1 : 0.5,
-          }}
-        >
+        <div className={`card-content ${isUnread ? "unread" : "read"}`}>
           <div className="card-header">
             <div className="card-meta">
               <div className="card-source">

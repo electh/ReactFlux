@@ -31,8 +31,8 @@
   .entry-panel {
     align-items: center;
     gap: var(--mobile-edge-spacing);
-    padding: var(--mobile-bottom-bar-vertical-spacing) var(--mobile-edge-spacing)
-      calc(var(--mobile-bottom-bar-vertical-spacing) + env(safe-area-inset-bottom, 0px));
+    padding: var(--mobile-edge-spacing);
+    padding-bottom: calc(var(--mobile-edge-spacing) + env(safe-area-inset-bottom, 0px));
     background-color: var(--color-bg-1);
   }
 
@@ -44,13 +44,13 @@
     width: var(--mobile-edge-control-size);
     height: var(--mobile-edge-control-size);
     padding: 0;
-    font-size: var(--mobile-bottom-bar-icon-size);
+    font-size: var(--mobile-navigation-icon-size);
     line-height: 0;
   }
 
   .entry-panel .arco-btn-shape-circle .arco-icon {
-    width: var(--mobile-bottom-bar-icon-size);
-    height: var(--mobile-bottom-bar-icon-size);
+    width: var(--mobile-navigation-icon-size);
+    height: var(--mobile-navigation-icon-size);
   }
 
   .entry-panel .arco-radio-group-type-button {
@@ -68,7 +68,7 @@
     min-width: var(--mobile-edge-control-size);
     height: var(--mobile-edge-control-size);
     margin: 0;
-    font-size: var(--mobile-edge-font-size);
+    font-size: var(--mobile-navigation-secondary-font-size);
     line-height: var(--mobile-edge-control-size);
     overflow: hidden;
   }
@@ -93,9 +93,9 @@
   }
 
   .entry-panel .arco-radio-button .arco-icon {
-    flex: 0 0 var(--mobile-bottom-bar-icon-size);
-    width: var(--mobile-bottom-bar-icon-size);
-    height: var(--mobile-bottom-bar-icon-size);
+    flex: 0 0 var(--mobile-navigation-icon-size);
+    width: var(--mobile-navigation-icon-size);
+    height: var(--mobile-navigation-icon-size);
   }
 
   .entry-panel-filter-label:not(.entry-panel-filter-label-hidden) {

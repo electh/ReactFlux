@@ -22,6 +22,10 @@
   transform: translateZ(0);
 }
 
+.card-content.read {
+  opacity: 0.5;
+}
+
 .card-image-mini {
   width: 80px;
   height: 80px;
@@ -170,4 +174,25 @@
 
 .icon-starred {
   transition: opacity 0.2s;
+}
+
+@media screen and (max-width: 768px) {
+  .card-title {
+    font-size: 17px;
+  }
+
+  .card-preview {
+    font-size: 15px;
+  }
+
+  .card-author,
+  .card-reading-time,
+  .card-source-title,
+  .card-time-wrapper {
+    font-size: 13px;
+  }
+
+  .card-content.read {
+    opacity: 0.65;
+  }
 }

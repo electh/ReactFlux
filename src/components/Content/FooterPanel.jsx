@@ -44,11 +44,13 @@ const MarkAllReadButton = ({ from, onConfirm }) => {
   const { skipMarkAllReadConfirmation } = useStore(settingsState)
 
   const isHidden = ["starred", "history"].includes(from)
+  const markAllReadLabel = polyglot.t("article_list.mark_all_as_read_tooltip")
 
   const button = (
-    <CustomTooltip mini content={polyglot.t("article_list.mark_all_as_read_tooltip")}>
+    <CustomTooltip mini content={markAllReadLabel}>
       <Button
-        icon={<IconCheck />}
+        aria-label={markAllReadLabel}
+        icon={<IconCheck aria-hidden="true" />}
         shape="circle"
         style={{ visibility: isHidden ? "hidden" : "visible" }}
         onClick={skipMarkAllReadConfirmation ? onConfirm : undefined}
@@ -79,6 +81,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const filteredCategories = useStore(filteredCategoriesState)
   const filteredFeeds = useStore(filteredFeedsState)
   const navigate = useNavigate()
+  const refreshLabel = polyglot.t("article_list.refresh_tooltip")
 
   const jumpToNext = () => {
     if (info.from === "category") {
@@ -172,19 +175,19 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
     {
       label: polyglot.t("article_list.filter_status_unread"),
       value: "unread",
-      icon: <IconRecord />,
+      icon: <IconRecord aria-hidden="true" />,
     },
     {
       label: polyglot.t("article_list.filter_status_all"),
       value: "all",
-      icon: <IconAlignLeft />,
+      icon: <IconAlignLeft aria-hidden="true" />,
     },
   ]
 
   const starredOption = {
     label: polyglot.t("article_list.filter_status_starred"),
     value: "starred",
-    icon: <IconStarFill />,
+    icon: <IconStarFill aria-hidden="true" />,
   }
 
   const filterOptions = ["category", "feed"].includes(info.from)
@@ -194,9 +197,13 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const renderRadioButton = (option) => {
     const isSelected = showStatus === option.value
     return (
-      <Radio value={option.value}>
+      <Radio key={option.value} value={option.value}>
         {option.icon}
-        {isSelected && <span style={{ marginLeft: "4px" }}>{option.label}</span>}
+        <span
+          className={`entry-panel-filter-label${isSelected ? "" : " entry-panel-filter-label-hidden"}`}
+        >
+          {option.label}
+        </span>
       </Radio>
     )
   }
@@ -218,9 +225,10 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       >
         {filterOptions.map((option) => renderRadioButton(option))}
       </Radio.Group>
-      <CustomTooltip mini content={polyglot.t("article_list.refresh_tooltip")}>
+      <CustomTooltip mini content={refreshLabel}>
         <Button
-          icon={<IconRefresh />}
+          aria-label={refreshLabel}
+          icon={<IconRefresh aria-hidden="true" />}
           loading={!isArticleListReady}
           shape="circle"
           onClick={refreshArticleList}
