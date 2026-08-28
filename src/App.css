@@ -1,3 +1,9 @@
+.arco-input::placeholder,
+.arco-select-view input::placeholder,
+.arco-select-view-placeholder {
+  color: var(--color-text-2);
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -156,6 +162,79 @@
     margin-right: 12px;
   }
 
+  .arco-select-popup .arco-select-option {
+    min-height: var(--mobile-form-control-size);
+    font-size: var(--mobile-form-font-size);
+    line-height: var(--mobile-form-control-size);
+  }
+
+  :is(.edit-modal, .modal-style) {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 16px);
+    max-width: 400px;
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+
+    & .arco-modal-header,
+    & .arco-modal-footer {
+      flex: 0 0 auto;
+    }
+
+    & .arco-modal-content {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    & .arco-modal-footer > .arco-btn {
+      min-width: 80px;
+      height: var(--mobile-form-control-size);
+      font-size: var(--mobile-form-font-size);
+    }
+  }
+
+  :is(.settings-modal, .edit-modal, .modal-style) {
+    & .arco-modal-title {
+      font-size: 18px;
+      line-height: 26px;
+    }
+
+    & .arco-modal-content {
+      font-size: var(--mobile-form-font-size);
+      line-height: 1.5;
+    }
+
+    & .arco-form-label-item > label,
+    & .arco-input,
+    & .arco-input-group-addbefore,
+    & .arco-select-view,
+    & .arco-select-view-input {
+      font-size: var(--mobile-form-font-size);
+    }
+
+    & .arco-input,
+    & .arco-input-group-wrapper,
+    & .arco-input-inner-wrapper,
+    & .arco-select-view {
+      min-height: var(--mobile-form-control-size);
+    }
+  }
+
+  .settings-modal {
+    & .setting-row .arco-typography-secondary {
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    & .arco-tag {
+      min-height: 1.75rem;
+      font-size: 0.875rem;
+      line-height: 1.625rem;
+    }
+  }
+
   .app-confirm-modal.arco-modal-simple {
     display: flex;
     flex-direction: column;
@@ -197,8 +276,8 @@
   .app-confirm-modal.arco-modal-simple .arco-modal-content {
     flex: 1 1 auto;
     min-height: 0;
-    font-size: 15px;
-    line-height: 24px;
+    font-size: var(--mobile-form-font-size);
+    line-height: 1.5;
     text-align: left;
     overflow-y: auto;
     overflow-wrap: anywhere;
