@@ -68,6 +68,7 @@
     "check": "查看",
     "dismiss": "关闭",
     "copy_to_clipboard_tooltip": "复制到剪贴板",
+    "code_language": "代码语言",
     "copied": "已复制！",
     "copy_failed": "复制失败，请稍后再试",
     "mark_as_read_error": "标记为已读失败，请稍后再试",
@@ -139,6 +140,7 @@
   },
   "search": {
     "search": "搜索",
+    "syntax_help": "搜索语法帮助",
     "confirm": "确定",
     "cancel": "取消",
     "placeholder": "搜索...",

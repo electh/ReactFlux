@@ -59,22 +59,242 @@
   width: 400px;
 }
 
+.search-syntax-help.arco-btn {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  font-size: 14px;
+  line-height: 0;
+}
+
 .arco-input-group-addbefore .arco-select .arco-select-view {
   border-radius: var(--border-radius-medium);
 }
 
 @media screen and (max-width: 768px) {
+  .search-and-sort-bar {
+    padding: var(--mobile-navigation-spacing) 0;
+  }
+
+  .search-and-sort-bar .brand {
+    margin-left: var(--mobile-navigation-spacing);
+  }
+
+  .search-and-sort-bar .page-info {
+    min-width: 0;
+    margin-left: var(--mobile-navigation-spacing);
+  }
+
+  .search-and-sort-bar .page-info .title-container {
+    min-width: 0;
+  }
+
+  .search-and-sort-bar .page-info .title-container .arco-typography {
+    font-size: 1.125rem;
+  }
+
+  .search-and-sort-bar .page-info .count-label {
+    font-size: var(--mobile-navigation-font-size);
+  }
+
+  .search-and-sort-bar .button-group {
+    gap: var(--mobile-navigation-spacing);
+    margin: 0 var(--mobile-navigation-spacing);
+  }
+
+  .search-and-sort-bar .arco-btn-shape-circle {
+    display: inline-flex;
+    flex: 0 0 var(--mobile-navigation-control-size);
+    align-items: center;
+    justify-content: center;
+    width: var(--mobile-navigation-control-size);
+    height: var(--mobile-navigation-control-size);
+    padding: 0;
+    font-size: var(--mobile-navigation-icon-size);
+    line-height: 0;
+  }
+
+  .search-and-sort-bar .arco-btn-shape-circle .arco-icon {
+    width: var(--mobile-navigation-icon-size);
+    height: var(--mobile-navigation-icon-size);
+  }
+
   .search-modal {
-    width: 95%;
+    width: calc(100% - 16px);
+    max-width: 400px;
+  }
+
+  .search-modal .arco-modal-title {
+    font-size: 18px;
+  }
+
+  .search-modal .arco-input-group-wrapper {
+    height: var(--mobile-form-control-size);
+  }
+
+  .search-modal .arco-input-group,
+  .search-modal .arco-input-group-addbefore,
+  .search-modal .arco-input-inner-wrapper,
+  .search-modal .arco-select {
+    height: 100%;
+  }
+
+  .search-modal .arco-input,
+  .search-modal .arco-input-group-addbefore,
+  .search-modal .arco-select-size-default.arco-select-single .arco-select-view {
+    font-size: var(--mobile-form-font-size);
+  }
+
+  .search-modal .arco-input-group-suffix .arco-icon {
+    width: var(--mobile-form-icon-size);
+    height: var(--mobile-form-icon-size);
+    font-size: var(--mobile-form-icon-size);
+  }
+
+  .search-modal .search-syntax-help.arco-btn {
+    flex: 0 0 var(--mobile-calendar-control-size);
+    width: var(--mobile-calendar-control-size);
+    height: var(--mobile-calendar-control-size);
+    font-size: var(--mobile-form-icon-size);
+  }
+
+  .search-modal .search-syntax-help .arco-icon {
+    width: var(--mobile-form-icon-size);
+    height: var(--mobile-form-icon-size);
+  }
+
+  .search-modal .arco-modal-footer .arco-btn {
+    min-width: 88px;
+    height: var(--mobile-form-control-size);
+    font-size: var(--mobile-form-font-size);
+  }
+
+  .search-modal .arco-modal-close-icon {
+    display: inline-flex;
+    top: 2px;
+    right: 2px;
+    align-items: center;
+    justify-content: center;
+    width: var(--mobile-form-control-size);
+    height: var(--mobile-form-control-size);
+    font-size: var(--mobile-form-icon-size);
+    line-height: 0;
+  }
+
+  .search-modal .arco-modal-close-icon::before {
+    width: var(--mobile-form-control-size);
+    height: var(--mobile-form-control-size);
+  }
+
+  .search-filter-select-popup,
+  .mobile-date-picker-popup {
+    max-width: calc(100vw - 16px);
+  }
+
+  .search-filter-select-popup .arco-select-option {
+    min-height: var(--mobile-form-control-size);
+    font-size: var(--mobile-form-font-size);
+    line-height: var(--mobile-form-control-size);
+  }
+
+  .mobile-date-picker-popup .arco-picker-container {
+    width: min(var(--mobile-overlay-panel-width), calc(100vw - 16px));
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-date-picker-popup .arco-panel-date-inner,
+  .mobile-date-picker-popup .arco-panel-month,
+  .mobile-date-picker-popup .arco-panel-year {
+    width: 100%;
+  }
+
+  .mobile-date-picker-popup .arco-picker-header {
+    align-items: center;
+    padding: 4px 8px;
+  }
+
+  .mobile-date-picker-popup .arco-picker-header-icon {
+    width: var(--mobile-calendar-control-size);
+    height: var(--mobile-calendar-control-size);
+    margin: 0;
+    font-size: var(--mobile-form-icon-size);
+    line-height: var(--mobile-calendar-control-size);
+  }
+
+  .mobile-date-picker-popup .arco-picker-header-value {
+    font-size: var(--mobile-form-font-size);
+    line-height: var(--mobile-calendar-control-size);
+  }
+
+  .mobile-date-picker-popup .arco-picker-week-list {
+    padding: 8px 8px 0;
+  }
+
+  .mobile-date-picker-popup .arco-picker-week-list-item {
+    height: 32px;
+    font-size: 14px;
+    line-height: 32px;
+  }
+
+  .mobile-date-picker-popup .arco-picker-body {
+    padding: 0 8px 8px;
+  }
+
+  .mobile-date-picker-popup .arco-picker-cell {
+    box-sizing: border-box;
+    height: var(--mobile-calendar-control-size);
+    padding: 4px 0;
+  }
+
+  .mobile-date-picker-popup .arco-picker-cell .arco-picker-date {
+    height: 32px;
+    padding: 0;
+  }
+
+  .mobile-date-picker-popup .arco-picker-date-value {
+    min-width: 32px;
+    height: 32px;
+    font-size: 14px;
+    line-height: 32px;
+  }
+
+  .mobile-date-picker-popup .arco-picker-footer-extra-wrapper {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .mobile-date-picker-popup .calendar-actions {
+    gap: 8px;
+  }
+
+  .mobile-date-picker-popup .calendar-actions .arco-btn {
+    height: var(--mobile-calendar-control-size);
+    padding: 0 12px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 359px) {
+  .search-and-sort-bar .page-info .count-label {
+    display: none;
   }
 }
 
 @supports (padding-top: env(safe-area-inset-top)) {
-  @media screen and (display-mode: fullscreen), screen and (display-mode: standalone) {
-    @media screen and (max-width: 992px) {
-      .search-and-sort-bar {
-        padding-top: calc(env(safe-area-inset-top) + 8px);
-      }
+  @media screen and (min-width: 769px) and (max-width: 992px) and (display-mode: fullscreen),
+    screen and (min-width: 769px) and (max-width: 992px) and (display-mode: standalone) {
+    .search-and-sort-bar {
+      padding-top: calc(env(safe-area-inset-top) + 8px);
+    }
+  }
+
+  @media screen and (max-width: 768px) and (display-mode: fullscreen),
+    screen and (max-width: 768px) and (display-mode: standalone) {
+    .search-and-sort-bar {
+      padding-top: calc(env(safe-area-inset-top, 0px) + var(--mobile-navigation-spacing));
     }
   }
 }

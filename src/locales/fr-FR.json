@@ -68,6 +68,7 @@
     "check": "Vérifier",
     "dismiss": "Ignorer",
     "copy_to_clipboard_tooltip": "Copier dans le presse-papiers",
+    "code_language": "Langage du code",
     "copied": "Copié !",
     "copy_failed": "Erreur lors de la copie, veuillez réessayer plus tard",
     "mark_as_read_error": "Impossible de marquer comme lu, veuillez réessayer plus tard",
@@ -139,6 +140,7 @@
   },
   "search": {
     "search": "Rechercher",
+    "syntax_help": "Aide sur la syntaxe de recherche",
     "confirm": "Confirmer",
     "cancel": "Annuler",
     "placeholder": "Rechercher...",

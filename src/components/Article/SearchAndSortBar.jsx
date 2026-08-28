@@ -16,7 +16,7 @@ import {
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { atom } from "nanostores"
-import { Fragment, memo, useMemo, useState } from "react"
+import { Fragment, memo, useMemo, useRef, useState } from "react"
 import { useParams } from "react-router"
 
 import SidebarTrigger from "./SidebarTrigger.jsx"
@@ -45,6 +45,9 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
   const draftFilterType = useStore(draftFilterTypeState)
   const { polyglot } = useStore(polyglotState)
   const tooltipLines = polyglot.t("search.tooltip").split("\n")
+  const searchInputRef = useRef(null)
+
+  const handleAfterOpen = () => searchInputRef.current?.focus()
 
   const handleConfirm = () => {
     setFilterType(draftFilterType)
@@ -59,6 +62,7 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
 
   return (
     <Modal
+      afterOpen={handleAfterOpen}
       className="search-modal"
       title={polyglot.t("search.search")}
       visible={visible}
@@ -74,6 +78,7 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
     >
       <div className="search-modal-content">
         <Input.Search
+          ref={searchInputRef}
           allowClear
           placeholder={polyglot.t("search.placeholder")}
           value={value}
@@ -84,6 +89,7 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
               triggerProps={{
                 autoAlignPopupWidth: false,
                 autoAlignPopupMinWidth: true,
+                className: "search-filter-select-popup",
                 position: "bl",
               }}
               onChange={setDraftFilterType}
@@ -96,6 +102,7 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
           prefix={
             <Tooltip
               mini
+              trigger={["hover", "focus", "click"]}
               content={
                 <div>
                   {tooltipLines.map((line, index) => (
@@ -107,7 +114,14 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
                 </div>
               }
             >
-              <IconQuestionCircle />
+              <Button
+                aria-label={polyglot.t("search.syntax_help")}
+                className="search-syntax-help"
+                icon={<IconQuestionCircle aria-hidden="true" />}
+                shape="circle"
+                size="mini"
+                type="text"
+              />
             </Tooltip>
           }
           onChange={onChange}
@@ -119,9 +133,12 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
 })
 SearchModal.displayName = "SearchModal"
 
-const ActiveButton = ({ active, icon, tooltip, onClick }) => (
+const ActiveButton = ({ active, expanded, icon, tooltip, onClick }) => (
   <CustomTooltip mini content={tooltip}>
     <Button
+      aria-expanded={expanded}
+      aria-haspopup="dialog"
+      aria-label={tooltip}
       icon={icon}
       shape="circle"
       size="small"
@@ -148,6 +165,11 @@ const SearchAndSortBar = () => {
   const [calendarVisible, setCalendarVisible] = useState(false)
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [modalInputValue, setModalInputValue] = useState("")
+
+  const sortLabel =
+    orderDirection === "desc"
+      ? polyglot.t("article_list.sort_direction_desc")
+      : polyglot.t("article_list.sort_direction_asc")
 
   const { title, count } = useMemo(() => {
     if (id) {
@@ -226,7 +248,8 @@ const SearchAndSortBar = () => {
       <div className="button-group">
         <ActiveButton
           active={!!filterString}
-          icon={<IconSearch />}
+          expanded={searchModalVisible}
+          icon={<IconSearch aria-hidden="true" />}
           tooltip={polyglot.t("search.search")}
           onClick={openSearchModal}
         />
@@ -248,7 +271,10 @@ const SearchAndSortBar = () => {
           triggerElement={
             <CustomTooltip mini content={polyglot.t("search.select_date")}>
               <Button
-                icon={<IconCalendar />}
+                aria-expanded={calendarVisible}
+                aria-haspopup="dialog"
+                aria-label={polyglot.t("search.select_date")}
+                icon={<IconCalendar aria-hidden="true" />}
                 shape="circle"
                 size="small"
                 style={{
@@ -257,21 +283,25 @@ const SearchAndSortBar = () => {
               />
             </CustomTooltip>
           }
+          triggerProps={{
+            boundaryDistance: { bottom: 8, left: 8, right: 8, top: 8 },
+            className: "mobile-date-picker-popup",
+          }}
           onChange={(v) => setFilterDate(v)}
           onVisibleChange={setCalendarVisible}
         />
-        <CustomTooltip
-          mini
-          content={
-            orderDirection === "desc"
-              ? polyglot.t("article_list.sort_direction_desc")
-              : polyglot.t("article_list.sort_direction_asc")
-          }
-        >
+        <CustomTooltip mini content={sortLabel}>
           <Button
-            icon={orderDirection === "desc" ? <IconSortDescending /> : <IconSortAscending />}
+            aria-label={sortLabel}
             shape="circle"
             size="small"
+            icon={
+              orderDirection === "desc" ? (
+                <IconSortDescending aria-hidden="true" />
+              ) : (
+                <IconSortAscending aria-hidden="true" />
+              )
+            }
             onClick={toggleOrderDirection}
           />
         </CustomTooltip>

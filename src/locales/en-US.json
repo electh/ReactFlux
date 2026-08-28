@@ -68,6 +68,7 @@
     "check": "Check",
     "dismiss": "Dismiss",
     "copy_to_clipboard_tooltip": "Copy to clipboard",
+    "code_language": "Code language",
     "copied": "Copied!",
     "copy_failed": "Failed to copy, please try again later",
     "mark_as_read_error": "Failed to mark as read, please try again later",
@@ -139,6 +140,7 @@
   },
   "search": {
     "search": "Search",
+    "syntax_help": "Search syntax help",
     "confirm": "Confirm",
     "cancel": "Cancel",
     "placeholder": "Search...",

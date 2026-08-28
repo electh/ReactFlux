@@ -68,6 +68,7 @@
     "check": "Comprobar",
     "dismiss": "Descartar",
     "copy_to_clipboard_tooltip": "Copiar al portapapeles",
+    "code_language": "Lenguaje del código",
     "copied": "Copiado!",
     "copy_failed": "Error al copiar, por favor intente de nuevo más tarde",
     "mark_as_read_error": "Error al marcar como leído, por favor intente de nuevo más tarde",
@@ -139,6 +140,7 @@
   },
   "search": {
     "search": "Buscar",
+    "syntax_help": "Ayuda sobre la sintaxis de búsqueda",
     "confirm": "Confirmar",
     "cancel": "Cancelar",
     "placeholder": "Buscar...",

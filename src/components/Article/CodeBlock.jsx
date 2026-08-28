@@ -44,7 +44,11 @@ const CodeBlock = ({ children }) => {
   return (
     <div className="code-block-container">
       <div className="code-block-header">
-        <LanguageSelector language={language} setLanguage={setLanguage} />
+        <LanguageSelector
+          label={polyglot.t("actions.code_language")}
+          language={language}
+          setLanguage={setLanguage}
+        />
         <CopyButton onClick={copyToClipboard} />
       </div>
       <SyntaxHighlighter language={language} showLineNumbers={true} style={atomOneDark}>
@@ -54,14 +58,17 @@ const CodeBlock = ({ children }) => {
   )
 }
 
-const LanguageSelector = ({ language, setLanguage }) => (
+const LanguageSelector = ({ label, language, setLanguage }) => (
   <Select
     showSearch
+    aria-label={label}
     className="language-selector"
     value={language}
     triggerProps={{
       autoAlignPopupWidth: false,
       autoAlignPopupMinWidth: true,
+      boundaryDistance: { bottom: 8, left: 8, right: 8, top: 8 },
+      className: "code-language-select-popup",
       position: "bl",
     }}
     onChange={setLanguage}
@@ -77,9 +84,16 @@ const LanguageSelector = ({ language, setLanguage }) => (
 const CopyButton = ({ onClick }) => {
   const { polyglot } = useStore(polyglotState)
 
+  const copyLabel = polyglot.t("actions.copy_to_clipboard_tooltip")
+
   return (
-    <CustomTooltip mini content={polyglot.t("actions.copy_to_clipboard_tooltip")}>
-      <Button className="copy-button" icon={<IconCopy />} onClick={onClick} />
+    <CustomTooltip mini content={copyLabel}>
+      <Button
+        aria-label={copyLabel}
+        className="copy-button"
+        icon={<IconCopy aria-hidden="true" />}
+        onClick={onClick}
+      />
     </CustomTooltip>
   )
 }
