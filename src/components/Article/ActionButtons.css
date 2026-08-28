@@ -22,16 +22,33 @@
 }
 
 .action-buttons.mobile {
-  padding-left: 30px;
-  padding-right: 30px;
+  align-items: center;
+  padding: var(--mobile-bottom-bar-vertical-spacing) var(--mobile-edge-spacing)
+    calc(var(--mobile-bottom-bar-vertical-spacing) + env(safe-area-inset-bottom, 0px));
   background-color: var(--color-bg-1);
+}
+
+.action-buttons.mobile .arco-btn-shape-circle {
+  display: inline-flex;
+  flex: 0 0 var(--mobile-edge-control-size);
+  align-items: center;
+  justify-content: center;
+  width: var(--mobile-edge-control-size);
+  height: var(--mobile-edge-control-size);
+  padding: 0;
+  font-size: var(--mobile-bottom-bar-icon-size);
+  line-height: 0;
+}
+
+.action-buttons.mobile .arco-btn-shape-circle .arco-icon {
+  width: var(--mobile-bottom-bar-icon-size);
+  height: var(--mobile-bottom-bar-icon-size);
 }
 
 .mobile-buttons {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  gap: 8px;
 }
 
 .settings-menu-item {

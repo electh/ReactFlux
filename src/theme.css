@@ -1,6 +1,24 @@
 body {
   --border-radius-small: 8px;
   --border-radius-medium: 8px;
+  --mobile-edge-control-size: 48px;
+  --mobile-edge-icon-size: 32px;
+  --mobile-edge-font-size: 16px;
+  --mobile-edge-spacing: 8px;
+  --mobile-bottom-bar-icon-size: 24px;
+  --mobile-bottom-bar-vertical-spacing: 4px;
+  --mobile-form-control-size: 44px;
+  --mobile-form-font-size: 16px;
+  --mobile-form-icon-size: 20px;
+  --mobile-calendar-control-size: 40px;
+  --mobile-overlay-panel-width: 304px;
+  --mobile-utility-control-size: 40px;
+  --mobile-navigation-control-size: 44px;
+  --mobile-navigation-icon-size: 20px;
+  --mobile-navigation-font-size: 16px;
+  --mobile-navigation-secondary-font-size: 14px;
+  --mobile-navigation-spacing: 4px;
+  --mobile-action-menu-item-size: 48px;
   --shadow:
     0 0 5px 0 rgba(0, 0, 0, 0.02), 0 2px 10px 0 rgba(0, 0, 0, 0.07), 0 0 1px 0 rgba(0, 0, 0, 0.3);
 }

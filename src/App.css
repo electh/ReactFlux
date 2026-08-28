@@ -55,12 +55,12 @@
 }
 
 @supports (padding-top: env(safe-area-inset-top)) {
-  @media screen and (display-mode: fullscreen), screen and (display-mode: standalone) {
-    .app {
-      padding-right: env(safe-area-inset-right);
-      padding-left: env(safe-area-inset-left);
-    }
+  .app {
+    padding-right: env(safe-area-inset-right);
+    padding-left: env(safe-area-inset-left);
+  }
 
+  @media screen and (display-mode: fullscreen), screen and (display-mode: standalone) {
     .arco-menu-light {
       padding-top: max(env(safe-area-inset-top), 20px);
       padding-left: env(safe-area-inset-left);

@@ -481,6 +481,7 @@ const ArticleDetail = forwardRef((_, ref) => {
             <Lightbox
               animation={getLightboxAnimationConfig()}
               carousel={{ finite: true, padding: 0 }}
+              className="article-lightbox"
               close={() => setIsPhotoSliderVisible(false)}
               controller={{ closeOnBackdropClick: true }}
               index={selectedIndex}

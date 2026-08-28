@@ -4,8 +4,104 @@
   justify-content: space-between;
   z-index: 2;
   padding: 8px 10px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
 }
 
 .entry-panel .arco-btn-secondary {
   background-color: transparent;
+}
+
+.entry-panel-filter-label {
+  margin-left: 4px;
+}
+
+.entry-panel-filter-label-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+  .entry-panel {
+    align-items: center;
+    gap: var(--mobile-edge-spacing);
+    padding: var(--mobile-bottom-bar-vertical-spacing) var(--mobile-edge-spacing)
+      calc(var(--mobile-bottom-bar-vertical-spacing) + env(safe-area-inset-bottom, 0px));
+    background-color: var(--color-bg-1);
+  }
+
+  .entry-panel .arco-btn-shape-circle {
+    display: inline-flex;
+    flex: 0 0 var(--mobile-edge-control-size);
+    align-items: center;
+    justify-content: center;
+    width: var(--mobile-edge-control-size);
+    height: var(--mobile-edge-control-size);
+    padding: 0;
+    font-size: var(--mobile-bottom-bar-icon-size);
+    line-height: 0;
+  }
+
+  .entry-panel .arco-btn-shape-circle .arco-icon {
+    width: var(--mobile-bottom-bar-icon-size);
+    height: var(--mobile-bottom-bar-icon-size);
+  }
+
+  .entry-panel .arco-radio-group-type-button {
+    display: flex;
+    flex: 0 1 auto;
+    min-width: 0;
+    padding: 0;
+    line-height: var(--mobile-edge-control-size);
+    overflow: hidden;
+  }
+
+  .entry-panel .arco-radio-button {
+    flex: 0 0 var(--mobile-edge-control-size);
+    box-sizing: border-box;
+    min-width: var(--mobile-edge-control-size);
+    height: var(--mobile-edge-control-size);
+    margin: 0;
+    font-size: var(--mobile-edge-font-size);
+    line-height: var(--mobile-edge-control-size);
+    overflow: hidden;
+  }
+
+  .entry-panel .arco-radio-button.arco-radio-checked {
+    flex: 1 1 auto;
+  }
+
+  .entry-panel .arco-radio-button-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: var(--mobile-edge-control-size);
+    height: var(--mobile-edge-control-size);
+    padding: 0 var(--mobile-edge-spacing);
+    overflow: hidden;
+  }
+
+  .entry-panel .arco-radio-button::after {
+    inset: 0;
+  }
+
+  .entry-panel .arco-radio-button .arco-icon {
+    flex: 0 0 var(--mobile-bottom-bar-icon-size);
+    width: var(--mobile-bottom-bar-icon-size);
+    height: var(--mobile-bottom-bar-icon-size);
+  }
+
+  .entry-panel-filter-label:not(.entry-panel-filter-label-hidden) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }

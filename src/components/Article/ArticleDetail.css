@@ -234,3 +234,71 @@ p {
 .article-content td {
   color: var(--color-text-3);
 }
+
+.article-lightbox .yarl__toolbar {
+  padding-top: calc(var(--mobile-edge-spacing) + env(safe-area-inset-top, 0px));
+  padding-right: calc(var(--mobile-edge-spacing) + env(safe-area-inset-right, 0px));
+  padding-bottom: var(--mobile-edge-spacing);
+  padding-left: var(--mobile-edge-spacing);
+}
+
+.article-lightbox .yarl__counter {
+  top: env(safe-area-inset-top, 0px);
+}
+
+.article-lightbox .yarl__counter,
+.article-lightbox .yarl__navigation_prev {
+  left: env(safe-area-inset-left, 0px);
+}
+
+.article-lightbox .yarl__navigation_next {
+  right: env(safe-area-inset-right, 0px);
+}
+
+[dir="rtl"] .article-lightbox .yarl__toolbar {
+  padding-right: var(--mobile-edge-spacing);
+  padding-left: calc(var(--mobile-edge-spacing) + env(safe-area-inset-left, 0px));
+}
+
+[dir="rtl"] .article-lightbox .yarl__counter,
+[dir="rtl"] .article-lightbox .yarl__navigation_prev {
+  right: env(safe-area-inset-right, 0px);
+  left: unset;
+}
+
+[dir="rtl"] .article-lightbox .yarl__navigation_next {
+  right: unset;
+  left: env(safe-area-inset-left, 0px);
+}
+
+@media screen and (max-width: 768px) {
+  .article-lightbox {
+    --yarl__button_padding: var(--mobile-edge-spacing);
+    --yarl__counter_line_height: var(--mobile-edge-icon-size);
+    --yarl__counter_margin: var(--mobile-edge-spacing);
+    --yarl__counter_padding: var(--mobile-edge-spacing);
+    --yarl__icon_size: var(--mobile-edge-icon-size);
+  }
+
+  .article-lightbox .yarl__counter {
+    font-size: var(--mobile-edge-font-size);
+  }
+
+  .article-lightbox .yarl__navigation_prev {
+    left: calc(var(--mobile-edge-spacing) + env(safe-area-inset-left, 0px));
+  }
+
+  .article-lightbox .yarl__navigation_next {
+    right: calc(var(--mobile-edge-spacing) + env(safe-area-inset-right, 0px));
+  }
+
+  [dir="rtl"] .article-lightbox .yarl__navigation_prev {
+    right: calc(var(--mobile-edge-spacing) + env(safe-area-inset-right, 0px));
+    left: unset;
+  }
+
+  [dir="rtl"] .article-lightbox .yarl__navigation_next {
+    right: unset;
+    left: calc(var(--mobile-edge-spacing) + env(safe-area-inset-left, 0px));
+  }
+}

@@ -12,3 +12,10 @@
 .trigger {
   display: none;
 }
+
+@media screen and (max-width: 768px) {
+  .sidebar-drawer .arco-drawer-content {
+    box-sizing: border-box;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--mobile-navigation-spacing));
+  }
+}
