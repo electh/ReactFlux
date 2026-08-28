@@ -22,6 +22,7 @@ import { resetContent } from "@/store/contentState"
 import { resetData } from "@/store/dataState"
 import { resetFeedIcons } from "@/store/feedIconsState"
 import { resetSettings, settingsState, updateSettings } from "@/store/settingsState"
+import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
 import { GITHUB_REPO_PATH } from "@/utils/constants"
 import "./Profile.css"
 
@@ -37,20 +38,22 @@ export default function Profile() {
 
   const handleResetSettings = () => {
     Modal.confirm({
+      ...confirmDialogProps,
       title: polyglot.t("sidebar.settings_reset_confirm"),
       content: <p>{polyglot.t("sidebar.settings_reset_description")}</p>,
       icon: <IconInfoCircleFill />,
-      okButtonProps: { status: "danger" },
+      okButtonProps: { ...destructiveConfirmButtonProps, status: "danger" },
       onOk: () => resetSettings(),
     })
   }
 
   const handleLogout = () => {
     Modal.confirm({
+      ...confirmDialogProps,
       title: polyglot.t("sidebar.logout_confirm"),
       content: <p>{polyglot.t("sidebar.logout_description")}</p>,
       icon: <IconInfoCircleFill />,
-      okButtonProps: { status: "danger" },
+      okButtonProps: { ...destructiveConfirmButtonProps, status: "danger" },
       onOk: () => {
         resetAuth()
         resetContent()

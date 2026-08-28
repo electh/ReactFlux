@@ -5,6 +5,7 @@ import { markFeedAsRead as markFeedAsReadAPI } from "@/apis/feeds"
 import { polyglotState } from "@/hooks/useLanguage"
 import { contentState, setEntries } from "@/store/contentState"
 import { setFeedsData, setUnreadInfo } from "@/store/dataState"
+import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
 import { getUTCDate } from "@/utils/date"
 
 export const updateFeedStatus = (feed, isSuccessful, targetFeedId = null) => {
@@ -101,10 +102,12 @@ export const useFeedOperations = (useNotification = false) => {
       const starredEntries = await getFeedEntries(feed.id || feed.key, null, true)
       if (starredEntries.total > 0) {
         Modal.confirm({
+          ...confirmDialogProps,
           title: polyglot.t("feed_table.remove_feed_confirm_title"),
           content: polyglot.t("feed_table.remove_feed_confirm_content", {
             count: starredEntries.total,
           }),
+          okButtonProps: destructiveConfirmButtonProps,
           onOk: () => deleteFeedDirectly(feed),
         })
       } else {
@@ -114,8 +117,10 @@ export const useFeedOperations = (useNotification = false) => {
         })
 
         Modal.confirm({
+          ...confirmDialogProps,
           title: confirmTitle,
           content: confirmContent,
+          okButtonProps: destructiveConfirmButtonProps,
           onOk: () => deleteFeedDirectly(feed),
         })
       }

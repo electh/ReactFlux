@@ -155,4 +155,104 @@
   .mobile-action-menu .arco-dropdown-menu-item > .icon-right {
     margin-right: 12px;
   }
+
+  .app-confirm-modal.arco-modal-simple {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: calc(100% - 16px);
+    max-width: 400px;
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+    padding: 20px;
+    overflow: hidden;
+  }
+
+  .app-confirm-modal.arco-modal-simple .arco-modal-header {
+    flex: 0 0 auto;
+    margin-bottom: 16px;
+  }
+
+  .app-confirm-modal.arco-modal-simple .arco-modal-title {
+    font-size: 18px;
+    line-height: 26px;
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+
+  .app-confirm-modal.arco-modal-simple .arco-modal-title > span {
+    display: flex;
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  .app-confirm-modal.arco-modal-simple .arco-modal-title .arco-icon {
+    flex: 0 0 var(--mobile-form-icon-size);
+    width: var(--mobile-form-icon-size);
+    height: var(--mobile-form-icon-size);
+    margin: 3px 8px 0 0;
+    font-size: var(--mobile-form-icon-size);
+  }
+
+  .app-confirm-modal.arco-modal-simple .arco-modal-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    font-size: 15px;
+    line-height: 24px;
+    text-align: left;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+    overscroll-behavior: contain;
+  }
+
+  .app-confirm-modal.arco-modal-simple .arco-modal-content > p {
+    margin: 0;
+  }
+
+  .app-confirm-modal.arco-modal-simple .arco-modal-footer {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    gap: var(--mobile-edge-spacing);
+    margin-top: 24px;
+  }
+
+  .app-confirm-modal.arco-modal-simple .arco-modal-footer > .arco-btn {
+    box-sizing: border-box;
+    min-width: 88px;
+    height: var(--mobile-form-control-size);
+    margin: 0;
+    font-size: var(--mobile-form-font-size);
+    white-space: nowrap;
+  }
+
+  .app-confirm-modal .destructive-confirm-action.arco-btn-primary:not(.arco-btn-disabled) {
+    border-color: transparent;
+    color: #fff;
+    background-color: rgb(var(--danger-6));
+  }
+
+  .app-confirm-modal
+    .destructive-confirm-action.arco-btn-primary:not(.arco-btn-disabled):not(
+      .arco-btn-loading
+    ):hover {
+    background-color: rgb(var(--danger-5));
+  }
+
+  .app-confirm-modal
+    .destructive-confirm-action.arco-btn-primary:not(.arco-btn-disabled):not(
+      .arco-btn-loading
+    ):active {
+    background-color: rgb(var(--danger-7));
+  }
+
+  .app-confirm-modal .destructive-confirm-action.arco-btn-primary:focus-visible {
+    box-shadow: 0 0 0 2px rgb(var(--danger-3));
+  }
+
+  .app-confirm-modal .destructive-confirm-action.arco-btn-primary.arco-btn-disabled {
+    border-color: transparent;
+    color: #fff;
+    background-color: var(--color-danger-light-3);
+  }
 }

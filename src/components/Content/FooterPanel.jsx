@@ -7,7 +7,7 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 
 import {
@@ -45,10 +45,12 @@ const MarkAllReadButton = ({ from, onConfirm }) => {
 
   const isHidden = ["starred", "history"].includes(from)
   const markAllReadLabel = polyglot.t("article_list.mark_all_as_read_tooltip")
+  const [confirmVisible, setConfirmVisible] = useState(false)
 
   const button = (
     <CustomTooltip mini content={markAllReadLabel}>
       <Button
+        aria-expanded={skipMarkAllReadConfirmation ? undefined : confirmVisible}
         aria-label={markAllReadLabel}
         icon={<IconCheck aria-hidden="true" />}
         shape="circle"
@@ -64,9 +66,16 @@ const MarkAllReadButton = ({ from, onConfirm }) => {
 
   return (
     <Popconfirm
+      autoFocus
       focusLock
+      className="mark-all-read-popconfirm"
+      popupVisible={confirmVisible}
       title={polyglot.t("article_list.mark_all_as_read_confirm")}
+      triggerProps={{
+        boundaryDistance: { bottom: 8, left: 8, right: 8, top: 8 },
+      }}
       onOk={onConfirm}
+      onVisibleChange={setConfirmVisible}
     >
       {button}
     </Popconfirm>

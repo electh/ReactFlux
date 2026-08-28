@@ -104,4 +104,42 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  .mark-all-read-popconfirm {
+    max-width: calc(100vw - 16px);
+  }
+
+  .mark-all-read-popconfirm .arco-popconfirm-content {
+    width: min(var(--mobile-overlay-panel-width), calc(100vw - 16px));
+  }
+
+  .mark-all-read-popconfirm .arco-popconfirm-title {
+    font-size: var(--mobile-form-font-size);
+    line-height: 24px;
+  }
+
+  .mark-all-read-popconfirm .arco-popconfirm-title-icon {
+    flex: 0 0 var(--mobile-form-icon-size);
+    height: 24px;
+    font-size: var(--mobile-form-icon-size);
+  }
+
+  .mark-all-read-popconfirm .arco-popconfirm-inner-content {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .mark-all-read-popconfirm .arco-popconfirm-btn {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--mobile-edge-spacing);
+  }
+
+  .mark-all-read-popconfirm .arco-popconfirm-btn > button {
+    box-sizing: border-box;
+    min-width: 80px;
+    height: var(--mobile-form-control-size);
+    margin: 0;
+    font-size: var(--mobile-form-font-size);
+  }
 }
