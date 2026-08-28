@@ -12,6 +12,7 @@ import {
   IconUser,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
+import { useState } from "react"
 import { useNavigate } from "react-router"
 
 import { polyglotState } from "@/hooks/useLanguage"
@@ -32,6 +33,7 @@ export default function Profile() {
   const { themeMode } = useStore(settingsState)
 
   const { setSettingsModalVisible } = useModalToggle()
+  const [menuVisible, setMenuVisible] = useState(false)
 
   const handleResetSettings = () => {
     Modal.confirm({
@@ -66,39 +68,39 @@ export default function Profile() {
     <div className="user-profile-container">
       <div>
         <Dropdown
+          popupVisible={menuVisible}
           position="br"
           trigger="click"
           droplist={
-            <Menu>
+            <Menu className="mobile-action-menu">
               <Radio.Group
+                className="profile-theme-options"
                 name="theme"
                 size="small"
                 type="button"
                 value={themeMode}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  padding: "8px",
-                }}
                 onChange={(value) => updateSettings({ themeMode: value })}
               >
                 <Radio value="system">
-                  <IconDesktop />
+                  <IconDesktop aria-hidden="true" />
+                  <span className="visually-hidden">{polyglot.t("sidebar.theme_system")}</span>
                 </Radio>
                 <Radio value="light">
-                  <IconSunFill />
+                  <IconSunFill aria-hidden="true" />
+                  <span className="visually-hidden">{polyglot.t("sidebar.theme_light")}</span>
                 </Radio>
                 <Radio value="dark">
-                  <IconMoonFill />
+                  <IconMoonFill aria-hidden="true" />
+                  <span className="visually-hidden">{polyglot.t("sidebar.theme_dark")}</span>
                 </Radio>
               </Radio.Group>
               <Divider style={{ margin: "4px 0" }} />
               <Menu.Item key="0" onClick={() => setSettingsModalVisible(true)}>
-                <IconSettings className="icon-right" />
+                <IconSettings aria-hidden="true" className="icon-right" />
                 {polyglot.t("sidebar.settings")}
               </Menu.Item>
               <Menu.Item key="1" onClick={() => window.open(`${server}/settings`, "_blank")}>
-                <IconLink className="icon-right" />
+                <IconLink aria-hidden="true" className="icon-right" />
                 {polyglot.t("sidebar.miniflux_settings")}
               </Menu.Item>
               <Menu.Item
@@ -107,22 +109,32 @@ export default function Profile() {
                   window.open(`https://github.com/${GITHUB_REPO_PATH}/issues/new/choose`, "_blank")
                 }
               >
-                <IconExclamationCircle className="icon-right" />
+                <IconExclamationCircle aria-hidden="true" className="icon-right" />
                 {polyglot.t("sidebar.report_issue")}
               </Menu.Item>
               <Divider style={{ margin: "4px 0" }} />
               <Menu.Item key="3" onClick={handleResetSettings}>
-                <IconRefresh className="icon-right" />
+                <IconRefresh aria-hidden="true" className="icon-right" />
                 {polyglot.t("sidebar.reset_settings")}
               </Menu.Item>
               <Menu.Item key="4" onClick={handleLogout}>
-                <IconPoweroff className="icon-right" />
+                <IconPoweroff aria-hidden="true" className="icon-right" />
                 {polyglot.t("sidebar.logout")}
               </Menu.Item>
             </Menu>
           }
+          onVisibleChange={setMenuVisible}
         >
-          <Button icon={<IconUser />} shape="circle" size="small" style={{ marginRight: 8 }} />
+          <Button
+            aria-expanded={menuVisible}
+            aria-haspopup="menu"
+            aria-label={polyglot.t("sidebar.user_menu")}
+            className="sidebar-profile-trigger"
+            icon={<IconUser aria-hidden="true" />}
+            shape="circle"
+            size="small"
+            style={{ marginRight: 8 }}
+          />
         </Dropdown>
       </div>
     </div>

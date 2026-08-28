@@ -6,6 +6,7 @@ import { useEffect } from "react"
 import { useLocation } from "react-router"
 
 import Sidebar from "@/components/Sidebar/Sidebar"
+import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import "./SidebarTrigger.css"
 import createSetter from "@/utils/nanostores"
@@ -18,6 +19,7 @@ export default function SidebarTrigger() {
   const { isBelowLarge } = useScreenWidth()
 
   const sidebarVisible = useStore(sidebarVisibleState)
+  const { polyglot } = useStore(polyglotState)
 
   useEffect(() => {
     if (!isBelowLarge) {
@@ -35,18 +37,23 @@ export default function SidebarTrigger() {
     <div>
       <div className="brand">
         <Button
+          aria-controls="mobile-sidebar-drawer"
+          aria-expanded={sidebarVisible}
+          aria-haspopup="dialog"
+          aria-label={polyglot.t("sidebar.navigation_menu")}
           className="trigger"
           shape="circle"
           size="small"
           onClick={() => setSidebarVisible(!sidebarVisible)}
         >
-          <IconMenu />
+          <IconMenu aria-hidden="true" />
         </Button>
       </div>
       <Drawer
         className="sidebar-drawer"
         closable={false}
         footer={null}
+        id="mobile-sidebar-drawer"
         placement="left"
         title={null}
         visible={sidebarVisible}

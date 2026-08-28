@@ -13,7 +13,10 @@ export default function AddFeed() {
   return (
     <CustomTooltip mini content={polyglot.t("sidebar.add_feed")}>
       <Button
-        icon={<IconPlus />}
+        aria-haspopup="dialog"
+        aria-label={polyglot.t("sidebar.add_feed")}
+        className="sidebar-section-action"
+        icon={<IconPlus aria-hidden="true" />}
         shape="circle"
         size="small"
         style={{ marginTop: "1em", marginBottom: "0.5em" }}

@@ -94,7 +94,7 @@ const CategoryTitle = ({
       position="bl"
       trigger="contextMenu"
       droplist={
-        <Menu>
+        <Menu className="mobile-action-menu">
           <MenuItem key="edit-category" onClick={() => onEditCategory(category)}>
             <div className="settings-menu-item">
               <span>{polyglot.t("sidebar.context_menu.edit_category")}</span>
@@ -202,7 +202,7 @@ const CustomMenuItem = ({ path, Icon, label, count }) => {
     >
       <div className="custom-menu-item">
         <span>
-          <Icon />
+          <Icon aria-hidden="true" />
           {label}
         </span>
         <CountDisplay count={count} />
@@ -263,7 +263,7 @@ const FeedMenuItem = ({ feed, onEditFeed, onRefreshFeed, onMarkAllAsRead, onDele
       position="bl"
       trigger="contextMenu"
       droplist={
-        <Menu>
+        <Menu className="mobile-action-menu">
           <MenuItem key="edit-feed" onClick={() => onEditFeed(feed)}>
             <div className="settings-menu-item">
               <span>{polyglot.t("sidebar.context_menu.edit_feed")}</span>
@@ -416,7 +416,7 @@ const CategoryGroup = ({
     .map((category) => (
       <Collapse.Item
         key={category.id}
-        expandIcon={<IconRight />}
+        expandIcon={<IconRight aria-hidden="true" />}
         name={`/category/${category.id}`}
         style={{ position: "relative", overflow: "hidden" }}
         header={
@@ -464,6 +464,7 @@ const downloadFile = (content, filename, type) => {
 const MoreOptionsDropdown = () => {
   const { showHiddenFeeds, showUnreadFeedsOnly } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
+  const [menuVisible, setMenuVisible] = useState(false)
 
   const { fetchAppData } = useAppData()
 
@@ -521,10 +522,11 @@ const MoreOptionsDropdown = () => {
   return (
     <>
       <Dropdown
+        popupVisible={menuVisible}
         position="br"
         trigger="click"
         droplist={
-          <Menu>
+          <Menu className="mobile-action-menu">
             <MenuItem key="1" onClick={handleToggleFeedsVisibility}>
               {showHiddenFeeds ? (
                 <IconEyeInvisible className="icon-right" />
@@ -556,9 +558,14 @@ const MoreOptionsDropdown = () => {
             </MenuItem>
           </Menu>
         }
+        onVisibleChange={setMenuVisible}
       >
         <Button
-          icon={<IconMoreVertical />}
+          aria-expanded={menuVisible}
+          aria-haspopup="menu"
+          aria-label={polyglot.t("sidebar.more_options")}
+          className="sidebar-section-action"
+          icon={<IconMoreVertical aria-hidden="true" />}
           shape="circle"
           size="small"
           style={{ marginTop: "1em", marginBottom: "0.5em" }}
@@ -685,7 +692,7 @@ const Sidebar = () => {
           <div className="menu-header">
             <span style={{ display: "flex", alignItems: "center" }}>
               <Avatar className="avatar" size={32}>
-                <IconBook style={{ color: "var(--color-bg-1)" }} />
+                <IconBook aria-hidden="true" style={{ color: "var(--color-bg-1)" }} />
               </Avatar>
               <Typography.Title heading={6} style={{ margin: 0 }}>
                 ReactFlux

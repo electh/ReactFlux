@@ -162,3 +162,82 @@
 .arco-menu-light .arco-menu-inline-header:hover {
   background-color: var(--color-neutral-3);
 }
+
+@media screen and (max-width: 768px) {
+  .sidebar-drawer .sidebar-container .arco-menu,
+  .sidebar-drawer .menu-header .arco-typography {
+    font-size: var(--mobile-navigation-font-size);
+  }
+
+  .sidebar-drawer .section-title {
+    font-size: var(--mobile-navigation-secondary-font-size);
+  }
+
+  .sidebar-drawer .sidebar-container .arco-menu-vertical .arco-menu-item,
+  .sidebar-drawer .sidebar-container .arco-menu-vertical .arco-menu-inline-header {
+    min-height: var(--mobile-navigation-control-size);
+    line-height: var(--mobile-navigation-control-size);
+  }
+
+  .sidebar-drawer .arco-collapse-item,
+  .sidebar-drawer .arco-collapse-item-header {
+    border-width: 0;
+  }
+
+  .sidebar-drawer .category-title {
+    box-sizing: border-box;
+    min-height: var(--mobile-navigation-control-size);
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: var(--mobile-navigation-font-size);
+  }
+
+  .sidebar-drawer .item-count,
+  .sidebar-drawer .unread-count {
+    font-size: var(--mobile-navigation-secondary-font-size);
+  }
+
+  .sidebar-drawer .sidebar-container .arco-menu-item .arco-icon,
+  .sidebar-drawer .arco-collapse-item-header-icon,
+  .sidebar-drawer .feed-icon-sidebar {
+    width: var(--mobile-navigation-icon-size);
+    height: var(--mobile-navigation-icon-size);
+    font-size: var(--mobile-navigation-icon-size);
+  }
+
+  .sidebar-drawer .arco-collapse-item-icon-hover {
+    display: flex;
+    left: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-drawer .arco-collapse-item-icon-hover,
+  .sidebar-drawer .arco-collapse-item-icon-hover::before {
+    width: var(--mobile-navigation-control-size);
+    height: var(--mobile-navigation-control-size);
+  }
+
+  .sidebar-drawer .sidebar-section-action,
+  .sidebar-drawer .sidebar-profile-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--mobile-navigation-control-size);
+    height: var(--mobile-navigation-control-size);
+    padding: 0;
+    font-size: var(--mobile-navigation-icon-size);
+    line-height: 0;
+  }
+
+  .sidebar-drawer .sidebar-section-action {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .sidebar-drawer .sidebar-section-action .arco-icon,
+  .sidebar-drawer .sidebar-profile-trigger .arco-icon {
+    width: var(--mobile-navigation-icon-size);
+    height: var(--mobile-navigation-icon-size);
+  }
+}

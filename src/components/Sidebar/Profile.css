@@ -21,3 +21,38 @@
 .arco-modal-simple .arco-modal-footer {
   text-align: right;
 }
+
+.profile-theme-options {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .profile-theme-options {
+    gap: 2px;
+  }
+
+  .profile-theme-options .arco-radio-button {
+    box-sizing: border-box;
+    width: var(--mobile-navigation-control-size);
+    height: var(--mobile-navigation-control-size);
+    margin: 0;
+    font-size: var(--mobile-navigation-icon-size);
+    line-height: 0;
+  }
+
+  .profile-theme-options .arco-radio-button-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+  }
+
+  .profile-theme-options .arco-icon {
+    width: var(--mobile-navigation-icon-size);
+    height: var(--mobile-navigation-icon-size);
+  }
+}
