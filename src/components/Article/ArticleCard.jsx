@@ -14,6 +14,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import FeedIcon from "@/components/ui/FeedIcon"
 import useEntryActions from "@/hooks/useEntryActions"
 import { polyglotState } from "@/hooks/useLanguage"
+import useLongPressContextMenu from "@/hooks/useLongPressContextMenu"
 import { contentState } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
@@ -95,6 +96,9 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
   const [hasError, setHasError] = useState(false)
   const [isWideImage, setIsWideImage] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const { dropdownProps, longPressProps } = useLongPressContextMenu({
+    disabled: !enableContextMenu,
+  })
 
   const wasVisible = useRef(false)
   const cardRef = useRef(null)
@@ -196,6 +200,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
 
   return (
     <Dropdown
+      {...dropdownProps}
       disabled={!enableContextMenu}
       position="bl"
       trigger="contextMenu"
@@ -256,6 +261,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
     >
       <div
         ref={cardRef}
+        {...longPressProps}
         className={isSelected ? "card-wrapper selected" : "card-wrapper"}
         data-entry-id={entry.id}
         onClick={() => handleEntryClick(entry)}

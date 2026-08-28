@@ -13,6 +13,13 @@
   align-items: center;
 }
 
+.category-title,
+.feed-menu-item {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .unread-count {
   display: flex;
   justify-content: flex-end;

@@ -231,6 +231,10 @@
   color: var(--color-text-2);
 }
 
+.article-lightbox .yarl__slide_image {
+  -webkit-touch-callout: initial;
+}
+
 .article-lightbox .yarl__toolbar {
   padding-top: calc(var(--mobile-edge-spacing) + env(safe-area-inset-top, 0px));
   padding-right: calc(var(--mobile-edge-spacing) + env(safe-area-inset-right, 0px));

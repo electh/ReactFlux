@@ -47,6 +47,7 @@ import useAppData from "@/hooks/useAppData"
 import useCategoryOperations from "@/hooks/useCategoryOperations"
 import { useFeedOperations } from "@/hooks/useFeedOperations"
 import { polyglotState } from "@/hooks/useLanguage"
+import useLongPressContextMenu from "@/hooks/useLongPressContextMenu"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { contentState, setActiveContent, setEntries } from "@/store/contentState"
 import {
@@ -81,6 +82,7 @@ const CategoryTitle = ({
   const { polyglot } = useStore(polyglotState)
 
   const navigate = useNavigate()
+  const { dropdownProps, longPressProps } = useLongPressContextMenu()
 
   const handleNavigation = () => {
     navigate(`/category/${category.id}`)
@@ -91,6 +93,7 @@ const CategoryTitle = ({
 
   return (
     <Dropdown
+      {...dropdownProps}
       position="bl"
       trigger="contextMenu"
       droplist={
@@ -134,6 +137,7 @@ const CategoryTitle = ({
       }
     >
       <div
+        {...longPressProps}
         role="button"
         style={{ cursor: "pointer" }}
         tabIndex={0}
@@ -255,11 +259,13 @@ const FeedMenuItem = ({ feed, onEditFeed, onRefreshFeed, onMarkAllAsRead, onDele
 
   const navigate = useNavigate()
   const location = useLocation()
+  const { dropdownProps, longPressProps } = useLongPressContextMenu()
   const isSelected =
     location.pathname === `/feed/${feed.id}` || location.pathname.startsWith(`/feed/${feed.id}/`)
 
   return (
     <Dropdown
+      {...dropdownProps}
       position="bl"
       trigger="contextMenu"
       droplist={
@@ -300,7 +306,8 @@ const FeedMenuItem = ({ feed, onEditFeed, onRefreshFeed, onMarkAllAsRead, onDele
     >
       <MenuItem
         key={`/feed/${feed.id}`}
-        className={classNames({ "arco-menu-selected": isSelected })}
+        {...longPressProps}
+        className={classNames("feed-menu-item", { "arco-menu-selected": isSelected })}
         style={{ position: "relative", overflow: "hidden" }}
         onClick={(e) => {
           e.stopPropagation()

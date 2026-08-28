@@ -156,6 +156,7 @@
   cursor: pointer;
   transition: background-color 0.2s;
   padding: 12px;
+  -webkit-touch-callout: none;
   user-select: none;
   overflow: hidden;
   contain: content;
