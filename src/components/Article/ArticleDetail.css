@@ -42,8 +42,8 @@
 
 .article-body figcaption {
   margin: 0 auto;
-  color: var(--color-text-3);
-  font-size: 0.75rem;
+  color: var(--color-text-2);
+  font-size: 0.875em;
   text-align: center;
 }
 
@@ -51,32 +51,24 @@
   margin: 16px 0;
 }
 
-.article-content h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-b,
-strong {
+.article-content :is(h1, h2, h3, h4, h5, h6, b, strong) {
   color: var(--color-text-1);
   font-weight: var(--font-weight-500);
 }
 
-.article-content li,
-p {
+.article-content :is(li, p) {
   margin-block-start: 1em;
   margin-block-end: 1em;
 }
 
 .article-content pre {
   border-radius: var(--border-radius-medium);
-  line-height: 1.2;
+  line-height: 1.5;
 }
 
 .article-date {
-  color: var(--color-text-3);
-  font-size: 0.75rem;
+  color: var(--color-text-2);
+  font-size: 0.875rem;
 }
 
 .article-header {
@@ -85,9 +77,13 @@ p {
 }
 
 .article-meta .arco-typography {
-  color: var(--color-text-3);
-  font-size: 0.75rem;
+  color: var(--color-text-2);
+  font-size: 0.875rem;
   line-height: 2 !important;
+}
+
+.article-meta .arco-tag {
+  font-size: 0.875rem;
 }
 
 .article-title,
@@ -221,7 +217,7 @@ p {
   margin: 1em 0;
   border-left: 1px solid var(--color-border-2);
   padding: 0 20px;
-  color: var(--color-text-3);
+  color: var(--color-text-2);
 }
 
 .article-content code {
@@ -232,7 +228,7 @@ p {
 
 /*code 相关样式 - 表格 */
 .article-content td {
-  color: var(--color-text-3);
+  color: var(--color-text-2);
 }
 
 .article-lightbox .yarl__toolbar {
@@ -272,12 +268,6 @@ p {
 }
 
 @media screen and (max-width: 768px) {
-  .article-date,
-  .article-meta .arco-typography,
-  .article-meta .arco-tag {
-    font-size: 14px;
-  }
-
   .article-meta .arco-tag {
     height: 32px;
     line-height: 30px;

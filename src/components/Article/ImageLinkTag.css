@@ -1,4 +1,6 @@
 .link-tag {
-  cursor: pointer;
+  min-height: 1.75rem;
   max-width: calc(100% - 32px);
+  cursor: pointer;
+  font-size: 0.875em;
 }

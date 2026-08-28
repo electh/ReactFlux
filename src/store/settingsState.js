@@ -2,6 +2,13 @@ import { persistentAtom } from "@nanostores/persistent"
 
 import { getBrowserLanguage } from "@/utils/locales"
 
+export const MIN_ARTICLE_FONT_SIZE = 1
+
+const fontFamilyMigrations = {
+  "'Noto Sans SC', sans-serif": "'Noto Sans', 'Noto Sans SC', sans-serif",
+  "'Noto Serif SC', serif": "'Noto Serif', 'Noto Serif SC', serif",
+}
+
 const defaultValue = {
   articleWidth: 75,
   checkForUpdates: false,
@@ -37,6 +44,14 @@ const defaultValue = {
   updateContentOnFetch: false,
 }
 
+const normalizeSettings = (settings) => ({
+  ...settings,
+  fontFamily: fontFamilyMigrations[settings.fontFamily] ?? settings.fontFamily,
+  fontSize: Number.isFinite(settings.fontSize)
+    ? Math.max(settings.fontSize, MIN_ARTICLE_FONT_SIZE)
+    : defaultValue.fontSize,
+})
+
 export const settingsState = persistentAtom("settings", defaultValue, {
   encode: (value) => {
     const filteredValue = {}
@@ -51,13 +66,13 @@ export const settingsState = persistentAtom("settings", defaultValue, {
   },
   decode: (str) => {
     const storedValue = JSON.parse(str)
-    return { ...defaultValue, ...storedValue }
+    return normalizeSettings({ ...defaultValue, ...storedValue })
   },
 })
 
 export const getSettings = (key) => settingsState.get()[key]
 
 export const updateSettings = (settingsChanges) =>
-  settingsState.set({ ...settingsState.get(), ...settingsChanges })
+  settingsState.set(normalizeSettings({ ...settingsState.get(), ...settingsChanges }))
 
 export const resetSettings = () => settingsState.set(defaultValue)

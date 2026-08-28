@@ -28,6 +28,10 @@
   margin-top: 40px;
 }
 
+.login-help .arco-typography-disabled {
+  color: var(--color-text-2);
+}
+
 .page-layout {
   display: flex;
   height: 100%;

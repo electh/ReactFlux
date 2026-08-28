@@ -35,7 +35,7 @@ import {
   prevContentState,
 } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
-import { settingsState, updateSettings } from "@/store/settingsState"
+import { MIN_ARTICLE_FONT_SIZE, settingsState, updateSettings } from "@/store/settingsState"
 import "./ActionButtons.css"
 
 const DesktopButtons = memo(
@@ -158,11 +158,11 @@ const ActionButtons = () => {
     { label: "Source Serif Pro", value: "'Source Serif Pro', serif" },
     {
       label: polyglot.t("appearance.font_family_noto_sans"),
-      value: "'Noto Sans SC', sans-serif",
+      value: "'Noto Sans', 'Noto Sans SC', sans-serif",
     },
     {
       label: polyglot.t("appearance.font_family_noto_serif"),
-      value: "'Noto Serif SC', serif",
+      value: "'Noto Serif', 'Noto Serif SC', serif",
     },
     {
       label: polyglot.t("appearance.font_family_lxgw_wenkai"),
@@ -433,8 +433,8 @@ const ActionButtons = () => {
                 <div className="settings-menu-item" onClick={(e) => e.stopPropagation()}>
                   <span>{polyglot.t("appearance.font_size_label")}</span>
                   <InputNumber
-                    max={1.25}
-                    min={0.75}
+                    max={1.5}
+                    min={MIN_ARTICLE_FONT_SIZE}
                     size="small"
                     step={0.05}
                     style={{ width: 90 }}

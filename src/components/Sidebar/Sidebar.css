@@ -16,14 +16,14 @@
 .unread-count {
   display: flex;
   justify-content: flex-end;
-  color: var(--color-text-4);
+  color: var(--color-text-2);
 }
 
 .item-count {
   display: flex;
   justify-content: flex-end;
   width: 50%;
-  color: var(--color-text-4);
+  color: var(--color-text-2);
 }
 
 .menu-header {
@@ -40,7 +40,7 @@
 }
 
 .section-title {
-  color: var(--color-text-3);
+  color: var(--color-text-2);
   font-style: italic;
 }
 
@@ -53,7 +53,7 @@
 .custom-menu-item .item-count {
   display: flex;
   justify-content: flex-end;
-  color: var(--color-text-4);
+  color: var(--color-text-2);
 }
 
 .category-title {

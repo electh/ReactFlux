@@ -324,8 +324,8 @@
     "edge_to_edge_images_label": "Bilder von Kante bis Kante",
     "font_family_label": "Artikelschriftart",
     "font_family_system": "Standard",
-    "font_family_noto_sans": "Noto Sans SC",
-    "font_family_noto_serif": "Noto Serif SC",
+    "font_family_noto_sans": "Noto Sans",
+    "font_family_noto_serif": "Noto Serif",
     "font_family_lxgw_wenkai": "LXGW WenKai Screen",
     "title_alignment_label": "Ausrichtung des Artikeltitels"
   },

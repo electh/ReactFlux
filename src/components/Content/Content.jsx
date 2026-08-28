@@ -277,7 +277,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       ) : (
         <div className="content-empty content-wrapper">
           <IconEmpty style={{ fontSize: "64px" }} />
-          <Typography.Title heading={6} style={{ color: "var(--color-text-3)", marginTop: "10px" }}>
+          <Typography.Title heading={6} style={{ color: "var(--color-text-2)", marginTop: "10px" }}>
             ReactFlux
           </Typography.Title>
         </div>

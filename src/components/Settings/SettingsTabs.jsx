@@ -29,7 +29,7 @@ const CustomTabTitle = ({ icon, title }) => (
     }}
   >
     {icon}
-    <div style={{ fontSize: "12px" }}>{title}</div>
+    <div className="custom-tab-title">{title}</div>
   </div>
 )
 

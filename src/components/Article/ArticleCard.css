@@ -1,8 +1,9 @@
 .card-author {
-  color: var(--color-text-3);
+  color: var(--color-text-2);
   margin-top: -3px;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: normal;
+  line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -59,6 +60,7 @@
 .card-preview {
   color: var(--color-text-2);
   font-size: 0.9rem;
+  line-height: 1.5;
   margin: 0;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -69,8 +71,9 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: var(--color-text-3);
-  font-size: 0.75rem;
+  color: var(--color-text-2);
+  font-size: 0.8125rem;
+  line-height: 1.4;
   margin-bottom: 2px;
 }
 
@@ -89,9 +92,10 @@
 }
 
 .card-source-title {
-  color: var(--color-text-3);
-  font-size: 0.75rem;
+  color: var(--color-text-2);
+  font-size: 0.8125rem;
   font-weight: bold;
+  line-height: 1.4;
 }
 
 .card-star {
@@ -124,8 +128,9 @@
 }
 
 .card-time-wrapper {
-  color: var(--color-text-3);
-  font-size: 0.75rem;
+  color: var(--color-text-2);
+  font-size: 0.8125rem;
+  line-height: 1.4;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -135,6 +140,7 @@
   color: var(--color-text-2);
   font-size: 1rem;
   font-weight: bold;
+  line-height: 1.4;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -178,21 +184,17 @@
 
 @media screen and (max-width: 768px) {
   .card-title {
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
 
   .card-preview {
-    font-size: 15px;
+    font-size: 0.9375rem;
   }
 
   .card-author,
   .card-reading-time,
   .card-source-title,
   .card-time-wrapper {
-    font-size: 13px;
-  }
-
-  .card-content.read {
-    opacity: 0.65;
+    font-size: 0.875rem;
   }
 }

@@ -91,7 +91,7 @@
     box-sizing: border-box;
     min-height: var(--mobile-form-control-size);
     height: auto;
-    font-size: 15px;
-    line-height: 20px;
+    font-size: var(--mobile-form-font-size);
+    line-height: 1.5;
   }
 }

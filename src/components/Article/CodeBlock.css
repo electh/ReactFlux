@@ -30,7 +30,7 @@
     .language-selector.arco-select-size-default.arco-select-single
     .arco-select-view {
     height: var(--mobile-utility-control-size);
-    font-size: 14px;
+    font-size: var(--mobile-form-font-size);
     line-height: calc(var(--mobile-utility-control-size) - 2px);
   }
 
