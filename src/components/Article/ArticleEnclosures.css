@@ -5,8 +5,11 @@
 }
 
 .article-enclosures > summary {
+  box-sizing: border-box;
   width: fit-content;
+  min-height: 44px;
   cursor: pointer;
+  padding-block: 10px;
   color: var(--color-text-1);
   font-weight: var(--font-weight-500);
 }

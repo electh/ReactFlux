@@ -1,6 +1,37 @@
-.link-tag {
-  min-height: 1.75rem;
+.article-body a.link-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-sizing: border-box;
+  min-height: 44px;
   max-width: calc(100% - 32px);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-small);
+  padding-inline: 12px;
+  background-color: var(--color-fill-2);
+  color: var(--color-text-1);
   cursor: pointer;
   font-size: 0.875em;
+  font-weight: var(--font-weight-500);
+  line-height: 1.5;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.article-body a.link-tag:hover {
+  border-color: transparent;
+  background-color: var(--color-fill-3);
+  color: var(--color-text-1);
+}
+
+.link-tag-icon {
+  flex-shrink: 0;
+  color: var(--color-text-2);
+}
+
+.link-tag-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

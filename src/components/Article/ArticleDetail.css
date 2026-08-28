@@ -128,6 +128,12 @@
   text-decoration: none;
 }
 
+.article-body a:focus-visible {
+  border-radius: var(--border-radius-small);
+  outline: 2px solid rgb(var(--primary-6));
+  outline-offset: 3px;
+}
+
 /* 文章内容图片样式 */
 .article-body img {
   border-radius: var(--border-radius-medium);

@@ -1,4 +1,4 @@
-import { Tag, Tooltip } from "@arco-design/web-react"
+import { Tooltip } from "@arco-design/web-react"
 import { IconLink } from "@arco-design/web-react/icon"
 
 import "./ImageLinkTag.css"
@@ -10,16 +10,16 @@ const ImageLinkTag = ({ href }) => {
 
   return (
     <Tooltip content={href}>
-      <Tag
+      <a
         className="link-tag"
-        icon={<IconLink />}
-        onClick={(e) => {
-          e.stopPropagation()
-          window.open(href, "_blank")
-        }}
+        href={href}
+        rel="noopener noreferrer"
+        target="_blank"
+        onClick={(event) => event.stopPropagation()}
       >
-        {href}
-      </Tag>
+        <IconLink aria-hidden="true" className="link-tag-icon" />
+        <span className="link-tag-text">{href}</span>
+      </a>
     </Tooltip>
   )
 }
