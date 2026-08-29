@@ -13,9 +13,6 @@ import createSetter from "@/utils/nanostores"
 const loadingMoreState = atom(false)
 const setLoadingMore = createSetter(loadingMoreState)
 
-const isUniqueEntry = (entry, existingEntries) =>
-  !existingEntries.some((existing) => existing.id === entry.id)
-
 const useLoadMore = () => {
   const { entries, filterString, infoFrom } = useStore(contentState)
   const { pageSize, showStatus, orderBy, orderDirection } = useStore(settingsState)
@@ -23,7 +20,15 @@ const useLoadMore = () => {
 
   const updateEntries = (newEntries) => {
     const currentEntries = contentState.get().entries
-    const uniqueNewEntries = newEntries.filter((entry) => isUniqueEntry(entry, currentEntries))
+    const seenEntryIds = new Set(currentEntries.map((entry) => entry.id))
+    const uniqueNewEntries = newEntries.filter(({ id }) => {
+      if (seenEntryIds.has(id)) {
+        return false
+      }
+
+      seenEntryIds.add(id)
+      return true
+    })
     const combinedEntries = [...currentEntries, ...uniqueNewEntries]
     const duplicateEntries = setEntriesWithDeduplication(combinedEntries)
     markDuplicatesAsRead(duplicateEntries)

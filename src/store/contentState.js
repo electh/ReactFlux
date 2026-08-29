@@ -1,6 +1,6 @@
 import { computed, map } from "nanostores"
 
-import { dataState, feedsState, hiddenFeedIdsState, unreadTotalState } from "./dataState"
+import { dataState, feedsState, hiddenFeedIdSetState, unreadTotalState } from "./dataState"
 import { getSettings, settingsState } from "./settingsState"
 
 import removeDuplicateEntries from "@/utils/deduplicate"
@@ -34,20 +34,21 @@ export const articleHeadingsState = computed([contentState], (content) => {
 })
 
 export const filteredEntriesState = computed(
-  [contentState, dataState, hiddenFeedIdsState, settingsState],
+  [contentState, dataState, hiddenFeedIdSetState, settingsState],
   (content, data, hiddenFeedIds, settings) => {
     const { entries, filterString, filterType, infoFrom } = content
     const filteredEntries = filterEntries(entries, filterType, filterString)
 
     const { version } = data
     const { showHiddenFeeds } = settings
-    const isValidFilter = !["starred", "history"].includes(infoFrom)
+    const shouldFilterByVisibility = !["starred", "history"].includes(infoFrom)
+    const isVisibilityHandledByServer = compareVersions(version, "2.2.0") >= 0
     const isVisible = (entry) =>
-      compareVersions(version, "2.2.0") >= 0 ||
-      showHiddenFeeds ||
-      !hiddenFeedIds.includes(entry.feed.id)
+      isVisibilityHandledByServer || showHiddenFeeds || !hiddenFeedIds.has(entry.feed.id)
 
-    return isValidFilter ? filteredEntries.filter((entry) => isVisible(entry)) : filteredEntries
+    return shouldFilterByVisibility
+      ? filteredEntries.filter((entry) => isVisible(entry))
+      : filteredEntries
   },
 )
 

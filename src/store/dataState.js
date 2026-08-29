@@ -38,13 +38,22 @@ export const categoriesState = computed(
   (data, feeds, settings) => {
     const { categoriesData } = data
     const { language } = settings
+    const categoryStatsById = new Map()
+
+    for (const feed of feeds) {
+      const categoryId = feed.category.id
+      const stats = categoryStatsById.get(categoryId) ?? { unreadCount: 0, feedCount: 0 }
+      stats.unreadCount += feed.unreadCount
+      stats.feedCount += 1
+      categoryStatsById.set(categoryId, stats)
+    }
 
     const categoriesWithUnread = categoriesData.map((category) => {
-      const feedsInCategory = feeds.filter((feed) => feed.category.id === category.id)
+      const stats = categoryStatsById.get(category.id) ?? { unreadCount: 0, feedCount: 0 }
       return {
         ...category,
-        unreadCount: feedsInCategory.reduce((acc, feed) => acc + (feed.unreadCount ?? 0), 0),
-        feedCount: feedsInCategory.length,
+        unreadCount: stats.unreadCount,
+        feedCount: stats.feedCount,
       }
     })
 
@@ -52,34 +61,46 @@ export const categoriesState = computed(
   },
 )
 
-const hiddenCategoryIdsState = computed(categoriesState, (categories) => {
-  return categories.filter((category) => category.hide_globally).map((category) => category.id)
+const hiddenCategoryIdSetState = computed(categoriesState, (categories) => {
+  const hiddenCategoryIdSet = new Set()
+
+  for (const category of categories) {
+    if (category.hide_globally) {
+      hiddenCategoryIdSet.add(category.id)
+    }
+  }
+
+  return hiddenCategoryIdSet
 })
 
-export const hiddenFeedIdsState = computed(
-  [feedsState, hiddenCategoryIdsState],
+export const hiddenFeedIdSetState = computed(
+  [feedsState, hiddenCategoryIdSetState],
   (feeds, hiddenCategoryIds) => {
-    return feeds
-      .filter((feed) => feed.hide_globally || hiddenCategoryIds.includes(feed.category.id))
-      .map((feed) => feed.id)
+    const hiddenFeedIdSet = new Set()
+
+    for (const feed of feeds) {
+      if (feed.hide_globally || hiddenCategoryIds.has(feed.category.id)) {
+        hiddenFeedIdSet.add(feed.id)
+      }
+    }
+
+    return hiddenFeedIdSet
   },
 )
 
 export const filteredFeedsState = computed(
-  [feedsState, hiddenFeedIdsState, settingsState],
+  [feedsState, hiddenFeedIdSetState, settingsState],
   (feeds, hiddenFeedIds, settings) => {
     const { showHiddenFeeds } = settings
-    return feeds.filter((feed) => showHiddenFeeds || !hiddenFeedIds.includes(feed.id))
+    return feeds.filter((feed) => showHiddenFeeds || !hiddenFeedIds.has(feed.id))
   },
 )
 
 export const filteredCategoriesState = computed(
-  [categoriesState, hiddenCategoryIdsState, settingsState],
+  [categoriesState, hiddenCategoryIdSetState, settingsState],
   (categories, hiddenCategoryIds, settings) => {
     const { showHiddenFeeds } = settings
-    return categories.filter(
-      (category) => showHiddenFeeds || !hiddenCategoryIds.includes(category.id),
-    )
+    return categories.filter((category) => showHiddenFeeds || !hiddenCategoryIds.has(category.id))
   },
 )
 
@@ -101,10 +122,11 @@ export const feedsGroupedByIdState = computed(filteredFeedsState, (filteredFeeds
 
 export const unreadTotalState = computed([dataState, filteredFeedsState], (data, filteredFeeds) => {
   const { unreadInfo } = data
+  const filteredFeedIds = new Set(filteredFeeds.map((feed) => feed.id))
   let total = 0
 
   for (const [id, count] of Object.entries(unreadInfo)) {
-    if (filteredFeeds.some((feed) => feed.id === Number(id))) {
+    if (filteredFeedIds.has(Number(id))) {
       total += count
     }
   }
