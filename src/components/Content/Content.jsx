@@ -1,4 +1,4 @@
-import { Button, Notification, Typography } from "@arco-design/web-react"
+import { Typography } from "@arco-design/web-react"
 import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { AnimatePresence } from "framer-motion"
@@ -19,7 +19,6 @@ import useContentContext from "@/hooks/useContentContext"
 import useContentHotkeys from "@/hooks/useContentHotkeys"
 import useDocumentTitle from "@/hooks/useDocumentTitle"
 import useKeyHandlers from "@/hooks/useKeyHandlers"
-import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import {
   contentState,
@@ -29,7 +28,6 @@ import {
   setIsArticleLoading,
 } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
-import { duplicateHotkeysState } from "@/store/hotkeysState"
 import { settingsState } from "@/store/settingsState"
 import prepareEntry from "@/utils/entry-presentation"
 
@@ -58,8 +56,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const { isAppDataReady } = useStore(dataState)
   const { enableSwipeGesture, orderBy, orderDirection, showStatus, swipeSensitivity } =
     useStore(settingsState)
-  const { polyglot } = useStore(polyglotState)
-  const duplicateHotkeys = useStore(duplicateHotkeysState)
 
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
   const [isSwipingRight, setIsSwipingRight] = useState(false)
@@ -72,7 +68,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const { entryDetailRef, entryListRef, handleEntryClick } = useContentContext()
 
-  const { navigateToNextArticle, navigateToPreviousArticle, showHotkeysSettings } = useKeyHandlers()
+  const { navigateToNextArticle, navigateToPreviousArticle } = useKeyHandlers()
 
   const { fetchAppData, fetchFeedRelatedData } = useAppData()
   const { fetchArticleList } = useArticleList(info, getEntries)
@@ -152,39 +148,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         }
       : undefined,
   })
-
-  useEffect(() => {
-    if (duplicateHotkeys.length > 0) {
-      const id = "duplicate-hotkeys"
-      Notification.error({
-        id,
-        title: polyglot.t("settings.duplicate_hotkeys"),
-        duration: 0,
-        btn: (
-          <span>
-            <Button
-              size="small"
-              style={{ marginRight: 8 }}
-              type="secondary"
-              onClick={() => Notification.remove(id)}
-            >
-              {polyglot.t("actions.dismiss")}
-            </Button>
-            <Button
-              size="small"
-              type="primary"
-              onClick={() => {
-                showHotkeysSettings()
-                Notification.remove(id)
-              }}
-            >
-              {polyglot.t("actions.check")}
-            </Button>
-          </span>
-        ),
-      })
-    }
-  }, [duplicateHotkeys, polyglot, showHotkeysSettings])
 
   useEffect(() => {
     setInfoFrom(info.from)

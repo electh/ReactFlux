@@ -1,0 +1,10 @@
+.notification-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.notification-actions .arco-btn {
+  min-height: 44px;
+}

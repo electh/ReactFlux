@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/react"
 import { ofetch } from "ofetch"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { dataState } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
@@ -14,10 +14,10 @@ function useVersionCheck() {
 
   const [hasUpdate, setHasUpdate] = useState(false)
 
-  const dismissUpdate = () => {
+  const dismissUpdate = useCallback(() => {
     localStorage.setItem(UPDATE_NOTIFICATION_KEY, getTimestamp().toString())
     setHasUpdate(false)
-  }
+  }, [])
 
   useEffect(() => {
     if (!isAppDataReady || import.meta.env.DEV || !checkForUpdates) {
