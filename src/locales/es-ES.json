@@ -298,7 +298,20 @@
     "mark_all_read_jump_to_next_label": "Saltar al siguiente no leído después de marcar todo como leído",
     "mark_all_read_jump_to_next_description": "Navegar automáticamente al siguiente feed o categoría con artículos no leídos después de marcar todo como leído",
     "check_for_updates_label": "Buscar actualizaciones",
-    "check_for_updates_description": "Mostrar una notificación cuando haya una nueva versión disponible en GitHub"
+    "check_for_updates_description": "Mostrar una notificación cuando haya una nueva versión disponible en GitHub",
+    "settings_transfer_label": "Copia de seguridad de ajustes",
+    "settings_transfer_description": "Exportar o restaurar ajustes locales, atajos y el estado de la barra lateral",
+    "import_settings": "Importar",
+    "export_settings": "Exportar",
+    "settings_import_confirm": "¿Importar la copia de seguridad de ajustes?",
+    "settings_import_description": "Esto reemplazará los ajustes locales, los atajos y las categorías expandidas. Las credenciales del servidor y las suscripciones no están incluidas. La aplicación se recargará después.",
+    "settings_import_success": "Ajustes importados. Recargando…",
+    "settings_import_error": "No se pudieron importar los ajustes",
+    "settings_import_invalid_file": "El archivo seleccionado no es una copia de seguridad válida de ReactFlux",
+    "settings_import_unsupported_version": "Esta versión de la copia de seguridad no es compatible",
+    "settings_import_file_too_large": "El archivo de copia de seguridad es demasiado grande",
+    "settings_export_success": "Copia de seguridad de ajustes exportada",
+    "settings_export_error": "No se pudo exportar la copia de seguridad de ajustes"
   },
   "appearance": {
     "theme_color_label": "Color del tema",

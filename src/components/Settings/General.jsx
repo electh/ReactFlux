@@ -1,5 +1,16 @@
-import { Divider, InputNumber, Select, Slider, Switch } from "@arco-design/web-react"
+import {
+  Button,
+  Divider,
+  InputNumber,
+  Message,
+  Modal,
+  Select,
+  Slider,
+  Switch,
+} from "@arco-design/web-react"
+import { IconDownload, IconInfoCircleFill, IconUpload } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
+import { useRef, useState } from "react"
 
 import SettingItem from "./SettingItem"
 
@@ -7,7 +18,17 @@ import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { dataState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
+import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
 import { MAX_ENTRIES_PER_PAGE, MIN_ENTRIES_PER_PAGE } from "@/utils/constants"
+import { downloadFile, readFileAsText } from "@/utils/file"
+import {
+  applySettingsBackup,
+  buildSettingsBackup,
+  formatSettingsBackupFilename,
+  MAX_SETTINGS_BACKUP_FILE_SIZE,
+  parseSettingsBackup,
+  SETTINGS_IMPORT_ERROR_CODES,
+} from "@/utils/settings-transfer"
 import compareVersions from "@/utils/version"
 
 const languageOptions = [
@@ -39,6 +60,8 @@ const General = () => {
   } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
   const { isBelowMedium } = useScreenWidth()
+  const importInputRef = useRef(null)
+  const [isImportingSettings, setIsImportingSettings] = useState(false)
 
   const homePageOptions = [
     {
@@ -76,6 +99,75 @@ const General = () => {
       value: "url",
     },
   ]
+
+  const handleSettingsExport = () => {
+    try {
+      downloadFile(
+        buildSettingsBackup(),
+        formatSettingsBackupFilename(),
+        "application/json;charset=utf-8",
+      )
+      Message.success(polyglot.t("settings.settings_export_success"))
+    } catch {
+      Message.error(polyglot.t("settings.settings_export_error"))
+    }
+  }
+
+  const applyImportedSettings = (snapshot) => {
+    try {
+      applySettingsBackup(snapshot)
+      Message.success(polyglot.t("settings.settings_import_success"))
+      globalThis.setTimeout(() => globalThis.location.reload(), 600)
+    } catch (error) {
+      Message.error(polyglot.t("settings.settings_import_error"))
+      return Promise.reject(error)
+    }
+  }
+
+  const getSettingsImportErrorMessage = (error) => {
+    if (error?.code === SETTINGS_IMPORT_ERROR_CODES.UNSUPPORTED_VERSION) {
+      return polyglot.t("settings.settings_import_unsupported_version")
+    }
+
+    if (error?.code === SETTINGS_IMPORT_ERROR_CODES.INVALID_FILE) {
+      return polyglot.t("settings.settings_import_invalid_file")
+    }
+
+    return polyglot.t("settings.settings_import_error")
+  }
+
+  const handleSettingsImport = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ""
+
+    if (!file) {
+      return
+    }
+
+    if (file.size > MAX_SETTINGS_BACKUP_FILE_SIZE) {
+      Message.error(polyglot.t("settings.settings_import_file_too_large"))
+      return
+    }
+
+    setIsImportingSettings(true)
+
+    try {
+      const importedSnapshot = parseSettingsBackup(await readFileAsText(file))
+
+      Modal.confirm({
+        ...confirmDialogProps,
+        title: polyglot.t("settings.settings_import_confirm"),
+        content: <p>{polyglot.t("settings.settings_import_description")}</p>,
+        icon: <IconInfoCircleFill aria-hidden="true" />,
+        okButtonProps: { ...destructiveConfirmButtonProps, status: "danger" },
+        onOk: () => applyImportedSettings(importedSnapshot),
+      })
+    } catch (error) {
+      Message.error(getSettingsImportErrorMessage(error))
+    } finally {
+      setIsImportingSettings(false)
+    }
+  }
 
   return (
     <>
@@ -314,6 +406,35 @@ const General = () => {
           )}
         </>
       )}
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.settings_transfer_description")}
+        title={polyglot.t("settings.settings_transfer_label")}
+      >
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <Button
+            icon={<IconUpload aria-hidden="true" />}
+            loading={isImportingSettings}
+            onClick={() => importInputRef.current?.click()}
+          >
+            {polyglot.t("settings.import_settings")}
+          </Button>
+          <Button icon={<IconDownload aria-hidden="true" />} onClick={handleSettingsExport}>
+            {polyglot.t("settings.export_settings")}
+          </Button>
+          <input
+            ref={importInputRef}
+            accept=".json,application/json"
+            aria-hidden="true"
+            style={{ display: "none" }}
+            tabIndex={-1}
+            type="file"
+            onChange={handleSettingsImport}
+          />
+        </div>
+      </SettingItem>
     </>
   )
 }

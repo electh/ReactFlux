@@ -298,7 +298,20 @@
     "mark_all_read_jump_to_next_label": "Jump to next unread after marking all as read",
     "mark_all_read_jump_to_next_description": "Automatically navigate to the next unread feed or category after marking all as read",
     "check_for_updates_label": "Check for updates",
-    "check_for_updates_description": "Display a notification when a new version is available on GitHub"
+    "check_for_updates_description": "Display a notification when a new version is available on GitHub",
+    "settings_transfer_label": "Settings backup",
+    "settings_transfer_description": "Export or restore local settings, shortcuts, and sidebar state",
+    "import_settings": "Import",
+    "export_settings": "Export",
+    "settings_import_confirm": "Import settings backup?",
+    "settings_import_description": "This will replace local settings, shortcuts, and expanded categories. Server credentials and subscriptions are not included. The app will reload afterward.",
+    "settings_import_success": "Settings imported. Reloading…",
+    "settings_import_error": "Failed to import settings",
+    "settings_import_invalid_file": "The selected file is not a valid ReactFlux settings backup",
+    "settings_import_unsupported_version": "This settings backup version is not supported",
+    "settings_import_file_too_large": "The settings backup file is too large",
+    "settings_export_success": "Settings backup exported",
+    "settings_export_error": "Failed to export settings backup"
   },
   "appearance": {
     "theme_color_label": "Theme color",

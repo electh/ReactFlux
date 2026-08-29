@@ -30,6 +30,9 @@ export const updateSettings = (settingsChanges) => {
   settingsState.set(sanitizeSettings(nextSettings, currentSettings))
 }
 
+export const replaceSettings = (settings) =>
+  settingsState.set(sanitizeSettings(settings, defaultSettings))
+
 export const resetSettings = () => settingsState.set({ ...defaultSettings })
 
 export { MIN_ARTICLE_FONT_SIZE } from "@/utils/settings-schema"

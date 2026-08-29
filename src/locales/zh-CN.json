@@ -298,7 +298,20 @@
     "mark_all_read_jump_to_next_label": "标记已读后自动跳转下一个未读",
     "mark_all_read_jump_to_next_description": "全部标为已读后自动跳转到下一个含有未读文章的订阅源或分类",
     "check_for_updates_label": "检查更新",
-    "check_for_updates_description": "当 GitHub 上有新版本时显示通知"
+    "check_for_updates_description": "当 GitHub 上有新版本时显示通知",
+    "settings_transfer_label": "设置备份",
+    "settings_transfer_description": "导出或恢复本地设置、快捷键和侧边栏状态",
+    "import_settings": "导入",
+    "export_settings": "导出",
+    "settings_import_confirm": "导入设置备份？",
+    "settings_import_description": "这将替换本地设置、快捷键和已展开的分类。服务器凭据和订阅不会包含在内。导入后应用将重新加载。",
+    "settings_import_success": "设置已导入，正在重新加载…",
+    "settings_import_error": "导入设置失败",
+    "settings_import_invalid_file": "所选文件不是有效的 ReactFlux 设置备份",
+    "settings_import_unsupported_version": "不支持此版本的设置备份",
+    "settings_import_file_too_large": "设置备份文件过大",
+    "settings_export_success": "设置备份已导出",
+    "settings_export_error": "导出设置备份失败"
   },
   "appearance": {
     "theme_color_label": "主题颜色",

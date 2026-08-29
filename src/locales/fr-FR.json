@@ -298,7 +298,20 @@
     "mark_all_read_jump_to_next_label": "Passer au suivant non lu après tout marquer comme lu",
     "mark_all_read_jump_to_next_description": "Naviguer automatiquement vers le flux ou la catégorie suivante contenant des articles non lus après avoir tout marqué comme lu",
     "check_for_updates_label": "Rechercher des mises à jour",
-    "check_for_updates_description": "Afficher une notification lorsqu'une nouvelle version est disponible sur GitHub"
+    "check_for_updates_description": "Afficher une notification lorsqu'une nouvelle version est disponible sur GitHub",
+    "settings_transfer_label": "Sauvegarde des paramètres",
+    "settings_transfer_description": "Exporter ou restaurer les paramètres locaux, les raccourcis et l’état de la barre latérale",
+    "import_settings": "Importer",
+    "export_settings": "Exporter",
+    "settings_import_confirm": "Importer la sauvegarde des paramètres ?",
+    "settings_import_description": "Cette opération remplacera les paramètres locaux, les raccourcis et les catégories développées. Les identifiants du serveur et les abonnements ne sont pas inclus. L’application sera ensuite rechargée.",
+    "settings_import_success": "Paramètres importés. Rechargement…",
+    "settings_import_error": "Échec de l’importation des paramètres",
+    "settings_import_invalid_file": "Le fichier sélectionné n’est pas une sauvegarde ReactFlux valide",
+    "settings_import_unsupported_version": "Cette version de sauvegarde des paramètres n’est pas prise en charge",
+    "settings_import_file_too_large": "Le fichier de sauvegarde des paramètres est trop volumineux",
+    "settings_export_success": "Sauvegarde des paramètres exportée",
+    "settings_export_error": "Échec de l’exportation de la sauvegarde des paramètres"
   },
   "appearance": {
     "theme_color_label": "Couleur du thème",

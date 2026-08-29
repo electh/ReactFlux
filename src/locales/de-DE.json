@@ -298,7 +298,20 @@
     "mark_all_read_jump_to_next_label": "Nach Alles-als-gelesen-Markieren zum nächsten Ungelesenen springen",
     "mark_all_read_jump_to_next_description": "Nach dem Markieren aller Artikel als gelesen automatisch zum nächsten Feed oder zur nächsten Kategorie mit ungelesenen Artikeln navigieren",
     "check_for_updates_label": "Nach Updates suchen",
-    "check_for_updates_description": "Benachrichtigung anzeigen, wenn eine neue Version auf GitHub verfügbar ist"
+    "check_for_updates_description": "Benachrichtigung anzeigen, wenn eine neue Version auf GitHub verfügbar ist",
+    "settings_transfer_label": "Einstellungssicherung",
+    "settings_transfer_description": "Lokale Einstellungen, Tastenkürzel und Seitenleistenstatus exportieren oder wiederherstellen",
+    "import_settings": "Importieren",
+    "export_settings": "Exportieren",
+    "settings_import_confirm": "Einstellungssicherung importieren?",
+    "settings_import_description": "Dadurch werden lokale Einstellungen, Tastenkürzel und aufgeklappte Kategorien ersetzt. Server-Zugangsdaten und Abonnements sind nicht enthalten. Die App wird anschließend neu geladen.",
+    "settings_import_success": "Einstellungen importiert. Neu laden…",
+    "settings_import_error": "Einstellungen konnten nicht importiert werden",
+    "settings_import_invalid_file": "Die ausgewählte Datei ist keine gültige ReactFlux-Einstellungssicherung",
+    "settings_import_unsupported_version": "Diese Version der Einstellungssicherung wird nicht unterstützt",
+    "settings_import_file_too_large": "Die Einstellungssicherung ist zu groß",
+    "settings_export_success": "Einstellungssicherung exportiert",
+    "settings_export_error": "Einstellungssicherung konnte nicht exportiert werden"
   },
   "appearance": {
     "theme_color_label": "Farbthema",

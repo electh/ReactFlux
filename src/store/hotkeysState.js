@@ -1,42 +1,19 @@
 import { persistentAtom } from "@nanostores/persistent"
 import { computed } from "nanostores"
 
+import {
+  createDefaultHotkeys,
+  decodeHotkeys,
+  encodeHotkeys,
+  sanitizeHotkeys,
+} from "@/utils/hotkeys-schema"
 import createSetter from "@/utils/nanostores"
 
-const defaultValue = {
-  exitDetailView: ["esc"],
-  fetchOriginalArticle: ["d"],
-  navigateToNextArticle: ["n", "j", "right"],
-  navigateToNextCategory: [],
-  navigateToNextUnreadArticle: ["shift+n", "shift+j", "ctrl+right"],
-  navigateToPreviousArticle: ["p", "k", "left"],
-  navigateToPreviousCategory: [],
-  navigateToPreviousUnreadArticle: ["shift+p", "shift+k", "ctrl+left"],
-  openLinkExternally: ["v"],
-  openPhotoSlider: ["i"],
-  refreshArticleList: ["r"],
-  saveToThirdPartyServices: ["s"],
-  showHotkeysSettings: ["shift+?"],
-  toggleReadStatus: ["m"],
-  toggleStarStatus: ["f"],
-}
+const defaultHotkeys = createDefaultHotkeys()
 
-export const hotkeysState = persistentAtom("hotkeys", defaultValue, {
-  encode: (value) => {
-    const filteredValue = {}
-
-    for (const key of Object.keys(value)) {
-      if (key in defaultValue) {
-        filteredValue[key] = value[key]
-      }
-    }
-
-    return JSON.stringify(filteredValue)
-  },
-  decode: (str) => {
-    const storedValue = JSON.parse(str)
-    return { ...defaultValue, ...storedValue }
-  },
+export const hotkeysState = persistentAtom("hotkeys", defaultHotkeys, {
+  encode: (hotkeys) => encodeHotkeys(hotkeys, defaultHotkeys),
+  decode: (storedHotkeys) => decodeHotkeys(storedHotkeys, defaultHotkeys),
 })
 
 export const duplicateHotkeysState = computed(hotkeysState, (hotkeys) => {
@@ -56,4 +33,6 @@ export const updateHotkey = (action, keys) => {
   const setter = createSetter(hotkeysState, action)
   setter(keys)
 }
-export const resetHotkey = (action) => updateHotkey(action, defaultValue[action])
+export const resetHotkey = (action) => updateHotkey(action, defaultHotkeys[action])
+export const replaceHotkeys = (hotkeys) =>
+  hotkeysState.set(sanitizeHotkeys(hotkeys, defaultHotkeys))
