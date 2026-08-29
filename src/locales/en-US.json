@@ -73,6 +73,7 @@
   "actions": {
     "check": "Check",
     "dismiss": "Dismiss",
+    "retry": "Retry",
     "close_dialog": "Close %{name}",
     "copy_to_clipboard_tooltip": "Copy to clipboard",
     "code_language": "Code language",
@@ -256,6 +257,9 @@
     "edit_category_hidden_label": "Hidden"
   },
   "settings": {
+    "loading": "Loading settings…",
+    "load_error": "Unable to load settings",
+    "load_error_description": "Check your connection and try again.",
     "feeds": "Feeds",
     "categories": "Categories",
     "general": "General",

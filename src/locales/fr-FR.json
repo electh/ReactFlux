@@ -73,6 +73,7 @@
   "actions": {
     "check": "Vérifier",
     "dismiss": "Ignorer",
+    "retry": "Réessayer",
     "close_dialog": "Fermer %{name}",
     "copy_to_clipboard_tooltip": "Copier dans le presse-papiers",
     "code_language": "Langage du code",
@@ -256,6 +257,9 @@
     "edit_category_hidden_label": "Masqué"
   },
   "settings": {
+    "loading": "Chargement des paramètres…",
+    "load_error": "Impossible de charger les paramètres",
+    "load_error_description": "Vérifiez votre connexion, puis réessayez.",
     "feeds": "Flux",
     "categories": "Catégories",
     "general": "Général",

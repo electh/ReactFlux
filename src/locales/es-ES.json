@@ -73,6 +73,7 @@
   "actions": {
     "check": "Comprobar",
     "dismiss": "Descartar",
+    "retry": "Reintentar",
     "close_dialog": "Cerrar %{name}",
     "copy_to_clipboard_tooltip": "Copiar al portapapeles",
     "code_language": "Lenguaje del código",
@@ -256,6 +257,9 @@
     "edit_category_hidden_label": "Oculto"
   },
   "settings": {
+    "loading": "Cargando ajustes…",
+    "load_error": "No se pudieron cargar los ajustes",
+    "load_error_description": "Compruebe su conexión e inténtelo de nuevo.",
     "feeds": "Feeds",
     "categories": "Categorías",
     "general": "General",

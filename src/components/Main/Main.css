@@ -16,8 +16,41 @@
   overflow: hidden;
 }
 
-.settings-modal-loading {
+.settings-modal-loading,
+.settings-modal-load-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   min-height: 320px;
+  padding: 32px;
+  text-align: center;
+}
+
+.settings-modal-loading {
+  gap: 12px;
+  color: var(--color-text-2);
+}
+
+.settings-modal-load-error-title {
+  margin: 0;
+  color: var(--color-text-1);
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.settings-modal-load-error-description {
+  margin: 8px 0 0;
+  color: var(--color-text-2);
+}
+
+.settings-modal-load-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
 }
 
 .add-feed-modal {
@@ -69,8 +102,14 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .settings-modal-loading {
+  .settings-modal-loading,
+  .settings-modal-load-error {
     min-height: 0;
+    height: 100%;
+  }
+
+  .settings-modal-load-error-actions .arco-btn {
+    min-height: var(--mobile-form-control-size);
   }
 
   .add-feed-modal {

@@ -73,6 +73,7 @@
   "actions": {
     "check": "Ansehen",
     "dismiss": "Verwerfen",
+    "retry": "Erneut versuchen",
     "close_dialog": "%{name} schließen",
     "copy_to_clipboard_tooltip": "In die Zwischenablage kopieren",
     "code_language": "Code-Sprache",
@@ -256,6 +257,9 @@
     "edit_category_hidden_label": "Versteckt"
   },
   "settings": {
+    "loading": "Einstellungen werden geladen…",
+    "load_error": "Einstellungen konnten nicht geladen werden",
+    "load_error_description": "Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
     "feeds": "Abonnements",
     "categories": "Kategorien",
     "general": "Allgemein",

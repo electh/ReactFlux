@@ -24,6 +24,7 @@ import { resetFeedIcons } from "@/store/feedIconsState"
 import { resetSettings, settingsState, updateSettings } from "@/store/settingsState"
 import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
 import { GITHUB_REPO_PATH } from "@/utils/constants"
+import { preloadSettingsTabs } from "@/utils/settings-loader"
 import "./Profile.css"
 
 export default function Profile() {
@@ -35,6 +36,13 @@ export default function Profile() {
 
   const { setSettingsModalVisible } = useModalToggle()
   const [menuVisible, setMenuVisible] = useState(false)
+
+  const handleMenuVisibleChange = (isVisible) => {
+    setMenuVisible(isVisible)
+    if (isVisible) {
+      preloadSettingsTabs()
+    }
+  }
 
   const handleResetSettings = () => {
     Modal.confirm({
@@ -130,7 +138,7 @@ export default function Profile() {
               </Menu.Item>
             </Menu>
           }
-          onVisibleChange={setMenuVisible}
+          onVisibleChange={handleMenuVisibleChange}
         >
           <Button
             aria-expanded={menuVisible}

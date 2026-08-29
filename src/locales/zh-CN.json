@@ -73,6 +73,7 @@
   "actions": {
     "check": "查看",
     "dismiss": "关闭",
+    "retry": "重试",
     "close_dialog": "关闭%{name}",
     "copy_to_clipboard_tooltip": "复制到剪贴板",
     "code_language": "代码语言",
@@ -256,6 +257,9 @@
     "edit_category_hidden_label": "隐藏"
   },
   "settings": {
+    "loading": "正在加载设置…",
+    "load_error": "无法加载设置",
+    "load_error_description": "请检查网络连接后重试。",
     "feeds": "订阅源",
     "categories": "分类",
     "general": "常规",
