@@ -198,6 +198,7 @@
     "table_category": "Categoía",
     "table_checked_at": "Comprobado el",
     "table_actions": "Acciones",
+    "table_feed_more": "Más",
     "table_feed_bulk_update_tooltip": "Actualizar hosts en masa",
     "table_feed_edit_tooltip": "Editar este feed",
     "table_feed_refresh_tooltip": "Actualizar este feed",

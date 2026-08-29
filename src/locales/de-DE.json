@@ -198,6 +198,7 @@
     "table_category": "Kategorie",
     "table_checked_at": "Überprüft",
     "table_actions": "Aktionen",
+    "table_feed_more": "Mehr",
     "table_feed_bulk_update_tooltip": "Massenaktualisierung von Hosts",
     "table_feed_edit_tooltip": "Dieses Abonnement bearbeiten",
     "table_feed_refresh_tooltip": "Dieses Abonnement neu laden",

@@ -16,20 +16,106 @@
   width: 100%;
 }
 
+.feed-search-container {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .feed-table-action-bar .button-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding-bottom: 16px;
   padding-left: 8px;
 }
 
-.search-input {
+.feed-table-action-bar .search-input {
   margin-bottom: 16px;
   width: 300px;
+  height: var(--mobile-form-control-size);
+}
+
+.feed-table-action-bar .search-input .arco-input-group,
+.feed-table-action-bar .search-input .arco-input-inner-wrapper,
+.feed-table-action-bar .search-input .arco-select,
+.feed-table-action-bar .search-input .arco-select-view {
+  height: 100%;
+}
+
+.feed-search-syntax-help.arco-btn {
+  flex: 0 0 var(--mobile-form-control-size);
+  width: var(--mobile-form-control-size);
+  height: var(--mobile-form-control-size);
+  padding: 0;
+  line-height: 0;
+  touch-action: manipulation;
+}
+
+.feed-mobile-actions {
+  display: none;
+}
+
+.feed-row-action-menu.arco-dropdown-menu {
+  min-width: 160px;
+}
+
+.feed-row-action-menu .arco-dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--mobile-form-control-size);
+}
+
+.feed-row-action-danger {
+  color: rgb(var(--danger-6));
 }
 
 @media screen and (max-width: 768px) {
   .edit-modal {
-    width: 95%;
+    width: calc(100% - 16px);
+    max-width: 400px;
+  }
+
+  .feed-table-action-bar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .feed-search-container {
+    flex: 1 0 100%;
+    width: 100%;
+  }
+
+  .feed-table-action-bar .search-input {
+    width: 100%;
+  }
+
+  .feed-table-action-bar .button-group {
+    width: 100%;
+    padding-left: 0;
+  }
+}
+
+@media screen and (max-width: 768px), (pointer: coarse) {
+  .feed-desktop-actions {
+    display: none;
+  }
+
+  .feed-mobile-actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  .feed-more-action.arco-btn,
+  .feed-touch-target.arco-btn {
+    min-width: var(--mobile-form-control-size);
+    min-height: var(--mobile-form-control-size);
+    touch-action: manipulation;
+  }
+
+  .feed-more-action.arco-btn {
+    padding-right: 10px;
+    padding-left: 10px;
   }
 }

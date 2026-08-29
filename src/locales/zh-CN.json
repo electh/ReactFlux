@@ -198,6 +198,7 @@
     "table_category": "分类",
     "table_checked_at": "最后更新于",
     "table_actions": "操作",
+    "table_feed_more": "更多",
     "table_feed_bulk_update_tooltip": "批量更新域名",
     "table_feed_edit_tooltip": "编辑此订阅源",
     "table_feed_refresh_tooltip": "刷新此订阅源",

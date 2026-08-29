@@ -198,6 +198,7 @@
     "table_category": "Catégorie",
     "table_checked_at": "Vérifié à",
     "table_actions": "Actions",
+    "table_feed_more": "Plus",
     "table_feed_bulk_update_tooltip": "Mettre à jour en masse les hôtes",
     "table_feed_edit_tooltip": "Éditer ce flux",
     "table_feed_refresh_tooltip": "Rafraîchir ce flux",

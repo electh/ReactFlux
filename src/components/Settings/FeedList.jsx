@@ -1,9 +1,10 @@
 import {
   Button,
+  Dropdown,
   Form,
   Input,
+  Menu,
   Message,
-  Modal,
   Select,
   Space,
   Table,
@@ -11,13 +12,20 @@ import {
   Tooltip,
   Typography,
 } from "@arco-design/web-react"
-import { IconDelete, IconEdit, IconQuestionCircle, IconRefresh } from "@arco-design/web-react/icon"
+import {
+  IconDelete,
+  IconEdit,
+  IconMore,
+  IconQuestionCircle,
+  IconRefresh,
+} from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { atom, computed } from "nanostores"
-import { Fragment, useEffect, useMemo, useState } from "react"
+import { Fragment, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
 import { refreshAllFeed, updateFeed } from "@/apis"
+import AccessibleModal from "@/components/ui/AccessibleModal"
 import CustomLink from "@/components/ui/CustomLink"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import EditFeedModal from "@/components/ui/EditFeedModal"
@@ -70,6 +78,99 @@ const tableDataState = computed(filteredFeedsState, (filteredFeeds) => {
   }))
 })
 
+const FeedRowActions = ({ record, polyglot, onDelete, onEdit, onRefresh }) => {
+  const [menuVisible, setMenuVisible] = useState(false)
+  const triggerRef = useRef(null)
+  const editLabel = polyglot.t("feed_table.table_feed_edit_tooltip")
+  const refreshLabel = polyglot.t("feed_table.table_feed_refresh_tooltip")
+  const removeLabel = polyglot.t("feed_table.table_feed_remove_tooltip")
+
+  const handleMenuAction = (action) => {
+    setMenuVisible(false)
+    triggerRef.current?.focus({ preventScroll: true })
+    action(record)
+  }
+
+  const mobileActionMenu = (
+    <Menu className="feed-row-action-menu">
+      <Menu.Item key="edit" onClick={() => handleMenuAction(onEdit)}>
+        <IconEdit aria-hidden="true" />
+        {polyglot.t("sidebar.context_menu.edit_feed")}
+      </Menu.Item>
+      <Menu.Item key="refresh" onClick={() => handleMenuAction(onRefresh)}>
+        <IconRefresh aria-hidden="true" />
+        {polyglot.t("sidebar.context_menu.refresh_feed")}
+      </Menu.Item>
+      <Menu.Item
+        key="delete"
+        className="feed-row-action-danger"
+        onClick={() => handleMenuAction(onDelete)}
+      >
+        <IconDelete aria-hidden="true" />
+        {polyglot.t("sidebar.context_menu.delete_feed")}
+      </Menu.Item>
+    </Menu>
+  )
+
+  return (
+    <>
+      <Space className="feed-desktop-actions" size={4}>
+        <CustomTooltip mini content={editLabel}>
+          <Button
+            aria-haspopup="dialog"
+            aria-label={editLabel}
+            data-feed-edit-id={record.key}
+            icon={<IconEdit aria-hidden="true" />}
+            shape="circle"
+            size="mini"
+            onClick={() => onEdit(record)}
+          />
+        </CustomTooltip>
+        <CustomTooltip mini content={refreshLabel}>
+          <Button
+            aria-label={refreshLabel}
+            icon={<IconRefresh aria-hidden="true" />}
+            shape="circle"
+            size="mini"
+            onClick={() => onRefresh(record)}
+          />
+        </CustomTooltip>
+        <CustomTooltip mini content={removeLabel}>
+          <Button
+            aria-label={removeLabel}
+            icon={<IconDelete aria-hidden="true" />}
+            shape="circle"
+            size="mini"
+            onClick={() => onDelete(record)}
+          />
+        </CustomTooltip>
+      </Space>
+      <div className="feed-mobile-actions">
+        <Dropdown
+          droplist={mobileActionMenu}
+          popupVisible={menuVisible}
+          position="br"
+          trigger="click"
+          onVisibleChange={setMenuVisible}
+        >
+          <Button
+            ref={triggerRef}
+            aria-expanded={menuVisible}
+            aria-haspopup="menu"
+            aria-label={polyglot.t("article_card.more_actions_tooltip")}
+            className="feed-more-action"
+            data-feed-edit-id={record.key}
+            icon={<IconMore aria-hidden="true" />}
+            size="mini"
+          >
+            {polyglot.t("feed_table.table_feed_more")}
+          </Button>
+        </Dropdown>
+      </div>
+    </>
+  )
+}
+
 const RefreshModal = ({ visible, setVisible }) => {
   const { polyglot } = useStore(polyglotState)
   const filteredFeeds = useStore(filteredFeedsState)
@@ -110,20 +211,26 @@ const RefreshModal = ({ visible, setVisible }) => {
   }
 
   const closeModal = () => setVisible(false)
+  const modalTitle = polyglot.t("feed_table.refresh_feeds_title")
 
   return (
     <>
       <CustomTooltip mini content={polyglot.t("feed_table.refresh_feeds_tooltip")}>
         <Button
-          icon={<IconRefresh />}
+          aria-expanded={visible}
+          aria-haspopup="dialog"
+          aria-label={polyglot.t("feed_table.refresh_feeds_tooltip")}
+          className="feed-touch-target"
+          icon={<IconRefresh aria-hidden="true" />}
           shape="circle"
           size="small"
           onClick={() => setVisible(true)}
         />
       </CustomTooltip>
-      <Modal
+      <AccessibleModal
         className="edit-modal"
-        title={polyglot.t("feed_table.refresh_feeds_title")}
+        closeLabel={polyglot.t("actions.close_dialog", { name: modalTitle })}
+        title={modalTitle}
         visible={visible}
         footer={[
           <Button key="cancel" onClick={closeModal}>
@@ -139,7 +246,7 @@ const RefreshModal = ({ visible, setVisible }) => {
         onCancel={closeModal}
       >
         <p>{polyglot.t("feed_table.refresh_feeds_description")}</p>
-      </Modal>
+      </AccessibleModal>
     </>
   )
 }
@@ -152,6 +259,7 @@ const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete })
   const [newCategoryId, setNewCategoryId] = useState("")
   const [newStatus, setNewStatus] = useState("")
   const [loading, setLoading] = useState(false)
+  const modalTitle = polyglot.t("feed_table.bulk_operations_title")
 
   const handleBulkOperation = async () => {
     if (!operationType) {
@@ -216,10 +324,12 @@ const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete })
   }
 
   return (
-    <Modal
+    <AccessibleModal
       className="edit-modal"
+      closeLabel={polyglot.t("actions.close_dialog", { name: modalTitle })}
       confirmLoading={loading}
-      title={polyglot.t("feed_table.bulk_operations_title")}
+      fallbackFocusSelector=".feed-table-action-bar .search-input input"
+      title={modalTitle}
       visible={visible}
       onCancel={handleCancel}
       onOk={handleBulkOperation}
@@ -284,7 +394,7 @@ const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete })
           </Select>
         </Form.Item>
       )}
-    </Modal>
+    </AccessibleModal>
   )
 }
 
@@ -293,6 +403,7 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
   const filteredFeeds = useStore(filteredFeedsState)
 
   const [newHost, setNewHost] = useState("")
+  const modalTitle = polyglot.t("feed_table.modal_bulk_update_title")
 
   const bulkUpdateFeedHosts = async () => {
     try {
@@ -325,9 +436,10 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
   }
 
   return (
-    <Modal
+    <AccessibleModal
       className="edit-modal"
-      title={polyglot.t("feed_table.modal_bulk_update_title")}
+      closeLabel={polyglot.t("actions.close_dialog", { name: modalTitle })}
+      title={modalTitle}
       visible={visible}
       onOk={bulkUpdateFeedHosts}
       onCancel={() => {
@@ -345,7 +457,7 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
         }
         onChange={(value) => setNewHost(value)}
       />
-    </Modal>
+    </AccessibleModal>
   )
 }
 
@@ -477,32 +589,13 @@ const FeedList = () => {
       fixed: "right",
       width: 100,
       render: (_, record) => (
-        <Space style={{ marginLeft: -10 }}>
-          <CustomTooltip mini content={polyglot.t("feed_table.table_feed_edit_tooltip")}>
-            <Button
-              icon={<IconEdit />}
-              shape="circle"
-              size="mini"
-              onClick={() => handleSelectFeed(record)}
-            />
-          </CustomTooltip>
-          <CustomTooltip mini content={polyglot.t("feed_table.table_feed_refresh_tooltip")}>
-            <Button
-              icon={<IconRefresh />}
-              shape="circle"
-              size="mini"
-              onClick={() => refreshSingleFeed(record)}
-            />
-          </CustomTooltip>
-          <CustomTooltip mini content={polyglot.t("feed_table.table_feed_remove_tooltip")}>
-            <Button
-              icon={<IconDelete />}
-              shape="circle"
-              size="mini"
-              onClick={() => handleDeleteFeed(record)}
-            />
-          </CustomTooltip>
-        </Space>
+        <FeedRowActions
+          polyglot={polyglot}
+          record={record}
+          onDelete={handleDeleteFeed}
+          onEdit={handleSelectFeed}
+          onRefresh={refreshSingleFeed}
+        />
       ),
     },
   ].filter(Boolean)
@@ -526,14 +619,7 @@ const FeedList = () => {
   return (
     <>
       <div className="feed-table-action-bar">
-        <div
-          style={{
-            display: "flex",
-            flex: 1,
-            justifyContent: "left",
-            minWidth: 0,
-          }}
-        >
+        <div className="feed-search-container">
           <Input.Search
             allowClear
             className="search-input"
@@ -558,6 +644,7 @@ const FeedList = () => {
               <Tooltip
                 mini
                 position="bottom"
+                trigger={["hover", "focus", "click"]}
                 content={
                   <div>
                     {tooltipLines.map((line, index) => (
@@ -569,7 +656,14 @@ const FeedList = () => {
                   </div>
                 }
               >
-                <IconQuestionCircle />
+                <Button
+                  aria-label={polyglot.t("search.syntax_help")}
+                  className="feed-search-syntax-help"
+                  icon={<IconQuestionCircle aria-hidden="true" />}
+                  shape="circle"
+                  size="mini"
+                  type="text"
+                />
               </Tooltip>
             }
             onChange={setFilterString}
@@ -578,6 +672,9 @@ const FeedList = () => {
         <div className="button-group">
           <CustomTooltip mini content={polyglot.t("feed_table.bulk_operations_tooltip")}>
             <Button
+              aria-expanded={bulkOperationsModalVisible}
+              aria-haspopup="dialog"
+              className="feed-touch-target"
               disabled={selectedRowKeys.length === 0}
               size="small"
               type={selectedRowKeys.length > 0 ? "primary" : "default"}
@@ -589,7 +686,11 @@ const FeedList = () => {
           </CustomTooltip>
           <CustomTooltip mini content={polyglot.t("feed_table.table_feed_bulk_update_tooltip")}>
             <Button
-              icon={<IconEdit />}
+              aria-expanded={bulkUpdateModalVisible}
+              aria-haspopup="dialog"
+              aria-label={polyglot.t("feed_table.table_feed_bulk_update_tooltip")}
+              className="feed-touch-target"
+              icon={<IconEdit aria-hidden="true" />}
               shape="circle"
               size="small"
               onClick={() => setBulkUpdateModalVisible(true)}
@@ -638,6 +739,7 @@ const FeedList = () => {
       />
       {selectedFeed && (
         <EditFeedModal
+          fallbackFocusSelector={`.settings-modal [data-feed-edit-id="${selectedFeed.key}"], .feed-table-action-bar .search-input input`}
           feedForm={feedForm}
           selectedFeed={selectedFeed}
           setVisible={setEditFeedModalVisible}
