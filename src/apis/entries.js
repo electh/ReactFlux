@@ -2,6 +2,7 @@ import apiClient from "./ofetch"
 
 import { contentState } from "@/store/contentState"
 import { getSettings } from "@/store/settingsState"
+import { MAX_ENTRIES_PER_PAGE } from "@/utils/constants"
 import { get24HoursAgoTimestamp, getDayEndTimestamp, getTimestamp } from "@/utils/date"
 
 export const getEntry = async (entryId) => apiClient.get(`/v1/entries/${entryId}`)
@@ -11,6 +12,27 @@ export const updateEntriesStatus = async (entryIds, newStatus) =>
     entry_ids: entryIds,
     status: newStatus,
   })
+
+export const markEntriesAsReadInBatches = async (fetchEntries) => {
+  let markedEntryCount = 0
+
+  while (true) {
+    // Always fetch from offset zero because marking a batch read removes it from the result set.
+    const response = await fetchEntries("unread", {
+      limit: MAX_ENTRIES_PER_PAGE,
+      offset: 0,
+    })
+    const unreadEntries = response?.entries ?? []
+    const unreadEntryIds = [...new Set(unreadEntries.map((entry) => entry.id))]
+
+    if (unreadEntryIds.length === 0) {
+      return markedEntryCount
+    }
+
+    await updateEntriesStatus(unreadEntryIds, "read")
+    markedEntryCount += unreadEntryIds.length
+  }
+}
 
 export const toggleEntryStarred = async (entryId) =>
   apiClient.put(`/v1/entries/${entryId}/bookmark`)

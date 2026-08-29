@@ -15,11 +15,11 @@ import {
   getCategoryEntries,
   getCounters,
   getFeedEntries,
-  updateEntriesStatus,
+  markEntriesAsReadInBatches,
 } from "@/apis"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import { polyglotState } from "@/hooks/useLanguage"
-import { contentState, setEntries } from "@/store/contentState"
+import { contentState, setActiveContent, setEntries } from "@/store/contentState"
 import {
   dataState,
   filteredCategoriesState,
@@ -32,6 +32,10 @@ import findAdjacentItem from "@/utils/navigation"
 import "./FooterPanel.css"
 
 const updateAllEntriesAsRead = () => {
+  const { activeContent } = contentState.get()
+  if (activeContent) {
+    setActiveContent({ ...activeContent, status: "read" })
+  }
   setEntries((prev) => prev.map((entry) => ({ ...entry, status: "read" })))
 }
 
@@ -85,7 +89,7 @@ const MarkAllReadButton = ({ from, onConfirm }) => {
 const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const { filterDate, isArticleListReady } = useStore(contentState)
   const { feedsData } = useStore(dataState)
-  const { markAllReadJumpToNext, showStatus, skipMarkAllReadConfirmation } = useStore(settingsState)
+  const { markAllReadJumpToNext, showStatus } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
   const filteredCategories = useStore(filteredCategoriesState)
   const filteredFeeds = useStore(filteredFeedsState)
@@ -139,25 +143,13 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
     const starred = showStatus === "starred"
 
     const entryFetchers = {
-      all: (status, options) => getAllEntries(status, options),
+      all: getAllEntries,
       feed: (status, options) => getFeedEntries(info.id, status, starred, options),
       category: (status, options) => getCategoryEntries(info.id, status, starred, options),
     }
 
     const fetchEntries = entryFetchers[info.from]
-    let unreadResponse = await fetchEntries("unread")
-    const unreadCount = unreadResponse.total
-    let unreadEntries = unreadResponse.entries
-
-    if (unreadCount > unreadEntries.length) {
-      const fullResponse = await fetchEntries("unread", { limit: unreadCount })
-      unreadEntries = fullResponse.entries
-    }
-
-    if (unreadEntries.length > 0) {
-      const unreadEntryIds = unreadEntries.map((entry) => entry.id)
-      await updateEntriesStatus(unreadEntryIds, "read")
-    }
+    return markEntriesAsReadInBatches(fetchEntries)
   }
 
   const updateUIAfterMarkAsRead = async () => {

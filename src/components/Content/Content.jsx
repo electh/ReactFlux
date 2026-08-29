@@ -54,7 +54,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, entries, filterDate, filterString, isArticleLoading } =
     useStore(contentState)
   const { isAppDataReady } = useStore(dataState)
-  const { enableSwipeGesture, orderBy, orderDirection, showStatus, swipeSensitivity } =
+  const { enableSwipeGesture, orderBy, orderDirection, pageSize, showStatus, swipeSensitivity } =
     useStore(settingsState)
 
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
@@ -171,7 +171,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   useEffect(() => {
     fetchArticleListOnly()
-  }, [filterDate, filterString, orderDirection, showStatus])
+  }, [filterDate, filterString, orderDirection, pageSize, showStatus])
 
   useEffect(() => {
     if (isBelowMedium && activeContent) {

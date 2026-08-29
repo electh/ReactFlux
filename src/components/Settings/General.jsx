@@ -7,6 +7,7 @@ import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { dataState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
+import { MAX_ENTRIES_PER_PAGE, MIN_ENTRIES_PER_PAGE } from "@/utils/constants"
 import compareVersions from "@/utils/version"
 
 const languageOptions = [
@@ -143,8 +144,10 @@ const General = () => {
         <InputNumber
           className="input-select"
           defaultValue={pageSize}
-          min={1}
+          max={MAX_ENTRIES_PER_PAGE}
+          min={MIN_ENTRIES_PER_PAGE}
           mode="button"
+          precision={0}
           size="small"
           onChange={(value) => updateSettings({ pageSize: value })}
         />

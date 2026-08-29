@@ -1,5 +1,6 @@
 import { persistentAtom } from "@nanostores/persistent"
 
+import { MAX_ENTRIES_PER_PAGE, MIN_ENTRIES_PER_PAGE } from "@/utils/constants"
 import { getBrowserLanguage } from "@/utils/locales"
 
 export const MIN_ARTICLE_FONT_SIZE = 1
@@ -44,12 +45,22 @@ const defaultValue = {
   updateContentOnFetch: false,
 }
 
+const normalizePageSize = (pageSize) => {
+  if (!Number.isFinite(pageSize)) {
+    return defaultValue.pageSize
+  }
+
+  const integerPageSize = Math.trunc(pageSize)
+  return Math.min(MAX_ENTRIES_PER_PAGE, Math.max(MIN_ENTRIES_PER_PAGE, integerPageSize))
+}
+
 const normalizeSettings = (settings) => ({
   ...settings,
   fontFamily: fontFamilyMigrations[settings.fontFamily] ?? settings.fontFamily,
   fontSize: Number.isFinite(settings.fontSize)
     ? Math.max(settings.fontSize, MIN_ARTICLE_FONT_SIZE)
     : defaultValue.fontSize,
+  pageSize: normalizePageSize(settings.pageSize),
 })
 
 export const settingsState = persistentAtom("settings", defaultValue, {
