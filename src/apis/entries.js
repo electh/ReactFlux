@@ -61,7 +61,7 @@ export const markEntriesAsReadInBatches = async (fetchEntries) => {
 }
 
 export const getOriginalContent = async (entryId) => {
-  const { updateContentOnFetch } = getSettings("updateContentOnFetch")
+  const updateContentOnFetch = getSettings("updateContentOnFetch")
   const queryParams = updateContentOnFetch ? "?update_content=true" : ""
   return apiClient.get(`/v1/entries/${entryId}/fetch-content${queryParams}`)
 }
