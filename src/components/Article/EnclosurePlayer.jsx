@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/react"
 import { useCallback, useState } from "react"
 
-import PlyrPlayer from "@/components/ui/PlyrPlayer"
+import PlyrPlayer from "@/components/ui/LazyPlyrPlayer"
 import { polyglotState } from "@/hooks/useLanguage"
 
 const EnclosurePlayer = ({ enclosure, poster }) => {

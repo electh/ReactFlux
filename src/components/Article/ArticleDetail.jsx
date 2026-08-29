@@ -2,25 +2,18 @@ import { Divider, Tag, Typography } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import ReactHtmlParser, { domToReact } from "html-react-parser"
 import { littlefoot } from "littlefoot"
-import { forwardRef, useEffect, useRef } from "react"
+import { forwardRef, lazy, Suspense, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import SimpleBar from "simplebar-react"
-import Lightbox from "yet-another-react-lightbox"
-import Counter from "yet-another-react-lightbox/plugins/counter"
-import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen"
-import Zoom from "yet-another-react-lightbox/plugins/zoom"
-import "yet-another-react-lightbox/styles.css"
-import "yet-another-react-lightbox/plugins/counter.css"
 
 import ArticleEnclosures from "./ArticleEnclosures"
-import CodeBlock from "./CodeBlock"
 import EnclosurePlayer from "./EnclosurePlayer"
 import ImageLinkTag from "./ImageLinkTag"
 import ImageOverlayButton from "./ImageOverlayButton"
 
 import CustomLink from "@/components/ui/CustomLink"
 import FadeTransition from "@/components/ui/FadeTransition"
-import PlyrPlayer from "@/components/ui/PlyrPlayer"
+import PlyrPlayer from "@/components/ui/LazyPlyrPlayer"
 import usePhotoSlider from "@/hooks/usePhotoSlider"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import {
@@ -34,6 +27,21 @@ import { generateReadableDate, generateReadingTime } from "@/utils/date"
 import extractImageSources from "@/utils/images"
 import "./ArticleDetail.css"
 import "./littlefoot.css"
+
+const ArticleLightbox = lazy(() => import("./ArticleLightbox"))
+const CodeBlock = lazy(() => import("./CodeBlock"))
+
+const renderCodeBlock = (codeContent) => (
+  <Suspense
+    fallback={
+      <pre aria-busy="true" className="code-block-loading">
+        <code>{codeContent}</code>
+      </pre>
+    }
+  >
+    <CodeBlock>{codeContent}</CodeBlock>
+  </Suspense>
+)
 
 const handleLinkWithImage = (node, imageSources, togglePhotoSlider) => {
   const imgNodes = node.children.filter((child) => child.type === "tag" && child.name === "img")
@@ -205,13 +213,13 @@ const handleFigure = (node, imageSources, togglePhotoSlider, options) => {
   // Handle code blocks wrapped in figure
   if (firstChild?.name === "pre") {
     const codeContent = decodeAndParseCodeContent(firstChild)
-    return codeContent ? <CodeBlock>{codeContent}</CodeBlock> : null
+    return codeContent ? renderCodeBlock(codeContent) : null
   }
 
   // Handle table-based code blocks with line numbers
   if (firstChild?.name === "table") {
     const codeContent = handleTableBasedCode(firstChild)
-    return codeContent ? <CodeBlock>{codeContent}</CodeBlock> : null
+    return codeContent ? renderCodeBlock(codeContent) : null
   }
 
   // Handle multiple images in figure with figcaption support
@@ -263,7 +271,7 @@ const handleCodeBlock = (node) => {
       ? decodeAndParseCodeContent(node.children[0])
       : decodeAndParseCodeContent(node)
 
-  return <CodeBlock>{codeContent}</CodeBlock>
+  return renderCodeBlock(codeContent)
 }
 
 const handleVideo = (node) => {
@@ -345,6 +353,7 @@ const ArticleDetail = forwardRef((_, ref) => {
     titleAlignment,
   } = useStore(settingsState)
   const scrollContainerRef = useRef(null)
+  const [hasOpenedPhotoSlider, setHasOpenedPhotoSlider] = useState(false)
 
   const { isPhotoSliderVisible, setIsPhotoSliderVisible, selectedIndex, setSelectedIndex } =
     usePhotoSlider()
@@ -358,6 +367,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   }
 
   const togglePhotoSlider = (index) => {
+    setHasOpenedPhotoSlider(true)
     setSelectedIndex(index)
     setIsPhotoSliderVisible((prev) => !prev)
   }
@@ -388,6 +398,12 @@ const ArticleDetail = forwardRef((_, ref) => {
     }
     return `${articleWidth}ch`
   }
+
+  useEffect(() => {
+    if (isPhotoSliderVisible) {
+      setHasOpenedPhotoSlider(true)
+    }
+  }, [isPhotoSliderVisible])
 
   // pretty footnotes
   useEffect(() => {
@@ -478,20 +494,18 @@ const ArticleDetail = forwardRef((_, ref) => {
               items={attachmentItems}
               onImagePreview={(index) => togglePhotoSlider(bodyImageSources.length + index)}
             />
-            <Lightbox
-              animation={getLightboxAnimationConfig()}
-              carousel={{ finite: true, padding: 0 }}
-              className="article-lightbox"
-              close={() => setIsPhotoSliderVisible(false)}
-              controller={{ closeOnBackdropClick: true }}
-              index={selectedIndex}
-              open={isPhotoSliderVisible}
-              plugins={[Counter, Fullscreen, Zoom]}
-              slides={imageSources.map((item) => ({ src: item }))}
-              on={{
-                view: ({ index }) => setSelectedIndex(index),
-              }}
-            />
+            {hasOpenedPhotoSlider && (
+              <Suspense fallback={null}>
+                <ArticleLightbox
+                  animation={getLightboxAnimationConfig()}
+                  index={selectedIndex}
+                  open={isPhotoSliderVisible}
+                  slides={imageSources.map((src) => ({ src }))}
+                  onClose={() => setIsPhotoSliderVisible(false)}
+                  onView={({ index }) => setSelectedIndex(index)}
+                />
+              </Suspense>
+            )}
           </div>
         </FadeTransition>
       </SimpleBar>

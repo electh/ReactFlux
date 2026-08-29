@@ -2,7 +2,7 @@ import { Button, Notification, Typography } from "@arco-design/web-react"
 import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { AnimatePresence } from "framer-motion"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { useLocation, useParams } from "react-router"
 import { useSwipeable } from "react-swipeable"
 
@@ -10,7 +10,6 @@ import FooterPanel from "./FooterPanel"
 
 import { getEntry } from "@/apis"
 import ActionButtons from "@/components/Article/ActionButtons"
-import ArticleDetail from "@/components/Article/ArticleDetail"
 import ArticleList from "@/components/Article/ArticleList"
 import SearchAndSortBar from "@/components/Article/SearchAndSortBar"
 import FadeTransition from "@/components/ui/FadeTransition"
@@ -35,6 +34,8 @@ import { settingsState } from "@/store/settingsState"
 import prepareEntry from "@/utils/entry-presentation"
 
 import "./Content.css"
+
+const ArticleDetail = lazy(() => import("@/components/Article/ArticleDetail"))
 
 const isInHorizontalScrollable = (element) => {
   let el = element
@@ -269,7 +270,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
                   </FadeTransition>
                 )}
               </AnimatePresence>
-              <ArticleDetail ref={entryDetailRef} />
+              <Suspense fallback={<div aria-busy="true" style={{ flex: 1 }} />}>
+                <ArticleDetail ref={entryDetailRef} />
+              </Suspense>
             </>
           )}
           {isBelowMedium && <ActionButtons />}

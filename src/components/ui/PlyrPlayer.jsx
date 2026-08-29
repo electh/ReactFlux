@@ -8,7 +8,6 @@ import compareVersions from "@/utils/version"
 import "plyr/dist/plyr.css"
 import "./PlyrPlayer.css"
 
-const PlyrPromise = import("plyr")
 const NOOP = () => {}
 const DEFAULT_PLYR_OPTIONS = {}
 // Preserve the latest position when an entry is reopened before its API payload refreshes.
@@ -152,7 +151,7 @@ const PlyrPlayer = ({
 
     const initPlayer = async () => {
       try {
-        const { default: Plyr } = await PlyrPromise
+        const { default: Plyr } = await import("plyr")
         if (isCancelled) {
           return
         }

@@ -8,10 +8,8 @@ import "simplebar-react/dist/simplebar.min.css"
 
 import "./index.css"
 import router from "./routes"
-import { registerLanguages } from "./utils/highlighter"
 import "./theme.css"
 
 registerSW({ immediate: true })
-registerLanguages()
 
 ReactDOM.createRoot(document.querySelector("#root")).render(<RouterProvider router={router} />)

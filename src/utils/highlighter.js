@@ -46,7 +46,7 @@ const languages = {
   lua,
   markdown,
   php,
-  phpTemplate,
+  "php-template": phpTemplate,
   plaintext,
   powershell,
   python,
@@ -101,4 +101,5 @@ export const LANGUAGE_DISPLAY_NAMES = {
 
 export const SUPPORTED_LANGUAGES = Object.keys(LANGUAGE_DISPLAY_NAMES)
 
+export { default as detectCodeLanguage } from "./code-language-detection"
 export { Light as SyntaxHighlighter } from "react-syntax-highlighter"

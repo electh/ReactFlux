@@ -1,11 +1,10 @@
 import { Form, Input, Message, Select, Switch } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
-import { useEffect, useRef, useState } from "react"
+import { lazy, Suspense, useEffect, useRef, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router"
 
 import { addFeed } from "@/apis"
 import { ContextProvider } from "@/components/Content/ContentContext"
-import SettingsTabs from "@/components/Settings/SettingsTabs"
 import AccessibleModal from "@/components/ui/AccessibleModal"
 import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
@@ -14,6 +13,8 @@ import useScreenWidth from "@/hooks/useScreenWidth"
 import { categoriesState, feedsState } from "@/store/dataState"
 import { includesIgnoreCase } from "@/utils/filter"
 import "./Main.css"
+
+const SettingsTabs = lazy(() => import("@/components/Settings/SettingsTabs"))
 
 const urlRule = [{ required: true }]
 const categoryRule = [{ required: true }]
@@ -55,7 +56,9 @@ const SettingsModal = () => {
         setSettingsTabsActiveTab("1")
       }}
     >
-      <SettingsTabs activeTab={settingsTabsActiveTab} onTabChange={setSettingsTabsActiveTab} />
+      <Suspense fallback={<div aria-busy="true" className="settings-modal-loading" />}>
+        <SettingsTabs activeTab={settingsTabsActiveTab} onTabChange={setSettingsTabsActiveTab} />
+      </Suspense>
     </AccessibleModal>
   )
 }

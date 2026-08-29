@@ -20,6 +20,10 @@
   padding-top: 52px;
 }
 
+.settings-modal-loading {
+  min-height: 320px;
+}
+
 .add-feed-modal {
   width: 400px;
 }
@@ -50,9 +54,14 @@
     overflow: hidden;
   }
 
-  .settings-modal .settings-tabs-scroll {
+  .settings-modal .settings-tabs-scroll,
+  .settings-modal-loading {
     height: 100%;
     max-height: none;
+  }
+
+  .settings-modal-loading {
+    min-height: 0;
   }
 
   .settings-modal .settings-tabs-scroll .simplebar-content-wrapper {

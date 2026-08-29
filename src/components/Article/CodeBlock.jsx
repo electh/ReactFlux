@@ -1,15 +1,22 @@
 import { Button, Message, Select } from "@arco-design/web-react"
 import { IconCopy } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import hljs from "highlight.js"
 import { useCallback, useEffect, useState } from "react"
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs"
 
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import { polyglotState } from "@/hooks/useLanguage"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
-import { LANGUAGE_DISPLAY_NAMES, SUPPORTED_LANGUAGES, SyntaxHighlighter } from "@/utils/highlighter"
+import {
+  detectCodeLanguage,
+  LANGUAGE_DISPLAY_NAMES,
+  registerLanguages,
+  SUPPORTED_LANGUAGES,
+  SyntaxHighlighter,
+} from "@/utils/highlighter"
 import "./CodeBlock.css"
+
+registerLanguages()
 
 const CodeBlock = ({ children }) => {
   const { polyglot } = useStore(polyglotState)
@@ -30,7 +37,7 @@ const CodeBlock = ({ children }) => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      const detectedLanguage = hljs.highlightAuto(children).language
+      const detectedLanguage = detectCodeLanguage(code)
       if (SUPPORTED_LANGUAGES.includes(detectedLanguage)) {
         setLanguage(detectedLanguage)
       } else {
@@ -39,7 +46,7 @@ const CodeBlock = ({ children }) => {
     }, ANIMATION_DURATION_MS)
 
     return () => clearTimeout(timeoutId)
-  }, [children])
+  }, [code])
 
   return (
     <div className="code-block-container">

@@ -66,6 +66,13 @@
   line-height: 1.5;
 }
 
+.code-block-loading {
+  padding: 16px;
+  color: #abb2bf;
+  background-color: #282c34;
+  overflow-x: auto;
+}
+
 .article-date {
   color: var(--color-text-2);
   font-size: 0.875rem;
