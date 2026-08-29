@@ -7,15 +7,16 @@ const createSetter =
       if (key === null) {
         return
       }
-      if (typeof updater === "function") {
-        store.set({ ...state, [key]: updater(state[key]) })
-      } else {
-        store.set({ ...state, [key]: updater })
+
+      const nextValue = typeof updater === "function" ? updater(state[key]) : updater
+      if (!Object.is(state[key], nextValue)) {
+        store.set({ ...state, [key]: nextValue })
       }
-    } else if (typeof updater === "function") {
-      store.set(updater(state))
     } else {
-      store.set(updater)
+      const nextValue = typeof updater === "function" ? updater(state) : updater
+      if (!Object.is(state, nextValue)) {
+        store.set(nextValue)
+      }
     }
   }
 
