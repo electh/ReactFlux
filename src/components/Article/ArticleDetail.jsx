@@ -24,7 +24,7 @@ import {
 } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
-import extractImageSources from "@/utils/images"
+import buildArticleImageModel from "@/utils/images"
 import "./ArticleDetail.css"
 import "./littlefoot.css"
 
@@ -43,7 +43,7 @@ const renderCodeBlock = (codeContent) => (
   </Suspense>
 )
 
-const handleLinkWithImage = (node, imageSources, togglePhotoSlider) => {
+const handleLinkWithImage = (node, getImageIndex, togglePhotoSlider) => {
   const imgNodes = node.children.filter((child) => child.type === "tag" && child.name === "img")
 
   if (imgNodes.length > 0) {
@@ -54,7 +54,7 @@ const handleLinkWithImage = (node, imageSources, togglePhotoSlider) => {
           <div className="image-container">
             {imgNodes.map((imgNode, index) => (
               <div key={`link-img-${index}`}>
-                {handleImage(imgNode, imageSources, togglePhotoSlider)}
+                {handleImage(imgNode, getImageIndex, togglePhotoSlider)}
               </div>
             ))}
             <ImageLinkTag href={node.attribs.href} />
@@ -64,7 +64,11 @@ const handleLinkWithImage = (node, imageSources, togglePhotoSlider) => {
     }
 
     // Single image case
-    const index = imageSources.indexOf(imgNodes[0].attribs.src)
+    const index = getImageIndex(imgNodes[0].attribs.src)
+    if (index < 0) {
+      return node
+    }
+
     return (
       <ImageOverlayButton
         index={index}
@@ -88,13 +92,17 @@ const handleBskyVideo = (node) => {
   return null
 }
 
-const handleImage = (node, imageSources, togglePhotoSlider) => {
+const handleImage = (node, getImageIndex, togglePhotoSlider) => {
   const bskyVideoPlayer = handleBskyVideo(node)
   if (bskyVideoPlayer) {
     return bskyVideoPlayer
   }
 
-  const index = imageSources.indexOf(node.attribs.src)
+  const index = getImageIndex(node.attribs.src)
+  if (index < 0) {
+    return <img {...node.attribs} />
+  }
+
   return <ImageOverlayButton index={index} node={node} togglePhotoSlider={togglePhotoSlider} />
 }
 
@@ -206,7 +214,7 @@ const processFigcaptionContent = (children) => {
   })
 }
 
-const handleFigure = (node, imageSources, togglePhotoSlider, options) => {
+const handleFigure = (node, getImageIndex, togglePhotoSlider, options) => {
   const firstChild = node.children[0]
   const hasImages = node.children.some((child) => child.name === "img")
 
@@ -230,7 +238,7 @@ const handleFigure = (node, imageSources, togglePhotoSlider, options) => {
           if (child.name === "img") {
             return (
               <div key={`figure-img-${index}`}>
-                {handleImage(child, imageSources, togglePhotoSlider)}
+                {handleImage(child, getImageIndex, togglePhotoSlider)}
               </div>
             )
           }
@@ -299,7 +307,7 @@ const handleIframe = (node) => {
   return node
 }
 
-const getHtmlParserOptions = (imageSources, togglePhotoSlider) => {
+const getHtmlParserOptions = (getImageIndex, togglePhotoSlider) => {
   const options = {
     replace: (node) => {
       if (node.type !== "tag") {
@@ -309,17 +317,17 @@ const getHtmlParserOptions = (imageSources, togglePhotoSlider) => {
       switch (node.name) {
         case "a": {
           return node.children.length > 0
-            ? handleLinkWithImage(node, imageSources, togglePhotoSlider)
+            ? handleLinkWithImage(node, getImageIndex, togglePhotoSlider)
             : node
         }
         case "img": {
-          return handleImage(node, imageSources, togglePhotoSlider)
+          return handleImage(node, getImageIndex, togglePhotoSlider)
         }
         case "pre": {
           return handleCodeBlock(node)
         }
         case "figure": {
-          return handleFigure(node, imageSources, togglePhotoSlider, options)
+          return handleFigure(node, getImageIndex, togglePhotoSlider, options)
         }
         case "video": {
           return handleVideo(node)
@@ -377,14 +385,15 @@ const ArticleDetail = forwardRef((_, ref) => {
   }
 
   const attachments = activeContent.attachments ?? {
-    images: [],
     items: [],
     primaryMedia: null,
   }
-  const { images: attachmentImages, items: attachmentItems, primaryMedia } = attachments
-  const bodyImageSources = extractImageSources(activeContent.content)
-  const imageSources = [...bodyImageSources, ...attachmentImages.map(({ url }) => url)]
-  const htmlParserOptions = getHtmlParserOptions(imageSources, togglePhotoSlider)
+  const { items: attachmentItems, primaryMedia } = attachments
+  const { getImageIndex, imageSources, visibleAttachments } = buildArticleImageModel(
+    activeContent.content,
+    attachmentItems,
+  )
+  const htmlParserOptions = getHtmlParserOptions(getImageIndex, togglePhotoSlider)
 
   const parsedHtml = ReactHtmlParser(activeContent.content, htmlParserOptions)
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category
@@ -490,10 +499,7 @@ const ArticleDetail = forwardRef((_, ref) => {
               />
             )}
             {parsedHtml}
-            <ArticleEnclosures
-              items={attachmentItems}
-              onImagePreview={(index) => togglePhotoSlider(bodyImageSources.length + index)}
-            />
+            <ArticleEnclosures items={visibleAttachments} onImagePreview={togglePhotoSlider} />
             {hasOpenedPhotoSlider && (
               <Suspense fallback={null}>
                 <ArticleLightbox

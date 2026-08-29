@@ -10,7 +10,7 @@ const AttachmentPreview = ({ item, name, onError, onImagePreview, polyglot }) =>
     aria-label={polyglot.t("article_attachments.preview_image", { name })}
     className="article-enclosure-preview"
     type="button"
-    onClick={() => onImagePreview(item.imageIndex)}
+    onClick={() => onImagePreview(item.galleryIndex)}
   >
     <img alt="" decoding="async" loading="lazy" src={item.url} onError={onError} />
   </button>

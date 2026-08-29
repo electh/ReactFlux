@@ -17,7 +17,7 @@ import {
 } from "@/store/contentState"
 import { filteredCategoriesState } from "@/store/dataState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
-import extractImageSources from "@/utils/images"
+import buildArticleImageModel from "@/utils/images"
 import findAdjacentItem from "@/utils/navigation"
 
 const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
@@ -175,9 +175,10 @@ const useKeyHandlers = () => {
       return
     }
 
-    const bodyImageSources = extractImageSources(activeContent.content)
-    const enclosureImageSources = activeContent.attachments?.images.map(({ url }) => url) ?? []
-    const imageSources = [...bodyImageSources, ...enclosureImageSources]
+    const { imageSources } = buildArticleImageModel(
+      activeContent.content,
+      activeContent.attachments?.items,
+    )
     if (imageSources.length === 0) {
       return
     }
