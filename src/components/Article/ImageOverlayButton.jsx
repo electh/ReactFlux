@@ -1,5 +1,7 @@
 import { Tooltip } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
+import classNames from "classnames"
+import { attributesToProps } from "html-react-parser"
 import { useEffect, useId, useRef, useState } from "react"
 
 import ImageLinkTag from "./ImageLinkTag"
@@ -16,17 +18,23 @@ const ImageComponent = ({ imgNode, isIcon, isBigImage, index, togglePhotoSlider 
   const imageInstanceId = useId()
   const imageRef = useRef(null)
   const altText = imgNode.attribs.alt
+  const imageProps = attributesToProps(imgNode.attribs, "img")
+  const imageClassName = classNames(imageProps.className, {
+    "big-image": isBigImage && !isIcon,
+    "icon-image": isIcon,
+  })
 
   return isIcon ? (
     <Tooltip content={altText} disabled={!altText}>
       <img
-        {...imgNode.attribs}
+        {...imageProps}
         ref={imageRef}
         alt={altText}
-        className="icon-image"
+        className={imageClassName}
         data-article-image-index={index}
         data-article-image-instance={imageInstanceId}
         style={{
+          ...imageProps.style,
           height: `${fontSize}rem`,
         }}
       />
@@ -34,10 +42,10 @@ const ImageComponent = ({ imgNode, isIcon, isBigImage, index, togglePhotoSlider 
   ) : (
     <div style={{ position: "relative" }}>
       <img
-        {...imgNode.attribs}
+        {...imageProps}
         ref={imageRef}
         alt={altText}
-        className={isBigImage ? "big-image" : ""}
+        className={imageClassName}
         data-article-image-index={index}
         data-article-image-instance={imageInstanceId}
       />
@@ -70,33 +78,33 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
   useEffect(() => {
     let isSubscribed = true
 
-    const imgNode = findImageNode(node, isLinkWrapper)
-    const imgSrc = imgNode.attribs.src
-    const img = new Image()
-    img.src = imgSrc
+    const image = new Image()
+    image.src = imgNode.attribs.src
 
     const handleLoad = () => {
-      if (isSubscribed) {
-        const isSmall = Math.max(img.width, img.height) <= MIN_THUMBNAIL_SIZE
-        const isLarge = img.width > 768
-
-        setIsIcon(isSmall)
-        setIsBigImage(isLarge && !isSmall)
+      if (!isSubscribed) {
+        return
       }
+
+      const isSmall = Math.max(image.width, image.height) <= MIN_THUMBNAIL_SIZE
+      const isLarge = image.width > 768
+
+      setIsIcon(isSmall)
+      setIsBigImage(isLarge && !isSmall)
     }
 
-    img.addEventListener("load", handleLoad)
+    image.addEventListener("load", handleLoad)
 
     return () => {
       isSubscribed = false
-      img.src = ""
-      img.removeEventListener("load", handleLoad)
+      image.src = ""
+      image.removeEventListener("load", handleLoad)
     }
-  }, [node, isLinkWrapper])
+  }, [imgNode])
 
   if (isIcon) {
     return isLinkWrapper ? (
-      <a {...node.attribs}>
+      <a {...attributesToProps(node.attribs, "a")}>
         <ImageComponent
           imgNode={imgNode}
           index={index}

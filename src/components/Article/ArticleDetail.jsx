@@ -1,6 +1,6 @@
 import { Divider, Tag, Typography } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
-import ReactHtmlParser, { domToReact } from "html-react-parser"
+import ReactHtmlParser, { attributesToProps, domToReact } from "html-react-parser"
 import { littlefoot } from "littlefoot"
 import {
   forwardRef,
@@ -110,7 +110,7 @@ const handleImage = (node, getImageIndex, togglePhotoSlider) => {
 
   const index = getImageIndex(node.attribs.src)
   if (index < 0) {
-    return <img {...node.attribs} />
+    return <img {...attributesToProps(node.attribs, "img")} />
   }
 
   return <ImageOverlayButton index={index} node={node} togglePhotoSlider={togglePhotoSlider} />
@@ -208,7 +208,7 @@ const processFigcaptionContent = (children) => {
     }
     if (child.type === "tag") {
       const Tag = child.name
-      const props = child.attribs || {}
+      const props = attributesToProps(child.attribs, child.name)
 
       if (child.name === "br") {
         return null
@@ -311,7 +311,12 @@ const handleIframe = (node) => {
 
   // Check if it's a YouTube iframe
   if (src && (src.includes("youtube.com") || src.includes("youtube-nocookie.com"))) {
-    return <iframe {...node.attribs} referrerPolicy="strict-origin-when-cross-origin" />
+    return (
+      <iframe
+        {...attributesToProps(node.attribs, "iframe")}
+        referrerPolicy="strict-origin-when-cross-origin"
+      />
+    )
   }
 
   return node
