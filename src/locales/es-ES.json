@@ -131,6 +131,9 @@
     "filter_headings": "Filtrar títulos",
     "back_to_actions": "Volver a más acciones"
   },
+  "article_images": {
+    "preview_image": "Vista previa de imagen"
+  },
   "article_attachments": {
     "title": "Archivos adjuntos (%{count})",
     "fallback_name": "Archivo adjunto %{index}",

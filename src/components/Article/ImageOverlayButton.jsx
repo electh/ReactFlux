@@ -1,9 +1,10 @@
 import { Tooltip } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
-import { useEffect, useState } from "react"
+import { useEffect, useId, useRef, useState } from "react"
 
 import ImageLinkTag from "./ImageLinkTag"
 
+import { polyglotState } from "@/hooks/useLanguage"
 import { settingsState } from "@/store/settingsState"
 import { MIN_THUMBNAIL_SIZE } from "@/utils/constants"
 
@@ -11,14 +12,20 @@ import "./ImageOverlayButton.css"
 
 const ImageComponent = ({ imgNode, isIcon, isBigImage, index, togglePhotoSlider }) => {
   const { fontSize } = useStore(settingsState)
+  const { polyglot } = useStore(polyglotState)
+  const imageInstanceId = useId()
+  const imageRef = useRef(null)
   const altText = imgNode.attribs.alt
 
   return isIcon ? (
     <Tooltip content={altText} disabled={!altText}>
       <img
         {...imgNode.attribs}
+        ref={imageRef}
         alt={altText}
         className="icon-image"
+        data-article-image-index={index}
+        data-article-image-instance={imageInstanceId}
         style={{
           height: `${fontSize}rem`,
         }}
@@ -26,14 +33,24 @@ const ImageComponent = ({ imgNode, isIcon, isBigImage, index, togglePhotoSlider 
     </Tooltip>
   ) : (
     <div style={{ position: "relative" }}>
-      <img {...imgNode.attribs} alt={altText} className={isBigImage ? "big-image" : ""} />
+      <img
+        {...imgNode.attribs}
+        ref={imageRef}
+        alt={altText}
+        className={isBigImage ? "big-image" : ""}
+        data-article-image-index={index}
+        data-article-image-instance={imageInstanceId}
+      />
       <Tooltip content={altText} disabled={!altText}>
         <button
+          aria-label={polyglot.t("article_images.preview_image")}
           className="image-overlay-button"
+          data-article-image-focus-index={index}
+          data-article-image-instance={imageInstanceId}
           type="button"
           onClick={(event) => {
             event.preventDefault()
-            togglePhotoSlider(index)
+            togglePhotoSlider(index, { targetElement: imageRef.current })
           }}
         />
       </Tooltip>

@@ -53,7 +53,11 @@ const useKeyHandlers = () => {
     }
   }
 
-  const { isPhotoSliderVisible, setIsPhotoSliderVisible, setSelectedIndex } = usePhotoSlider()
+  const {
+    isPhotoSliderVisible,
+    openPhotoSlider: showPhotoSlider,
+    requestPhotoSliderClose,
+  } = usePhotoSlider()
   const { setSettingsModalVisible, setSettingsTabsActiveTab } = useModalToggle()
 
   const withActiveContent =
@@ -171,7 +175,7 @@ const useKeyHandlers = () => {
 
   const openPhotoSlider = withActiveContent(() => {
     if (isPhotoSliderVisible) {
-      setIsPhotoSliderVisible(false)
+      requestPhotoSliderClose()
       return
     }
 
@@ -183,8 +187,7 @@ const useKeyHandlers = () => {
       return
     }
 
-    setSelectedIndex(0)
-    setIsPhotoSliderVisible(true)
+    showPhotoSlider(0)
   })
 
   return {

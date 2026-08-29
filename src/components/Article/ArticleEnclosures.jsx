@@ -1,20 +1,40 @@
 import { useStore } from "@nanostores/react"
-import { useState } from "react"
+import { useId, useRef, useState } from "react"
 
 import { polyglotState } from "@/hooks/useLanguage"
 
 import "./ArticleEnclosures.css"
 
-const AttachmentPreview = ({ item, name, onError, onImagePreview, polyglot }) => (
-  <button
-    aria-label={polyglot.t("article_attachments.preview_image", { name })}
-    className="article-enclosure-preview"
-    type="button"
-    onClick={() => onImagePreview(item.galleryIndex)}
-  >
-    <img alt="" decoding="async" loading="lazy" src={item.url} onError={onError} />
-  </button>
-)
+const AttachmentPreview = ({ item, name, onError, onImagePreview, polyglot }) => {
+  const imageInstanceId = useId()
+  const imageRef = useRef(null)
+
+  return (
+    <button
+      aria-label={polyglot.t("article_attachments.preview_image", { name })}
+      className="article-enclosure-preview"
+      data-article-image-focus-index={item.galleryIndex}
+      data-article-image-instance={imageInstanceId}
+      type="button"
+      onClick={() =>
+        onImagePreview(item.galleryIndex, {
+          targetElement: imageRef.current,
+        })
+      }
+    >
+      <img
+        ref={imageRef}
+        alt=""
+        data-article-image-index={item.galleryIndex}
+        data-article-image-instance={imageInstanceId}
+        decoding="async"
+        loading="lazy"
+        src={item.url}
+        onError={onError}
+      />
+    </button>
+  )
+}
 
 const AttachmentName = ({ item, name }) => {
   if (item.linkMode === "blocked") {
@@ -53,7 +73,7 @@ const AttachmentMetadata = ({ item, polyglot }) => (
   </small>
 )
 
-const ArticleEnclosures = ({ items, onImagePreview }) => {
+const ArticleEnclosures = ({ items, onImagePreview, onOpenChange, open }) => {
   const { polyglot } = useStore(polyglotState)
   const [hasBeenOpened, setHasBeenOpened] = useState(false)
   const [failedPreviewIndexes, setFailedPreviewIndexes] = useState(() => new Set())
@@ -69,14 +89,16 @@ const ArticleEnclosures = ({ items, onImagePreview }) => {
   return (
     <details
       className="article-enclosures"
+      open={open}
       onToggle={({ currentTarget }) => {
         if (currentTarget.open) {
           setHasBeenOpened(true)
         }
+        onOpenChange(currentTarget.open)
       }}
     >
       <summary>{polyglot.t("article_attachments.title", { count: items.length })}</summary>
-      {hasBeenOpened && (
+      {(open || hasBeenOpened) && (
         <ul className="article-enclosure-list">
           {items.map((item, index) => {
             const name =

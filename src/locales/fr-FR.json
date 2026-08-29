@@ -131,6 +131,9 @@
     "filter_headings": "Filtrer les titres",
     "back_to_actions": "Retour aux autres actions"
   },
+  "article_images": {
+    "preview_image": "Aperçu de l’image"
+  },
   "article_attachments": {
     "title": "Pièces jointes (%{count})",
     "fallback_name": "Pièce jointe %{index}",

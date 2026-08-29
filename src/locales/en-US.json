@@ -131,6 +131,9 @@
     "filter_headings": "Filter headings",
     "back_to_actions": "Back to more actions"
   },
+  "article_images": {
+    "preview_image": "Preview image"
+  },
   "article_attachments": {
     "title": "Attachments (%{count})",
     "fallback_name": "Attachment %{index}",

@@ -131,6 +131,9 @@
     "filter_headings": "Überschriften filtern",
     "back_to_actions": "Zurück zu weiteren Aktionen"
   },
+  "article_images": {
+    "preview_image": "Bildvorschau"
+  },
   "article_attachments": {
     "title": "Anhänge (%{count})",
     "fallback_name": "Anhang %{index}",

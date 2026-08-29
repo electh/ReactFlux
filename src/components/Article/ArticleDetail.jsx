@@ -2,7 +2,16 @@ import { Divider, Tag, Typography } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import ReactHtmlParser, { domToReact } from "html-react-parser"
 import { littlefoot } from "littlefoot"
-import { forwardRef, lazy, Suspense, useEffect, useRef, useState } from "react"
+import {
+  forwardRef,
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react"
 import { useNavigate } from "react-router"
 import SimpleBar from "simplebar-react"
 
@@ -23,6 +32,7 @@ import {
   setFilterType,
 } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
+import returnToArticleImage from "@/utils/article-image-return"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
 import buildArticleImageModel from "@/utils/images"
 import "./ArticleDetail.css"
@@ -361,10 +371,21 @@ const ArticleDetail = forwardRef((_, ref) => {
     titleAlignment,
   } = useStore(settingsState)
   const scrollContainerRef = useRef(null)
+  const photoSliderSessionRef = useRef(null)
+  const preparedPhotoSliderSessionRef = useRef(false)
+  const previousPhotoSliderVisibleRef = useRef(false)
+  const [enclosuresOpenState, setEnclosuresOpenState] = useState({ articleId: null, open: false })
   const [hasOpenedPhotoSlider, setHasOpenedPhotoSlider] = useState(false)
 
-  const { isPhotoSliderVisible, setIsPhotoSliderVisible, selectedIndex, setSelectedIndex } =
-    usePhotoSlider()
+  const {
+    completePhotoSliderClose,
+    isPhotoSliderCloseRequested,
+    isPhotoSliderVisible,
+    markPhotoSliderClosing,
+    openPhotoSlider,
+    selectedIndex,
+    setSelectedIndex,
+  } = usePhotoSlider()
 
   const handleAuthorFilter = () => {
     setFilterType("author")
@@ -374,11 +395,38 @@ const ArticleDetail = forwardRef((_, ref) => {
     }
   }
 
-  const togglePhotoSlider = (index) => {
-    setHasOpenedPhotoSlider(true)
-    setSelectedIndex(index)
-    setIsPhotoSliderVisible((prev) => !prev)
-  }
+  const capturePhotoSliderSession = useCallback(
+    (index, { targetElement = null } = {}) => {
+      const scrollElement = scrollContainerRef.current?.getScrollElement()
+      if (!scrollElement) {
+        return false
+      }
+
+      const openingTarget = targetElement?.isConnected ? targetElement : null
+      photoSliderSessionRef.current = {
+        articleId: activeContent.id,
+        currentIndex: index,
+        hasViewedDifferentSlide: false,
+        openingIndex: index,
+        openingInstanceId: openingTarget?.dataset.articleImageInstance ?? null,
+        openingScrollTop: scrollElement.scrollTop,
+        openingTarget,
+        openingViewportCenter: scrollElement.scrollTop + scrollElement.clientHeight / 2,
+        pendingReturnIndex: null,
+      }
+      return true
+    },
+    [activeContent.id],
+  )
+
+  const togglePhotoSlider = useCallback(
+    (index, source) => {
+      preparedPhotoSliderSessionRef.current = capturePhotoSliderSession(index, source)
+      setHasOpenedPhotoSlider(true)
+      openPhotoSlider(index)
+    },
+    [capturePhotoSliderSession, openPhotoSlider],
+  )
 
   const getLightboxAnimationConfig = () => {
     return lightboxSlideAnimation ? { fade: 250 } : { fade: 250, navigation: 0 }
@@ -393,9 +441,81 @@ const ArticleDetail = forwardRef((_, ref) => {
     activeContent.content,
     attachmentItems,
   )
+  const enclosuresOpen =
+    enclosuresOpenState.articleId === activeContent.id && enclosuresOpenState.open
   const htmlParserOptions = getHtmlParserOptions(getImageIndex, togglePhotoSlider)
 
   const parsedHtml = ReactHtmlParser(activeContent.content, htmlParserOptions)
+
+  const handlePhotoSliderView = ({ index }) => {
+    const session = photoSliderSessionRef.current
+    if (session) {
+      session.currentIndex = index
+      if (index !== session.openingIndex) {
+        session.hasViewedDifferentSlide = true
+      }
+    }
+    setSelectedIndex(index)
+  }
+
+  const handlePhotoSliderExiting = () => {
+    markPhotoSliderClosing()
+
+    const session = photoSliderSessionRef.current
+    if (!session || session.articleId !== activeContent.id) {
+      return
+    }
+
+    const index = session.currentIndex
+    session.pendingReturnIndex = index
+
+    const isAttachmentSlide = visibleAttachments.some(
+      ({ galleryIndex }) => Number.isInteger(galleryIndex) && galleryIndex === index,
+    )
+    if (isAttachmentSlide) {
+      setEnclosuresOpenState({ articleId: activeContent.id, open: true })
+    }
+  }
+
+  const handlePhotoSliderExited = () => {
+    const session = photoSliderSessionRef.current
+    const scrollElement = scrollContainerRef.current?.getScrollElement()
+
+    if (
+      !session ||
+      session.pendingReturnIndex === null ||
+      !scrollElement ||
+      session.articleId !== activeContent.id
+    ) {
+      return
+    }
+
+    const galleryIndex = session.pendingReturnIndex
+    session.pendingReturnIndex = null
+    const isCurrentSession = () => photoSliderSessionRef.current === session
+
+    void returnToArticleImage({
+      galleryIndex,
+      hasViewedDifferentSlide: session.hasViewedDifferentSlide,
+      isCurrent: isCurrentSession,
+      openingIndex: session.openingIndex,
+      openingInstanceId: session.openingInstanceId,
+      openingScrollTop: session.openingScrollTop,
+      openingTarget: session.openingTarget,
+      openingViewportCenter: session.openingViewportCenter,
+      scrollElement,
+    }).then(() => {
+      if (isCurrentSession()) {
+        photoSliderSessionRef.current = null
+      }
+      return null
+    })
+  }
+
+  const handleEnclosuresOpenChange = (open) => {
+    setEnclosuresOpenState({ articleId: activeContent.id, open })
+  }
+
   const { id: categoryId, title: categoryTitle } = activeContent.feed.category
   const { id: feedId, title: feedTitle } = activeContent.feed
 
@@ -407,6 +527,28 @@ const ArticleDetail = forwardRef((_, ref) => {
     }
     return `${articleWidth}ch`
   }
+
+  useLayoutEffect(() => {
+    return () => {
+      photoSliderSessionRef.current = null
+      preparedPhotoSliderSessionRef.current = false
+    }
+  }, [activeContent.id])
+
+  useLayoutEffect(() => {
+    const wasPhotoSliderVisible = previousPhotoSliderVisibleRef.current
+
+    if (isPhotoSliderVisible && !wasPhotoSliderVisible) {
+      if (!preparedPhotoSliderSessionRef.current) {
+        capturePhotoSliderSession(selectedIndex)
+      }
+      preparedPhotoSliderSessionRef.current = false
+    } else if (!isPhotoSliderVisible) {
+      preparedPhotoSliderSessionRef.current = false
+    }
+
+    previousPhotoSliderVisibleRef.current = isPhotoSliderVisible
+  }, [capturePhotoSliderSession, isPhotoSliderVisible, selectedIndex])
 
   useEffect(() => {
     if (isPhotoSliderVisible) {
@@ -499,16 +641,24 @@ const ArticleDetail = forwardRef((_, ref) => {
               />
             )}
             {parsedHtml}
-            <ArticleEnclosures items={visibleAttachments} onImagePreview={togglePhotoSlider} />
+            <ArticleEnclosures
+              items={visibleAttachments}
+              open={enclosuresOpen}
+              onImagePreview={togglePhotoSlider}
+              onOpenChange={handleEnclosuresOpenChange}
+            />
             {hasOpenedPhotoSlider && (
               <Suspense fallback={null}>
                 <ArticleLightbox
                   animation={getLightboxAnimationConfig()}
+                  closeRequested={isPhotoSliderCloseRequested}
                   index={selectedIndex}
                   open={isPhotoSliderVisible}
                   slides={imageSources.map((src) => ({ src }))}
-                  onClose={() => setIsPhotoSliderVisible(false)}
-                  onView={({ index }) => setSelectedIndex(index)}
+                  onClose={completePhotoSliderClose}
+                  onExited={handlePhotoSliderExited}
+                  onExiting={handlePhotoSliderExiting}
+                  onView={handlePhotoSliderView}
                 />
               </Suspense>
             )}
