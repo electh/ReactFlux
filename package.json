@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "preanalyze": "node src/scripts/version-info.js",
+    "analyze": "vite build --mode analyze",
     "preview": "pnpm run build && vite preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
