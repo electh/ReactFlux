@@ -51,6 +51,7 @@ const SettingsModal = () => {
       footer={null}
       title={null}
       visible={settingsModalVisible}
+      wrapClassName="settings-modal-wrapper"
       onCancel={() => {
         setSettingsModalVisible(false)
         setSettingsTabsActiveTab("1")

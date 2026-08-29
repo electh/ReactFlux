@@ -33,7 +33,6 @@
     gap: var(--mobile-edge-spacing);
     padding: var(--mobile-edge-spacing);
     padding-bottom: calc(var(--mobile-edge-spacing) + env(safe-area-inset-bottom, 0px));
-    background-color: var(--color-bg-1);
   }
 
   .entry-panel .arco-btn-shape-circle {

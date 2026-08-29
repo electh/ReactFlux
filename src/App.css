@@ -4,6 +4,10 @@
   color: var(--color-text-2);
 }
 
+.arco-select-single .arco-select-view-selector {
+  align-items: center;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

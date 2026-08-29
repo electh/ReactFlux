@@ -11,6 +11,9 @@
 }
 
 .feed-table-action-bar {
+  --feed-action-control-size: 32px;
+  --feed-action-icon-size: 16px;
+
   display: flex;
   align-items: center;
   width: 100%;
@@ -25,15 +28,32 @@
 .feed-table-action-bar .button-group {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 8px;
   padding-bottom: 16px;
   padding-left: 8px;
 }
 
+.feed-table-action-bar .button-group .arco-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--feed-action-control-size);
+  touch-action: manipulation;
+}
+
+.feed-table-action-bar .button-group .arco-btn-icon-only {
+  min-width: var(--feed-action-control-size);
+}
+
+.feed-table-action-bar .button-group span.feed-touch-target {
+  line-height: 0;
+}
+
 .feed-table-action-bar .search-input {
   margin-bottom: 16px;
   width: 300px;
-  height: var(--mobile-form-control-size);
+  height: var(--feed-action-control-size);
 }
 
 .feed-table-action-bar .search-input .arco-input-group,
@@ -44,9 +64,13 @@
 }
 
 .feed-search-syntax-help.arco-btn {
-  flex: 0 0 var(--mobile-form-control-size);
-  width: var(--mobile-form-control-size);
-  height: var(--mobile-form-control-size);
+  display: inline-flex;
+  flex: 0 0 var(--feed-action-control-size);
+  align-items: center;
+  justify-content: center;
+  width: var(--feed-action-control-size);
+  height: var(--feed-action-control-size);
+  font-size: var(--feed-action-icon-size);
   padding: 0;
   line-height: 0;
   touch-action: manipulation;
@@ -98,6 +122,11 @@
 }
 
 @media screen and (max-width: 768px), (pointer: coarse) {
+  .feed-table-action-bar {
+    --feed-action-control-size: var(--mobile-form-control-size);
+    --feed-action-icon-size: var(--mobile-form-icon-size);
+  }
+
   .feed-desktop-actions {
     display: none;
   }
@@ -107,15 +136,11 @@
     justify-content: center;
   }
 
-  .feed-more-action.arco-btn,
-  .feed-touch-target.arco-btn {
+  .feed-more-action.arco-btn {
     min-width: var(--mobile-form-control-size);
     min-height: var(--mobile-form-control-size);
-    touch-action: manipulation;
-  }
-
-  .feed-more-action.arco-btn {
     padding-right: 10px;
     padding-left: 10px;
+    touch-action: manipulation;
   }
 }

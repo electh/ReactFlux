@@ -20,6 +20,16 @@
 }
 
 @media screen and (max-width: 768px) {
+  .settings-modal .settings-tabs-scroll {
+    height: 100%;
+    max-height: none;
+  }
+
+  .settings-modal .arco-tabs-header-nav {
+    box-sizing: border-box;
+    padding-right: 32px;
+  }
+
   .setting-control .input-select,
   .setting-control .input-slider {
     margin-left: 0;
