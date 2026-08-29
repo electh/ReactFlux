@@ -1,17 +1,43 @@
 import apiClient from "./ofetch"
 
 import { contentState } from "@/store/contentState"
+import { dataState } from "@/store/dataState"
 import { getSettings } from "@/store/settingsState"
-import { MAX_ENTRIES_PER_PAGE } from "@/utils/constants"
+import {
+  ENTRY_UPDATE_BATCH_SIZE,
+  MAX_ENTRIES_PER_PAGE,
+  MAX_ENTRY_IDS_PER_PAGE,
+} from "@/utils/constants"
 import { get24HoursAgoTimestamp, getDayEndTimestamp, getTimestamp } from "@/utils/date"
+import compareVersions from "@/utils/version"
 
 export const getEntry = async (entryId) => apiClient.get(`/v1/entries/${entryId}`)
 
-export const updateEntriesStatus = async (entryIds, newStatus) =>
+const supportsEntryIdsAndStarredUpdates = () =>
+  compareVersions(dataState.get().version || "0", "2.3.2") >= 0
+
+const updateEntries = async (entryIds, updates) =>
   apiClient.put("/v1/entries", {
     entry_ids: entryIds,
-    status: newStatus,
+    ...updates,
   })
+
+export const updateEntriesStatus = async (entryIds, newStatus) =>
+  updateEntries(entryIds, { status: newStatus })
+
+const toggleEntryStarred = async (entryId) => apiClient.put(`/v1/entries/${entryId}/bookmark`)
+
+export const setEntriesStarred = async (entryIds, starred) => {
+  if (supportsEntryIdsAndStarredUpdates()) {
+    return updateEntries(entryIds, { starred })
+  }
+
+  if (entryIds.length !== 1) {
+    throw new Error("Bulk starred updates require Miniflux 2.3.2 or newer")
+  }
+
+  return toggleEntryStarred(entryIds[0])
+}
 
 export const markEntriesAsReadInBatches = async (fetchEntries) => {
   let markedEntryCount = 0
@@ -33,9 +59,6 @@ export const markEntriesAsReadInBatches = async (fetchEntries) => {
     markedEntryCount += unreadEntryIds.length
   }
 }
-
-export const toggleEntryStarred = async (entryId) =>
-  apiClient.put(`/v1/entries/${entryId}/bookmark`)
 
 export const getOriginalContent = async (entryId) => {
   const { updateContentOnFetch } = getSettings("updateContentOnFetch")
@@ -63,7 +86,7 @@ const addDateFilters = (orderField, queryParams, filterDate) => {
   }
 }
 
-const buildEntriesUrl = (baseParams, extraParams = {}) => {
+const buildEntriesUrl = (baseParams, extraParams = {}, applyDateFilter = true) => {
   const { baseUrl, orderField, limit, status } = baseParams
   const { filterDate } = contentState.get()
   const orderDirection = getSettings("orderDirection")
@@ -79,11 +102,62 @@ const buildEntriesUrl = (baseParams, extraParams = {}) => {
     queryParams.append("status", status)
   }
 
-  if (filterDate) {
+  if (applyDateFilter && filterDate) {
     addDateFilters(orderField, queryParams, filterDate)
   }
 
   return `${baseUrl}?${queryParams}`
+}
+
+const getEntryIds = async ({ status, starred, offset = 0, limit } = {}) => {
+  const queryParams = new URLSearchParams({
+    offset,
+    limit: Math.min(limit ?? MAX_ENTRY_IDS_PER_PAGE, MAX_ENTRY_IDS_PER_PAGE),
+  })
+
+  if (status) {
+    queryParams.append("status", status)
+  }
+
+  if (typeof starred === "boolean") {
+    queryParams.append("starred", starred)
+  }
+
+  return apiClient.get(`/v1/entries/ids?${queryParams}`)
+}
+
+const getAllEntryIds = async (filters) => {
+  // Collect all matching IDs before updating them so pagination offsets remain stable.
+  const entryIds = []
+  let offset = 0
+  let total = Infinity
+
+  while (offset < total) {
+    const response = await getEntryIds({
+      ...filters,
+      offset,
+      limit: MAX_ENTRY_IDS_PER_PAGE,
+    })
+    const pageEntryIds = response?.entry_ids ?? []
+    total = response?.total ?? 0
+
+    if (pageEntryIds.length === 0) {
+      break
+    }
+
+    entryIds.push(...pageEntryIds)
+    offset += pageEntryIds.length
+  }
+
+  return [...new Set(entryIds)]
+}
+
+const updateEntryIdsInBatches = async (entryIds, updates) => {
+  for (let batchStart = 0; batchStart < entryIds.length; batchStart += ENTRY_UPDATE_BATCH_SIZE) {
+    await updateEntries(entryIds.slice(batchStart, batchStart + ENTRY_UPDATE_BATCH_SIZE), updates)
+  }
+
+  return entryIds.length
 }
 
 export const getAllEntries = async (status = null, filterParams = {}) => {
@@ -106,7 +180,7 @@ export const getAllEntries = async (status = null, filterParams = {}) => {
   return apiClient.get(buildEntriesUrl(baseParams, extraParams))
 }
 
-export const getTodayEntries = async (status = null, filterParams = {}) => {
+const fetchTodayEntries = async (status, filterParams, applyDateFilter) => {
   const orderBy = getSettings("orderBy")
   const pageSize = getSettings("pageSize")
   const showHiddenFeeds = getSettings("showHiddenFeeds")
@@ -125,10 +199,13 @@ export const getTodayEntries = async (status = null, filterParams = {}) => {
     ...filterParams,
   }
 
-  return apiClient.get(buildEntriesUrl(baseParams, extraParams))
+  return apiClient.get(buildEntriesUrl(baseParams, extraParams, applyDateFilter))
 }
 
-export const getStarredEntries = async (status = null, filterParams = {}) => {
+export const getTodayEntries = async (status = null, filterParams = {}) =>
+  fetchTodayEntries(status, filterParams, true)
+
+const fetchStarredEntries = async (status, filterParams, applyDateFilter) => {
   const pageSize = getSettings("pageSize")
 
   const baseParams = {
@@ -143,7 +220,42 @@ export const getStarredEntries = async (status = null, filterParams = {}) => {
     ...filterParams,
   }
 
-  return apiClient.get(buildEntriesUrl(baseParams, extraParams))
+  return apiClient.get(buildEntriesUrl(baseParams, extraParams, applyDateFilter))
+}
+
+export const getStarredEntries = async (status = null, filterParams = {}) =>
+  fetchStarredEntries(status, filterParams, true)
+
+export const markStarredEntriesAsRead = async () => {
+  if (!supportsEntryIdsAndStarredUpdates()) {
+    return markEntriesAsReadInBatches(getStarredEntries)
+  }
+
+  const unreadStarredEntryIds = await getAllEntryIds({
+    starred: true,
+    status: "unread",
+  })
+
+  return updateEntryIdsInBatches(unreadStarredEntryIds, { status: "read" })
+}
+
+const getStarredCountData = async (status = null) =>
+  supportsEntryIdsAndStarredUpdates()
+    ? getEntryIds({ starred: true, status, limit: 1 })
+    : fetchStarredEntries(status, { limit: 1 }, false)
+
+export const getEntryCountSummary = async () => {
+  const [starredData, unreadStarredData, unreadTodayData] = await Promise.all([
+    getStarredCountData(),
+    getStarredCountData("unread"),
+    fetchTodayEntries("unread", { limit: 1 }, false),
+  ])
+
+  return {
+    starredCount: starredData?.total ?? 0,
+    unreadStarredCount: unreadStarredData?.total ?? 0,
+    unreadTodayCount: unreadTodayData?.total ?? 0,
+  }
 }
 
 export const getHistoryEntries = async (filterParams = {}) => {

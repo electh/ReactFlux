@@ -14,7 +14,9 @@ import {
   getAllEntries,
   getCategoryEntries,
   getCounters,
+  getEntryCountSummary,
   getFeedEntries,
+  getStarredEntries,
   markEntriesAsReadInBatches,
 } from "@/apis"
 import CustomTooltip from "@/components/ui/CustomTooltip"
@@ -24,7 +26,10 @@ import {
   dataState,
   filteredCategoriesState,
   filteredFeedsState,
+  setHistoryCount,
+  setStarredCount,
   setUnreadInfo,
+  setUnreadStarredCount,
   setUnreadTodayCount,
 } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
@@ -47,7 +52,7 @@ const MarkAllReadButton = ({ from, onConfirm }) => {
   const { polyglot } = useStore(polyglotState)
   const { skipMarkAllReadConfirmation } = useStore(settingsState)
 
-  const isHidden = ["starred", "history"].includes(from)
+  const isHidden = from === "history"
   const markAllReadLabel = polyglot.t("article_list.mark_all_as_read_tooltip")
   const [confirmVisible, setConfirmVisible] = useState(false)
 
@@ -146,6 +151,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       all: getAllEntries,
       feed: (status, options) => getFeedEntries(info.id, status, starred, options),
       category: (status, options) => getCategoryEntries(info.id, status, starred, options),
+      starred: getStarredEntries,
     }
 
     const fetchEntries = entryFetchers[info.from]
@@ -155,17 +161,24 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const updateUIAfterMarkAsRead = async () => {
     updateAllEntriesAsRead()
 
-    const countersData = await getCounters()
+    const [countersData, entryCountSummary] = await Promise.all([
+      getCounters(),
+      getEntryCountSummary(),
+    ])
     const unreadInfo = {}
     for (const feed of feedsData) {
       unreadInfo[feed.id] = countersData.unreads[feed.id] ?? 0
     }
 
+    const historyCount = Object.values(countersData.reads).reduce(
+      (total, count) => total + count,
+      0,
+    )
+    setHistoryCount(historyCount)
+    setStarredCount(entryCountSummary.starredCount)
     setUnreadInfo(unreadInfo)
-
-    if (info.from === "today") {
-      setUnreadTodayCount(0)
-    }
+    setUnreadStarredCount(entryCountSummary.unreadStarredCount)
+    setUnreadTodayCount(entryCountSummary.unreadTodayCount)
 
     Notification.success({
       title: polyglot.t("article_list.mark_all_as_read_success"),

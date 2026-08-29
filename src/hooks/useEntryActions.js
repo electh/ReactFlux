@@ -5,7 +5,7 @@ import Confetti from "canvas-confetti"
 import {
   getOriginalContent,
   saveToThirdPartyServices,
-  toggleEntryStarred,
+  setEntriesStarred,
   updateEntriesStatus,
 } from "@/apis"
 import { polyglotState } from "@/hooks/useLanguage"
@@ -14,6 +14,7 @@ import {
   setHistoryCount,
   setStarredCount,
   setUnreadInfo,
+  setUnreadStarredCount,
   setUnreadTodayCount,
 } from "@/store/dataState"
 import { checkIsInLast24Hours } from "@/utils/date"
@@ -31,6 +32,7 @@ const updateEntries = (entries, updatedEntries) => {
 
 export const handleEntriesStatusUpdate = (entries, newStatus) => {
   const feedCountChanges = {}
+  let unreadStarredCountChange = 0
   let unreadTodayCountChange = 0
   const filteredEntries = entries.filter((entry) => entry.status !== newStatus)
   if (filteredEntries.length === 0) {
@@ -49,9 +51,11 @@ export const handleEntriesStatusUpdate = (entries, newStatus) => {
     const statusDelta = newStatus === "read" ? -1 : 1
 
     feedCountChanges[feedId] = (feedCountChanges[feedId] ?? 0) + statusDelta
+    unreadStarredCountChange += entry.starred ? statusDelta : 0
     unreadTodayCountChange += isRecent ? statusDelta : 0
   }
 
+  setUnreadStarredCount((prev) => Math.max(0, prev + unreadStarredCountChange))
   setUnreadTodayCount((prev) => Math.max(0, prev + unreadTodayCountChange))
 
   setUnreadInfo((prev) => {
@@ -88,21 +92,25 @@ const useEntryActions = () => {
   const { activeContent } = useStore(contentState)
   const { polyglot } = useStore(polyglotState)
 
-  const handleEntryStarredUpdate = (entry, newStarred) => {
-    if (newStarred) {
-      setStarredCount((prev) => prev + 1)
+  const handleEntryStarredUpdate = (entry, newStarred, shouldCelebrate = true) => {
+    const starredCountChange = newStarred ? 1 : -1
+    setStarredCount((prev) => Math.max(0, prev + starredCountChange))
+
+    if (entry.status === "unread") {
+      setUnreadStarredCount((prev) => Math.max(0, prev + starredCountChange))
+    }
+
+    if (newStarred && shouldCelebrate) {
       Confetti({
         particleCount: 100,
         angle: 120,
         spread: 70,
         origin: { x: 1, y: 1 },
       })
-    } else {
-      setStarredCount((prev) => Math.max(0, prev - 1))
     }
 
     const updatedEntry = { ...entry, starred: newStarred }
-    if (activeContent) {
+    if (activeContent?.id === entry.id) {
       setActiveContent(updatedEntry)
     }
     setEntries((prev) => updateEntries(prev, [updatedEntry]))
@@ -111,6 +119,7 @@ const useEntryActions = () => {
   const handleToggleStatus = async (entry) => {
     const prevStatus = entry.status
     const newStatus = prevStatus === "read" ? "unread" : "read"
+    const updatedEntry = { ...entry, status: newStatus }
     handleEntryStatusUpdate(entry, newStatus)
 
     updateEntriesStatus([entry.id], newStatus).catch(() => {
@@ -119,7 +128,7 @@ const useEntryActions = () => {
           ? polyglot.t("actions.mark_as_read_error")
           : polyglot.t("actions.mark_as_unread_error"),
       )
-      handleEntryStatusUpdate(entry, prevStatus)
+      handleEntryStatusUpdate(updatedEntry, prevStatus)
     })
   }
 
@@ -127,12 +136,20 @@ const useEntryActions = () => {
     const newStarred = !entry.starred
     handleEntryStarredUpdate(entry, newStarred)
 
-    toggleEntryStarred(entry.id).catch(() => {
+    try {
+      await setEntriesStarred([entry.id], newStarred)
+
+      if (!newStarred && contentState.get().infoFrom === "starred") {
+        setEntries((prev) =>
+          prev.filter((currentEntry) => currentEntry.id !== entry.id || currentEntry.starred),
+        )
+      }
+    } catch {
       Message.error(
         newStarred ? polyglot.t("actions.star_error") : polyglot.t("actions.unstar_error"),
       )
-      handleEntryStarredUpdate(entry, !newStarred)
-    })
+      handleEntryStarredUpdate(entry, !newStarred, false)
+    }
   }
 
   const handleFetchContent = async () => {
