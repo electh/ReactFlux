@@ -1,5 +1,87 @@
 .setting-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 24px;
+}
+
+.setting-row-header {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.setting-row-header .arco-typography {
+  overflow-wrap: anywhere;
+}
+
+.setting-row-header .arco-typography-secondary {
+  display: block;
+}
+
+.setting-control {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .setting-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .setting-control {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 768px), (pointer: coarse) {
+  .setting-row .arco-switch {
+    margin: 10px 2px;
+    overflow: visible;
+    touch-action: manipulation;
+  }
+
+  .setting-row .arco-switch::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--mobile-form-control-size);
+    height: var(--mobile-form-control-size);
+    border-radius: 50%;
+    content: "";
+    transform: translate(-50%, -50%);
+  }
+
+  .setting-row .input-slider {
+    box-sizing: border-box;
+    padding-right: 22px;
+    padding-left: 22px;
+  }
+
+  .setting-row .input-slider .arco-slider-road {
+    height: var(--mobile-form-control-size);
+    touch-action: manipulation;
+  }
+
+  .setting-row .input-slider .arco-slider-button {
+    top: 50%;
+    width: var(--mobile-form-control-size);
+    height: var(--mobile-form-control-size);
+    transform: translate(-50%, -50%);
+  }
+
+  .setting-row .input-slider .arco-slider-button::after {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .setting-row .input-slider .arco-slider-button-active::after,
+  .setting-row .input-slider .arco-slider-button:hover::after {
+    transform: translate(-50%, -50%) scale(1.1667);
+  }
+
+  .setting-row .input-slider.arco-slider-reverse .arco-slider-button {
+    transform: translate(50%, -50%);
+  }
 }

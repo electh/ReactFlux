@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react"
 
 import EditableTag from "./EditableTag"
 
+import { polyglotState } from "@/hooks/useLanguage"
 import { duplicateHotkeysState, resetHotkey, updateHotkey } from "@/store/hotkeysState"
 
 const capitalizeFirstLetter = (word) => word.charAt(0).toUpperCase() + word.slice(1)
@@ -28,6 +29,7 @@ const processKeyName = (keys) =>
 
 const EditableTagGroup = ({ keys, record }) => {
   const duplicateHotkeys = useStore(duplicateHotkeysState)
+  const { polyglot } = useStore(polyglotState)
 
   const [isEditing, setIsEditing] = useState(false)
 
@@ -89,7 +91,9 @@ const EditableTagGroup = ({ keys, record }) => {
             }}
           />
           <Button
-            icon={<IconRefresh />}
+            aria-label={polyglot.t("hotkeys.reset_action", { action: record.description })}
+            className="settings-touch-target"
+            icon={<IconRefresh aria-hidden="true" />}
             shape="circle"
             size="mini"
             onClick={() => resetHotkey(record.action)}

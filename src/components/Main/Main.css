@@ -13,7 +13,11 @@
 .settings-modal {
   top: 5%;
   width: 720px;
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+.settings-modal .arco-modal-content {
+  padding-top: 52px;
 }
 
 .add-feed-modal {
@@ -31,8 +35,28 @@
 
 @media screen and (max-width: 768px) {
   .settings-modal {
-    top: 8%;
-    width: 95%;
+    display: flex;
+    top: 8px;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: calc(100% - 16px);
+    height: calc(100vh - 16px);
+    height: calc(100dvh - 16px);
+  }
+
+  .settings-modal .arco-modal-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .settings-modal .settings-tabs-scroll {
+    height: 100%;
+    max-height: none;
+  }
+
+  .settings-modal .settings-tabs-scroll .simplebar-content-wrapper {
+    overscroll-behavior: contain;
   }
 
   .add-feed-modal {
@@ -110,22 +134,6 @@
     min-width: 88px;
     height: var(--mobile-form-control-size);
     font-size: var(--mobile-form-font-size);
-  }
-
-  .add-feed-modal .arco-modal-close-icon {
-    display: inline-flex;
-    top: 2px;
-    right: 2px;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--mobile-form-icon-size);
-    line-height: 0;
-  }
-
-  .add-feed-modal .arco-modal-close-icon,
-  .add-feed-modal .arco-modal-close-icon::before {
-    width: var(--mobile-form-control-size);
-    height: var(--mobile-form-control-size);
   }
 
   .add-feed-category-select-popup {

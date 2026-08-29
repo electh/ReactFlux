@@ -38,14 +38,7 @@ const SettingsTabs = ({ activeTab, onTabChange }) => {
   const { isBelowMedium } = useScreenWidth()
 
   return (
-    <SimpleBar
-      style={{
-        maxHeight: "80vh",
-        overflow: "auto",
-        marginRight: "-20px",
-        paddingRight: "20px",
-      }}
-    >
+    <SimpleBar className="settings-tabs-scroll">
       <Tabs
         animation
         activeTab={activeTab}

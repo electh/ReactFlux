@@ -34,37 +34,37 @@ const Appearance = () => {
         description={polyglot.t("appearance.theme_color_description")}
         title={polyglot.t("appearance.theme_color_label")}
       >
-        <div style={{ display: "flex" }}>
-          {Object.keys(colors).map((colorName) => (
-            <div
-              key={colorName}
-              role="button"
-              tabIndex={0}
-              aria-label={polyglot.t("appearance.theme_color_aria_label", {
-                color: colorName,
-              })}
-              style={{
-                width: "18px",
-                height: "18px",
-                borderRadius: "50%",
-                margin: "2px",
-                backgroundColor: getDisplayColorValue(colorName),
-                cursor: "pointer",
-                border: "3px solid var(--color-bg-3)",
-                outline:
-                  colorName === themeColor
-                    ? `1px solid ${getDisplayColorValue(colorName)}`
-                    : "none",
-              }}
-              onClick={() => handleConfigChange({ themeColor: colorName })}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  handleConfigChange({ themeColor: colorName })
-                }
-              }}
-            />
-          ))}
-        </div>
+        <fieldset className="theme-color-options">
+          <legend className="visually-hidden">{polyglot.t("appearance.theme_color_label")}</legend>
+          {Object.keys(colors).map((colorName) => {
+            const localizedColorName = polyglot.t(
+              `appearance.theme_color_${colorName.toLowerCase()}`,
+            )
+
+            return (
+              <label key={colorName} className="theme-color-option">
+                <input
+                  checked={colorName === themeColor}
+                  className="theme-color-input visually-hidden"
+                  name="theme-color"
+                  type="radio"
+                  value={colorName}
+                  onChange={() => handleConfigChange({ themeColor: colorName })}
+                />
+                <span
+                  aria-hidden="true"
+                  className="theme-color-swatch"
+                  style={{ "--theme-color": getDisplayColorValue(colorName) }}
+                />
+                <span className="visually-hidden">
+                  {polyglot.t("appearance.theme_color_aria_label", {
+                    color: localizedColorName,
+                  })}
+                </span>
+              </label>
+            )
+          })}
+        </fieldset>
       </SettingItem>
 
       <Divider />

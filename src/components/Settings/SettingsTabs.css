@@ -1,3 +1,9 @@
+.settings-tabs-scroll {
+  margin-right: -20px;
+  padding-right: 20px;
+  max-height: 80vh;
+}
+
 .custom-tabs .arco-tabs-header {
   margin: 0 auto !important;
 }
@@ -11,4 +17,20 @@
 .input-slider {
   margin-left: 16px;
   width: 130px;
+}
+
+@media screen and (max-width: 768px) {
+  .setting-control .input-select,
+  .setting-control .input-slider {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+@media (pointer: coarse) {
+  .settings-touch-target.arco-btn {
+    min-width: var(--mobile-form-control-size);
+    min-height: var(--mobile-form-control-size);
+    touch-action: manipulation;
+  }
 }

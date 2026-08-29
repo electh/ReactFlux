@@ -1,3 +1,46 @@
 .arco-radio {
   padding-left: 0;
 }
+
+.theme-color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.theme-color-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--mobile-form-control-size);
+  height: var(--mobile-form-control-size);
+  border-radius: 50%;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.theme-color-swatch {
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--color-bg-3);
+  border-radius: 50%;
+  background-color: var(--theme-color);
+}
+
+.theme-color-option:hover .theme-color-swatch {
+  transform: scale(1.15);
+}
+
+.theme-color-input:checked + .theme-color-swatch {
+  outline: 2px solid var(--theme-color);
+  outline-offset: 2px;
+}
+
+.theme-color-input:focus-visible + .theme-color-swatch {
+  box-shadow: 0 0 0 4px var(--color-primary-light-3);
+}
