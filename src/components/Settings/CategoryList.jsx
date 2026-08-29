@@ -25,6 +25,12 @@ const CategoryList = () => {
     setShowAddInput(false)
   }
 
+  const handleSelectCategory = (category) => {
+    setSelectedCategory(category)
+    setCategoryModalVisible(true)
+    categoryForm.setFieldsValue({ title: category.title })
+  }
+
   return (
     <>
       <div>
@@ -34,19 +40,21 @@ const CategoryList = () => {
             className="tag-style"
             closable={category.feedCount === 0}
             size="medium"
-            onClick={() => {
-              setSelectedCategory(category)
-              setCategoryModalVisible(true)
-              categoryForm.setFieldsValue({
-                title: category.title,
-              })
-            }}
             onClose={async (event) => {
               event.stopPropagation()
               await handleDeleteCategory(category, false)
             }}
           >
-            {category.title}
+            <button
+              aria-expanded={categoryModalVisible && selectedCategory.id === category.id}
+              aria-haspopup="dialog"
+              className="category-edit-button"
+              data-category-edit-id={category.id}
+              type="button"
+              onClick={() => handleSelectCategory(category)}
+            >
+              {category.title}
+            </button>
           </Tag>
         ))}
         {showAddInput ? (
@@ -72,6 +80,7 @@ const CategoryList = () => {
       {selectedCategory && (
         <EditCategoryModal
           categoryForm={categoryForm}
+          fallbackFocusSelector={`.settings-modal [data-category-edit-id="${selectedCategory.id}"], .settings-modal .arco-tabs-header-title-active, .sidebar-profile-trigger`}
           selectedCategory={selectedCategory}
           setVisible={setCategoryModalVisible}
           useNotification={false}

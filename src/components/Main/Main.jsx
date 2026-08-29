@@ -1,4 +1,4 @@
-import { Form, Input, Message, Modal, Select, Switch } from "@arco-design/web-react"
+import { Form, Input, Message, Select, Switch } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import { useEffect, useRef, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router"
@@ -6,6 +6,7 @@ import { Outlet, useLocation, useNavigate } from "react-router"
 import { addFeed } from "@/apis"
 import { ContextProvider } from "@/components/Content/ContentContext"
 import SettingsTabs from "@/components/Settings/SettingsTabs"
+import AccessibleModal from "@/components/ui/AccessibleModal"
 import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
 import useModalToggle from "@/hooks/useModalToggle"
@@ -20,6 +21,7 @@ const crawlerRule = [{ type: "boolean" }]
 
 const SettingsModal = () => {
   const location = useLocation()
+  const { polyglot } = useStore(polyglotState)
 
   const { isBelowMedium } = useScreenWidth()
   const {
@@ -35,13 +37,16 @@ const SettingsModal = () => {
     }
   }, [location.pathname])
 
+  const settingsTitle = polyglot.t("sidebar.settings")
+
   return (
-    <Modal
-      autoFocus
-      focusLock
+    <AccessibleModal
       unmountOnExit
       alignCenter={false}
       className="settings-modal"
+      closeLabel={polyglot.t("actions.close_dialog", { name: settingsTitle })}
+      dialogLabel={settingsTitle}
+      fallbackFocusSelector=".sidebar-profile-trigger"
       footer={null}
       title={null}
       visible={settingsModalVisible}
@@ -51,7 +56,7 @@ const SettingsModal = () => {
       }}
     >
       <SettingsTabs activeTab={settingsTabsActiveTab} onTabChange={setSettingsTabsActiveTab} />
-    </Modal>
+    </AccessibleModal>
   )
 }
 
@@ -69,6 +74,7 @@ const AddFeedModal = () => {
   const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle()
 
   const navigate = useNavigate()
+  const modalTitle = polyglot.t("main.add_feed_modal_title")
 
   const handleAfterOpen = () => feedUrlInputRef.current?.focus()
 
@@ -106,12 +112,13 @@ const AddFeedModal = () => {
   }
 
   return (
-    <Modal
+    <AccessibleModal
       unmountOnExit
       afterOpen={handleAfterOpen}
       className="add-feed-modal"
+      closeLabel={polyglot.t("actions.close_dialog", { name: modalTitle })}
       confirmLoading={feedModalLoading}
-      title={polyglot.t("main.add_feed_modal_title")}
+      title={modalTitle}
       visible={addFeedModalVisible}
       onOk={feedForm.submit}
       onCancel={() => {
@@ -183,7 +190,7 @@ const AddFeedModal = () => {
           <Switch className="add-feed-switch" />
         </Form.Item>
       </Form>
-    </Modal>
+    </AccessibleModal>
   )
 }
 

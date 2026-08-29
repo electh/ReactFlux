@@ -90,6 +90,12 @@ const CategoryTitle = ({
   }
 
   const canDelete = !feedsGroupedById[category.id] || feedsGroupedById[category.id].length === 0
+  const categoryPath = `/category/${category.id}`
+  const isCategoryActive = path === categoryPath || path.startsWith(`${categoryPath}/`)
+  const categoryClassName = classNames("category-title", {
+    "submenu-active": isCategoryActive,
+    "submenu-inactive": !isCategoryActive,
+  })
 
   return (
     <Dropdown
@@ -138,15 +144,11 @@ const CategoryTitle = ({
     >
       <div
         {...longPressProps}
+        className={categoryClassName}
+        data-category-edit-id={category.id}
         role="button"
         style={{ cursor: "pointer" }}
         tabIndex={0}
-        className={classNames("category-title", {
-          "submenu-active":
-            path === `/category/${category.id}` || path.startsWith(`/category/${category.id}/`),
-          "submenu-inactive":
-            path !== `/category/${category.id}` && !path.startsWith(`/category/${category.id}/`),
-        })}
         onClick={handleNavigation}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -308,6 +310,7 @@ const FeedMenuItem = ({ feed, onEditFeed, onRefreshFeed, onMarkAllAsRead, onDele
         key={`/feed/${feed.id}`}
         {...longPressProps}
         className={classNames("feed-menu-item", { "arco-menu-selected": isSelected })}
+        data-feed-edit-id={feed.id}
         style={{ position: "relative", overflow: "hidden" }}
         onClick={(e) => {
           e.stopPropagation()
@@ -752,6 +755,7 @@ const Sidebar = () => {
       {selectedCategory && (
         <EditCategoryModal
           categoryForm={categoryForm}
+          fallbackFocusSelector={`.sidebar-container [data-category-edit-id="${selectedCategory.id}"], .sidebar-profile-trigger`}
           selectedCategory={selectedCategory}
           setVisible={setCategoryModalVisible}
           useNotification={true}
@@ -761,6 +765,7 @@ const Sidebar = () => {
 
       {selectedFeed && (
         <EditFeedModal
+          fallbackFocusSelector={`.sidebar-container [data-feed-edit-id="${selectedFeed.id}"], .sidebar-profile-trigger`}
           feedForm={feedForm}
           selectedFeed={selectedFeed}
           setVisible={setFeedModalVisible}

@@ -73,6 +73,7 @@
   "actions": {
     "check": "Ansehen",
     "dismiss": "Verwerfen",
+    "close_dialog": "%{name} schließen",
     "copy_to_clipboard_tooltip": "In die Zwischenablage kopieren",
     "code_language": "Code-Sprache",
     "copied": "Kopiert!",

@@ -1,5 +1,7 @@
-import { Form, Input, Modal, Switch } from "@arco-design/web-react"
+import { Form, Input, Switch } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
+
+import AccessibleModal from "./AccessibleModal"
 
 import useCategoryOperations from "@/hooks/useCategoryOperations"
 import { polyglotState } from "@/hooks/useLanguage"
@@ -8,6 +10,7 @@ const EditCategoryModal = ({
   visible,
   setVisible,
   categoryForm,
+  fallbackFocusSelector,
   selectedCategory,
   onSuccess,
   useNotification = false,
@@ -42,10 +45,11 @@ const EditCategoryModal = ({
   const hiddenLabel = polyglot.t("category_list.edit_category_hidden_label")
 
   return (
-    <Modal
+    <AccessibleModal
       unmountOnExit
       className="modal-style"
-      closable={false}
+      closeLabel={polyglot.t("actions.close_dialog", { name: modalTitle })}
+      fallbackFocusSelector={fallbackFocusSelector}
       title={modalTitle}
       visible={visible}
       onCancel={handleCancel}
@@ -68,7 +72,7 @@ const EditCategoryModal = ({
           </Form.Item>
         )}
       </Form>
-    </Modal>
+    </AccessibleModal>
   )
 }
 

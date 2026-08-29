@@ -73,6 +73,7 @@
   "actions": {
     "check": "Comprobar",
     "dismiss": "Descartar",
+    "close_dialog": "Cerrar %{name}",
     "copy_to_clipboard_tooltip": "Copiar al portapapeles",
     "code_language": "Lenguaje del código",
     "copied": "Copiado!",

@@ -1,14 +1,7 @@
-import {
-  Form,
-  Input,
-  Link,
-  Message,
-  Modal,
-  Notification,
-  Select,
-  Switch,
-} from "@arco-design/web-react"
+import { Form, Input, Link, Message, Notification, Select, Switch } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
+
+import AccessibleModal from "./AccessibleModal"
 
 import { updateFeed } from "@/apis"
 import { polyglotState } from "@/hooks/useLanguage"
@@ -19,6 +12,7 @@ const EditFeedModal = ({
   visible,
   setVisible,
   feedForm,
+  fallbackFocusSelector,
   selectedFeed,
   onSuccess,
   useNotification = false,
@@ -29,6 +23,7 @@ const EditFeedModal = ({
 
   const feedId = selectedFeed?.id || selectedFeed?.key
   const minifluxEditUrl = `${auth.server}/feed/${feedId}/edit`
+  const modalTitle = polyglot.t("feed_table.modal_edit_feed_title")
 
   const editFeed = async (newDetails) => {
     try {
@@ -98,11 +93,12 @@ const EditFeedModal = ({
   }
 
   return (
-    <Modal
+    <AccessibleModal
       unmountOnExit
       className="edit-modal"
-      closable={false}
-      title={polyglot.t("feed_table.modal_edit_feed_title")}
+      closeLabel={polyglot.t("actions.close_dialog", { name: modalTitle })}
+      fallbackFocusSelector={fallbackFocusSelector}
+      title={modalTitle}
       visible={visible}
       onCancel={handleCancel}
       onOk={feedForm.submit}
@@ -186,7 +182,7 @@ const EditFeedModal = ({
       <Link href={minifluxEditUrl} target="_blank">
         {polyglot.t("feed_table.modal_edit_feed_miniflux_link")}
       </Link>
-    </Modal>
+    </AccessibleModal>
   )
 }
 

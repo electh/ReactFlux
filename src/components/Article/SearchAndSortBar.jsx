@@ -1,12 +1,4 @@
-import {
-  Button,
-  DatePicker,
-  Input,
-  Modal,
-  Select,
-  Tooltip,
-  Typography,
-} from "@arco-design/web-react"
+import { Button, DatePicker, Input, Select, Tooltip, Typography } from "@arco-design/web-react"
 import {
   IconCalendar,
   IconQuestionCircle,
@@ -21,6 +13,7 @@ import { useParams } from "react-router"
 
 import SidebarTrigger from "./SidebarTrigger.jsx"
 
+import AccessibleModal from "@/components/ui/AccessibleModal"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
@@ -60,11 +53,14 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
     }
   }
 
+  const modalTitle = polyglot.t("search.search")
+
   return (
-    <Modal
+    <AccessibleModal
       afterOpen={handleAfterOpen}
       className="search-modal"
-      title={polyglot.t("search.search")}
+      closeLabel={polyglot.t("actions.close_dialog", { name: modalTitle })}
+      title={modalTitle}
       visible={visible}
       footer={
         <>
@@ -128,7 +124,7 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
           onKeyDown={handleKeyDown}
         />
       </div>
-    </Modal>
+    </AccessibleModal>
   )
 })
 SearchModal.displayName = "SearchModal"

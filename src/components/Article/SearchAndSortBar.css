@@ -59,12 +59,24 @@
   width: 400px;
 }
 
+.search-modal .arco-input-group-wrapper {
+  height: var(--mobile-form-control-size);
+}
+
+.search-modal .arco-input-group,
+.search-modal .arco-input-group-addbefore,
+.search-modal .arco-input-inner-wrapper,
+.search-modal .arco-select {
+  height: 100%;
+}
+
 .search-syntax-help.arco-btn {
-  width: 16px;
-  height: 16px;
+  width: var(--mobile-form-control-size);
+  height: var(--mobile-form-control-size);
   padding: 0;
   font-size: 14px;
   line-height: 0;
+  touch-action: manipulation;
 }
 
 .arco-input-group-addbefore .arco-select .arco-select-view {
@@ -128,17 +140,6 @@
     font-size: 18px;
   }
 
-  .search-modal .arco-input-group-wrapper {
-    height: var(--mobile-form-control-size);
-  }
-
-  .search-modal .arco-input-group,
-  .search-modal .arco-input-group-addbefore,
-  .search-modal .arco-input-inner-wrapper,
-  .search-modal .arco-select {
-    height: 100%;
-  }
-
   .search-modal .arco-input,
   .search-modal .arco-input-group-addbefore,
   .search-modal .arco-select-size-default.arco-select-single .arco-select-view {
@@ -152,9 +153,7 @@
   }
 
   .search-modal .search-syntax-help.arco-btn {
-    flex: 0 0 var(--mobile-calendar-control-size);
-    width: var(--mobile-calendar-control-size);
-    height: var(--mobile-calendar-control-size);
+    flex: 0 0 var(--mobile-form-control-size);
     font-size: var(--mobile-form-icon-size);
   }
 
@@ -167,23 +166,6 @@
     min-width: 88px;
     height: var(--mobile-form-control-size);
     font-size: var(--mobile-form-font-size);
-  }
-
-  .search-modal .arco-modal-close-icon {
-    display: inline-flex;
-    top: 2px;
-    right: 2px;
-    align-items: center;
-    justify-content: center;
-    width: var(--mobile-form-control-size);
-    height: var(--mobile-form-control-size);
-    font-size: var(--mobile-form-icon-size);
-    line-height: 0;
-  }
-
-  .search-modal .arco-modal-close-icon::before {
-    width: var(--mobile-form-control-size);
-    height: var(--mobile-form-control-size);
   }
 
   .search-filter-select-popup,

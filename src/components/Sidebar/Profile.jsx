@@ -98,7 +98,11 @@ export default function Profile() {
                 </Radio>
               </Radio.Group>
               <Divider style={{ margin: "4px 0" }} />
-              <Menu.Item key="0" onClick={() => setSettingsModalVisible(true)}>
+              <Menu.Item
+                key="0"
+                aria-haspopup="dialog"
+                onClick={() => setSettingsModalVisible(true)}
+              >
                 <IconSettings aria-hidden="true" className="icon-right" />
                 {polyglot.t("sidebar.settings")}
               </Menu.Item>

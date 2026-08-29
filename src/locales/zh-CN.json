@@ -73,6 +73,7 @@
   "actions": {
     "check": "查看",
     "dismiss": "关闭",
+    "close_dialog": "关闭%{name}",
     "copy_to_clipboard_tooltip": "复制到剪贴板",
     "code_language": "代码语言",
     "copied": "已复制！",

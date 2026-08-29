@@ -15,7 +15,23 @@
 }
 
 .tag-style {
-  cursor: pointer;
   margin-right: 10px;
   margin-bottom: 10px;
+}
+
+.category-edit-button {
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  padding: 0;
+  min-height: 24px;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.category-edit-button:focus-visible {
+  outline: 2px solid rgb(var(--primary-6));
+  outline-offset: 2px;
 }
