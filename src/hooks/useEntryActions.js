@@ -30,7 +30,7 @@ const updateEntries = (entries, updatedEntries) => {
   })
 }
 
-export const handleEntriesStatusUpdate = (entries, newStatus) => {
+const handleEntriesStatusUpdate = (entries, newStatus) => {
   const feedCountChanges = {}
   let unreadStarredCountChange = 0
   let unreadTodayCountChange = 0
@@ -78,6 +78,25 @@ export const handleEntriesStatusUpdate = (entries, newStatus) => {
   }
 
   setEntries((prev) => updateEntries(prev, updatedEntries))
+}
+
+// Keeps duplicate-entry side effects out of the pure deduplication utility.
+export const markDuplicatesAsRead = (duplicateEntries) => {
+  const unreadDuplicateIds = duplicateEntries
+    .filter(({ status }) => status === "unread")
+    .map(({ id }) => id)
+
+  if (unreadDuplicateIds.length === 0) {
+    return
+  }
+
+  const { polyglot } = polyglotState.get()
+
+  handleEntriesStatusUpdate(duplicateEntries, "read")
+  updateEntriesStatus(unreadDuplicateIds, "read").catch(() => {
+    Message.error(polyglot.t("deduplicate.mark_as_read_error"))
+    handleEntriesStatusUpdate(duplicateEntries, "unread")
+  })
 }
 
 const handleEntryStatusUpdate = (entry, newStatus) => {

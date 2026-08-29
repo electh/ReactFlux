@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/react"
 import { atom } from "nanostores"
 
+import { markDuplicatesAsRead } from "@/hooks/useEntryActions"
 import { contentState, setEntriesWithDeduplication, setLoadMoreVisible } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import createArticleListRequestKey from "@/utils/article-list-request-key"
@@ -24,7 +25,8 @@ const useLoadMore = () => {
     const currentEntries = contentState.get().entries
     const uniqueNewEntries = newEntries.filter((entry) => isUniqueEntry(entry, currentEntries))
     const combinedEntries = [...currentEntries, ...uniqueNewEntries]
-    setEntriesWithDeduplication(combinedEntries)
+    const duplicateEntries = setEntriesWithDeduplication(combinedEntries)
+    markDuplicatesAsRead(duplicateEntries)
   }
 
   const getFilterParams = () => {

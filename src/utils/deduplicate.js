@@ -1,14 +1,7 @@
-import { Message } from "@arco-design/web-react"
-
-import { updateEntriesStatus } from "@/apis"
-import { handleEntriesStatusUpdate } from "@/hooks/useEntryActions"
-import { polyglotState } from "@/hooks/useLanguage"
-
+// Callers handle duplicate side effects so this utility stays independent of APIs and stores.
 const removeDuplicateEntries = (entries, option) => {
-  const { polyglot } = polyglotState.get()
-
   if (entries.length === 0 || option === "none") {
-    return entries
+    return { entries, duplicates: [] }
   }
 
   const originalOrder = entries.map((entry, index) => ({
@@ -58,22 +51,14 @@ const removeDuplicateEntries = (entries, option) => {
       return true
     })
 
-  const unreadDuplicateIds = duplicateEntries
-    .filter((entry) => entry.status === "unread")
-    .map((entry) => entry.id)
-  if (unreadDuplicateIds.length > 0) {
-    handleEntriesStatusUpdate(duplicateEntries, "read")
-    updateEntriesStatus(unreadDuplicateIds, "read").catch(() => {
-      Message.error(polyglot.t("deduplicate.mark_as_read_error"))
-      handleEntriesStatusUpdate(duplicateEntries, "unread")
-    })
+  return {
+    entries: uniqueEntries.toSorted((a, b) => {
+      const indexA = originalOrder.find((order) => order.id === a.id).index
+      const indexB = originalOrder.find((order) => order.id === b.id).index
+      return indexA - indexB
+    }),
+    duplicates: duplicateEntries,
   }
-
-  return uniqueEntries.toSorted((a, b) => {
-    const indexA = originalOrder.find((order) => order.id === a.id).index
-    const indexB = originalOrder.find((order) => order.id === b.id).index
-    return indexA - indexB
-  })
 }
 
 export default removeDuplicateEntries

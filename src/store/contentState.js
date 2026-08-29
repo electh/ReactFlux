@@ -134,7 +134,7 @@ export const setLoadMoreVisible = createSetter(contentState, "loadMoreVisible")
 export const setTotal = createSetter(contentState, "total")
 export const resetContent = () => contentState.set(defaultValue)
 
-// Entries setter function with deduplication capability
+// Updates the entry list and returns entries dropped by deduplication.
 export const setEntriesWithDeduplication = (newEntries) => {
   const { infoFrom } = contentState.get()
   const { removeDuplicates } = settingsState.get()
@@ -142,10 +142,13 @@ export const setEntriesWithDeduplication = (newEntries) => {
   // Skip deduplication when disabled or for specific sources (starred/history)
   if (removeDuplicates === "none" || ["starred", "history"].includes(infoFrom)) {
     setEntries(newEntries)
-    return
+    return []
   }
 
-  // Apply deduplication based on selected strategy and update entries
-  const deduplicatedEntries = removeDuplicateEntries(newEntries, removeDuplicates)
+  const { entries: deduplicatedEntries, duplicates } = removeDuplicateEntries(
+    newEntries,
+    removeDuplicates,
+  )
   setEntries(deduplicatedEntries)
+  return duplicates
 }

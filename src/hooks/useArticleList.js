@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/react"
 import { useEffect, useRef } from "react"
 
+import { markDuplicatesAsRead } from "@/hooks/useEntryActions"
 import {
   contentState,
   setEntriesWithDeduplication,
@@ -24,7 +25,8 @@ import { extractBasicSearchTerms } from "@/utils/kmp"
 const handleResponses = (response) => {
   if (response?.total >= 0) {
     const articles = response.entries.map((entry) => prepareEntry(entry))
-    setEntriesWithDeduplication(articles)
+    const duplicateEntries = setEntriesWithDeduplication(articles)
+    markDuplicatesAsRead(duplicateEntries)
     setTotal(response.total)
     setLoadMoreVisible(articles.length < response.total)
   }
