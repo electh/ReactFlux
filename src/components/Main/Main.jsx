@@ -12,7 +12,7 @@ import { polyglotState } from "@/hooks/useLanguage"
 import useModalToggle from "@/hooks/useModalToggle"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { categoriesState, feedsState } from "@/store/dataState"
-import { includesIgnoreCase } from "@/utils/filter"
+import includesIgnoreCase from "@/utils/filter"
 import "./Main.css"
 
 const urlRule = [{ required: true }]

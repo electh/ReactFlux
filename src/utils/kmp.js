@@ -134,7 +134,7 @@ const filterData = (data, query, fields = [], ignoreCase = true) => {
 }
 
 // Main function
-export const filterByQuery = (data, query, fields = [], ignoreCase = true) => {
+const filterByQuery = (data, query, fields = [], ignoreCase = true) => {
   if (!Array.isArray(data) || data.length === 0) {
     console.error("Invalid data input:", {
       receivedData: data,
@@ -155,15 +155,4 @@ export const filterByQuery = (data, query, fields = [], ignoreCase = true) => {
   return filterData(data, query, fields, ignoreCase)
 }
 
-// Extract basic search terms for server-side search
-export const extractBasicSearchTerms = (query) => {
-  if (!query || typeof query !== "string" || !query.trim()) {
-    return ""
-  }
-
-  const { includeTerms } = parseQuery(query)
-
-  // Return only the words that must be included, connected with spaces
-  // Excludes excludeTerms (-prefix)
-  return includeTerms.join(" ").trim()
-}
+export default filterByQuery

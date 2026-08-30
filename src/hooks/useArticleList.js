@@ -4,8 +4,11 @@ import { useCallback, useEffect, useLayoutEffect, useRef } from "react"
 import { markDuplicatesAsRead } from "@/hooks/useEntryActions"
 import {
   contentState,
+  setArticleListError,
+  setEntries,
   setEntriesWithDeduplication,
   setIsArticleListReady,
+  setLoadMoreError,
   setLoadMoreVisible,
   setTotal,
 } from "@/store/contentState"
@@ -19,16 +22,19 @@ import {
 import { settingsState } from "@/store/settingsState"
 import createArticleListRequestKey from "@/utils/article-list-request-key"
 import prepareEntry from "@/utils/entry-presentation"
-import { extractBasicSearchTerms } from "@/utils/kmp"
 
 const handleResponses = (response) => {
-  if (response?.total >= 0) {
-    const articles = response.entries.map((entry) => prepareEntry(entry))
-    const duplicateEntries = setEntriesWithDeduplication(articles)
-    markDuplicatesAsRead(duplicateEntries)
-    setTotal(response.total)
-    setLoadMoreVisible(articles.length < response.total)
+  const isValidResponse =
+    Array.isArray(response?.entries) && Number.isFinite(response?.total) && response.total >= 0
+  if (!isValidResponse) {
+    throw new TypeError("Invalid entries response")
   }
+
+  const preparedEntries = response.entries.map((entry) => prepareEntry(entry))
+  const duplicateEntries = setEntriesWithDeduplication(preparedEntries)
+  markDuplicatesAsRead(duplicateEntries)
+  setTotal(response.total)
+  setLoadMoreVisible(preparedEntries.length < response.total)
 }
 
 const useArticleList = (source, sourceId, getEntries) => {
@@ -42,10 +48,17 @@ const useArticleList = (source, sourceId, getEntries) => {
 
   const latestRequestId = useRef(0)
   const loadingRequestKey = useRef(null)
-  const currentRequestKey = useRef(automaticRequestKey)
+  const currentRequestKey = useRef(null)
 
   useLayoutEffect(() => {
+    if (currentRequestKey.current === automaticRequestKey) {
+      return
+    }
+
     currentRequestKey.current = automaticRequestKey
+    setArticleListError(false)
+    setLoadMoreError(false)
+    setIsArticleListReady(false)
   }, [automaticRequestKey])
 
   const fetchArticleList = useCallback(async () => {
@@ -70,11 +83,12 @@ const useArticleList = (source, sourceId, getEntries) => {
           info,
         })
 
+    setArticleListError(false)
+    setLoadMoreError(false)
     setIsArticleListReady(false)
 
     try {
-      const basicSearchTerms = extractBasicSearchTerms(content.filterString)
-      const filterParams = basicSearchTerms ? { search: basicSearchTerms } : {}
+      const filterParams = content.filterString ? { search: content.filterString } : {}
 
       let response
       switch (settings.showStatus) {
@@ -96,7 +110,9 @@ const useArticleList = (source, sourceId, getEntries) => {
         return
       }
 
-      if (!content.filterDate) {
+      handleResponses(response)
+
+      if (!content.filterDate && !content.filterString) {
         switch (source) {
           case "feed": {
             if (settings.showStatus === "unread") {
@@ -127,10 +143,16 @@ const useArticleList = (source, sourceId, getEntries) => {
           }
         }
       }
-
-      handleResponses(response)
     } catch (error) {
+      if (!isLatestRequest()) {
+        return
+      }
+
       console.error("Error fetching articles:", error)
+      setEntries([])
+      setTotal(0)
+      setLoadMoreVisible(false)
+      setArticleListError(true)
     } finally {
       if (isLatestRequest()) {
         loadingRequestKey.current = null

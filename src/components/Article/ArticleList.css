@@ -7,6 +7,21 @@
   overscroll-behavior-y: contain;
 }
 
+.article-list-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 16px;
+  color: var(--color-text-2);
+  text-align: center;
+}
+
+.article-list-state-icon {
+  font-size: 48px;
+  color: var(--color-text-3);
+}
+
 .load-more-container {
   display: flex;
   justify-content: center;

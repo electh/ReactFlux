@@ -1,20 +1,27 @@
+import { Message } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import { atom } from "nanostores"
 
 import { markDuplicatesAsRead } from "@/hooks/useEntryActions"
-import { contentState, setEntriesWithDeduplication, setLoadMoreVisible } from "@/store/contentState"
+import { polyglotState } from "@/hooks/useLanguage"
+import {
+  contentState,
+  setEntriesWithDeduplication,
+  setLoadMoreError,
+  setLoadMoreVisible,
+} from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import createArticleListRequestKey from "@/utils/article-list-request-key"
 import { getTimestamp } from "@/utils/date"
 import prepareEntry from "@/utils/entry-presentation"
-import { extractBasicSearchTerms } from "@/utils/kmp"
 import createSetter from "@/utils/nanostores"
 
 const loadingMoreState = atom(false)
 const setLoadingMore = createSetter(loadingMoreState)
 
 const useLoadMore = () => {
-  const { entries, filterString, infoFrom } = useStore(contentState)
+  const { entries, filterString, infoFrom, loadMoreError } = useStore(contentState)
+  const { polyglot } = useStore(polyglotState)
   const { pageSize, showStatus, orderBy, orderDirection } = useStore(settingsState)
   const loadingMore = useStore(loadingMoreState)
 
@@ -110,16 +117,14 @@ const useLoadMore = () => {
 
   const handleLoadMore = async (getEntries) => {
     const requestKey = getCurrentArticleListRequestKey()
+    setLoadMoreError(false)
     setLoadingMore(true)
 
     try {
       const filterParams = getFilterParams()
 
-      // Add search query to filter params if present
-      // Extract basic search terms
-      const basicSearchTerms = extractBasicSearchTerms(filterString)
-      if (basicSearchTerms) {
-        filterParams.search = basicSearchTerms
+      if (filterString) {
+        filterParams.search = filterString
       }
 
       let response
@@ -153,17 +158,23 @@ const useLoadMore = () => {
         const newEntries = response.entries.map((entry) => prepareEntry(entry))
         updateEntries(newEntries)
       }
-      if (response.total < pageSize) {
+      if (response.total <= pageSize) {
         setLoadMoreVisible(false)
       }
     } catch (error) {
       console.error("Error fetching more articles:", error)
+      if (requestKey !== getCurrentArticleListRequestKey()) {
+        return
+      }
+
+      setLoadMoreError(true)
+      Message.error(polyglot.t("article_list.load_more_error"))
     } finally {
       setLoadingMore(false)
     }
   }
 
-  return { handleLoadMore, loadingMore }
+  return { handleLoadMore, loadMoreError, loadingMore }
 }
 
 export default useLoadMore

@@ -6,7 +6,7 @@
 
 ReactFlux 是 [Miniflux](https://github.com/miniflux/v2) 的第三方 Web 前端，旨在提供更加友好的阅读体验。
 
-支持的 Miniflux 版本：2.1.4 及更高版本。
+支持的 Miniflux 版本：2.3.2 及更高版本。
 
 主要特性包括：
 
@@ -22,8 +22,8 @@ ReactFlux 是 [Miniflux](https://github.com/miniflux/v2) 的第三方 Web 前端
   - 代码语法高亮
   - 预计阅读时间
 - 文章和订阅源管理：
-  - 类 Google 搜索语法
-  - 按阅读状态、发布日期、标题、内容或作者过滤文章
+  - 支持短语、`OR` 和排除词的 Miniflux 全文搜索
+  - 按阅读状态和发布日期筛选文章
   - 订阅源批量操作
   - 全文获取支持
   - 按 hash、标题或 URL 去重文章

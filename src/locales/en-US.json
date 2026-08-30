@@ -126,7 +126,11 @@
     "mark_all_as_read_error": "Failed to mark all as read",
     "mark_all_as_read_confirm": "Mark all as read?",
     "mark_all_as_read_tooltip": "Mark all as read",
-    "refresh_tooltip": "Refresh"
+    "refresh_tooltip": "Refresh",
+    "load_error": "Failed to load articles",
+    "loading_more": "Loading more...",
+    "load_more_error": "Failed to load more articles. Please try again.",
+    "no_search_results": "No matching articles found"
   },
   "article_toc": {
     "tooltip": "Table of Contents",
@@ -156,13 +160,15 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "placeholder": "Search...",
+    "article_input_label": "Search article titles and content",
+    "article_placeholder": "Search titles and content...",
+    "active_query": "Search: %{query}",
     "clear_date": "Clear",
     "select_date": "Select date",
     "today": "Today",
     "tooltip": "Search syntax:\n• Text: apple banana\n• Exact text: \"red apple\"\n• Exclude: -text or -\"text\"\n• Must include: +text or +\"text\"\nExample: \"red apple\" +fresh -rotten",
+    "article_tooltip": "Search titles and content:\n• All terms: apple banana\n• Exact phrase: \"red apple\"\n• Either term: apple OR banana\n• Exclude: apple -rotten\nExample: \"red apple\" OR orange -rotten",
     "type_title": "Title",
-    "type_content": "Content",
-    "type_author": "Author",
     "type_feed_url": "Feed URL",
     "type_site_url": "Site URL"
   },

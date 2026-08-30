@@ -1,4 +1,4 @@
-import { Button, DatePicker, Input, Select, Tooltip, Typography } from "@arco-design/web-react"
+import { Button, DatePicker, Input, Tooltip, Typography } from "@arco-design/web-react"
 import {
   IconCalendar,
   IconQuestionCircle,
@@ -7,7 +7,6 @@ import {
   IconSortDescending,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { atom } from "nanostores"
 import { Fragment, memo, useMemo, useRef, useState } from "react"
 import { useParams } from "react-router"
 
@@ -15,6 +14,7 @@ import SidebarTrigger from "./SidebarTrigger.jsx"
 
 import AccessibleModal from "@/components/ui/AccessibleModal"
 import CustomTooltip from "@/components/ui/CustomTooltip"
+import useContentContext from "@/hooks/useContentContext"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import {
@@ -22,30 +22,20 @@ import {
   dynamicCountState,
   setFilterDate,
   setFilterString,
-  setFilterType,
 } from "@/store/contentState"
 import { categoriesState, feedsState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { getStartOfToday } from "@/utils/date"
-import createSetter from "@/utils/nanostores"
-
 import "./SearchAndSortBar.css"
 
-const draftFilterTypeState = atom("title")
-const setDraftFilterType = createSetter(draftFilterTypeState)
-
 const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => {
-  const draftFilterType = useStore(draftFilterTypeState)
   const { polyglot } = useStore(polyglotState)
-  const tooltipLines = polyglot.t("search.tooltip").split("\n")
+  const tooltipLines = polyglot.t("search.article_tooltip").split("\n")
   const searchInputRef = useRef(null)
 
   const handleAfterOpen = () => searchInputRef.current?.focus()
 
-  const handleConfirm = () => {
-    setFilterType(draftFilterType)
-    onConfirm(value)
-  }
+  const handleConfirm = () => onConfirm(value)
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -76,25 +66,9 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
         <Input.Search
           ref={searchInputRef}
           allowClear
-          placeholder={polyglot.t("search.placeholder")}
+          aria-label={polyglot.t("search.article_input_label")}
+          placeholder={polyglot.t("search.article_placeholder")}
           value={value}
-          addBefore={
-            <Select
-              style={{ width: "auto" }}
-              value={draftFilterType}
-              triggerProps={{
-                autoAlignPopupWidth: false,
-                autoAlignPopupMinWidth: true,
-                className: "search-filter-select-popup",
-                position: "bl",
-              }}
-              onChange={setDraftFilterType}
-            >
-              <Select.Option value="title">{polyglot.t("search.type_title")}</Select.Option>
-              <Select.Option value="content">{polyglot.t("search.type_content")}</Select.Option>
-              <Select.Option value="author">{polyglot.t("search.type_author")}</Select.Option>
-            </Select>
-          }
           prefix={
             <Tooltip
               mini
@@ -147,21 +121,24 @@ const ActiveButton = ({ active, expanded, icon, tooltip, onClick }) => (
 )
 
 const SearchAndSortBar = () => {
-  const { filterDate, filterString, filterType, infoFrom, isArticleListReady } =
-    useStore(contentState)
-  const { orderDirection, showStatus } = useStore(settingsState)
+  const { filterDate, filterString, infoFrom, isArticleListReady } = useStore(contentState)
+  const { orderDirection } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
   const feeds = useStore(feedsState)
   const categories = useStore(categoriesState)
   const dynamicCount = useStore(dynamicCountState)
 
   const { id } = useParams()
+  const { closeActiveContent, entryListRef } = useContentContext()
   const { isBelowMedium } = useScreenWidth()
 
   const [calendarVisible, setCalendarVisible] = useState(false)
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [modalInputValue, setModalInputValue] = useState("")
 
+  const searchLabel = filterString
+    ? polyglot.t("search.active_query", { query: filterString })
+    : polyglot.t("search.search")
   const sortLabel =
     orderDirection === "desc"
       ? polyglot.t("article_list.sort_direction_desc")
@@ -197,7 +174,6 @@ const SearchAndSortBar = () => {
 
   const openSearchModal = () => {
     setModalInputValue(filterString)
-    setDraftFilterType(filterType)
     setSearchModalVisible(true)
   }
 
@@ -206,7 +182,12 @@ const SearchAndSortBar = () => {
   }
 
   const handleConfirmSearch = (value) => {
-    setFilterString(value)
+    const normalizedQuery = value.trim()
+    if (normalizedQuery !== filterString) {
+      closeActiveContent()
+      entryListRef.current?.getScrollElement()?.scroll({ top: 0 })
+      setFilterString(normalizedQuery)
+    }
     closeSearchModal()
   }
 
@@ -246,7 +227,7 @@ const SearchAndSortBar = () => {
           active={!!filterString}
           expanded={searchModalVisible}
           icon={<IconSearch aria-hidden="true" />}
-          tooltip={polyglot.t("search.search")}
+          tooltip={searchLabel}
           onClick={openSearchModal}
         />
         <DatePicker

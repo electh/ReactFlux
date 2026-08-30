@@ -208,6 +208,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           cardsRef={cardsRef}
           getEntries={getEntries}
           handleEntryClick={handleEntryClick}
+          retryArticleList={fetchArticleList}
         />
         <FooterPanel
           info={info}

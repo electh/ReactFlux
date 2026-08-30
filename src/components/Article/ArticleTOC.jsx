@@ -9,7 +9,7 @@ import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { articleHeadingsState } from "@/store/contentState"
 import { scrollToHeading } from "@/utils/dom"
-import { includesIgnoreCase } from "@/utils/filter"
+import includesIgnoreCase from "@/utils/filter"
 import "./ArticleTOC.css"
 
 const ArticleTOCPanel = ({ onBack, onClose }) => {

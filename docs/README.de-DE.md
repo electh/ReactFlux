@@ -6,7 +6,7 @@ In anderen Sprachen lesen: [English](../README.md), [Español](README.es-ES.md),
 
 ReactFlux ist ein Drittanbieter-Web-Frontend für [Miniflux](https://github.com/miniflux/v2), das ein benutzerfreundlicheres Leseerlebnis bieten soll.
 
-Unterstützte Miniflux-Versionen: 2.1.4 und höher.
+Unterstützte Miniflux-Versionen: 2.3.2 und höher.
 
 Die wichtigsten Merkmale sind:
 
@@ -22,8 +22,8 @@ Die wichtigsten Merkmale sind:
   - Quelltext-Syntax-Hervorhebung
   - Geschätzte Lesezeit
 - Verwaltung von Artikeln und Abonnements (_Feeds_):
-  - Google-artige Syntax für die Suche
-  - Filtern von Artikeln nach Lesestatus, Veröffentlichungsdatum, Titel, Inhalt oder Autor
+  - Miniflux-Volltextsuche mit Phrasen, `OR` und Ausschlussbegriffen
+  - Filtern von Artikeln nach Lesestatus und Veröffentlichungsdatum
   - Stapel-Operationen für Abonnements (_Feeds_)
   - Unterstützung für Volltextabruf
   - Artikel nach Hashsumme, Titel oder URL de-duplizieren

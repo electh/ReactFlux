@@ -25,12 +25,7 @@ import FadeTransition from "@/components/ui/FadeTransition"
 import PlyrPlayer from "@/components/ui/LazyPlyrPlayer"
 import usePhotoSlider from "@/hooks/usePhotoSlider"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import {
-  contentState,
-  setActiveContent,
-  setFilterString,
-  setFilterType,
-} from "@/store/contentState"
+import { contentState } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import returnToArticleImage from "@/utils/article-image-return"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
@@ -392,14 +387,6 @@ const ArticleDetail = forwardRef((_, ref) => {
     setSelectedIndex,
   } = usePhotoSlider()
 
-  const handleAuthorFilter = () => {
-    setFilterType("author")
-    setFilterString(activeContent.author)
-    if (isBelowMedium) {
-      setActiveContent(null)
-    }
-  }
-
   const capturePhotoSliderSession = useCallback(
     (index, { targetElement = null } = {}) => {
       const scrollElement = scrollContainerRef.current?.getScrollElement()
@@ -606,9 +593,7 @@ const ArticleDetail = forwardRef((_, ref) => {
               <Typography.Text>
                 <CustomLink text={feedTitle} url={`/feed/${feedId}`} />
               </Typography.Text>
-              <Typography.Text style={{ cursor: "pointer" }} onClick={handleAuthorFilter}>
-                {` - ${activeContent.author}`}
-              </Typography.Text>
+              {activeContent.author && <Typography.Text> - {activeContent.author}</Typography.Text>}
               <Typography.Text>
                 <Tag
                   size="small"

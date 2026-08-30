@@ -126,7 +126,11 @@
     "mark_all_as_read_error": "Alles als gelesen markieren fehlgeschlagen",
     "mark_all_as_read_confirm": "Alles als gelesen markieren?",
     "mark_all_as_read_tooltip": "Alles als gelesen markieren",
-    "refresh_tooltip": "Neu laden"
+    "refresh_tooltip": "Neu laden",
+    "load_error": "Artikel konnten nicht geladen werden",
+    "loading_more": "Weitere Artikel werden geladen...",
+    "load_more_error": "Weitere Artikel konnten nicht geladen werden. Bitte erneut versuchen.",
+    "no_search_results": "Keine passenden Artikel gefunden"
   },
   "article_toc": {
     "tooltip": "Inhaltsverzeichnis",
@@ -156,13 +160,15 @@
     "confirm": "Bestätigen",
     "cancel": "Abbrechen",
     "placeholder": "Suchen...",
+    "article_input_label": "Artikeltitel und -inhalte durchsuchen",
+    "article_placeholder": "Titel und Inhalte durchsuchen...",
+    "active_query": "Suche: %{query}",
     "clear_date": "Leeren",
     "select_date": "Datum wählen",
     "today": "Heute",
     "tooltip": "Suchsyntax:\n• Text: Apfel Banane\n• Exakter Text: \"Roter Apfel\"\n• Ausschließen: -Text oder -\"Text\"\n• Zwingend einschließen: +Text oder +\"Text\"\nBeispiel: \"Roter Apfel\" +frisch -vergammelt",
+    "article_tooltip": "Artikeltitel und -inhalte durchsuchen:\n• Alle Begriffe: Apfel Banane\n• Exakte Wortgruppe: \"Roter Apfel\"\n• Einer der Begriffe: Apfel OR Banane\n• Ausschließen: Apfel -verdorben\nBeispiel: \"Roter Apfel\" OR Orange -verdorben",
     "type_title": "Titel",
-    "type_content": "Inhalt",
-    "type_author": "Autor",
     "type_feed_url": "Feed-URL",
     "type_site_url": "Website-URL"
   },

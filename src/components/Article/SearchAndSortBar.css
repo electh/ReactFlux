@@ -64,9 +64,7 @@
 }
 
 .search-modal .arco-input-group,
-.search-modal .arco-input-group-addbefore,
-.search-modal .arco-input-inner-wrapper,
-.search-modal .arco-select {
+.search-modal .arco-input-inner-wrapper {
   height: 100%;
 }
 
@@ -77,10 +75,6 @@
   font-size: 14px;
   line-height: 0;
   touch-action: manipulation;
-}
-
-.arco-input-group-addbefore .arco-select .arco-select-view {
-  border-radius: var(--border-radius-medium);
 }
 
 @media screen and (max-width: 768px) {
@@ -140,9 +134,7 @@
     font-size: 18px;
   }
 
-  .search-modal .arco-input,
-  .search-modal .arco-input-group-addbefore,
-  .search-modal .arco-select-size-default.arco-select-single .arco-select-view {
+  .search-modal .arco-input {
     font-size: var(--mobile-form-font-size);
   }
 
@@ -168,15 +160,8 @@
     font-size: var(--mobile-form-font-size);
   }
 
-  .search-filter-select-popup,
   .mobile-date-picker-popup {
     max-width: calc(100vw - 16px);
-  }
-
-  .search-filter-select-popup .arco-select-option {
-    min-height: var(--mobile-form-control-size);
-    font-size: var(--mobile-form-font-size);
-    line-height: var(--mobile-form-control-size);
   }
 
   .mobile-date-picker-popup .arco-picker-container {

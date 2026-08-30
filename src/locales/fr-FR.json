@@ -126,7 +126,11 @@
     "mark_all_as_read_error": "Impossible de marquer tous les articles comme lus",
     "mark_all_as_read_confirm": "Marquer tous les articles comme lus ?",
     "mark_all_as_read_tooltip": "Marquer tous les articles comme lus",
-    "refresh_tooltip": "Rafraîchir"
+    "refresh_tooltip": "Rafraîchir",
+    "load_error": "Impossible de charger les articles",
+    "loading_more": "Chargement d’autres articles...",
+    "load_more_error": "Impossible de charger davantage d’articles. Veuillez réessayer.",
+    "no_search_results": "Aucun article correspondant"
   },
   "article_toc": {
     "tooltip": "Table des matières",
@@ -156,13 +160,15 @@
     "confirm": "Confirmer",
     "cancel": "Annuler",
     "placeholder": "Rechercher...",
+    "article_input_label": "Rechercher dans les titres et le contenu des articles",
+    "article_placeholder": "Rechercher dans les titres et le contenu...",
+    "active_query": "Recherche : %{query}",
     "clear_date": "Effacer",
     "select_date": "Sélectionner une date",
     "today": "Aujourd'hui",
     "tooltip": "Syntaxe de recherche :\n• Texte : apple banana\n• Texte exact : \"red apple\"\n• Exclure : -text ou -\"text\"\n• Doit inclure : +text ou +\"text\"\nExemple : \"red apple\" +fresh -rotten",
+    "article_tooltip": "Rechercher dans les titres et le contenu :\n• Tous les termes : pomme banane\n• Expression exacte : \"pomme rouge\"\n• L’un des termes : pomme OR banane\n• Exclure : pomme -pourrie\nExemple : \"pomme rouge\" OR orange -pourrie",
     "type_title": "Titre",
-    "type_content": "Contenu",
-    "type_author": "Auteur",
     "type_feed_url": "URL du flux",
     "type_site_url": "URL du site"
   },

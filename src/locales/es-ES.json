@@ -126,7 +126,11 @@
     "mark_all_as_read_error": "No se pudo marcar todo como leído",
     "mark_all_as_read_confirm": "¿Marcar todo como leído?",
     "mark_all_as_read_tooltip": "Marcar todo como leído",
-    "refresh_tooltip": "Actualizar"
+    "refresh_tooltip": "Actualizar",
+    "load_error": "No se pudieron cargar los artículos",
+    "loading_more": "Cargando más...",
+    "load_more_error": "No se pudieron cargar más artículos. Inténtelo de nuevo.",
+    "no_search_results": "No se encontraron artículos coincidentes"
   },
   "article_toc": {
     "tooltip": "Tabla de contenidos",
@@ -156,13 +160,15 @@
     "confirm": "Confirmar",
     "cancel": "Cancelar",
     "placeholder": "Buscar...",
+    "article_input_label": "Buscar en títulos y contenido de artículos",
+    "article_placeholder": "Buscar en títulos y contenido...",
+    "active_query": "Búsqueda: %{query}",
     "clear_date": "Limpiar",
     "select_date": "Seleccionar fecha",
     "today": "Hoy",
     "tooltip": "Sintaxis de búsqueda:\n• Texto: manzana plátano\n• Texto exacto: \"manzana roja\"\n• Excluir: -texto o -\"texto\"\n• Debe incluir: +texto o +\"texto\"\nEjemplo: \"manzana roja\" +fresca -podrida",
+    "article_tooltip": "Buscar en títulos y contenido:\n• Todos los términos: manzana plátano\n• Frase exacta: \"manzana roja\"\n• Cualquier término: manzana OR plátano\n• Excluir: manzana -podrida\nEjemplo: \"manzana roja\" OR naranja -podrida",
     "type_title": "Título",
-    "type_content": "Contenido",
-    "type_author": "Autor",
     "type_feed_url": "URL del feed",
     "type_site_url": "URL del sitio"
   },
