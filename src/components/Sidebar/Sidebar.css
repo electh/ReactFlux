@@ -155,6 +155,15 @@
   height: 100%;
 }
 
+.sidebar-load-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 12px;
+  text-align: center;
+}
+
 .sidebar-container .arco-menu-light,
 .sidebar-container .arco-menu-light .arco-menu-item,
 .sidebar-container .arco-menu-light .arco-menu-group-title,

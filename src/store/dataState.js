@@ -3,11 +3,15 @@ import { computed, map } from "nanostores"
 import { settingsState } from "./settingsState"
 
 import { sortMixedLanguageArray } from "@/utils/locales"
-import createSetter from "@/utils/nanostores"
 
-const defaultValue = {
-  isAppDataReady: false,
-  isCoreDataReady: false,
+const createResourceLoadState = () => ({
+  hasSnapshot: false,
+  activity: "idle",
+  error: null,
+})
+
+const createDefaultValue = (sessionRevision = 0) => ({
+  sessionRevision,
   unreadInfo: {},
   unreadStarredCount: 0,
   unreadTodayCount: 0,
@@ -17,9 +21,19 @@ const defaultValue = {
   categoriesData: [],
   version: "",
   hasIntegrations: false,
-}
+  loadState: {
+    catalog: createResourceLoadState(),
+    counts: createResourceLoadState(),
+    serverInfo: createResourceLoadState(),
+  },
+  resourceRevisions: {
+    catalog: 0,
+    counts: 0,
+    serverInfo: 0,
+  },
+})
 
-export const dataState = map(defaultValue)
+export const dataState = map(createDefaultValue())
 
 export const feedsState = computed([dataState, settingsState], (data, settings) => {
   const { unreadInfo, feedsData } = data
@@ -134,17 +148,86 @@ export const unreadTotalState = computed([dataState, filteredFeedsState], (data,
   return total
 })
 
-export const setCategoriesData = createSetter(dataState, "categoriesData")
-export const setFeedsData = createSetter(dataState, "feedsData")
-export const setHasIntegrations = createSetter(dataState, "hasIntegrations")
-export const setHistoryCount = createSetter(dataState, "historyCount")
-export const setIsAppDataReady = createSetter(dataState, "isAppDataReady")
-export const setIsCoreDataReady = (isCoreDataReady) => {
-  dataState.setKey("isCoreDataReady", isCoreDataReady)
+const incrementResourceRevision = (resourceRevisions, resource) => ({
+  ...resourceRevisions,
+  [resource]: resourceRevisions[resource] + 1,
+})
+
+const createResourceFieldSetter = (fieldName, resource) => (updater) => {
+  const currentState = dataState.get()
+  const currentValue = currentState[fieldName]
+  const nextValue = typeof updater === "function" ? updater(currentValue) : updater
+
+  if (Object.is(currentValue, nextValue)) {
+    return
+  }
+
+  dataState.set({
+    ...currentState,
+    [fieldName]: nextValue,
+    resourceRevisions: incrementResourceRevision(currentState.resourceRevisions, resource),
+  })
 }
-export const setStarredCount = createSetter(dataState, "starredCount")
-export const setUnreadInfo = createSetter(dataState, "unreadInfo")
-export const setUnreadStarredCount = createSetter(dataState, "unreadStarredCount")
-export const setUnreadTodayCount = createSetter(dataState, "unreadTodayCount")
-export const setVersion = createSetter(dataState, "version")
-export const resetData = () => dataState.set(defaultValue)
+
+const commitResourceData = (resource, resourceData, error = null) => {
+  const currentState = dataState.get()
+
+  dataState.set({
+    ...currentState,
+    ...resourceData,
+    loadState: {
+      ...currentState.loadState,
+      [resource]: {
+        hasSnapshot: true,
+        activity: "idle",
+        error,
+      },
+    },
+    resourceRevisions: incrementResourceRevision(currentState.resourceRevisions, resource),
+  })
+}
+
+export const getDataResourceRevision = (resource) => dataState.get().resourceRevisions[resource]
+
+export const getDataSessionRevision = () => dataState.get().sessionRevision
+
+export const setDataResourceLoadState = (resource, loadStateChanges) => {
+  const currentState = dataState.get()
+  const currentLoadState = currentState.loadState[resource]
+  const hasLoadStateChanges = Object.entries(loadStateChanges).some(
+    ([key, value]) => !Object.is(currentLoadState[key], value),
+  )
+
+  if (!hasLoadStateChanges) {
+    return
+  }
+
+  dataState.set({
+    ...currentState,
+    loadState: {
+      ...currentState.loadState,
+      [resource]: { ...currentLoadState, ...loadStateChanges },
+    },
+  })
+}
+
+export const commitCatalogData = ({ feedsData, categoriesData }) =>
+  commitResourceData("catalog", { feedsData, categoriesData })
+
+export const commitCountsData = (countsData, error = null) =>
+  commitResourceData("counts", countsData, error)
+
+export const commitServerInfoData = (serverInfoData, error = null) =>
+  commitResourceData("serverInfo", serverInfoData, error)
+
+export const setCategoriesData = createResourceFieldSetter("categoriesData", "catalog")
+export const setFeedsData = createResourceFieldSetter("feedsData", "catalog")
+export const setHistoryCount = createResourceFieldSetter("historyCount", "counts")
+export const setStarredCount = createResourceFieldSetter("starredCount", "counts")
+export const setUnreadInfo = createResourceFieldSetter("unreadInfo", "counts")
+export const setUnreadStarredCount = createResourceFieldSetter("unreadStarredCount", "counts")
+export const setUnreadTodayCount = createResourceFieldSetter("unreadTodayCount", "counts")
+export const resetData = () => {
+  const nextSessionRevision = dataState.get().sessionRevision + 1
+  dataState.set(createDefaultValue(nextSessionRevision))
+}

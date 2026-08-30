@@ -42,6 +42,7 @@
     "delete_category_confirm_title": "Confirmer la Suppression de la Catégorie",
     "delete_category_confirm_content": "Êtes-vous sûr de vouloir supprimer la catégorie '%{title}' ? Cette action est irréversible.",
     "feeds": "Flux",
+    "load_error": "Impossible de charger les flux",
     "logout_success": "Déconnexion réussie",
     "add_feed": "Ajouter un flux",
     "navigation_menu": "Menu de navigation",

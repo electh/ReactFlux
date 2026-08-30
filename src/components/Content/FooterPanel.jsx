@@ -13,25 +13,15 @@ import { useNavigate } from "react-router"
 import {
   getAllEntries,
   getCategoryEntries,
-  getCounters,
-  getEntryCountSummary,
   getFeedEntries,
   getStarredEntries,
   markEntriesAsReadInBatches,
 } from "@/apis"
 import CustomTooltip from "@/components/ui/CustomTooltip"
+import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
 import { contentState, setActiveContent, setEntries } from "@/store/contentState"
-import {
-  dataState,
-  filteredCategoriesState,
-  filteredFeedsState,
-  setHistoryCount,
-  setStarredCount,
-  setUnreadInfo,
-  setUnreadStarredCount,
-  setUnreadTodayCount,
-} from "@/store/dataState"
+import { filteredCategoriesState, filteredFeedsState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import findAdjacentItem from "@/utils/navigation"
 import "./FooterPanel.css"
@@ -92,18 +82,21 @@ const MarkAllReadButton = ({ from, onConfirm }) => {
 }
 
 const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
+  const { from: source, id: sourceId } = info
   const { filterDate, isArticleListReady } = useStore(contentState)
-  const { feedsData } = useStore(dataState)
   const { markAllReadJumpToNext, showStatus } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
   const filteredCategories = useStore(filteredCategoriesState)
   const filteredFeeds = useStore(filteredFeedsState)
+  const { refreshCounts } = useAppData()
   const navigate = useNavigate()
   const refreshLabel = polyglot.t("article_list.refresh_tooltip")
 
   const jumpToNext = () => {
-    if (info.from === "category") {
-      const currentIndex = filteredCategories.findIndex((c) => c.id === Number(info.id))
+    if (source === "category") {
+      const currentIndex = filteredCategories.findIndex(
+        (category) => category.id === Number(sourceId),
+      )
       const next = findAdjacentItem(filteredCategories, currentIndex, "next", {
         predicate: (category) => category.unreadCount > 0,
         wrap: true,
@@ -111,11 +104,11 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       if (next) {
         navigate(`/category/${next.id}`)
       }
-    } else if (info.from === "feed") {
+    } else if (source === "feed") {
       const orderedFeeds = filteredCategories.flatMap((cat) =>
         filteredFeeds.filter((f) => f.category.id === cat.id),
       )
-      const currentIndex = orderedFeeds.findIndex((f) => f.id === Number(info.id))
+      const currentIndex = orderedFeeds.findIndex((feed) => feed.id === Number(sourceId))
       const next = findAdjacentItem(orderedFeeds, currentIndex, "next", {
         predicate: (feed) => feed.unreadCount > 0,
         wrap: true,
@@ -128,7 +121,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
 
   const handleMarkAllAsRead = async () => {
     try {
-      await (filterDate && info.from !== "today" ? handleFilteredMarkAsRead() : markAllAsRead())
+      await (filterDate && source !== "today" ? handleFilteredMarkAsRead() : markAllAsRead())
 
       await updateUIAfterMarkAsRead()
 
@@ -149,36 +142,20 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
 
     const entryFetchers = {
       all: getAllEntries,
-      feed: (status, options) => getFeedEntries(info.id, status, starred, options),
-      category: (status, options) => getCategoryEntries(info.id, status, starred, options),
+      feed: (status, options) => getFeedEntries(sourceId, status, starred, options),
+      category: (status, options) => getCategoryEntries(sourceId, status, starred, options),
       starred: getStarredEntries,
     }
 
-    const fetchEntries = entryFetchers[info.from]
+    const fetchEntries = entryFetchers[source]
     return markEntriesAsReadInBatches(fetchEntries)
   }
 
   const updateUIAfterMarkAsRead = async () => {
     updateAllEntriesAsRead()
-
-    const [countersData, entryCountSummary] = await Promise.all([
-      getCounters(),
-      getEntryCountSummary(),
-    ])
-    const unreadInfo = {}
-    for (const feed of feedsData) {
-      unreadInfo[feed.id] = countersData.unreads[feed.id] ?? 0
-    }
-
-    const historyCount = Object.values(countersData.reads).reduce(
-      (total, count) => total + count,
-      0,
-    )
-    setHistoryCount(historyCount)
-    setStarredCount(entryCountSummary.starredCount)
-    setUnreadInfo(unreadInfo)
-    setUnreadStarredCount(entryCountSummary.unreadStarredCount)
-    setUnreadTodayCount(entryCountSummary.unreadTodayCount)
+    await refreshCounts({ force: true, includeEntrySummary: true }).catch((error) => {
+      console.error("Failed to refresh counts after marking entries as read:", error)
+    })
 
     Notification.success({
       title: polyglot.t("article_list.mark_all_as_read_success"),
@@ -204,7 +181,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
     icon: <IconStarFill aria-hidden="true" />,
   }
 
-  const filterOptions = ["category", "feed"].includes(info.from)
+  const filterOptions = ["category", "feed"].includes(source)
     ? [starredOption, ...baseFilterOptions]
     : baseFilterOptions
 
@@ -223,16 +200,16 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   }
 
   useEffect(() => {
-    if (info.from === "starred" && showStatus !== "unread") {
+    if (source === "starred" && showStatus !== "unread") {
       updateSettings({ showStatus: "all" })
     }
-  }, [info.from, showStatus])
+  }, [source, showStatus])
 
   return (
     <div className="entry-panel">
-      <MarkAllReadButton from={info.from} onConfirm={handleMarkAllAsRead} />
+      <MarkAllReadButton from={source} onConfirm={handleMarkAllAsRead} />
       <Radio.Group
-        style={{ visibility: info.from === "history" ? "hidden" : "visible" }}
+        style={{ visibility: source === "history" ? "hidden" : "visible" }}
         type="button"
         value={showStatus}
         onChange={handleFilterChange}

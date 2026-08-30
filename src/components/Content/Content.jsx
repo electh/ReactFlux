@@ -3,7 +3,7 @@ import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { AnimatePresence } from "framer-motion"
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
-import { useLocation, useParams } from "react-router"
+import { useParams } from "react-router"
 import { useSwipeable } from "react-swipeable"
 
 import FooterPanel from "./FooterPanel"
@@ -27,7 +27,6 @@ import {
   setInfoId,
   setIsArticleLoading,
 } from "@/store/contentState"
-import { dataState } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
 import prepareEntry from "@/utils/entry-presentation"
 
@@ -51,18 +50,16 @@ const shouldIgnoreSwipe = (element) =>
   isInHorizontalScrollable(element) || Boolean(element?.closest?.(".plyr, audio, video"))
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
-  const { activeContent, entries, filterDate, filterString, isArticleLoading } =
-    useStore(contentState)
-  const { isAppDataReady } = useStore(dataState)
-  const { enableSwipeGesture, orderBy, orderDirection, pageSize, showStatus, swipeSensitivity } =
-    useStore(settingsState)
+  const { from: source, id: sourceId } = info
+  const { activeContent, isArticleLoading } = useStore(contentState)
+  const { enableSwipeGesture, swipeSensitivity } = useStore(settingsState)
 
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
   const [isSwipingRight, setIsSwipingRight] = useState(false)
   const cardsRef = useRef(null)
+  const entryRequestIdRef = useRef(0)
 
-  const location = useLocation()
-  const params = useParams()
+  const { entryId } = useParams()
 
   useDocumentTitle()
 
@@ -70,24 +67,42 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const { navigateToNextArticle, navigateToPreviousArticle } = useKeyHandlers()
 
-  const { fetchAppData, fetchFeedRelatedData } = useAppData()
-  const { fetchArticleList } = useArticleList(info, getEntries)
+  const { refreshFeedData } = useAppData()
   const { isBelowMedium } = useScreenWidth()
 
-  const fetchArticleListOnly = async () => {
-    await (isAppDataReady ? fetchArticleList(getEntries) : fetchAppData())
-  }
+  useEffect(() => {
+    const { activeContent: storedActiveContent, infoFrom, infoId } = contentState.get()
+    const sourceChanged = infoFrom !== source || String(infoId ?? "") !== String(sourceId ?? "")
 
-  const fetchArticleListWithRelatedData = async () => {
-    await (isAppDataReady
-      ? Promise.all([fetchArticleList(getEntries), fetchFeedRelatedData()])
-      : fetchAppData())
-  }
+    setInfoFrom(source)
+    setInfoId(sourceId)
+    if (sourceChanged) {
+      setIsArticleLoading(false)
+      if (storedActiveContent) {
+        setActiveContent(null)
+      }
+    }
 
-  const fetchSingleEntry = async (entryId) => {
-    const existingEntry = entries.find((entry) => entry.id === Number(entryId))
+    return () => {
+      entryRequestIdRef.current += 1
+    }
+  }, [source, sourceId])
+
+  const { fetchArticleList } = useArticleList(source, sourceId, getEntries)
+
+  const fetchArticleListWithRelatedData = useCallback(
+    () => Promise.allSettled([fetchArticleList(), refreshFeedData()]),
+    [fetchArticleList, refreshFeedData],
+  )
+
+  const fetchSingleEntry = useCallback(async (entryId) => {
+    const requestId = ++entryRequestIdRef.current
+    const isCurrentRequest = () => entryRequestIdRef.current === requestId
+    const numericEntryId = Number(entryId)
+    const existingEntry = contentState.get().entries.find((entry) => entry.id === numericEntryId)
 
     if (existingEntry) {
+      setIsArticleLoading(false)
       setActiveContent(existingEntry)
       return
     }
@@ -95,13 +110,19 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     try {
       setIsArticleLoading(true)
       const entry = await getEntry(entryId)
-      setActiveContent(prepareEntry(entry))
+      if (isCurrentRequest()) {
+        setActiveContent(prepareEntry(entry))
+      }
     } catch (error) {
-      console.error("Failed to fetch entry:", error)
+      if (isCurrentRequest()) {
+        console.error("Failed to fetch entry:", error)
+      }
     } finally {
-      setIsArticleLoading(false)
+      if (isCurrentRequest()) {
+        setIsArticleLoading(false)
+      }
     }
-  }
+  }, [])
 
   useContentHotkeys({ handleRefreshArticleList: fetchArticleListWithRelatedData })
 
@@ -150,48 +171,28 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   })
 
   useEffect(() => {
-    setInfoFrom(info.from)
-    setInfoId(info.id)
-    if (activeContent) {
-      setActiveContent(null)
+    if (source === "category") {
+      refreshFeedData().catch((error) => {
+        console.error("Failed to refresh category feed data:", error)
+      })
     }
-    if (info.from === "category") {
-      fetchArticleListWithRelatedData()
-    } else {
-      fetchArticleListOnly()
-    }
-  }, [info])
+  }, [refreshFeedData, source, sourceId])
 
   useEffect(() => {
-    if (["starred", "history"].includes(info.from)) {
-      return
-    }
-    fetchArticleListOnly()
-  }, [orderBy])
+    const currentActiveContent = contentState.get().activeContent
 
-  useEffect(() => {
-    fetchArticleListOnly()
-  }, [filterDate, filterString, orderDirection, pageSize, showStatus])
-
-  useEffect(() => {
-    if (isBelowMedium && activeContent) {
-      const { entryId } = params
-      if (!entryId) {
-        setActiveContent(null)
-      }
-    }
-  }, [location.pathname])
-
-  useEffect(() => {
-    const { entryId } = params
     if (entryId) {
-      if (!activeContent || activeContent.id !== Number(entryId)) {
+      if (currentActiveContent?.id !== Number(entryId)) {
         fetchSingleEntry(entryId)
       }
-    } else if (activeContent) {
-      setActiveContent(null)
+    } else {
+      entryRequestIdRef.current += 1
+      if (currentActiveContent) {
+        setActiveContent(null)
+      }
+      setIsArticleLoading(false)
     }
-  }, [params])
+  }, [entryId, fetchSingleEntry, source, sourceId])
 
   return (
     <>

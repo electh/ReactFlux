@@ -457,7 +457,7 @@ const MoreOptionsDropdown = () => {
   const { polyglot } = useStore(polyglotState)
   const [menuVisible, setMenuVisible] = useState(false)
 
-  const { fetchAppData } = useAppData()
+  const { refreshFeedData } = useAppData()
 
   const handleToggleFeedsVisibility = () => {
     updateSettings({ showHiddenFeeds: !showHiddenFeeds })
@@ -481,7 +481,9 @@ const MoreOptionsDropdown = () => {
         Notification.success({
           title: polyglot.t("sidebar.import_opml_success"),
         })
-        await fetchAppData()
+        await refreshFeedData({ force: true }).catch((error) => {
+          console.error("Failed to refresh data after OPML import:", error)
+        })
       } else {
         Notification.error({
           title: polyglot.t("sidebar.import_opml_error"),
@@ -578,7 +580,7 @@ const updateAllEntriesAsRead = () => {
 }
 
 const Sidebar = () => {
-  const { isCoreDataReady } = useStore(dataState)
+  const { catalog: catalogLoadState } = useStore(dataState).loadState
   const { polyglot } = useStore(polyglotState)
   const expandedCategories = useStore(expandedCategoriesState)
 
@@ -594,9 +596,9 @@ const Sidebar = () => {
 
   const location = useLocation()
   const currentPath = location.pathname
-  const selectedKeys = useMemo(() => [currentPath], [currentPath])
+  const selectedKeys = [currentPath]
 
-  const { fetchCounters } = useAppData()
+  const { refreshCounts, refreshFeedData } = useAppData()
   const { infoFrom, infoId } = useStore(contentState)
 
   const handleEditCategory = (category) => {
@@ -614,7 +616,9 @@ const Sidebar = () => {
       Notification.success({
         title: polyglot.t("sidebar.refresh_category_success"),
       })
-      await fetchCounters()
+      await refreshFeedData({ force: true }).catch((error) => {
+        console.error("Failed to refresh data after category refresh:", error)
+      })
     } catch {
       Notification.error({
         title: polyglot.t("sidebar.refresh_category_error"),
@@ -669,7 +673,9 @@ const Sidebar = () => {
 
   const handleRefreshFeed = async (feed) => {
     await refreshSingleFeed(feed)
-    await fetchCounters()
+    await refreshCounts({ force: true }).catch((error) => {
+      console.error("Failed to refresh counts after feed refresh:", error)
+    })
   }
 
   const handleMarkAllAsReadFeed = async (feed) => {
@@ -710,25 +716,43 @@ const Sidebar = () => {
               <MoreOptionsDropdown />
             </div>
           </div>
-          <Skeleton animation={true} loading={!isCoreDataReady} text={{ rows: 6 }} />
-          {isCoreDataReady && (
-            <Collapse
-              activeKey={expandedCategories}
-              bordered={false}
-              triggerRegion="icon"
-              onChange={(_key, keys) => setExpandedCategories(keys)}
-            >
-              <CategoryGroup
-                onDeleteCategory={handleDeleteCategory}
-                onDeleteFeed={handleDeleteFeed}
-                onEditCategory={handleEditCategory}
-                onEditFeed={handleEditFeed}
-                onMarkAllAsReadCategory={handleMarkAllAsReadCategory}
-                onMarkAllAsReadFeed={handleMarkAllAsReadFeed}
-                onRefreshCategory={handleRefreshCategory}
-                onRefreshFeed={handleRefreshFeed}
-              />
-            </Collapse>
+          <Skeleton
+            animation
+            loading={!catalogLoadState.hasSnapshot && !catalogLoadState.error}
+            text={{ rows: 6 }}
+          />
+          {!catalogLoadState.hasSnapshot && catalogLoadState.error && (
+            <div className="sidebar-load-error" role="alert">
+              <Typography.Text>{polyglot.t("sidebar.load_error")}</Typography.Text>
+              <Button
+                icon={<IconRefresh aria-hidden="true" />}
+                size="small"
+                onClick={() => refreshFeedData().catch(() => null)}
+              >
+                {polyglot.t("actions.retry")}
+              </Button>
+            </div>
+          )}
+          {catalogLoadState.hasSnapshot && (
+            <div aria-busy={catalogLoadState.activity === "refreshing"}>
+              <Collapse
+                activeKey={expandedCategories}
+                bordered={false}
+                triggerRegion="icon"
+                onChange={(_key, keys) => setExpandedCategories(keys)}
+              >
+                <CategoryGroup
+                  onDeleteCategory={handleDeleteCategory}
+                  onDeleteFeed={handleDeleteFeed}
+                  onEditCategory={handleEditCategory}
+                  onEditFeed={handleEditFeed}
+                  onMarkAllAsReadCategory={handleMarkAllAsReadCategory}
+                  onMarkAllAsReadFeed={handleMarkAllAsReadFeed}
+                  onRefreshCategory={handleRefreshCategory}
+                  onRefreshFeed={handleRefreshFeed}
+                />
+              </Collapse>
+            </div>
           )}
         </Menu>
       </SimpleBar>

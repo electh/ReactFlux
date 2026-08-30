@@ -77,7 +77,7 @@ const AddFeedModal = () => {
   const [feedForm] = Form.useForm()
   const feedUrlInputRef = useRef(null)
 
-  const { fetchFeedRelatedData } = useAppData()
+  const { refreshFeedData } = useAppData()
   const { addFeedModalVisible, setAddFeedModalVisible } = useModalToggle()
 
   const navigate = useNavigate()
@@ -98,18 +98,13 @@ const AddFeedModal = () => {
       const response = await addFeed(url, categoryId, isFullText)
       Message.loading({ id, duration: 0, content: polyglot.t("main.add_feed_loading") })
 
-      fetchFeedRelatedData()
-        .then(() => {
-          Message.success({ id, content: polyglot.t("main.add_feed_success") })
-          setAddFeedModalVisible(false)
-          navigate(`/feed/${response.feed_id}`)
-          feedForm.resetFields()
-          return null
-        })
-        .catch((error) => {
-          console.error("Failed to fetch feed related data:", error)
-          Message.error({ id, content: polyglot.t("main.add_feed_error") })
-        })
+      await refreshFeedData({ force: true }).catch((error) => {
+        console.error("Failed to refresh data after adding a feed:", error)
+      })
+      Message.success({ id, content: polyglot.t("main.add_feed_success") })
+      setAddFeedModalVisible(false)
+      navigate(`/feed/${response.feed_id}`)
+      feedForm.resetFields()
     } catch (error) {
       console.error("Failed to add a feed:", error)
       Message.error({ id, content: polyglot.t("main.add_feed_error") })

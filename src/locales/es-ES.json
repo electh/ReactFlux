@@ -42,6 +42,7 @@
     "delete_category_confirm_title": "Confirmar Eliminación de Categoría",
     "delete_category_confirm_content": "¿Está seguro de que desea eliminar la categoría '%{title}'? Esta acción no se puede deshacer.",
     "feeds": "Feeds",
+    "load_error": "No se pudieron cargar los feeds",
     "logout_success": "Se ha cerrado la sesión correctamente",
     "add_feed": "Añadir un feed",
     "navigation_menu": "Menú de navegación",

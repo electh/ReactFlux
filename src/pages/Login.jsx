@@ -12,16 +12,17 @@ import useForm from "@arco-design/web-react/es/Form/useForm"
 import { IconHome, IconLock, IconUser } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { ofetch } from "ofetch"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router"
 
 import useLanguage, { polyglotState } from "@/hooks/useLanguage"
 import useTheme from "@/hooks/useTheme"
-import { authState, setAuth } from "@/store/authState"
+import { authState } from "@/store/authState"
 import { settingsState } from "@/store/settingsState"
 import isValidAuth from "@/utils/auth"
 import { handleEnterKeyToSubmit, validateAndFormatFormFields } from "@/utils/form"
 import hideSpinner from "@/utils/loading"
+import { startSession } from "@/utils/session"
 import "./Login.css"
 
 const Login = () => {
@@ -36,8 +37,9 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
 
   const [searchParams] = useSearchParams()
-  const urlParamsObj = useMemo(() => Object.fromEntries(searchParams), [])
-  const [authMethod, setAuthMethod] = useState(urlParamsObj.username ? "user" : "token")
+  const [authMethod, setAuthMethod] = useState(() =>
+    Object.fromEntries(searchParams).username ? "user" : "token",
+  )
   /* token or user */
   const location = useLocation()
   const navigate = useNavigate()
@@ -58,7 +60,7 @@ const Login = () => {
         Notification.success({
           title: polyglot.t("login.success"),
         })
-        setAuth({ server, token, username, password })
+        startSession({ server, token, username, password })
         navigate(redirectTo || `/${homePage}`, { replace: true })
       }
     } catch (error) {

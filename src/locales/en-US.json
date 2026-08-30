@@ -42,6 +42,7 @@
     "delete_category_confirm_title": "Confirm Delete Category",
     "delete_category_confirm_content": "Are you sure you want to delete category '%{title}'? This action cannot be undone.",
     "feeds": "Feeds",
+    "load_error": "Unable to load feeds",
     "logout_success": "Successfully logged out",
     "add_feed": "Add a feed",
     "navigation_menu": "Navigation menu",

@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react"
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef } from "react"
 
 import { markDuplicatesAsRead } from "@/hooks/useEntryActions"
 import {
@@ -10,7 +10,6 @@ import {
   setTotal,
 } from "@/store/contentState"
 import {
-  dataState,
   setHistoryCount,
   setStarredCount,
   setUnreadInfo,
@@ -32,40 +31,53 @@ const handleResponses = (response) => {
   }
 }
 
-const useArticleList = (info, getEntries) => {
-  const content = useStore(contentState)
-  const { filterDate, filterString } = content
-  const { isAppDataReady } = useStore(dataState)
-  const settings = useStore(settingsState)
-  const { showStatus } = settings
+const useArticleList = (source, sourceId, getEntries) => {
+  const contentSnapshot = useStore(contentState)
+  const settingsSnapshot = useStore(settingsState)
+  const automaticRequestKey = createArticleListRequestKey({
+    content: contentSnapshot,
+    settings: settingsSnapshot,
+    info: { from: source, id: sourceId },
+  })
 
   const latestRequestId = useRef(0)
   const loadingRequestKey = useRef(null)
+  const currentRequestKey = useRef(automaticRequestKey)
 
-  const fetchArticleList = async (getEntries) => {
+  useLayoutEffect(() => {
+    currentRequestKey.current = automaticRequestKey
+  }, [automaticRequestKey])
+
+  const fetchArticleList = useCallback(async () => {
+    const content = contentState.get()
+    const settings = settingsState.get()
+    const info = { from: source, id: sourceId }
     const requestKey = createArticleListRequestKey({ content, settings, info })
+
     if (loadingRequestKey.current === requestKey) {
       return
     }
 
     loadingRequestKey.current = requestKey
     const requestId = ++latestRequestId.current
-    const isLatestRequest = () => requestId === latestRequestId.current
+    const isLatestRequest = () =>
+      requestId === latestRequestId.current &&
+      requestKey === currentRequestKey.current &&
+      requestKey ===
+        createArticleListRequestKey({
+          content: contentState.get(),
+          settings: settingsState.get(),
+          info,
+        })
 
     setIsArticleListReady(false)
 
     try {
+      const basicSearchTerms = extractBasicSearchTerms(content.filterString)
+      const filterParams = basicSearchTerms ? { search: basicSearchTerms } : {}
+
       let response
-
-      // Build filter params with search query
-      // Extract basic search terms
-      const filterParams = {}
-      const basicSearchTerms = extractBasicSearchTerms(filterString)
-      if (basicSearchTerms) {
-        filterParams.search = basicSearchTerms
-      }
-
-      switch (showStatus) {
+      switch (settings.showStatus) {
         case "starred": {
           response = await getEntries(null, true, filterParams)
           break
@@ -80,13 +92,17 @@ const useArticleList = (info, getEntries) => {
         }
       }
 
-      if (!filterDate) {
-        switch (info.from) {
+      if (!isLatestRequest()) {
+        return
+      }
+
+      if (!content.filterDate) {
+        switch (source) {
           case "feed": {
-            if (showStatus === "unread") {
-              setUnreadInfo((prev) => ({
-                ...prev,
-                [Number(info.id)]: response.total,
+            if (settings.showStatus === "unread") {
+              setUnreadInfo((previous) => ({
+                ...previous,
+                [Number(sourceId)]: response.total,
               }))
             }
             break
@@ -96,7 +112,7 @@ const useArticleList = (info, getEntries) => {
             break
           }
           case "starred": {
-            if (showStatus === "unread") {
+            if (settings.showStatus === "unread") {
               setUnreadStarredCount(response.total)
             } else {
               setStarredCount(response.total)
@@ -104,16 +120,12 @@ const useArticleList = (info, getEntries) => {
             break
           }
           case "today": {
-            if (showStatus === "unread") {
+            if (settings.showStatus === "unread") {
               setUnreadTodayCount(response.total)
             }
             break
           }
         }
-      }
-
-      if (!isLatestRequest()) {
-        return
       }
 
       handleResponses(response)
@@ -125,20 +137,16 @@ const useArticleList = (info, getEntries) => {
         setIsArticleListReady(true)
       }
     }
-  }
+  }, [getEntries, source, sourceId])
 
   useEffect(() => {
-    if (isAppDataReady) {
-      fetchArticleList(getEntries)
-    }
-  }, [isAppDataReady])
+    void fetchArticleList()
 
-  useEffect(() => {
     return () => {
       latestRequestId.current += 1
       loadingRequestKey.current = null
     }
-  }, [])
+  }, [automaticRequestKey, fetchArticleList])
 
   return { fetchArticleList }
 }

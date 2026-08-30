@@ -42,6 +42,7 @@
     "delete_category_confirm_title": "确认删除分类",
     "delete_category_confirm_content": "确定要删除分类「%{title}」吗？此操作无法撤销。",
     "feeds": "订阅源",
+    "load_error": "无法加载订阅源",
     "logout_success": "成功登出",
     "add_feed": "添加订阅源",
     "navigation_menu": "导航菜单",

@@ -17,13 +17,11 @@ import { useNavigate } from "react-router"
 
 import { polyglotState } from "@/hooks/useLanguage"
 import useModalToggle from "@/hooks/useModalToggle"
-import { authState, resetAuth } from "@/store/authState"
-import { resetContent } from "@/store/contentState"
-import { resetData } from "@/store/dataState"
-import { resetFeedIcons } from "@/store/feedIconsState"
+import { authState } from "@/store/authState"
 import { resetSettings, settingsState, updateSettings } from "@/store/settingsState"
 import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
 import { GITHUB_REPO_PATH } from "@/utils/constants"
+import { clearSession } from "@/utils/session"
 import { preloadSettingsTabs } from "@/utils/settings-loader"
 import "./Profile.css"
 
@@ -63,10 +61,7 @@ export default function Profile() {
       icon: <IconInfoCircleFill />,
       okButtonProps: { ...destructiveConfirmButtonProps, status: "danger" },
       onOk: () => {
-        resetAuth()
-        resetContent()
-        resetData()
-        resetFeedIcons()
+        clearSession()
         navigate("/login")
         Notification.success({
           title: polyglot.t("sidebar.logout_success"),

@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router"
 
 import App from "./App"
+import AppDataProvider from "./components/AppDataProvider"
 import All from "./pages/All"
 import Category from "./pages/Category"
 import ErrorPage from "./pages/ErrorPage"
@@ -32,12 +33,16 @@ const router = createBrowserRouter(
   [
     { path: "/login", element: <Login /> },
     {
-      path: "/",
-      element: <App />,
-      errorElement: <ErrorPage />,
+      element: <RouterProtect />,
       children: [
         {
-          element: <RouterProtect />,
+          path: "/",
+          element: (
+            <AppDataProvider>
+              <App />
+            </AppDataProvider>
+          ),
+          errorElement: <ErrorPage />,
           children: [...routes, { index: true, element: <Navigate replace to={`/${homePage}`} /> }],
         },
       ],

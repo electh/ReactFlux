@@ -20,16 +20,20 @@ const pickFields = (source, fields) => {
 
 const createArticleListRequestKey = ({ content, settings, info }) => {
   const contentKey = pickFields(content, articleListContentKeyFields)
+  const settingsKey = pickFields(settings, articleListSettingsKeyFields)
 
   if (info) {
     contentKey.infoFrom = info.from
     contentKey.infoId = info.id
   }
+  if (["starred", "history"].includes(contentKey.infoFrom)) {
+    settingsKey.orderBy = null
+  }
+  if (["feed", "starred", "history"].includes(contentKey.infoFrom)) {
+    settingsKey.showHiddenFeeds = null
+  }
 
-  return JSON.stringify({
-    ...contentKey,
-    ...pickFields(settings, articleListSettingsKeyFields),
-  })
+  return JSON.stringify({ ...contentKey, ...settingsKey })
 }
 
 export default createArticleListRequestKey

@@ -21,7 +21,7 @@ import {
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { atom, computed } from "nanostores"
-import { Fragment, useEffect, useMemo, useRef, useState } from "react"
+import { Fragment, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
 import { refreshAllFeed, updateFeed } from "@/apis"
@@ -462,7 +462,7 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
 }
 
 const FeedList = () => {
-  const { isCoreDataReady } = useStore(dataState)
+  const { catalog: catalogLoadState } = useStore(dataState).loadState
   const { showDetailedRelativeTime } = useStore(settingsState)
   const filterType = useStore(filterTypeState)
   const tableData = useStore(tableDataState)
@@ -600,17 +600,14 @@ const FeedList = () => {
     },
   ].filter(Boolean)
 
-  const pagination = useMemo(
-    () => ({
-      showJumper: true,
-      showTotal: true,
-      total: tableData.length,
-      pageSize: 15,
-      current: currentPage,
-      sizeCanChange: false,
-    }),
-    [tableData.length, currentPage],
-  )
+  const pagination = {
+    showJumper: true,
+    showTotal: true,
+    total: tableData.length,
+    pageSize: 15,
+    current: currentPage,
+    sizeCanChange: false,
+  }
 
   const handleTableChange = (newPagination) => {
     setCurrentPage(newPagination.current)
@@ -714,7 +711,7 @@ const FeedList = () => {
         className="feed-table"
         columns={columns}
         data={tableData}
-        loading={!isCoreDataReady}
+        loading={!catalogLoadState.hasSnapshot && !catalogLoadState.error}
         pagination={pagination}
         scroll={{ x: true }}
         size="small"

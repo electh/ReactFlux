@@ -9,7 +9,7 @@ import { checkIsInLast24Hours, getTimestamp } from "@/utils/date"
 import buildInfo from "@/version-info.json"
 
 function useVersionCheck() {
-  const { isAppDataReady } = useStore(dataState)
+  const isServerInfoReady = useStore(dataState).loadState.serverInfo.hasSnapshot
   const { checkForUpdates } = useStore(settingsState)
 
   const [hasUpdate, setHasUpdate] = useState(false)
@@ -20,7 +20,7 @@ function useVersionCheck() {
   }, [])
 
   useEffect(() => {
-    if (!isAppDataReady || import.meta.env.DEV || !checkForUpdates) {
+    if (!isServerInfoReady || import.meta.env.DEV || !checkForUpdates) {
       return
     }
 
@@ -43,7 +43,7 @@ function useVersionCheck() {
     }
 
     checkUpdate()
-  }, [checkForUpdates, isAppDataReady])
+  }, [checkForUpdates, isServerInfoReady])
 
   // When checkForUpdates is off, never report an update regardless of internal state
   const effectiveHasUpdate = checkForUpdates && hasUpdate
