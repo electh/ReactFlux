@@ -35,7 +35,7 @@ import useScreenWidth from "@/hooks/useScreenWidth"
 import { dataState, setFeedsData } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
 import { generateRelativeTime } from "@/utils/date"
-import filterByQuery from "@/utils/kmp"
+import filterFeedsByQuery from "@/utils/feed-search"
 import createSetter from "@/utils/nanostores"
 import sleep from "@/utils/time"
 import "./FeedList.css"
@@ -59,7 +59,7 @@ const filteredFeedsState = computed(
       })
       .toSorted((a, b) => b.parsing_error_count - a.parsing_error_count)
 
-    return filterString ? filterByQuery(sortedFeeds, filterString, [filterType]) : sortedFeeds
+    return filterFeedsByQuery(sortedFeeds, filterString, filterType)
   },
 )
 
