@@ -1,12 +1,11 @@
 import { computed, map } from "nanostores"
 
-import { dataState, feedsState, hiddenFeedIdSetState, unreadTotalState } from "./dataState"
+import { dataState, feedsState, unreadTotalState } from "./dataState"
 import { getSettings, settingsState } from "./settingsState"
 
 import removeDuplicateEntries from "@/utils/deduplicate"
 import { extractHeadings } from "@/utils/dom"
 import createSetter from "@/utils/nanostores"
-import compareVersions from "@/utils/version"
 
 const defaultValue = {
   activeContent: null, // 当前打开的文章
@@ -33,21 +32,7 @@ export const articleHeadingsState = computed([contentState], (content) => {
   return extractHeadings(activeContent.content)
 })
 
-export const filteredEntriesState = computed(
-  [contentState, dataState, hiddenFeedIdSetState, settingsState],
-  (content, data, hiddenFeedIds, settings) => {
-    const { entries, infoFrom } = content
-
-    const { version } = data
-    const { showHiddenFeeds } = settings
-    const shouldFilterByVisibility = !["starred", "history"].includes(infoFrom)
-    const isVisibilityHandledByServer = compareVersions(version, "2.2.0") >= 0
-    const isVisible = (entry) =>
-      isVisibilityHandledByServer || showHiddenFeeds || !hiddenFeedIds.has(entry.feed.id)
-
-    return shouldFilterByVisibility ? entries.filter((entry) => isVisible(entry)) : entries
-  },
-)
+export const filteredEntriesState = computed(contentState, (content) => content.entries)
 
 export const dynamicCountState = computed(
   [contentState, dataState, unreadTotalState, settingsState, feedsState],

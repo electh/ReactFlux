@@ -23,6 +23,10 @@
   width: 340px;
 }
 
+.login-compatibility-alert {
+  margin-bottom: 20px;
+}
+
 .login-help {
   display: flex;
   margin-top: 40px;

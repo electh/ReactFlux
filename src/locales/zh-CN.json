@@ -22,6 +22,16 @@
     "need_help": "需要更多信息？",
     "miniflux_official_website": "前往 Miniflux 官网"
   },
+  "compatibility": {
+    "checking": "正在检查 Miniflux 兼容性…",
+    "unsupported_title": "不支持的 Miniflux 版本",
+    "unsupported_description": "ReactFlux 要求 Miniflux %{minimumVersion} 或更高版本。检测到的版本：%{detectedVersion}。",
+    "unverifiable_title": "无法验证 Miniflux 版本",
+    "unverifiable_description": "服务器报告的版本“%{detectedVersion}”不是受支持的正式版本。",
+    "check_failed_title": "版本检查失败",
+    "check_failed_description": "ReactFlux 无法确认此服务器是否支持 Miniflux %{minimumVersion} 或更高版本。请检查连接后重试。",
+    "unknown_version": "未知"
+  },
   "sidebar": {
     "all": "全部",
     "today": "今天",

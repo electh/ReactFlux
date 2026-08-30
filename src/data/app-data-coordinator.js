@@ -5,7 +5,6 @@ import {
   getFeeds,
   getIntegrationsStatus,
   getTodayEntries,
-  getVersion,
 } from "@/apis"
 import {
   commitCatalogData,
@@ -16,7 +15,6 @@ import {
   getDataSessionRevision,
   setDataResourceLoadState,
 } from "@/store/dataState"
-import compareVersions from "@/utils/version"
 
 const RESOURCE_NAMES = ["catalog", "counts", "serverInfo"]
 
@@ -81,17 +79,15 @@ const loadCounts = async (includeEntrySummary) => {
 }
 
 const loadServerInfo = async () => {
-  const { version } = await getVersion()
+  const { version } = dataState.get()
   let hasIntegrations = false
   let error = null
 
-  if (compareVersions(version, "2.2.2") >= 0) {
-    try {
-      const integrationsStatus = await getIntegrationsStatus()
-      hasIntegrations = Boolean(integrationsStatus.has_integrations)
-    } catch (integrationError) {
-      error = getErrorMessage(integrationError)
-    }
+  try {
+    const integrationsStatus = await getIntegrationsStatus()
+    hasIntegrations = Boolean(integrationsStatus.has_integrations)
+  } catch (integrationError) {
+    error = getErrorMessage(integrationError)
   }
 
   return {

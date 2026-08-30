@@ -1,0 +1,32 @@
+.compatibility-gate {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 24px;
+  background-color: var(--color-bg-1);
+}
+
+.compatibility-gate-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--color-text-1);
+  text-align: center;
+}
+
+.compatibility-gate-status p {
+  margin: 0;
+}
+
+.compatibility-gate-result {
+  width: min(640px, 100%);
+}
+
+.compatibility-gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}

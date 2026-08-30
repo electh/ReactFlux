@@ -16,7 +16,6 @@ import SettingItem from "./SettingItem"
 
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { dataState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
 import { MAX_ENTRIES_PER_PAGE, MIN_ENTRIES_PER_PAGE } from "@/utils/constants"
@@ -29,7 +28,6 @@ import {
   parseSettingsBackup,
   SETTINGS_IMPORT_ERROR_CODES,
 } from "@/utils/settings-transfer"
-import compareVersions from "@/utils/version"
 
 const languageOptions = [
   { label: "Deutsch", value: "de-DE" },
@@ -40,7 +38,6 @@ const languageOptions = [
 ]
 
 const General = () => {
-  const { version } = useStore(dataState)
   const {
     checkForUpdates,
     compactSidebarGroups,
@@ -342,21 +339,17 @@ const General = () => {
         />
       </SettingItem>
 
-      {compareVersions(version, "2.2.8") >= 0 && (
-        <>
-          <Divider />
+      <Divider />
 
-          <SettingItem
-            description={polyglot.t("settings.update_content_on_fetch_description")}
-            title={polyglot.t("settings.update_content_on_fetch_label")}
-          >
-            <Switch
-              checked={updateContentOnFetch}
-              onChange={(value) => updateSettings({ updateContentOnFetch: value })}
-            />
-          </SettingItem>
-        </>
-      )}
+      <SettingItem
+        description={polyglot.t("settings.update_content_on_fetch_description")}
+        title={polyglot.t("settings.update_content_on_fetch_label")}
+      >
+        <Switch
+          checked={updateContentOnFetch}
+          onChange={(value) => updateSettings({ updateContentOnFetch: value })}
+        />
+      </SettingItem>
 
       <Divider />
 

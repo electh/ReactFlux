@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import AppDataContext from "@/contexts/app-data-context"
 import createAppDataCoordinator from "@/data/app-data-coordinator"
 import { authState } from "@/store/authState"
+import { getAuthSessionKey } from "@/utils/auth"
 
 const SessionAppDataProvider = ({ children }) => {
   const [coordinator] = useState(createAppDataCoordinator)
@@ -17,8 +18,8 @@ const SessionAppDataProvider = ({ children }) => {
 }
 
 const AppDataProvider = ({ children }) => {
-  const { password, server, token, username } = useStore(authState)
-  const sessionKey = JSON.stringify([server, token, username, password])
+  const auth = useStore(authState)
+  const sessionKey = getAuthSessionKey(auth)
 
   return <SessionAppDataProvider key={sessionKey}>{children}</SessionAppDataProvider>
 }

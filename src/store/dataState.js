@@ -20,6 +20,7 @@ const createDefaultValue = (sessionRevision = 0) => ({
   feedsData: [],
   categoriesData: [],
   version: "",
+  verifiedAuthSessionKey: "",
   hasIntegrations: false,
   loadState: {
     catalog: createResourceLoadState(),
@@ -87,7 +88,7 @@ const hiddenCategoryIdSetState = computed(categoriesState, (categories) => {
   return hiddenCategoryIdSet
 })
 
-export const hiddenFeedIdSetState = computed(
+const hiddenFeedIdSetState = computed(
   [feedsState, hiddenCategoryIdSetState],
   (feeds, hiddenCategoryIds) => {
     const hiddenFeedIdSet = new Set()
@@ -224,6 +225,20 @@ export const setCategoriesData = createResourceFieldSetter("categoriesData", "ca
 export const setFeedsData = createResourceFieldSetter("feedsData", "catalog")
 export const setHistoryCount = createResourceFieldSetter("historyCount", "counts")
 export const setStarredCount = createResourceFieldSetter("starredCount", "counts")
+export const setVerifiedServer = ({ authSessionKey, version }) => {
+  const currentState = dataState.get()
+
+  if (currentState.verifiedAuthSessionKey === authSessionKey && currentState.version === version) {
+    return
+  }
+
+  dataState.set({
+    ...currentState,
+    verifiedAuthSessionKey: authSessionKey,
+    version,
+    resourceRevisions: incrementResourceRevision(currentState.resourceRevisions, "serverInfo"),
+  })
+}
 export const setUnreadInfo = createResourceFieldSetter("unreadInfo", "counts")
 export const setUnreadStarredCount = createResourceFieldSetter("unreadStarredCount", "counts")
 export const setUnreadTodayCount = createResourceFieldSetter("unreadTodayCount", "counts")

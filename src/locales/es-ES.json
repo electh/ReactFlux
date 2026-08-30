@@ -22,6 +22,16 @@
     "need_help": "¿Necesita más información?",
     "miniflux_official_website": "Ir a la página web oficial de Miniflux"
   },
+  "compatibility": {
+    "checking": "Comprobando la compatibilidad con Miniflux…",
+    "unsupported_title": "Versión de Miniflux no compatible",
+    "unsupported_description": "ReactFlux requiere Miniflux %{minimumVersion} o una versión posterior. Versión detectada: %{detectedVersion}.",
+    "unverifiable_title": "No se puede verificar la versión de Miniflux",
+    "unverifiable_description": "El servidor informó de la versión «%{detectedVersion}», que no es una versión estable compatible.",
+    "check_failed_title": "Error al comprobar la versión",
+    "check_failed_description": "ReactFlux no pudo verificar que este servidor admita Miniflux %{minimumVersion} o una versión posterior. Compruebe la conexión e inténtelo de nuevo.",
+    "unknown_version": "desconocida"
+  },
   "sidebar": {
     "all": "Todo",
     "today": "Hoy",

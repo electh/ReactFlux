@@ -3,8 +3,6 @@ import { useEffect, useRef, useState } from "react"
 
 import { saveEnclosureProgression } from "@/apis"
 import { authState } from "@/store/authState"
-import { dataState } from "@/store/dataState"
-import compareVersions from "@/utils/version"
 import "plyr/dist/plyr.css"
 import "./PlyrPlayer.css"
 
@@ -117,7 +115,6 @@ const PlyrPlayer = ({
   onError = NOOP,
 }) => {
   const { server } = useStore(authState)
-  const { version } = useStore(dataState)
   const mediaRef = useRef(null)
   const playerRef = useRef(null)
   const hlsRef = useRef(null)
@@ -134,7 +131,7 @@ const PlyrPlayer = ({
   const resolvedSourceType = sourceType || enclosure?.mime_type || ""
   const mediaType = getMediaType(src, resolvedSourceType, elementType)
   const resolvedElementType = mediaType === MEDIA_TYPES.AUDIO ? "audio" : "video"
-  const canSaveProgression = Boolean(enclosureId) && compareVersions(version || "0", "2.2.0") >= 0
+  const canSaveProgression = Boolean(enclosureId)
 
   useEffect(() => {
     const mediaElement = mediaRef.current

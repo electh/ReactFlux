@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Divider,
   Form,
@@ -22,8 +23,43 @@ import { settingsState } from "@/store/settingsState"
 import isValidAuth from "@/utils/auth"
 import { handleEnterKeyToSubmit, validateAndFormatFormFields } from "@/utils/form"
 import hideSpinner from "@/utils/loading"
+import {
+  checkMinifluxCompatibility,
+  MINIMUM_MINIFLUX_VERSION,
+} from "@/utils/miniflux-compatibility"
 import { startSession } from "@/utils/session"
 import "./Login.css"
+
+const getSafeRequestErrorDetails = (error) => ({
+  message: error instanceof Error ? error.message : String(error),
+  status: error?.status ?? error?.response?.status,
+})
+
+const getCompatibilityAlert = (polyglot, compatibilityError) => {
+  const variables = {
+    detectedVersion: compatibilityError.version || polyglot.t("compatibility.unknown_version"),
+    minimumVersion: compatibilityError.minimumVersion,
+  }
+
+  if (compatibilityError.reason === "unsupported") {
+    return {
+      content: polyglot.t("compatibility.unsupported_description", variables),
+      title: polyglot.t("compatibility.unsupported_title"),
+    }
+  }
+
+  if (compatibilityError.reason === "unverifiable") {
+    return {
+      content: polyglot.t("compatibility.unverifiable_description", variables),
+      title: polyglot.t("compatibility.unverifiable_title"),
+    }
+  }
+
+  return {
+    content: polyglot.t("compatibility.check_failed_description", variables),
+    title: polyglot.t("compatibility.check_failed_title"),
+  }
+}
 
 const Login = () => {
   useLanguage()
@@ -43,34 +79,77 @@ const Login = () => {
   /* token or user */
   const location = useLocation()
   const navigate = useNavigate()
+  const compatibilityErrorFromNavigation = location.state?.compatibilityError
 
   const [redirectTo] = useState(() => location.state?.from)
+  const [compatibilityError, setCompatibilityError] = useState(
+    compatibilityErrorFromNavigation ?? null,
+  )
+  const redirectedServer = compatibilityErrorFromNavigation?.server
 
   const performHealthCheck = async (auth) => {
     setLoading(true)
+    setCompatibilityError(null)
     const { server, token, username, password } = auth
+    const headers = token
+      ? { "X-Auth-Token": token }
+      : { Authorization: `Basic ${btoa(`${username}:${password}`)}` }
+
     try {
-      const response = await ofetch.raw("v1/me", {
-        baseURL: server,
-        headers: token
-          ? { "X-Auth-Token": token }
-          : { Authorization: `Basic ${btoa(`${username}:${password}`)}` },
-      })
-      if (response.status === 200) {
-        Notification.success({
-          title: polyglot.t("login.success"),
+      let response
+
+      try {
+        response = await ofetch.raw("v1/me", {
+          baseURL: server,
+          headers,
+          redirect: "error",
         })
-        startSession({ server, token, username, password })
-        navigate(redirectTo || `/${homePage}`, { replace: true })
+      } catch (error) {
+        const errorDetails = getSafeRequestErrorDetails(error)
+        console.error("Login health check failed:", errorDetails)
+        Notification.error({
+          title: polyglot.t("login.error"),
+          content: errorDetails.message,
+        })
+        return
       }
-    } catch (error) {
-      console.error(error)
-      Notification.error({
-        title: polyglot.t("login.error"),
-        content: error.message,
+
+      if (response.status !== 200) {
+        return
+      }
+
+      let compatibility
+
+      try {
+        compatibility = await checkMinifluxCompatibility(auth)
+      } catch (error) {
+        console.error("Failed to check Miniflux compatibility:", getSafeRequestErrorDetails(error))
+        setCompatibilityError({
+          minimumVersion: MINIMUM_MINIFLUX_VERSION,
+          reason: "check-failed",
+          server,
+        })
+        return
+      }
+
+      if (compatibility.status !== "supported") {
+        setCompatibilityError({
+          minimumVersion: compatibility.minimumVersion,
+          reason: compatibility.status,
+          server,
+          version: compatibility.version,
+        })
+        return
+      }
+
+      Notification.success({
+        title: polyglot.t("login.success"),
       })
+      startSession({ server, token, username, password }, compatibility.version)
+      navigate(redirectTo || `/${homePage}`, { replace: true })
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const handleLogin = async (auth) => {
@@ -91,8 +170,13 @@ const Login = () => {
     if (server) {
       loginForm.setFieldsValue({ server, token, username, password })
       loginForm.submit()
+    } else if (redirectedServer) {
+      loginForm.setFieldsValue({ server: redirectedServer })
     }
-  }, [loginForm, polyglot])
+  }, [loginForm, polyglot, redirectedServer])
+
+  const compatibilityAlert =
+    polyglot && compatibilityError ? getCompatibilityAlert(polyglot, compatibilityError) : null
 
   if (isValidAuth(auth)) {
     return <Navigate to={redirectTo || `/${homePage}`} />
@@ -106,6 +190,14 @@ const Login = () => {
             <Typography.Title heading={3}>
               {polyglot.t("login.login_to_your_server")}
             </Typography.Title>
+            {compatibilityAlert && (
+              <Alert
+                className="login-compatibility-alert"
+                content={compatibilityAlert.content}
+                title={compatibilityAlert.title}
+                type="error"
+              />
+            )}
             <Form
               autoComplete="off"
               form={loginForm}
