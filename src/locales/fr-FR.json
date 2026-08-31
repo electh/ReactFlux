@@ -60,6 +60,8 @@
     "logout_success": "Déconnexion réussie",
     "add_feed": "Ajouter un flux",
     "navigation_menu": "Menu de navigation",
+    "collapse": "Réduire la barre latérale",
+    "expand": "Développer la barre latérale",
     "user_menu": "Menu utilisateur",
     "more_options": "Plus d’options de flux",
     "theme_system": "Thème du système",

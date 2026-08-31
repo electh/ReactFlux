@@ -39,8 +39,9 @@
 
 .app {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: var(--desktop-sidebar-width) 1fr;
   grid-template-areas: "sidebar main";
+  transition: grid-template-columns 160ms ease;
   background-color: var(--color-neutral-2);
   height: 100%;
 }
@@ -84,12 +85,14 @@
   }
 
   .app {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    grid-template-areas: "sidebar main";
     border-radius: var(--border-radius-medium);
-    height: 100%;
     overflow: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app {
+    transition: none;
   }
 }
 
@@ -110,8 +113,6 @@
 @media screen and (max-width: 992px) {
   .app {
     grid-template-columns: 0 1fr;
-    grid-template-areas: "sidebar main";
-    height: 100%;
   }
 
   .arco-menu-collapse-button {

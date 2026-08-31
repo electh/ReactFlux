@@ -1,3 +1,13 @@
+export const decodeDesktopSidebarCollapsed = (value) => {
+  try {
+    return JSON.parse(value) === true
+  } catch {
+    return false
+  }
+}
+
+export const encodeDesktopSidebarCollapsed = (value) => JSON.stringify(value === true)
+
 const toExpandedCategoryKey = (value) => {
   if (typeof value === "number") {
     return Number.isSafeInteger(value) && value > 0 ? `/category/${value}` : null

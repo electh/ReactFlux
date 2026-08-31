@@ -60,6 +60,8 @@
     "logout_success": "Se ha cerrado la sesión correctamente",
     "add_feed": "Añadir un feed",
     "navigation_menu": "Menú de navegación",
+    "collapse": "Contraer la barra lateral",
+    "expand": "Expandir la barra lateral",
     "user_menu": "Menú de usuario",
     "more_options": "Más opciones de feeds",
     "theme_system": "Tema del sistema",

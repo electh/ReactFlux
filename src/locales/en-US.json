@@ -60,6 +60,8 @@
     "logout_success": "Successfully logged out",
     "add_feed": "Add a feed",
     "navigation_menu": "Navigation menu",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
     "user_menu": "User menu",
     "more_options": "More feed options",
     "theme_system": "System theme",

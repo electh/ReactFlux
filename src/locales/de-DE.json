@@ -60,6 +60,8 @@
     "logout_success": "Erfolgreich ausgeloggt",
     "add_feed": "Abonnement hinzufügen",
     "navigation_menu": "Navigationsmenü",
+    "collapse": "Seitenleiste einklappen",
+    "expand": "Seitenleiste ausklappen",
     "user_menu": "Benutzermenü",
     "more_options": "Weitere Feed-Optionen",
     "theme_system": "Systemdesign",

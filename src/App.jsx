@@ -1,9 +1,10 @@
-import { ConfigProvider, Layout } from "@arco-design/web-react"
+import { Button, ConfigProvider, Layout, Tooltip } from "@arco-design/web-react"
 import deDE from "@arco-design/web-react/es/locale/de-DE"
 import enUS from "@arco-design/web-react/es/locale/en-US"
 import esES from "@arco-design/web-react/es/locale/es-ES"
 import frFR from "@arco-design/web-react/es/locale/fr-FR"
 import zhCN from "@arco-design/web-react/es/locale/zh-CN"
+import { IconMenuFold, IconMenuUnfold } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { useEffect } from "react"
 
@@ -17,7 +18,11 @@ import useLanguage, { polyglotState } from "./hooks/useLanguage"
 import useScreenWidth from "./hooks/useScreenWidth"
 import useTheme from "./hooks/useTheme"
 import { settingsState } from "./store/settingsState"
+import { desktopSidebarCollapsedState, toggleDesktopSidebar } from "./store/sidebarState"
 import hideSpinner from "./utils/loading"
+
+const COLLAPSED_SIDEBAR_WIDTH = 48
+const EXPANDED_SIDEBAR_WIDTH = 240
 
 const localMap = {
   "de-DE": deDE,
@@ -37,7 +42,13 @@ const App = () => {
 
   const { polyglot } = useStore(polyglotState)
   const { language } = useStore(settingsState)
+  const isDesktopSidebarCollapsed = useStore(desktopSidebarCollapsedState)
   const locale = getLocale(language)
+  const sidebarToggleLabel = polyglot?.t(
+    isDesktopSidebarCollapsed ? "sidebar.expand" : "sidebar.collapse",
+  )
+  const sidebarWidth = isDesktopSidebarCollapsed ? COLLAPSED_SIDEBAR_WIDTH : EXPANDED_SIDEBAR_WIDTH
+  const SidebarToggleIcon = isDesktopSidebarCollapsed ? IconMenuUnfold : IconMenuFold
 
   useEffect(() => {
     hideSpinner()
@@ -48,16 +59,37 @@ const App = () => {
       <ConfigProvider locale={locale}>
         <AppNotifications />
         <HomePageManager />
-        <div className="app">
+        <div className="app" style={{ "--desktop-sidebar-width": `${sidebarWidth}px` }}>
           {isBelowLarge ? null : (
             <Layout.Sider
               breakpoint="lg"
-              className="sidebar"
               collapsible={false}
               trigger={null}
-              width={240}
+              width={sidebarWidth}
+              className={`sidebar ${
+                isDesktopSidebarCollapsed ? "sidebar-collapsed" : "sidebar-expanded"
+              }`}
             >
-              <Sidebar />
+              <Tooltip content={sidebarToggleLabel} position="right">
+                <Button
+                  aria-controls="desktop-sidebar-navigation"
+                  aria-expanded={!isDesktopSidebarCollapsed}
+                  aria-label={sidebarToggleLabel}
+                  className="desktop-sidebar-toggle"
+                  icon={<SidebarToggleIcon aria-hidden="true" />}
+                  shape="circle"
+                  size="small"
+                  type="secondary"
+                  onClick={toggleDesktopSidebar}
+                />
+              </Tooltip>
+              <div
+                className="desktop-sidebar-content"
+                hidden={isDesktopSidebarCollapsed}
+                id="desktop-sidebar-navigation"
+              >
+                {!isDesktopSidebarCollapsed && <Sidebar />}
+              </div>
             </Layout.Sider>
           )}
           <Main />

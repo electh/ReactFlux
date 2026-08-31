@@ -60,6 +60,8 @@
     "logout_success": "成功登出",
     "add_feed": "添加订阅源",
     "navigation_menu": "导航菜单",
+    "collapse": "收起侧栏",
+    "expand": "展开侧栏",
     "user_menu": "用户菜单",
     "more_options": "更多订阅选项",
     "theme_system": "跟随系统主题",
