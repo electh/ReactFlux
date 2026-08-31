@@ -1,4 +1,10 @@
-const articleListContentKeyFields = ["filterDate", "filterString", "infoFrom", "infoId"]
+const articleListContentKeyFields = [
+  "articleListRevision",
+  "filterDate",
+  "filterString",
+  "infoFrom",
+  "infoId",
+]
 
 const articleListSettingsKeyFields = [
   "orderBy",

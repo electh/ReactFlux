@@ -10,6 +10,7 @@ import createSetter from "@/utils/nanostores"
 const defaultValue = {
   activeContent: null, // 当前打开的文章
   articleListError: false,
+  articleListRevision: 0,
   entries: [], // 接口返回的所有文章
   filterDate: null, // 搜索日期
   filterString: "", // 搜索文本
@@ -121,6 +122,31 @@ export const setLoadMoreError = createSetter(contentState, "loadMoreError")
 export const setLoadMoreVisible = createSetter(contentState, "loadMoreVisible")
 export const setTotal = createSetter(contentState, "total")
 export const resetContent = () => contentState.set(defaultValue)
+
+const isFeedInCurrentArticleList = (feed, { infoFrom, infoId }) => {
+  switch (infoFrom) {
+    case "all":
+    case "today": {
+      return true
+    }
+    case "feed": {
+      return Number(feed.id ?? feed.key) === Number(infoId)
+    }
+    case "category": {
+      return Number(feed.category?.id) === Number(infoId)
+    }
+    default: {
+      return false
+    }
+  }
+}
+
+export const invalidateArticleListForFeed = (feed) => {
+  const content = contentState.get()
+  if (isFeedInCurrentArticleList(feed, content)) {
+    contentState.setKey("articleListRevision", (content.articleListRevision ?? 0) + 1)
+  }
+}
 
 // Updates the entry list and returns entries dropped by deduplication.
 export const setEntriesWithDeduplication = (newEntries) => {

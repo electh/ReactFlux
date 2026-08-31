@@ -52,7 +52,12 @@ import useHomePage from "@/hooks/useHomePage"
 import { polyglotState } from "@/hooks/useLanguage"
 import useLongPressContextMenu from "@/hooks/useLongPressContextMenu"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { contentState, setActiveContent, setEntries } from "@/store/contentState"
+import {
+  contentState,
+  invalidateArticleListForFeed,
+  setActiveContent,
+  setEntries,
+} from "@/store/contentState"
 import {
   dataState,
   feedsGroupedByIdState,
@@ -754,7 +759,11 @@ const Sidebar = ({ onNavigate }) => {
   }
 
   const handleRefreshFeed = async (feed) => {
-    await refreshSingleFeed(feed)
+    if (!(await refreshSingleFeed(feed))) {
+      return
+    }
+
+    invalidateArticleListForFeed(feed)
     await refreshCounts({ force: true }).catch((error) => {
       console.error("Failed to refresh counts after feed refresh:", error)
     })
