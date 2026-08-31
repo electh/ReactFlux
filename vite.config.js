@@ -4,14 +4,33 @@ import { fileURLToPath } from "node:url"
 import babel from "@rolldown/plugin-babel"
 import react, { reactCompilerPreset } from "@vitejs/plugin-react"
 import { visualizer } from "rollup-plugin-visualizer"
-import { defineConfig } from "vite"
+import { defineConfig, loadEnv } from "vite"
 import { VitePWA } from "vite-plugin-pwa"
 
 const { dirname, resolve } = path
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+const BASE_PATH_PATTERN = /^\/(?:[A-Za-z0-9._~-]+\/)*$/
+
+const getBasePath = (value) => {
+  const basePath = value?.trim() || "/"
+  const segments = basePath.split("/").filter(Boolean)
+
+  if (
+    !BASE_PATH_PATTERN.test(basePath) ||
+    segments.some((segment) => segment === "." || segment === "..")
+  ) {
+    throw new Error(
+      'VITE_BASE_PATH must be "/" or an absolute path that starts and ends with "/" (for example, "/reactflux/"). Path segments may contain only letters, numbers, ".", "_", "~", and "-".',
+    )
+  }
+
+  return basePath
+}
+
 export default defineConfig(({ mode }) => ({
+  base: getBasePath(loadEnv(mode, __dirname).VITE_BASE_PATH),
   plugins: [
     react(),
     babel({

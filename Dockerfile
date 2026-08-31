@@ -1,6 +1,10 @@
+ARG VITE_BASE_PATH=/
+
 # Stage 1: Build the React application
 # Specify the version to ensure consistent builds
 FROM --platform=$BUILDPLATFORM node:22-alpine AS build
+
+ARG VITE_BASE_PATH
 
 # Install git
 RUN apk add --no-cache git
@@ -27,8 +31,11 @@ RUN pnpm run build
 # Specify the version for consistency
 FROM caddy:2
 
-# Copy built assets from the builder stage
-COPY --from=build /app/build /srv
+ARG VITE_BASE_PATH
+ENV REACTFLUX_BASE_PATH=$VITE_BASE_PATH
+
+# Copy built assets to the URL path embedded in the frontend bundle
+COPY --from=build /app/build /srv${REACTFLUX_BASE_PATH}
 
 # Caddy will pick up the Caddyfile automatically
 COPY Caddyfile /etc/caddy/Caddyfile

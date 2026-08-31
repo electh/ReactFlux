@@ -63,6 +63,8 @@ ReactFlux 使用 React 编写，构建完成后生成一组静态网页文件，
 
 您可以从 `gh-pages` 分支下载预构建文件，并将它们部署到任何支持单页应用程序 (SPA) 的静态托管服务。
 
+`gh-pages` 中的文件按本仓库的 GitHub Pages 路径（`/ReactFlux/`）构建。若部署路径不同，请按下文说明设置 `VITE_BASE_PATH` 并从源码构建。
+
 确保配置 URL 重写，将所有请求重定向到 `index.html`。
 
 如果您使用 Nginx 部署，可能需要添加以下配置：
@@ -78,6 +80,32 @@ location / {
 ```caddyfile
 try_files {path} {path}/ /index.html
 ```
+
+### 部署到子路径
+
+公共路径会在构建时写入前端产物，修改后必须重新构建。请将 `VITE_BASE_PATH` 设置为 `/`，或设置为以 `/` 开头和结尾的绝对路径。路径分段可包含 ASCII 字母、数字、`.`、`_`、`~` 和 `-`：
+
+```bash
+VITE_BASE_PATH=/reactflux/ pnpm run build
+```
+
+请在同一 URL 路径下提供 `build` 目录中的内容，并将 SPA 深层链接回退到该路径的 `index.html`。例如，将文件放在 `/srv/reactflux` 后，可使用以下 Caddy 配置：
+
+```caddyfile
+root * /srv
+try_files {path} {path}/ /reactflux/index.html
+file_server
+```
+
+也可以为同一路径自行构建 Docker 镜像；镜像内置的 Caddy 会自动放置并提供这些文件：
+
+```bash
+docker build --build-arg VITE_BASE_PATH=/reactflux/ -t reactflux:subpath .
+docker run -p 2000:2000 reactflux:subpath
+# 访问 http://localhost:2000/reactflux/
+```
+
+反向代理必须保留配置的路径前缀。
 
 ### Vercel
 

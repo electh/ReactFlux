@@ -63,6 +63,8 @@ Vous pouvez le déployer sur Cloudflare Pages en sélectionnant `Framework prese
 
 Vous pouvez télécharger les fichiers pré-construits à partir de la branche `gh-pages` et les déployer sur n'importe quel service d'hébergement statique qui prend en charge les applications monopages (SPA).
 
+Les fichiers de `gh-pages` sont compilés pour le chemin GitHub Pages de ce dépôt (`/ReactFlux/`). Si votre déploiement utilise un autre chemin, compilez le projet depuis les sources avec `VITE_BASE_PATH` comme indiqué ci-dessous.
+
 Assurez-vous de configurer la réécriture des URL pour rediriger toutes les requêtes vers `index.html`.
 
 Si vous déployez en utilisant Nginx, vous devrez peut-être ajouter la configuration suivante :
@@ -78,6 +80,32 @@ Ou en utilisant Caddy, vous devrez peut-être ajouter la configuration suivante 
 ```caddyfile
 try_files {path} {path}/ /index.html
 ```
+
+### Déploiement dans un sous-chemin
+
+Le chemin public est intégré au bundle du frontend lors de la compilation : toute modification nécessite une nouvelle compilation. `VITE_BASE_PATH` doit valoir `/` ou être un chemin absolu commençant et se terminant par `/`. Les segments peuvent contenir des lettres ASCII, des chiffres, `.`, `_`, `~` et `-` :
+
+```bash
+VITE_BASE_PATH=/reactflux/ pnpm run build
+```
+
+Le contenu de `build` doit être disponible sous le même chemin d’URL et les liens profonds de la SPA doivent se replier sur le fichier `index.html` de ce chemin. Par exemple, si les fichiers se trouvent dans `/srv/reactflux`, Caddy peut être configuré ainsi :
+
+```caddyfile
+root * /srv
+try_files {path} {path}/ /reactflux/index.html
+file_server
+```
+
+L’image Docker peut également être construite pour ce chemin ; la configuration Caddy incluse place et sert automatiquement les fichiers :
+
+```bash
+docker build --build-arg VITE_BASE_PATH=/reactflux/ -t reactflux:subpath .
+docker run -p 2000:2000 reactflux:subpath
+# Ouvrez http://localhost:2000/reactflux/
+```
+
+Le proxy inverse doit conserver le préfixe configuré.
 
 ### Vercel
 

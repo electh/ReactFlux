@@ -63,6 +63,8 @@ You can deploy it on Cloudflare Pages by selecting `Framework preset` as `Create
 
 You can download the pre-built files from the `gh-pages` branch and deploy them to any static hosting service that supports single-page applications (SPA).
 
+The files in `gh-pages` are built for this repository's GitHub Pages path (`/ReactFlux/`). If your deployment uses a different path, build from source with `VITE_BASE_PATH` as described below.
+
 Make sure to configure URL rewriting to redirect all requests to `index.html`.
 
 If you are deploying using Nginx, you might need to add the following configuration:
@@ -78,6 +80,32 @@ Or using Caddy, you might need to add the following configuration:
 ```caddyfile
 try_files {path} {path}/ /index.html
 ```
+
+### Deploying Under a Subpath
+
+The public path is embedded in the frontend bundle at build time, so changing it requires a rebuild. Set `VITE_BASE_PATH` to `/` or to an absolute path that starts and ends with `/`. Path segments may contain ASCII letters, numbers, `.`, `_`, `~`, and `-`:
+
+```bash
+VITE_BASE_PATH=/reactflux/ pnpm run build
+```
+
+Make the contents of `build` available at the same URL path and route SPA deep links to that path's `index.html`. For example, if the files are stored in `/srv/reactflux`, Caddy can serve them with:
+
+```caddyfile
+root * /srv
+try_files {path} {path}/ /reactflux/index.html
+file_server
+```
+
+The Docker image can be built for the same path; its bundled Caddy configuration places and serves the files automatically:
+
+```bash
+docker build --build-arg VITE_BASE_PATH=/reactflux/ -t reactflux:subpath .
+docker run -p 2000:2000 reactflux:subpath
+# Open http://localhost:2000/reactflux/
+```
+
+A reverse proxy must preserve the configured prefix.
 
 ### Vercel
 

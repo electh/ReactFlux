@@ -2,7 +2,14 @@
 
 root * /srv
 
-try_files {path} {path}/ /index.html
+@staticFiles file {path} {path}/
+handle @staticFiles {
+	file_server
+}
 
-# Enable the static file server.
-file_server
+handle {$REACTFLUX_BASE_PATH:/}* {
+	try_files {path} {path}/ {$REACTFLUX_BASE_PATH:/}index.html
+	file_server
+}
+
+respond 404

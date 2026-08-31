@@ -179,7 +179,7 @@ async function processFontFile(font, fontDir, dirName, index, total) {
   try {
     const buffer = await downloadFont(url, outputPath)
     const hash = calculateHash(buffer)
-    const localPath = `/fonts/${dirName}/${filename}`
+    const localPath = `../fonts/${dirName}/${filename}`
     const updatedCSS = css.replace(url, localPath)
 
     return { css: updatedCSS, filename, hash }

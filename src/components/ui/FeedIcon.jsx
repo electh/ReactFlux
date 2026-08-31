@@ -4,7 +4,7 @@ import useFeedIcons from "@/hooks/useFeedIcons"
 import { updateFeedIcon } from "@/store/feedIconsState"
 import { getSecondHostname } from "@/utils/url"
 
-const DEFAULT_ICON_URL = "/default-feed-icon.png"
+const DEFAULT_ICON_URL = `${import.meta.env.BASE_URL}default-feed-icon.png`
 
 const getFallbackIconURL = (feed) => {
   const hostname = getSecondHostname(feed.site_url) ?? getSecondHostname(feed.feed_url)

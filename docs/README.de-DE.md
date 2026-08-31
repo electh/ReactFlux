@@ -63,6 +63,8 @@ ReactFlux kann auf Cloudflare Pages eingerichtet werden, indem man `Framework pr
 
 Fertige Dateien können aus dem `gh-pages`-Zweig heruntergeladen und bei jedem statischen Hosting-Service eingesetzt werden, der Single-Page-Webanwendungen (SPA: _single-page applications_) unterstützt.
 
+Die Dateien in `gh-pages` sind für den GitHub-Pages-Pfad dieses Repositorys (`/ReactFlux/`) gebaut. Wird ein anderer Pfad verwendet, muss der Build wie unten beschrieben mit `VITE_BASE_PATH` aus dem Quellcode erstellt werden.
+
 Es sollte sichergestellt werden, dass das URL-Rewriting so konfiguriert ist, dass alle Anfragen auf `index.html` umgeleitet werden.
 
 Wird Nginx verwendet, muss möglicherweise folgende Konfiguration hinzugefügt werden:
@@ -78,6 +80,32 @@ Wenn Caddy genutzt wird, muss möglicherweise diese Konfiguration hinzugefügt w
 ```caddyfile
 try_files {path} {path}/ /index.html
 ```
+
+### Bereitstellung unter einem Unterpfad
+
+Der öffentliche Pfad wird beim Build fest in das Frontend-Bundle eingebettet; jede Änderung erfordert einen neuen Build. `VITE_BASE_PATH` muss `/` oder ein absoluter Pfad sein, der mit `/` beginnt und endet. Pfadsegmente dürfen ASCII-Buchstaben, Ziffern, `.`, `_`, `~` und `-` enthalten:
+
+```bash
+VITE_BASE_PATH=/reactflux/ pnpm run build
+```
+
+Der Inhalt von `build` muss unter demselben URL-Pfad verfügbar sein; SPA-Deep-Links müssen auf die dortige `index.html` zurückfallen. Liegen die Dateien beispielsweise unter `/srv/reactflux`, kann Caddy so konfiguriert werden:
+
+```caddyfile
+root * /srv
+try_files {path} {path}/ /reactflux/index.html
+file_server
+```
+
+Das Docker-Image kann für denselben Pfad gebaut werden. Die enthaltene Caddy-Konfiguration legt die Dateien automatisch am richtigen Ort ab und stellt sie bereit:
+
+```bash
+docker build --build-arg VITE_BASE_PATH=/reactflux/ -t reactflux:subpath .
+docker run -p 2000:2000 reactflux:subpath
+# http://localhost:2000/reactflux/ öffnen
+```
+
+Ein Reverse-Proxy muss das konfigurierte Präfix beibehalten.
 
 ### Vercel
 

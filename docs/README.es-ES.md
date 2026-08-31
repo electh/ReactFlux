@@ -63,6 +63,8 @@ Puede desplegarlo en Cloudflare Pages seleccionando `Framework preset` como `Cre
 
 Puede descargar los archivos preconstruidos de la rama `gh-pages` y desplegarlos en cualquier servicio de alojamiento estático que soporte aplicaciones de una sola página (SPA).
 
+Los archivos de `gh-pages` se compilan para la ruta de GitHub Pages de este repositorio (`/ReactFlux/`). Si su despliegue usa otra ruta, compile desde el código fuente con `VITE_BASE_PATH` como se describe a continuación.
+
 Asegúrese de configurar la reescritura de URL para redirigir todas las solicitudes a `index.html`.
 
 Si está desplegando usando Nginx, es posible que necesite agregar la siguiente configuración:
@@ -78,6 +80,32 @@ O usando Caddy, es posible que necesite agregar la siguiente configuración:
 ```caddyfile
 try_files {path} {path}/ /index.html
 ```
+
+### Despliegue en una subruta
+
+La ruta pública queda fijada en el paquete del frontend durante la compilación, por lo que cualquier cambio requiere una nueva compilación. `VITE_BASE_PATH` debe ser `/` o una ruta absoluta que empiece y termine con `/`. Los segmentos pueden contener letras ASCII, números, `.`, `_`, `~` y `-`:
+
+```bash
+VITE_BASE_PATH=/reactflux/ pnpm run build
+```
+
+El contenido de `build` debe estar disponible en la misma ruta URL y los enlaces profundos de la SPA deben volver al `index.html` de esa ruta. Por ejemplo, si los archivos están en `/srv/reactflux`, Caddy puede configurarse así:
+
+```caddyfile
+root * /srv
+try_files {path} {path}/ /reactflux/index.html
+file_server
+```
+
+También puede compilar la imagen Docker para la misma ruta; la configuración Caddy incluida coloca y sirve los archivos automáticamente:
+
+```bash
+docker build --build-arg VITE_BASE_PATH=/reactflux/ -t reactflux:subpath .
+docker run -p 2000:2000 reactflux:subpath
+# Abra http://localhost:2000/reactflux/
+```
+
+El proxy inverso debe conservar el prefijo configurado.
 
 ### Vercel
 
