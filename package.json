@@ -15,6 +15,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint",
+    "lint:cache:clear": "node -e \"require('node:fs').rmSync('.eslintcache', { force: true })\"",
+    "lint:fast": "eslint --cache --cache-strategy content",
     "lint:fix": "eslint --fix",
     "knip": "knip",
     "knip:fix": "knip --fix",

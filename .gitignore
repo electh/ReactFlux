@@ -39,5 +39,6 @@ dist-ssr
 /dev-dist
 
 # misc
+.eslintcache
 stats.html
 src/version-info.json
