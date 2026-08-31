@@ -28,3 +28,9 @@
   outline: 2px solid rgb(var(--primary-6));
   outline-offset: 2px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .enable-code-highlighting {
+    transition: none;
+  }
+}

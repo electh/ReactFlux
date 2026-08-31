@@ -1,8 +1,9 @@
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 
 import { ANIMATION_DURATION_S } from "@/utils/constants"
 
 const FadeTransition = ({ children, duration = ANIMATION_DURATION_S, y = 0, x = 0, ...props }) => {
+  const shouldReduceMotion = useReducedMotion()
   const initialPosition = {
     ...(x === 0 ? {} : { x }),
     ...(y === 0 ? {} : { y }),
@@ -16,8 +17,8 @@ const FadeTransition = ({ children, duration = ANIMATION_DURATION_S, y = 0, x = 
     <motion.div
       animate={{ opacity: 1, ...settledPosition }}
       exit={{ opacity: 0, ...settledPosition }}
-      initial={{ opacity: 0, ...initialPosition }}
-      transition={{ duration }}
+      initial={shouldReduceMotion ? false : { opacity: 0, ...initialPosition }}
+      transition={{ duration: shouldReduceMotion ? 0 : duration }}
       {...props}
     >
       {children}

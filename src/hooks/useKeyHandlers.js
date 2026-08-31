@@ -17,6 +17,7 @@ import {
 } from "@/store/contentState"
 import { filteredCategoriesState } from "@/store/dataState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
+import { getPreferredScrollBehavior } from "@/utils/dom"
 import buildArticleImageModel from "@/utils/images"
 import findAdjacentItem from "@/utils/navigation"
 
@@ -49,7 +50,7 @@ const useKeyHandlers = () => {
       const selectedCard = entryListRef.current.el.querySelector(".card-wrapper.selected")
       if (selectedCard) {
         selectedCard.scrollIntoView({
-          behavior: "smooth",
+          behavior: getPreferredScrollBehavior(),
           block: "center",
         })
       }

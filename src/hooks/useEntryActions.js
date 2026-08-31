@@ -297,7 +297,8 @@ const handleEntryStarredUpdate = (entry, newStarred, shouldCelebrate = true) => 
     setUnreadStarredCount((prev) => Math.max(0, prev + starredCountChange))
   }
 
-  if (newStarred && shouldCelebrate) {
+  const prefersReducedMotion = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+  if (newStarred && shouldCelebrate && !prefersReducedMotion) {
     void import("canvas-confetti")
       .then(({ default: confetti }) =>
         confetti({

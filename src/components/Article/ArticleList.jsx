@@ -111,7 +111,11 @@ const ArticleList = forwardRef(
     const canRenderResults = isArticleListReady && !articleListError
 
     return (
-      <AdaptiveScrollArea ref={ref} className="entry-list" scrollableNodeProps={{ ref: cardsRef }}>
+      <AdaptiveScrollArea
+        ref={ref}
+        className="entry-list"
+        scrollableNodeProps={{ ref: cardsRef, tabIndex: 0 }}
+      >
         <LoadingCards />
         {isArticleListReady && articleListError && (
           <div className="article-list-state" role="alert">

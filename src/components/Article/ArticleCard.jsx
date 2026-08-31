@@ -40,7 +40,7 @@ const ArticleCardImage = ({ coverDisplayMode, entry, isWideImage, onError, onLoa
   return (
     <div className="card-thumbnail">
       <img
-        alt={entry.id}
+        alt=""
         decoding="async"
         height={entry.coverHeight || undefined}
         loading="lazy"

@@ -13,12 +13,15 @@ export const extractHeadings = (content) => {
   return extractHeadingsFromDocument(new DOMParser().parseFromString(content, "text/html"))
 }
 
+export const getPreferredScrollBehavior = () =>
+  globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+
 export const scrollToHeading = (heading) => {
   const headingElements = document.querySelectorAll("h1, h2, h3, h4, h5, h6")
 
   for (const element of headingElements) {
     if (element.textContent.trim() === heading.text) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
+      element.scrollIntoView({ behavior: getPreferredScrollBehavior(), block: "start" })
       break
     }
   }

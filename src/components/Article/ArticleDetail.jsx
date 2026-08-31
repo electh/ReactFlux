@@ -27,7 +27,7 @@ import CustomLink from "@/components/ui/CustomLink"
 import FadeTransition from "@/components/ui/FadeTransition"
 import PlyrPlayer from "@/components/ui/LazyPlyrPlayer"
 import usePhotoSlider from "@/hooks/usePhotoSlider"
-import useScreenWidth from "@/hooks/useScreenWidth"
+import useScreenWidth, { prefersReducedMotionState } from "@/hooks/useScreenWidth"
 import { activeContentState } from "@/store/contentState"
 import { articleDetailSettingsState } from "@/store/settingsState"
 import returnToArticleImage from "@/utils/article-image-return"
@@ -366,6 +366,7 @@ const getHtmlParserOptions = (getImageIndex, togglePhotoSlider) => {
 const ArticleDetail = forwardRef((_, ref) => {
   const navigate = useNavigate()
   const { isBelowMedium } = useScreenWidth()
+  const prefersReducedMotion = useStore(prefersReducedMotionState)
 
   const activeContent = useStore(activeContentState)
   const activeContentHtml = activeContent.content ?? ""
@@ -430,10 +431,12 @@ const ArticleDetail = forwardRef((_, ref) => {
     [capturePhotoSliderSession, openPhotoSlider],
   )
 
-  const lightboxAnimationConfig = useMemo(
-    () => (lightboxSlideAnimation ? { fade: 250 } : { fade: 250, navigation: 0 }),
-    [lightboxSlideAnimation],
-  )
+  const lightboxAnimationConfig = useMemo(() => {
+    if (prefersReducedMotion) {
+      return { fade: 0, navigation: 0 }
+    }
+    return lightboxSlideAnimation ? { fade: 250 } : { fade: 250, navigation: 0 }
+  }, [lightboxSlideAnimation, prefersReducedMotion])
 
   const attachments = activeContent.attachments ?? EMPTY_ATTACHMENTS
   const { items: attachmentItems, primaryMedia } = attachments

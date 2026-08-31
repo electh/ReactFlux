@@ -30,6 +30,7 @@ const isBelowCompactState = createMediaQueryState(`(max-width: ${COMPACT_THRESHO
 const isBelowMediumState = createMediaQueryState(`(max-width: ${MEDIUM_THRESHOLD}px)`)
 const isBelowLargeState = createMediaQueryState(`(max-width: ${LARGE_THRESHOLD}px)`)
 export const hasCoarsePointerState = createMediaQueryState("(pointer: coarse)")
+export const prefersReducedMotionState = createMediaQueryState("(prefers-reduced-motion: reduce)")
 
 const useScreenWidth = () => {
   const isBelowCompact = useStore(isBelowCompactState)
