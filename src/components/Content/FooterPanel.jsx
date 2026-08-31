@@ -40,7 +40,9 @@ const handleFilterChange = (value) => {
 
 const MarkAllReadButton = ({ from, onConfirm }) => {
   const { polyglot } = useStore(polyglotState)
-  const { skipMarkAllReadConfirmation } = useStore(settingsState)
+  const { skipMarkAllReadConfirmation } = useStore(settingsState, {
+    keys: ["skipMarkAllReadConfirmation"],
+  })
 
   const isHidden = from === "history"
   const markAllReadLabel = polyglot.t("article_list.mark_all_as_read_tooltip")
@@ -83,8 +85,12 @@ const MarkAllReadButton = ({ from, onConfirm }) => {
 
 const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   const { from: source, id: sourceId } = info
-  const { filterDate, isArticleListReady } = useStore(contentState)
-  const { markAllReadJumpToNext, showStatus } = useStore(settingsState)
+  const { filterDate, isArticleListReady } = useStore(contentState, {
+    keys: ["filterDate", "isArticleListReady"],
+  })
+  const { markAllReadJumpToNext, showStatus } = useStore(settingsState, {
+    keys: ["markAllReadJumpToNext", "showStatus"],
+  })
   const { polyglot } = useStore(polyglotState)
   const filteredCategories = useStore(filteredCategoriesState)
   const filteredFeeds = useStore(filteredFeedsState)

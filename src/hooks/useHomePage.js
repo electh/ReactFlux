@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/react"
 import { useMemo } from "react"
 
 import { polyglotState } from "@/hooks/useLanguage"
-import { categoriesState, dataState, feedsState } from "@/store/dataState"
+import { catalogCategoriesState, catalogFeedsState, dataState } from "@/store/dataState"
 import {
   currentHomeTargetState,
   homeIdentityState,
@@ -45,9 +45,9 @@ export const describeHomeTarget = ({ categories, feeds, polyglot, target }) => {
 const useHomePage = () => {
   const target = useStore(currentHomeTargetState)
   const identity = useStore(homeIdentityState)
-  const categories = useStore(categoriesState)
-  const feeds = useStore(feedsState)
-  const { loadState } = useStore(dataState)
+  const categories = useStore(catalogCategoriesState)
+  const feeds = useStore(catalogFeedsState)
+  const { loadState } = useStore(dataState, { keys: ["loadState"] })
   const { polyglot } = useStore(polyglotState)
 
   const description = useMemo(

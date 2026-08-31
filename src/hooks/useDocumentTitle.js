@@ -4,16 +4,18 @@ import { useParams } from "react-router"
 
 import { polyglotState } from "@/hooks/useLanguage"
 import { contentState } from "@/store/contentState"
-import { categoriesState, feedsState } from "@/store/dataState"
+import { catalogCategoriesState, catalogFeedsState } from "@/store/dataState"
 
 const BASE_TITLE = "ReactFlux"
 
 const useDocumentTitle = () => {
-  const { activeContent, infoFrom } = useStore(contentState)
+  const { activeContent, infoFrom } = useStore(contentState, {
+    keys: ["activeContent", "infoFrom"],
+  })
   const { polyglot } = useStore(polyglotState)
   const { id } = useParams()
-  const feeds = useStore(feedsState)
-  const categories = useStore(categoriesState)
+  const feeds = useStore(catalogFeedsState)
+  const categories = useStore(catalogCategoriesState)
 
   useEffect(() => {
     const getTitle = () => {

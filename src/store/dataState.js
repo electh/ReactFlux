@@ -3,6 +3,7 @@ import { computed, map } from "nanostores"
 import { settingsState } from "./settingsState"
 
 import { sortMixedLanguageArray } from "@/utils/locales"
+import { selectStore } from "@/utils/nanostores"
 
 const createResourceLoadState = () => ({
   hasSnapshot: false,
@@ -39,24 +40,33 @@ const createDefaultValue = (sessionRevision = 0) => ({
 })
 
 export const dataState = map(createDefaultValue())
+export const hasIntegrationsState = selectStore(dataState, ({ hasIntegrations }) => hasIntegrations)
 
-export const feedsState = computed([dataState, settingsState], (data, settings) => {
-  const { unreadInfo, feedsData } = data
-  const { language } = settings
+const categoriesDataState = selectStore(dataState, ({ categoriesData }) => categoriesData)
+const feedsDataState = selectStore(dataState, ({ feedsData }) => feedsData)
+const unreadInfoState = selectStore(dataState, ({ unreadInfo }) => unreadInfo)
+const languageState = selectStore(settingsState, ({ language }) => language)
+const showHiddenFeedsState = selectStore(settingsState, ({ showHiddenFeeds }) => showHiddenFeeds)
 
-  const feedsWithUnread = feedsData.map((feed) => ({
+export const catalogFeedsState = computed([feedsDataState, languageState], (feeds, language) =>
+  sortMixedLanguageArray(feeds, "title", language),
+)
+
+export const catalogCategoriesState = computed(
+  [categoriesDataState, languageState],
+  (categories, language) => sortMixedLanguageArray(categories, "title", language),
+)
+
+export const feedsState = computed([catalogFeedsState, unreadInfoState], (feeds, unreadInfo) =>
+  feeds.map((feed) => ({
     ...feed,
     unreadCount: unreadInfo[feed.id] ?? 0,
-  }))
-
-  return sortMixedLanguageArray(feedsWithUnread, "title", language)
-})
+  })),
+)
 
 export const categoriesState = computed(
-  [dataState, feedsState, settingsState],
-  (data, feeds, settings) => {
-    const { categoriesData } = data
-    const { language } = settings
+  [catalogCategoriesState, feedsState],
+  (categories, feeds) => {
     const categoryStatsById = new Map()
 
     for (const feed of feeds) {
@@ -67,7 +77,7 @@ export const categoriesState = computed(
       categoryStatsById.set(categoryId, stats)
     }
 
-    const categoriesWithUnread = categoriesData.map((category) => {
+    return categories.map((category) => {
       const stats = categoryStatsById.get(category.id) ?? { unreadCount: 0, feedCount: 0 }
       return {
         ...category,
@@ -75,12 +85,10 @@ export const categoriesState = computed(
         feedCount: stats.feedCount,
       }
     })
-
-    return sortMixedLanguageArray(categoriesWithUnread, "title", language)
   },
 )
 
-const hiddenCategoryIdSetState = computed(categoriesState, (categories) => {
+const hiddenCategoryIdSetState = computed(catalogCategoriesState, (categories) => {
   const hiddenCategoryIdSet = new Set()
 
   for (const category of categories) {
@@ -93,7 +101,7 @@ const hiddenCategoryIdSetState = computed(categoriesState, (categories) => {
 })
 
 const hiddenFeedIdSetState = computed(
-  [feedsState, hiddenCategoryIdSetState],
+  [catalogFeedsState, hiddenCategoryIdSetState],
   (feeds, hiddenCategoryIds) => {
     const hiddenFeedIdSet = new Set()
 
@@ -108,19 +116,15 @@ const hiddenFeedIdSetState = computed(
 )
 
 export const filteredFeedsState = computed(
-  [feedsState, hiddenFeedIdSetState, settingsState],
-  (feeds, hiddenFeedIds, settings) => {
-    const { showHiddenFeeds } = settings
-    return feeds.filter((feed) => showHiddenFeeds || !hiddenFeedIds.has(feed.id))
-  },
+  [feedsState, hiddenFeedIdSetState, showHiddenFeedsState],
+  (feeds, hiddenFeedIds, showHiddenFeeds) =>
+    feeds.filter((feed) => showHiddenFeeds || !hiddenFeedIds.has(feed.id)),
 )
 
 export const filteredCategoriesState = computed(
-  [categoriesState, hiddenCategoryIdSetState, settingsState],
-  (categories, hiddenCategoryIds, settings) => {
-    const { showHiddenFeeds } = settings
-    return categories.filter((category) => showHiddenFeeds || !hiddenCategoryIds.has(category.id))
-  },
+  [categoriesState, hiddenCategoryIdSetState, showHiddenFeedsState],
+  (categories, hiddenCategoryIds, showHiddenFeeds) =>
+    categories.filter((category) => showHiddenFeeds || !hiddenCategoryIds.has(category.id)),
 )
 
 export const feedsGroupedByIdState = computed(filteredFeedsState, (filteredFeeds) => {
@@ -139,19 +143,21 @@ export const feedsGroupedByIdState = computed(filteredFeedsState, (filteredFeeds
   return groupedFeeds
 })
 
-export const unreadTotalState = computed([dataState, filteredFeedsState], (data, filteredFeeds) => {
-  const { unreadInfo } = data
-  const filteredFeedIds = new Set(filteredFeeds.map((feed) => feed.id))
-  let total = 0
+export const unreadTotalState = computed(
+  [unreadInfoState, filteredFeedsState],
+  (unreadInfo, filteredFeeds) => {
+    const filteredFeedIds = new Set(filteredFeeds.map((feed) => feed.id))
+    let total = 0
 
-  for (const [id, count] of Object.entries(unreadInfo)) {
-    if (filteredFeedIds.has(Number(id))) {
-      total += count
+    for (const [id, count] of Object.entries(unreadInfo)) {
+      if (filteredFeedIds.has(Number(id))) {
+        total += count
+      }
     }
-  }
 
-  return total
-})
+    return total
+  },
+)
 
 const incrementResourceRevision = (resourceRevisions, resource) => ({
   ...resourceRevisions,

@@ -15,7 +15,7 @@ const LoadingCard = ({ isArticleListReady }) => (
 )
 
 const LoadingCards = () => {
-  const { isArticleListReady } = useStore(contentState)
+  const { isArticleListReady } = useStore(contentState, { keys: ["isArticleListReady"] })
 
   return (
     !isArticleListReady &&

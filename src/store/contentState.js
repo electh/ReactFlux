@@ -5,12 +5,13 @@ import { getSettings, settingsState } from "./settingsState"
 
 import removeDuplicateEntries from "@/utils/deduplicate"
 import { extractHeadings } from "@/utils/dom"
-import createSetter from "@/utils/nanostores"
+import createSetter, { selectStore } from "@/utils/nanostores"
 
 const defaultValue = {
   activeContent: null, // 当前打开的文章
   articleListError: false,
   articleListRevision: 0,
+  articleListSnapshotRevision: 0,
   entries: [], // 接口返回的所有文章
   filterDate: null, // 搜索日期
   filterString: "", // 搜索文本
@@ -25,12 +26,19 @@ const defaultValue = {
 
 export const contentState = map(defaultValue)
 
-export const articleHeadingsState = computed([contentState], (content) => {
-  const { activeContent } = content
-  if (!activeContent?.content) {
+export const activeContentState = selectStore(contentState, ({ activeContent }) => activeContent)
+const activeContentIdState = selectStore(
+  activeContentState,
+  (activeContent) => activeContent?.id ?? null,
+)
+export const createEntrySelectedState = (entryId) =>
+  selectStore(activeContentIdState, (activeContentId) => activeContentId === entryId)
+
+export const articleHeadingsState = selectStore(activeContentState, (activeContent) => {
+  if (!activeContent) {
     return []
   }
-  return extractHeadings(activeContent.content)
+  return activeContent.headings ?? extractHeadings(activeContent.content)
 })
 
 export const filteredEntriesState = computed(contentState, (content) => content.entries)
@@ -85,13 +93,12 @@ export const dynamicCountState = computed(
 )
 
 export const activeEntryIndexState = computed(
-  [contentState, filteredEntriesState],
-  (content, filteredEntries) => {
-    const { activeContent } = content
-    if (!activeContent) {
+  [activeContentIdState, filteredEntriesState],
+  (activeContentId, filteredEntries) => {
+    if (activeContentId === null) {
       return -1
     }
-    return filteredEntries.findIndex((entry) => entry.id === activeContent.id)
+    return filteredEntries.findIndex((entry) => entry.id === activeContentId)
   },
 )
 
@@ -111,6 +118,11 @@ export const nextContentState = computed(
 
 export const setActiveContent = createSetter(contentState, "activeContent")
 export const setArticleListError = createSetter(contentState, "articleListError")
+export const incrementArticleListSnapshotRevision = () =>
+  contentState.setKey(
+    "articleListSnapshotRevision",
+    (contentState.get().articleListSnapshotRevision ?? 0) + 1,
+  )
 export const setEntries = createSetter(contentState, "entries")
 export const setFilterDate = createSetter(contentState, "filterDate")
 export const setFilterString = createSetter(contentState, "filterString")

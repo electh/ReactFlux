@@ -9,8 +9,10 @@ import { checkIsInLast24Hours, getTimestamp } from "@/utils/date"
 import buildInfo from "@/version-info.json"
 
 function useVersionCheck() {
-  const isServerInfoReady = useStore(dataState).loadState.serverInfo.hasSnapshot
-  const { checkForUpdates } = useStore(settingsState)
+  const isServerInfoReady = useStore(dataState, {
+    keys: ["loadState"],
+  }).loadState.serverInfo.hasSnapshot
+  const { checkForUpdates } = useStore(settingsState, { keys: ["checkForUpdates"] })
 
   const [hasUpdate, setHasUpdate] = useState(false)
 

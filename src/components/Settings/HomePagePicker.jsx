@@ -109,9 +109,9 @@ const TargetButton = ({
 
 const HomePagePicker = ({ visible, onClose }) => {
   const { categories, feeds, setTarget, target } = useHomePage()
-  const { catalog: catalogLoadState } = useStore(dataState).loadState
+  const { catalog: catalogLoadState } = useStore(dataState, { keys: ["loadState"] }).loadState
   const { polyglot } = useStore(polyglotState)
-  const { showFeedIcon } = useStore(settingsState)
+  const { showFeedIcon } = useStore(settingsState, { keys: ["showFeedIcon"] })
   const { isBelowMedium } = useScreenWidth()
   const { refreshFeedData } = useAppData()
 

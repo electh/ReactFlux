@@ -23,7 +23,7 @@ import {
   setFilterDate,
   setFilterString,
 } from "@/store/contentState"
-import { categoriesState, feedsState } from "@/store/dataState"
+import { catalogCategoriesState, catalogFeedsState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { getStartOfToday } from "@/utils/date"
 import "./SearchAndSortBar.css"
@@ -121,11 +121,13 @@ const ActiveButton = ({ active, expanded, icon, tooltip, onClick }) => (
 )
 
 const SearchAndSortBar = () => {
-  const { filterDate, filterString, infoFrom, isArticleListReady } = useStore(contentState)
-  const { orderDirection } = useStore(settingsState)
+  const { filterDate, filterString, infoFrom, isArticleListReady } = useStore(contentState, {
+    keys: ["filterDate", "filterString", "infoFrom", "isArticleListReady"],
+  })
+  const { orderDirection } = useStore(settingsState, { keys: ["orderDirection"] })
   const { polyglot } = useStore(polyglotState)
-  const feeds = useStore(feedsState)
-  const categories = useStore(categoriesState)
+  const feeds = useStore(catalogFeedsState)
+  const categories = useStore(catalogCategoriesState)
   const dynamicCount = useStore(dynamicCountState)
 
   const { id } = useParams()

@@ -30,7 +30,7 @@ export default function Profile() {
   const { server } = useStore(authState)
   const { polyglot } = useStore(polyglotState)
 
-  const { themeMode } = useStore(settingsState)
+  const { themeMode } = useStore(settingsState, { keys: ["themeMode"] })
 
   const { setSettingsModalVisible } = useModalToggle()
   const [menuVisible, setMenuVisible] = useState(false)

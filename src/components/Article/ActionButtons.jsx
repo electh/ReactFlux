@@ -86,8 +86,8 @@ const MobileButtons = memo(({ commonButtons, hasHeadings, moveContextActionToMen
 MobileButtons.displayName = "MobileButtons"
 
 const ActionButtons = () => {
-  const { activeContent } = useStore(contentState)
-  const { hasIntegrations } = useStore(dataState)
+  const { activeContent } = useStore(contentState, { keys: ["activeContent"] })
+  const { hasIntegrations } = useStore(dataState, { keys: ["hasIntegrations"] })
   const { polyglot } = useStore(polyglotState)
   const headings = useStore(articleHeadingsState)
 
@@ -98,7 +98,16 @@ const ActionButtons = () => {
     fontSize,
     fontFamily,
     titleAlignment,
-  } = useStore(settingsState)
+  } = useStore(settingsState, {
+    keys: [
+      "articleWidth",
+      "edgeToEdgeImages",
+      "enableSwipeGesture",
+      "fontSize",
+      "fontFamily",
+      "titleAlignment",
+    ],
+  })
 
   const nextContent = useStore(nextContentState)
   const prevContent = useStore(prevContentState)

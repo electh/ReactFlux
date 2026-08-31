@@ -39,7 +39,9 @@ const ErrorState = ({ description, logoutLabel, retryLabel, title, onLogout, onR
 const HomeRedirect = () => {
   const identity = useStore(homeIdentityState)
   const target = useStore(currentHomeTargetState)
-  const { categoriesData, feedsData, loadState } = useStore(dataState)
+  const { categoriesData, feedsData, loadState } = useStore(dataState, {
+    keys: ["categoriesData", "feedsData", "loadState"],
+  })
   const { polyglot } = useStore(polyglotState)
   const { refreshFeedData, refreshIdentity } = useAppData()
   const navigate = useNavigate()

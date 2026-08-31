@@ -98,7 +98,9 @@ const CompatibilityGate = ({ checkState, onLogout, onRetry }) => {
 
 const RouterProtect = () => {
   const auth = useStore(authState)
-  const { verifiedAuthSessionKey, version } = useStore(dataState)
+  const { verifiedAuthSessionKey, version } = useStore(dataState, {
+    keys: ["verifiedAuthSessionKey", "version"],
+  })
   const location = useLocation()
   const navigate = useNavigate()
   const [retryCount, setRetryCount] = useState(0)

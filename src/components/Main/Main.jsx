@@ -11,7 +11,7 @@ import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
 import useModalToggle from "@/hooks/useModalToggle"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { categoriesState, feedsState } from "@/store/dataState"
+import { catalogCategoriesState, catalogFeedsState } from "@/store/dataState"
 import includesIgnoreCase from "@/utils/filter"
 import "./Main.css"
 
@@ -69,8 +69,8 @@ const SettingsModal = () => {
 
 const AddFeedModal = () => {
   const { polyglot } = useStore(polyglotState)
-  const categories = useStore(categoriesState)
-  const feeds = useStore(feedsState)
+  const categories = useStore(catalogCategoriesState)
+  const feeds = useStore(catalogFeedsState)
   const { isBelowMedium } = useScreenWidth()
 
   const [feedModalLoading, setFeedModalLoading] = useState(false)

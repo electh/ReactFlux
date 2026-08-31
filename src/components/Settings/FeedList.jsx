@@ -253,7 +253,7 @@ const RefreshModal = ({ visible, setVisible }) => {
 
 const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete }) => {
   const { polyglot } = useStore(polyglotState)
-  const { categoriesData } = useStore(dataState)
+  const { categoriesData } = useStore(dataState, { keys: ["categoriesData"] })
 
   const [operationType, setOperationType] = useState("")
   const [newCategoryId, setNewCategoryId] = useState("")
@@ -462,8 +462,10 @@ const BulkUpdateModal = ({ visible, setVisible }) => {
 }
 
 const FeedList = () => {
-  const { catalog: catalogLoadState } = useStore(dataState).loadState
-  const { showDetailedRelativeTime } = useStore(settingsState)
+  const { catalog: catalogLoadState } = useStore(dataState, { keys: ["loadState"] }).loadState
+  const { showDetailedRelativeTime } = useStore(settingsState, {
+    keys: ["showDetailedRelativeTime"],
+  })
   const filterType = useStore(filterTypeState)
   const tableData = useStore(tableDataState)
   const { polyglot } = useStore(polyglotState)

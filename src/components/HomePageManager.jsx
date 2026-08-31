@@ -24,8 +24,10 @@ import {
 const HomePageManager = () => {
   const identity = useStore(homeIdentityState)
   const target = useStore(currentHomeTargetState)
-  const { homePage: legacyHomePage, homePages } = useStore(settingsState)
-  const { loadState } = useStore(dataState)
+  const { homePage: legacyHomePage, homePages } = useStore(settingsState, {
+    keys: ["homePage", "homePages"],
+  })
+  const { loadState } = useStore(dataState, { keys: ["loadState"] })
   const { polyglot } = useStore(polyglotState)
   const location = useLocation()
   const navigate = useNavigate()

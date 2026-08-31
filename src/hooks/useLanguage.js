@@ -53,7 +53,7 @@ const loadLanguage = async (language, polyglot) => {
 }
 
 const useLanguage = () => {
-  const { language } = useStore(settingsState)
+  const { language } = useStore(settingsState, { keys: ["language"] })
 
   useEffect(() => {
     if (language) {

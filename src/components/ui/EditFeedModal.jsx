@@ -6,7 +6,7 @@ import AccessibleModal from "./AccessibleModal"
 import { updateFeed } from "@/apis"
 import { polyglotState } from "@/hooks/useLanguage"
 import { authState } from "@/store/authState"
-import { categoriesState, setFeedsData } from "@/store/dataState"
+import { catalogCategoriesState, setFeedsData } from "@/store/dataState"
 
 const EditFeedModal = ({
   visible,
@@ -19,7 +19,7 @@ const EditFeedModal = ({
 }) => {
   const { polyglot } = useStore(polyglotState)
   const auth = useStore(authState)
-  const categories = useStore(categoriesState)
+  const categories = useStore(catalogCategoriesState)
 
   const feedId = selectedFeed?.id || selectedFeed?.key
   const minifluxEditUrl = `${auth.server}/feed/${feedId}/edit`

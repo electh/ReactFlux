@@ -5,7 +5,9 @@ import { settingsState } from "@/store/settingsState"
 import { applyColor } from "@/utils/colors"
 
 const useTheme = () => {
-  const { themeColor, themeMode } = useStore(settingsState)
+  const { themeColor, themeMode } = useStore(settingsState, {
+    keys: ["themeColor", "themeMode"],
+  })
   const [isSystemDark, setIsSystemDark] = useState(
     globalThis.matchMedia("(prefers-color-scheme: dark)").matches,
   )
