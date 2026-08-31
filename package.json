@@ -18,7 +18,7 @@
     "lint:fix": "eslint --fix",
     "knip": "knip",
     "knip:fix": "knip --fix",
-    "prepare": "lefthook install",
+    "prepare": "node src/scripts/install-hooks.js",
     "prebuild": "node src/scripts/version-info.js",
     "update-fonts": "node scripts/update-fonts.js"
   },

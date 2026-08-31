@@ -20,7 +20,7 @@ function useVersionCheck() {
   }, [])
 
   useEffect(() => {
-    if (!isServerInfoReady || import.meta.env.DEV || !checkForUpdates) {
+    if (!isServerInfoReady || import.meta.env.DEV || !checkForUpdates || !buildInfo.gitDate) {
       return
     }
 
