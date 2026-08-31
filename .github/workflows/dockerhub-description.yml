@@ -9,17 +9,23 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   dockerHubDescription:
+    if: >-
+      github.repository == 'electh/ReactFlux' &&
+      (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Docker Hub Description
-        uses: peter-evans/dockerhub-description@v5
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ github.repository }}
+          repository: electh/reactflux
           short-description: ${{ github.event.repository.description }}
           enable-url-completion: true

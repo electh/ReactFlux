@@ -1,58 +1,104 @@
 name: Build and Deploy to gh-pages
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - ".editorconfig"
-      - ".github/**"
-      - ".gitignore"
-      - ".husky/**"
-      - ".prettierignore"
-      - ".prettierrc"
-      - "Caddyfile"
-      - "Dockerfile"
-      - "docs/**"
-      - "eslint.config.mjs"
-      - "README.md"
-
-  workflow_run:
-    workflows: ["Dependabot auto-merge"]
-    types:
-      - completed
-
   workflow_dispatch:
+
+  workflow_call:
+    inputs:
+      checkout_ref:
+        description: Commit to deploy after an authorized merge
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: write
+  statuses: write
 
 jobs:
   build-and-deploy:
-    concurrency: ci-${{github.ref}}
+    if: >-
+      github.repository == 'electh/ReactFlux' &&
+      ((github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+       ((github.event_name == 'workflow_run' || github.event_name == 'schedule') &&
+        github.ref == 'refs/heads/main' && inputs.checkout_ref != ''))
+    concurrency:
+      group: pages-main
+      cancel-in-progress: false
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success' || github.event_name != 'workflow_run'
     steps:
+      - name: Authorize deployment context
+        id: authorize
+        env:
+          CHECKOUT_REF: ${{ inputs.checkout_ref }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "deploy=true" >> "$GITHUB_OUTPUT"
+
+          if [[ -z "$CHECKOUT_REF" ]]; then
+            exit 0
+          fi
+
+          if [[ ! "$CHECKOUT_REF" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "The authorized checkout ref must be a full commit SHA" >&2
+            exit 1
+          fi
+
+          comparison="$(gh api "repos/$GITHUB_REPOSITORY/compare/$CHECKOUT_REF...main" --jq .status)"
+          if [[ "$comparison" != "ahead" && "$comparison" != "identical" ]]; then
+            echo "Authorized source $CHECKOUT_REF is not on main; comparison status is $comparison"
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          already_deployed="$(
+            gh api "repos/$GITHUB_REPOSITORY/commits/$CHECKOUT_REF/status" \
+              --jq '[.statuses[] | select(.context == "reactflux/pages" and .state == "success")] | length > 0'
+          )"
+          if [[ "$already_deployed" == "true" ]]; then
+            echo "GitHub Pages for $CHECKOUT_REF is already deployed"
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout
-        uses: actions/checkout@v7
+        if: steps.authorize.outputs.deploy == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.checkout_ref || github.sha }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        if: steps.authorize.outputs.deploy == 'true'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "22"
 
       - name: Install pnpm
+        if: steps.authorize.outputs.deploy == 'true'
         run: npm install -g pnpm
 
       - name: Install and Build
+        if: steps.authorize.outputs.deploy == 'true'
         run: |
           pnpm install --frozen-lockfile
           pnpm run build
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.9.0
+        if: steps.authorize.outputs.deploy == 'true'
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
         with:
           branch: gh-pages
           folder: build
           git-config-name: github-actions[bot]
           git-config-email: 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Mark Pages deployment
+        if: steps.authorize.outputs.deploy == 'true'
+        env:
+          DEPLOY_SHA: ${{ inputs.checkout_ref || github.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$DEPLOY_SHA" \
+            -f state=success \
+            -f context=reactflux/pages \
+            -f description="GitHub Pages deployed"

@@ -6,35 +6,85 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: scheduled-tag
+  cancel-in-progress: false
+
 jobs:
-  create-tag:
-    runs-on: ubuntu-latest
+  create_tag:
+    name: Create tag
+    if: >-
+      github.repository == 'electh/ReactFlux' &&
+      (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
     permissions:
       contents: write
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.date.outputs.image_tag }}
+      publish: ${{ steps.check_tag.outputs.publish }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
-      - name: Get current date
+      - name: Get release tag
         id: date
-        run: echo "date=$(date +'%Y.%m.%d')" >> $GITHUB_OUTPUT
+        run: |
+          image_tag="$(date -u +'%Y.%m.%d')"
+          echo "image_tag=$image_tag" >> "$GITHUB_OUTPUT"
+          echo "tag=v$image_tag" >> "$GITHUB_OUTPUT"
 
       - name: Check existing tag
         id: check_tag
+        env:
+          RELEASE_TAG: ${{ steps.date.outputs.tag }}
         run: |
-          LATEST_COMMIT=$(git rev-parse HEAD)
-          TAGS_ON_COMMIT=$(git tag --points-at $LATEST_COMMIT)
-          if [ ! -z "$TAGS_ON_COMMIT" ]; then
-            echo "Tag(s) ${TAGS_ON_COMMIT} already exists on commit ${LATEST_COMMIT}, skipping..."
-            echo "skip=true" >> $GITHUB_OUTPUT
+          latest_commit="$(git rev-parse HEAD)"
+          tag_commit="$(git rev-list -n 1 "$RELEASE_TAG" 2>/dev/null || true)"
+
+          if [[ -n "$tag_commit" && "$tag_commit" != "$latest_commit" ]]; then
+            echo "Tag $RELEASE_TAG already points to $tag_commit, not $latest_commit" >&2
+            exit 1
+          elif [[ -n "$tag_commit" ]]; then
+            echo "Tag $RELEASE_TAG already points to the latest commit; publishing can be retried"
+            echo "create=false" >> "$GITHUB_OUTPUT"
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          tags_on_commit="$(git tag --points-at "$latest_commit")"
+          if [[ -n "$tags_on_commit" ]]; then
+            echo "Tag(s) already exist on commit $latest_commit; skipping:"
+            echo "$tags_on_commit"
+            echo "create=false" >> "$GITHUB_OUTPUT"
+            echo "publish=false" >> "$GITHUB_OUTPUT"
           else
-            echo "No tags found on latest commit, proceeding with tag creation"
-            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "No tags found on the latest commit; creating $RELEASE_TAG"
+            echo "create=true" >> "$GITHUB_OUTPUT"
+            echo "publish=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create tag
-        if: steps.check_tag.outputs.skip != 'true'
+        if: steps.check_tag.outputs.create == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.date.outputs.tag }}
         run: |
-          git tag v${{ steps.date.outputs.date }}
-          git push origin v${{ steps.date.outputs.date }}
+          git tag "$RELEASE_TAG"
+          git push origin "refs/tags/$RELEASE_TAG"
+
+  publish_docker:
+    name: Publish Docker image
+    needs: create_tag
+    if: needs.create_tag.outputs.publish == 'true'
+    permissions:
+      contents: read
+      statuses: write
+    uses: ./.github/workflows/deploy-docker.yml
+    with:
+      release_tag: ${{ needs.create_tag.outputs.image_tag }}
+    secrets:
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}

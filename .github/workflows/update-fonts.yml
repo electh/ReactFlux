@@ -12,14 +12,17 @@ permissions:
 
 jobs:
   update-fonts:
+    if: >-
+      github.repository == 'electh/ReactFlux' &&
+      (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "22"
 
@@ -29,7 +32,7 @@ jobs:
       - name: Check for changes
         id: check-changes
         run: |
-          if [[-n $(git status --porcelain) ]]; then
+          if [[ -n "$(git status --porcelain)" ]]; then
             echo "changes=true" >> $GITHUB_OUTPUT
           else
             echo "changes=false" >> $GITHUB_OUTPUT
@@ -39,7 +42,7 @@ jobs:
         if: steps.check-changes.outputs.changes == 'true'
         id: update-info
         run: |
-          if [-f public/fonts/version.json]; then
+          if [[ -f public/fonts/version.json ]]; then
             FONT_COUNT=$(jq -r '.fonts | length' public/fonts/version.json)
             FILE_COUNT=$(jq -r '[.fonts[].files] | add' public/fonts/version.json)
             echo "font_count=$FONT_COUNT" >> $GITHUB_OUTPUT
@@ -56,7 +59,7 @@ jobs:
 
       - name: Create Pull Request
         if: steps.check-changes.outputs.changes == 'true'
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           title: "chore(fonts): update fonts to latest versions"
           body: |

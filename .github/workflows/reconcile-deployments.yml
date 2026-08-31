@@ -1,0 +1,157 @@
+name: Reconcile Deployments
+
+on:
+  push:
+    branches:
+      - main
+
+  schedule:
+    - cron: "17,47 * * * *"
+
+  workflow_dispatch:
+
+  workflow_run:
+    workflows: ["Dependabot auto-merge"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  authorize:
+    name: Authorize or reconcile deployment
+    if: >-
+      github.repository == 'electh/ReactFlux' &&
+      ((github.event_name == 'workflow_run' &&
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.actor.login == 'dependabot[bot]') ||
+       ((github.event_name == 'push' ||
+         github.event_name == 'schedule' ||
+         github.event_name == 'workflow_dispatch') &&
+        github.ref == 'refs/heads/main'))
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    outputs:
+      deploy_docker: ${{ steps.reconcile.outputs.deploy_docker }}
+      deploy_pages: ${{ steps.reconcile.outputs.deploy_pages }}
+      deploy_sha: ${{ steps.reconcile.outputs.deploy_sha }}
+    steps:
+      - name: Verify and reconcile deployment
+        id: reconcile
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          echo "deploy_docker=false" >> "$GITHUB_OUTPUT"
+          echo "deploy_pages=false" >> "$GITHUB_OUTPUT"
+
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_run" ]]; then
+            pr_number="$(
+              gh api "repos/$GH_REPO/commits/$SOURCE_HEAD_SHA/pulls" \
+                --jq 'map(select(.base.ref == "main" and .user.login == "dependabot[bot]")) | .[0].number // empty'
+            )"
+            if [[ -z "$pr_number" ]]; then
+              echo "No Dependabot pull request found for $SOURCE_HEAD_SHA; skipping deployment"
+              exit 0
+            fi
+
+            for attempt in {1..60}; do
+              pr_data="$(
+                gh api "repos/$GH_REPO/pulls/$pr_number" \
+                  --jq '[.merged, (.merged_by.login // "-"), .head.sha, .base.ref, (.merge_commit_sha // "-"), .user.login, .state, (.auto_merge.enabled_by.login // "-")] | @tsv'
+              )"
+              IFS=$'\t' read -r merged merged_by head_sha base_ref merge_sha author state auto_merge_by <<< "$pr_data"
+
+              if [[ "$author" != "dependabot[bot]" || "$base_ref" != "main" || "$head_sha" != "$SOURCE_HEAD_SHA" ]]; then
+                echo "PR #$pr_number does not match the trusted Dependabot run; skipping deployment"
+                exit 0
+              fi
+
+              if [[ "$merged" == "true" ]]; then
+                break
+              fi
+
+              if [[ "$state" != "open" || "$auto_merge_by" != "github-actions[bot]" ]]; then
+                echo "PR #$pr_number is not awaiting a GitHub Actions auto-merge; skipping deployment"
+                exit 0
+              fi
+
+              if ((attempt == 60)); then
+                echo "Timed out waiting for PR #$pr_number to auto-merge; scheduled reconciliation will retry" >&2
+                exit 1
+              fi
+
+              echo "Waiting for PR #$pr_number to auto-merge (attempt $attempt of 60)"
+              sleep 5
+            done
+
+            if [[ "$merged_by" != "github-actions[bot]" ]]; then
+              echo "PR #$pr_number was not merged by github-actions[bot]; its push workflow handles deployment"
+              exit 0
+            fi
+
+            main_sha="$(gh api "repos/$GH_REPO/commits/main" --jq .sha)"
+            comparison="$(gh api "repos/$GH_REPO/compare/$merge_sha...$main_sha" --jq .status)"
+            if [[ "$comparison" != "ahead" && "$comparison" != "identical" ]]; then
+              echo "PR #$pr_number merge $merge_sha is not on main; comparison status is $comparison"
+              exit 0
+            fi
+
+            reconciliation_message="Verified auto-merged Dependabot PR #$pr_number; reconciling main at $main_sha"
+          else
+            main_sha="$(gh api "repos/$GH_REPO/commits/main" --jq .sha)"
+            reconciliation_message="Main $main_sha is missing a successful deployment; reconciling"
+          fi
+
+          deployment_state="$(
+            gh api "repos/$GH_REPO/commits/$main_sha/status" \
+              --jq '[([.statuses[] | select(.context == "reactflux/docker" and .state == "success")] | length > 0), ([.statuses[] | select(.context == "reactflux/pages" and .state == "success")] | length > 0)] | @tsv'
+          )"
+          IFS=$'\t' read -r docker_deployed pages_deployed <<< "$deployment_state"
+
+          if [[ "$docker_deployed" == "true" && "$pages_deployed" == "true" ]]; then
+            echo "Main $main_sha is already deployed"
+            exit 0
+          fi
+
+          echo "$reconciliation_message"
+          if [[ "$docker_deployed" != "true" ]]; then
+            echo "deploy_docker=true" >> "$GITHUB_OUTPUT"
+          fi
+          if [[ "$pages_deployed" != "true" ]]; then
+            echo "deploy_pages=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "deploy_sha=$main_sha" >> "$GITHUB_OUTPUT"
+
+  publish_docker:
+    name: Publish Docker image
+    needs: authorize
+    if: needs.authorize.outputs.deploy_docker == 'true'
+    permissions:
+      contents: read
+      statuses: write
+    uses: ./.github/workflows/deploy-docker.yml
+    with:
+      checkout_ref: ${{ needs.authorize.outputs.deploy_sha }}
+      source_sha: ${{ needs.authorize.outputs.deploy_sha }}
+    secrets:
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
+  deploy_pages:
+    name: Deploy GitHub Pages
+    needs: authorize
+    if: needs.authorize.outputs.deploy_pages == 'true'
+    permissions:
+      contents: write
+      statuses: write
+    uses: ./.github/workflows/deploy-gh-pages.yml
+    with:
+      checkout_ref: ${{ needs.authorize.outputs.deploy_sha }}
