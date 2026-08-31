@@ -34,7 +34,6 @@ import { useStore } from "@nanostores/react"
 import classNames from "classnames"
 import { useMemo, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router"
-import SimpleBar from "simplebar-react"
 import { Virtualizer } from "virtua"
 
 import AddFeed from "./AddFeed.jsx"
@@ -42,6 +41,7 @@ import Profile from "./Profile.jsx"
 
 import { exportOPML, importOPML } from "@/apis"
 import { markCategoryAsRead, refreshCategoryFeed } from "@/apis/categories"
+import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import EditCategoryModal from "@/components/ui/EditCategoryModal"
 import EditFeedModal from "@/components/ui/EditFeedModal"
 import FeedIcon from "@/components/ui/FeedIcon"
@@ -252,8 +252,10 @@ const CustomMenuItem = ({ path, Icon, label, count }) => {
 }
 
 const SidebarMenuItems = () => {
-  const { infoFrom } = useStore(contentState)
-  const { historyCount, starredCount, unreadTodayCount } = useStore(dataState)
+  const { infoFrom } = useStore(contentState, { keys: ["infoFrom"] })
+  const { historyCount, starredCount, unreadTodayCount } = useStore(dataState, {
+    keys: ["historyCount", "starredCount", "unreadTodayCount"],
+  })
   const { polyglot } = useStore(polyglotState)
   const unreadTotal = useStore(unreadTotalState)
 
@@ -297,7 +299,7 @@ const FeedMenuItem = ({
   onRefreshFeed,
   onSetHomePage,
 }) => {
-  const { showFeedIcon } = useStore(settingsState)
+  const { showFeedIcon } = useStore(settingsState, { keys: ["showFeedIcon"] })
   const { polyglot } = useStore(polyglotState)
 
   const { isBelowMedium } = useScreenWidth()
@@ -416,7 +418,9 @@ const FeedMenuGroup = ({
   onRefreshFeed,
   onSetHomePage,
 }) => {
-  const { showUnreadFeedsOnly, compactSidebarGroups } = useStore(settingsState)
+  const { showUnreadFeedsOnly, compactSidebarGroups } = useStore(settingsState, {
+    keys: ["showUnreadFeedsOnly", "compactSidebarGroups"],
+  })
   const feedsGroupedById = useStore(feedsGroupedByIdState)
 
   const parentRef = useRef(null)
@@ -431,7 +435,7 @@ const FeedMenuGroup = ({
   )
 
   return (
-    <SimpleBar
+    <AdaptiveScrollArea
       ref={parentRef}
       style={compactSidebarGroups ? { maxHeight: 400 } : {}}
       scrollableNodeProps={{
@@ -439,8 +443,8 @@ const FeedMenuGroup = ({
         style: { minHeight: "40px" },
       }}
     >
-      <Virtualizer overscan={10} scrollRef={scrollableNodeRef}>
-        {filteredFeeds.map((feed) => (
+      <Virtualizer bufferSize={200} data={filteredFeeds} scrollRef={scrollableNodeRef}>
+        {(feed) => (
           <FeedMenuItem
             key={feed.id}
             feed={feed}
@@ -452,9 +456,9 @@ const FeedMenuGroup = ({
             onRefreshFeed={onRefreshFeed}
             onSetHomePage={onSetHomePage}
           />
-        ))}
+        )}
       </Virtualizer>
-    </SimpleBar>
+    </AdaptiveScrollArea>
   )
 }
 
@@ -471,7 +475,7 @@ const CategoryGroup = ({
   onRefreshFeed,
   onSetHomePage,
 }) => {
-  const { showUnreadFeedsOnly } = useStore(settingsState)
+  const { showUnreadFeedsOnly } = useStore(settingsState, { keys: ["showUnreadFeedsOnly"] })
   const feedsGroupedById = useStore(feedsGroupedByIdState)
   const filteredCategories = useStore(filteredCategoriesState)
 
@@ -531,7 +535,9 @@ const CategoryGroup = ({
 }
 
 const MoreOptionsDropdown = () => {
-  const { showHiddenFeeds, showUnreadFeedsOnly } = useStore(settingsState)
+  const { showHiddenFeeds, showUnreadFeedsOnly } = useStore(settingsState, {
+    keys: ["showHiddenFeeds", "showUnreadFeedsOnly"],
+  })
   const { polyglot } = useStore(polyglotState)
   const [menuVisible, setMenuVisible] = useState(false)
 
@@ -658,7 +664,7 @@ const updateAllEntriesAsRead = () => {
 }
 
 const Sidebar = ({ onNavigate }) => {
-  const { catalog: catalogLoadState } = useStore(dataState).loadState
+  const { catalog: catalogLoadState } = useStore(dataState, { keys: ["loadState"] }).loadState
   const { polyglot } = useStore(polyglotState)
   const expandedCategories = useStore(expandedCategoriesState)
 
@@ -678,7 +684,7 @@ const Sidebar = ({ onNavigate }) => {
   const selectedKeys = [currentPath]
 
   const { refreshCounts, refreshFeedData } = useAppData()
-  const { infoFrom, infoId } = useStore(contentState)
+  const { infoFrom, infoId } = useStore(contentState, { keys: ["infoFrom", "infoId"] })
   const {
     identityError,
     identityReady: homePageReady,
@@ -803,7 +809,7 @@ const Sidebar = ({ onNavigate }) => {
 
   return (
     <div className="sidebar-container">
-      <SimpleBar style={{ maxHeight: "100%" }}>
+      <AdaptiveScrollArea style={{ maxHeight: "100%" }}>
         <Menu hasCollapseButton={false} selectedKeys={selectedKeys}>
           <div className="menu-header">
             <Tooltip content={homePageActionLabel} position="bottom">
@@ -885,7 +891,7 @@ const Sidebar = ({ onNavigate }) => {
             </div>
           )}
         </Menu>
-      </SimpleBar>
+      </AdaptiveScrollArea>
 
       {selectedCategory && (
         <EditCategoryModal

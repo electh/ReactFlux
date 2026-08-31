@@ -1,24 +1,16 @@
+export const extractHeadingsFromDocument = (doc) =>
+  [...doc.querySelectorAll("h1, h2, h3, h4, h5, h6")].map((heading, index) => ({
+    id: `heading-${index}`,
+    text: heading.textContent.trim(),
+    level: Number.parseInt(heading.tagName.slice(1)),
+  }))
+
 export const extractHeadings = (content) => {
   if (!content) {
     return []
   }
 
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(content, "text/html")
-  const headings = [...doc.querySelectorAll("h1, h2, h3, h4, h5, h6")]
-
-  return headings.map((heading, index) => {
-    const text = heading.textContent.trim()
-    const level = Number.parseInt(heading.tagName.slice(1))
-    const id = `heading-${index}`
-
-    return {
-      id,
-      text,
-      level,
-      element: heading,
-    }
-  })
+  return extractHeadingsFromDocument(new DOMParser().parseFromString(content, "text/html"))
 }
 
 export const scrollToHeading = (heading) => {

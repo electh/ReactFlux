@@ -1,12 +1,11 @@
 import { Button, Message, Select } from "@arco-design/web-react"
 import { IconCopy } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs"
 
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import { polyglotState } from "@/hooks/useLanguage"
-import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import {
   detectCodeLanguage,
   LANGUAGE_DISPLAY_NAMES,
@@ -18,10 +17,22 @@ import "./CodeBlock.css"
 
 registerLanguages()
 
+const languageCache = new Map()
+const MAX_CACHED_LANGUAGES = 100
+const MAX_LANGUAGE_DETECTION_CHARACTERS = 50_000
+const MAX_NUMBERED_LINES = 500
+
+const cacheLanguage = (code, language) => {
+  if (languageCache.size >= MAX_CACHED_LANGUAGES) {
+    languageCache.delete(languageCache.keys().next().value)
+  }
+  languageCache.set(code, language)
+}
+
 const CodeBlock = ({ children }) => {
   const { polyglot } = useStore(polyglotState)
-
-  const [language, setLanguage] = useState("plaintext")
+  const code = children.trim()
+  const [language, setLanguage] = useState(() => languageCache.get(code) ?? "plaintext")
 
   const copyToClipboard = useCallback(() => {
     navigator.clipboard
@@ -33,18 +44,38 @@ const CodeBlock = ({ children }) => {
       })
   }, [children, polyglot])
 
-  const code = children.trim()
+  const showLineNumbers = useMemo(
+    () => code.split("\n", MAX_NUMBERED_LINES + 1).length <= MAX_NUMBERED_LINES,
+    [code],
+  )
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+    const detectLanguage = () => {
+      if (code.length > MAX_LANGUAGE_DETECTION_CHARACTERS) {
+        return
+      }
+
+      const cachedLanguage = languageCache.get(code)
+      if (cachedLanguage) {
+        setLanguage(cachedLanguage)
+        return
+      }
+
       const detectedLanguage = detectCodeLanguage(code)
       if (SUPPORTED_LANGUAGES.includes(detectedLanguage)) {
+        cacheLanguage(code, detectedLanguage)
         setLanguage(detectedLanguage)
       } else {
         console.info("detectedLanguage not supported:", detectedLanguage)
       }
-    }, ANIMATION_DURATION_MS)
+    }
 
+    if (typeof globalThis.requestIdleCallback === "function") {
+      const idleCallbackId = globalThis.requestIdleCallback(detectLanguage, { timeout: 500 })
+      return () => globalThis.cancelIdleCallback(idleCallbackId)
+    }
+
+    const timeoutId = setTimeout(detectLanguage, 50)
     return () => clearTimeout(timeoutId)
   }, [code])
 
@@ -58,7 +89,7 @@ const CodeBlock = ({ children }) => {
         />
         <CopyButton onClick={copyToClipboard} />
       </div>
-      <SyntaxHighlighter language={language} showLineNumbers={true} style={atomOneDark}>
+      <SyntaxHighlighter language={language} showLineNumbers={showLineNumbers} style={atomOneDark}>
         {code}
       </SyntaxHighlighter>
     </div>

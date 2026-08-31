@@ -1,0 +1,30 @@
+.deferred-code-block {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
+}
+
+.deferred-code-block-placeholder {
+  position: relative;
+}
+
+.enable-code-highlighting {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  border: 1px solid rgb(255 255 255 / 24%);
+  border-radius: var(--border-radius-small);
+  background: rgb(255 255 255 / 10%);
+  padding: 6px 10px;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+.enable-code-highlighting:hover {
+  background: rgb(255 255 255 / 18%);
+}
+
+.enable-code-highlighting:focus-visible {
+  outline: 2px solid rgb(var(--primary-6));
+  outline-offset: 2px;
+}

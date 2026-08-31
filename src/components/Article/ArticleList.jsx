@@ -1,57 +1,92 @@
 import { Button, Divider, Spin, Typography } from "@arco-design/web-react"
 import { IconEmpty, IconExclamationCircle } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { throttle } from "lodash-es"
-import { forwardRef, useCallback, useEffect, useMemo } from "react"
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react"
 import { useInView } from "react-intersection-observer"
-import SimpleBar from "simplebar-react"
 import { Virtualizer } from "virtua"
 
 import ArticleCard from "./ArticleCard"
 import LoadingCards from "./LoadingCards"
 
+import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import FadeTransition from "@/components/ui/FadeTransition"
-import Ripple from "@/components/ui/Ripple"
 import { polyglotState } from "@/hooks/useLanguage"
 import useLoadMore from "@/hooks/useLoadMore"
+import useReadOnScroll from "@/hooks/useReadOnScroll"
 import { contentState, filteredEntriesState } from "@/store/contentState"
 
 import "./ArticleList.css"
 
-const LoadMoreComponent = ({ getEntries }) => {
-  const { isArticleListReady, loadMoreVisible } = useStore(contentState)
+const isElementVisibleInRoot = (element, root) => {
+  if (!element || !root) {
+    return false
+  }
 
+  const elementRect = element.getBoundingClientRect()
+  const rootRect = root.getBoundingClientRect()
+  return elementRect.bottom >= rootRect.top && elementRect.top <= rootRect.bottom
+}
+
+const LoadMoreComponent = ({ getEntries, scrollRootRef }) => {
+  const { isArticleListReady, loadMoreVisible } = useStore(contentState, {
+    keys: ["isArticleListReady", "loadMoreVisible"],
+  })
   const { handleLoadMore, loadMoreError, loadingMore } = useLoadMore()
   const { polyglot } = useStore(polyglotState)
+  const { ref: inViewRef, inView } = useInView()
+  const autoLoadArmedRef = useRef(true)
+  const loadMoreElementRef = useRef(null)
+  const [autoLoadRevision, setAutoLoadRevision] = useState(0)
+  const setLoadMoreRef = useCallback(
+    (element) => {
+      loadMoreElementRef.current = element
+      inViewRef(element)
+    },
+    [inViewRef],
+  )
+  const requestLoadMore = useCallback(() => {
+    autoLoadArmedRef.current = false
+    return handleLoadMore(getEntries).finally(() => {
+      requestAnimationFrame(() => {
+        if (isElementVisibleInRoot(loadMoreElementRef.current, scrollRootRef.current)) {
+          autoLoadArmedRef.current = true
+          setAutoLoadRevision((revision) => revision + 1)
+        }
+      })
+    })
+  }, [getEntries, handleLoadMore, scrollRootRef])
 
-  const { ref: loadMoreRef, inView } = useInView()
+  useEffect(() => {
+    if (!inView) {
+      autoLoadArmedRef.current = true
+      return
+    }
 
-  const loadMoreEntries = useCallback(() => {
-    if (loadMoreVisible && inView && isArticleListReady && !loadMoreError && !loadingMore) {
-      void handleLoadMore(getEntries)
+    if (
+      autoLoadArmedRef.current &&
+      loadMoreVisible &&
+      isArticleListReady &&
+      !loadMoreError &&
+      !loadingMore
+    ) {
+      void requestLoadMore()
     }
   }, [
-    loadMoreVisible,
+    autoLoadRevision,
     inView,
     isArticleListReady,
     loadMoreError,
     loadingMore,
-    handleLoadMore,
-    getEntries,
+    loadMoreVisible,
+    requestLoadMore,
   ])
-
-  useEffect(() => {
-    const intervalId = setInterval(loadMoreEntries, 500)
-
-    return () => clearInterval(intervalId)
-  }, [loadMoreEntries])
 
   return (
     isArticleListReady &&
     loadMoreVisible && (
-      <div ref={loadMoreRef} className="load-more-container">
+      <div ref={setLoadMoreRef} className="load-more-container">
         {loadMoreError ? (
-          <Button size="small" onClick={() => void handleLoadMore(getEntries)}>
+          <Button size="small" onClick={() => void requestLoadMore()}>
             {polyglot.t("actions.retry")}
           </Button>
         ) : (
@@ -67,33 +102,16 @@ const LoadMoreComponent = ({ getEntries }) => {
 
 const ArticleList = forwardRef(
   ({ getEntries, handleEntryClick, cardsRef, retryArticleList }, ref) => {
-    const { articleListError, filterString, isArticleListReady, loadMoreVisible } =
-      useStore(contentState)
+    const { articleListError, filterString, isArticleListReady } = useStore(contentState, {
+      keys: ["articleListError", "filterString", "isArticleListReady"],
+    })
     const filteredEntries = useStore(filteredEntriesState)
     const { polyglot } = useStore(polyglotState)
-
-    const { handleLoadMore, loadMoreError, loadingMore } = useLoadMore()
-    const canLoadMore = loadMoreVisible && isArticleListReady && !loadMoreError && !loadingMore
+    const observeRead = useReadOnScroll(cardsRef)
     const canRenderResults = isArticleListReady && !articleListError
 
-    const checkAndLoadMore = useMemo(
-      () =>
-        throttle((element) => {
-          if (!canLoadMore) {
-            return
-          }
-
-          const threshold = element.scrollHeight * 0.8
-          const scrolledDistance = element.scrollTop + element.clientHeight
-          if (scrolledDistance >= threshold) {
-            void handleLoadMore(getEntries)
-          }
-        }, 200),
-      [canLoadMore, handleLoadMore, getEntries],
-    )
-
     return (
-      <SimpleBar ref={ref} className="entry-list" scrollableNodeProps={{ ref: cardsRef }}>
+      <AdaptiveScrollArea ref={ref} className="entry-list" scrollableNodeProps={{ ref: cardsRef }}>
         <LoadingCards />
         {isArticleListReady && articleListError && (
           <div className="article-list-state" role="alert">
@@ -111,22 +129,15 @@ const ArticleList = forwardRef(
           </div>
         )}
         {canRenderResults && filteredEntries.length > 0 && (
-          <FadeTransition y={20}>
-            <Virtualizer
-              overscan={10}
-              scrollRef={cardsRef}
-              onScroll={() => {
-                const element = cardsRef.current
-                if (element) {
-                  checkAndLoadMore(element)
-                }
-              }}
-            >
-              {filteredEntries.map((entry, index) => (
+          <FadeTransition>
+            <Virtualizer bufferSize={300} data={filteredEntries} scrollRef={cardsRef}>
+              {(entry, index) => (
                 <div key={entry.id}>
-                  <ArticleCard entry={entry} handleEntryClick={handleEntryClick}>
-                    <Ripple color="var(--color-text-4)" duration={1000} />
-                  </ArticleCard>
+                  <ArticleCard
+                    entry={entry}
+                    handleEntryClick={handleEntryClick}
+                    observeRead={observeRead}
+                  />
                   {index < filteredEntries.length - 1 && (
                     <Divider
                       style={{
@@ -136,12 +147,12 @@ const ArticleList = forwardRef(
                     />
                   )}
                 </div>
-              ))}
+              )}
             </Virtualizer>
           </FadeTransition>
         )}
-        <LoadMoreComponent getEntries={getEntries} />
-      </SimpleBar>
+        <LoadMoreComponent getEntries={getEntries} scrollRootRef={cardsRef} />
+      </AdaptiveScrollArea>
     )
   },
 )

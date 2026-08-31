@@ -1,3 +1,7 @@
+const ARTICLE_IMAGE_MODEL_CACHE_SIZE = 6
+const EMPTY_ATTACHMENT_ITEMS = []
+const articleImageModelCache = []
+
 const normalizeImageSource = (source) => (typeof source === "string" ? source.trim() : "")
 
 const extractImageSources = (htmlString) => {
@@ -9,7 +13,7 @@ const extractImageSources = (htmlString) => {
     .filter(Boolean)
 }
 
-const buildArticleImageModel = (htmlString, attachmentItems = []) => {
+const createArticleImageModel = (htmlString, attachmentItems) => {
   const imageSources = [...new Set(extractImageSources(htmlString))]
   const imageIndexBySource = new Map(imageSources.map((source, index) => [source, index]))
 
@@ -37,6 +41,24 @@ const buildArticleImageModel = (htmlString, attachmentItems = []) => {
     imageSources,
     visibleAttachments,
   }
+}
+
+const buildArticleImageModel = (htmlString, attachmentItems = EMPTY_ATTACHMENT_ITEMS) => {
+  const cacheIndex = articleImageModelCache.findIndex(
+    (entry) => entry.htmlString === htmlString && entry.attachmentItems === attachmentItems,
+  )
+  if (cacheIndex !== -1) {
+    const [cachedEntry] = articleImageModelCache.splice(cacheIndex, 1)
+    articleImageModelCache.push(cachedEntry)
+    return cachedEntry.model
+  }
+
+  const model = createArticleImageModel(htmlString, attachmentItems)
+  articleImageModelCache.push({ attachmentItems, htmlString, model })
+  if (articleImageModelCache.length > ARTICLE_IMAGE_MODEL_CACHE_SIZE) {
+    articleImageModelCache.shift()
+  }
+  return model
 }
 
 export default buildArticleImageModel

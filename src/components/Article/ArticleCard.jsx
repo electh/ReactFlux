@@ -9,25 +9,23 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { memo, useLayoutEffect, useMemo, useRef, useState } from "react"
 
 import FeedIcon from "@/components/ui/FeedIcon"
 import useEntryActions from "@/hooks/useEntryActions"
 import { polyglotState } from "@/hooks/useLanguage"
 import useLongPressContextMenu from "@/hooks/useLongPressContextMenu"
-import { contentState } from "@/store/contentState"
-import { dataState } from "@/store/dataState"
-import { settingsState } from "@/store/settingsState"
+import { contentState, createEntrySelectedState } from "@/store/contentState"
+import { hasIntegrationsState } from "@/store/dataState"
+import { articleCardSettingsState } from "@/store/settingsState"
 import { WIDE_IMAGE_RATIO } from "@/utils/constants"
 import { generateReadingTime, generateRelativeTime } from "@/utils/date"
 import "./ArticleCard.css"
 
-const ArticleCardImage = ({ entry, isWideImage }) => {
+const ArticleCardImage = ({ coverDisplayMode, entry, isWideImage, onError, onLoad }) => {
   const imageSize = isWideImage
     ? { width: "100%", height: "100%" }
     : { width: "80px", height: "80px" }
-
-  const { coverDisplayMode } = useStore(settingsState)
 
   const imageStyle = {
     width: imageSize.width,
@@ -41,9 +39,40 @@ const ArticleCardImage = ({ entry, isWideImage }) => {
 
   return (
     <div className="card-thumbnail">
-      <img alt={entry.id} src={entry.coverSource} style={imageStyle} />
+      <img
+        alt={entry.id}
+        decoding="async"
+        height={entry.coverHeight || undefined}
+        loading="lazy"
+        src={entry.coverSource}
+        style={imageStyle}
+        width={entry.coverWidth || undefined}
+        onError={onError}
+        onLoad={onLoad}
+      />
     </div>
   )
+}
+
+const getInitialCoverState = (entry, coverDisplayMode) => {
+  const width = Number(entry.coverWidth)
+  const height = Number(entry.coverHeight)
+  const hasDimensions = Number.isFinite(width) && width > 0 && Number.isFinite(height) && height > 0
+  const aspectRatio = hasDimensions ? width / height : null
+  const isThumbnailSize = hasDimensions && Math.max(width, height) <= 250
+
+  return {
+    aspectRatio,
+    coverDisplayMode,
+    coverSource: entry.coverSource,
+    hasError: false,
+    isWideImage:
+      coverDisplayMode === "banner" ||
+      (coverDisplayMode === "auto" &&
+        hasDimensions &&
+        aspectRatio >= WIDE_IMAGE_RATIO &&
+        !isThumbnailSize),
+  }
 }
 
 const extractTextFromHtml = (html) => {
@@ -69,7 +98,7 @@ const extractTextFromHtml = (html) => {
     .trim()
 }
 
-const ArticleCard = ({ entry, handleEntryClick, children }) => {
+const ArticleCard = ({ entry, handleEntryClick, observeRead }) => {
   const {
     coverDisplayMode,
     enableContextMenu,
@@ -78,11 +107,12 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
     showEstimatedReadingTime,
     showFeedIcon,
     summaryLines,
-  } = useStore(settingsState)
-  const { activeContent, infoFrom } = useStore(contentState)
-  const { hasIntegrations } = useStore(dataState)
+  } = useStore(articleCardSettingsState)
+  const { infoFrom } = useStore(contentState, { keys: ["infoFrom"] })
+  const hasIntegrations = useStore(hasIntegrationsState)
   const { polyglot } = useStore(polyglotState)
-  const isSelected = activeContent?.id === entry.id
+  const selectedState = useMemo(() => createEntrySelectedState(entry.id), [entry.id])
+  const isSelected = useStore(selectedState)
   const isUnread = entry.status === "unread"
   const isStarred = entry.starred
 
@@ -93,117 +123,55 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
     handleOpenLinkExternally,
   } = useEntryActions()
 
-  const [coverState, setCoverState] = useState({
-    coverDisplayMode: null,
-    coverSource: null,
-    hasError: false,
-    isImageLoaded: false,
-    isWideImage: false,
-  })
+  const [coverState, setCoverState] = useState(() => getInitialCoverState(entry, coverDisplayMode))
   const { dropdownProps, longPressProps } = useLongPressContextMenu({
     disabled: !enableContextMenu,
   })
 
-  const wasVisible = useRef(false)
   const cardRef = useRef(null)
   const shouldShowCover = coverDisplayMode !== "none" && Boolean(entry.coverSource)
   const isCurrentCover =
     coverState.coverDisplayMode === coverDisplayMode && coverState.coverSource === entry.coverSource
-  const hasError = isCurrentCover && coverState.hasError
-  const isImageLoaded = isCurrentCover && coverState.isImageLoaded
-  const isWideImage = isCurrentCover && coverState.isWideImage
-  const shouldRenderCover = shouldShowCover && !hasError && isImageLoaded
+  const currentCoverState = isCurrentCover
+    ? coverState
+    : getInitialCoverState(entry, coverDisplayMode)
+  const { aspectRatio, hasError, isWideImage } = currentCoverState
+  const shouldRenderCover = shouldShowCover && !hasError
 
-  useEffect(() => {
-    // If the article is read or scroll marking is not enabled, no observation needed
+  useLayoutEffect(() => {
     if (!isUnread || !markReadOnScroll || infoFrom === "history") {
       return
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const observerEntry of entries) {
-          const { boundingClientRect, rootBounds, isIntersecting } = observerEntry
+    return observeRead(cardRef.current, entry)
+  }, [entry, infoFrom, isUnread, markReadOnScroll, observeRead])
 
-          // Record status when the article enters the viewport
-          if (isIntersecting) {
-            wasVisible.current = true
-          } else if (wasVisible.current && boundingClientRect.top < rootBounds.top) {
-            // Only mark as read when the card is completely above the viewport top and was previously visible
-            handleToggleStatus(entry)
-            observer.unobserve(observerEntry.target)
-          }
-        }
-      },
-      {
-        // Set the root element as the scroll container
-        root: document.querySelector(".entry-list"),
-        // Set threshold to 0.2
-        threshold: 0.2,
-      },
-    )
+  const handleCoverLoad = ({ currentTarget }) => {
+    const width = currentTarget.naturalWidth
+    const height = currentTarget.naturalHeight
+    const nextAspectRatio = width > 0 && height > 0 ? width / height : null
+    const isThumbnailSize = Math.max(width, height) <= 250
 
-    const element = cardRef.current
-    if (element) {
-      observer.observe(element)
-    }
+    setCoverState({
+      aspectRatio: nextAspectRatio,
+      coverDisplayMode,
+      coverSource: entry.coverSource,
+      hasError: false,
+      isWideImage:
+        coverDisplayMode === "banner" ||
+        (coverDisplayMode === "auto" && nextAspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize),
+    })
+  }
 
-    return () => {
-      if (element) {
-        observer.unobserve(element)
-      }
-    }
-  }, [entry, markReadOnScroll, infoFrom, isUnread, isImageLoaded, isWideImage])
-
-  useEffect(() => {
-    let isSubscribed = true
-
-    if (shouldShowCover) {
-      const coverIdentity = { coverDisplayMode, coverSource: entry.coverSource }
-      const img = new Image()
-      img.src = entry.coverSource
-
-      const handleLoad = () => {
-        if (isSubscribed) {
-          const aspectRatio = img.naturalWidth / img.naturalHeight
-          const isThumbnailSize = Math.max(img.width, img.height) <= 250
-
-          const nextIsWideImage =
-            coverDisplayMode === "banner" ||
-            (coverDisplayMode === "auto" && aspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize)
-
-          setCoverState({
-            ...coverIdentity,
-            hasError: false,
-            isImageLoaded: true,
-            isWideImage: nextIsWideImage,
-          })
-        }
-      }
-
-      img.addEventListener("load", handleLoad)
-
-      const handleError = () => {
-        if (isSubscribed) {
-          setCoverState({
-            ...coverIdentity,
-            hasError: true,
-            isImageLoaded: false,
-            isWideImage: false,
-          })
-        }
-      }
-
-      img.addEventListener("error", handleError)
-
-      return () => {
-        isSubscribed = false
-        img.src = ""
-        img.removeEventListener("load", handleLoad)
-        img.removeEventListener("error", handleError)
-      }
-    }
-  }, [entry.coverSource, coverDisplayMode, shouldShowCover])
+  const handleCoverError = () => {
+    setCoverState({
+      aspectRatio: null,
+      coverDisplayMode,
+      coverSource: entry.coverSource,
+      hasError: true,
+      isWideImage: false,
+    })
+  }
 
   const previewContent = useMemo(() => extractTextFromHtml(entry.content), [entry.content])
 
@@ -308,8 +276,20 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
           </div>
 
           {shouldRenderCover && isWideImage && (
-            <div className="card-image-wide">
-              <ArticleCardImage isWideImage entry={entry} />
+            <div
+              className="card-image-wide"
+              style={{
+                "--card-cover-aspect-ratio":
+                  coverDisplayMode === "banner" ? 16 / 9 : aspectRatio || 16 / 9,
+              }}
+            >
+              <ArticleCardImage
+                isWideImage
+                coverDisplayMode={coverDisplayMode}
+                entry={entry}
+                onError={handleCoverError}
+                onLoad={handleCoverLoad}
+              />
             </div>
           )}
 
@@ -332,15 +312,20 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
             </div>
             {shouldRenderCover && !isWideImage && (
               <div className="card-image-mini">
-                <ArticleCardImage entry={entry} isWideImage={false} />
+                <ArticleCardImage
+                  coverDisplayMode={coverDisplayMode}
+                  entry={entry}
+                  isWideImage={false}
+                  onError={handleCoverError}
+                  onLoad={handleCoverLoad}
+                />
               </div>
             )}
           </div>
         </div>
-        {children}
       </div>
     </Dropdown>
   )
 }
 
-export default ArticleCard
+export default memo(ArticleCard)

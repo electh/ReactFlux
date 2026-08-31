@@ -27,7 +27,7 @@ import {
   setInfoId,
   setIsArticleLoading,
 } from "@/store/contentState"
-import { settingsState } from "@/store/settingsState"
+import { contentGestureSettingsState } from "@/store/settingsState"
 import prepareEntry from "@/utils/entry-presentation"
 
 import "./Content.css"
@@ -51,13 +51,17 @@ const shouldIgnoreSwipe = (element) =>
 
 const Content = ({ info, getEntries, markAllAsRead }) => {
   const { from: source, id: sourceId } = info
-  const { activeContent, isArticleLoading } = useStore(contentState)
-  const { enableSwipeGesture, swipeSensitivity } = useStore(settingsState)
+  const { activeContent, isArticleLoading } = useStore(contentState, {
+    keys: ["activeContent", "isArticleLoading"],
+  })
+  const { enableSwipeGesture, swipeSensitivity } = useStore(contentGestureSettingsState)
 
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
   const [isSwipingRight, setIsSwipingRight] = useState(false)
   const cardsRef = useRef(null)
   const entryRequestIdRef = useRef(0)
+  const ignoreSwipeRef = useRef(false)
+  const swipeDirectionRef = useRef(null)
 
   const { entryId } = useParams()
 
@@ -127,11 +131,17 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   useContentHotkeys({ handleRefreshArticleList: fetchArticleListWithRelatedData })
 
   const handleSwiping = (eventData) => {
+    if (swipeDirectionRef.current === eventData.dir) {
+      return
+    }
+
+    swipeDirectionRef.current = eventData.dir
     setIsSwipingLeft(eventData.dir === "Left")
     setIsSwipingRight(eventData.dir === "Right")
   }
 
   const handleSwiped = () => {
+    swipeDirectionRef.current = null
     setIsSwipingLeft(false)
     setIsSwipingRight(false)
   }
@@ -145,27 +155,38 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   const handlers = useSwipeable({
     delta: 50 / swipeSensitivity,
+    onTouchStartOrOnMouseDown: enableSwipeGesture
+      ? ({ event }) => {
+          ignoreSwipeRef.current =
+            Boolean(globalThis.getSelection()?.toString()) || shouldIgnoreSwipe(event.target)
+        }
+      : undefined,
     onSwiping: enableSwipeGesture
       ? (eventData) => {
-          if (globalThis.getSelection().toString() || shouldIgnoreSwipe(eventData.event.target)) {
-            return
+          if (!ignoreSwipeRef.current) {
+            handleSwiping(eventData)
           }
-          handleSwiping(eventData)
         }
       : undefined,
     onSwiped: enableSwipeGesture ? handleSwiped : undefined,
     onSwipedLeft: enableSwipeGesture
-      ? (eventData) => {
-          if (!shouldIgnoreSwipe(eventData.event.target)) {
+      ? () => {
+          if (!ignoreSwipeRef.current) {
             handleSwipeLeft()
           }
         }
       : undefined,
     onSwipedRight: enableSwipeGesture
-      ? (eventData) => {
-          if (!shouldIgnoreSwipe(eventData.event.target)) {
+      ? () => {
+          if (!ignoreSwipeRef.current) {
             handleSwipeRight()
           }
+        }
+      : undefined,
+    onTouchEndOrOnMouseUp: enableSwipeGesture
+      ? () => {
+          ignoreSwipeRef.current = false
+          swipeDirectionRef.current = null
         }
       : undefined,
   })

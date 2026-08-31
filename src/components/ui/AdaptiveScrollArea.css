@@ -1,0 +1,6 @@
+.adaptive-scroll-area-native {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: auto;
+}

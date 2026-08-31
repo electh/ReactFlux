@@ -19,8 +19,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  will-change: opacity, background-color;
-  transform: translateZ(0);
 }
 
 .card-content.read {
@@ -37,7 +35,7 @@
 
 .card-image-wide {
   width: 100%;
-  aspect-ratio: auto;
+  aspect-ratio: var(--card-cover-aspect-ratio, 16 / 9);
   margin: 4px 0;
   border-radius: var(--border-radius-medium);
   overflow: hidden;
@@ -160,8 +158,6 @@
   user-select: none;
   overflow: hidden;
   contain: content;
-  will-change: background-color;
-  transform: translateZ(0);
 }
 
 .card-wrapper:hover {

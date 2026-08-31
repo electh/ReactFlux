@@ -7,26 +7,29 @@ import {
   lazy,
   Suspense,
   useCallback,
+  useDeferredValue,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react"
 import { useNavigate } from "react-router"
-import SimpleBar from "simplebar-react"
 
 import ArticleEnclosures from "./ArticleEnclosures"
+import DeferredCodeBlock from "./DeferredCodeBlock"
 import EnclosurePlayer from "./EnclosurePlayer"
 import ImageLinkTag from "./ImageLinkTag"
 import ImageOverlayButton from "./ImageOverlayButton"
 
+import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import CustomLink from "@/components/ui/CustomLink"
 import FadeTransition from "@/components/ui/FadeTransition"
 import PlyrPlayer from "@/components/ui/LazyPlyrPlayer"
 import usePhotoSlider from "@/hooks/usePhotoSlider"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { contentState } from "@/store/contentState"
-import { settingsState } from "@/store/settingsState"
+import { activeContentState } from "@/store/contentState"
+import { articleDetailSettingsState } from "@/store/settingsState"
 import returnToArticleImage from "@/utils/article-image-return"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
 import buildArticleImageModel from "@/utils/images"
@@ -34,19 +37,9 @@ import "./ArticleDetail.css"
 import "./littlefoot.css"
 
 const ArticleLightbox = lazy(() => import("./ArticleLightbox"))
-const CodeBlock = lazy(() => import("./CodeBlock"))
+const EMPTY_ATTACHMENTS = { items: [], primaryMedia: null }
 
-const renderCodeBlock = (codeContent) => (
-  <Suspense
-    fallback={
-      <pre aria-busy="true" className="code-block-loading">
-        <code>{codeContent}</code>
-      </pre>
-    }
-  >
-    <CodeBlock>{codeContent}</CodeBlock>
-  </Suspense>
-)
+const renderCodeBlock = (codeContent) => <DeferredCodeBlock>{codeContent}</DeferredCodeBlock>
 
 const handleLinkWithImage = (node, getImageIndex, togglePhotoSlider) => {
   const imgNodes = node.children.filter((child) => child.type === "tag" && child.name === "img")
@@ -76,8 +69,8 @@ const handleLinkWithImage = (node, getImageIndex, togglePhotoSlider) => {
 
     return (
       <ImageOverlayButton
+        isLinkWrapper
         index={index}
-        isLinkWrapper={true}
         node={node}
         togglePhotoSlider={togglePhotoSlider}
       />
@@ -97,6 +90,15 @@ const handleBskyVideo = (node) => {
   return null
 }
 
+const getOptimizedImageProps = (node) => {
+  const imageProps = attributesToProps(node.attribs, "img")
+  return {
+    ...imageProps,
+    decoding: imageProps.decoding ?? "async",
+    loading: imageProps.loading ?? "lazy",
+  }
+}
+
 const handleImage = (node, getImageIndex, togglePhotoSlider) => {
   const bskyVideoPlayer = handleBskyVideo(node)
   if (bskyVideoPlayer) {
@@ -105,7 +107,7 @@ const handleImage = (node, getImageIndex, togglePhotoSlider) => {
 
   const index = getImageIndex(node.attribs.src)
   if (index < 0) {
-    return <img {...attributesToProps(node.attribs, "img")} />
+    return <img {...getOptimizedImageProps(node)} />
   }
 
   return <ImageOverlayButton index={index} node={node} togglePhotoSlider={togglePhotoSlider} />
@@ -303,18 +305,22 @@ const handleVideo = (node) => {
 
 const handleIframe = (node) => {
   const src = node.attribs?.src
-
-  // Check if it's a YouTube iframe
-  if (src && (src.includes("youtube.com") || src.includes("youtube-nocookie.com"))) {
-    return (
-      <iframe
-        {...attributesToProps(node.attribs, "iframe")}
-        referrerPolicy="strict-origin-when-cross-origin"
-      />
-    )
+  if (!src) {
+    return node
   }
 
-  return node
+  const iframeProps = attributesToProps(node.attribs, "iframe")
+  const isYouTube = src.includes("youtube.com") || src.includes("youtube-nocookie.com")
+
+  return (
+    <iframe
+      {...iframeProps}
+      loading={iframeProps.loading ?? "lazy"}
+      referrerPolicy={
+        iframeProps.referrerPolicy ?? (isYouTube ? "strict-origin-when-cross-origin" : undefined)
+      }
+    />
+  )
 }
 
 const getHtmlParserOptions = (getImageIndex, togglePhotoSlider) => {
@@ -361,7 +367,11 @@ const ArticleDetail = forwardRef((_, ref) => {
   const navigate = useNavigate()
   const { isBelowMedium } = useScreenWidth()
 
-  const { activeContent } = useStore(contentState)
+  const activeContent = useStore(activeContentState)
+  const activeContentHtml = activeContent.content ?? ""
+  const deferredContentHtml = useDeferredValue(activeContentHtml, "")
+  const isArticleBodyPending = deferredContentHtml !== activeContentHtml
+  const renderableContentHtml = isArticleBodyPending ? "" : deferredContentHtml
   const {
     articleWidth,
     edgeToEdgeImages,
@@ -369,7 +379,7 @@ const ArticleDetail = forwardRef((_, ref) => {
     fontSize,
     lightboxSlideAnimation,
     titleAlignment,
-  } = useStore(settingsState)
+  } = useStore(articleDetailSettingsState)
   const scrollContainerRef = useRef(null)
   const photoSliderSessionRef = useRef(null)
   const preparedPhotoSliderSessionRef = useRef(false)
@@ -420,24 +430,28 @@ const ArticleDetail = forwardRef((_, ref) => {
     [capturePhotoSliderSession, openPhotoSlider],
   )
 
-  const getLightboxAnimationConfig = () => {
-    return lightboxSlideAnimation ? { fade: 250 } : { fade: 250, navigation: 0 }
-  }
+  const lightboxAnimationConfig = useMemo(
+    () => (lightboxSlideAnimation ? { fade: 250 } : { fade: 250, navigation: 0 }),
+    [lightboxSlideAnimation],
+  )
 
-  const attachments = activeContent.attachments ?? {
-    items: [],
-    primaryMedia: null,
-  }
+  const attachments = activeContent.attachments ?? EMPTY_ATTACHMENTS
   const { items: attachmentItems, primaryMedia } = attachments
-  const { getImageIndex, imageSources, visibleAttachments } = buildArticleImageModel(
-    activeContent.content,
-    attachmentItems,
+  const { getImageIndex, imageSources, visibleAttachments } = useMemo(
+    () => buildArticleImageModel(renderableContentHtml, attachmentItems),
+    [attachmentItems, renderableContentHtml],
   )
   const enclosuresOpen =
     enclosuresOpenState.articleId === activeContent.id && enclosuresOpenState.open
-  const htmlParserOptions = getHtmlParserOptions(getImageIndex, togglePhotoSlider)
-
-  const parsedHtml = ReactHtmlParser(activeContent.content, htmlParserOptions)
+  const htmlParserOptions = useMemo(
+    () => getHtmlParserOptions(getImageIndex, togglePhotoSlider),
+    [getImageIndex, togglePhotoSlider],
+  )
+  const parsedHtml = useMemo(
+    () => ReactHtmlParser(renderableContentHtml, htmlParserOptions),
+    [htmlParserOptions, renderableContentHtml],
+  )
+  const lightboxSlides = useMemo(() => imageSources.map((src) => ({ src })), [imageSources])
 
   const handlePhotoSliderView = ({ index }) => {
     const session = photoSliderSessionRef.current
@@ -513,12 +527,7 @@ const ArticleDetail = forwardRef((_, ref) => {
 
   const { coverSource } = activeContent
 
-  const getResponsiveMaxWidth = () => {
-    if (isBelowMedium) {
-      return "90%"
-    }
-    return `${articleWidth}ch`
-  }
+  const responsiveMaxWidth = isBelowMedium ? "90%" : `${articleWidth}ch`
 
   useLayoutEffect(() => {
     return () => {
@@ -550,11 +559,15 @@ const ArticleDetail = forwardRef((_, ref) => {
 
   // pretty footnotes
   useEffect(() => {
+    if (isArticleBodyPending) {
+      return
+    }
+
     const lf = littlefoot()
     return () => {
       lf.unmount()
     }
-  }, [activeContent.id])
+  }, [activeContent.id, isArticleBodyPending])
 
   // Focus the scrollable area when activeContent changes
   useEffect(() => {
@@ -570,15 +583,15 @@ const ArticleDetail = forwardRef((_, ref) => {
       className={`article-content ${edgeToEdgeImages ? "edge-to-edge" : ""}`}
       tabIndex={-1}
     >
-      <SimpleBar
+      <AdaptiveScrollArea
         ref={scrollContainerRef}
         className="scroll-container"
         scrollableNodeProps={{ tabIndex: -1 }}
       >
-        <FadeTransition y={20}>
+        <FadeTransition>
           <div
             className="article-header"
-            style={{ maxWidth: getResponsiveMaxWidth(), textAlign: titleAlignment }}
+            style={{ maxWidth: responsiveMaxWidth, textAlign: titleAlignment }}
           >
             <Typography.Title
               className="article-title"
@@ -615,46 +628,53 @@ const ArticleDetail = forwardRef((_, ref) => {
           </div>
           <div
             key={activeContent.id}
+            aria-busy={isArticleBodyPending || undefined}
             className="article-body"
             style={{
               fontSize: `${fontSize}rem`,
-              maxWidth: getResponsiveMaxWidth(),
+              maxWidth: responsiveMaxWidth,
               fontFamily: fontFamily,
               "--article-width": articleWidth,
             }}
           >
-            {primaryMedia && (
-              <EnclosurePlayer
-                key={primaryMedia.id ?? primaryMedia.url}
-                enclosure={primaryMedia}
-                poster={coverSource}
-              />
-            )}
-            {parsedHtml}
-            <ArticleEnclosures
-              items={visibleAttachments}
-              open={enclosuresOpen}
-              onImagePreview={togglePhotoSlider}
-              onOpenChange={handleEnclosuresOpenChange}
-            />
-            {hasOpenedPhotoSlider && (
-              <Suspense fallback={null}>
-                <ArticleLightbox
-                  animation={getLightboxAnimationConfig()}
-                  closeRequested={isPhotoSliderCloseRequested}
-                  index={selectedIndex}
-                  open={isPhotoSliderVisible}
-                  slides={imageSources.map((src) => ({ src }))}
-                  onClose={completePhotoSliderClose}
-                  onExited={handlePhotoSliderExited}
-                  onExiting={handlePhotoSliderExiting}
-                  onView={handlePhotoSliderView}
+            {isArticleBodyPending ? (
+              <div className="article-body-loading" />
+            ) : (
+              <>
+                {primaryMedia && (
+                  <EnclosurePlayer
+                    key={primaryMedia.id ?? primaryMedia.url}
+                    enclosure={primaryMedia}
+                    poster={coverSource}
+                  />
+                )}
+                {parsedHtml}
+                <ArticleEnclosures
+                  items={visibleAttachments}
+                  open={enclosuresOpen}
+                  onImagePreview={togglePhotoSlider}
+                  onOpenChange={handleEnclosuresOpenChange}
                 />
-              </Suspense>
+                {hasOpenedPhotoSlider && (
+                  <Suspense fallback={null}>
+                    <ArticleLightbox
+                      animation={lightboxAnimationConfig}
+                      closeRequested={isPhotoSliderCloseRequested}
+                      index={selectedIndex}
+                      open={isPhotoSliderVisible}
+                      slides={lightboxSlides}
+                      onClose={completePhotoSliderClose}
+                      onExited={handlePhotoSliderExited}
+                      onExiting={handlePhotoSliderExiting}
+                      onView={handlePhotoSliderView}
+                    />
+                  </Suspense>
+                )}
+              </>
             )}
           </div>
         </FadeTransition>
-      </SimpleBar>
+      </AdaptiveScrollArea>
     </article>
   )
 })

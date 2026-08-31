@@ -2,8 +2,8 @@ import { Button, Dropdown, Input, Menu, Typography } from "@arco-design/web-reac
 import { IconArrowLeft, IconUnorderedList } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { memo, useState } from "react"
-import SimpleBar from "simplebar-react"
 
+import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
@@ -54,7 +54,7 @@ const ArticleTOCPanel = ({ onBack, onClose }) => {
           />
         </div>
       )}
-      <SimpleBar className="toc-menu-container">
+      <AdaptiveScrollArea className="toc-menu-container">
         <Menu>
           {filteredHeadings.map((heading) => (
             <Menu.Item key={heading.id} onClick={() => handleHeadingClick(heading)}>
@@ -69,7 +69,7 @@ const ArticleTOCPanel = ({ onBack, onClose }) => {
             </Menu.Item>
           ))}
         </Menu>
-      </SimpleBar>
+      </AdaptiveScrollArea>
     </div>
   )
 }

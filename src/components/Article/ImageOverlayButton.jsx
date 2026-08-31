@@ -2,18 +2,18 @@ import { Tooltip } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import classNames from "classnames"
 import { attributesToProps } from "html-react-parser"
-import { useEffect, useId, useRef, useState } from "react"
+import { useId, useRef, useState } from "react"
 
 import ImageLinkTag from "./ImageLinkTag"
 
 import { polyglotState } from "@/hooks/useLanguage"
-import { settingsState } from "@/store/settingsState"
+import { articleFontSizeState } from "@/store/settingsState"
 import { MIN_THUMBNAIL_SIZE } from "@/utils/constants"
 
 import "./ImageOverlayButton.css"
 
-const ImageComponent = ({ imgNode, isIcon, isBigImage, index, togglePhotoSlider }) => {
-  const { fontSize } = useStore(settingsState)
+const ImageComponent = ({ imgNode, isIcon, isBigImage, index, onImageLoad, togglePhotoSlider }) => {
+  const fontSize = useStore(articleFontSizeState)
   const { polyglot } = useStore(polyglotState)
   const imageInstanceId = useId()
   const imageRef = useRef(null)
@@ -23,11 +23,16 @@ const ImageComponent = ({ imgNode, isIcon, isBigImage, index, togglePhotoSlider 
     "big-image": isBigImage && !isIcon,
     "icon-image": isIcon,
   })
+  const optimizedImageProps = {
+    ...imageProps,
+    decoding: imageProps.decoding ?? "async",
+    loading: imageProps.loading ?? "lazy",
+  }
 
   return isIcon ? (
     <Tooltip content={altText} disabled={!altText}>
       <img
-        {...imageProps}
+        {...optimizedImageProps}
         ref={imageRef}
         alt={altText}
         className={imageClassName}
@@ -37,17 +42,19 @@ const ImageComponent = ({ imgNode, isIcon, isBigImage, index, togglePhotoSlider 
           ...imageProps.style,
           height: `${fontSize}rem`,
         }}
+        onLoad={onImageLoad}
       />
     </Tooltip>
   ) : (
     <div style={{ position: "relative" }}>
       <img
-        {...imageProps}
+        {...optimizedImageProps}
         ref={imageRef}
         alt={altText}
         className={imageClassName}
         data-article-image-index={index}
         data-article-image-instance={imageInstanceId}
+        onLoad={onImageLoad}
       />
       <Tooltip content={altText} disabled={!altText}>
         <button
@@ -75,32 +82,13 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
 
   const imgNode = findImageNode(node, isLinkWrapper)
 
-  useEffect(() => {
-    let isSubscribed = true
+  const handleImageLoad = ({ currentTarget }) => {
+    const { naturalHeight, naturalWidth } = currentTarget
+    const isSmall = Math.max(naturalWidth, naturalHeight) <= MIN_THUMBNAIL_SIZE
 
-    const image = new Image()
-    image.src = imgNode.attribs.src
-
-    const handleLoad = () => {
-      if (!isSubscribed) {
-        return
-      }
-
-      const isSmall = Math.max(image.width, image.height) <= MIN_THUMBNAIL_SIZE
-      const isLarge = image.width > 768
-
-      setIsIcon(isSmall)
-      setIsBigImage(isLarge && !isSmall)
-    }
-
-    image.addEventListener("load", handleLoad)
-
-    return () => {
-      isSubscribed = false
-      image.src = ""
-      image.removeEventListener("load", handleLoad)
-    }
-  }, [imgNode])
+    setIsIcon(isSmall)
+    setIsBigImage(naturalWidth > 768 && !isSmall)
+  }
 
   if (isIcon) {
     return isLinkWrapper ? (
@@ -111,6 +99,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
           isBigImage={isBigImage}
           isIcon={isIcon}
           togglePhotoSlider={togglePhotoSlider}
+          onImageLoad={handleImageLoad}
         />
         {node.children[1]?.data}
       </a>
@@ -121,6 +110,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
         isBigImage={isBigImage}
         isIcon={isIcon}
         togglePhotoSlider={togglePhotoSlider}
+        onImageLoad={handleImageLoad}
       />
     )
   }
@@ -136,6 +126,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
               isBigImage={isBigImage}
               isIcon={isIcon}
               togglePhotoSlider={togglePhotoSlider}
+              onImageLoad={handleImageLoad}
             />
             <ImageLinkTag href={node.attribs.href} />
           </div>
@@ -146,6 +137,7 @@ const ImageOverlayButton = ({ node, index, togglePhotoSlider, isLinkWrapper = fa
             isBigImage={isBigImage}
             isIcon={isIcon}
             togglePhotoSlider={togglePhotoSlider}
+            onImageLoad={handleImageLoad}
           />
         )}
       </div>

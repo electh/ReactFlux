@@ -94,6 +94,7 @@
     "close_dialog": "Fermer %{name}",
     "copy_to_clipboard_tooltip": "Copier dans le presse-papiers",
     "code_language": "Langage du code",
+    "enable_syntax_highlighting": "Activer la coloration syntaxique",
     "copied": "Copié !",
     "copy_failed": "Erreur lors de la copie, veuillez réessayer plus tard",
     "mark_as_read_error": "Impossible de marquer comme lu, veuillez réessayer plus tard",

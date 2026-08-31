@@ -41,7 +41,6 @@
   display: grid;
   grid-template-columns: var(--desktop-sidebar-width) 1fr;
   grid-template-areas: "sidebar main";
-  transition: grid-template-columns 160ms ease;
   background-color: var(--color-neutral-2);
   height: 100%;
 }

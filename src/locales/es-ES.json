@@ -94,6 +94,7 @@
     "close_dialog": "Cerrar %{name}",
     "copy_to_clipboard_tooltip": "Copiar al portapapeles",
     "code_language": "Lenguaje del código",
+    "enable_syntax_highlighting": "Activar resaltado de sintaxis",
     "copied": "Copiado!",
     "copy_failed": "Error al copiar, por favor intente de nuevo más tarde",
     "mark_as_read_error": "Error al marcar como leído, por favor intente de nuevo más tarde",

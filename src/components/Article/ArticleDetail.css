@@ -8,6 +8,10 @@
   padding-bottom: 40px;
 }
 
+.article-body-loading {
+  min-height: 40vh;
+}
+
 .article-body img {
   max-width: 100%;
 }

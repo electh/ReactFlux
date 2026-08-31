@@ -7,7 +7,6 @@ import {
   IconStorage,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import SimpleBar from "simplebar-react"
 
 import Appearance from "./Appearance"
 import CategoryList from "./CategoryList"
@@ -15,6 +14,7 @@ import FeedList from "./FeedList"
 import General from "./General"
 import Hotkeys from "./Hotkeys"
 
+import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 
@@ -38,7 +38,7 @@ const SettingsTabs = ({ activeTab, onTabChange }) => {
   const { isBelowMedium } = useScreenWidth()
 
   return (
-    <SimpleBar className="settings-tabs-scroll">
+    <AdaptiveScrollArea className="settings-tabs-scroll">
       <Tabs
         animation
         activeTab={activeTab}
@@ -104,7 +104,7 @@ const SettingsTabs = ({ activeTab, onTabChange }) => {
           </Tabs.TabPane>
         )}
       </Tabs>
-    </SimpleBar>
+    </AdaptiveScrollArea>
   )
 }
 

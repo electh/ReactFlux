@@ -1,3 +1,5 @@
+import { extractHeadingsFromDocument } from "@/utils/dom"
+
 // Keep this allowlist aligned with Miniflux's reader/sanitizer/url.go.
 const ALLOWED_URI_SCHEMES = new Set([
   "https",
@@ -176,6 +178,11 @@ const getWeiboFirstImage = (doc) =>
       !img.closest("a") && !(img.hasAttribute("alt") && /\[.+]/.test(img.getAttribute("alt"))),
   ) ?? null
 
+const getPositiveDimension = (element, attribute) => {
+  const value = Number.parseFloat(element?.getAttribute(attribute) ?? "")
+  return Number.isFinite(value) && value > 0 ? value : null
+}
+
 const prepareEntry = (entry) => {
   const content = typeof entry.content === "string" ? entry.content : ""
   const doc = new DOMParser().parseFromString(content, "text/html")
@@ -188,14 +195,20 @@ const prepareEntry = (entry) => {
   const enclosures = Array.isArray(entry.enclosures) ? entry.enclosures : []
   const attachments = buildAttachmentModel(enclosures)
 
+  const coverElement = firstImage ?? video
   const coverSource = firstImage?.getAttribute("src") || video?.getAttribute("poster") || null
+  const coverWidth = getPositiveDimension(coverElement, "width")
+  const coverHeight = getPositiveDimension(coverElement, "height")
 
   return {
     ...entry,
     content,
     enclosures,
     attachments,
+    headings: extractHeadingsFromDocument(doc),
     coverSource,
+    coverWidth,
+    coverHeight,
     isMedia: Boolean(attachments.primaryMedia || embeddedMedia),
   }
 }

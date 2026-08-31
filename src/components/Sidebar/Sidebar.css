@@ -176,7 +176,6 @@
   grid-area: sidebar;
   box-sizing: border-box;
   z-index: 999;
-  transition: width 160ms ease;
   border-right: 1px solid var(--color-border-2);
   background-color: var(--color-neutral-2);
   height: 100%;
