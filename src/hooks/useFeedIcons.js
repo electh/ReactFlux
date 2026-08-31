@@ -19,7 +19,7 @@ const useFeedIcons = (id, feed = null) => {
     loadingIcons.add(id)
 
     if (feed?.icon?.external_icon_id) {
-      const iconURL = `${auth.server}/feed/icon/${feed.icon.external_icon_id}`
+      const iconURL = `${auth.server}/feed-icon/${feed.icon.external_icon_id}`
 
       feedIconsState.setKey(id, { ...defaultIcon, url: iconURL })
       loadingIcons.delete(id)
