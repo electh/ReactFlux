@@ -132,4 +132,10 @@ Erstellt mit [contrib.rocks](https://contrib.rocks).
 
 ## Sternverlauf
 
-[![Star History](https://starchart.cc/electh/ReactFlux.svg)](https://starchart.cc/electh/ReactFlux)
+<a href="https://star-history.dera.page/#electh/ReactFlux">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=electh/reactflux&amp;theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=electh/reactflux" />
+    <img alt="ReactFlux-Sternverlauf" src="https://star-history.dera.page/svg?repos=electh/reactflux" />
+  </picture>
+</a>

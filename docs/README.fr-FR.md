@@ -132,4 +132,10 @@ Créé avec [contrib.rocks](https://contrib.rocks).
 
 ## Historique des étoiles
 
-[![Historique des étoiles](https://starchart.cc/electh/ReactFlux.svg)](https://starchart.cc/electh/ReactFlux)
+<a href="https://star-history.dera.page/#electh/ReactFlux">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=electh/reactflux&amp;theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=electh/reactflux" />
+    <img alt="Graphique de l’historique des étoiles de ReactFlux" src="https://star-history.dera.page/svg?repos=electh/reactflux" />
+  </picture>
+</a>
