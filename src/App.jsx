@@ -13,6 +13,7 @@ import AppNotifications from "./AppNotifications"
 import HomePageManager from "./components/HomePageManager"
 import Main from "./components/Main/Main"
 import Sidebar from "./components/Sidebar/Sidebar"
+import useArticleFontStylesheet from "./hooks/useArticleFontStylesheet"
 import useFeedIconsSync from "./hooks/useFeedIconsSync"
 import useLanguage, { polyglotState } from "./hooks/useLanguage"
 import useScreenWidth from "./hooks/useScreenWidth"
@@ -36,12 +37,13 @@ const getLocale = (language) => localMap[language] || enUS
 const App = () => {
   useLanguage()
   useTheme()
+  useArticleFontStylesheet()
   useFeedIconsSync()
 
   const { isBelowLarge } = useScreenWidth()
 
   const { polyglot } = useStore(polyglotState)
-  const { language } = useStore(settingsState)
+  const { language } = useStore(settingsState, { keys: ["language"] })
   const isDesktopSidebarCollapsed = useStore(desktopSidebarCollapsedState)
   const locale = getLocale(language)
   const sidebarToggleLabel = polyglot?.t(

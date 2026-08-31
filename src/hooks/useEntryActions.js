@@ -1,6 +1,5 @@
 import { Message, Notification } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
-import Confetti from "canvas-confetti"
 import { batch } from "nanostores"
 
 import {
@@ -299,12 +298,16 @@ const handleEntryStarredUpdate = (entry, newStarred, shouldCelebrate = true) => 
   }
 
   if (newStarred && shouldCelebrate) {
-    Confetti({
-      particleCount: 100,
-      angle: 120,
-      spread: 70,
-      origin: { x: 1, y: 1 },
-    })
+    void import("canvas-confetti")
+      .then(({ default: confetti }) =>
+        confetti({
+          particleCount: 100,
+          angle: 120,
+          spread: 70,
+          origin: { x: 1, y: 1 },
+        }),
+      )
+      .catch(() => null)
   }
 
   const updatedEntry = { ...entry, starred: newStarred }

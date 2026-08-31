@@ -1,47 +1,45 @@
 import { createBrowserRouter } from "react-router"
 
-import App from "./App"
-import AppDataProvider from "./components/AppDataProvider"
-import HomeRedirect from "./components/HomeRedirect"
-import All from "./pages/All"
-import Category from "./pages/Category"
-import ErrorPage from "./pages/ErrorPage"
-import Feed from "./pages/Feed"
-import History from "./pages/History"
-import Login from "./pages/Login"
-import RouterProtect from "./pages/RouterProtect"
-import Starred from "./pages/Starred"
-import Today from "./pages/Today"
-
-const pageRoutes = {
-  all: <All />,
-  today: <Today />,
-  starred: <Starred />,
-  history: <History />,
-  "category/:id": <Category />,
-  "feed/:id": <Feed />,
+const lazyRoute = (loadRoute) => async () => {
+  const { default: Component, ...routeModule } = await loadRoute()
+  return { Component, ...routeModule }
 }
 
-const routes = Object.entries(pageRoutes).flatMap(([path, element]) => [
-  { path: `/${path}`, element },
-  { path: `/${path}/entry/:entryId`, element },
+const loadAuthenticatedRoute = async () => {
+  const [{ default: Component }, { default: ErrorBoundary }] = await Promise.all([
+    import("./pages/AuthenticatedApp"),
+    import("./pages/ErrorPage"),
+  ])
+  return { Component, ErrorBoundary }
+}
+
+const pageRoutes = {
+  all: () => import("./pages/All"),
+  today: () => import("./pages/Today"),
+  starred: () => import("./pages/Starred"),
+  history: () => import("./pages/History"),
+  "category/:id": () => import("./pages/Category"),
+  "feed/:id": () => import("./pages/Feed"),
+}
+
+const routes = Object.entries(pageRoutes).flatMap(([path, loadRoute]) => [
+  { path: `/${path}`, lazy: lazyRoute(loadRoute) },
+  { path: `/${path}/entry/:entryId`, lazy: lazyRoute(loadRoute) },
 ])
 
 const router = createBrowserRouter(
   [
-    { path: "/login", element: <Login /> },
+    { path: "/login", lazy: lazyRoute(() => import("./pages/Login")) },
     {
-      element: <RouterProtect />,
+      lazy: lazyRoute(() => import("./pages/RouterProtect")),
       children: [
         {
           path: "/",
-          element: (
-            <AppDataProvider>
-              <App />
-            </AppDataProvider>
-          ),
-          errorElement: <ErrorPage />,
-          children: [...routes, { index: true, element: <HomeRedirect /> }],
+          lazy: loadAuthenticatedRoute,
+          children: [
+            ...routes,
+            { index: true, lazy: lazyRoute(() => import("./components/HomeRedirect")) },
+          ],
         },
       ],
     },

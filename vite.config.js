@@ -67,6 +67,40 @@ export default defineConfig(({ mode }) => ({
         display: "fullscreen",
       },
       workbox: {
+        cleanupOutdatedCaches: true,
+        globPatterns: [
+          "**/*.html",
+          "styles/*.css",
+          "assets/index-*.{js,css}",
+          "assets/react-*.js",
+          "assets/rolldown-runtime-*.js",
+          "assets/warning-*.js",
+          "assets/workbox-window*.js",
+        ],
+        runtimeCaching: [
+          {
+            urlPattern: /\/assets\/.*\.(?:css|js)$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "runtime-build-assets",
+              expiration: {
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+                maxEntries: 80,
+              },
+            },
+          },
+          {
+            urlPattern: /\/fonts\/.*\.woff2$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "runtime-fonts",
+              expiration: {
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+                maxEntries: 40,
+              },
+            },
+          },
+        ],
         skipWaiting: true,
       },
     }),
@@ -100,13 +134,6 @@ export default defineConfig(({ mode }) => ({
             {
               name: "react",
               test: /[\\/]node_modules[\\/](react|react-dom|react-router)[\\/]/,
-            },
-            {
-              entriesAware: true,
-              maxSize: 800 * 1024,
-              name: "arco",
-              tags: ["$initial"],
-              test: /[\\/]node_modules[\\/]@arco-design[\\/]web-react[\\/]/,
             },
           ],
         },
