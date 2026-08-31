@@ -17,6 +17,11 @@ import {
   getDataSessionRevision,
   setDataResourceLoadState,
 } from "@/store/dataState"
+import {
+  getEntryMutationSnapshot,
+  isEntryMutationSnapshotCurrent,
+  waitForEntryMutations,
+} from "@/utils/entry-mutation-state"
 
 const RESOURCE_NAMES = ["catalog", "counts", "identity", "serverInfo"]
 
@@ -87,6 +92,26 @@ const loadCounts = async (includeEntrySummary) => {
   return {
     countsData,
     error: errors.length > 0 ? errors.map((error) => getErrorMessage(error)).join("; ") : null,
+  }
+}
+
+const loadCountsConsistently = async (includeEntrySummary) => {
+  while (true) {
+    const mutationSnapshot = getEntryMutationSnapshot()
+    if (mutationSnapshot.pendingRequests > 0) {
+      if (!(await waitForEntryMutations(mutationSnapshot))) {
+        throw new Error("Entry mutation session changed")
+      }
+      continue
+    }
+
+    const result = await loadCounts(includeEntrySummary)
+    if (isEntryMutationSnapshotCurrent(mutationSnapshot)) {
+      return result
+    }
+    if (!(await waitForEntryMutations(mutationSnapshot))) {
+      throw new Error("Entry mutation session changed")
+    }
   }
 }
 
@@ -180,7 +205,7 @@ const createAppDataCoordinator = () => {
   const refreshCounts = ({ includeEntrySummary = false, ...options } = {}) =>
     runResource(
       "counts",
-      () => loadCounts(includeEntrySummary),
+      () => loadCountsConsistently(includeEntrySummary),
       ({ countsData, error }) => commitCountsData(countsData, error),
       options,
     )

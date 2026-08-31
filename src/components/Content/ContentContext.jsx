@@ -3,26 +3,30 @@ import { useStore } from "@nanostores/react"
 import { createContext, useCallback, useMemo, useRef } from "react"
 import { useLocation, useNavigate } from "react-router"
 
-import { updateEntriesStatus } from "@/apis"
-import useEntryActions from "@/hooks/useEntryActions"
+import { updateEntriesStatusOptimistically } from "@/hooks/useEntryActions"
 import { polyglotState } from "@/hooks/useLanguage"
-import { setActiveContent, setIsArticleLoading } from "@/store/contentState"
+import { setActiveContent } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
-import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { buildEntryDetailPath, extractBasePath, isEntryDetailPath } from "@/utils/url"
 
 const Context = createContext()
 
+const scheduleAfterNextPaint = (callback) => {
+  if (typeof globalThis.requestAnimationFrame === "function") {
+    globalThis.requestAnimationFrame(() => globalThis.setTimeout(callback, 0))
+  } else {
+    globalThis.setTimeout(callback, 0)
+  }
+}
+
 export const ContextProvider = ({ children }) => {
   const { polyglot } = useStore(polyglotState)
-  const { markReadBy } = useStore(settingsState)
+  const { markReadBy } = useStore(settingsState, { keys: ["markReadBy"] })
 
   const entryDetailRef = useRef(null)
   const entryListRef = useRef(null)
   const navigate = useNavigate()
   const location = useLocation()
-
-  const { handleEntryStatusUpdate } = useEntryActions()
 
   const closeActiveContent = useCallback(() => {
     setActiveContent(null)
@@ -36,9 +40,7 @@ export const ContextProvider = ({ children }) => {
   }, [location.pathname, navigate])
 
   const handleEntryClick = useCallback(
-    async (entry) => {
-      setIsArticleLoading(true)
-
+    (entry) => {
       const shouldAutoMarkAsRead = markReadBy === "view"
       const updatedEntry = shouldAutoMarkAsRead ? { ...entry, status: "read" } : { ...entry }
 
@@ -50,28 +52,24 @@ export const ContextProvider = ({ children }) => {
 
       navigate(entryDetailPath)
 
-      setTimeout(() => {
+      scheduleAfterNextPaint(() => {
         const articleContent = entryDetailRef.current
         if (articleContent) {
-          const contentWrapper = articleContent.querySelector(".simplebar-content-wrapper")
-          if (contentWrapper) {
-            contentWrapper.scroll({ top: 0 })
-          }
+          const contentWrapper = articleContent.querySelector(
+            ".simplebar-content-wrapper, .scroll-container",
+          )
+          contentWrapper?.scroll({ top: 0 })
           articleContent.focus()
         }
+      })
 
-        setIsArticleLoading(false)
-        if (shouldAutoMarkAsRead && entry.status === "unread") {
-          handleEntryStatusUpdate(entry, "read")
-          updateEntriesStatus([entry.id], "read").catch(() => {
-            Message.error(polyglot.t("content.mark_as_read_error"))
-            setActiveContent({ ...entry, status: "unread" })
-            handleEntryStatusUpdate(entry, "unread")
-          })
-        }
-      }, ANIMATION_DURATION_MS)
+      if (shouldAutoMarkAsRead && entry.status === "unread") {
+        void updateEntriesStatusOptimistically([entry], "read", () => {
+          Message.error(polyglot.t("content.mark_as_read_error"))
+        })
+      }
     },
-    [polyglot, handleEntryStatusUpdate, markReadBy, location.pathname, navigate],
+    [polyglot, markReadBy, location.pathname, navigate],
   )
 
   const value = useMemo(

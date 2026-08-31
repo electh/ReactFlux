@@ -4,6 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef } from "react"
 import { markDuplicatesAsRead } from "@/hooks/useEntryActions"
 import {
   contentState,
+  incrementArticleListSnapshotRevision,
   setArticleListError,
   setEntries,
   setEntriesWithDeduplication,
@@ -13,14 +14,20 @@ import {
   setTotal,
 } from "@/store/contentState"
 import {
+  getDataSessionRevision,
   setHistoryCount,
   setStarredCount,
   setUnreadInfo,
   setUnreadStarredCount,
   setUnreadTodayCount,
 } from "@/store/dataState"
-import { settingsState } from "@/store/settingsState"
+import { articleListRequestSettingsState, settingsState } from "@/store/settingsState"
 import createArticleListRequestKey from "@/utils/article-list-request-key"
+import {
+  getEntryMutationSnapshot,
+  isEntryMutationSnapshotCurrent,
+  waitForEntryMutations,
+} from "@/utils/entry-mutation-state"
 import prepareEntry from "@/utils/entry-presentation"
 
 const handleResponses = (response) => {
@@ -35,11 +42,14 @@ const handleResponses = (response) => {
   markDuplicatesAsRead(duplicateEntries)
   setTotal(response.total)
   setLoadMoreVisible(preparedEntries.length < response.total)
+  incrementArticleListSnapshotRevision()
 }
 
 const useArticleList = (source, sourceId, getEntries) => {
-  const contentSnapshot = useStore(contentState)
-  const settingsSnapshot = useStore(settingsState)
+  const contentSnapshot = useStore(contentState, {
+    keys: ["articleListRevision", "filterDate", "filterString", "infoFrom", "infoId"],
+  })
+  const settingsSnapshot = useStore(articleListRequestSettingsState)
   const automaticRequestKey = createArticleListRequestKey({
     content: contentSnapshot,
     settings: settingsSnapshot,
@@ -66,13 +76,16 @@ const useArticleList = (source, sourceId, getEntries) => {
     const settings = settingsState.get()
     const info = { from: source, id: sourceId }
     const requestKey = createArticleListRequestKey({ content, settings, info })
+    const requestSessionRevision = getDataSessionRevision()
+    const loadingKey = `${requestSessionRevision}:${requestKey}`
 
-    if (loadingRequestKey.current === requestKey) {
+    if (loadingRequestKey.current === loadingKey) {
       return
     }
 
-    loadingRequestKey.current = requestKey
+    loadingRequestKey.current = loadingKey
     const requestId = ++latestRequestId.current
+    const isRequestSessionCurrent = () => requestSessionRevision === getDataSessionRevision()
     const isLatestRequest = () =>
       requestId === latestRequestId.current &&
       requestKey === currentRequestKey.current &&
@@ -91,24 +104,45 @@ const useArticleList = (source, sourceId, getEntries) => {
       const filterParams = content.filterString ? { search: content.filterString } : {}
 
       let response
-      switch (settings.showStatus) {
-        case "starred": {
-          response = await getEntries(null, true, filterParams)
-          break
+      let shouldRetry
+      do {
+        const mutationSnapshot = getEntryMutationSnapshot()
+        if (mutationSnapshot.pendingRequests > 0) {
+          const canContinue = await waitForEntryMutations(mutationSnapshot)
+          if (!canContinue || !isLatestRequest() || !isRequestSessionCurrent()) {
+            return
+          }
+          shouldRetry = true
+          continue
         }
-        case "unread": {
-          response = await getEntries("unread", false, filterParams)
-          break
-        }
-        default: {
-          response = await getEntries(null, false, filterParams)
-          break
-        }
-      }
 
-      if (!isLatestRequest()) {
-        return
-      }
+        switch (settings.showStatus) {
+          case "starred": {
+            response = await getEntries(null, true, filterParams)
+            break
+          }
+          case "unread": {
+            response = await getEntries("unread", false, filterParams)
+            break
+          }
+          default: {
+            response = await getEntries(null, false, filterParams)
+            break
+          }
+        }
+
+        if (!isLatestRequest() || !isRequestSessionCurrent()) {
+          return
+        }
+
+        shouldRetry = !isEntryMutationSnapshotCurrent(mutationSnapshot)
+        if (shouldRetry) {
+          const canRetry = await waitForEntryMutations(mutationSnapshot)
+          if (!canRetry || !isLatestRequest() || !isRequestSessionCurrent()) {
+            return
+          }
+        }
+      } while (shouldRetry)
 
       handleResponses(response)
 
@@ -144,7 +178,7 @@ const useArticleList = (source, sourceId, getEntries) => {
         }
       }
     } catch (error) {
-      if (!isLatestRequest()) {
+      if (!isLatestRequest() || !isRequestSessionCurrent()) {
         return
       }
 
@@ -154,8 +188,10 @@ const useArticleList = (source, sourceId, getEntries) => {
       setLoadMoreVisible(false)
       setArticleListError(true)
     } finally {
-      if (isLatestRequest()) {
+      if (requestId === latestRequestId.current && loadingRequestKey.current === loadingKey) {
         loadingRequestKey.current = null
+      }
+      if (isLatestRequest() && isRequestSessionCurrent()) {
         setIsArticleListReady(true)
       }
     }

@@ -4,11 +4,9 @@ import { useHotkeys } from "react-hotkeys-hook"
 
 import useEntryActions from "@/hooks/useEntryActions"
 import useKeyHandlers from "@/hooks/useKeyHandlers"
-import { contentState } from "@/store/contentState"
 import { duplicateHotkeysState, hotkeysState } from "@/store/hotkeysState"
 
 const useContentHotkeys = ({ handleRefreshArticleList }) => {
-  const { activeContent } = useStore(contentState)
   const duplicateHotkeys = useStore(duplicateHotkeysState)
   const hotkeys = useStore(hotkeysState)
 
@@ -72,20 +70,16 @@ const useContentHotkeys = ({ handleRefreshArticleList }) => {
   useHotkeys(filteredHotkeys.refreshArticleList, handleRefreshArticleList)
 
   useHotkeys(filteredHotkeys.saveToThirdPartyServices, () =>
-    saveToThirdPartyServices(() => handleSaveToThirdPartyServices(activeContent)),
+    saveToThirdPartyServices(handleSaveToThirdPartyServices),
   )
 
   useHotkeys(filteredHotkeys.showHotkeysSettings, showHotkeysSettings, {
     useKey: true,
   })
 
-  useHotkeys(filteredHotkeys.toggleReadStatus, () =>
-    toggleReadStatus(() => handleToggleStatus(activeContent)),
-  )
+  useHotkeys(filteredHotkeys.toggleReadStatus, () => toggleReadStatus(handleToggleStatus))
 
-  useHotkeys(filteredHotkeys.toggleStarStatus, () =>
-    toggleStarStatus(() => handleToggleStarred(activeContent)),
-  )
+  useHotkeys(filteredHotkeys.toggleStarStatus, () => toggleStarStatus(handleToggleStarred))
 }
 
 export default useContentHotkeys

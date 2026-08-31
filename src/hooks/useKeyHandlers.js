@@ -20,6 +20,15 @@ import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import buildArticleImageModel from "@/utils/images"
 import findAdjacentItem from "@/utils/navigation"
 
+const withActiveContent =
+  (fn) =>
+  (...args) => {
+    const { activeContent } = contentState.get()
+    if (activeContent) {
+      return fn(activeContent, ...args)
+    }
+  }
+
 const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
   const isSearchingBackward = direction === "prev"
   const searchRange = isSearchingBackward
@@ -30,13 +39,7 @@ const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
 }
 
 const useKeyHandlers = () => {
-  const { activeContent, infoFrom, infoId } = useStore(contentState)
   const { polyglot } = useStore(polyglotState)
-  const activeEntryIndex = useStore(activeEntryIndexState)
-  const filteredCategories = useStore(filteredCategoriesState)
-  const filteredEntries = useStore(filteredEntriesState)
-  const prevContent = useStore(prevContentState)
-  const nextContent = useStore(nextContentState)
   const navigate = useNavigate()
 
   const { entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
@@ -60,14 +63,6 @@ const useKeyHandlers = () => {
   } = usePhotoSlider()
   const { setSettingsModalVisible, setSettingsTabsActiveTab } = useModalToggle()
 
-  const withActiveContent =
-    (fn) =>
-    (...args) => {
-      if (activeContent) {
-        return fn(...args)
-      }
-    }
-
   const withPhotoSliderCheck =
     (fn) =>
     (...args) => {
@@ -89,8 +84,9 @@ const useKeyHandlers = () => {
 
   // eslint-disable-next-line react-hooks/refs
   const navigateToPreviousArticle = withPhotoSliderCheck(() => {
-    if (prevContent) {
-      handleEntryClick(prevContent)
+    const previousContent = prevContentState.get()
+    if (previousContent) {
+      handleEntryClick(previousContent)
       setTimeout(() => scrollSelectedCardIntoView(), ANIMATION_DURATION_MS)
     } else {
       Message.info(polyglot.t("actions.no_previous_article"))
@@ -99,6 +95,7 @@ const useKeyHandlers = () => {
 
   // eslint-disable-next-line react-hooks/refs
   const navigateToNextArticle = withPhotoSliderCheck(() => {
+    const nextContent = nextContentState.get()
     if (nextContent) {
       handleEntryClick(nextContent)
       setTimeout(() => scrollSelectedCardIntoView(), ANIMATION_DURATION_MS)
@@ -110,9 +107,9 @@ const useKeyHandlers = () => {
   // eslint-disable-next-line react-hooks/refs
   const navigateToAdjacentUnreadArticle = withPhotoSliderCheck((direction) => {
     const adjacentUnreadEntry = findAdjacentUnreadEntry(
-      activeEntryIndex,
+      activeEntryIndexState.get(),
       direction,
-      filteredEntries,
+      filteredEntriesState.get(),
     )
     if (adjacentUnreadEntry) {
       handleEntryClick(adjacentUnreadEntry)
@@ -128,10 +125,12 @@ const useKeyHandlers = () => {
   const navigateToNextUnreadArticle = () => navigateToAdjacentUnreadArticle("next")
 
   const navigateToAdjacentCategory = withPhotoSliderCheck((direction) => {
+    const { infoFrom, infoId } = contentState.get()
     if (infoFrom !== "category") {
       return
     }
 
+    const filteredCategories = filteredCategoriesState.get()
     const currentIndex = filteredCategories.findIndex((category) => category.id === Number(infoId))
     const adjacentCategory = findAdjacentItem(filteredCategories, currentIndex, direction)
 
@@ -148,32 +147,34 @@ const useKeyHandlers = () => {
   const navigateToPreviousCategory = () => navigateToAdjacentCategory("prev")
   const navigateToNextCategory = () => navigateToAdjacentCategory("next")
 
-  const openLinkExternally = withActiveContent(() => {
+  const openLinkExternally = withActiveContent((activeContent) => {
     window.open(activeContent.url, "_blank")
   })
 
-  const fetchOriginalArticle = withActiveContent((handleFetchContent) => {
+  const fetchOriginalArticle = withActiveContent((_activeContent, handleFetchContent) => {
     handleFetchContent()
   })
 
-  const saveToThirdPartyServices = withActiveContent((handleSaveToThirdPartyServices) => {
-    handleSaveToThirdPartyServices()
-  })
+  const saveToThirdPartyServices = withActiveContent(
+    (activeContent, handleSaveToThirdPartyServices) => {
+      handleSaveToThirdPartyServices(activeContent)
+    },
+  )
 
   const showHotkeysSettings = () => {
     setSettingsTabsActiveTab("5")
     setSettingsModalVisible(true)
   }
 
-  const toggleReadStatus = withActiveContent((handleUpdateEntry) => {
-    handleUpdateEntry()
+  const toggleReadStatus = withActiveContent((activeContent, handleUpdateEntry) => {
+    handleUpdateEntry(activeContent)
   })
 
-  const toggleStarStatus = withActiveContent((handleStarEntry) => {
-    handleStarEntry()
+  const toggleStarStatus = withActiveContent((activeContent, handleStarEntry) => {
+    handleStarEntry(activeContent)
   })
 
-  const openPhotoSlider = withActiveContent(() => {
+  const openPhotoSlider = withActiveContent((activeContent) => {
     if (isPhotoSliderVisible) {
       requestPhotoSliderClose()
       return
