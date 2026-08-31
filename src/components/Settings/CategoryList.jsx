@@ -37,6 +37,7 @@ const CategoryList = () => {
         {categories.map((category) => (
           <Tag
             key={category.id}
+            visible
             className="tag-style"
             closable={category.feedCount === 0}
             size="medium"

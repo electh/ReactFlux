@@ -8,6 +8,7 @@ import {
   Menu,
   Notification,
   Skeleton,
+  Tooltip,
   Typography,
 } from "@arco-design/web-react"
 import {
@@ -19,6 +20,7 @@ import {
   IconEye,
   IconEyeInvisible,
   IconHistory,
+  IconHome,
   IconMinusCircle,
   IconMoreVertical,
   IconRecord,
@@ -46,6 +48,7 @@ import FeedIcon from "@/components/ui/FeedIcon"
 import useAppData from "@/hooks/useAppData"
 import useCategoryOperations from "@/hooks/useCategoryOperations"
 import { useFeedOperations } from "@/hooks/useFeedOperations"
+import useHomePage from "@/hooks/useHomePage"
 import { polyglotState } from "@/hooks/useLanguage"
 import useLongPressContextMenu from "@/hooks/useLongPressContextMenu"
 import useScreenWidth from "@/hooks/useScreenWidth"
@@ -60,6 +63,7 @@ import {
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { expandedCategoriesState, setExpandedCategories } from "@/store/sidebarState"
 import { downloadFile, readFileAsText } from "@/utils/file"
+import { createEntityHomeTarget, isSameHomeTarget } from "@/utils/home-page"
 
 import "./Sidebar.css"
 
@@ -68,10 +72,13 @@ const MenuItem = Menu.Item
 const CategoryTitle = ({
   category,
   path,
-  onEditCategory,
-  onRefreshCategory,
-  onMarkAllAsRead,
+  homePageReady,
+  homeTarget,
   onDeleteCategory,
+  onEditCategory,
+  onMarkAllAsRead,
+  onRefreshCategory,
+  onSetHomePage,
 }) => {
   const feedsGroupedById = useStore(feedsGroupedByIdState)
   const unreadCount = feedsGroupedById[category.id]?.reduce(
@@ -91,6 +98,8 @@ const CategoryTitle = ({
   }
 
   const canDelete = !feedsGroupedById[category.id] || feedsGroupedById[category.id].length === 0
+  const categoryTarget = createEntityHomeTarget("category", category.id)
+  const isHomePage = isSameHomeTarget(homeTarget, categoryTarget)
   const categoryPath = `/category/${category.id}`
   const isCategoryActive = path === categoryPath || path.startsWith(`${categoryPath}/`)
   const categoryClassName = classNames("category-title", {
@@ -105,6 +114,25 @@ const CategoryTitle = ({
       trigger="contextMenu"
       droplist={
         <Menu className="mobile-action-menu">
+          <MenuItem
+            key="set-home-page"
+            disabled={!homePageReady || isHomePage}
+            onClick={() => onSetHomePage(categoryTarget, category.title)}
+          >
+            <div className="settings-menu-item">
+              <span>
+                {polyglot.t(
+                  isHomePage
+                    ? "sidebar.context_menu.current_home_page"
+                    : "sidebar.context_menu.set_as_home_page",
+                )}
+              </span>
+              <IconHome aria-hidden="true" />
+            </div>
+          </MenuItem>
+
+          <Divider style={{ margin: "4px 0" }} />
+
           <MenuItem key="edit-category" onClick={() => onEditCategory(category)}>
             <div className="settings-menu-item">
               <span>{polyglot.t("sidebar.context_menu.edit_category")}</span>
@@ -254,7 +282,16 @@ const SidebarMenuItems = () => {
   )
 }
 
-const FeedMenuItem = ({ feed, onEditFeed, onRefreshFeed, onMarkAllAsRead, onDeleteFeed }) => {
+const FeedMenuItem = ({
+  feed,
+  homePageReady,
+  homeTarget,
+  onDeleteFeed,
+  onEditFeed,
+  onMarkAllAsRead,
+  onRefreshFeed,
+  onSetHomePage,
+}) => {
   const { showFeedIcon } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
 
@@ -265,6 +302,8 @@ const FeedMenuItem = ({ feed, onEditFeed, onRefreshFeed, onMarkAllAsRead, onDele
   const { dropdownProps, longPressProps } = useLongPressContextMenu()
   const isSelected =
     location.pathname === `/feed/${feed.id}` || location.pathname.startsWith(`/feed/${feed.id}/`)
+  const feedTarget = createEntityHomeTarget("feed", feed.id)
+  const isHomePage = isSameHomeTarget(homeTarget, feedTarget)
 
   return (
     <Dropdown
@@ -273,6 +312,25 @@ const FeedMenuItem = ({ feed, onEditFeed, onRefreshFeed, onMarkAllAsRead, onDele
       trigger="contextMenu"
       droplist={
         <Menu className="mobile-action-menu">
+          <MenuItem
+            key="set-home-page"
+            disabled={!homePageReady || isHomePage}
+            onClick={() => onSetHomePage(feedTarget, feed.title)}
+          >
+            <div className="settings-menu-item">
+              <span>
+                {polyglot.t(
+                  isHomePage
+                    ? "sidebar.context_menu.current_home_page"
+                    : "sidebar.context_menu.set_as_home_page",
+                )}
+              </span>
+              <IconHome aria-hidden="true" />
+            </div>
+          </MenuItem>
+
+          <Divider style={{ margin: "4px 0" }} />
+
           <MenuItem key="edit-feed" onClick={() => onEditFeed(feed)}>
             <div className="settings-menu-item">
               <span>{polyglot.t("sidebar.context_menu.edit_feed")}</span>
@@ -345,10 +403,13 @@ const FeedMenuItem = ({ feed, onEditFeed, onRefreshFeed, onMarkAllAsRead, onDele
 
 const FeedMenuGroup = ({
   categoryId,
-  onEditFeed,
-  onRefreshFeed,
-  onMarkAllAsRead,
+  homePageReady,
+  homeTarget,
   onDeleteFeed,
+  onEditFeed,
+  onMarkAllAsRead,
+  onRefreshFeed,
+  onSetHomePage,
 }) => {
   const { showUnreadFeedsOnly, compactSidebarGroups } = useStore(settingsState)
   const feedsGroupedById = useStore(feedsGroupedByIdState)
@@ -378,10 +439,13 @@ const FeedMenuGroup = ({
           <FeedMenuItem
             key={feed.id}
             feed={feed}
+            homePageReady={homePageReady}
+            homeTarget={homeTarget}
             onDeleteFeed={onDeleteFeed}
             onEditFeed={onEditFeed}
             onMarkAllAsRead={onMarkAllAsRead}
             onRefreshFeed={onRefreshFeed}
+            onSetHomePage={onSetHomePage}
           />
         ))}
       </Virtualizer>
@@ -390,14 +454,17 @@ const FeedMenuGroup = ({
 }
 
 const CategoryGroup = ({
-  onEditCategory,
-  onRefreshCategory,
-  onMarkAllAsReadCategory,
+  homePageReady,
+  homeTarget,
   onDeleteCategory,
-  onEditFeed,
-  onRefreshFeed,
-  onMarkAllAsReadFeed,
   onDeleteFeed,
+  onEditCategory,
+  onEditFeed,
+  onMarkAllAsReadCategory,
+  onMarkAllAsReadFeed,
+  onRefreshCategory,
+  onRefreshFeed,
+  onSetHomePage,
 }) => {
   const { showUnreadFeedsOnly } = useStore(settingsState)
   const feedsGroupedById = useStore(feedsGroupedByIdState)
@@ -433,20 +500,26 @@ const CategoryGroup = ({
         header={
           <CategoryTitle
             category={category}
+            homePageReady={homePageReady}
+            homeTarget={homeTarget}
             path={currentPath}
             onDeleteCategory={onDeleteCategory}
             onEditCategory={onEditCategory}
             onMarkAllAsRead={onMarkAllAsReadCategory}
             onRefreshCategory={onRefreshCategory}
+            onSetHomePage={onSetHomePage}
           />
         }
       >
         <FeedMenuGroup
           categoryId={category.id}
+          homePageReady={homePageReady}
+          homeTarget={homeTarget}
           onDeleteFeed={onDeleteFeed}
           onEditFeed={onEditFeed}
           onMarkAllAsRead={onMarkAllAsReadFeed}
           onRefreshFeed={onRefreshFeed}
+          onSetHomePage={onSetHomePage}
         />
       </Collapse.Item>
     ))
@@ -579,7 +652,7 @@ const updateAllEntriesAsRead = () => {
   setEntries((prev) => prev.map((entry) => ({ ...entry, status: "read" })))
 }
 
-const Sidebar = () => {
+const Sidebar = ({ onNavigate }) => {
   const { catalog: catalogLoadState } = useStore(dataState).loadState
   const { polyglot } = useStore(polyglotState)
   const expandedCategories = useStore(expandedCategoriesState)
@@ -595,11 +668,20 @@ const Sidebar = () => {
   const { handleDeleteCategory } = useCategoryOperations(true)
 
   const location = useLocation()
+  const navigate = useNavigate()
   const currentPath = location.pathname
   const selectedKeys = [currentPath]
 
   const { refreshCounts, refreshFeedData } = useAppData()
   const { infoFrom, infoId } = useStore(contentState)
+  const {
+    identityError,
+    identityReady: homePageReady,
+    label: homePageLabel,
+    path: homePagePath,
+    setTarget: setHomePageTarget,
+    target: homeTarget,
+  } = useHomePage()
 
   const handleEditCategory = (category) => {
     setSelectedCategory(category)
@@ -682,19 +764,55 @@ const Sidebar = () => {
     await markFeedAsRead(feed)
   }
 
+  const handleSetHomePage = (target, name) => {
+    if (setHomePageTarget(target)) {
+      Notification.success({
+        title: polyglot.t("home_page.set_success", { name }),
+      })
+    }
+  }
+
+  let homePageActionLabel
+  if (homePageReady) {
+    homePageActionLabel = polyglot.t("home_page.go_to", { name: homePageLabel })
+  } else {
+    const statusKey = identityError
+      ? "home_page.identity_unavailable"
+      : "home_page.identity_loading"
+    homePageActionLabel = polyglot.t(statusKey)
+  }
+
+  const handleHomeNavigation = () => {
+    if (!homePageReady) {
+      return
+    }
+
+    navigate(homePagePath)
+    setActiveContent(null)
+    onNavigate?.()
+  }
+
   return (
     <div className="sidebar-container">
       <SimpleBar style={{ maxHeight: "100%" }}>
         <Menu hasCollapseButton={false} selectedKeys={selectedKeys}>
           <div className="menu-header">
-            <span style={{ display: "flex", alignItems: "center" }}>
-              <Avatar className="avatar" size={32}>
-                <IconBook aria-hidden="true" style={{ color: "var(--color-bg-1)" }} />
-              </Avatar>
-              <Typography.Title heading={6} style={{ margin: 0 }}>
-                ReactFlux
-              </Typography.Title>
-            </span>
+            <Tooltip content={homePageActionLabel} position="bottom">
+              <span className="home-brand-tooltip-anchor">
+                <button
+                  aria-label={homePageActionLabel}
+                  className="home-brand"
+                  disabled={!homePageReady}
+                  type="button"
+                  onClick={handleHomeNavigation}
+                >
+                  <Avatar className="avatar" size={32}>
+                    <IconBook aria-hidden="true" style={{ color: "var(--color-bg-1)" }} />
+                  </Avatar>
+                  <span className="home-brand-title">ReactFlux</span>
+                </button>
+              </span>
+            </Tooltip>
             <Profile />
           </div>
           <Typography.Title className="section-title" heading={6} style={{ paddingLeft: "12px" }}>
@@ -742,6 +860,8 @@ const Sidebar = () => {
                 onChange={(_key, keys) => setExpandedCategories(keys)}
               >
                 <CategoryGroup
+                  homePageReady={homePageReady}
+                  homeTarget={homeTarget}
                   onDeleteCategory={handleDeleteCategory}
                   onDeleteFeed={handleDeleteFeed}
                   onEditCategory={handleEditCategory}
@@ -750,6 +870,7 @@ const Sidebar = () => {
                   onMarkAllAsReadFeed={handleMarkAllAsReadFeed}
                   onRefreshCategory={handleRefreshCategory}
                   onRefreshFeed={handleRefreshFeed}
+                  onSetHomePage={handleSetHomePage}
                 />
               </Collapse>
             </div>

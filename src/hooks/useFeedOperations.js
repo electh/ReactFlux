@@ -1,12 +1,20 @@
 import { Message, Modal, Notification } from "@arco-design/web-react"
+import { useNavigate } from "react-router"
 
 import { deleteFeed, getFeedEntries, refreshFeed } from "@/apis"
 import { markFeedAsRead as markFeedAsReadAPI } from "@/apis/feeds"
 import { polyglotState } from "@/hooks/useLanguage"
 import { contentState, setEntries } from "@/store/contentState"
 import { setFeedsData, setUnreadInfo } from "@/store/dataState"
+import {
+  getCurrentHomePath,
+  getCurrentHomeTarget,
+  resetCurrentHomeTargetIfMatches,
+} from "@/store/homePageState"
+import { currentRoutePathState } from "@/store/locationState"
 import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
 import { getUTCDate } from "@/utils/date"
+import { createEntityHomeTarget, isSameHomeTarget } from "@/utils/home-page"
 
 export const updateFeedStatus = (feed, isSuccessful, targetFeedId = null) => {
   if (targetFeedId === null || targetFeedId === feed.id) {
@@ -61,6 +69,7 @@ export const handleFeedRefresh = async (
 export const useFeedOperations = (useNotification = false) => {
   const { polyglot } = polyglotState.get()
   const { infoFrom, infoId } = contentState.get()
+  const navigate = useNavigate()
 
   const showMessage = (message, type = "success") => {
     if (useNotification) {
@@ -82,48 +91,58 @@ export const useFeedOperations = (useNotification = false) => {
 
   const deleteFeedDirectly = async (feed) => {
     try {
-      const response = await deleteFeed(feed.id || feed.key)
-      if (response.status === 204) {
-        setFeedsData((feeds) => feeds.filter((f) => f.id !== (feed.id || feed.key)))
-        const successMessage = polyglot.t("feed_table.remove_feed_success", { title: feed.title })
-        showMessage(successMessage)
-      } else {
+      const feedId = feed.id || feed.key
+      const response = await deleteFeed(feedId)
+      if (response.status !== 204) {
         throw new Error(`Unexpected status: ${response.status}`)
       }
+
+      const feedTarget = createEntityHomeTarget("feed", feedId)
+      const feedPath = `/feed/${feedId}`
+      setFeedsData((feeds) => feeds.filter((candidate) => candidate.id !== feedId))
+
+      const homePageWasReset = resetCurrentHomeTargetIfMatches(feedTarget)
+      const currentPath = currentRoutePathState.get()
+      if (currentPath === feedPath || currentPath.startsWith(`${feedPath}/`)) {
+        navigate(getCurrentHomePath() ?? "/", { replace: true })
+      }
+
+      const successMessage = polyglot.t("feed_table.remove_feed_success", { title: feed.title })
+      showMessage(successMessage)
+      if (homePageWasReset) {
+        showMessage(polyglot.t("home_page.fallback_notice"), "warning")
+      }
+      return true
     } catch (error) {
       console.error(`Failed to delete feed: ${feed.title}`, error)
       const errorMessage = polyglot.t("feed_table.remove_feed_error", { title: feed.title })
       showMessage(errorMessage, "error")
+      return false
     }
   }
 
   const handleDeleteFeed = async (feed) => {
     try {
-      const starredEntries = await getFeedEntries(feed.id || feed.key, null, true)
-      if (starredEntries.total > 0) {
-        Modal.confirm({
-          ...confirmDialogProps,
-          title: polyglot.t("feed_table.remove_feed_confirm_title"),
-          content: polyglot.t("feed_table.remove_feed_confirm_content", {
+      const feedId = feed.id || feed.key
+      const feedTarget = createEntityHomeTarget("feed", feedId)
+      const isHomePage = isSameHomeTarget(getCurrentHomeTarget(), feedTarget)
+      const homePageWarning = isHomePage ? ` ${polyglot.t("home_page.delete_warning")}` : ""
+      const starredEntries = await getFeedEntries(feedId, null, true)
+      const hasStarredEntries = starredEntries.total > 0
+      const confirmTitle = polyglot.t("feed_table.remove_feed_confirm_title")
+      const confirmContent = hasStarredEntries
+        ? polyglot.t("feed_table.remove_feed_confirm_content", {
             count: starredEntries.total,
-          }),
-          okButtonProps: destructiveConfirmButtonProps,
-          onOk: () => deleteFeedDirectly(feed),
-        })
-      } else {
-        const confirmTitle = polyglot.t("feed_table.remove_feed_confirm_title")
-        const confirmContent = polyglot.t("feed_table.table_feed_remove_confirm", {
-          title: feed.title,
-        })
+          })
+        : polyglot.t("feed_table.table_feed_remove_confirm", { title: feed.title })
 
-        Modal.confirm({
-          ...confirmDialogProps,
-          title: confirmTitle,
-          content: confirmContent,
-          okButtonProps: destructiveConfirmButtonProps,
-          onOk: () => deleteFeedDirectly(feed),
-        })
-      }
+      Modal.confirm({
+        ...confirmDialogProps,
+        title: confirmTitle,
+        content: `${confirmContent}${homePageWarning}`,
+        okButtonProps: destructiveConfirmButtonProps,
+        onOk: () => deleteFeedDirectly(feed),
+      })
     } catch (error) {
       console.error("Failed to check starred entries:", error)
       const errorMessage = polyglot.t("feed_table.check_starred_error")

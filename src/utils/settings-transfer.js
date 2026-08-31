@@ -1,12 +1,14 @@
 import { hotkeysState, replaceHotkeys } from "@/store/hotkeysState"
 import { replaceSettings, settingsState } from "@/store/settingsState"
 import { expandedCategoriesState, replaceExpandedCategories } from "@/store/sidebarState"
+import { createDefaultHomePages } from "@/utils/home-page"
 import { sanitizeHotkeys } from "@/utils/hotkeys-schema"
 import { createDefaultSettings, sanitizeSettings } from "@/utils/settings-schema"
 import { sanitizeExpandedCategories } from "@/utils/sidebar-schema"
 
 const SETTINGS_BACKUP_FORMAT = "reactflux-settings"
-const SETTINGS_BACKUP_SCHEMA_VERSION = 1
+const SETTINGS_BACKUP_SCHEMA_VERSION = 2
+const SUPPORTED_SETTINGS_BACKUP_SCHEMA_VERSIONS = new Set([1, SETTINGS_BACKUP_SCHEMA_VERSION])
 
 export const MAX_SETTINGS_BACKUP_FILE_SIZE = 1024 * 1024
 
@@ -37,11 +39,16 @@ export const formatSettingsBackupFilename = (date = new Date()) => {
   return `reactflux-settings-${year}${month}${day}-${hours}${minutes}.json`
 }
 
-const sanitizeSnapshot = ({ settings, hotkeys, expandedCategories }) => {
+const sanitizeSnapshot = (
+  { settings, hotkeys, expandedCategories },
+  schemaVersion = SETTINGS_BACKUP_SCHEMA_VERSION,
+) => {
   const fallbackSettings = createDefaultSettings(settings?.language)
+  const settingsWithHomePages =
+    schemaVersion === 1 ? { ...settings, homePages: createDefaultHomePages() } : settings
 
   return {
-    settings: sanitizeSettings(settings, fallbackSettings),
+    settings: sanitizeSettings(settingsWithHomePages, fallbackSettings),
     hotkeys: sanitizeHotkeys(hotkeys),
     expandedCategories: sanitizeExpandedCategories(expandedCategories),
   }
@@ -89,7 +96,7 @@ export const parseSettingsBackup = (value) => {
     throw new SettingsImportError(SETTINGS_IMPORT_ERROR_CODES.INVALID_FILE)
   }
 
-  if (backup.schemaVersion !== SETTINGS_BACKUP_SCHEMA_VERSION) {
+  if (!SUPPORTED_SETTINGS_BACKUP_SCHEMA_VERSIONS.has(backup.schemaVersion)) {
     throw new SettingsImportError(SETTINGS_IMPORT_ERROR_CODES.UNSUPPORTED_VERSION)
   }
 
@@ -104,11 +111,14 @@ export const parseSettingsBackup = (value) => {
     throw new SettingsImportError(SETTINGS_IMPORT_ERROR_CODES.INVALID_FILE)
   }
 
-  return sanitizeSnapshot({
-    settings: data.settings,
-    hotkeys: data.hotkeys,
-    expandedCategories: data.sidebar.expandedCategories,
-  })
+  return sanitizeSnapshot(
+    {
+      settings: data.settings,
+      hotkeys: data.hotkeys,
+      expandedCategories: data.sidebar.expandedCategories,
+    },
+    backup.schemaVersion,
+  )
 }
 
 export const applySettingsBackup = (snapshot) => {

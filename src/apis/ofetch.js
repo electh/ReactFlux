@@ -61,20 +61,25 @@ const createApiClient = () => {
         statusCode === 401 &&
         isCurrentRequestSession(options[REQUEST_AUTH_SESSION_KEY], authState.get())
       ) {
+        const { location } = router.state
+        const from = `${location.pathname}${location.search}${location.hash}`
         clearSession()
-        await router.navigate("/login")
+        await router.navigate("/login", { replace: true, state: { from } })
       }
       // 处理响应错误
       const errorMessage = response._data?.error_message ?? response.statusText
       console.error("Response error:", errorMessage)
-      throw new Error(errorMessage)
+      const responseError = new Error(errorMessage)
+      responseError.status = statusCode
+      responseError.data = response._data
+      throw responseError
     },
   })
 }
 
 const apiClient = createApiClient()
-apiClient.get = (url) => apiClient(url, { method: "GET" })
-apiClient.post = (url, body) => apiClient(url, { method: "POST", body })
-apiClient.put = (url, body) => apiClient(url, { method: "PUT", body })
+apiClient.get = (url, options = {}) => apiClient(url, { ...options, method: "GET" })
+apiClient.post = (url, body, options = {}) => apiClient(url, { ...options, method: "POST", body })
+apiClient.put = (url, body, options = {}) => apiClient(url, { ...options, method: "PUT", body })
 
 export default apiClient

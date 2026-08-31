@@ -1,6 +1,7 @@
 import {
   getCategories,
   getCounters,
+  getCurrentUser,
   getEntryCountSummary,
   getFeeds,
   getIntegrationsStatus,
@@ -9,6 +10,7 @@ import {
 import {
   commitCatalogData,
   commitCountsData,
+  commitIdentityData,
   commitServerInfoData,
   dataState,
   getDataResourceRevision,
@@ -16,7 +18,7 @@ import {
   setDataResourceLoadState,
 } from "@/store/dataState"
 
-const RESOURCE_NAMES = ["catalog", "counts", "serverInfo"]
+const RESOURCE_NAMES = ["catalog", "counts", "identity", "serverInfo"]
 
 const getErrorMessage = (error) => (error instanceof Error ? error.message : String(error))
 
@@ -28,6 +30,16 @@ const loadCatalog = async () => {
   }
 
   return { feedsData, categoriesData }
+}
+
+const loadIdentity = async () => {
+  const currentUser = await getCurrentUser()
+  const userId = currentUser?.id
+  if (!Number.isSafeInteger(userId) || userId <= 0) {
+    throw new TypeError("Invalid current user response")
+  }
+
+  return currentUser
 }
 
 const loadCounts = async (includeEntrySummary) => {
@@ -173,6 +185,9 @@ const createAppDataCoordinator = () => {
       options,
     )
 
+  const refreshIdentity = (options) =>
+    runResource("identity", loadIdentity, commitIdentityData, options)
+
   const refreshServerInfo = (options) =>
     runResource(
       "serverInfo",
@@ -188,7 +203,11 @@ const createAppDataCoordinator = () => {
 
   const bootstrap = () => {
     isActive = true
-    return Promise.allSettled([refreshFeedData(), refreshServerInfo()])
+    const requests = [refreshFeedData(), refreshServerInfo()]
+    if (!dataState.get().loadState.identity.hasSnapshot) {
+      requests.push(refreshIdentity())
+    }
+    return Promise.allSettled(requests)
   }
 
   const dispose = () => {
@@ -201,7 +220,7 @@ const createAppDataCoordinator = () => {
   }
 
   return {
-    actions: { refreshCounts, refreshFeedData },
+    actions: { refreshCounts, refreshFeedData, refreshIdentity },
     bootstrap,
     dispose,
   }

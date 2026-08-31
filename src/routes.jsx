@@ -1,7 +1,8 @@
-import { createBrowserRouter, Navigate } from "react-router"
+import { createBrowserRouter } from "react-router"
 
 import App from "./App"
 import AppDataProvider from "./components/AppDataProvider"
+import HomeRedirect from "./components/HomeRedirect"
 import All from "./pages/All"
 import Category from "./pages/Category"
 import ErrorPage from "./pages/ErrorPage"
@@ -11,9 +12,6 @@ import Login from "./pages/Login"
 import RouterProtect from "./pages/RouterProtect"
 import Starred from "./pages/Starred"
 import Today from "./pages/Today"
-import { getSettings } from "./store/settingsState"
-
-const homePage = getSettings("homePage")
 
 const pageRoutes = {
   all: <All />,
@@ -43,7 +41,7 @@ const router = createBrowserRouter(
             </AppDataProvider>
           ),
           errorElement: <ErrorPage />,
-          children: [...routes, { index: true, element: <Navigate replace to={`/${homePage}`} /> }],
+          children: [...routes, { index: true, element: <HomeRedirect /> }],
         },
       ],
     },

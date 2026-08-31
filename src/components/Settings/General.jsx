@@ -7,15 +7,24 @@ import {
   Select,
   Slider,
   Switch,
+  Tooltip,
 } from "@arco-design/web-react"
-import { IconDownload, IconInfoCircleFill, IconUpload } from "@arco-design/web-react/icon"
+import {
+  IconDownload,
+  IconInfoCircleFill,
+  IconRight,
+  IconUpload,
+} from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { useRef, useState } from "react"
 
+import HomePagePicker from "./HomePagePicker"
 import SettingItem from "./SettingItem"
 
+import useHomePage from "@/hooks/useHomePage"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
+import { ensureCurrentHomePage } from "@/store/homePageState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
 import { MAX_ENTRIES_PER_PAGE, MIN_ENTRIES_PER_PAGE } from "@/utils/constants"
@@ -43,7 +52,6 @@ const General = () => {
     compactSidebarGroups,
     enableContextMenu,
     enableSwipeGesture,
-    homePage,
     language,
     markAllReadJumpToNext,
     markReadBy,
@@ -59,25 +67,17 @@ const General = () => {
   const { isBelowMedium } = useScreenWidth()
   const importInputRef = useRef(null)
   const [isImportingSettings, setIsImportingSettings] = useState(false)
+  const [homePagePickerVisible, setHomePagePickerVisible] = useState(false)
+  const { identityError, identityReady, label: homePageLabel } = useHomePage()
 
-  const homePageOptions = [
-    {
-      label: polyglot.t("settings.default_home_page_option_all"),
-      value: "all",
-    },
-    {
-      label: polyglot.t("settings.default_home_page_option_today"),
-      value: "today",
-    },
-    {
-      label: polyglot.t("settings.default_home_page_option_starred"),
-      value: "starred",
-    },
-    {
-      label: polyglot.t("settings.default_home_page_option_history"),
-      value: "history",
-    },
-  ]
+  let homePageSummaryLabel = homePageLabel
+  if (!identityReady) {
+    const statusKey = identityError
+      ? "home_page.identity_unavailable"
+      : "home_page.identity_loading"
+    homePageSummaryLabel = polyglot.t(statusKey)
+  }
+
   const removeDuplicatesOptions = [
     {
       label: polyglot.t("settings.remove_duplicates_option_none"),
@@ -113,6 +113,7 @@ const General = () => {
   const applyImportedSettings = (snapshot) => {
     try {
       applySettingsBackup(snapshot)
+      ensureCurrentHomePage()
       Message.success(polyglot.t("settings.settings_import_success"))
       globalThis.setTimeout(() => globalThis.location.reload(), 600)
     } catch (error) {
@@ -191,17 +192,26 @@ const General = () => {
         description={polyglot.t("settings.default_home_page_description")}
         title={polyglot.t("settings.default_home_page_label")}
       >
-        <Select
-          className="input-select"
-          value={homePage}
-          onChange={(value) => updateSettings({ homePage: value })}
+        <Tooltip
+          content={homePageSummaryLabel}
+          disabled={isBelowMedium || !identityReady}
+          trigger={["hover", "focus"]}
         >
-          {homePageOptions.map(({ label, value }) => (
-            <Select.Option key={value} value={value}>
-              {label}
-            </Select.Option>
-          ))}
-        </Select>
+          <Button
+            aria-expanded={homePagePickerVisible}
+            aria-haspopup="dialog"
+            className="home-page-summary"
+            disabled={!identityReady}
+            onClick={() => setHomePagePickerVisible(true)}
+          >
+            <span>{homePageSummaryLabel}</span>
+            <IconRight aria-hidden="true" />
+          </Button>
+        </Tooltip>
+        <HomePagePicker
+          visible={homePagePickerVisible}
+          onClose={() => setHomePagePickerVisible(false)}
+        />
       </SettingItem>
 
       <Divider />

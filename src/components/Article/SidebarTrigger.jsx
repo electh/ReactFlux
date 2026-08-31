@@ -60,7 +60,7 @@ export default function SidebarTrigger() {
         width={240}
         onCancel={() => setSidebarVisible(false)}
       >
-        <Sidebar />
+        <Sidebar onNavigate={() => setSidebarVisible(false)} />
       </Drawer>
     </div>
   )

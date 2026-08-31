@@ -6,6 +6,7 @@ import { sortMixedLanguageArray } from "@/utils/locales"
 
 const createResourceLoadState = () => ({
   hasSnapshot: false,
+  snapshotRevision: 0,
   activity: "idle",
   error: null,
 })
@@ -19,17 +20,20 @@ const createDefaultValue = (sessionRevision = 0) => ({
   historyCount: 0,
   feedsData: [],
   categoriesData: [],
+  currentUser: null,
   version: "",
   verifiedAuthSessionKey: "",
   hasIntegrations: false,
   loadState: {
     catalog: createResourceLoadState(),
     counts: createResourceLoadState(),
+    identity: createResourceLoadState(),
     serverInfo: createResourceLoadState(),
   },
   resourceRevisions: {
     catalog: 0,
     counts: 0,
+    identity: 0,
     serverInfo: 0,
   },
 })
@@ -180,6 +184,7 @@ const commitResourceData = (resource, resourceData, error = null) => {
       ...currentState.loadState,
       [resource]: {
         hasSnapshot: true,
+        snapshotRevision: currentState.loadState[resource].snapshotRevision + 1,
         activity: "idle",
         error,
       },
@@ -217,6 +222,8 @@ export const commitCatalogData = ({ feedsData, categoriesData }) =>
 
 export const commitCountsData = (countsData, error = null) =>
   commitResourceData("counts", countsData, error)
+
+export const commitIdentityData = (currentUser) => commitResourceData("identity", { currentUser })
 
 export const commitServerInfoData = (serverInfoData, error = null) =>
   commitResourceData("serverInfo", serverInfoData, error)

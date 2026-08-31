@@ -1,6 +1,6 @@
 import { resetAuth, setAuth } from "@/store/authState"
 import { resetContent } from "@/store/contentState"
-import { resetData, setVerifiedServer } from "@/store/dataState"
+import { commitIdentityData, resetData, setVerifiedServer } from "@/store/dataState"
 import { resetFeedIcons } from "@/store/feedIconsState"
 import { getAuthSessionKey } from "@/utils/auth"
 
@@ -15,8 +15,9 @@ export const clearSession = () => {
   resetSessionData()
 }
 
-export const startSession = (auth, serverVersion) => {
+export const startSession = (auth, serverVersion, currentUser) => {
   resetSessionData()
+  commitIdentityData(currentUser)
   setVerifiedServer({ authSessionKey: getAuthSessionKey(auth), version: serverVersion })
   setAuth(auth)
 }

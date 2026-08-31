@@ -11,7 +11,7 @@ const getFallbackIconURL = (feed) => {
   return `https://icons.duckduckgo.com/ip3/${hostname}.ico`
 }
 
-const FeedIcon = ({ feed, className = "feed-icon" }) => {
+const FeedIcon = ({ feed, className = "feed-icon", fallbackIcon = null }) => {
   const { icon_id: iconId } = feed.icon
   const fallbackIconURL = getFallbackIconURL(feed)
 
@@ -57,6 +57,10 @@ const FeedIcon = ({ feed, className = "feed-icon" }) => {
     if (!fallbackFailed && !useFallback) {
       setUseFallback(true)
     }
+  }
+
+  if (fallbackIcon && (fallbackFailed || (iconId !== 0 && !fetchedIconURL && !useFallback))) {
+    return fallbackIcon
   }
 
   if (fallbackFailed) {

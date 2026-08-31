@@ -46,6 +46,47 @@
   background-color: var(--color-text-1);
 }
 
+.home-brand-tooltip-anchor {
+  display: inline-flex;
+  min-width: 0;
+}
+
+.home-brand {
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 120ms ease;
+  border: 0;
+  border-radius: var(--border-radius-medium);
+  background: transparent;
+  padding: 4px 8px 4px 4px;
+  min-width: 0;
+  color: var(--color-text-1);
+  font: inherit;
+  cursor: pointer;
+}
+
+.home-brand:hover:not(:disabled),
+.home-brand:focus-visible {
+  background-color: var(--color-neutral-3);
+}
+
+.home-brand:focus-visible {
+  outline: 2px solid rgb(var(--primary-6));
+  outline-offset: 1px;
+}
+
+.home-brand:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.home-brand-title {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .section-title {
   color: var(--color-text-2);
   font-style: italic;
@@ -232,6 +273,10 @@
   .sidebar-drawer .arco-collapse-item-icon-hover::before {
     width: var(--mobile-navigation-control-size);
     height: var(--mobile-navigation-control-size);
+  }
+
+  .sidebar-drawer .home-brand {
+    min-height: var(--mobile-navigation-control-size);
   }
 
   .sidebar-drawer .sidebar-section-action,

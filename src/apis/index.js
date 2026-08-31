@@ -12,7 +12,7 @@ export const importOPML = (xmlContent) =>
     body: xmlContent,
   })
 
-const getCurrentUser = async () => apiClient.get("/v1/me")
+export const getCurrentUser = (options) => apiClient.get("/v1/me", options)
 
 export const getFeedIcon = async (id) => apiClient.get(`/v1/icons/${id}`)
 

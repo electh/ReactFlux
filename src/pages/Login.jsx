@@ -19,7 +19,6 @@ import { Navigate, useLocation, useNavigate, useSearchParams } from "react-route
 import useLanguage, { polyglotState } from "@/hooks/useLanguage"
 import useTheme from "@/hooks/useTheme"
 import { authState } from "@/store/authState"
-import { settingsState } from "@/store/settingsState"
 import isValidAuth from "@/utils/auth"
 import { handleEnterKeyToSubmit, validateAndFormatFormFields } from "@/utils/form"
 import hideSpinner from "@/utils/loading"
@@ -66,7 +65,6 @@ const Login = () => {
   useTheme()
 
   const auth = useStore(authState)
-  const { homePage } = useStore(settingsState)
   const { polyglot } = useStore(polyglotState)
 
   const [loginForm] = useForm()
@@ -118,6 +116,16 @@ const Login = () => {
         return
       }
 
+      const currentUser = response._data
+      const userId = currentUser?.id
+      if (!Number.isSafeInteger(userId) || userId <= 0) {
+        Notification.error({
+          title: polyglot.t("login.error"),
+          content: polyglot.t("login.invalid_identity"),
+        })
+        return
+      }
+
       let compatibility
 
       try {
@@ -145,8 +153,8 @@ const Login = () => {
       Notification.success({
         title: polyglot.t("login.success"),
       })
-      startSession({ server, token, username, password }, compatibility.version)
-      navigate(redirectTo || `/${homePage}`, { replace: true })
+      startSession({ server, token, username, password }, compatibility.version, currentUser)
+      navigate(redirectTo || "/", { replace: true })
     } finally {
       setLoading(false)
     }
@@ -179,7 +187,7 @@ const Login = () => {
     polyglot && compatibilityError ? getCompatibilityAlert(polyglot, compatibilityError) : null
 
   if (isValidAuth(auth)) {
-    return <Navigate to={redirectTo || `/${homePage}`} />
+    return <Navigate replace to={redirectTo || "/"} />
   }
 
   return (

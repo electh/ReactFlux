@@ -9,6 +9,7 @@ import { useEffect } from "react"
 
 import "./App.css"
 import AppNotifications from "./AppNotifications"
+import HomePageManager from "./components/HomePageManager"
 import Main from "./components/Main/Main"
 import Sidebar from "./components/Sidebar/Sidebar"
 import useFeedIconsSync from "./hooks/useFeedIconsSync"
@@ -46,6 +47,7 @@ const App = () => {
     polyglot && (
       <ConfigProvider locale={locale}>
         <AppNotifications />
+        <HomePageManager />
         <div className="app">
           {isBelowLarge ? null : (
             <Layout.Sider

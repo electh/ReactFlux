@@ -1,4 +1,5 @@
 import { MAX_ENTRIES_PER_PAGE, MIN_ENTRIES_PER_PAGE } from "@/utils/constants"
+import { createDefaultHomePages, sanitizeHomePages } from "@/utils/home-page"
 
 export const MIN_ARTICLE_FONT_SIZE = 1
 const MAX_ARTICLE_FONT_SIZE = 1.5
@@ -91,6 +92,10 @@ const SETTINGS_SCHEMA = {
     precision: 2,
   }),
   homePage: enumSetting("all", ["all", "today", "starred", "history"]),
+  homePages: {
+    defaultValue: createDefaultHomePages(),
+    sanitize: sanitizeHomePages,
+  },
   language: {
     defaultValue: "en-US",
     sanitize: sanitizeLanguage,

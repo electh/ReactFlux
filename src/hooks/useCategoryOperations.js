@@ -1,12 +1,21 @@
 import { Message, Modal, Notification } from "@arco-design/web-react"
+import { useNavigate } from "react-router"
 
 import { addCategory, deleteCategory, updateCategory } from "@/apis/categories"
 import { polyglotState } from "@/hooks/useLanguage"
 import { setCategoriesData, setFeedsData } from "@/store/dataState"
+import {
+  getCurrentHomePath,
+  getCurrentHomeTarget,
+  resetCurrentHomeTargetIfMatches,
+} from "@/store/homePageState"
+import { currentRoutePathState } from "@/store/locationState"
 import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
+import { createEntityHomeTarget, isSameHomeTarget } from "@/utils/home-page"
 
 const useCategoryOperations = (useNotification = false) => {
   const { polyglot } = polyglotState.get()
+  const navigate = useNavigate()
 
   const showMessage = (message, type = "success") => {
     if (useNotification) {
@@ -78,17 +87,28 @@ const useCategoryOperations = (useNotification = false) => {
   const deleteCategoryDirectly = async (category) => {
     try {
       const response = await deleteCategory(category.id)
-      if (response.status === 204) {
-        setCategoriesData((prevCategories) => prevCategories.filter((c) => c.id !== category.id))
-
-        const successMessage = polyglot.t("category_list.remove_category_success", {
-          title: category.title,
-        })
-        showMessage(successMessage)
-        return true
-      } else {
+      if (response.status !== 204) {
         throw new Error(`Unexpected status: ${response.status}`)
       }
+
+      const categoryTarget = createEntityHomeTarget("category", category.id)
+      const categoryPath = `/category/${category.id}`
+      setCategoriesData((prevCategories) => prevCategories.filter((c) => c.id !== category.id))
+
+      const homePageWasReset = resetCurrentHomeTargetIfMatches(categoryTarget)
+      const currentPath = currentRoutePathState.get()
+      if (currentPath === categoryPath || currentPath.startsWith(`${categoryPath}/`)) {
+        navigate(getCurrentHomePath() ?? "/", { replace: true })
+      }
+
+      const successMessage = polyglot.t("category_list.remove_category_success", {
+        title: category.title,
+      })
+      showMessage(successMessage)
+      if (homePageWasReset) {
+        showMessage(polyglot.t("home_page.fallback_notice"), "warning")
+      }
+      return true
     } catch (error) {
       console.error(`Failed to delete category: ${category.title}`, error)
 
@@ -101,19 +121,24 @@ const useCategoryOperations = (useNotification = false) => {
   }
 
   const handleDeleteCategory = async (category, requireConfirmation = true) => {
-    if (requireConfirmation) {
-      Modal.confirm({
-        ...confirmDialogProps,
-        title: polyglot.t("sidebar.delete_category_confirm_title"),
-        content: polyglot.t("sidebar.delete_category_confirm_content", {
-          title: category.title,
-        }),
-        okButtonProps: destructiveConfirmButtonProps,
-        onOk: () => deleteCategoryDirectly(category),
-      })
-    } else {
+    const categoryTarget = createEntityHomeTarget("category", category.id)
+    const isHomePage = isSameHomeTarget(getCurrentHomeTarget(), categoryTarget)
+    if (!requireConfirmation && !isHomePage) {
       return deleteCategoryDirectly(category)
     }
+
+    const confirmation = polyglot.t("sidebar.delete_category_confirm_content", {
+      title: category.title,
+    })
+    Modal.confirm({
+      ...confirmDialogProps,
+      title: polyglot.t("sidebar.delete_category_confirm_title"),
+      content: isHomePage
+        ? `${confirmation} ${polyglot.t("home_page.delete_warning")}`
+        : confirmation,
+      okButtonProps: destructiveConfirmButtonProps,
+      onOk: () => deleteCategoryDirectly(category),
+    })
   }
 
   return {

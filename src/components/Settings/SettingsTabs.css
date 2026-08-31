@@ -19,6 +19,31 @@
   width: 130px;
 }
 
+.home-page-summary.arco-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-left: 16px;
+  width: fit-content;
+  max-width: min(300px, 38vw);
+  height: 32px;
+  min-height: 32px;
+  padding: 0 12px;
+  text-align: left;
+}
+
+.home-page-summary > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-page-summary .arco-icon {
+  flex: 0 0 auto;
+}
+
 @media screen and (max-width: 768px) {
   .settings-modal .settings-tabs-scroll {
     height: 100%;
@@ -31,13 +56,25 @@
   }
 
   .setting-control .input-select,
-  .setting-control .input-slider {
+  .setting-control .input-slider,
+  .setting-control .home-page-summary {
     margin-left: 0;
     width: 100%;
+  }
+
+  .setting-control .home-page-summary {
+    justify-content: space-between;
+    max-width: none;
+    height: var(--mobile-form-control-size);
+    min-height: var(--mobile-form-control-size);
   }
 }
 
 @media (pointer: coarse) {
+  .home-page-summary.arco-btn {
+    min-height: var(--mobile-form-control-size);
+  }
+
   .settings-touch-target.arco-btn {
     min-width: var(--mobile-form-control-size);
     min-height: var(--mobile-form-control-size);

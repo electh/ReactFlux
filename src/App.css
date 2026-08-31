@@ -20,6 +20,23 @@
   white-space: nowrap;
 }
 
+.home-identity-notice {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  z-index: 1100;
+  gap: 12px;
+  transform: translateX(-50%);
+  border: 1px solid var(--color-warning-light-3);
+  border-radius: var(--border-radius-medium);
+  background: var(--color-bg-2);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
+  padding: 8px 12px;
+  color: var(--color-text-1);
+}
+
 .app {
   display: grid;
   grid-template-columns: 240px 1fr;
@@ -107,6 +124,11 @@
 }
 
 @media screen and (max-width: 768px) {
+  .home-identity-notice {
+    top: max(8px, env(safe-area-inset-top, 0px));
+    width: calc(100% - 32px);
+  }
+
   .background {
     position: absolute !important;
     top: 0 !important;

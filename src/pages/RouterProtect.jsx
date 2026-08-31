@@ -1,12 +1,13 @@
 import { Button, Result, Spin } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router"
 
 import useLanguage, { polyglotState } from "@/hooks/useLanguage"
 import useTheme from "@/hooks/useTheme"
 import { authState } from "@/store/authState"
 import { dataState, setVerifiedServer } from "@/store/dataState"
+import { setCurrentRoutePath } from "@/store/locationState"
 import isValidAuth, { getAuthSessionKey } from "@/utils/auth"
 import hideSpinner from "@/utils/loading"
 import {
@@ -110,6 +111,10 @@ const RouterProtect = () => {
   const currentLocation = `${location.pathname}${location.search}${location.hash}`
   const activeCheckState =
     checkState.authSessionKey === authSessionKey ? checkState : INITIAL_CHECK_STATE
+
+  useLayoutEffect(() => {
+    setCurrentRoutePath(location.pathname)
+  }, [location.pathname])
 
   useEffect(() => {
     if (!hasValidAuth || hasVerifiedSession) {
