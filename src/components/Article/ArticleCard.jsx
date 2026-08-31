@@ -93,15 +93,26 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
     handleOpenLinkExternally,
   } = useEntryActions()
 
-  const [hasError, setHasError] = useState(false)
-  const [isWideImage, setIsWideImage] = useState(false)
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [coverState, setCoverState] = useState({
+    coverDisplayMode: null,
+    coverSource: null,
+    hasError: false,
+    isImageLoaded: false,
+    isWideImage: false,
+  })
   const { dropdownProps, longPressProps } = useLongPressContextMenu({
     disabled: !enableContextMenu,
   })
 
   const wasVisible = useRef(false)
   const cardRef = useRef(null)
+  const shouldShowCover = coverDisplayMode !== "none" && Boolean(entry.coverSource)
+  const isCurrentCover =
+    coverState.coverDisplayMode === coverDisplayMode && coverState.coverSource === entry.coverSource
+  const hasError = isCurrentCover && coverState.hasError
+  const isImageLoaded = isCurrentCover && coverState.isImageLoaded
+  const isWideImage = isCurrentCover && coverState.isWideImage
+  const shouldRenderCover = shouldShowCover && !hasError && isImageLoaded
 
   useEffect(() => {
     // If the article is read or scroll marking is not enabled, no observation needed
@@ -147,7 +158,8 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
   useEffect(() => {
     let isSubscribed = true
 
-    if (entry.coverSource) {
+    if (shouldShowCover) {
+      const coverIdentity = { coverDisplayMode, coverSource: entry.coverSource }
       const img = new Image()
       img.src = entry.coverSource
 
@@ -156,24 +168,16 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
           const aspectRatio = img.naturalWidth / img.naturalHeight
           const isThumbnailSize = Math.max(img.width, img.height) <= 250
 
-          // Determine image display mode based on user settings
-          switch (coverDisplayMode) {
-            case "auto": {
-              setIsWideImage(aspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize)
-              break
-            }
-            case "banner": {
-              setIsWideImage(true)
-              break
-            }
-            case "thumbnail": {
-              setIsWideImage(false)
-              break
-            }
-            // No default
-          }
+          const nextIsWideImage =
+            coverDisplayMode === "banner" ||
+            (coverDisplayMode === "auto" && aspectRatio >= WIDE_IMAGE_RATIO && !isThumbnailSize)
 
-          setIsImageLoaded(true)
+          setCoverState({
+            ...coverIdentity,
+            hasError: false,
+            isImageLoaded: true,
+            isWideImage: nextIsWideImage,
+          })
         }
       }
 
@@ -181,7 +185,12 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
 
       const handleError = () => {
         if (isSubscribed) {
-          setHasError(true)
+          setCoverState({
+            ...coverIdentity,
+            hasError: true,
+            isImageLoaded: false,
+            isWideImage: false,
+          })
         }
       }
 
@@ -194,7 +203,7 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
         img.removeEventListener("error", handleError)
       }
     }
-  }, [entry.coverSource, coverDisplayMode])
+  }, [entry.coverSource, coverDisplayMode, shouldShowCover])
 
   const previewContent = useMemo(() => extractTextFromHtml(entry.content), [entry.content])
 
@@ -298,9 +307,9 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
             <h3 className="card-title">{entry.title}</h3>
           </div>
 
-          {entry.coverSource && !hasError && isImageLoaded && isWideImage && (
+          {shouldRenderCover && isWideImage && (
             <div className="card-image-wide">
-              <ArticleCardImage entry={entry} isWideImage={isWideImage} setHasError={setHasError} />
+              <ArticleCardImage isWideImage entry={entry} />
             </div>
           )}
 
@@ -321,13 +330,9 @@ const ArticleCard = ({ entry, handleEntryClick, children }) => {
                 </p>
               )}
             </div>
-            {entry.coverSource && !hasError && isImageLoaded && !isWideImage && (
+            {shouldRenderCover && !isWideImage && (
               <div className="card-image-mini">
-                <ArticleCardImage
-                  entry={entry}
-                  isWideImage={isWideImage}
-                  setHasError={setHasError}
-                />
+                <ArticleCardImage entry={entry} isWideImage={false} />
               </div>
             )}
           </div>

@@ -87,6 +87,9 @@ const Appearance = () => {
           <Select.Option value="thumbnail">
             {polyglot.t("appearance.cover_display_mode_thumbnail")}
           </Select.Option>
+          <Select.Option value="none">
+            {polyglot.t("appearance.cover_display_mode_none")}
+          </Select.Option>
         </Select>
       </SettingItem>
 

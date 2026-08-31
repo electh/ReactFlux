@@ -10,7 +10,9 @@ const SettingItem = ({ title, description, children }) => {
   const descriptionId = `${generatedId}-description`
 
   useLayoutEffect(() => {
-    const controls = controlRef.current.querySelectorAll('[role="slider"], [role="switch"]')
+    const controls = controlRef.current.querySelectorAll(
+      '[role="combobox"], [role="slider"], [role="switch"]',
+    )
 
     for (const control of controls) {
       if (!control.hasAttribute("aria-label") && !control.hasAttribute("aria-labelledby")) {

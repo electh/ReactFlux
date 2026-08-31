@@ -356,6 +356,7 @@
     "cover_display_mode_auto": "Auto",
     "cover_display_mode_banner": "Bannière",
     "cover_display_mode_thumbnail": "Vignette",
+    "cover_display_mode_none": "Aucune",
     "show_detailed_relative_time_label": "Afficher le temps relatif détaillé",
     "show_detailed_relative_time_description": "Afficher le temps relatif détaillé dans la carte d'article",
     "show_estimated_reading_time_label": "Afficher le temps de lecture estimé",

@@ -356,6 +356,7 @@
     "cover_display_mode_auto": "自动",
     "cover_display_mode_banner": "横幅",
     "cover_display_mode_thumbnail": "缩略图",
+    "cover_display_mode_none": "无",
     "show_detailed_relative_time_label": "显示详细相对时间",
     "show_detailed_relative_time_description": "在文章卡片中显示详细相对时间",
     "show_estimated_reading_time_label": "显示预计阅读时间",

@@ -83,7 +83,7 @@ const SETTINGS_SCHEMA = {
   articleWidth: numberSetting(75, 50, 100, { precision: 2 }),
   checkForUpdates: booleanSetting(false),
   compactSidebarGroups: booleanSetting(true),
-  coverDisplayMode: enumSetting("auto", ["auto", "banner", "thumbnail"]),
+  coverDisplayMode: enumSetting("auto", ["auto", "banner", "thumbnail", "none"]),
   edgeToEdgeImages: booleanSetting(false),
   enableContextMenu: booleanSetting(true),
   enableSwipeGesture: booleanSetting(true),
