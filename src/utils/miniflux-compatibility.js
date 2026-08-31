@@ -5,6 +5,10 @@ import compareVersions from "@/utils/version"
 export const MINIMUM_MINIFLUX_VERSION = "2.3.2"
 
 const MINIFLUX_RELEASE_VERSION_PATTERN = /^\d+\.\d+\.\d+$/
+const MINIFLUX_DEVELOPMENT_VERSION_PATTERN = /^(\d+\.\d+)\.x-dev$/
+const MINIMUM_MINIFLUX_MAJOR_MINOR_VERSION = MINIMUM_MINIFLUX_VERSION.split(".")
+  .slice(0, 2)
+  .join(".")
 
 const getAuthHeaders = ({ token, username, password }) =>
   token ? { "X-Auth-Token": token } : { Authorization: `Basic ${btoa(`${username}:${password}`)}` }
@@ -32,7 +36,9 @@ export const checkMinifluxCompatibility = async (auth, { signal } = {}) => {
 
   const version = typeof response?.version === "string" ? response.version : ""
 
-  if (!MINIFLUX_RELEASE_VERSION_PATTERN.test(version)) {
+  const developmentMajorMinorVersion = MINIFLUX_DEVELOPMENT_VERSION_PATTERN.exec(version)?.[1]
+
+  if (!MINIFLUX_RELEASE_VERSION_PATTERN.test(version) && !developmentMajorMinorVersion) {
     return {
       minimumVersion: MINIMUM_MINIFLUX_VERSION,
       status: "unverifiable",
@@ -40,9 +46,15 @@ export const checkMinifluxCompatibility = async (auth, { signal } = {}) => {
     }
   }
 
+  const comparisonVersion = developmentMajorMinorVersion ?? version
+  const minimumComparisonVersion = developmentMajorMinorVersion
+    ? MINIMUM_MINIFLUX_MAJOR_MINOR_VERSION
+    : MINIMUM_MINIFLUX_VERSION
+  const isSupported = compareVersions(comparisonVersion, minimumComparisonVersion) >= 0
+
   return {
     minimumVersion: MINIMUM_MINIFLUX_VERSION,
-    status: compareVersions(version, MINIMUM_MINIFLUX_VERSION) >= 0 ? "supported" : "unsupported",
+    status: isSupported ? "supported" : "unsupported",
     version,
   }
 }
