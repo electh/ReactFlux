@@ -7,6 +7,7 @@ const state = map({
   isPhotoSliderCloseRequested: false,
   isPhotoSliderClosing: false,
   isPhotoSliderVisible: false,
+  photoSliderSessionId: 0,
   selectedIndex: 0,
 })
 
@@ -17,10 +18,13 @@ const updatePhotoSliderState = (updates) => {
 }
 
 const openPhotoSlider = (index) => {
+  const { photoSliderSessionId: currentSessionId } = state.get()
+
   updatePhotoSliderState({
     isPhotoSliderCloseRequested: false,
     isPhotoSliderClosing: false,
     isPhotoSliderVisible: true,
+    photoSliderSessionId: currentSessionId + 1,
     selectedIndex: index,
   })
 }
@@ -50,7 +54,8 @@ const completePhotoSliderClose = () => {
 }
 
 const usePhotoSlider = () => {
-  const { isPhotoSliderCloseRequested, isPhotoSliderVisible, selectedIndex } = useStore(state)
+  const { isPhotoSliderCloseRequested, isPhotoSliderVisible, photoSliderSessionId, selectedIndex } =
+    useStore(state)
 
   return {
     completePhotoSliderClose,
@@ -58,6 +63,7 @@ const usePhotoSlider = () => {
     isPhotoSliderVisible,
     markPhotoSliderClosing,
     openPhotoSlider,
+    photoSliderSessionId,
     requestPhotoSliderClose,
     selectedIndex,
     setSelectedIndex,
