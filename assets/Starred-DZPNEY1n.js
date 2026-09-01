@@ -1,1 +1,0 @@
-import{n as e,t}from"./react-BPJs1lL6.js";import{t as n}from"./Content-CBVC-oAZ.js";import{C as r,E as i}from"./apis-D3ENJUFB.js";var a=t(),o=e(),s=(e,t,n)=>r(e,n),c=()=>{let e=(0,a.c)(1),t;return e[0]===Symbol.for(`react.memo_cache_sentinel`)?(t=(0,o.jsx)(n,{getEntries:s,info:{from:`starred`,id:``},markAllAsRead:i}),e[0]=t):t=e[0],t};export{c as default};
