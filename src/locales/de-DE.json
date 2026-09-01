@@ -396,6 +396,7 @@
     "navigateToPreviousUnreadArticle": "Zu vohergehendem ungelesenen Artikel in der Liste navigieren",
     "openLinkExternally": "Den Link des derzeitigen Artikels in neuem Browser-Tab öffnen",
     "openPhotoSlider": "Diashow öffnen, um alle Bilder des Artikels anzusehen",
+    "openSearchModal": "Dialog für die Artikelsuche öffnen",
     "refreshArticleList": "Artikelliste neu laden",
     "saveToThirdPartyServices": "Derzeitigen Artikel bei Drittanbieter speichern",
     "showHotkeysSettings": "Tastenkürzeleinstellungen anzeigen",

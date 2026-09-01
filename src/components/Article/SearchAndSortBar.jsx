@@ -8,6 +8,7 @@ import {
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { Fragment, memo, useMemo, useRef, useState } from "react"
+import { useHotkeys } from "react-hotkeys-hook"
 import { useParams } from "react-router"
 
 import SidebarTrigger from "./SidebarTrigger.jsx"
@@ -24,6 +25,7 @@ import {
   setFilterString,
 } from "@/store/contentState"
 import { catalogCategoriesState, catalogFeedsState } from "@/store/dataState"
+import { duplicateHotkeysState, hotkeysState } from "@/store/hotkeysState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { getStartOfToday } from "@/utils/date"
 import "./SearchAndSortBar.css"
@@ -72,7 +74,7 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
           prefix={
             <Tooltip
               mini
-              trigger={["hover", "focus", "click"]}
+              trigger={["hover", "click"]}
               content={
                 <div>
                   {tooltipLines.map((line, index) => (
@@ -129,6 +131,8 @@ const SearchAndSortBar = () => {
   const feeds = useStore(catalogFeedsState)
   const categories = useStore(catalogCategoriesState)
   const dynamicCount = useStore(dynamicCountState)
+  const duplicateHotkeys = useStore(duplicateHotkeysState)
+  const hotkeys = useStore(hotkeysState)
 
   const { id } = useParams()
   const { closeActiveContent, entryListRef } = useContentContext()
@@ -145,6 +149,9 @@ const SearchAndSortBar = () => {
     orderDirection === "desc"
       ? polyglot.t("article_list.sort_direction_desc")
       : polyglot.t("article_list.sort_direction_asc")
+  const openSearchModalHotkeys = hotkeys.openSearchModal.filter(
+    (key) => !duplicateHotkeys.includes(key),
+  )
 
   const { title, count } = useMemo(() => {
     if (id) {
@@ -178,6 +185,11 @@ const SearchAndSortBar = () => {
     setModalInputValue(filterString)
     setSearchModalVisible(true)
   }
+
+  useHotkeys(openSearchModalHotkeys, openSearchModal, {
+    preventDefault: true,
+    useKey: true,
+  })
 
   const closeSearchModal = () => {
     setSearchModalVisible(false)

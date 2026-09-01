@@ -9,6 +9,7 @@ const DEFAULT_HOTKEYS = {
   navigateToPreviousUnreadArticle: ["shift+p", "shift+k", "ctrl+left"],
   openLinkExternally: ["v"],
   openPhotoSlider: ["i"],
+  openSearchModal: ["/"],
   refreshArticleList: ["r"],
   saveToThirdPartyServices: ["s"],
   showHotkeysSettings: ["shift+?"],

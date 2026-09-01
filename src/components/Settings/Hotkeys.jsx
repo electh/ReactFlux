@@ -23,6 +23,7 @@ const Hotkeys = () => {
     "toggleStarStatus",
     "saveToThirdPartyServices",
     "openPhotoSlider",
+    "openSearchModal",
     "refreshArticleList",
     "exitDetailView",
     "showHotkeysSettings",
