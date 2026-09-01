@@ -14,17 +14,22 @@ const loadAuthenticatedRoute = async () => {
 }
 
 const pageRoutes = {
-  all: () => import("./pages/All"),
-  today: () => import("./pages/Today"),
-  starred: () => import("./pages/Starred"),
-  history: () => import("./pages/History"),
-  "category/:id": () => import("./pages/Category"),
-  "feed/:id": () => import("./pages/Feed"),
+  all: "all",
+  today: "today",
+  starred: "starred",
+  history: "history",
+  "category/:id": "category",
+  "feed/:id": "feed",
 }
 
-const routes = Object.entries(pageRoutes).flatMap(([path, loadRoute]) => [
-  { path: `/${path}`, lazy: lazyRoute(loadRoute) },
-  { path: `/${path}/entry/:entryId`, lazy: lazyRoute(loadRoute) },
+const loadContentPage = (pageKey) => async () => {
+  const { default: contentPageComponents } = await import("./pages/ContentPages")
+  return { Component: contentPageComponents[pageKey] }
+}
+
+const routes = Object.entries(pageRoutes).flatMap(([path, pageKey]) => [
+  { path: `/${path}`, lazy: loadContentPage(pageKey) },
+  { path: `/${path}/entry/:entryId`, lazy: loadContentPage(pageKey) },
 ])
 
 const router = createBrowserRouter(

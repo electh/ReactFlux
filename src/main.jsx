@@ -10,6 +10,29 @@ import "./index.css"
 import router from "./routes"
 import "./theme.css"
 
+const PRELOAD_ERROR_RELOAD_KEY = "reactflux:preload-error-reload"
+const PRELOAD_ERROR_RELOAD_COOLDOWN_MS = 10_000
+
+const handlePreloadError = (event) => {
+  const now = Date.now()
+
+  try {
+    const lastReload = Number(globalThis.sessionStorage.getItem(PRELOAD_ERROR_RELOAD_KEY))
+    const elapsed = now - lastReload
+    if (lastReload > 0 && elapsed >= 0 && elapsed < PRELOAD_ERROR_RELOAD_COOLDOWN_MS) {
+      return
+    }
+    globalThis.sessionStorage.setItem(PRELOAD_ERROR_RELOAD_KEY, String(now))
+  } catch {
+    return
+  }
+
+  event.preventDefault()
+  globalThis.location.reload()
+}
+
+globalThis.addEventListener("vite:preloadError", handlePreloadError)
+
 ReactDOM.createRoot(document.querySelector("#root")).render(<RouterProvider router={router} />)
 
 const RUNTIME_ASSET_PATTERN = /\/(?:assets\/.*\.(?:css|js)|fonts\/.*\.woff2)$/
