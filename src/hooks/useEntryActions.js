@@ -289,26 +289,12 @@ const handleOpenLinkExternally = (entry) => {
   window.open(entry.url, "_blank")
 }
 
-const handleEntryStarredUpdate = (entry, newStarred, shouldCelebrate = true) => {
+const handleEntryStarredUpdate = (entry, newStarred) => {
   const starredCountChange = newStarred ? 1 : -1
   setStarredCount((prev) => Math.max(0, prev + starredCountChange))
 
   if (entry.status === "unread") {
     setUnreadStarredCount((prev) => Math.max(0, prev + starredCountChange))
-  }
-
-  const prefersReducedMotion = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-  if (newStarred && shouldCelebrate && !prefersReducedMotion) {
-    void import("canvas-confetti")
-      .then(({ default: confetti }) =>
-        confetti({
-          particleCount: 100,
-          angle: 120,
-          spread: 70,
-          origin: { x: 1, y: 1 },
-        }),
-      )
-      .catch(() => null)
   }
 
   const updatedEntry = { ...entry, starred: newStarred }
@@ -367,7 +353,7 @@ function settleStarMutation(state, version, targetStarred, succeeded, error) {
       starred: targetStarred,
     })
     if (rollbackEntry.starred !== state.confirmedStarred) {
-      handleEntryStarredUpdate(rollbackEntry, state.confirmedStarred, false)
+      handleEntryStarredUpdate(rollbackEntry, state.confirmedStarred)
     }
     state.desiredStarred = state.confirmedStarred
     state.onError?.(error)
