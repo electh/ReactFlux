@@ -51,3 +51,37 @@ a {
   margin-left: 0.25rem;
   margin-right: 0.25rem;
 }
+
+.arco-notification-wrapper {
+  --notification-left-offset: max(20px, env(safe-area-inset-left, 0px));
+  --notification-right-offset: max(20px, env(safe-area-inset-right, 0px));
+}
+
+.arco-notification-wrapper-topLeft,
+.arco-notification-wrapper-topRight {
+  top: max(20px, env(safe-area-inset-top, 0px));
+}
+
+.arco-notification-wrapper-bottomLeft,
+.arco-notification-wrapper-bottomRight {
+  bottom: max(20px, env(safe-area-inset-bottom, 0px));
+}
+
+.arco-notification-wrapper-topLeft,
+.arco-notification-wrapper-bottomLeft {
+  left: var(--notification-left-offset);
+}
+
+.arco-notification-wrapper-topRight,
+.arco-notification-wrapper-bottomRight {
+  right: var(--notification-right-offset);
+}
+
+@media screen and (max-width: 768px) {
+  .arco-notification {
+    width: min(
+      340px,
+      calc(100vw - var(--notification-left-offset) - var(--notification-right-offset))
+    );
+  }
+}
