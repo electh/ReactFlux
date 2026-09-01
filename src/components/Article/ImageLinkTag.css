@@ -35,3 +35,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+@media screen and (min-width: 769px) and (hover: hover) and (pointer: fine) {
+  .article-body a.link-tag {
+    min-height: 32px;
+  }
+}
