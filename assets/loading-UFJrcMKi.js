@@ -1,0 +1,1 @@
+var e=()=>{let e=document.querySelector(`.spinner`);e&&(e.style.display=`none`)};export{e as t};
