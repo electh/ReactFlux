@@ -1,1 +1,0 @@
-import{Y as e}from"./useLanguage-CCmV_jgL.js";var t=e(`/`),n=e=>t.set(e);export{n,t};
