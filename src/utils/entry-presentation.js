@@ -196,7 +196,11 @@ const prepareEntry = (entry) => {
   const attachments = buildAttachmentModel(enclosures)
 
   const coverElement = firstImage ?? video
-  const coverSource = firstImage?.getAttribute("src") || video?.getAttribute("poster") || null
+  const coverSource =
+    firstImage?.getAttribute("src") ||
+    video?.getAttribute("poster") ||
+    attachments.images[0]?.url ||
+    null
   const coverWidth = getPositiveDimension(coverElement, "width")
   const coverHeight = getPositiveDimension(coverElement, "height")
 
