@@ -33,7 +33,7 @@
     "dayjs": "^1.11.21",
     "framer-motion": "^12.40.0",
     "highlight.js": "^11.12.0",
-    "hls.js": "^1.7.1",
+    "hls.js": "^1.7.2",
     "html-react-parser": "^6.1.7",
     "littlefoot": "^4.1.4",
     "nanostores": "^1.4.2",
