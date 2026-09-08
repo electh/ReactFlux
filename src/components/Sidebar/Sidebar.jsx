@@ -119,25 +119,6 @@ const CategoryTitle = ({
       trigger="contextMenu"
       droplist={
         <Menu className="mobile-action-menu">
-          <MenuItem
-            key="set-home-page"
-            disabled={!homePageReady || isHomePage}
-            onClick={() => onSetHomePage(categoryTarget, category.title)}
-          >
-            <div className="settings-menu-item">
-              <span>
-                {polyglot.t(
-                  isHomePage
-                    ? "sidebar.context_menu.current_home_page"
-                    : "sidebar.context_menu.set_as_home_page",
-                )}
-              </span>
-              <IconHome aria-hidden="true" />
-            </div>
-          </MenuItem>
-
-          <Divider style={{ margin: "4px 0" }} />
-
           <MenuItem key="edit-category" onClick={() => onEditCategory(category)}>
             <div className="settings-menu-item">
               <span>{polyglot.t("sidebar.context_menu.edit_category")}</span>
@@ -173,6 +154,25 @@ const CategoryTitle = ({
               </MenuItem>
             </>
           )}
+
+          <Divider style={{ margin: "4px 0" }} />
+
+          <MenuItem
+            key="set-home-page"
+            disabled={!homePageReady || isHomePage}
+            onClick={() => onSetHomePage(categoryTarget, category.title)}
+          >
+            <div className="settings-menu-item">
+              <span>
+                {polyglot.t(
+                  isHomePage
+                    ? "sidebar.context_menu.current_home_page"
+                    : "sidebar.context_menu.set_as_home_page",
+                )}
+              </span>
+              <IconHome aria-hidden="true" />
+            </div>
+          </MenuItem>
         </Menu>
       }
     >
@@ -319,25 +319,6 @@ const FeedMenuItem = ({
       trigger="contextMenu"
       droplist={
         <Menu className="mobile-action-menu">
-          <MenuItem
-            key="set-home-page"
-            disabled={!homePageReady || isHomePage}
-            onClick={() => onSetHomePage(feedTarget, feed.title)}
-          >
-            <div className="settings-menu-item">
-              <span>
-                {polyglot.t(
-                  isHomePage
-                    ? "sidebar.context_menu.current_home_page"
-                    : "sidebar.context_menu.set_as_home_page",
-                )}
-              </span>
-              <IconHome aria-hidden="true" />
-            </div>
-          </MenuItem>
-
-          <Divider style={{ margin: "4px 0" }} />
-
           <MenuItem key="edit-feed" onClick={() => onEditFeed(feed)}>
             <div className="settings-menu-item">
               <span>{polyglot.t("sidebar.context_menu.edit_feed")}</span>
@@ -367,6 +348,25 @@ const FeedMenuItem = ({
                 {polyglot.t("sidebar.context_menu.delete_feed")}
               </span>
               <IconDelete style={{ color: "var(--color-danger-light-4)" }} />
+            </div>
+          </MenuItem>
+
+          <Divider style={{ margin: "4px 0" }} />
+
+          <MenuItem
+            key="set-home-page"
+            disabled={!homePageReady || isHomePage}
+            onClick={() => onSetHomePage(feedTarget, feed.title)}
+          >
+            <div className="settings-menu-item">
+              <span>
+                {polyglot.t(
+                  isHomePage
+                    ? "sidebar.context_menu.current_home_page"
+                    : "sidebar.context_menu.set_as_home_page",
+                )}
+              </span>
+              <IconHome aria-hidden="true" />
             </div>
           </MenuItem>
         </Menu>
