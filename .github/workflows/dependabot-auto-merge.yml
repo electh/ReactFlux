@@ -87,7 +87,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Merge eligible Dependabot PR
-        run: gh pr merge --auto --squash --match-head-commit "$EXPECTED_HEAD" "$PR_URL"
+        run: gh pr merge --squash --match-head-commit "$EXPECTED_HEAD" "$PR_URL"
         env:
           EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
           PR_URL: ${{ github.event.pull_request.html_url }}
