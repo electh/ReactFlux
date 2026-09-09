@@ -1,6 +1,6 @@
 # ReactFlux
 
-Lea este texto en otros idiomas: [Deutsch](README.de-DE.md), [English](../README.md), [Français](README.fr-FR.md), [简体中文](README.zh-CN.md)
+Lea este texto en otros idiomas: [Deutsch](README.de-DE.md), [English](../README.md), [Français](README.fr-FR.md), [日本語](README.ja-JP.md), [简体中文](README.zh-CN.md)
 
 ## Descripción general
 
@@ -33,7 +33,7 @@ Las funcionalidades clave incluyen:
   - Actualización por lotes del host de URL de suscripción filtradas (útil para reemplazar instancias de RSSHub)
   - Actualización por lotes de suscripciones con errores
   - Guardar artículos en servicios de terceros
-- Disponible en varios idiomas (Deutsch / English / Español / Français / 简体中文)
+- Disponible en varios idiomas (Deutsch / English / Español / Français / 日本語 / 简体中文)
 - Otras características esperando que las descubras...
 
 ## Demostración en línea y capturas de pantalla
@@ -146,6 +146,7 @@ Para cambios detallados, por favor consulte las modificaciones en [PR #145](http
 | Deutsch  | [DonkeeeyKong](https://github.com/donkeeeykong) |
 | Español  | [Victorhck](https://github.com/victorhck)       |
 | Français | [MickGe](https://github.com/MickGe)             |
+| 日本語   | [hogehige](https://github.com/hogehige2025)     |
 | 简体中文 | [Neko Aria](https://github.com/NekoAria)        |
 
 ## Colaboradores

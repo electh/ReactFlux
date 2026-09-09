@@ -1,6 +1,6 @@
 # ReactFlux
 
-In anderen Sprachen lesen: [English](../README.md), [Español](README.es-ES.md), [Français](README.fr-FR.md), [简体中文](README.zh-CN.md)
+In anderen Sprachen lesen: [English](../README.md), [Español](README.es-ES.md), [Français](README.fr-FR.md), [日本語](README.ja-JP.md), [简体中文](README.zh-CN.md)
 
 ## Überblick
 
@@ -33,7 +33,7 @@ Die wichtigsten Merkmale sind:
   - Stapelaktualisierung des Hosts von gefilterten Abonnement-URLs (nützlich für den Austausch von RSSHub-Instanzen)
   - Stapelaktualisierung fehlerhafter Abonnements
   - Speichern von Artikeln in Diensten von Drittanbietern
-- I18n-Unterstützung (Deutsch / English / Español / Français / 简体中文)
+- I18n-Unterstützung (Deutsch / English / Español / Français / 日本語 / 简体中文)
 - Andere Funktionen warten darauf, entdeckt zu werden…
 
 ## Online-Demo & Screenshots
@@ -146,6 +146,7 @@ Detaillierte Änderungen bitte [PR #145](https://github.com/electh/ReactFlux/pul
 | Deutsch  | [DonkeeeyKong](https://github.com/donkeeeykong) |
 | Español  | [Victorhck](https://github.com/victorhck)       |
 | Français | [MickGe](https://github.com/MickGe)             |
+| 日本語   | [hogehige](https://github.com/hogehige2025)     |
 | 简体中文 | [Neko Aria](https://github.com/NekoAria)        |
 
 ## Mitwirkende

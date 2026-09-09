@@ -3,6 +3,7 @@ import deDE from "@arco-design/web-react/es/locale/de-DE"
 import enUS from "@arco-design/web-react/es/locale/en-US"
 import esES from "@arco-design/web-react/es/locale/es-ES"
 import frFR from "@arco-design/web-react/es/locale/fr-FR"
+import jaJP from "@arco-design/web-react/es/locale/ja-JP"
 import zhCN from "@arco-design/web-react/es/locale/zh-CN"
 import { IconMenuFold, IconMenuUnfold } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
@@ -29,6 +30,7 @@ const localMap = {
   "de-DE": deDE,
   "es-ES": esES,
   "fr-FR": frFR,
+  "ja-JP": jaJP,
   "zh-CN": zhCN,
 }
 
