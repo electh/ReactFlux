@@ -13,13 +13,13 @@ importers:
         version: 0.4.0
       '@arco-design/web-react':
         specifier: ^2.66.16
-        version: 2.66.16(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.66.16(@types/react@19.3.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
       '@nanostores/persistent':
         specifier: ^1.3.5
         version: 1.3.5(nanostores@1.4.2)
       '@nanostores/react':
         specifier: ^1.1.0
-        version: 1.1.0(nanostores@1.4.2)(react@19.2.8)
+        version: 1.1.0(nanostores@1.4.2)(react@19.3.0)
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -28,7 +28,7 @@ importers:
         version: 1.11.21
       framer-motion:
         specifier: ^13.2.0
-        version: 13.2.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 13.2.0(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
       highlight.js:
         specifier: ^11.12.0
         version: 11.12.0
@@ -37,7 +37,7 @@ importers:
         version: 1.7.2
       html-react-parser:
         specifier: ^6.1.7
-        version: 6.1.7(@types/react@19.2.18)(react@19.2.8)
+        version: 6.1.7(@types/react@19.3.0)(react@19.3.0)
       littlefoot:
         specifier: ^4.1.4
         version: 4.1.4
@@ -54,38 +54,38 @@ importers:
         specifier: ^3.8.4
         version: 3.8.4
       react:
-        specifier: ^19.2.8
-        version: 19.2.8
+        specifier: ^19.3.0
+        version: 19.3.0
       react-dom:
         specifier: ^19.2.8
-        version: 19.2.8(react@19.2.8)
+        version: 19.2.8(react@19.3.0)
       react-hotkeys-hook:
         specifier: ^5.3.3
-        version: 5.3.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 5.3.3(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
       react-intersection-observer:
         specifier: ^11.0.1
-        version: 11.0.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 11.0.1(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
       react-router:
         specifier: ^8.3.1
-        version: 8.3.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 8.3.1(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
       react-swipeable:
         specifier: ^7.0.2
-        version: 7.0.2(react@19.2.8)
+        version: 7.0.2(react@19.3.0)
       react-syntax-highlighter:
         specifier: ^16.1.1
-        version: 16.1.1(react@19.2.8)
+        version: 16.1.1(react@19.3.0)
       simplebar-react:
         specifier: ^3.3.2
-        version: 3.3.2(react@19.2.8)
+        version: 3.3.2(react@19.3.0)
       validator:
         specifier: ^13.15.35
         version: 13.15.35
       virtua:
         specifier: ^0.50.5
-        version: 0.50.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 0.50.5(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
       yet-another-react-lightbox:
         specifier: ^3.32.2
-        version: 3.32.2(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 3.32.2(@types/react-dom@19.2.4(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
     devDependencies:
       '@babel/core':
         specifier: ^8.0.1
@@ -100,11 +100,11 @@ importers:
         specifier: ^26.5.1
         version: 26.5.1
       '@types/react':
-        specifier: ^19.2.18
-        version: 19.2.18
+        specifier: ^19.3.0
+        version: 19.3.0
       '@types/react-dom':
         specifier: ^19.2.4
-        version: 19.2.4(@types/react@19.2.18)
+        version: 19.2.4(@types/react@19.3.0)
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(@rolldown/plugin-babel@0.2.4(@babel/core@8.0.1)(@babel/runtime@7.29.7)(rolldown@1.2.7)(vite@8.2.2(@types/node@26.5.1)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.0)))(babel-plugin-react-compiler@1.0.0)(vite@8.2.2(@types/node@26.5.1)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.0))
@@ -1649,8 +1649,8 @@ packages:
     peerDependencies:
       '@types/react': ^19.2.0
 
-  '@types/react@19.2.18':
-    resolution: {integrity: sha512-AnzbBERsrLKtk2XSfTbYRLjQPdy116Sty4q+T+Bp3IC4l6jNBvreVPAHmpq9qhXQM7CXZPjLVmGMw9sy+hxQ3w==}
+  '@types/react@19.3.0':
+    resolution: {integrity: sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==}
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -3338,8 +3338,8 @@ packages:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
 
-  react@19.2.8:
-    resolution: {integrity: sha512-PWaYA1L/q9u2u7xYQi+Y3L3Yfnie7XyLeaJICV1MGD6LprsBxcAqGjYyr0eY3p+QdsA+x/Irkt4Qif8D63+Sbw==}
+  react@19.3.0:
+    resolution: {integrity: sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==}
     engines: {node: '>=0.10.0'}
 
   reflect.getprototypeof@1.0.10:
@@ -3982,7 +3982,7 @@ snapshots:
     dependencies:
       color: 3.2.1
 
-  '@arco-design/web-react@2.66.16(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@arco-design/web-react@2.66.16(@types/react@19.3.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@arco-design/color': 0.4.0
       '@babel/runtime': 7.29.7
@@ -3992,11 +3992,11 @@ snapshots:
       dayjs: 1.11.21
       lodash: 4.18.1
       number-precision: 1.6.0
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
-      react-focus-lock: 2.13.7(@types/react@19.2.18)(react@19.2.8)
+      react: 19.3.0
+      react-dom: 19.2.8(react@19.3.0)
+      react-focus-lock: 2.13.7(@types/react@19.3.0)(react@19.3.0)
       react-is: 18.3.1
-      react-transition-group: 4.4.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react-transition-group: 4.4.5(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
       resize-observer-polyfill: 1.5.1
       scroll-into-view-if-needed: 2.2.31
       shallowequal: 1.1.0
@@ -5013,10 +5013,10 @@ snapshots:
     dependencies:
       nanostores: 1.4.2
 
-  '@nanostores/react@1.1.0(nanostores@1.4.2)(react@19.2.8)':
+  '@nanostores/react@1.1.0(nanostores@1.4.2)(react@19.3.0)':
     dependencies:
       nanostores: 1.4.2
-      react: 19.2.8
+      react: 19.3.0
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
@@ -5385,11 +5385,11 @@ snapshots:
 
   '@types/prismjs@1.26.6': {}
 
-  '@types/react-dom@19.2.4(@types/react@19.2.18)':
+  '@types/react-dom@19.2.4(@types/react@19.3.0)':
     dependencies:
-      '@types/react': 19.2.18
+      '@types/react': 19.3.0
 
-  '@types/react@19.2.18':
+  '@types/react@19.3.0':
     dependencies:
       csstype: 3.2.3
 
@@ -6246,14 +6246,14 @@ snapshots:
       fd-package-json: 2.0.0
       package-manager-detector: 1.8.0
 
-  framer-motion@13.2.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  framer-motion@13.2.0(react-dom@19.2.8(react@19.3.0))(react@19.3.0):
     dependencies:
       motion-dom: 13.2.0
       motion-utils: 13.0.0
       tslib: 2.8.1
     optionalDependencies:
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
+      react: 19.3.0
+      react-dom: 19.2.8(react@19.3.0)
 
   fs-extra@9.1.0:
     dependencies:
@@ -6401,15 +6401,15 @@ snapshots:
       domhandler: 6.0.1
       htmlparser2: 12.0.0
 
-  html-react-parser@6.1.7(@types/react@19.2.18)(react@19.2.8):
+  html-react-parser@6.1.7(@types/react@19.3.0)(react@19.3.0):
     dependencies:
       domhandler: 6.0.1
       html-dom-parser: 8.0.2
-      react: 19.2.8
+      react: 19.3.0
       react-property: 2.0.2
       style-to-js: 2.0.2
     optionalDependencies:
-      '@types/react': 19.2.18
+      '@types/react': 19.3.0
 
   htmlparser2@12.0.0:
     dependencies:
@@ -7098,38 +7098,38 @@ snapshots:
 
   rangetouch@2.0.1: {}
 
-  react-clientside-effect@1.2.8(react@19.2.8):
+  react-clientside-effect@1.2.8(react@19.3.0):
     dependencies:
       '@babel/runtime': 7.29.7
-      react: 19.2.8
+      react: 19.3.0
 
-  react-dom@19.2.8(react@19.2.8):
+  react-dom@19.2.8(react@19.3.0):
     dependencies:
-      react: 19.2.8
+      react: 19.3.0
       scheduler: 0.27.0
 
-  react-focus-lock@2.13.7(@types/react@19.2.18)(react@19.2.8):
+  react-focus-lock@2.13.7(@types/react@19.3.0)(react@19.3.0):
     dependencies:
       '@babel/runtime': 7.29.7
       focus-lock: 1.3.6
       prop-types: 15.8.1
-      react: 19.2.8
-      react-clientside-effect: 1.2.8(react@19.2.8)
-      use-callback-ref: 1.3.3(@types/react@19.2.18)(react@19.2.8)
-      use-sidecar: 1.1.3(@types/react@19.2.18)(react@19.2.8)
+      react: 19.3.0
+      react-clientside-effect: 1.2.8(react@19.3.0)
+      use-callback-ref: 1.3.3(@types/react@19.3.0)(react@19.3.0)
+      use-sidecar: 1.1.3(@types/react@19.3.0)(react@19.3.0)
     optionalDependencies:
-      '@types/react': 19.2.18
+      '@types/react': 19.3.0
 
-  react-hotkeys-hook@5.3.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  react-hotkeys-hook@5.3.3(react-dom@19.2.8(react@19.3.0))(react@19.3.0):
     dependencies:
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
+      react: 19.3.0
+      react-dom: 19.2.8(react@19.3.0)
 
-  react-intersection-observer@11.0.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  react-intersection-observer@11.0.1(react-dom@19.2.8(react@19.3.0))(react@19.3.0):
     dependencies:
-      react: 19.2.8
+      react: 19.3.0
     optionalDependencies:
-      react-dom: 19.2.8(react@19.2.8)
+      react-dom: 19.2.8(react@19.3.0)
 
   react-is@16.13.1: {}
 
@@ -7137,37 +7137,37 @@ snapshots:
 
   react-property@2.0.2: {}
 
-  react-router@8.3.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  react-router@8.3.1(react-dom@19.2.8(react@19.3.0))(react@19.3.0):
     dependencies:
       cookie-es: 3.1.1
-      react: 19.2.8
+      react: 19.3.0
     optionalDependencies:
-      react-dom: 19.2.8(react@19.2.8)
+      react-dom: 19.2.8(react@19.3.0)
 
-  react-swipeable@7.0.2(react@19.2.8):
+  react-swipeable@7.0.2(react@19.3.0):
     dependencies:
-      react: 19.2.8
+      react: 19.3.0
 
-  react-syntax-highlighter@16.1.1(react@19.2.8):
+  react-syntax-highlighter@16.1.1(react@19.3.0):
     dependencies:
       '@babel/runtime': 7.28.6
       highlight.js: 10.7.3
       highlightjs-vue: 1.0.0
       lowlight: 1.20.0
       prismjs: 1.30.0
-      react: 19.2.8
+      react: 19.3.0
       refractor: 5.0.0
 
-  react-transition-group@4.4.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  react-transition-group@4.4.5(react-dom@19.2.8(react@19.3.0))(react@19.3.0):
     dependencies:
       '@babel/runtime': 7.29.7
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
+      react: 19.3.0
+      react-dom: 19.2.8(react@19.3.0)
 
-  react@19.2.8: {}
+  react@19.3.0: {}
 
   reflect.getprototypeof@1.0.10:
     dependencies:
@@ -7412,9 +7412,9 @@ snapshots:
       lodash: 4.18.1
       lodash-es: 4.18.1
 
-  simplebar-react@3.3.2(react@19.2.8):
+  simplebar-react@3.3.2(react@19.3.0):
     dependencies:
-      react: 19.2.8
+      react: 19.3.0
       simplebar-core: 1.3.2
 
   smob@1.6.2: {}
@@ -7661,27 +7661,27 @@ snapshots:
 
   url-polyfill@1.1.14: {}
 
-  use-callback-ref@1.3.3(@types/react@19.2.18)(react@19.2.8):
+  use-callback-ref@1.3.3(@types/react@19.3.0)(react@19.3.0):
     dependencies:
-      react: 19.2.8
+      react: 19.3.0
       tslib: 2.8.1
     optionalDependencies:
-      '@types/react': 19.2.18
+      '@types/react': 19.3.0
 
-  use-sidecar@1.1.3(@types/react@19.2.18)(react@19.2.8):
+  use-sidecar@1.1.3(@types/react@19.3.0)(react@19.3.0):
     dependencies:
       detect-node-es: 1.1.0
-      react: 19.2.8
+      react: 19.3.0
       tslib: 2.8.1
     optionalDependencies:
-      '@types/react': 19.2.18
+      '@types/react': 19.3.0
 
   validator@13.15.35: {}
 
-  virtua@0.50.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  virtua@0.50.5(react-dom@19.2.8(react@19.3.0))(react@19.3.0):
     optionalDependencies:
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
+      react: 19.3.0
+      react-dom: 19.2.8(react@19.3.0)
 
   vite-plugin-pwa@1.3.0(supports-color@7.2.0)(vite@8.2.2(@types/node@26.5.1)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1(@types/babel__core@7.20.5)(supports-color@7.2.0))(workbox-window@7.4.1):
     dependencies:
@@ -7904,13 +7904,13 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 22.0.0
 
-  yet-another-react-lightbox@3.32.2(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  yet-another-react-lightbox@3.32.2(@types/react-dom@19.2.4(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0):
     dependencies:
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
+      react: 19.3.0
+      react-dom: 19.2.8(react@19.3.0)
     optionalDependencies:
-      '@types/react': 19.2.18
-      '@types/react-dom': 19.2.4(@types/react@19.2.18)
+      '@types/react': 19.3.0
+      '@types/react-dom': 19.2.4(@types/react@19.3.0)
 
   yocto-queue@0.1.0: {}
 
