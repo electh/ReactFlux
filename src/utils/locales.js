@@ -3,6 +3,9 @@ export const getBrowserLanguage = () => {
   if (browserLanguage === "zh-Hans-CN") {
     return "zh-CN"
   }
+  if (browserLanguage === "ja" || browserLanguage.startsWith("ja-")) {
+    return "ja-JP"
+  }
   return browserLanguage
 }
 

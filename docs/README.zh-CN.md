@@ -1,6 +1,6 @@
 # ReactFlux
 
-阅读其他语言版本： [Deutsch](README.de-DE.md), [English](../README.md), [Español](README.es-ES.md), [Français](README.fr-FR.md)
+阅读其他语言版本： [Deutsch](README.de-DE.md), [English](../README.md), [Español](README.es-ES.md), [Français](README.fr-FR.md), [日本語](README.ja-JP.md)
 
 ## 概述
 
@@ -33,7 +33,7 @@ ReactFlux 是 [Miniflux](https://github.com/miniflux/v2) 的第三方 Web 前端
   - 批量更新过滤后的订阅 URL 的 host（适用于替换 RSSHub 实例）
   - 批量刷新最近更新错误的订阅源
   - 保存文章到第三方服务
-- 多语言支持 (Deutsch / English / Español / Français / 简体中文)
+- 多语言支持 (Deutsch / English / Español / Français / 日本語 / 简体中文)
 - 其他功能等您来发现...
 
 ## 在线演示和截图
@@ -146,6 +146,7 @@ docker-compose up -d
 | Deutsch  | [DonkeeeyKong](https://github.com/donkeeeykong) |
 | Español  | [Victorhck](https://github.com/victorhck)       |
 | Français | [MickGe](https://github.com/MickGe)             |
+| 日本語   | [hogehige](https://github.com/hogehige2025)     |
 | 简体中文 | [Neko Aria](https://github.com/NekoAria)        |
 
 ## 贡献者

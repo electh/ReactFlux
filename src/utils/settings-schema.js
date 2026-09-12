@@ -27,6 +27,7 @@ const LANGUAGE_BY_BASE = {
   en: "en-US",
   es: "es-ES",
   fr: "fr-FR",
+  ja: "ja-JP",
   zh: "zh-CN",
 }
 

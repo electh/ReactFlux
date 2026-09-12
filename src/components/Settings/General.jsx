@@ -43,6 +43,7 @@ const languageOptions = [
   { label: "English", value: "en-US" },
   { label: "Español", value: "es-ES" },
   { label: "Français", value: "fr-FR" },
+  { label: "日本語", value: "ja-JP" },
   { label: "简体中文", value: "zh-CN" },
 ]
 
