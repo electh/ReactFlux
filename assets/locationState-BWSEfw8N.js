@@ -1,0 +1,1 @@
+import{tn as e}from"./session-cgEjbuJq.js";var t=e(`/`),n=e=>t.set(e);export{n,t};
