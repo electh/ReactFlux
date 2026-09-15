@@ -11,6 +11,7 @@ const lightboxPlugins = [Counter, Fullscreen, Zoom]
 const ArticleLightbox = ({
   animation,
   closeRequested,
+  direction,
   index,
   open,
   slides,
@@ -42,6 +43,7 @@ const ArticleLightbox = ({
       on={{ exited: onExited, exiting: onExiting, view: onView }}
       open={open}
       plugins={lightboxPlugins}
+      portal={{ container: { dir: direction } }}
       slides={slides}
     />
   )

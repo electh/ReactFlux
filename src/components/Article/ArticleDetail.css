@@ -272,18 +272,18 @@
   right: env(safe-area-inset-right, 0px);
 }
 
-[dir="rtl"] .article-lightbox .yarl__toolbar {
+.article-lightbox[dir="rtl"] .yarl__toolbar {
   padding-right: var(--mobile-edge-spacing);
   padding-left: calc(var(--mobile-edge-spacing) + env(safe-area-inset-left, 0px));
 }
 
-[dir="rtl"] .article-lightbox .yarl__counter,
-[dir="rtl"] .article-lightbox .yarl__navigation_prev {
+.article-lightbox[dir="rtl"] .yarl__counter,
+.article-lightbox[dir="rtl"] .yarl__navigation_prev {
   right: env(safe-area-inset-right, 0px);
   left: unset;
 }
 
-[dir="rtl"] .article-lightbox .yarl__navigation_next {
+.article-lightbox[dir="rtl"] .yarl__navigation_next {
   right: unset;
   left: env(safe-area-inset-left, 0px);
 }
@@ -314,12 +314,12 @@
     right: calc(var(--mobile-edge-spacing) + env(safe-area-inset-right, 0px));
   }
 
-  [dir="rtl"] .article-lightbox .yarl__navigation_prev {
+  .article-lightbox[dir="rtl"] .yarl__navigation_prev {
     right: calc(var(--mobile-edge-spacing) + env(safe-area-inset-right, 0px));
     left: unset;
   }
 
-  [dir="rtl"] .article-lightbox .yarl__navigation_next {
+  .article-lightbox[dir="rtl"] .yarl__navigation_next {
     right: unset;
     left: calc(var(--mobile-edge-spacing) + env(safe-area-inset-left, 0px));
   }

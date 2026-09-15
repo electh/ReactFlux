@@ -28,6 +28,7 @@ import {
   setIsArticleLoading,
 } from "@/store/contentState"
 import { contentGestureSettingsState } from "@/store/settingsState"
+import { isRightToLeftBrowsing } from "@/utils/content-browsing-direction"
 import prepareEntry from "@/utils/entry-presentation"
 
 import "./Content.css"
@@ -54,7 +55,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const { activeContent, isArticleLoading } = useStore(contentState, {
     keys: ["activeContent", "isArticleLoading"],
   })
-  const { enableSwipeGesture, swipeSensitivity } = useStore(contentGestureSettingsState)
+  const { contentBrowsingDirection, enableSwipeGesture, swipeSensitivity } = useStore(
+    contentGestureSettingsState,
+  )
+  const isBrowsingRightToLeft = isRightToLeftBrowsing(contentBrowsingDirection)
 
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
   const [isSwipingRight, setIsSwipingRight] = useState(false)
@@ -146,11 +150,14 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     setIsSwipingRight(false)
   }
 
-  const handleSwipeLeft = useCallback(() => navigateToNextArticle(), [navigateToNextArticle])
+  const handleSwipeLeft = useCallback(
+    () => (isBrowsingRightToLeft ? navigateToPreviousArticle() : navigateToNextArticle()),
+    [isBrowsingRightToLeft, navigateToNextArticle, navigateToPreviousArticle],
+  )
 
   const handleSwipeRight = useCallback(
-    () => navigateToPreviousArticle(),
-    [navigateToPreviousArticle],
+    () => (isBrowsingRightToLeft ? navigateToNextArticle() : navigateToPreviousArticle()),
+    [isBrowsingRightToLeft, navigateToNextArticle, navigateToPreviousArticle],
   )
 
   const handlers = useSwipeable({

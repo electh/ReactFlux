@@ -36,6 +36,7 @@ import {
 } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
 import { MIN_ARTICLE_FONT_SIZE, settingsState, updateSettings } from "@/store/settingsState"
+import { isRightToLeftBrowsing } from "@/utils/content-browsing-direction"
 import "./ActionButtons.css"
 
 const DesktopButtons = memo(
@@ -43,8 +44,8 @@ const DesktopButtons = memo(
     <>
       <div className="left-side">
         {commonButtons.close}
-        {commonButtons.prev}
-        {commonButtons.next}
+        {commonButtons.navigationLeft}
+        {commonButtons.navigationRight}
       </div>
       <div className="right-side">
         {commonButtons.status}
@@ -75,9 +76,9 @@ const MobileButtons = memo(({ commonButtons, hasHeadings, moveContextActionToMen
   <div className="mobile-buttons">
     {commonButtons.status}
     {commonButtons.star}
-    {commonButtons.prev}
+    {commonButtons.navigationLeft}
     {commonButtons.close}
-    {commonButtons.next}
+    {commonButtons.navigationRight}
     {!moveContextActionToMenu && !hasHeadings && commonButtons.fetch}
     {!moveContextActionToMenu && commonButtons.toc}
     {commonButtons.more}
@@ -93,6 +94,7 @@ const ActionButtons = () => {
 
   const {
     articleWidth,
+    contentBrowsingDirection,
     edgeToEdgeImages,
     enableSwipeGesture,
     fontSize,
@@ -101,6 +103,7 @@ const ActionButtons = () => {
   } = useStore(settingsState, {
     keys: [
       "articleWidth",
+      "contentBrowsingDirection",
       "edgeToEdgeImages",
       "enableSwipeGesture",
       "fontSize",
@@ -140,6 +143,7 @@ const ActionButtons = () => {
 
   const isUnread = activeContent.status === "unread"
   const isStarred = activeContent.starred
+  const isBrowsingRightToLeft = isRightToLeftBrowsing(contentBrowsingDirection)
   const moveContextActionToMenu = isBelowCompact && !enableSwipeGesture
   const showFetchInMenu = isBelowMedium && (hasHeadings || moveContextActionToMenu)
   const showTocInMenu = moveContextActionToMenu && hasHeadings
@@ -231,28 +235,41 @@ const ActionButtons = () => {
     requestAnimationFrame(() => moreButtonRef.current?.focus({ preventScroll: true }))
   }
 
+  const previousNavigation = {
+    content: prevContent,
+    label: actionLabels.previous,
+    navigate: navigateToPreviousArticle,
+  }
+  const nextNavigation = {
+    content: nextContent,
+    label: actionLabels.next,
+    navigate: navigateToNextArticle,
+  }
+  const leftNavigation = isBrowsingRightToLeft ? nextNavigation : previousNavigation
+  const rightNavigation = isBrowsingRightToLeft ? previousNavigation : nextNavigation
+
   const commonButtons = {
-    prev:
+    navigationLeft:
       isBelowMedium && enableSwipeGesture ? undefined : (
-        <CustomTooltip mini content={actionLabels.previous}>
+        <CustomTooltip mini content={leftNavigation.label}>
           <Button
-            aria-label={actionLabels.previous}
-            disabled={!prevContent}
+            aria-label={leftNavigation.label}
+            disabled={!leftNavigation.content}
             icon={<IconArrowLeft aria-hidden="true" />}
             shape="circle"
-            onClick={navigateToPreviousArticle}
+            onClick={leftNavigation.navigate}
           />
         </CustomTooltip>
       ),
-    next:
+    navigationRight:
       isBelowMedium && enableSwipeGesture ? undefined : (
-        <CustomTooltip mini content={actionLabels.next}>
+        <CustomTooltip mini content={rightNavigation.label}>
           <Button
-            aria-label={actionLabels.next}
-            disabled={!nextContent}
+            aria-label={rightNavigation.label}
+            disabled={!rightNavigation.content}
             icon={<IconArrowRight aria-hidden="true" />}
             shape="circle"
-            onClick={navigateToNextArticle}
+            onClick={rightNavigation.navigate}
           />
         </CustomTooltip>
       ),

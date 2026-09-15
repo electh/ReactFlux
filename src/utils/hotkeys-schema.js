@@ -1,3 +1,9 @@
+import {
+  CONTENT_BROWSING_DIRECTION_LTR,
+  isRightToLeftBrowsing,
+  swapDirectionalNavigationHotkeys,
+} from "@/utils/content-browsing-direction"
+
 const DEFAULT_HOTKEYS = {
   exitDetailView: ["esc"],
   fetchOriginalArticle: ["d"],
@@ -35,8 +41,27 @@ const sanitizeKeys = (value, fallback) => {
   return [...new Set(sanitizedKeys)]
 }
 
-export const createDefaultHotkeys = () =>
-  Object.fromEntries(Object.entries(DEFAULT_HOTKEYS).map(([action, keys]) => [action, [...keys]]))
+export const createDefaultHotkeys = (contentBrowsingDirection = CONTENT_BROWSING_DIRECTION_LTR) => {
+  const hotkeys = Object.fromEntries(
+    Object.entries(DEFAULT_HOTKEYS).map(([action, keys]) => [action, [...keys]]),
+  )
+
+  return isRightToLeftBrowsing(contentBrowsingDirection)
+    ? swapDirectionalNavigationHotkeys(hotkeys)
+    : hotkeys
+}
+
+export const findDuplicateHotkeys = (hotkeys) => {
+  const keyCounts = {}
+
+  for (const key of Object.values(hotkeys).flat()) {
+    keyCounts[key] = (keyCounts[key] ?? 0) + 1
+  }
+
+  return Object.entries(keyCounts)
+    .filter(([, count]) => count > 1)
+    .map(([key]) => key)
+}
 
 export const sanitizeHotkeys = (value, fallbackHotkeys = DEFAULT_HOTKEYS) => {
   const hotkeys = isHotkeysObject(value) ? value : {}

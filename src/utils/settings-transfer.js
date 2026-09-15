@@ -1,14 +1,17 @@
 import { hotkeysState, replaceHotkeys } from "@/store/hotkeysState"
 import { replaceSettings, settingsState } from "@/store/settingsState"
 import { expandedCategoriesState, replaceExpandedCategories } from "@/store/sidebarState"
+import { CONTENT_BROWSING_DIRECTION_LTR } from "@/utils/content-browsing-direction"
 import { createDefaultHomePages } from "@/utils/home-page"
-import { sanitizeHotkeys } from "@/utils/hotkeys-schema"
+import { createDefaultHotkeys, sanitizeHotkeys } from "@/utils/hotkeys-schema"
 import { createDefaultSettings, sanitizeSettings } from "@/utils/settings-schema"
 import { sanitizeExpandedCategories } from "@/utils/sidebar-schema"
 
 const SETTINGS_BACKUP_FORMAT = "reactflux-settings"
-const SETTINGS_BACKUP_SCHEMA_VERSION = 2
-const SUPPORTED_SETTINGS_BACKUP_SCHEMA_VERSIONS = new Set([1, SETTINGS_BACKUP_SCHEMA_VERSION])
+const SETTINGS_BACKUP_SCHEMA_VERSION = 3
+const HOTKEYS_REPRESENTATION_SCHEMA_VERSION = 3
+const HOTKEYS_REPRESENTATION = "physical"
+const SUPPORTED_SETTINGS_BACKUP_SCHEMA_VERSIONS = new Set([1, 2, SETTINGS_BACKUP_SCHEMA_VERSION])
 
 export const MAX_SETTINGS_BACKUP_FILE_SIZE = 1024 * 1024
 
@@ -46,10 +49,19 @@ const sanitizeSnapshot = (
   const fallbackSettings = createDefaultSettings(settings?.language)
   const settingsWithHomePages =
     schemaVersion === 1 ? { ...settings, homePages: createDefaultHomePages() } : settings
+  const settingsWithBrowsingDirection =
+    schemaVersion < HOTKEYS_REPRESENTATION_SCHEMA_VERSION
+      ? {
+          ...settingsWithHomePages,
+          contentBrowsingDirection: CONTENT_BROWSING_DIRECTION_LTR,
+        }
+      : settingsWithHomePages
+  const sanitizedSettings = sanitizeSettings(settingsWithBrowsingDirection, fallbackSettings)
+  const fallbackHotkeys = createDefaultHotkeys(sanitizedSettings.contentBrowsingDirection)
 
   return {
-    settings: sanitizeSettings(settingsWithHomePages, fallbackSettings),
-    hotkeys: sanitizeHotkeys(hotkeys),
+    settings: sanitizedSettings,
+    hotkeys: sanitizeHotkeys(hotkeys, fallbackHotkeys),
     expandedCategories: sanitizeExpandedCategories(expandedCategories),
   }
 }
@@ -76,6 +88,7 @@ export const buildSettingsBackup = () => {
     data: {
       settings,
       hotkeys,
+      hotkeysRepresentation: HOTKEYS_REPRESENTATION,
       sidebar: { expandedCategories },
     },
   }
@@ -106,7 +119,9 @@ export const parseSettingsBackup = (value) => {
     !isObject(data.settings) ||
     !isObject(data.hotkeys) ||
     !isObject(data.sidebar) ||
-    !Array.isArray(data.sidebar.expandedCategories)
+    !Array.isArray(data.sidebar.expandedCategories) ||
+    (backup.schemaVersion >= HOTKEYS_REPRESENTATION_SCHEMA_VERSION &&
+      data.hotkeysRepresentation !== HOTKEYS_REPRESENTATION)
   ) {
     throw new SettingsImportError(SETTINGS_IMPORT_ERROR_CODES.INVALID_FILE)
   }

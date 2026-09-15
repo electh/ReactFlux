@@ -24,10 +24,15 @@ import SettingItem from "./SettingItem"
 import useHomePage from "@/hooks/useHomePage"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
+import { setContentBrowsingDirection } from "@/store/contentBrowsingDirectionState"
 import { ensureCurrentHomePage } from "@/store/homePageState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
 import { MAX_ENTRIES_PER_PAGE, MIN_ENTRIES_PER_PAGE } from "@/utils/constants"
+import {
+  CONTENT_BROWSING_DIRECTION_LTR,
+  CONTENT_BROWSING_DIRECTION_RTL,
+} from "@/utils/content-browsing-direction"
 import { downloadFile, readFileAsText } from "@/utils/file"
 import {
   applySettingsBackup,
@@ -51,6 +56,7 @@ const General = () => {
   const {
     checkForUpdates,
     compactSidebarGroups,
+    contentBrowsingDirection,
     enableContextMenu,
     enableSwipeGesture,
     language,
@@ -97,6 +103,17 @@ const General = () => {
       value: "url",
     },
   ]
+
+  const handleContentBrowsingDirectionChange = (value) => {
+    const { conflicts } = setContentBrowsingDirection(value)
+    if (conflicts.length > 0) {
+      Message.error(
+        polyglot.t("settings.content_browsing_direction_conflict_description", {
+          keys: conflicts.join(", "),
+        }),
+      )
+    }
+  }
 
   const handleSettingsExport = () => {
     try {
@@ -372,6 +389,26 @@ const General = () => {
           checked={checkForUpdates}
           onChange={(value) => updateSettings({ checkForUpdates: value })}
         />
+      </SettingItem>
+
+      <Divider />
+
+      <SettingItem
+        description={polyglot.t("settings.content_browsing_direction_description")}
+        title={polyglot.t("settings.content_browsing_direction_label")}
+      >
+        <Select
+          className="input-select"
+          value={contentBrowsingDirection}
+          onChange={handleContentBrowsingDirectionChange}
+        >
+          <Select.Option value={CONTENT_BROWSING_DIRECTION_LTR}>
+            {polyglot.t("settings.content_browsing_direction_option_ltr")}
+          </Select.Option>
+          <Select.Option value={CONTENT_BROWSING_DIRECTION_RTL}>
+            {polyglot.t("settings.content_browsing_direction_option_rtl")}
+          </Select.Option>
+        </Select>
       </SettingItem>
 
       {isBelowMedium && (

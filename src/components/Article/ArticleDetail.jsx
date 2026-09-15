@@ -375,6 +375,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   const renderableContentHtml = isArticleBodyPending ? "" : deferredContentHtml
   const {
     articleWidth,
+    contentBrowsingDirection,
     edgeToEdgeImages,
     fontFamily,
     fontSize,
@@ -663,6 +664,7 @@ const ArticleDetail = forwardRef((_, ref) => {
                     <ArticleLightbox
                       animation={lightboxAnimationConfig}
                       closeRequested={isPhotoSliderCloseRequested}
+                      direction={contentBrowsingDirection}
                       index={selectedIndex}
                       open={isPhotoSliderVisible}
                       slides={lightboxSlides}

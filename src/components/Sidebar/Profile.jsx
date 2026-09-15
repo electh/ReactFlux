@@ -18,7 +18,8 @@ import { useNavigate } from "react-router"
 import { polyglotState } from "@/hooks/useLanguage"
 import useModalToggle from "@/hooks/useModalToggle"
 import { authState } from "@/store/authState"
-import { resetSettings, settingsState, updateSettings } from "@/store/settingsState"
+import { resetSettings } from "@/store/contentBrowsingDirectionState"
+import { settingsState, updateSettings } from "@/store/settingsState"
 import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
 import { GITHUB_REPO_PATH } from "@/utils/constants"
 import { clearSession } from "@/utils/session"
@@ -49,7 +50,17 @@ export default function Profile() {
       content: <p>{polyglot.t("sidebar.settings_reset_description")}</p>,
       icon: <IconInfoCircleFill />,
       okButtonProps: { ...destructiveConfirmButtonProps, status: "danger" },
-      onOk: () => resetSettings(),
+      onOk: () => {
+        const { conflicts } = resetSettings()
+        if (conflicts.length > 0) {
+          Notification.error({
+            title: polyglot.t("settings.content_browsing_direction_conflict_title"),
+            content: polyglot.t("settings.settings_reset_hotkey_conflict_description", {
+              keys: conflicts.join(", "),
+            }),
+          })
+        }
+      },
     })
   }
 

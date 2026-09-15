@@ -1,4 +1,8 @@
 import { MAX_ENTRIES_PER_PAGE, MIN_ENTRIES_PER_PAGE } from "@/utils/constants"
+import {
+  CONTENT_BROWSING_DIRECTION_LTR,
+  CONTENT_BROWSING_DIRECTIONS,
+} from "@/utils/content-browsing-direction"
 import { createDefaultHomePages, sanitizeHomePages } from "@/utils/home-page"
 
 export const MIN_ARTICLE_FONT_SIZE = 1
@@ -84,6 +88,10 @@ const SETTINGS_SCHEMA = {
   articleWidth: numberSetting(75, 50, 100, { precision: 2 }),
   checkForUpdates: booleanSetting(false),
   compactSidebarGroups: booleanSetting(true),
+  contentBrowsingDirection: enumSetting(
+    CONTENT_BROWSING_DIRECTION_LTR,
+    CONTENT_BROWSING_DIRECTIONS,
+  ),
   coverDisplayMode: enumSetting("auto", ["auto", "banner", "thumbnail", "none"]),
   edgeToEdgeImages: booleanSetting(false),
   enableContextMenu: booleanSetting(true),

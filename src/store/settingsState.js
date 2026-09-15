@@ -17,6 +17,7 @@ export const settingsState = persistentAtom("settings", defaultSettings, {
 })
 
 export const getSettings = (key) => settingsState.get()[key]
+export const getDefaultSettings = () => ({ ...defaultSettings })
 
 const selectShallowSettings = (selector) => selectStore(settingsState, selector, shallowEqual)
 
@@ -43,6 +44,7 @@ export const articleCardSettingsState = selectShallowSettings(
 export const articleDetailSettingsState = selectShallowSettings(
   ({
     articleWidth,
+    contentBrowsingDirection,
     edgeToEdgeImages,
     fontFamily,
     fontSize,
@@ -50,6 +52,7 @@ export const articleDetailSettingsState = selectShallowSettings(
     titleAlignment,
   }) => ({
     articleWidth,
+    contentBrowsingDirection,
     edgeToEdgeImages,
     fontFamily,
     fontSize,
@@ -59,7 +62,11 @@ export const articleDetailSettingsState = selectShallowSettings(
 )
 
 export const contentGestureSettingsState = selectShallowSettings(
-  ({ enableSwipeGesture, swipeSensitivity }) => ({ enableSwipeGesture, swipeSensitivity }),
+  ({ contentBrowsingDirection, enableSwipeGesture, swipeSensitivity }) => ({
+    contentBrowsingDirection,
+    enableSwipeGesture,
+    swipeSensitivity,
+  }),
 )
 
 export const articleListRequestSettingsState = selectShallowSettings(
@@ -81,6 +88,12 @@ export const updateSettings = (settingsChanges) => {
     settingsChanges !== null &&
     typeof settingsChanges === "object" &&
     !Array.isArray(settingsChanges)
+  if (canMergeChanges && Object.hasOwn(settingsChanges, "contentBrowsingDirection")) {
+    throw new TypeError(
+      "Use setContentBrowsingDirection() to keep directional shortcuts synchronized",
+    )
+  }
+
   const nextSettings = canMergeChanges
     ? { ...currentSettings, ...settingsChanges }
     : currentSettings
@@ -90,7 +103,5 @@ export const updateSettings = (settingsChanges) => {
 
 export const replaceSettings = (settings) =>
   settingsState.set(sanitizeSettings(settings, defaultSettings))
-
-export const resetSettings = () => settingsState.set({ ...defaultSettings })
 
 export { MIN_ARTICLE_FONT_SIZE } from "@/utils/settings-schema"
