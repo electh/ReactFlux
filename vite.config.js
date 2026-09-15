@@ -74,7 +74,6 @@ export default defineConfig(({ mode }) => ({
           "assets/index-*.{js,css}",
           "assets/react-*.js",
           "assets/rolldown-runtime-*.js",
-          "assets/warning-*.js",
           "assets/workbox-window*.js",
         ],
         runtimeCaching: [
