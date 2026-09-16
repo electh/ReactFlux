@@ -39,6 +39,12 @@
   height: 48px;
 }
 
+.menu-header-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
 .menu-header .avatar {
   margin-right: 10px;
   background-color: var(--color-text-1);
@@ -63,9 +69,10 @@
   cursor: pointer;
 }
 
-.home-brand:hover:not(:disabled),
-.home-brand:focus-visible {
-  background-color: var(--color-neutral-3);
+@media (hover: hover) and (pointer: fine) {
+  .home-brand:enabled:hover {
+    background-color: var(--color-neutral-3);
+  }
 }
 
 .home-brand:focus-visible {

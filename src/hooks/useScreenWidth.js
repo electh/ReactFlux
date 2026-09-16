@@ -29,6 +29,7 @@ const createMediaQueryState = (query) => {
 const isBelowCompactState = createMediaQueryState(`(max-width: ${COMPACT_THRESHOLD}px)`)
 const isBelowMediumState = createMediaQueryState(`(max-width: ${MEDIUM_THRESHOLD}px)`)
 const isBelowLargeState = createMediaQueryState(`(max-width: ${LARGE_THRESHOLD}px)`)
+export const canPreciselyHoverState = createMediaQueryState("(hover: hover) and (pointer: fine)")
 export const hasCoarsePointerState = createMediaQueryState("(pointer: coarse)")
 export const prefersReducedMotionState = createMediaQueryState("(prefers-reduced-motion: reduce)")
 

@@ -1,22 +1,13 @@
 import { Tooltip } from "@arco-design/web-react"
-import { forwardRef, useState } from "react"
+import { useStore } from "@nanostores/react"
+import { forwardRef } from "react"
 
-import useScreenWidth from "@/hooks/useScreenWidth"
+import { canPreciselyHoverState } from "@/hooks/useScreenWidth"
 
-const CustomTooltip = forwardRef(({ children, ...props }, ref) => {
-  const { isBelowMedium } = useScreenWidth()
-  const [isHovered, setIsHovered] = useState(false)
+const CustomTooltip = forwardRef(({ disabled, ...props }, ref) => {
+  const canPreciselyHover = useStore(canPreciselyHoverState)
 
-  return (
-    <Tooltip
-      ref={ref}
-      popupVisible={!isBelowMedium && isHovered}
-      onVisibleChange={(visible) => setIsHovered(visible)}
-      {...props}
-    >
-      {children}
-    </Tooltip>
-  )
+  return <Tooltip ref={ref} disabled={disabled || !canPreciselyHover} {...props} />
 })
 CustomTooltip.displayName = "CustomTooltip"
 

@@ -9,6 +9,29 @@
   background-color: var(--color-neutral-2);
 }
 
+.sidebar-drawer .mobile-sidebar-close.arco-btn {
+  display: inline-flex;
+  flex: 0 0 var(--mobile-navigation-control-size);
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--mobile-navigation-control-size);
+  height: var(--mobile-navigation-control-size);
+  padding: 0;
+  line-height: 0;
+}
+
+.sidebar-drawer .mobile-sidebar-close.arco-btn:focus-visible {
+  outline: 2px solid rgb(var(--primary-6));
+  outline-offset: 1px;
+}
+
+.sidebar-drawer .mobile-sidebar-close .arco-icon {
+  width: var(--mobile-navigation-icon-size);
+  height: var(--mobile-navigation-icon-size);
+  font-size: var(--mobile-navigation-icon-size);
+}
+
 .trigger {
   display: none;
 }

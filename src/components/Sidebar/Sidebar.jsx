@@ -8,7 +8,6 @@ import {
   Menu,
   Notification,
   Skeleton,
-  Tooltip,
   Typography,
 } from "@arco-design/web-react"
 import {
@@ -42,6 +41,7 @@ import Profile from "./Profile.jsx"
 import { exportOPML, importOPML } from "@/apis"
 import { markCategoryAsRead, refreshCategoryFeed } from "@/apis/categories"
 import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
+import CustomTooltip from "@/components/ui/CustomTooltip"
 import EditCategoryModal from "@/components/ui/EditCategoryModal"
 import EditFeedModal from "@/components/ui/EditFeedModal"
 import FeedIcon from "@/components/ui/FeedIcon"
@@ -663,7 +663,7 @@ const updateAllEntriesAsRead = () => {
   setEntries((prev) => prev.map((entry) => ({ ...entry, status: "read" })))
 }
 
-const Sidebar = ({ onNavigate }) => {
+const Sidebar = ({ headerAction, onNavigate }) => {
   const { catalog: catalogLoadState } = useStore(dataState, { keys: ["loadState"] }).loadState
   const { polyglot } = useStore(polyglotState)
   const expandedCategories = useStore(expandedCategoriesState)
@@ -812,7 +812,7 @@ const Sidebar = ({ onNavigate }) => {
       <AdaptiveScrollArea style={{ maxHeight: "100%" }}>
         <Menu hasCollapseButton={false} selectedKeys={selectedKeys}>
           <div className="menu-header">
-            <Tooltip content={homePageActionLabel} position="bottom">
+            <CustomTooltip content={homePageActionLabel} position="bottom">
               <span className="home-brand-tooltip-anchor">
                 <button
                   aria-label={homePageActionLabel}
@@ -827,8 +827,11 @@ const Sidebar = ({ onNavigate }) => {
                   <span className="home-brand-title">ReactFlux</span>
                 </button>
               </span>
-            </Tooltip>
-            <Profile />
+            </CustomTooltip>
+            <div className="menu-header-actions">
+              <Profile />
+              {headerAction}
+            </div>
           </div>
           <Typography.Title className="section-title" heading={6} style={{ paddingLeft: "12px" }}>
             {polyglot.t("sidebar.articles")}
