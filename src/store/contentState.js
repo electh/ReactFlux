@@ -1,7 +1,7 @@
 import { computed, map } from "nanostores"
 
 import { dataState, feedsState, unreadTotalState } from "./dataState"
-import { getSettings, settingsState } from "./settingsState"
+import { settingsState } from "./settingsState"
 
 import removeDuplicateEntries from "@/utils/deduplicate"
 import { extractHeadings } from "@/utils/dom"
@@ -15,7 +15,7 @@ const defaultValue = {
   entries: [], // 接口返回的所有文章
   filterDate: null, // 搜索日期
   filterString: "", // 搜索文本
-  infoFrom: getSettings("homePage"), // all | today | starred | history
+  infoFrom: "all", // all | today | starred | history | feed | category
   infoId: null, // feed 或 category 的 id
   isArticleListReady: false, // 文章列表是否加载完成
   isArticleLoading: false, // 文章是否正在加载

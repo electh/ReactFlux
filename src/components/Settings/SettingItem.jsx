@@ -11,7 +11,7 @@ const SettingItem = ({ title, description, children }) => {
 
   useLayoutEffect(() => {
     const controls = controlRef.current.querySelectorAll(
-      '[role="combobox"], [role="slider"], [role="switch"]',
+      '[role="combobox"], [role="slider"], [role="spinbutton"], [role="switch"]',
     )
 
     for (const control of controls) {

@@ -100,28 +100,9 @@
     width: calc(100% - 16px);
     max-width: 400px;
   }
-
-  .feed-table-action-bar {
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .feed-search-container {
-    flex: 1 0 100%;
-    width: 100%;
-  }
-
-  .feed-table-action-bar .search-input {
-    width: 100%;
-  }
-
-  .feed-table-action-bar .button-group {
-    width: 100%;
-    padding-left: 0;
-  }
 }
 
-@media screen and (max-width: 768px), (pointer: coarse) {
+@media (pointer: coarse) {
   .feed-table-action-bar {
     --feed-action-control-size: var(--mobile-form-control-size);
     --feed-action-icon-size: var(--mobile-form-icon-size);

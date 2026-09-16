@@ -31,7 +31,6 @@ import CustomTooltip from "@/components/ui/CustomTooltip"
 import EditFeedModal from "@/components/ui/EditFeedModal"
 import { handleFeedRefresh, updateFeedStatus, useFeedOperations } from "@/hooks/useFeedOperations"
 import { polyglotState } from "@/hooks/useLanguage"
-import useScreenWidth from "@/hooks/useScreenWidth"
 import { dataState, setFeedsData } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
 import { generateRelativeTime } from "@/utils/date"
@@ -480,7 +479,6 @@ const FeedList = () => {
   const [selectedFeed, setSelectedFeed] = useState(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
-  const { isBelowMedium } = useScreenWidth()
   const { refreshSingleFeed, handleDeleteFeed } = useFeedOperations(false)
 
   const navigate = useNavigate()
@@ -546,7 +544,7 @@ const FeedList = () => {
       },
     },
 
-    !isBelowMedium && {
+    {
       title: polyglot.t("feed_table.table_url"),
       dataIndex: "feed_url",
       sorter: (a, b) => a.feed_url.localeCompare(b.feed_url, "en"),
@@ -562,7 +560,7 @@ const FeedList = () => {
       dataIndex: "category.title",
       sorter: (a, b) => a.category.title.localeCompare(b.category.title, "en"),
       render: (category, feed) => (
-        <Typography.Ellipsis expandable={false} showTooltip={!isBelowMedium}>
+        <Typography.Ellipsis showTooltip expandable={false}>
           <Tag
             size="small"
             style={{ cursor: "pointer" }}
@@ -574,7 +572,7 @@ const FeedList = () => {
       ),
     },
 
-    !isBelowMedium && {
+    {
       title: polyglot.t("feed_table.table_checked_at"),
       dataIndex: "checked_at",
       sorter: (a, b) => a.checked_at.localeCompare(b.checked_at, "en"),
@@ -600,7 +598,7 @@ const FeedList = () => {
         />
       ),
     },
-  ].filter(Boolean)
+  ]
 
   const pagination = {
     showJumper: true,

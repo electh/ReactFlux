@@ -5,11 +5,14 @@ import { useState } from "react"
 
 import EditCategoryModal from "@/components/ui/EditCategoryModal"
 import useCategoryOperations from "@/hooks/useCategoryOperations"
+import { polyglotState } from "@/hooks/useLanguage"
 import { categoriesState } from "@/store/dataState"
 import "./CategoryList.css"
 
 const CategoryList = () => {
   const categories = useStore(categoriesState)
+  const { polyglot } = useStore(polyglotState)
+  const addCategoryLabel = polyglot.t("category_list.add_category")
 
   const [categoryForm] = Form.useForm()
   const [categoryModalVisible, setCategoryModalVisible] = useState(false)
@@ -61,6 +64,7 @@ const CategoryList = () => {
         {showAddInput ? (
           <Input
             autoFocus
+            aria-label={addCategoryLabel}
             className="input-style"
             size="small"
             value={inputAddValue}
@@ -69,13 +73,14 @@ const CategoryList = () => {
             onPressEnter={handleAddNewCategory}
           />
         ) : (
-          <Tag
-            className="add-category-tag"
-            icon={<IconPlus />}
-            size="medium"
-            tabIndex={0}
+          <button
+            aria-label={addCategoryLabel}
+            className="add-category-button"
+            type="button"
             onClick={() => setShowAddInput(true)}
-          />
+          >
+            <IconPlus aria-hidden="true" />
+          </button>
         )}
       </div>
       {selectedCategory && (

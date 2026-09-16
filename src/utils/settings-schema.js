@@ -4,22 +4,16 @@ import {
   CONTENT_BROWSING_DIRECTIONS,
 } from "@/utils/content-browsing-direction"
 import { createDefaultHomePages, sanitizeHomePages } from "@/utils/home-page"
-
-export const MIN_ARTICLE_FONT_SIZE = 1
-const MAX_ARTICLE_FONT_SIZE = 1.5
-
-const FONT_FAMILIES = [
-  "system-ui",
-  "sans-serif",
-  "serif",
-  "'Fira Sans', sans-serif",
-  "'Open Sans', sans-serif",
-  "'Source Sans Pro', sans-serif",
-  "'Source Serif Pro', serif",
-  "'Noto Sans', 'Noto Sans SC', sans-serif",
-  "'Noto Serif', 'Noto Serif SC', serif",
-  "'LXGW WenKai Screen', sans-serif",
-]
+import {
+  FONT_FAMILIES,
+  MAX_ARTICLE_FONT_SIZE,
+  MAX_ARTICLE_WIDTH,
+  MIN_ARTICLE_FONT_SIZE,
+  MIN_ARTICLE_WIDTH,
+  SWIPE_SENSITIVITIES,
+  THEME_MODES,
+  TITLE_ALIGNMENTS,
+} from "@/utils/settings-options"
 
 const FONT_FAMILY_MIGRATIONS = {
   "'Noto Sans SC', sans-serif": "'Noto Sans', 'Noto Sans SC', sans-serif",
@@ -75,6 +69,30 @@ const numberSetting = (defaultValue, min, max, { integer = false, precision = nu
   },
 })
 
+const nearestNumberSetting = (defaultValue, values) => ({
+  defaultValue,
+  sanitize: (value, fallback) => {
+    const fallbackValue = values.includes(fallback) ? fallback : defaultValue
+    if (!Number.isFinite(value)) {
+      return fallbackValue
+    }
+
+    let nearest = values[0]
+    for (const candidate of values.slice(1)) {
+      const candidateDistance = Math.abs(candidate - value)
+      const nearestDistance = Math.abs(nearest - value)
+      if (
+        candidateDistance < nearestDistance ||
+        (candidateDistance === nearestDistance &&
+          Math.abs(candidate - defaultValue) < Math.abs(nearest - defaultValue))
+      ) {
+        nearest = candidate
+      }
+    }
+    return nearest
+  },
+})
+
 const sanitizeLanguage = (value, fallback) => {
   if (typeof value !== "string") {
     return fallback
@@ -85,7 +103,7 @@ const sanitizeLanguage = (value, fallback) => {
 }
 
 const SETTINGS_SCHEMA = {
-  articleWidth: numberSetting(75, 50, 100, { precision: 2 }),
+  articleWidth: numberSetting(75, MIN_ARTICLE_WIDTH, MAX_ARTICLE_WIDTH, { precision: 2 }),
   checkForUpdates: booleanSetting(false),
   compactSidebarGroups: booleanSetting(true),
   contentBrowsingDirection: enumSetting(
@@ -100,6 +118,7 @@ const SETTINGS_SCHEMA = {
   fontSize: numberSetting(1.05, MIN_ARTICLE_FONT_SIZE, MAX_ARTICLE_FONT_SIZE, {
     precision: 2,
   }),
+  // Retained for local data and v1/v2 backup migration. New settings use homePages.
   homePage: enumSetting("all", ["all", "today", "starred", "history"]),
   homePages: {
     defaultValue: createDefaultHomePages(),
@@ -127,10 +146,10 @@ const SETTINGS_SCHEMA = {
   showStatus: enumSetting("unread", ["unread", "all", "starred"]),
   showUnreadFeedsOnly: booleanSetting(false),
   skipMarkAllReadConfirmation: booleanSetting(false),
-  swipeSensitivity: numberSetting(1, 0.5, 1.5, { precision: 2 }),
+  swipeSensitivity: nearestNumberSetting(1, SWIPE_SENSITIVITIES),
   themeColor: enumSetting("Blue", ["Red", "Orange", "Yellow", "Green", "Blue", "Violet"]),
-  themeMode: enumSetting("system", ["system", "light", "dark"]),
-  titleAlignment: enumSetting("center", ["left", "center"]),
+  themeMode: enumSetting("system", THEME_MODES),
+  titleAlignment: enumSetting("center", TITLE_ALIGNMENTS),
   updateContentOnFetch: booleanSetting(false),
 }
 

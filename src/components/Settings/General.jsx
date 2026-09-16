@@ -1,14 +1,4 @@
-import {
-  Button,
-  Divider,
-  InputNumber,
-  Message,
-  Modal,
-  Select,
-  Slider,
-  Switch,
-  Tooltip,
-} from "@arco-design/web-react"
+import { Button, Message, Modal, Select, Switch, Tooltip } from "@arco-design/web-react"
 import {
   IconDownload,
   IconInfoCircleFill,
@@ -20,19 +10,14 @@ import { useRef, useState } from "react"
 
 import HomePagePicker from "./HomePagePicker"
 import SettingItem from "./SettingItem"
+import SettingSection from "./SettingSection"
 
 import useHomePage from "@/hooks/useHomePage"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
-import { setContentBrowsingDirection } from "@/store/contentBrowsingDirectionState"
 import { ensureCurrentHomePage } from "@/store/homePageState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confirm-dialog"
-import { MAX_ENTRIES_PER_PAGE, MIN_ENTRIES_PER_PAGE } from "@/utils/constants"
-import {
-  CONTENT_BROWSING_DIRECTION_LTR,
-  CONTENT_BROWSING_DIRECTION_RTL,
-} from "@/utils/content-browsing-direction"
 import { downloadFile, readFileAsText } from "@/utils/file"
 import {
   applySettingsBackup,
@@ -53,23 +38,9 @@ const languageOptions = [
 ]
 
 const General = () => {
-  const {
-    checkForUpdates,
-    compactSidebarGroups,
-    contentBrowsingDirection,
-    enableContextMenu,
-    enableSwipeGesture,
-    language,
-    markAllReadJumpToNext,
-    markReadBy,
-    markReadOnScroll,
-    orderBy,
-    pageSize,
-    removeDuplicates,
-    skipMarkAllReadConfirmation,
-    swipeSensitivity,
-    updateContentOnFetch,
-  } = useStore(settingsState)
+  const { checkForUpdates, language } = useStore(settingsState, {
+    keys: ["checkForUpdates", "language"],
+  })
   const { polyglot } = useStore(polyglotState)
   const { isBelowMedium } = useScreenWidth()
   const importInputRef = useRef(null)
@@ -83,36 +54,6 @@ const General = () => {
       ? "home_page.identity_unavailable"
       : "home_page.identity_loading"
     homePageSummaryLabel = polyglot.t(statusKey)
-  }
-
-  const removeDuplicatesOptions = [
-    {
-      label: polyglot.t("settings.remove_duplicates_option_none"),
-      value: "none",
-    },
-    {
-      label: polyglot.t("settings.remove_duplicates_option_hash"),
-      value: "hash",
-    },
-    {
-      label: polyglot.t("settings.remove_duplicates_option_title"),
-      value: "title",
-    },
-    {
-      label: polyglot.t("settings.remove_duplicates_option_url"),
-      value: "url",
-    },
-  ]
-
-  const handleContentBrowsingDirectionChange = (value) => {
-    const { conflicts } = setContentBrowsingDirection(value)
-    if (conflicts.length > 0) {
-      Message.error(
-        polyglot.t("settings.content_browsing_direction_conflict_description", {
-          keys: conflicts.join(", "),
-        }),
-      )
-    }
   }
 
   const handleSettingsExport = () => {
@@ -187,295 +128,89 @@ const General = () => {
 
   return (
     <>
-      <SettingItem
-        description={polyglot.t("appearance.language_description")}
-        title={polyglot.t("appearance.language_label")}
-      >
-        <Select
-          className="input-select"
-          value={language}
-          onChange={(value) => updateSettings({ language: value })}
+      <SettingSection title={polyglot.t("settings.section_language_startup")}>
+        <SettingItem
+          description={polyglot.t("settings.language_description")}
+          title={polyglot.t("settings.language_label")}
         >
-          {languageOptions.map(({ label, value }) => (
-            <Select.Option key={value} value={value}>
-              {label}
-            </Select.Option>
-          ))}
-        </Select>
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.default_home_page_description")}
-        title={polyglot.t("settings.default_home_page_label")}
-      >
-        <Tooltip
-          content={homePageSummaryLabel}
-          disabled={isBelowMedium || !identityReady}
-          trigger={["hover", "focus"]}
-        >
-          <Button
-            aria-expanded={homePagePickerVisible}
-            aria-haspopup="dialog"
-            className="home-page-summary"
-            disabled={!identityReady}
-            onClick={() => setHomePagePickerVisible(true)}
+          <Select
+            className="input-select"
+            value={language}
+            onChange={(value) => updateSettings({ language: value })}
           >
-            <span>{homePageSummaryLabel}</span>
-            <IconRight aria-hidden="true" />
-          </Button>
-        </Tooltip>
-        <HomePagePicker
-          visible={homePagePickerVisible}
-          onClose={() => setHomePagePickerVisible(false)}
-        />
-      </SettingItem>
+            {languageOptions.map(({ label, value }) => (
+              <Select.Option key={value} value={value}>
+                {label}
+              </Select.Option>
+            ))}
+          </Select>
+        </SettingItem>
 
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.entries_order_description")}
-        title={polyglot.t("settings.entries_order_label")}
-      >
-        <Select
-          className="input-select"
-          value={orderBy}
-          onChange={(value) => updateSettings({ orderBy: value })}
+        <SettingItem
+          description={polyglot.t("settings.default_home_page_description")}
+          title={polyglot.t("settings.default_home_page_label")}
         >
-          <Select.Option value="published_at">
-            {polyglot.t("settings.entries_order_option_published_at")}
-          </Select.Option>
-          <Select.Option value="created_at">
-            {polyglot.t("settings.entries_order_option_created_at")}
-          </Select.Option>
-        </Select>
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.entries_per_page_description")}
-        title={polyglot.t("settings.entries_per_page_label")}
-      >
-        <InputNumber
-          className="input-select"
-          defaultValue={pageSize}
-          max={MAX_ENTRIES_PER_PAGE}
-          min={MIN_ENTRIES_PER_PAGE}
-          mode="button"
-          precision={0}
-          size="small"
-          onChange={(value) => updateSettings({ pageSize: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.remove_duplicates_description")}
-        title={polyglot.t("settings.remove_duplicates_label")}
-      >
-        <Select
-          className="input-select"
-          value={removeDuplicates}
-          onChange={(value) => updateSettings({ removeDuplicates: value })}
-        >
-          {removeDuplicatesOptions.map(({ label, value }) => (
-            <Select.Option key={value} value={value}>
-              {label}
-            </Select.Option>
-          ))}
-        </Select>
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.mark_read_by_description")}
-        title={polyglot.t("settings.mark_read_by_label")}
-      >
-        <Select
-          className="input-select"
-          value={markReadBy}
-          onChange={(value) => updateSettings({ markReadBy: value })}
-        >
-          <Select.Option value="view">{polyglot.t("settings.mark_read_on_view")}</Select.Option>
-          <Select.Option value="manually">
-            {polyglot.t("settings.mark_read_manually")}
-          </Select.Option>
-        </Select>
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.mark_read_on_scroll_description")}
-        title={polyglot.t("settings.mark_read_on_scroll_label")}
-      >
-        <Switch
-          checked={markReadOnScroll}
-          onChange={(value) => updateSettings({ markReadOnScroll: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.skip_mark_all_read_confirmation_description")}
-        title={polyglot.t("settings.skip_mark_all_read_confirmation_label")}
-      >
-        <Switch
-          checked={skipMarkAllReadConfirmation}
-          onChange={(value) => updateSettings({ skipMarkAllReadConfirmation: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.mark_all_read_jump_to_next_description")}
-        title={polyglot.t("settings.mark_all_read_jump_to_next_label")}
-      >
-        <Switch
-          checked={markAllReadJumpToNext}
-          onChange={(value) => updateSettings({ markAllReadJumpToNext: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.enable_context_menu_description")}
-        title={polyglot.t("settings.enable_context_menu_label")}
-      >
-        <Switch
-          checked={enableContextMenu}
-          onChange={(value) => updateSettings({ enableContextMenu: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.compact_sidebar_groups_description")}
-        title={polyglot.t("settings.compact_sidebar_groups_label")}
-      >
-        <Switch
-          checked={compactSidebarGroups}
-          onChange={(value) => updateSettings({ compactSidebarGroups: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.update_content_on_fetch_description")}
-        title={polyglot.t("settings.update_content_on_fetch_label")}
-      >
-        <Switch
-          checked={updateContentOnFetch}
-          onChange={(value) => updateSettings({ updateContentOnFetch: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.check_for_updates_description")}
-        title={polyglot.t("settings.check_for_updates_label")}
-      >
-        <Switch
-          checked={checkForUpdates}
-          onChange={(value) => updateSettings({ checkForUpdates: value })}
-        />
-      </SettingItem>
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.content_browsing_direction_description")}
-        title={polyglot.t("settings.content_browsing_direction_label")}
-      >
-        <Select
-          className="input-select"
-          value={contentBrowsingDirection}
-          onChange={handleContentBrowsingDirectionChange}
-        >
-          <Select.Option value={CONTENT_BROWSING_DIRECTION_LTR}>
-            {polyglot.t("settings.content_browsing_direction_option_ltr")}
-          </Select.Option>
-          <Select.Option value={CONTENT_BROWSING_DIRECTION_RTL}>
-            {polyglot.t("settings.content_browsing_direction_option_rtl")}
-          </Select.Option>
-        </Select>
-      </SettingItem>
-
-      {isBelowMedium && (
-        <>
-          <Divider />
-
-          <SettingItem
-            description={polyglot.t("settings.enable_swipe_gesture_description")}
-            title={polyglot.t("settings.enable_swipe_gesture_label")}
+          <Tooltip
+            content={homePageSummaryLabel}
+            disabled={isBelowMedium || !identityReady}
+            trigger={["hover", "focus"]}
           >
-            <Switch
-              checked={enableSwipeGesture}
-              onChange={(value) => updateSettings({ enableSwipeGesture: value })}
-            />
-          </SettingItem>
-
-          {enableSwipeGesture && (
-            <>
-              <Divider />
-
-              <SettingItem
-                description={polyglot.t("settings.swipe_sensitivity_description")}
-                title={polyglot.t("settings.swipe_sensitivity_label")}
-              >
-                <Slider
-                  className="input-slider"
-                  max={1.5}
-                  min={0.5}
-                  showTicks={true}
-                  step={0.25}
-                  value={swipeSensitivity}
-                  onChange={(value) => updateSettings({ swipeSensitivity: value })}
-                />
-              </SettingItem>
-            </>
-          )}
-        </>
-      )}
-
-      <Divider />
-
-      <SettingItem
-        description={polyglot.t("settings.settings_transfer_description")}
-        title={polyglot.t("settings.settings_transfer_label")}
-      >
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          <Button
-            icon={<IconUpload aria-hidden="true" />}
-            loading={isImportingSettings}
-            onClick={() => importInputRef.current?.click()}
-          >
-            {polyglot.t("settings.import_settings")}
-          </Button>
-          <Button icon={<IconDownload aria-hidden="true" />} onClick={handleSettingsExport}>
-            {polyglot.t("settings.export_settings")}
-          </Button>
-          <input
-            ref={importInputRef}
-            accept=".json,application/json"
-            aria-hidden="true"
-            style={{ display: "none" }}
-            tabIndex={-1}
-            type="file"
-            onChange={handleSettingsImport}
+            <Button
+              aria-expanded={homePagePickerVisible}
+              aria-haspopup="dialog"
+              className="home-page-summary"
+              disabled={!identityReady}
+              onClick={() => setHomePagePickerVisible(true)}
+            >
+              <span>{homePageSummaryLabel}</span>
+              <IconRight aria-hidden="true" />
+            </Button>
+          </Tooltip>
+          <HomePagePicker
+            visible={homePagePickerVisible}
+            onClose={() => setHomePagePickerVisible(false)}
           />
-        </div>
-      </SettingItem>
+        </SettingItem>
+      </SettingSection>
+
+      <SettingSection title={polyglot.t("settings.section_data_maintenance")}>
+        <SettingItem
+          description={polyglot.t("settings.check_for_updates_description")}
+          title={polyglot.t("settings.check_for_updates_label")}
+        >
+          <Switch
+            checked={checkForUpdates}
+            onChange={(value) => updateSettings({ checkForUpdates: value })}
+          />
+        </SettingItem>
+
+        <SettingItem
+          description={polyglot.t("settings.settings_transfer_description")}
+          title={polyglot.t("settings.settings_transfer_label")}
+        >
+          <div className="settings-transfer-actions">
+            <Button
+              icon={<IconUpload aria-hidden="true" />}
+              loading={isImportingSettings}
+              onClick={() => importInputRef.current?.click()}
+            >
+              {polyglot.t("settings.import_settings")}
+            </Button>
+            <Button icon={<IconDownload aria-hidden="true" />} onClick={handleSettingsExport}>
+              {polyglot.t("settings.export_settings")}
+            </Button>
+            <input
+              ref={importInputRef}
+              accept=".json,application/json"
+              aria-hidden="true"
+              style={{ display: "none" }}
+              tabIndex={-1}
+              type="file"
+              onChange={handleSettingsImport}
+            />
+          </div>
+        </SettingItem>
+      </SettingSection>
     </>
   )
 }

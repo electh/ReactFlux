@@ -79,6 +79,9 @@ const replaceSnapshot = ({ settings, hotkeys, expandedCategories }) => {
   replaceExpandedCategories(expandedCategories)
 }
 
+const getExportableSettings = ({ homePage: _legacyHomePage, ...exportableSettings }) =>
+  exportableSettings
+
 export const buildSettingsBackup = () => {
   const { settings, hotkeys, expandedCategories } = getCurrentSnapshot()
   const backup = {
@@ -86,7 +89,7 @@ export const buildSettingsBackup = () => {
     schemaVersion: SETTINGS_BACKUP_SCHEMA_VERSION,
     exportedAt: new Date().toISOString(),
     data: {
-      settings,
+      settings: getExportableSettings(settings),
       hotkeys,
       hotkeysRepresentation: HOTKEYS_REPRESENTATION,
       sidebar: { expandedCategories },

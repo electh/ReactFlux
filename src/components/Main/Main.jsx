@@ -13,6 +13,7 @@ import useModalToggle from "@/hooks/useModalToggle"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { catalogCategoriesState, catalogFeedsState } from "@/store/dataState"
 import includesIgnoreCase from "@/utils/filter"
+import { DEFAULT_SETTINGS_TAB } from "@/utils/settings-navigation"
 import "./Main.css"
 
 const urlRule = [{ required: true }]
@@ -30,18 +31,29 @@ const SettingsModal = () => {
     settingsModalVisible,
     settingsTabsActiveTab,
   } = useModalToggle()
+  const previousPathnameRef = useRef(location.pathname)
 
   useEffect(() => {
-    if (isBelowMedium && settingsModalVisible) {
+    const hasPathnameChanged = previousPathnameRef.current !== location.pathname
+    previousPathnameRef.current = location.pathname
+
+    if (hasPathnameChanged && isBelowMedium && settingsModalVisible) {
       setSettingsModalVisible(false)
+      setSettingsTabsActiveTab(DEFAULT_SETTINGS_TAB)
     }
-  }, [location.pathname])
+  }, [
+    isBelowMedium,
+    location.pathname,
+    setSettingsModalVisible,
+    setSettingsTabsActiveTab,
+    settingsModalVisible,
+  ])
 
   const settingsTitle = polyglot.t("sidebar.settings")
 
   const handleClose = () => {
     setSettingsModalVisible(false)
-    setSettingsTabsActiveTab("1")
+    setSettingsTabsActiveTab(DEFAULT_SETTINGS_TAB)
   }
 
   return (

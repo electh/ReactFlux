@@ -84,4 +84,14 @@
   .setting-row .input-slider.arco-slider-reverse .arco-slider-button {
     transform: translate(50%, -50%);
   }
+
+  .setting-row .input-number .arco-input-inner-wrapper,
+  .setting-row .input-number .arco-input-number-step-button {
+    min-height: var(--mobile-form-control-size);
+  }
+
+  .setting-row .input-number .arco-input-number-step-button {
+    min-width: var(--mobile-form-control-size);
+    touch-action: manipulation;
+  }
 }

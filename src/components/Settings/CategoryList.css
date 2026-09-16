@@ -1,8 +1,29 @@
-.add-category-tag {
-  cursor: pointer;
+.add-category-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   border: 1px dashed var(--color-border-2);
+  border-radius: var(--border-radius-small);
   background-color: var(--color-bg-1);
+  padding: 0;
   width: 32px;
+  min-height: 28px;
+  color: var(--color-text-2);
+  font: inherit;
+  vertical-align: top;
+  cursor: pointer;
+}
+
+.add-category-button:hover,
+.add-category-button:focus-visible {
+  border-color: rgb(var(--primary-6));
+  color: rgb(var(--primary-6));
+}
+
+.add-category-button:focus-visible {
+  outline: 2px solid rgb(var(--primary-6));
+  outline-offset: 2px;
 }
 
 .input-style {
@@ -34,4 +55,25 @@
 .category-edit-button:focus-visible {
   outline: 2px solid rgb(var(--primary-6));
   outline-offset: 2px;
+}
+
+@media screen and (max-width: 768px), (pointer: coarse) {
+  .add-category-button {
+    width: var(--mobile-form-control-size);
+    min-height: var(--mobile-form-control-size);
+    touch-action: manipulation;
+  }
+
+  .input-style,
+  .category-edit-button,
+  .tag-style .arco-tag-close-btn {
+    min-height: var(--mobile-form-control-size);
+  }
+
+  .tag-style .arco-tag-close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+  }
 }

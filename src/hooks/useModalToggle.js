@@ -2,11 +2,12 @@ import { useStore } from "@nanostores/react"
 import { map } from "nanostores"
 
 import createSetter from "@/utils/nanostores"
+import { DEFAULT_SETTINGS_TAB } from "@/utils/settings-navigation"
 
 const state = map({
   addFeedModalVisible: false,
   settingsModalVisible: false,
-  settingsTabsActiveTab: "1",
+  settingsTabsActiveTab: DEFAULT_SETTINGS_TAB,
 })
 
 const setAddFeedModalVisible = createSetter(state, "addFeedModalVisible")

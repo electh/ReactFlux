@@ -24,7 +24,14 @@ import { confirmDialogProps, destructiveConfirmButtonProps } from "@/utils/confi
 import { GITHUB_REPO_PATH } from "@/utils/constants"
 import { clearSession } from "@/utils/session"
 import { preloadSettingsTabs } from "@/utils/settings-loader"
+import { THEME_MODE_OPTIONS } from "@/utils/settings-options"
 import "./Profile.css"
+
+const THEME_MODE_ICONS = {
+  system: IconDesktop,
+  light: IconSunFill,
+  dark: IconMoonFill,
+}
 
 export default function Profile() {
   const navigate = useNavigate()
@@ -98,18 +105,16 @@ export default function Profile() {
                 value={themeMode}
                 onChange={(value) => updateSettings({ themeMode: value })}
               >
-                <Radio value="system">
-                  <IconDesktop aria-hidden="true" />
-                  <span className="visually-hidden">{polyglot.t("sidebar.theme_system")}</span>
-                </Radio>
-                <Radio value="light">
-                  <IconSunFill aria-hidden="true" />
-                  <span className="visually-hidden">{polyglot.t("sidebar.theme_light")}</span>
-                </Radio>
-                <Radio value="dark">
-                  <IconMoonFill aria-hidden="true" />
-                  <span className="visually-hidden">{polyglot.t("sidebar.theme_dark")}</span>
-                </Radio>
+                {THEME_MODE_OPTIONS.map(({ labelKey, value }) => {
+                  const ThemeIcon = THEME_MODE_ICONS[value]
+
+                  return (
+                    <Radio key={value} value={value}>
+                      <ThemeIcon aria-hidden="true" />
+                      <span className="visually-hidden">{polyglot.t(labelKey)}</span>
+                    </Radio>
+                  )
+                })}
               </Radio.Group>
               <Divider style={{ margin: "4px 0" }} />
               <Menu.Item

@@ -4,9 +4,11 @@ import { useEffect, useRef } from "react"
 
 import { polyglotState } from "@/hooks/useLanguage"
 import useModalToggle from "@/hooks/useModalToggle"
+import useScreenWidth from "@/hooks/useScreenWidth"
 import useVersionCheck from "@/hooks/useVersionCheck"
 import { duplicateHotkeysState } from "@/store/hotkeysState"
 import { GITHUB_REPO_PATH } from "@/utils/constants"
+import { isSettingsTabAvailable, SETTINGS_TAB_KEYS } from "@/utils/settings-navigation"
 
 import "./AppNotifications.css"
 
@@ -18,9 +20,11 @@ const NotificationActions = ({ polyglot, onCheck, onDismiss }) => (
     <Button size="small" type="secondary" onClick={onDismiss}>
       {polyglot.t("actions.dismiss")}
     </Button>
-    <Button size="small" type="primary" onClick={onCheck}>
-      {polyglot.t("actions.check")}
-    </Button>
+    {onCheck && (
+      <Button size="small" type="primary" onClick={onCheck}>
+        {polyglot.t("actions.check")}
+      </Button>
+    )}
   </div>
 )
 
@@ -28,6 +32,7 @@ const AppNotifications = () => {
   const { polyglot } = useStore(polyglotState)
   const duplicateHotkeys = useStore(duplicateHotkeysState)
   const { hasUpdate, dismissUpdate } = useVersionCheck()
+  const { isBelowMedium } = useScreenWidth()
   const { setSettingsModalVisible, setSettingsTabsActiveTab } = useModalToggle()
 
   const previousDuplicateHotkeysSignatureRef = useRef(null)
@@ -35,6 +40,7 @@ const AppNotifications = () => {
 
   const duplicateHotkeysSignature = JSON.stringify(duplicateHotkeys.toSorted())
   const hasDuplicateHotkeys = duplicateHotkeys.length > 0
+  const canOpenHotkeysSettings = isSettingsTabAvailable(SETTINGS_TAB_KEYS.HOTKEYS, isBelowMedium)
 
   useEffect(() => {
     if (!hasUpdate) {
@@ -87,21 +93,29 @@ const AppNotifications = () => {
     Notification.error({
       id: DUPLICATE_HOTKEYS_NOTIFICATION_ID,
       title: polyglot.t("settings.duplicate_hotkeys"),
+      content: canOpenHotkeysSettings
+        ? undefined
+        : polyglot.t("settings.duplicate_hotkeys_desktop_description"),
       closable: false,
       duration: 0,
       btn: (
         <NotificationActions
           polyglot={polyglot}
           onDismiss={dismissDuplicateHotkeysNotification}
-          onCheck={() => {
-            setSettingsTabsActiveTab("5")
-            setSettingsModalVisible(true)
-            dismissDuplicateHotkeysNotification()
-          }}
+          onCheck={
+            canOpenHotkeysSettings
+              ? () => {
+                  setSettingsTabsActiveTab(SETTINGS_TAB_KEYS.HOTKEYS)
+                  setSettingsModalVisible(true)
+                  dismissDuplicateHotkeysNotification()
+                }
+              : undefined
+          }
         />
       ),
     })
   }, [
+    canOpenHotkeysSettings,
     duplicateHotkeysSignature,
     hasDuplicateHotkeys,
     polyglot,

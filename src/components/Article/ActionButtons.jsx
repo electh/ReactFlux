@@ -35,9 +35,22 @@ import {
   prevContentState,
 } from "@/store/contentState"
 import { dataState } from "@/store/dataState"
-import { MIN_ARTICLE_FONT_SIZE, settingsState, updateSettings } from "@/store/settingsState"
+import { settingsState, updateSettings } from "@/store/settingsState"
 import { isRightToLeftBrowsing } from "@/utils/content-browsing-direction"
+import {
+  createFontFamilyOptions,
+  MAX_ARTICLE_FONT_SIZE,
+  MAX_ARTICLE_WIDTH,
+  MIN_ARTICLE_FONT_SIZE,
+  MIN_ARTICLE_WIDTH,
+  TITLE_ALIGNMENT_OPTIONS,
+} from "@/utils/settings-options"
 import "./ActionButtons.css"
+
+const TITLE_ALIGNMENT_ICONS = {
+  left: IconAlignLeft,
+  center: IconAlignCenter,
+}
 
 const DesktopButtons = memo(
   ({ commonButtons, hasIntegrations, handleSaveToThirdPartyServices, polyglot }) => (
@@ -161,27 +174,7 @@ const ActionButtons = () => {
       : polyglot.t("article_card.mark_as_unread_tooltip"),
   }
 
-  const fontFamilyOptions = [
-    { label: polyglot.t("appearance.font_family_system"), value: "system-ui" },
-    { label: "Sans-serif", value: "sans-serif" },
-    { label: "Serif", value: "serif" },
-    { label: "Fira Sans", value: "'Fira Sans', sans-serif" },
-    { label: "Open Sans", value: "'Open Sans', sans-serif" },
-    { label: "Source Sans Pro", value: "'Source Sans Pro', sans-serif" },
-    { label: "Source Serif Pro", value: "'Source Serif Pro', serif" },
-    {
-      label: polyglot.t("appearance.font_family_noto_sans"),
-      value: "'Noto Sans', 'Noto Sans SC', sans-serif",
-    },
-    {
-      label: polyglot.t("appearance.font_family_noto_serif"),
-      value: "'Noto Serif', 'Noto Serif SC', serif",
-    },
-    {
-      label: polyglot.t("appearance.font_family_lxgw_wenkai"),
-      value: "'LXGW WenKai Screen', sans-serif",
-    },
-  ]
+  const fontFamilyOptions = createFontFamilyOptions(polyglot)
 
   const handleShare = async () => {
     if (!navigator.share) {
@@ -410,12 +403,16 @@ const ActionButtons = () => {
                     value={titleAlignment}
                     onChange={(value) => updateSettings({ titleAlignment: value })}
                   >
-                    <Radio value="left">
-                      <IconAlignLeft />
-                    </Radio>
-                    <Radio value="center">
-                      <IconAlignCenter />
-                    </Radio>
+                    {TITLE_ALIGNMENT_OPTIONS.map(({ labelKey, value }) => {
+                      const AlignmentIcon = TITLE_ALIGNMENT_ICONS[value]
+
+                      return (
+                        <Radio key={value} value={value}>
+                          <AlignmentIcon aria-hidden="true" />
+                          <span className="visually-hidden">{polyglot.t(labelKey)}</span>
+                        </Radio>
+                      )
+                    })}
                   </Radio.Group>
                 </div>
               </Menu.Item>
@@ -459,7 +456,7 @@ const ActionButtons = () => {
                 <div className="settings-menu-item" onClick={(e) => e.stopPropagation()}>
                   <span>{polyglot.t("appearance.font_size_label")}</span>
                   <InputNumber
-                    max={1.5}
+                    max={MAX_ARTICLE_FONT_SIZE}
                     min={MIN_ARTICLE_FONT_SIZE}
                     size="small"
                     step={0.05}
@@ -476,8 +473,8 @@ const ActionButtons = () => {
                   <div className="settings-menu-item" onClick={(e) => e.stopPropagation()}>
                     <span>{polyglot.t("appearance.article_width_label")}</span>
                     <InputNumber
-                      max={100}
-                      min={50}
+                      max={MAX_ARTICLE_WIDTH}
+                      min={MIN_ARTICLE_WIDTH}
                       size="small"
                       step={5}
                       style={{ width: 90 }}

@@ -1,0 +1,16 @@
+.setting-section + .setting-section {
+  margin-top: 32px;
+}
+
+.setting-section-title.arco-typography {
+  margin: 0 0 16px !important;
+  color: var(--color-text-2) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.setting-section-items > .arco-divider-horizontal {
+  margin: 20px 0;
+}

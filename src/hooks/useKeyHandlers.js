@@ -5,6 +5,7 @@ import { useNavigate } from "react-router"
 import { polyglotState } from "./useLanguage"
 import useModalToggle from "./useModalToggle"
 import usePhotoSlider from "./usePhotoSlider"
+import useScreenWidth from "./useScreenWidth"
 
 import useContentContext from "@/hooks/useContentContext"
 import {
@@ -20,6 +21,7 @@ import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { getPreferredScrollBehavior } from "@/utils/dom"
 import buildArticleImageModel from "@/utils/images"
 import findAdjacentItem from "@/utils/navigation"
+import { isSettingsTabAvailable, SETTINGS_TAB_KEYS } from "@/utils/settings-navigation"
 
 const withActiveContent =
   (fn) =>
@@ -41,6 +43,7 @@ const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
 
 const useKeyHandlers = () => {
   const { polyglot } = useStore(polyglotState)
+  const { isBelowMedium } = useScreenWidth()
   const navigate = useNavigate()
 
   const { entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
@@ -163,7 +166,12 @@ const useKeyHandlers = () => {
   )
 
   const showHotkeysSettings = () => {
-    setSettingsTabsActiveTab("5")
+    if (!isSettingsTabAvailable(SETTINGS_TAB_KEYS.HOTKEYS, isBelowMedium)) {
+      Message.info(polyglot.t("settings.hotkeys_desktop_only"))
+      return
+    }
+
+    setSettingsTabsActiveTab(SETTINGS_TAB_KEYS.HOTKEYS)
     setSettingsModalVisible(true)
   }
 

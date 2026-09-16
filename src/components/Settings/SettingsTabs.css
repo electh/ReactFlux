@@ -4,6 +4,33 @@
   max-height: 80vh;
 }
 
+.settings-modal .custom-tabs {
+  overflow: visible;
+}
+
+.settings-modal .custom-tabs > .arco-tabs-header-nav {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: var(--color-bg-3);
+}
+
+.settings-modal .arco-modal-content::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: 28px;
+  background-color: var(--color-bg-3);
+  content: "";
+  pointer-events: none;
+}
+
+.settings-modal .arco-modal-close-icon {
+  z-index: 3;
+}
+
 .custom-tabs .arco-tabs-header {
   margin: 0 auto !important;
 }
@@ -16,6 +43,15 @@
 .input-select,
 .input-slider {
   margin-left: 16px;
+  width: 130px;
+}
+
+.input-number {
+  margin-left: 16px;
+  width: 140px;
+}
+
+.input-number-compact {
   width: 130px;
 }
 
@@ -40,6 +76,12 @@
   white-space: nowrap;
 }
 
+.settings-transfer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .home-page-summary .arco-icon {
   flex: 0 0 auto;
 }
@@ -57,6 +99,7 @@
 
   .setting-control .input-select,
   .setting-control .input-slider,
+  .setting-control .input-number,
   .setting-control .home-page-summary {
     margin-left: 0;
     width: 100%;
@@ -66,6 +109,11 @@
     justify-content: space-between;
     max-width: none;
     height: var(--mobile-form-control-size);
+    min-height: var(--mobile-form-control-size);
+  }
+
+  .settings-transfer-actions > .arco-btn {
+    flex: 1 1 auto;
     min-height: var(--mobile-form-control-size);
   }
 }

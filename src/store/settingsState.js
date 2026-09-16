@@ -103,5 +103,3 @@ export const updateSettings = (settingsChanges) => {
 
 export const replaceSettings = (settings) =>
   settingsState.set(sanitizeSettings(settings, defaultSettings))
-
-export { MIN_ARTICLE_FONT_SIZE } from "@/utils/settings-schema"
