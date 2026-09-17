@@ -22,6 +22,7 @@ import { articleEntryInteractionSettingsState } from "@/store/settingsState"
 import "./ArticleEntry.css"
 
 const ENTRY_CLASS_NAMES = {
+  card: "grid-card-wrapper",
   column: "card-wrapper",
   list: "list-entry-wrapper",
 }
@@ -79,6 +80,9 @@ const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter
   const previewContent = useMemo(() => extractTextFromHtml(entry.content), [entry.content])
   const { getPrimaryLinkProps, openInReactFlux, opensSourceOnCardClick } = articleActivation
   const primaryLinkProps = getPrimaryLinkProps(entry)
+  const accessibleLabel = isUnread
+    ? polyglot.t("article_card.unread_article_aria_label", { title: entry.title })
+    : entry.title
   const menuOpenAction = opensSourceOnCardClick
     ? {
         icon: <IconBook aria-hidden="true" />,
@@ -158,6 +162,7 @@ const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter
         {...primaryLinkProps}
         ref={entryRef}
         {...longPressProps}
+        aria-label={accessibleLabel}
         data-entry-id={entry.id}
         className={classNames("article-entry", ENTRY_CLASS_NAMES[layout], {
           "context-menu-enabled": enableContextMenu,
@@ -166,7 +171,7 @@ const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter
           unread: isUnread,
         })}
       >
-        <Presenter entry={entry} isUnread={isUnread} previewContent={previewContent} />
+        <Presenter entry={entry} previewContent={previewContent} />
       </a>
     </Dropdown>
   )

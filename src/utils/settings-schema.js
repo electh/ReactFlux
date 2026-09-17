@@ -141,6 +141,7 @@ const SETTINGS_SCHEMA = {
     integer: true,
   }),
   removeDuplicates: enumSetting("none", ["none", "hash", "title", "url"]),
+  showCardSummary: booleanSetting(true),
   showDetailedRelativeTime: booleanSetting(false),
   summaryLines: numberSetting(4, 0, 4, { integer: true }),
   showEstimatedReadingTime: booleanSetting(false),

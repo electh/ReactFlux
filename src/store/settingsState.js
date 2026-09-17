@@ -41,6 +41,15 @@ export const articleCardSettingsState = selectShallowSettings(
   }),
 )
 
+export const articleGridCardSettingsState = selectShallowSettings(
+  ({ showCardSummary, showDetailedRelativeTime, showEstimatedReadingTime, showFeedIcon }) => ({
+    showCardSummary,
+    showDetailedRelativeTime,
+    showEstimatedReadingTime,
+    showFeedIcon,
+  }),
+)
+
 export const articleListItemSettingsState = selectShallowSettings(
   ({ showDetailedRelativeTime, showEstimatedReadingTime, showFeedIcon, showListSummary }) => ({
     showDetailedRelativeTime,

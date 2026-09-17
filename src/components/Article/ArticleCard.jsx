@@ -62,7 +62,7 @@ const getInitialCoverState = (entry, coverDisplayMode) => {
   }
 }
 
-const ArticleCard = ({ entry, isUnread, previewContent }) => {
+const ArticleCard = ({ entry, previewContent }) => {
   const {
     coverDisplayMode,
     showDetailedRelativeTime,
@@ -108,7 +108,7 @@ const ArticleCard = ({ entry, isUnread, previewContent }) => {
   }
 
   return (
-    <div className={`card-content ${isUnread ? "unread" : "read"}`}>
+    <div className="card-content">
       <div className="card-header">
         <div className="card-meta">
           <div className="card-source">
@@ -132,7 +132,7 @@ const ArticleCard = ({ entry, isUnread, previewContent }) => {
           </div>
         </div>
 
-        <h3 className="card-title">{entry.title}</h3>
+        <h3 className="article-entry-title card-title">{entry.title}</h3>
       </div>
 
       {shouldRenderCover && isWideImage && (

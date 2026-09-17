@@ -6,6 +6,7 @@ export const MAX_ARTICLE_WIDTH = 100
 export const ARTICLE_LIST_LAYOUT_OPTIONS = Object.freeze([
   { value: "column", labelKey: "appearance.article_list_layout_column" },
   { value: "list", labelKey: "appearance.article_list_layout_list" },
+  { value: "card", labelKey: "appearance.article_list_layout_card" },
 ])
 
 export const ARTICLE_LIST_LAYOUTS = Object.freeze(

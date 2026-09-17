@@ -51,7 +51,7 @@ const useKeyHandlers = () => {
 
   const scrollSelectedCardIntoView = () => {
     if (entryListRef.current) {
-      const selectedCard = entryListRef.current.el.querySelector(".card-wrapper.selected")
+      const selectedCard = entryListRef.current.el.querySelector(".article-entry.selected")
       if (selectedCard) {
         selectedCard.scrollIntoView({
           behavior: getPreferredScrollBehavior(),

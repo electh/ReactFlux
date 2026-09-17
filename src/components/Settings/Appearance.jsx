@@ -38,6 +38,7 @@ const Appearance = () => {
     fontFamily,
     fontSize,
     lightboxSlideAnimation,
+    showCardSummary,
     showDetailedRelativeTime,
     showEstimatedReadingTime,
     showFeedIcon,
@@ -56,6 +57,7 @@ const Appearance = () => {
       "fontFamily",
       "fontSize",
       "lightboxSlideAnimation",
+      "showCardSummary",
       "showDetailedRelativeTime",
       "showEstimatedReadingTime",
       "showFeedIcon",
@@ -214,17 +216,7 @@ const Appearance = () => {
           />
         </SettingItem>
 
-        {articleListLayout === "list" ? (
-          <SettingItem
-            description={polyglot.t("appearance.show_list_summary_description")}
-            title={polyglot.t("appearance.show_list_summary_label")}
-          >
-            <Switch
-              checked={showListSummary}
-              onChange={(value) => handleConfigChange({ showListSummary: value })}
-            />
-          </SettingItem>
-        ) : (
+        {articleListLayout === "column" && (
           <SettingItem
             description={polyglot.t("appearance.summary_lines_description")}
             title={polyglot.t("appearance.summary_lines_label")}
@@ -237,6 +229,30 @@ const Appearance = () => {
               step={1}
               value={summaryLines}
               onChange={(value) => handleConfigChange({ summaryLines: value })}
+            />
+          </SettingItem>
+        )}
+
+        {articleListLayout === "list" && (
+          <SettingItem
+            description={polyglot.t("appearance.show_list_summary_description")}
+            title={polyglot.t("appearance.show_list_summary_label")}
+          >
+            <Switch
+              checked={showListSummary}
+              onChange={(value) => handleConfigChange({ showListSummary: value })}
+            />
+          </SettingItem>
+        )}
+
+        {articleListLayout === "card" && (
+          <SettingItem
+            description={polyglot.t("appearance.show_card_summary_description")}
+            title={polyglot.t("appearance.show_card_summary_label")}
+          >
+            <Switch
+              checked={showCardSummary}
+              onChange={(value) => handleConfigChange({ showCardSummary: value })}
             />
           </SettingItem>
         )}

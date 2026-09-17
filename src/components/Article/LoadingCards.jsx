@@ -21,11 +21,34 @@ const LoadingListRows = () => (
   </div>
 )
 
-const LoadingCards = ({ layout = "column" }) => {
+const LoadingCardGrid = ({ columnCount }) => (
+  <div
+    aria-busy="true"
+    className="grid-card-loading-grid"
+    style={{ "--article-card-grid-columns": columnCount }}
+  >
+    {Array.from({ length: columnCount * 2 }, (_, index) => (
+      <div key={index} className="grid-card-loading-item">
+        <div className="grid-card-loading-media">
+          <Skeleton animation image text={false} />
+        </div>
+        <div className="grid-card-loading-copy">
+          <Skeleton animation text={{ rows: 3, width: ["45%", "100%", "70%"] }} />
+        </div>
+      </div>
+    ))}
+  </div>
+)
+
+const LoadingCards = ({ cardColumnCount = 1, layout = "column" }) => {
   const { isArticleListReady } = useStore(contentState, { keys: ["isArticleListReady"] })
 
   if (isArticleListReady) {
     return null
+  }
+
+  if (layout === "card") {
+    return <LoadingCardGrid columnCount={cardColumnCount} />
   }
 
   if (layout === "list") {

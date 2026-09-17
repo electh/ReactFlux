@@ -28,7 +28,7 @@ const ArticleListItem = ({ entry, previewContent }) => {
       </div>
 
       <div className="list-entry-story">
-        <h3 className="list-entry-title">{entry.title}</h3>
+        <h3 className="article-entry-title list-entry-title">{entry.title}</h3>
         {showListSummary && listSummary && (
           <>
             <span aria-hidden="true" className="list-entry-summary-separator">

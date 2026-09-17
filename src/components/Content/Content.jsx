@@ -61,7 +61,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   )
   const articleListLayout = useStore(articleListLayoutState)
   const isBrowsingRightToLeft = isRightToLeftBrowsing(contentBrowsingDirection)
-  const isListLayout = articleListLayout === "list"
+  const isFullWidthLayout = articleListLayout === "card" || articleListLayout === "list"
 
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
   const [isSwipingRight, setIsSwipingRight] = useState(false)
@@ -227,20 +227,20 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   }, [entryId, fetchSingleEntry, restoreEntryListFocus, source, sourceId])
 
-  const isFullSizeDetail = isListLayout || isBelowMedium
+  const isFullSizeDetail = isFullWidthLayout || isBelowMedium
   const isDetailLayerActive = Boolean(activeContent) && isFullSizeDetail
 
   return (
     <>
       <div
         aria-hidden={isDetailLayerActive || undefined}
-        className={classNames("entry-col", { "entry-col-list": isListLayout })}
+        className={classNames("entry-col", { "entry-col-full-width": isFullWidthLayout })}
         inert={isDetailLayerActive || undefined}
         style={{
           opacity: isBelowMedium && isArticleLoading ? 0 : 1,
         }}
       >
-        <SearchAndSortBar fullWidth={isListLayout} />
+        <SearchAndSortBar fullWidth={isFullWidthLayout} />
         <ArticleList
           ref={entryListRef}
           cardsRef={cardsRef}
@@ -257,7 +257,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       {activeContent ? (
         <div
           className={classNames("article-container", "content-wrapper", {
-            "article-container-full-size": isListLayout,
+            "article-container-full-size": isFullWidthLayout,
           })}
           {...handlers}
         >
@@ -286,7 +286,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           {isBelowMedium && <ActionButtons />}
         </div>
       ) : (
-        !isListLayout && (
+        !isFullWidthLayout && (
           <div className="content-empty content-wrapper">
             <IconEmpty aria-hidden="true" style={{ fontSize: "64px" }} />
             <Typography.Title

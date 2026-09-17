@@ -7,12 +7,14 @@ import { Virtualizer } from "virtua"
 
 import ArticleCard from "./ArticleCard"
 import ArticleEntry from "./ArticleEntry"
+import ArticleGridCard from "./ArticleGridCard"
 import ArticleListItem from "./ArticleListItem"
 import LoadingCards from "./LoadingCards"
 
 import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import FadeTransition from "@/components/ui/FadeTransition"
 import useArticleCardActivation from "@/hooks/useArticleCardActivation"
+import useArticleListLayout from "@/hooks/useArticleListLayout"
 import { polyglotState } from "@/hooks/useLanguage"
 import useLoadMore from "@/hooks/useLoadMore"
 import useReadOnScroll from "@/hooks/useReadOnScroll"
@@ -22,6 +24,7 @@ import { articleListLayoutState } from "@/store/settingsState"
 import "./ArticleList.css"
 
 const ENTRY_PRESENTERS = {
+  card: ArticleGridCard,
   column: ArticleCard,
   list: ArticleListItem,
 }
@@ -121,14 +124,27 @@ const ArticleList = forwardRef(
     const observeRead = useReadOnScroll(cardsRef)
     const canRenderResults = isArticleListReady && !articleListError
     const EntryPresenter = ENTRY_PRESENTERS[articleListLayout] ?? ArticleCard
+    const isCardLayout = articleListLayout === "card"
+    const {
+      cardColumnCount,
+      handleVirtualizerScroll,
+      setScrollRoot,
+      virtualItems,
+      virtualizerKey,
+      virtualizerRef,
+    } = useArticleListLayout({
+      entries: filteredEntries,
+      layout: articleListLayout,
+      scrollRootRef: cardsRef,
+    })
 
     return (
       <AdaptiveScrollArea
         ref={ref}
         className={`entry-list entry-list-layout-${articleListLayout}`}
-        scrollableNodeProps={{ ref: cardsRef, tabIndex: 0 }}
+        scrollableNodeProps={{ ref: setScrollRoot, tabIndex: 0 }}
       >
-        <LoadingCards layout={articleListLayout} />
+        <LoadingCards cardColumnCount={cardColumnCount} layout={articleListLayout} />
         {isArticleListReady && articleListError && (
           <div className="article-list-state" role="alert">
             <IconExclamationCircle aria-hidden="true" className="article-list-state-icon" />
@@ -146,21 +162,53 @@ const ArticleList = forwardRef(
         )}
         {canRenderResults && filteredEntries.length > 0 && (
           <FadeTransition role="list">
-            <Virtualizer bufferSize={300} data={filteredEntries} scrollRef={cardsRef}>
-              {(entry, index) => (
-                <div key={entry.id} role="listitem">
-                  <ArticleEntry
-                    articleActivation={articleActivation}
-                    entry={entry}
-                    layout={articleListLayout}
-                    observeRead={observeRead}
-                    presenter={EntryPresenter}
-                  />
-                  {index < filteredEntries.length - 1 && (
-                    <Divider className="article-list-divider" />
-                  )}
-                </div>
-              )}
+            <Virtualizer
+              key={virtualizerKey}
+              ref={virtualizerRef}
+              bufferSize={300}
+              data={virtualItems}
+              scrollRef={cardsRef}
+              onScroll={handleVirtualizerScroll}
+            >
+              {(item, index) => {
+                if (isCardLayout) {
+                  return (
+                    <div
+                      key={`card-row-${item[0].id}`}
+                      className="article-card-grid-row"
+                      role="presentation"
+                      style={{ "--article-card-grid-columns": cardColumnCount }}
+                    >
+                      {item.map((entry) => (
+                        <div key={entry.id} className="article-card-grid-cell" role="listitem">
+                          <ArticleEntry
+                            articleActivation={articleActivation}
+                            entry={entry}
+                            layout={articleListLayout}
+                            observeRead={observeRead}
+                            presenter={EntryPresenter}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )
+                }
+
+                return (
+                  <div key={item.id} role="listitem">
+                    <ArticleEntry
+                      articleActivation={articleActivation}
+                      entry={item}
+                      layout={articleListLayout}
+                      observeRead={observeRead}
+                      presenter={EntryPresenter}
+                    />
+                    {index < virtualItems.length - 1 && (
+                      <Divider className="article-list-divider" />
+                    )}
+                  </div>
+                )
+              }}
             </Virtualizer>
           </FadeTransition>
         )}
