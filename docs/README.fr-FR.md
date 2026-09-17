@@ -11,25 +11,30 @@ Versions Miniflux prises en charge : 2.3.2 et supérieures.
 Les fonctionnalités principales incluent :
 
 - Design d'interface moderne
-- Mise en page responsive avec support de gestes tactiles
+- Mise en page responsive avec gestes tactiles, menus contextuels par appui long et navigation repliable
 - Prise en charge du mode sombre et des thèmes personnalisés
 - Expérience de lecture personnalisable :
+  - Affichages en colonne, liste et cartes avec couvertures et résumés configurables
   - Paramètres de police et de taille
   - Ajustement de la largeur des articles
   - Options d'alignement des titres
   - Visionneuse d'images avec zoom et diaporama
+  - Pièces jointes aux articles avec aperçu des images et lecture audio/vidéo
   - Amélioration des notes de bas de page
   - Coloration syntaxique du code
   - Temps de lecture estimé
+  - Sens de navigation et comportement d'ouverture des liens source configurables
 - Gestion des articles et des flux :
   - Recherche en texte intégral Miniflux avec phrases, `OR` et termes exclus
   - Filtrage des articles par statut de lecture et date de publication
   - Opérations par lot sur les flux
+  - Pages d'accueil par compte ciblant les vues intégrées, les catégories ou les flux
   - Support de la récupération du texte intégral
   - Dédoublonnage des articles par hash, titre ou URL
   - Marquage automatique des articles comme lus lors du défilement
 - Fonctionnalités avancées :
   - Raccourcis clavier (personnalisables)
+  - Importation et exportation des sauvegardes de paramètres
   - Mise à jour par lot de l'hôte des URLs de souscription filtrées (utile pour remplacer les instances RSSHub)
   - Actualisation par lot des souscriptions récemment en erreur
   - Sauvegarde d'articles vers des services tiers

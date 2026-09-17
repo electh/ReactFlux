@@ -11,25 +11,30 @@ Unterstützte Miniflux-Versionen: 2.3.2 und höher.
 Die wichtigsten Merkmale sind:
 
 - Modernes Oberflächendesign
-- Responsives Layout mit Unterstützung von Touch-Gesten
+- Responsives Layout mit Touch-Gesten, Kontextmenüs per langem Drücken und einklappbarer Navigation
 - Unterstützung für Darkmode und benutzerdefinierte Designs
 - Anpassbare Leseerfahrung:
+  - Spalten-, Listen- und Kartenlayouts mit konfigurierbaren Titelbildern und Zusammenfassungen
   - Einstellungen für Schriftfamilie und -größe
   - Anpassung der Artikelbreite
   - Optionen für Titelausrichtung
   - Bildbetrachter mit Zoom und Diashow
+  - Artikelanhänge mit Bildvorschau sowie Audio- und Videowiedergabe
   - Fußnoten-Verbesserung
   - Quelltext-Syntax-Hervorhebung
   - Geschätzte Lesezeit
+  - Konfigurierbare Navigationsrichtung und Verhalten beim Öffnen von Quelllinks
 - Verwaltung von Artikeln und Abonnements (_Feeds_):
   - Miniflux-Volltextsuche mit Phrasen, `OR` und Ausschlussbegriffen
   - Filtern von Artikeln nach Lesestatus und Veröffentlichungsdatum
   - Stapel-Operationen für Abonnements (_Feeds_)
+  - Kontospezifische Startseiten für integrierte Ansichten, Kategorien oder Abonnements
   - Unterstützung für Volltextabruf
   - Artikel nach Hashsumme, Titel oder URL de-duplizieren
   - Artikel beim Scrollen automatisch als gelesen markieren
 - Erweiterte Funktionen:
   - Tastenkürzel (anpassbar)
+  - Import und Export von Einstellungssicherungen
   - Stapelaktualisierung des Hosts von gefilterten Abonnement-URLs (nützlich für den Austausch von RSSHub-Instanzen)
   - Stapelaktualisierung fehlerhafter Abonnements
   - Speichern von Artikeln in Diensten von Drittanbietern

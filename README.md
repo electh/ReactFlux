@@ -11,25 +11,30 @@ Supported Miniflux versions: 2.3.2 and higher.
 Key features include:
 
 - Modern interface design
-- Responsive layout with touch gestures support
+- Responsive layout with touch gestures, long-press context menus, and collapsible navigation
 - Support for dark mode and custom themes
 - Customizable reading experience:
+  - Column, list, and card layouts with configurable covers and summaries
   - Font family and size settings
   - Article width adjustment
   - Title alignment options
   - Image viewer with zoom and slideshow
+  - Article attachments with image previews and audio/video playback
   - Footnotes enhancement
   - Code syntax highlighting
   - Estimated reading time
+  - Configurable browsing direction and source-link behavior
 - Article and feed management:
   - Miniflux full-text search with phrases, `OR`, and exclusions
   - Filter articles by read status and publish date
   - Batch operations for feeds
+  - Per-account homepages targeting built-in views, categories, or feeds
   - Full-text fetching support
   - De-duplicate articles by hash, title, or URL
   - Auto mark articles as read while scrolling
 - Advanced features:
   - Keyboard shortcuts (customizable)
+  - Settings backup import and export
   - Batch update the host of filtered subscription URLs (useful for replacing RSSHub instances)
   - Batch refresh errored subscriptions
   - Save articles to third-party services
