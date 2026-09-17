@@ -1,5 +1,6 @@
 import { Divider, Dropdown, Menu } from "@arco-design/web-react/es"
 import {
+  IconBook,
   IconClockCircle,
   IconLaunch,
   IconMinusCircle,
@@ -9,6 +10,7 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
+import classNames from "classnames"
 import { memo, useLayoutEffect, useMemo, useRef, useState } from "react"
 
 import FeedIcon from "@/components/ui/FeedIcon"
@@ -98,7 +100,7 @@ const extractTextFromHtml = (html) => {
     .trim()
 }
 
-const ArticleCard = ({ entry, handleEntryClick, observeRead }) => {
+const ArticleCard = ({ articleActivation, entry, observeRead }) => {
   const {
     coverDisplayMode,
     enableContextMenu,
@@ -174,6 +176,21 @@ const ArticleCard = ({ entry, handleEntryClick, observeRead }) => {
   }
 
   const previewContent = useMemo(() => extractTextFromHtml(entry.content), [entry.content])
+  const { getPrimaryLinkProps, openInReactFlux, opensSourceOnCardClick } = articleActivation
+  const primaryLinkProps = getPrimaryLinkProps(entry)
+  const menuOpenAction = opensSourceOnCardClick
+    ? {
+        icon: <IconBook aria-hidden="true" />,
+        key: "open-in-reactflux",
+        label: polyglot.t("article_card.open_in_reactflux_tooltip"),
+        onClick: () => openInReactFlux(entry),
+      }
+    : {
+        icon: <IconLaunch aria-hidden="true" />,
+        key: "open-in-browser",
+        label: polyglot.t("article_card.open_link_externally_tooltip"),
+        onClick: () => handleOpenLinkExternally(entry),
+      }
 
   return (
     <Dropdown
@@ -183,10 +200,10 @@ const ArticleCard = ({ entry, handleEntryClick, observeRead }) => {
       trigger="contextMenu"
       droplist={
         <Menu className="mobile-action-menu">
-          <Menu.Item key="open-in-browser" onClick={() => handleOpenLinkExternally(entry)}>
+          <Menu.Item key={menuOpenAction.key} onClick={menuOpenAction.onClick}>
             <div className="settings-menu-item">
-              <span>{polyglot.t("article_card.open_link_externally_tooltip")}</span>
-              <IconLaunch aria-hidden="true" />
+              <span>{menuOpenAction.label}</span>
+              {menuOpenAction.icon}
             </div>
           </Menu.Item>
 
@@ -236,18 +253,15 @@ const ArticleCard = ({ entry, handleEntryClick, observeRead }) => {
         </Menu>
       }
     >
-      <div
+      <a
+        {...primaryLinkProps}
         ref={cardRef}
         {...longPressProps}
-        className={isSelected ? "card-wrapper selected" : "card-wrapper"}
         data-entry-id={entry.id}
-        onClick={() => handleEntryClick(entry)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault()
-            handleEntryClick(entry)
-          }
-        }}
+        className={classNames("card-wrapper", {
+          "context-menu-enabled": enableContextMenu,
+          selected: isSelected,
+        })}
       >
         <div className={`card-content ${isUnread ? "unread" : "read"}`}>
           <div className="card-header">
@@ -323,7 +337,7 @@ const ArticleCard = ({ entry, handleEntryClick, observeRead }) => {
             )}
           </div>
         </div>
-      </div>
+      </a>
     </Dropdown>
   )
 }

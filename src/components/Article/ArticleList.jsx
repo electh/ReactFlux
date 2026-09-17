@@ -10,6 +10,7 @@ import LoadingCards from "./LoadingCards"
 
 import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import FadeTransition from "@/components/ui/FadeTransition"
+import useArticleCardActivation from "@/hooks/useArticleCardActivation"
 import { polyglotState } from "@/hooks/useLanguage"
 import useLoadMore from "@/hooks/useLoadMore"
 import useReadOnScroll from "@/hooks/useReadOnScroll"
@@ -107,6 +108,7 @@ const ArticleList = forwardRef(
     })
     const filteredEntries = useStore(filteredEntriesState)
     const { polyglot } = useStore(polyglotState)
+    const articleActivation = useArticleCardActivation(handleEntryClick)
     const observeRead = useReadOnScroll(cardsRef)
     const canRenderResults = isArticleListReady && !articleListError
 
@@ -138,8 +140,8 @@ const ArticleList = forwardRef(
               {(entry, index) => (
                 <div key={entry.id}>
                   <ArticleCard
+                    articleActivation={articleActivation}
                     entry={entry}
-                    handleEntryClick={handleEntryClick}
                     observeRead={observeRead}
                   />
                   {index < filteredEntries.length - 1 && (

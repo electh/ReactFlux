@@ -29,6 +29,7 @@ const Reading = () => {
     markAllReadJumpToNext,
     markReadBy,
     markReadOnScroll,
+    openSourceOnCardClick,
     orderBy,
     pageSize,
     removeDuplicates,
@@ -43,6 +44,7 @@ const Reading = () => {
       "markAllReadJumpToNext",
       "markReadBy",
       "markReadOnScroll",
+      "openSourceOnCardClick",
       "orderBy",
       "pageSize",
       "removeDuplicates",
@@ -185,6 +187,16 @@ const Reading = () => {
               {polyglot.t("settings.content_browsing_direction_option_rtl")}
             </Select.Option>
           </Select>
+        </SettingItem>
+
+        <SettingItem
+          description={polyglot.t("settings.open_source_on_card_click_description")}
+          title={polyglot.t("settings.open_source_on_card_click_label")}
+        >
+          <Switch
+            checked={openSourceOnCardClick}
+            onChange={(value) => updateSettings({ openSourceOnCardClick: value })}
+          />
         </SettingItem>
 
         <SettingItem

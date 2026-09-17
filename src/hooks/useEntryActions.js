@@ -27,6 +27,7 @@ import {
   recordEntryMutationRequestStart,
   registerEntryMutationSessionReset,
 } from "@/utils/entry-mutation-state"
+import { openExternalUrl } from "@/utils/url"
 
 const updateEntries = (entries, updatedEntries) => {
   const updatedEntriesById = new Map(updatedEntries.map((entry) => [entry.id, entry]))
@@ -285,8 +286,13 @@ export const markEntriesAsRead = (entries) => {
   })
 }
 
-const handleOpenLinkExternally = (entry) => {
-  window.open(entry.url, "_blank")
+export const handleOpenLinkExternally = (entry) => {
+  const opened = openExternalUrl(entry.url)
+  if (!opened) {
+    const { polyglot } = polyglotState.get()
+    Message.error(polyglot.t("actions.invalid_source_link"))
+  }
+  return opened
 }
 
 const handleEntryStarredUpdate = (entry, newStarred) => {

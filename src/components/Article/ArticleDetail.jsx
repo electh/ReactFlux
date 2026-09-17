@@ -33,6 +33,7 @@ import { articleDetailSettingsState } from "@/store/settingsState"
 import returnToArticleImage from "@/utils/article-image-return"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
 import buildArticleImageModel from "@/utils/images"
+import { getSafeExternalUrl } from "@/utils/url"
 import "./ArticleDetail.css"
 import "./littlefoot.css"
 
@@ -530,6 +531,7 @@ const ArticleDetail = forwardRef((_, ref) => {
   const { id: feedId, title: feedTitle } = activeContent.feed
 
   const { coverSource } = activeContent
+  const sourceUrl = getSafeExternalUrl(activeContent.url)
 
   const responsiveMaxWidth = isBelowMedium ? "90%" : `${articleWidth}ch`
 
@@ -602,9 +604,13 @@ const ArticleDetail = forwardRef((_, ref) => {
               heading={3}
               style={{ fontFamily: fontFamily }}
             >
-              <a href={activeContent.url} rel="noopener noreferrer" target="_blank">
-                {activeContent.title}
-              </a>
+              {sourceUrl ? (
+                <a href={sourceUrl} rel="noopener" target="_blank">
+                  {activeContent.title}
+                </a>
+              ) : (
+                activeContent.title
+              )}
             </Typography.Title>
             <div className="article-meta">
               <Typography.Text>

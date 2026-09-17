@@ -1,3 +1,28 @@
+const SAFE_EXTERNAL_PROTOCOLS = new Set(["http:", "https:"])
+
+export const getSafeExternalUrl = (url) => {
+  if (typeof url !== "string" || url.trim() === "") {
+    return null
+  }
+
+  try {
+    const parsedUrl = new URL(url)
+    return SAFE_EXTERNAL_PROTOCOLS.has(parsedUrl.protocol) ? parsedUrl.href : null
+  } catch {
+    return null
+  }
+}
+
+export const openExternalUrl = (url) => {
+  const safeUrl = getSafeExternalUrl(url)
+  if (!safeUrl) {
+    return false
+  }
+
+  globalThis.open(safeUrl, "_blank", "noopener")
+  return true
+}
+
 const getHostname = (url) => {
   const pattern = /^(?:http|https):\/\/((?!(\d+\.){3}\d+)([^/?#]+))/
   const match = url.match(pattern)

@@ -132,6 +132,7 @@ const SETTINGS_SCHEMA = {
   markAllReadJumpToNext: booleanSetting(false),
   markReadBy: enumSetting("view", ["view", "manually"]),
   markReadOnScroll: booleanSetting(false),
+  openSourceOnCardClick: booleanSetting(false),
   orderBy: enumSetting("created_at", ["created_at", "published_at"]),
   orderDirection: enumSetting("desc", ["desc", "asc"]),
   pageSize: numberSetting(100, MIN_ENTRIES_PER_PAGE, MAX_ENTRIES_PER_PAGE, {

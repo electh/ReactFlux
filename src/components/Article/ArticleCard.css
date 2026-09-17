@@ -149,19 +149,30 @@
 
 .card-wrapper {
   position: relative;
+  display: block;
   border-radius: var(--border-radius-medium);
   background-color: transparent;
+  color: inherit;
   cursor: pointer;
+  text-decoration: none;
   transition: background-color 0.2s;
   padding: 12px;
-  -webkit-touch-callout: none;
   user-select: none;
   overflow: hidden;
   contain: content;
 }
 
+.card-wrapper.context-menu-enabled {
+  -webkit-touch-callout: none;
+}
+
 .card-wrapper:hover {
   background-color: var(--color-bg-2);
+}
+
+.card-wrapper:focus-visible {
+  outline: 2px solid rgb(var(--primary-6));
+  outline-offset: -2px;
 }
 
 .card-wrapper.selected {

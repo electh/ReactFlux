@@ -2,6 +2,7 @@ import { Message } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import { useNavigate } from "react-router"
 
+import { handleOpenLinkExternally } from "./useEntryActions"
 import { polyglotState } from "./useLanguage"
 import useModalToggle from "./useModalToggle"
 import usePhotoSlider from "./usePhotoSlider"
@@ -151,9 +152,7 @@ const useKeyHandlers = () => {
   const navigateToPreviousCategory = () => navigateToAdjacentCategory("prev")
   const navigateToNextCategory = () => navigateToAdjacentCategory("next")
 
-  const openLinkExternally = withActiveContent((activeContent) => {
-    window.open(activeContent.url, "_blank")
-  })
+  const openLinkExternally = withActiveContent(handleOpenLinkExternally)
 
   const fetchOriginalArticle = withActiveContent((_activeContent, handleFetchContent) => {
     handleFetchContent()
