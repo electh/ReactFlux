@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router"
 
 import { updateEntriesStatusOptimistically } from "@/hooks/useEntryActions"
 import { polyglotState } from "@/hooks/useLanguage"
-import { setActiveContent } from "@/store/contentState"
+import { contentState, setActiveContent } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import { buildEntryDetailPath, extractBasePath, isEntryDetailPath } from "@/utils/url"
 
@@ -28,7 +28,22 @@ export const ContextProvider = ({ children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
+  const restoreEntryListFocus = useCallback((entryId) => {
+    scheduleAfterNextPaint(() => {
+      const entryList = entryListRef.current
+      const numericEntryId = Number(entryId)
+      const entryElement = Number.isFinite(numericEntryId)
+        ? [...(entryList?.el?.querySelectorAll("[data-entry-id]") ?? [])].find(
+            (element) => Number(element.dataset.entryId) === numericEntryId,
+          )
+        : null
+      const focusTarget = entryElement ?? entryList?.contentWrapperEl
+      focusTarget?.focus({ preventScroll: true })
+    })
+  }, [])
+
   const closeActiveContent = useCallback(() => {
+    const activeEntryId = contentState.get().activeContent?.id
     setActiveContent(null)
 
     const currentPath = location.pathname
@@ -37,7 +52,8 @@ export const ContextProvider = ({ children }) => {
     if (isEntryDetailPath(currentPath) && basePath) {
       navigate(basePath)
     }
-  }, [location.pathname, navigate])
+    restoreEntryListFocus(activeEntryId)
+  }, [location.pathname, navigate, restoreEntryListFocus])
 
   const handleEntryClick = useCallback(
     (entry) => {
@@ -77,10 +93,11 @@ export const ContextProvider = ({ children }) => {
       entryDetailRef,
       entryListRef,
       handleEntryClick,
+      restoreEntryListFocus,
       setActiveContent,
       closeActiveContent,
     }),
-    [handleEntryClick, closeActiveContent],
+    [handleEntryClick, restoreEntryListFocus, closeActiveContent],
   )
 
   return <Context.Provider value={value}>{children}</Context.Provider>

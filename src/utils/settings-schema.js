@@ -5,6 +5,7 @@ import {
 } from "@/utils/content-browsing-direction"
 import { createDefaultHomePages, sanitizeHomePages } from "@/utils/home-page"
 import {
+  ARTICLE_LIST_LAYOUTS,
   FONT_FAMILIES,
   MAX_ARTICLE_FONT_SIZE,
   MAX_ARTICLE_WIDTH,
@@ -103,6 +104,7 @@ const sanitizeLanguage = (value, fallback) => {
 }
 
 const SETTINGS_SCHEMA = {
+  articleListLayout: enumSetting("column", ARTICLE_LIST_LAYOUTS),
   articleWidth: numberSetting(75, MIN_ARTICLE_WIDTH, MAX_ARTICLE_WIDTH, { precision: 2 }),
   checkForUpdates: booleanSetting(false),
   compactSidebarGroups: booleanSetting(true),
@@ -144,6 +146,7 @@ const SETTINGS_SCHEMA = {
   showEstimatedReadingTime: booleanSetting(false),
   showFeedIcon: booleanSetting(true),
   showHiddenFeeds: booleanSetting(false),
+  showListSummary: booleanSetting(true),
   showStatus: enumSetting("unread", ["unread", "all", "starred"]),
   showUnreadFeedsOnly: booleanSetting(false),
   skipMarkAllReadConfirmation: booleanSetting(false),

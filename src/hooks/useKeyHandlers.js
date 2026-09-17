@@ -77,15 +77,7 @@ const useKeyHandlers = () => {
       return fn(...args)
     }
 
-  const exitDetailView = withActiveContent(
-    // eslint-disable-next-line react-hooks/refs
-    withPhotoSliderCheck(() => {
-      closeActiveContent()
-      if (entryListRef.current) {
-        entryListRef.current.contentWrapperEl.focus()
-      }
-    }),
-  )
+  const exitDetailView = withActiveContent(withPhotoSliderCheck(closeActiveContent))
 
   // eslint-disable-next-line react-hooks/refs
   const navigateToPreviousArticle = withPhotoSliderCheck(() => {

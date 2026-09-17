@@ -1,0 +1,18 @@
+.article-entry {
+  position: relative;
+  display: block;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  user-select: none;
+  overflow: hidden;
+}
+
+.article-entry.context-menu-enabled {
+  -webkit-touch-callout: none;
+}
+
+.article-entry:focus-visible {
+  outline: 2px solid rgb(var(--primary-6));
+  outline-offset: -2px;
+}

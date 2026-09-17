@@ -6,6 +6,8 @@ import { useInView } from "react-intersection-observer"
 import { Virtualizer } from "virtua"
 
 import ArticleCard from "./ArticleCard"
+import ArticleEntry from "./ArticleEntry"
+import ArticleListItem from "./ArticleListItem"
 import LoadingCards from "./LoadingCards"
 
 import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
@@ -15,8 +17,14 @@ import { polyglotState } from "@/hooks/useLanguage"
 import useLoadMore from "@/hooks/useLoadMore"
 import useReadOnScroll from "@/hooks/useReadOnScroll"
 import { contentState, filteredEntriesState } from "@/store/contentState"
+import { articleListLayoutState } from "@/store/settingsState"
 
 import "./ArticleList.css"
+
+const ENTRY_PRESENTERS = {
+  column: ArticleCard,
+  list: ArticleListItem,
+}
 
 const isElementVisibleInRoot = (element, root) => {
   if (!element || !root) {
@@ -108,17 +116,19 @@ const ArticleList = forwardRef(
     })
     const filteredEntries = useStore(filteredEntriesState)
     const { polyglot } = useStore(polyglotState)
+    const articleListLayout = useStore(articleListLayoutState)
     const articleActivation = useArticleCardActivation(handleEntryClick)
     const observeRead = useReadOnScroll(cardsRef)
     const canRenderResults = isArticleListReady && !articleListError
+    const EntryPresenter = ENTRY_PRESENTERS[articleListLayout] ?? ArticleCard
 
     return (
       <AdaptiveScrollArea
         ref={ref}
-        className="entry-list"
+        className={`entry-list entry-list-layout-${articleListLayout}`}
         scrollableNodeProps={{ ref: cardsRef, tabIndex: 0 }}
       >
-        <LoadingCards />
+        <LoadingCards layout={articleListLayout} />
         {isArticleListReady && articleListError && (
           <div className="article-list-state" role="alert">
             <IconExclamationCircle aria-hidden="true" className="article-list-state-icon" />
@@ -135,22 +145,19 @@ const ArticleList = forwardRef(
           </div>
         )}
         {canRenderResults && filteredEntries.length > 0 && (
-          <FadeTransition>
+          <FadeTransition role="list">
             <Virtualizer bufferSize={300} data={filteredEntries} scrollRef={cardsRef}>
               {(entry, index) => (
-                <div key={entry.id}>
-                  <ArticleCard
+                <div key={entry.id} role="listitem">
+                  <ArticleEntry
                     articleActivation={articleActivation}
                     entry={entry}
+                    layout={articleListLayout}
                     observeRead={observeRead}
+                    presenter={EntryPresenter}
                   />
                   {index < filteredEntries.length - 1 && (
-                    <Divider
-                      style={{
-                        margin: "8px 0",
-                        borderBottom: "1px solid var(--color-border-2)",
-                      }}
-                    />
+                    <Divider className="article-list-divider" />
                   )}
                 </div>
               )}

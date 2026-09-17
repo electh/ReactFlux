@@ -7,3 +7,18 @@
   margin-bottom: 10px;
   width: 100%;
 }
+
+.list-loading-rows {
+  padding: 2px 0;
+}
+
+.list-loading-row {
+  box-sizing: border-box;
+  min-height: 37px;
+  border-bottom: 1px solid var(--color-border-1);
+  padding: 8px 10px;
+}
+
+.list-loading-row .arco-skeleton-text-row {
+  height: 14px;
+}

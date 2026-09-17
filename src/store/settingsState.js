@@ -21,24 +21,38 @@ export const getDefaultSettings = () => ({ ...defaultSettings })
 
 const selectShallowSettings = (selector) => selectStore(settingsState, selector, shallowEqual)
 
+export const articleEntryInteractionSettingsState = selectShallowSettings(
+  ({ enableContextMenu, markReadOnScroll }) => ({ enableContextMenu, markReadOnScroll }),
+)
+
 export const articleCardSettingsState = selectShallowSettings(
   ({
     coverDisplayMode,
-    enableContextMenu,
-    markReadOnScroll,
     showDetailedRelativeTime,
     showEstimatedReadingTime,
     showFeedIcon,
     summaryLines,
   }) => ({
     coverDisplayMode,
-    enableContextMenu,
-    markReadOnScroll,
     showDetailedRelativeTime,
     showEstimatedReadingTime,
     showFeedIcon,
     summaryLines,
   }),
+)
+
+export const articleListItemSettingsState = selectShallowSettings(
+  ({ showDetailedRelativeTime, showEstimatedReadingTime, showFeedIcon, showListSummary }) => ({
+    showDetailedRelativeTime,
+    showEstimatedReadingTime,
+    showFeedIcon,
+    showListSummary,
+  }),
+)
+
+export const articleListLayoutState = selectStore(
+  settingsState,
+  ({ articleListLayout }) => articleListLayout,
 )
 
 export const articleDetailSettingsState = selectShallowSettings(

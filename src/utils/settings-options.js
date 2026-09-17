@@ -3,6 +3,15 @@ export const MAX_ARTICLE_FONT_SIZE = 1.5
 export const MIN_ARTICLE_WIDTH = 50
 export const MAX_ARTICLE_WIDTH = 100
 
+export const ARTICLE_LIST_LAYOUT_OPTIONS = Object.freeze([
+  { value: "column", labelKey: "appearance.article_list_layout_column" },
+  { value: "list", labelKey: "appearance.article_list_layout_list" },
+])
+
+export const ARTICLE_LIST_LAYOUTS = Object.freeze(
+  ARTICLE_LIST_LAYOUT_OPTIONS.map(({ value }) => value),
+)
+
 const FONT_FAMILY_DEFINITIONS = Object.freeze([
   { value: "system-ui", labelKey: "appearance.font_family_system" },
   { value: "sans-serif", label: "Sans-serif" },

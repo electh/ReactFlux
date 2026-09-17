@@ -1,27 +1,12 @@
-import { Divider, Dropdown, Menu } from "@arco-design/web-react/es"
-import {
-  IconBook,
-  IconClockCircle,
-  IconLaunch,
-  IconMinusCircle,
-  IconRecord,
-  IconSave,
-  IconStar,
-  IconStarFill,
-} from "@arco-design/web-react/icon"
+import { IconClockCircle, IconStarFill } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import classNames from "classnames"
-import { memo, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { memo, useState } from "react"
 
 import FeedIcon from "@/components/ui/FeedIcon"
-import useEntryActions from "@/hooks/useEntryActions"
-import { polyglotState } from "@/hooks/useLanguage"
-import useLongPressContextMenu from "@/hooks/useLongPressContextMenu"
-import { contentState, createEntrySelectedState } from "@/store/contentState"
-import { hasIntegrationsState } from "@/store/dataState"
 import { articleCardSettingsState } from "@/store/settingsState"
 import { WIDE_IMAGE_RATIO } from "@/utils/constants"
 import { generateReadingTime, generateRelativeTime } from "@/utils/date"
+
 import "./ArticleCard.css"
 
 const ArticleCardImage = ({ coverDisplayMode, entry, isWideImage, onError, onLoad }) => {
@@ -77,60 +62,15 @@ const getInitialCoverState = (entry, coverDisplayMode) => {
   }
 }
 
-const extractTextFromHtml = (html) => {
-  if (!html) {
-    return ""
-  }
-
-  return html
-    .replaceAll(/<[^>]*>/g, "") // Remove all HTML tags
-    .replaceAll("&nbsp;", " ") // Replace space entities
-    .replaceAll(/&#(\d+);/g, (_match, dec) => String.fromCodePoint(dec)) // Handle numeric HTML entities
-    .replaceAll(/&([a-z]+);/g, (_match, entity) => {
-      // Handle named HTML entities
-      const entities = {
-        amp: "&",
-        lt: "<",
-        gt: ">",
-        quot: '"',
-        apos: "'",
-      }
-      return entities[entity] || ""
-    })
-    .trim()
-}
-
-const ArticleCard = ({ articleActivation, entry, observeRead }) => {
+const ArticleCard = ({ entry, isUnread, previewContent }) => {
   const {
     coverDisplayMode,
-    enableContextMenu,
-    markReadOnScroll,
     showDetailedRelativeTime,
     showEstimatedReadingTime,
     showFeedIcon,
     summaryLines,
   } = useStore(articleCardSettingsState)
-  const { infoFrom } = useStore(contentState, { keys: ["infoFrom"] })
-  const hasIntegrations = useStore(hasIntegrationsState)
-  const { polyglot } = useStore(polyglotState)
-  const selectedState = useMemo(() => createEntrySelectedState(entry.id), [entry.id])
-  const isSelected = useStore(selectedState)
-  const isUnread = entry.status === "unread"
-  const isStarred = entry.starred
-
-  const {
-    handleSaveToThirdPartyServices,
-    handleToggleStarred,
-    handleToggleStatus,
-    handleOpenLinkExternally,
-  } = useEntryActions()
-
   const [coverState, setCoverState] = useState(() => getInitialCoverState(entry, coverDisplayMode))
-  const { dropdownProps, longPressProps } = useLongPressContextMenu({
-    disabled: !enableContextMenu,
-  })
-
-  const cardRef = useRef(null)
   const shouldShowCover = coverDisplayMode !== "none" && Boolean(entry.coverSource)
   const isCurrentCover =
     coverState.coverDisplayMode === coverDisplayMode && coverState.coverSource === entry.coverSource
@@ -139,14 +79,6 @@ const ArticleCard = ({ articleActivation, entry, observeRead }) => {
     : getInitialCoverState(entry, coverDisplayMode)
   const { aspectRatio, hasError, isWideImage } = currentCoverState
   const shouldRenderCover = shouldShowCover && !hasError
-
-  useLayoutEffect(() => {
-    if (!isUnread || !markReadOnScroll || infoFrom === "history") {
-      return
-    }
-
-    return observeRead(cardRef.current, entry)
-  }, [entry, infoFrom, isUnread, markReadOnScroll, observeRead])
 
   const handleCoverLoad = ({ currentTarget }) => {
     const width = currentTarget.naturalWidth
@@ -175,170 +107,82 @@ const ArticleCard = ({ articleActivation, entry, observeRead }) => {
     })
   }
 
-  const previewContent = useMemo(() => extractTextFromHtml(entry.content), [entry.content])
-  const { getPrimaryLinkProps, openInReactFlux, opensSourceOnCardClick } = articleActivation
-  const primaryLinkProps = getPrimaryLinkProps(entry)
-  const menuOpenAction = opensSourceOnCardClick
-    ? {
-        icon: <IconBook aria-hidden="true" />,
-        key: "open-in-reactflux",
-        label: polyglot.t("article_card.open_in_reactflux_tooltip"),
-        onClick: () => openInReactFlux(entry),
-      }
-    : {
-        icon: <IconLaunch aria-hidden="true" />,
-        key: "open-in-browser",
-        label: polyglot.t("article_card.open_link_externally_tooltip"),
-        onClick: () => handleOpenLinkExternally(entry),
-      }
-
   return (
-    <Dropdown
-      {...dropdownProps}
-      disabled={!enableContextMenu}
-      position="bl"
-      trigger="contextMenu"
-      droplist={
-        <Menu className="mobile-action-menu">
-          <Menu.Item key={menuOpenAction.key} onClick={menuOpenAction.onClick}>
-            <div className="settings-menu-item">
-              <span>{menuOpenAction.label}</span>
-              {menuOpenAction.icon}
+    <div className={`card-content ${isUnread ? "unread" : "read"}`}>
+      <div className="card-header">
+        <div className="card-meta">
+          <div className="card-source">
+            {showFeedIcon && <FeedIcon className="feed-icon-mini" feed={entry.feed} />}
+            <div className="card-source-content">
+              <span className="card-source-title">{entry.feed.title}</span>
+              <span className="card-author">{entry.author}</span>
             </div>
-          </Menu.Item>
-
-          <Divider style={{ margin: "4px 0" }} />
-
-          <Menu.Item key="toggle-status" onClick={() => handleToggleStatus(entry)}>
-            <div className="settings-menu-item">
-              <span>
-                {isUnread
-                  ? polyglot.t("article_card.mark_as_read_tooltip")
-                  : polyglot.t("article_card.mark_as_unread_tooltip")}
-              </span>
-              {isUnread ? (
-                <IconMinusCircle aria-hidden="true" />
-              ) : (
-                <IconRecord aria-hidden="true" />
-              )}
-            </div>
-          </Menu.Item>
-
-          <Menu.Item key="toggle-starred" onClick={() => handleToggleStarred(entry)}>
-            <div className="settings-menu-item">
-              <span>
-                {isStarred
-                  ? polyglot.t("article_card.unstar_tooltip")
-                  : polyglot.t("article_card.star_tooltip")}
-              </span>
-              {isStarred ? (
-                <IconStarFill aria-hidden="true" style={{ color: "#ffcd00" }} />
-              ) : (
-                <IconStar aria-hidden="true" />
-              )}
-            </div>
-          </Menu.Item>
-
-          {hasIntegrations && (
-            <Menu.Item
-              key="save-to-third-party-services"
-              onClick={() => handleSaveToThirdPartyServices(entry)}
-            >
-              <div className="settings-menu-item">
-                <span>{polyglot.t("article_card.save_to_third_party_services_tooltip")}</span>
-                <IconSave aria-hidden="true" />
-              </div>
-            </Menu.Item>
-          )}
-        </Menu>
-      }
-    >
-      <a
-        {...primaryLinkProps}
-        ref={cardRef}
-        {...longPressProps}
-        data-entry-id={entry.id}
-        className={classNames("card-wrapper", {
-          "context-menu-enabled": enableContextMenu,
-          selected: isSelected,
-        })}
-      >
-        <div className={`card-content ${isUnread ? "unread" : "read"}`}>
-          <div className="card-header">
-            <div className="card-meta">
-              <div className="card-source">
-                {showFeedIcon && <FeedIcon className="feed-icon-mini" feed={entry.feed} />}
-                <div className="card-source-content">
-                  <span className="card-source-title">{entry.feed.title}</span>
-                  <span className="card-author">{entry.author}</span>
-                </div>
-              </div>
-              <div className="card-time-wrapper">
-                <span className="card-star">
-                  <IconStarFill
-                    className="icon-starred"
-                    style={{ opacity: entry.starred ? 1 : 0 }}
-                  />
-                </span>
-                <span className="card-time">
-                  {generateRelativeTime(entry.published_at, showDetailedRelativeTime)}
-                </span>
-              </div>
-            </div>
-
-            <h3 className="card-title">{entry.title}</h3>
           </div>
-
-          {shouldRenderCover && isWideImage && (
-            <div
-              className="card-image-wide"
-              style={{
-                "--card-cover-aspect-ratio":
-                  coverDisplayMode === "banner" ? 16 / 9 : aspectRatio || 16 / 9,
-              }}
-            >
-              <ArticleCardImage
-                isWideImage
-                coverDisplayMode={coverDisplayMode}
-                entry={entry}
-                onError={handleCoverError}
-                onLoad={handleCoverLoad}
+          <div className="card-time-wrapper">
+            <span className="card-star">
+              <IconStarFill
+                aria-hidden="true"
+                className="icon-starred"
+                style={{ opacity: entry.starred ? 1 : 0 }}
               />
-            </div>
-          )}
-
-          <div className="card-body">
-            <div className="card-text">
-              {showEstimatedReadingTime && (
-                <div className="card-reading-time">
-                  <IconClockCircle />
-                  <span>{generateReadingTime(entry.reading_time)}</span>
-                </div>
-              )}
-              {summaryLines > 0 && (
-                <p
-                  className="card-preview"
-                  style={{ lineClamp: summaryLines, WebkitLineClamp: summaryLines }}
-                >
-                  {previewContent}
-                </p>
-              )}
-            </div>
-            {shouldRenderCover && !isWideImage && (
-              <div className="card-image-mini">
-                <ArticleCardImage
-                  coverDisplayMode={coverDisplayMode}
-                  entry={entry}
-                  isWideImage={false}
-                  onError={handleCoverError}
-                  onLoad={handleCoverLoad}
-                />
-              </div>
-            )}
+            </span>
+            <span className="card-time">
+              {generateRelativeTime(entry.published_at, showDetailedRelativeTime)}
+            </span>
           </div>
         </div>
-      </a>
-    </Dropdown>
+
+        <h3 className="card-title">{entry.title}</h3>
+      </div>
+
+      {shouldRenderCover && isWideImage && (
+        <div
+          className="card-image-wide"
+          style={{
+            "--card-cover-aspect-ratio":
+              coverDisplayMode === "banner" ? 16 / 9 : aspectRatio || 16 / 9,
+          }}
+        >
+          <ArticleCardImage
+            isWideImage
+            coverDisplayMode={coverDisplayMode}
+            entry={entry}
+            onError={handleCoverError}
+            onLoad={handleCoverLoad}
+          />
+        </div>
+      )}
+
+      <div className="card-body">
+        <div className="card-text">
+          {showEstimatedReadingTime && (
+            <div className="card-reading-time">
+              <IconClockCircle aria-hidden="true" />
+              <span>{generateReadingTime(entry.reading_time)}</span>
+            </div>
+          )}
+          {summaryLines > 0 && (
+            <p
+              className="card-preview"
+              style={{ lineClamp: summaryLines, WebkitLineClamp: summaryLines }}
+            >
+              {previewContent}
+            </p>
+          )}
+        </div>
+        {shouldRenderCover && !isWideImage && (
+          <div className="card-image-mini">
+            <ArticleCardImage
+              coverDisplayMode={coverDisplayMode}
+              entry={entry}
+              isWideImage={false}
+              onError={handleCoverError}
+              onLoad={handleCoverLoad}
+            />
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 

@@ -9,6 +9,7 @@ import useScreenWidth from "@/hooks/useScreenWidth"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { applyColor, colors, getDisplayColorValue } from "@/utils/colors"
 import {
+  ARTICLE_LIST_LAYOUT_OPTIONS,
   createFontFamilyOptions,
   MAX_ARTICLE_FONT_SIZE,
   MAX_ARTICLE_WIDTH,
@@ -29,6 +30,7 @@ const handleConfigChange = (settingsChanges) => {
 
 const Appearance = () => {
   const {
+    articleListLayout,
     articleWidth,
     compactSidebarGroups,
     coverDisplayMode,
@@ -39,12 +41,14 @@ const Appearance = () => {
     showDetailedRelativeTime,
     showEstimatedReadingTime,
     showFeedIcon,
+    showListSummary,
     summaryLines,
     themeColor,
     themeMode,
     titleAlignment,
   } = useStore(settingsState, {
     keys: [
+      "articleListLayout",
       "articleWidth",
       "compactSidebarGroups",
       "coverDisplayMode",
@@ -55,6 +59,7 @@ const Appearance = () => {
       "showDetailedRelativeTime",
       "showEstimatedReadingTime",
       "showFeedIcon",
+      "showListSummary",
       "summaryLines",
       "themeColor",
       "themeMode",
@@ -135,30 +140,49 @@ const Appearance = () => {
         </SettingItem>
       </SettingSection>
 
-      <SettingSection title={polyglot.t("appearance.section_article_cards")}>
+      <SettingSection title={polyglot.t("settings.section_article_list")}>
         <SettingItem
-          description={polyglot.t("appearance.cover_display_mode_description")}
-          title={polyglot.t("appearance.cover_display_mode_label")}
+          description={polyglot.t("appearance.article_list_layout_description")}
+          title={polyglot.t("appearance.article_list_layout_label")}
         >
           <Select
             className="input-select"
-            value={coverDisplayMode}
-            onChange={(value) => handleConfigChange({ coverDisplayMode: value })}
+            value={articleListLayout}
+            onChange={(value) => handleConfigChange({ articleListLayout: value })}
           >
-            <Select.Option value="auto">
-              {polyglot.t("appearance.cover_display_mode_auto")}
-            </Select.Option>
-            <Select.Option value="banner">
-              {polyglot.t("appearance.cover_display_mode_banner")}
-            </Select.Option>
-            <Select.Option value="thumbnail">
-              {polyglot.t("appearance.cover_display_mode_thumbnail")}
-            </Select.Option>
-            <Select.Option value="none">
-              {polyglot.t("appearance.cover_display_mode_none")}
-            </Select.Option>
+            {ARTICLE_LIST_LAYOUT_OPTIONS.map(({ labelKey, value }) => (
+              <Select.Option key={value} value={value}>
+                {polyglot.t(labelKey)}
+              </Select.Option>
+            ))}
           </Select>
         </SettingItem>
+
+        {articleListLayout === "column" && (
+          <SettingItem
+            description={polyglot.t("appearance.cover_display_mode_description")}
+            title={polyglot.t("appearance.cover_display_mode_label")}
+          >
+            <Select
+              className="input-select"
+              value={coverDisplayMode}
+              onChange={(value) => handleConfigChange({ coverDisplayMode: value })}
+            >
+              <Select.Option value="auto">
+                {polyglot.t("appearance.cover_display_mode_auto")}
+              </Select.Option>
+              <Select.Option value="banner">
+                {polyglot.t("appearance.cover_display_mode_banner")}
+              </Select.Option>
+              <Select.Option value="thumbnail">
+                {polyglot.t("appearance.cover_display_mode_thumbnail")}
+              </Select.Option>
+              <Select.Option value="none">
+                {polyglot.t("appearance.cover_display_mode_none")}
+              </Select.Option>
+            </Select>
+          </SettingItem>
+        )}
 
         <SettingItem
           description={polyglot.t("appearance.show_feed_icon_description")}
@@ -190,20 +214,32 @@ const Appearance = () => {
           />
         </SettingItem>
 
-        <SettingItem
-          description={polyglot.t("appearance.summary_lines_description")}
-          title={polyglot.t("appearance.summary_lines_label")}
-        >
-          <Slider
-            showTicks
-            className="input-slider"
-            max={4}
-            min={0}
-            step={1}
-            value={summaryLines}
-            onChange={(value) => handleConfigChange({ summaryLines: value })}
-          />
-        </SettingItem>
+        {articleListLayout === "list" ? (
+          <SettingItem
+            description={polyglot.t("appearance.show_list_summary_description")}
+            title={polyglot.t("appearance.show_list_summary_label")}
+          >
+            <Switch
+              checked={showListSummary}
+              onChange={(value) => handleConfigChange({ showListSummary: value })}
+            />
+          </SettingItem>
+        ) : (
+          <SettingItem
+            description={polyglot.t("appearance.summary_lines_description")}
+            title={polyglot.t("appearance.summary_lines_label")}
+          >
+            <Slider
+              showTicks
+              className="input-slider"
+              max={4}
+              min={0}
+              step={1}
+              value={summaryLines}
+              onChange={(value) => handleConfigChange({ summaryLines: value })}
+            />
+          </SettingItem>
+        )}
       </SettingSection>
 
       <SettingSection title={polyglot.t("appearance.section_article_view")}>

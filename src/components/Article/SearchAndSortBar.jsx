@@ -122,7 +122,7 @@ const ActiveButton = ({ active, expanded, icon, tooltip, onClick }) => (
   </CustomTooltip>
 )
 
-const SearchAndSortBar = () => {
+const SearchAndSortBar = ({ fullWidth = false }) => {
   const { filterDate, filterString, infoFrom, isArticleListReady } = useStore(contentState, {
     keys: ["filterDate", "filterString", "infoFrom", "isArticleListReady"],
   })
@@ -216,7 +216,10 @@ const SearchAndSortBar = () => {
   }
 
   return (
-    <div className="search-and-sort-bar" style={{ width: isBelowMedium ? "100%" : 370 }}>
+    <div
+      className="search-and-sort-bar"
+      style={{ width: isBelowMedium || fullWidth ? "100%" : 370 }}
+    >
       <SidebarTrigger />
       <div className="page-info">
         <div className="title-container">

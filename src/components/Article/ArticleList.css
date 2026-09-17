@@ -7,6 +7,20 @@
   overscroll-behavior-y: contain;
 }
 
+.entry-list-layout-list {
+  padding-top: 6px;
+}
+
+.article-list-divider.arco-divider-horizontal {
+  margin: 8px 0;
+  border-bottom: 1px solid var(--color-border-2);
+}
+
+.entry-list-layout-list .article-list-divider.arco-divider-horizontal {
+  margin: 0;
+  border-bottom-color: var(--color-border-1);
+}
+
 .article-list-state {
   display: flex;
   flex-direction: column;

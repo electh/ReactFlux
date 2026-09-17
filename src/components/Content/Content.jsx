@@ -1,6 +1,7 @@
 import { Typography } from "@arco-design/web-react"
 import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
+import classNames from "classnames"
 import { AnimatePresence } from "framer-motion"
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { useParams } from "react-router"
@@ -27,7 +28,7 @@ import {
   setInfoId,
   setIsArticleLoading,
 } from "@/store/contentState"
-import { contentGestureSettingsState } from "@/store/settingsState"
+import { articleListLayoutState, contentGestureSettingsState } from "@/store/settingsState"
 import { isRightToLeftBrowsing } from "@/utils/content-browsing-direction"
 import prepareEntry from "@/utils/entry-presentation"
 
@@ -58,7 +59,9 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const { contentBrowsingDirection, enableSwipeGesture, swipeSensitivity } = useStore(
     contentGestureSettingsState,
   )
+  const articleListLayout = useStore(articleListLayoutState)
   const isBrowsingRightToLeft = isRightToLeftBrowsing(contentBrowsingDirection)
+  const isListLayout = articleListLayout === "list"
 
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
   const [isSwipingRight, setIsSwipingRight] = useState(false)
@@ -71,7 +74,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
 
   useDocumentTitle()
 
-  const { entryDetailRef, entryListRef, handleEntryClick } = useContentContext()
+  const { entryDetailRef, entryListRef, handleEntryClick, restoreEntryListFocus } =
+    useContentContext()
 
   const { navigateToNextArticle, navigateToPreviousArticle } = useKeyHandlers()
 
@@ -217,20 +221,26 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       entryRequestIdRef.current += 1
       if (currentActiveContent) {
         setActiveContent(null)
+        restoreEntryListFocus(currentActiveContent.id)
       }
       setIsArticleLoading(false)
     }
-  }, [entryId, fetchSingleEntry, source, sourceId])
+  }, [entryId, fetchSingleEntry, restoreEntryListFocus, source, sourceId])
+
+  const isFullSizeDetail = isListLayout || isBelowMedium
+  const isDetailLayerActive = Boolean(activeContent) && isFullSizeDetail
 
   return (
     <>
       <div
-        className="entry-col"
+        aria-hidden={isDetailLayerActive || undefined}
+        className={classNames("entry-col", { "entry-col-list": isListLayout })}
+        inert={isDetailLayerActive || undefined}
         style={{
           opacity: isBelowMedium && isArticleLoading ? 0 : 1,
         }}
       >
-        <SearchAndSortBar />
+        <SearchAndSortBar fullWidth={isListLayout} />
         <ArticleList
           ref={entryListRef}
           cardsRef={cardsRef}
@@ -245,7 +255,12 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
         />
       </div>
       {activeContent ? (
-        <div className="article-container content-wrapper" {...handlers}>
+        <div
+          className={classNames("article-container", "content-wrapper", {
+            "article-container-full-size": isListLayout,
+          })}
+          {...handlers}
+        >
           {!isBelowMedium && <ActionButtons />}
           {isArticleLoading ? (
             <div style={{ flex: 1 }} />
@@ -271,12 +286,17 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           {isBelowMedium && <ActionButtons />}
         </div>
       ) : (
-        <div className="content-empty content-wrapper">
-          <IconEmpty style={{ fontSize: "64px" }} />
-          <Typography.Title heading={6} style={{ color: "var(--color-text-2)", marginTop: "10px" }}>
-            ReactFlux
-          </Typography.Title>
-        </div>
+        !isListLayout && (
+          <div className="content-empty content-wrapper">
+            <IconEmpty aria-hidden="true" style={{ fontSize: "64px" }} />
+            <Typography.Title
+              heading={6}
+              style={{ color: "var(--color-text-2)", marginTop: "10px" }}
+            >
+              ReactFlux
+            </Typography.Title>
+          </div>
+        )
       )}
     </>
   )
