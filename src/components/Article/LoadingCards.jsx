@@ -1,7 +1,4 @@
 import { Card, Skeleton } from "@arco-design/web-react"
-import { useStore } from "@nanostores/react"
-
-import { contentState } from "@/store/contentState"
 
 import "./LoadingCards.css"
 
@@ -40,10 +37,8 @@ const LoadingCardGrid = ({ columnCount }) => (
   </div>
 )
 
-const LoadingCards = ({ cardColumnCount = 1, layout = "column" }) => {
-  const { isArticleListReady } = useStore(contentState, { keys: ["isArticleListReady"] })
-
-  if (isArticleListReady) {
+const LoadingCards = ({ cardColumnCount = 1, layout = "column", loading }) => {
+  if (!loading) {
     return null
   }
 

@@ -148,7 +148,12 @@
     "load_error": "Impossible de charger les articles",
     "loading_more": "Chargement d’autres articles...",
     "load_more_error": "Impossible de charger davantage d’articles. Veuillez réessayer.",
-    "no_search_results": "Aucun article correspondant"
+    "no_articles": "Aucun article",
+    "no_feeds": "Aucun flux",
+    "no_filter_results": "Aucun article ne correspond aux filtres",
+    "no_search_results": "Aucun article correspondant",
+    "no_starred_articles": "Aucun article favori",
+    "no_unread_articles": "Aucun article non lu"
   },
   "article_toc": {
     "tooltip": "Table des matières",

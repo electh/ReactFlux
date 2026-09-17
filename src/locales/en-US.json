@@ -148,7 +148,12 @@
     "load_error": "Failed to load articles",
     "loading_more": "Loading more...",
     "load_more_error": "Failed to load more articles. Please try again.",
-    "no_search_results": "No matching articles found"
+    "no_articles": "No articles",
+    "no_feeds": "No feeds",
+    "no_filter_results": "No articles match the filters",
+    "no_search_results": "No matching articles",
+    "no_starred_articles": "No starred articles",
+    "no_unread_articles": "No unread articles"
   },
   "article_toc": {
     "tooltip": "Table of Contents",

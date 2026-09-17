@@ -1,5 +1,4 @@
-import { Typography } from "@arco-design/web-react"
-import { IconEmpty, IconLeft, IconRight } from "@arco-design/web-react/icon"
+import { IconLeft, IconRight } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import classNames from "classnames"
 import { AnimatePresence } from "framer-motion"
@@ -286,17 +285,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           {isBelowMedium && <ActionButtons />}
         </div>
       ) : (
-        !isFullWidthLayout && (
-          <div className="content-empty content-wrapper">
-            <IconEmpty aria-hidden="true" style={{ fontSize: "64px" }} />
-            <Typography.Title
-              heading={6}
-              style={{ color: "var(--color-text-2)", marginTop: "10px" }}
-            >
-              ReactFlux
-            </Typography.Title>
-          </div>
-        )
+        !isFullWidthLayout && <div className="content-empty content-wrapper" />
       )}
     </>
   )

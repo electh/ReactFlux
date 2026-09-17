@@ -54,6 +54,21 @@
   color: var(--color-text-3);
 }
 
+.article-list-state-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  gap: 6px;
+}
+
+.article-list-state-summary {
+  max-width: 100%;
+  color: var(--color-text-3);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
 .load-more-container {
   display: flex;
   justify-content: center;

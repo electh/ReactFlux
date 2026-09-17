@@ -148,7 +148,12 @@
     "load_error": "文章加载失败",
     "loading_more": "正在加载更多...",
     "load_more_error": "加载更多文章失败，请重试",
-    "no_search_results": "没有找到匹配的文章"
+    "no_articles": "没有文章",
+    "no_feeds": "没有订阅源",
+    "no_filter_results": "没有符合筛选条件的文章",
+    "no_search_results": "没有匹配的文章",
+    "no_starred_articles": "没有收藏文章",
+    "no_unread_articles": "没有未读文章"
   },
   "article_toc": {
     "tooltip": "目录大纲",

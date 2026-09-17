@@ -186,7 +186,7 @@ const fetchTodayEntries = async (status, filterParams, applyDateFilter) => {
 }
 
 export const getTodayEntries = async (status = null, filterParams = {}) =>
-  fetchTodayEntries(status, filterParams, true)
+  fetchTodayEntries(status, filterParams, false)
 
 const fetchStarredEntries = async (status, filterParams) => {
   const pageSize = getSettings("pageSize")

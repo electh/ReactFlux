@@ -148,7 +148,12 @@
     "load_error": "記事の読み込みに失敗しました",
     "loading_more": "さらに読み込み中...",
     "load_more_error": "記事の追加読み込みに失敗しました。再試行してください。",
-    "no_search_results": "一致する記事が見つかりません"
+    "no_articles": "記事がありません",
+    "no_feeds": "フィードがありません",
+    "no_filter_results": "フィルターに一致する記事がありません",
+    "no_search_results": "一致する記事がありません",
+    "no_starred_articles": "スター付きの記事がありません",
+    "no_unread_articles": "未読の記事がありません"
   },
   "article_toc": {
     "tooltip": "目次",

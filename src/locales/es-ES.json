@@ -148,7 +148,12 @@
     "load_error": "No se pudieron cargar los artículos",
     "loading_more": "Cargando más...",
     "load_more_error": "No se pudieron cargar más artículos. Inténtelo de nuevo.",
-    "no_search_results": "No se encontraron artículos coincidentes"
+    "no_articles": "No hay artículos",
+    "no_feeds": "No hay feeds",
+    "no_filter_results": "Ningún artículo coincide con los filtros",
+    "no_search_results": "No hay artículos coincidentes",
+    "no_starred_articles": "No hay artículos favoritos",
+    "no_unread_articles": "No hay artículos sin leer"
   },
   "article_toc": {
     "tooltip": "Tabla de contenidos",

@@ -122,6 +122,61 @@ const ActiveButton = ({ active, expanded, icon, tooltip, onClick }) => (
   </CustomTooltip>
 )
 
+const DateFilter = ({ filterDate, polyglot }) => {
+  const [calendarVisible, setCalendarVisible] = useState(false)
+  const selectDateLabel = polyglot.t("search.select_date")
+
+  const setDateAndClose = (date) => {
+    setFilterDate(date)
+    setCalendarVisible(false)
+  }
+
+  return (
+    <DatePicker
+      popupVisible={calendarVisible}
+      position="bottom"
+      showNowBtn={false}
+      value={filterDate}
+      extra={
+        <div className="calendar-actions">
+          <Button
+            long
+            size="mini"
+            type="primary"
+            onClick={() => setDateAndClose(getStartOfToday())}
+          >
+            {polyglot.t("search.today")}
+          </Button>
+          <Button long size="mini" onClick={() => setDateAndClose(null)}>
+            {polyglot.t("search.clear_date")}
+          </Button>
+        </div>
+      }
+      triggerElement={
+        <CustomTooltip mini content={selectDateLabel}>
+          <Button
+            aria-expanded={calendarVisible}
+            aria-haspopup="dialog"
+            aria-label={selectDateLabel}
+            icon={<IconCalendar aria-hidden="true" />}
+            shape="circle"
+            size="small"
+            style={{
+              backgroundColor: filterDate ? "rgb(var(--primary-6))" : "inherit",
+            }}
+          />
+        </CustomTooltip>
+      }
+      triggerProps={{
+        boundaryDistance: { bottom: 8, left: 8, right: 8, top: 8 },
+        className: "mobile-date-picker-popup",
+      }}
+      onChange={setFilterDate}
+      onVisibleChange={setCalendarVisible}
+    />
+  )
+}
+
 const SearchAndSortBar = ({ fullWidth = false }) => {
   const { filterDate, filterString, infoFrom, isArticleListReady } = useStore(contentState, {
     keys: ["filterDate", "filterString", "infoFrom", "isArticleListReady"],
@@ -138,7 +193,6 @@ const SearchAndSortBar = ({ fullWidth = false }) => {
   const { closeActiveContent, entryListRef } = useContentContext()
   const { isBelowMedium } = useScreenWidth()
 
-  const [calendarVisible, setCalendarVisible] = useState(false)
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [modalInputValue, setModalInputValue] = useState("")
 
@@ -205,16 +259,6 @@ const SearchAndSortBar = ({ fullWidth = false }) => {
     closeSearchModal()
   }
 
-  const handleSetToday = () => {
-    setFilterDate(getStartOfToday())
-    setCalendarVisible(false)
-  }
-
-  const handleClearDate = () => {
-    setFilterDate(null)
-    setCalendarVisible(false)
-  }
-
   return (
     <div
       className="search-and-sort-bar"
@@ -247,43 +291,7 @@ const SearchAndSortBar = ({ fullWidth = false }) => {
           tooltip={searchLabel}
           onClick={openSearchModal}
         />
-        <DatePicker
-          popupVisible={calendarVisible}
-          position="bottom"
-          showNowBtn={false}
-          value={filterDate}
-          extra={
-            <div className="calendar-actions">
-              <Button long size="mini" type="primary" onClick={handleSetToday}>
-                {polyglot.t("search.today")}
-              </Button>
-              <Button long size="mini" onClick={handleClearDate}>
-                {polyglot.t("search.clear_date")}
-              </Button>
-            </div>
-          }
-          triggerElement={
-            <CustomTooltip mini content={polyglot.t("search.select_date")}>
-              <Button
-                aria-expanded={calendarVisible}
-                aria-haspopup="dialog"
-                aria-label={polyglot.t("search.select_date")}
-                icon={<IconCalendar aria-hidden="true" />}
-                shape="circle"
-                size="small"
-                style={{
-                  backgroundColor: filterDate ? "rgb(var(--primary-6))" : "inherit",
-                }}
-              />
-            </CustomTooltip>
-          }
-          triggerProps={{
-            boundaryDistance: { bottom: 8, left: 8, right: 8, top: 8 },
-            className: "mobile-date-picker-popup",
-          }}
-          onChange={(v) => setFilterDate(v)}
-          onVisibleChange={setCalendarVisible}
-        />
+        {infoFrom !== "today" && <DateFilter filterDate={filterDate} polyglot={polyglot} />}
         <CustomTooltip mini content={sortLabel}>
           <Button
             aria-label={sortLabel}

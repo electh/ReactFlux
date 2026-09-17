@@ -18,8 +18,10 @@ import useArticleListLayout from "@/hooks/useArticleListLayout"
 import { polyglotState } from "@/hooks/useLanguage"
 import useLoadMore from "@/hooks/useLoadMore"
 import useReadOnScroll from "@/hooks/useReadOnScroll"
+import { articleListEmptyState } from "@/store/articleListEmptyState"
 import { contentState, filteredEntriesState } from "@/store/contentState"
 import { articleListLayoutState } from "@/store/settingsState"
+import { formatLocalizedDate } from "@/utils/date"
 
 import "./ArticleList.css"
 
@@ -27,6 +29,36 @@ const ENTRY_PRESENTERS = {
   card: ArticleGridCard,
   column: ArticleCard,
   list: ArticleListItem,
+}
+
+const EMPTY_MESSAGE_KEYS = {
+  "no-articles": "article_list.no_articles",
+  "no-feeds": "article_list.no_feeds",
+  "no-filter-results": "article_list.no_filter_results",
+  "no-search-results": "article_list.no_search_results",
+  "no-starred-articles": "article_list.no_starred_articles",
+  "no-unread-articles": "article_list.no_unread_articles",
+}
+
+const getEmptyStateSummary = ({ date, query, status }, polyglot) => {
+  if (!query && !date) {
+    return null
+  }
+
+  const summaryParts = []
+  if (status === "unread") {
+    summaryParts.push(polyglot.t("article_list.filter_status_unread"))
+  } else if (status === "starred") {
+    summaryParts.push(polyglot.t("article_list.filter_status_starred"))
+  }
+  if (query) {
+    summaryParts.push(polyglot.t("search.active_query", { query }))
+  }
+  if (date) {
+    summaryParts.push(formatLocalizedDate(date))
+  }
+
+  return summaryParts.join(" · ")
 }
 
 const isElementVisibleInRoot = (element, root) => {
@@ -114,15 +146,20 @@ const LoadMoreComponent = ({ getEntries, scrollRootRef }) => {
 
 const ArticleList = forwardRef(
   ({ getEntries, handleEntryClick, cardsRef, retryArticleList }, ref) => {
-    const { articleListError, filterString, isArticleListReady } = useStore(contentState, {
-      keys: ["articleListError", "filterString", "isArticleListReady"],
+    const { articleListError, isArticleListReady } = useStore(contentState, {
+      keys: ["articleListError", "isArticleListReady"],
     })
+    const emptyState = useStore(articleListEmptyState)
     const filteredEntries = useStore(filteredEntriesState)
     const { polyglot } = useStore(polyglotState)
     const articleListLayout = useStore(articleListLayoutState)
     const articleActivation = useArticleCardActivation(handleEntryClick)
     const observeRead = useReadOnScroll(cardsRef)
-    const canRenderResults = isArticleListReady && !articleListError
+    const isWaitingForCatalog = emptyState?.phase === "waiting-for-catalog"
+    const showEmptyState = emptyState?.phase === "empty"
+    const canRenderResults = isArticleListReady && !articleListError && !isWaitingForCatalog
+    const emptyMessageKey = EMPTY_MESSAGE_KEYS[emptyState?.reason] ?? "article_list.no_articles"
+    const emptySummary = showEmptyState ? getEmptyStateSummary(emptyState.filters, polyglot) : null
     const EntryPresenter = ENTRY_PRESENTERS[articleListLayout] ?? ArticleCard
     const isCardLayout = articleListLayout === "card"
     const {
@@ -144,7 +181,11 @@ const ArticleList = forwardRef(
         className={`entry-list entry-list-layout-${articleListLayout}`}
         scrollableNodeProps={{ ref: setScrollRoot, tabIndex: 0 }}
       >
-        <LoadingCards cardColumnCount={cardColumnCount} layout={articleListLayout} />
+        <LoadingCards
+          cardColumnCount={cardColumnCount}
+          layout={articleListLayout}
+          loading={!isArticleListReady || isWaitingForCatalog}
+        />
         {isArticleListReady && articleListError && (
           <div className="article-list-state" role="alert">
             <IconExclamationCircle aria-hidden="true" className="article-list-state-icon" />
@@ -154,10 +195,17 @@ const ArticleList = forwardRef(
             </Button>
           </div>
         )}
-        {canRenderResults && filterString && filteredEntries.length === 0 && (
+        {canRenderResults && showEmptyState && (
           <div className="article-list-state" role="status">
             <IconEmpty aria-hidden="true" className="article-list-state-icon" />
-            <Typography.Text>{polyglot.t("article_list.no_search_results")}</Typography.Text>
+            <div className="article-list-state-copy">
+              <Typography.Text>{polyglot.t(emptyMessageKey)}</Typography.Text>
+              {emptySummary && (
+                <Typography.Text className="article-list-state-summary">
+                  {emptySummary}
+                </Typography.Text>
+              )}
+            </div>
           </div>
         )}
         {canRenderResults && filteredEntries.length > 0 && (

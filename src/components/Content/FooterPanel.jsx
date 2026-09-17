@@ -206,7 +206,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   }
 
   useEffect(() => {
-    if (source === "starred" && showStatus !== "unread") {
+    if (showStatus === "starred" && ["all", "today", "starred"].includes(source)) {
       updateSettings({ showStatus: "all" })
     }
   }, [source, showStatus])
