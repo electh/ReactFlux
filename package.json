@@ -53,7 +53,7 @@
     "yet-another-react-lightbox": "^3.32.2"
   },
   "devDependencies": {
-    "@babel/core": "^8.0.1",
+    "@babel/core": "^8.0.5",
     "@eslint/js": "^9.39.4",
     "@rolldown/plugin-babel": "^0.2.4",
     "@types/node": "^26.5.1",
