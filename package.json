@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@babel/core": "^8.0.5",
-    "@eslint/js": "^9.39.4",
+    "@eslint/js": "^9.39.5",
     "@rolldown/plugin-babel": "^0.2.4",
     "@types/node": "^26.5.1",
     "@types/react": "^19.3.0",
