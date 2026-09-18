@@ -24,6 +24,7 @@ import { memo, useRef, useState } from "react"
 import ArticleTOC, { ArticleTOCPanel } from "./ArticleTOC"
 
 import CustomTooltip from "@/components/ui/CustomTooltip"
+import useDesktopSidebar from "@/hooks/useDesktopSidebar"
 import useEntryActions from "@/hooks/useEntryActions"
 import useKeyHandlers from "@/hooks/useKeyHandlers"
 import { polyglotState } from "@/hooks/useLanguage"
@@ -100,6 +101,7 @@ const MobileButtons = memo(({ commonButtons, hasHeadings, moveContextActionToMen
 MobileButtons.displayName = "MobileButtons"
 
 const ActionButtons = () => {
+  const { detailCloseButtonRef } = useDesktopSidebar()
   const { activeContent } = useStore(contentState, { keys: ["activeContent"] })
   const { hasIntegrations } = useStore(dataState, { keys: ["hasIntegrations"] })
   const { polyglot } = useStore(polyglotState)
@@ -297,6 +299,7 @@ const ActionButtons = () => {
     close: (
       <CustomTooltip mini content={actionLabels.close}>
         <Button
+          ref={detailCloseButtonRef}
           aria-label={actionLabels.close}
           icon={<IconClose aria-hidden="true" />}
           shape="circle"

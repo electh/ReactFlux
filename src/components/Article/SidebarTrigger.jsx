@@ -1,11 +1,13 @@
 import { Button, Drawer } from "@arco-design/web-react"
-import { IconClose, IconMenu } from "@arco-design/web-react/icon"
+import { IconClose, IconMenuUnfold } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { atom } from "nanostores"
 import { useEffect, useRef } from "react"
 import { useLocation } from "react-router"
 
 import Sidebar from "@/components/Sidebar/Sidebar"
+import CustomTooltip from "@/components/ui/CustomTooltip"
+import useDesktopSidebar from "@/hooks/useDesktopSidebar"
 import { polyglotState } from "@/hooks/useLanguage"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import "./SidebarTrigger.css"
@@ -20,6 +22,7 @@ export default function SidebarTrigger() {
 
   const sidebarVisible = useStore(sidebarVisibleState)
   const { polyglot } = useStore(polyglotState)
+  const { expandDesktopSidebar, isDesktopSidebarCollapsed, reopenButtonRef } = useDesktopSidebar()
 
   const closeButtonRef = useRef(null)
   const restoreFocusAfterCloseRef = useRef(false)
@@ -28,6 +31,7 @@ export default function SidebarTrigger() {
   const closeSidebarLabel = polyglot.t("actions.close_dialog", {
     name: polyglot.t("sidebar.navigation_menu"),
   })
+  const sidebarTriggerLabel = polyglot.t(isBelowLarge ? "sidebar.open" : "sidebar.expand")
 
   const closeSidebar = () => {
     restoreFocusAfterCloseRef.current = true
@@ -68,25 +72,51 @@ export default function SidebarTrigger() {
     }
   }, [currentPath])
 
+  if (!isBelowLarge) {
+    if (!isDesktopSidebarCollapsed) {
+      return null
+    }
+
+    return (
+      <div className="brand">
+        <CustomTooltip mini content={sidebarTriggerLabel}>
+          <Button
+            ref={reopenButtonRef}
+            aria-controls="desktop-sidebar-navigation"
+            aria-expanded={false}
+            aria-label={sidebarTriggerLabel}
+            className="desktop-sidebar-reopen"
+            icon={<IconMenuUnfold aria-hidden="true" />}
+            shape="circle"
+            size="small"
+            type="secondary"
+            onClick={expandDesktopSidebar}
+          />
+        </CustomTooltip>
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="brand">
-        <Button
-          ref={triggerButtonRef}
-          aria-controls="mobile-sidebar-drawer"
-          aria-expanded={sidebarVisible}
-          aria-haspopup="dialog"
-          aria-label={polyglot.t("sidebar.navigation_menu")}
-          className="trigger"
-          shape="circle"
-          size="small"
-          onClick={() => {
-            restoreFocusAfterCloseRef.current = false
-            setSidebarVisible(!sidebarVisible)
-          }}
-        >
-          <IconMenu aria-hidden="true" />
-        </Button>
+        <CustomTooltip mini content={sidebarTriggerLabel}>
+          <Button
+            ref={triggerButtonRef}
+            aria-controls="mobile-sidebar-drawer"
+            aria-expanded={sidebarVisible}
+            aria-haspopup="dialog"
+            aria-label={sidebarTriggerLabel}
+            className="trigger"
+            icon={<IconMenuUnfold aria-hidden="true" />}
+            shape="circle"
+            size="small"
+            onClick={() => {
+              restoreFocusAfterCloseRef.current = false
+              setSidebarVisible(!sidebarVisible)
+            }}
+          />
+        </CustomTooltip>
       </div>
       <Drawer
         focusLock

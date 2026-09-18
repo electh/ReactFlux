@@ -60,6 +60,7 @@
     "logout_success": "ログアウトしました",
     "add_feed": "フィードを追加",
     "navigation_menu": "ナビゲーションメニュー",
+    "open": "サイドバーを開く",
     "collapse": "サイドバーを折りたたむ",
     "expand": "サイドバーを展開",
     "user_menu": "ユーザーメニュー",

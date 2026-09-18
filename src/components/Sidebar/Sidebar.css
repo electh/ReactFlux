@@ -193,6 +193,10 @@
   overflow: hidden;
 }
 
+.sidebar.sidebar-collapsed {
+  display: none;
+}
+
 .desktop-sidebar-content {
   height: 100%;
 }
@@ -227,10 +231,6 @@
 
 .sidebar-expanded .desktop-sidebar-toggle.arco-btn {
   right: 8px;
-}
-
-.sidebar-collapsed .desktop-sidebar-toggle.arco-btn {
-  left: max(10px, env(safe-area-inset-left, 0px));
 }
 
 .sidebar .desktop-sidebar-toggle.arco-btn:hover {
