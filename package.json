@@ -36,7 +36,7 @@
     "hls.js": "^1.7.3",
     "html-react-parser": "^6.1.7",
     "littlefoot": "^4.1.4",
-    "nanostores": "^1.4.2",
+    "nanostores": "^1.5.3",
     "node-polyglot": "^2.6.0",
     "ofetch": "^1.5.1",
     "plyr": "^3.8.4",
