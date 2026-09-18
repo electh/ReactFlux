@@ -115,20 +115,18 @@ const ArticleCard = ({ entry, previewContent }) => {
             {showFeedIcon && <FeedIcon className="feed-icon-mini" feed={entry.feed} />}
             <div className="card-source-content">
               <span className="card-source-title">{entry.feed.title}</span>
-              <span className="card-author">{entry.author}</span>
+              {entry.author && <span className="card-author">{entry.author}</span>}
             </div>
           </div>
           <div className="card-time-wrapper">
-            <span className="card-star">
-              <IconStarFill
-                aria-hidden="true"
-                className="icon-starred"
-                style={{ opacity: entry.starred ? 1 : 0 }}
-              />
-            </span>
-            <span className="card-time">
+            <IconStarFill
+              aria-hidden="true"
+              className="icon-starred"
+              style={{ opacity: entry.starred ? 1 : 0 }}
+            />
+            <time className="card-time" dateTime={entry.published_at}>
               {generateRelativeTime(entry.published_at, showDetailedRelativeTime)}
-            </span>
+            </time>
           </div>
         </div>
 

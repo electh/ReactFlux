@@ -52,6 +52,7 @@
   justify-content: center;
   box-sizing: border-box;
   padding: 20px;
+  background-color: var(--color-fill-1);
 }
 
 .grid-card-fallback-source {
@@ -59,10 +60,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
   max-width: 100%;
-  color: var(--color-text-2);
+  color: var(--color-text-3);
   font-size: 0.9375rem;
   font-weight: 600;
   line-height: 1.4;
@@ -80,8 +81,9 @@
 }
 
 .grid-card-fallback-feed-icon {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
+  opacity: 0.8;
 }
 
 .grid-card-copy {
@@ -99,8 +101,9 @@
   justify-content: space-between;
   gap: 8px;
   min-width: 0;
-  color: var(--color-text-2);
+  color: var(--color-text-3);
   font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
   line-height: 1.35;
 }
 
@@ -111,8 +114,10 @@
 .grid-card-source {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
+  color: var(--color-text-2);
+  font-weight: 600;
 }
 
 .grid-card-source > span {
@@ -163,8 +168,7 @@
   align-items: center;
   min-height: 18px;
   margin-top: auto;
-  padding-top: 2px;
-  color: var(--color-text-2);
+  color: var(--color-text-3);
   font-size: 0.8125rem;
   line-height: 1.35;
 }

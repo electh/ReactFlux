@@ -1,6 +1,7 @@
 .entry-list {
   flex: 1;
   contain: strict;
+  container: article-list / inline-size;
   padding: 10px;
   height: 100%;
   overflow-x: hidden;
