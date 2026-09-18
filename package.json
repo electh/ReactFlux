@@ -72,7 +72,7 @@
     "eslint-plugin-unicorn": "^65.0.1",
     "globals": "^17.12.0",
     "knip": "^6.35.1",
-    "lefthook": "^2.1.12",
+    "lefthook": "^2.1.14",
     "prettier": "^3.9.6",
     "rollup-plugin-visualizer": "^7.1.1",
     "vite": "^8.2.2",
