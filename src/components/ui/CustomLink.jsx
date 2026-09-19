@@ -1,12 +1,15 @@
-import { useState } from "react"
+import { forwardRef, useState } from "react"
 import { Link } from "react-router"
 
-const CustomLink = ({
-  url,
-  text,
-  onMouseEnter = (e) => e.target.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true })),
-  onMouseLeave = (e) => e.target.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true })),
-}) => {
+const CustomLink = forwardRef(function CustomLink(
+  {
+    url,
+    text,
+    onMouseEnter = (e) => e.target.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true })),
+    onMouseLeave = (e) => e.target.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true })),
+  },
+  ref,
+) {
   const [isHovering, setIsHovering] = useState(false)
 
   const handleMouseEnter = (e) => {
@@ -21,6 +24,7 @@ const CustomLink = ({
 
   return (
     <Link
+      ref={ref}
       to={url}
       style={{
         color: "inherit",
@@ -32,6 +36,6 @@ const CustomLink = ({
       {text}
     </Link>
   )
-}
+})
 
 export default CustomLink
