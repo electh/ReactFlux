@@ -38,8 +38,14 @@ import { Virtualizer } from "virtua"
 import AddFeed from "./AddFeed.jsx"
 import Profile from "./Profile.jsx"
 
-import { exportOPML, importOPML } from "@/apis"
-import { markCategoryAsRead, refreshCategoryFeed } from "@/apis/categories"
+import {
+  exportOPML,
+  getCategoryEntries,
+  importOPML,
+  markCategoryAsRead,
+  markEntriesAsReadInBatches,
+} from "@/apis"
+import { refreshCategoryFeed } from "@/apis/categories"
 import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import EditCategoryModal from "@/components/ui/EditCategoryModal"
@@ -51,9 +57,11 @@ import { useFeedOperations } from "@/hooks/useFeedOperations"
 import useHomePage from "@/hooks/useHomePage"
 import { polyglotState } from "@/hooks/useLanguage"
 import useLongPressContextMenu from "@/hooks/useLongPressContextMenu"
+import useRefreshCounts from "@/hooks/useRefreshCounts"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import {
   contentState,
+  invalidateArticleList,
   invalidateArticleListForFeed,
   setActiveContent,
   setEntries,
@@ -61,9 +69,10 @@ import {
 import {
   dataState,
   feedsGroupedByIdState,
-  filteredCategoriesState,
+  isEntryScopeFullyVisible,
   setUnreadInfo,
   unreadTotalState,
+  visibleCategoriesState,
 } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import { expandedCategoriesState, setExpandedCategories } from "@/store/sidebarState"
@@ -477,12 +486,12 @@ const CategoryGroup = ({
 }) => {
   const { showUnreadFeedsOnly } = useStore(settingsState, { keys: ["showUnreadFeedsOnly"] })
   const feedsGroupedById = useStore(feedsGroupedByIdState)
-  const filteredCategories = useStore(filteredCategoriesState)
+  const categories = useStore(visibleCategoriesState)
 
   const location = useLocation()
   const currentPath = location.pathname
 
-  return filteredCategories
+  return categories
     .filter((category) => {
       const feedsInCategory = feedsGroupedById[category.id]
 
@@ -542,9 +551,11 @@ const MoreOptionsDropdown = () => {
   const [menuVisible, setMenuVisible] = useState(false)
 
   const { refreshFeedData } = useAppData()
+  const refreshCounts = useRefreshCounts()
 
   const handleToggleFeedsVisibility = () => {
     updateSettings({ showHiddenFeeds: !showHiddenFeeds })
+    void refreshCounts({ force: true })
   }
 
   const handleToggleUnreadFeedsOnly = () => {
@@ -611,8 +622,8 @@ const MoreOptionsDropdown = () => {
                 <IconEye className="icon-right" />
               )}
               {showHiddenFeeds
-                ? polyglot.t("sidebar.hide_hidden_feeds")
-                : polyglot.t("sidebar.show_hidden_feeds")}
+                ? polyglot.t("sidebar.hide_hidden_sources")
+                : polyglot.t("sidebar.show_hidden_sources")}
             </MenuItem>
             <MenuItem key="2" onClick={handleToggleUnreadFeedsOnly}>
               {showUnreadFeedsOnly ? (
@@ -683,16 +694,20 @@ const Sidebar = ({ headerAction, onNavigate }) => {
   const currentPath = location.pathname
   const selectedKeys = [currentPath]
 
-  const { refreshCounts, refreshFeedData } = useAppData()
+  const { refreshFeedData } = useAppData()
+  const refreshCounts = useRefreshCounts()
   const { infoFrom, infoId } = useStore(contentState, { keys: ["infoFrom", "infoId"] })
   const {
     identityError,
-    identityReady: homePageReady,
+    identityReady: homeIdentityReady,
+    isVisible: homePageVisible,
     label: homePageLabel,
     path: homePagePath,
     setTarget: setHomePageTarget,
     target: homeTarget,
+    visibilityReady: homeVisibilityReady,
   } = useHomePage()
+  const homePageReady = homeIdentityReady && homeVisibilityReady
 
   const handleEditCategory = (category) => {
     setSelectedCategory(category)
@@ -721,7 +736,11 @@ const Sidebar = ({ headerAction, onNavigate }) => {
 
   const handleMarkAllAsReadCategory = async (category) => {
     try {
-      await markCategoryAsRead(category.id)
+      await (isEntryScopeFullyVisible("category", category.id)
+        ? markCategoryAsRead(category.id)
+        : markEntriesAsReadInBatches((status, filterParams) =>
+            getCategoryEntries(category.id, status, false, filterParams),
+          ))
       const feedsGroupedById = feedsGroupedByIdState.get()
       const feedsInCategory = feedsGroupedById[category.id] || []
 
@@ -740,10 +759,21 @@ const Sidebar = ({ headerAction, onNavigate }) => {
         updateAllEntriesAsRead()
       }
 
+      invalidateArticleList()
+      await refreshCounts({ force: true })
+
       Notification.success({
         title: polyglot.t("article_list.mark_all_as_read_success"),
       })
-    } catch {
+    } catch (error) {
+      console.error("Failed to mark visible category entries as read:", error)
+      await refreshFeedData({ force: true }).catch((refreshError) => {
+        console.error(
+          "Failed to refresh data after marking category entries as read:",
+          refreshError,
+        )
+      })
+      invalidateArticleList()
       Notification.error({
         title: polyglot.t("article_list.mark_all_as_read_error"),
       })
@@ -770,9 +800,7 @@ const Sidebar = ({ headerAction, onNavigate }) => {
     }
 
     invalidateArticleListForFeed(feed)
-    await refreshCounts({ force: true }).catch((error) => {
-      console.error("Failed to refresh counts after feed refresh:", error)
-    })
+    await refreshCounts({ force: true })
   }
 
   const handleMarkAllAsReadFeed = async (feed) => {
@@ -787,9 +815,12 @@ const Sidebar = ({ headerAction, onNavigate }) => {
     }
   }
 
+  const visibleHomePageLabel = homePageVisible ? homePageLabel : polyglot.t("sidebar.all")
+  const visibleHomePagePath = homePageVisible ? homePagePath : "/all"
+
   let homePageActionLabel
   if (homePageReady) {
-    homePageActionLabel = polyglot.t("home_page.go_to", { name: homePageLabel })
+    homePageActionLabel = polyglot.t("home_page.go_to", { name: visibleHomePageLabel })
   } else {
     const statusKey = identityError
       ? "home_page.identity_unavailable"
@@ -802,7 +833,7 @@ const Sidebar = ({ headerAction, onNavigate }) => {
       return
     }
 
-    navigate(homePagePath)
+    navigate(visibleHomePagePath)
     setActiveContent(null)
     onNavigate?.()
   }

@@ -1,7 +1,8 @@
 {
   "app": {
     "new_version_available": "新版本可用",
-    "new_version_available_description": "请检查最新版本在 GitHub 上的发布"
+    "new_version_available_description": "请检查最新版本在 GitHub 上的发布",
+    "counts_refresh_error": "部分计数刷新失败，显示的数字可能暂时不是最新值"
   },
   "login": {
     "success": "登录成功",
@@ -65,8 +66,8 @@
     "expand": "展开侧栏",
     "user_menu": "用户菜单",
     "more_options": "更多订阅选项",
-    "show_hidden_feeds": "显示隐藏订阅源",
-    "hide_hidden_feeds": "不显示隐藏订阅源",
+    "show_hidden_sources": "显示隐藏项",
+    "hide_hidden_sources": "不显示隐藏项",
     "show_read_feeds": "显示已读订阅源",
     "hide_read_feeds": "不显示已读订阅源",
     "import_opml": "导入 OPML",

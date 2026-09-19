@@ -4,7 +4,8 @@ import { useNavigate } from "react-router"
 import { deleteFeed, getFeedEntries, refreshFeed } from "@/apis"
 import { markFeedAsRead as markFeedAsReadAPI } from "@/apis/feeds"
 import { polyglotState } from "@/hooks/useLanguage"
-import { contentState, setEntries } from "@/store/contentState"
+import useRefreshCounts from "@/hooks/useRefreshCounts"
+import { contentState, invalidateArticleList, setEntries } from "@/store/contentState"
 import { setFeedsData, setUnreadInfo } from "@/store/dataState"
 import {
   getCurrentHomePath,
@@ -69,6 +70,7 @@ export const handleFeedRefresh = async (
 export const useFeedOperations = (useNotification = false) => {
   const { polyglot } = polyglotState.get()
   const { infoFrom, infoId } = contentState.get()
+  const refreshCounts = useRefreshCounts()
   const navigate = useNavigate()
 
   const showMessage = (message, type = "success") => {
@@ -163,10 +165,15 @@ export const useFeedOperations = (useNotification = false) => {
         setEntries((prev) => prev.map((entry) => ({ ...entry, status: "read" })))
       }
 
+      invalidateArticleList()
+      await refreshCounts({ force: true })
+
       const successMessage = polyglot.t("article_list.mark_all_as_read_success")
       showMessage(successMessage)
     } catch (error) {
       console.error("Failed to mark feed as read:", error)
+      invalidateArticleList()
+      await refreshCounts({ force: true })
       const errorMessage = polyglot.t("article_list.mark_all_as_read_error")
       showMessage(errorMessage, "error")
     }

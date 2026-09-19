@@ -1,7 +1,8 @@
 {
   "app": {
     "new_version_available": "Nouvelle version disponible",
-    "new_version_available_description": "Veuillez vérifier la dernière version sur GitHub"
+    "new_version_available_description": "Veuillez vérifier la dernière version sur GitHub",
+    "counts_refresh_error": "Certains compteurs n’ont pas pu être actualisés et peuvent être temporairement obsolètes"
   },
   "login": {
     "success": "Connexion réussie",
@@ -65,8 +66,8 @@
     "expand": "Développer la barre latérale",
     "user_menu": "Menu utilisateur",
     "more_options": "Plus d’options de flux",
-    "show_hidden_feeds": "Afficher les flux masqués",
-    "hide_hidden_feeds": "Masquer les flux masqués",
+    "show_hidden_sources": "Afficher les éléments masqués",
+    "hide_hidden_sources": "Ne pas afficher les éléments masqués",
     "show_read_feeds": "Afficher les flux lus",
     "hide_read_feeds": "Masquer les flux lus",
     "import_opml": "Importer OPML",

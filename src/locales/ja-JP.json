@@ -1,7 +1,8 @@
 {
   "app": {
     "new_version_available": "新しいバージョンが利用可能です",
-    "new_version_available_description": "GitHub で最新バージョンを確認してください"
+    "new_version_available_description": "GitHub で最新バージョンを確認してください",
+    "counts_refresh_error": "一部の件数を更新できなかったため、一時的に古い値が表示される可能性があります"
   },
   "login": {
     "success": "ログインに成功しました",
@@ -65,8 +66,8 @@
     "expand": "サイドバーを展開",
     "user_menu": "ユーザーメニュー",
     "more_options": "その他のオプション",
-    "show_hidden_feeds": "非表示のフィードを表示",
-    "hide_hidden_feeds": "非表示のフィードを隠す",
+    "show_hidden_sources": "非表示項目を表示",
+    "hide_hidden_sources": "非表示項目を表示しない",
     "show_read_feeds": "既読フィードを表示",
     "hide_read_feeds": "既読フィードを隠す",
     "import_opml": "OPML をインポート",

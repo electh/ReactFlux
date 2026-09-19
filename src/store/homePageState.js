@@ -1,7 +1,7 @@
 import { computed } from "nanostores"
 
 import { authState } from "@/store/authState"
-import { dataState } from "@/store/dataState"
+import { dataState, visibleCategoriesState, visibleFeedsState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import {
   createHomeIdentity,
@@ -10,6 +10,7 @@ import {
   getHomeIdentityKey,
   getHomeTargetForIdentity,
   getHomeTargetPath,
+  isHomeTargetInCatalog,
   isSameHomeTarget,
   setHomeTargetForIdentity,
 } from "@/utils/home-page"
@@ -27,8 +28,19 @@ const getCurrentHomeIdentity = () => homeIdentityState.get()
 
 export const getCurrentHomeTarget = () => currentHomeTargetState.get()
 
-export const getCurrentHomePath = () =>
-  getCurrentHomeIdentity() ? getHomeTargetPath(getCurrentHomeTarget()) : null
+export const getCurrentHomePath = () => {
+  if (!getCurrentHomeIdentity()) {
+    return null
+  }
+
+  const target = getCurrentHomeTarget()
+  const targetIsVisible = isHomeTargetInCatalog(
+    target,
+    visibleFeedsState.get(),
+    visibleCategoriesState.get(),
+  )
+  return targetIsVisible ? getHomeTargetPath(target) : "/all"
+}
 
 export const ensureCurrentHomePage = () => {
   const identity = getCurrentHomeIdentity()

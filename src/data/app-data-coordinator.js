@@ -16,6 +16,7 @@ import {
   getDataResourceRevision,
   getDataSessionRevision,
   setDataResourceLoadState,
+  visibleFeedsState,
 } from "@/store/dataState"
 import {
   getEntryMutationSnapshot,
@@ -64,10 +65,14 @@ const loadCounts = async (includeEntrySummary) => {
       unreadInfo[feed.id] = counters.unreads?.[feed.id] ?? 0
     }
 
-    countsData.historyCount = Object.values(counters.reads ?? {}).reduce(
-      (total, count) => total + count,
-      0,
-    )
+    const visibleFeedIds = new Set(visibleFeedsState.get().map((feed) => feed.id))
+    let historyCount = 0
+    for (const [feedId, count] of Object.entries(counters.reads ?? {})) {
+      if (visibleFeedIds.has(Number(feedId))) {
+        historyCount += count
+      }
+    }
+    countsData.historyCount = historyCount
     countsData.unreadInfo = unreadInfo
   } else {
     errors.push(countersResult.reason)

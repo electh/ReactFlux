@@ -2,13 +2,19 @@ import { useStore } from "@nanostores/react"
 import { useMemo } from "react"
 
 import { polyglotState } from "@/hooks/useLanguage"
-import { catalogCategoriesState, catalogFeedsState, dataState } from "@/store/dataState"
+import {
+  catalogCategoriesState,
+  catalogFeedsState,
+  dataState,
+  visibleCategoriesState,
+  visibleFeedsState,
+} from "@/store/dataState"
 import {
   currentHomeTargetState,
   homeIdentityState,
   setCurrentHomeTarget,
 } from "@/store/homePageState"
-import { getHomeTargetPath } from "@/utils/home-page"
+import { getHomeTargetPath, isHomeTargetInCatalog } from "@/utils/home-page"
 
 const getViewLabel = (polyglot, id) => polyglot.t(`settings.default_home_page_option_${id}`)
 
@@ -47,6 +53,8 @@ const useHomePage = () => {
   const identity = useStore(homeIdentityState)
   const categories = useStore(catalogCategoriesState)
   const feeds = useStore(catalogFeedsState)
+  const visibleCategories = useStore(visibleCategoriesState)
+  const visibleFeeds = useStore(visibleFeedsState)
   const { loadState } = useStore(dataState, { keys: ["loadState"] })
   const { polyglot } = useStore(polyglotState)
 
@@ -57,6 +65,7 @@ const useHomePage = () => {
 
   const identityReady = Boolean(identity && loadState.identity.hasSnapshot)
   const identityError = identityReady ? null : loadState.identity.error
+  const visibilityReady = target.type === "view" || loadState.catalog.hasSnapshot
 
   return {
     ...description,
@@ -65,9 +74,13 @@ const useHomePage = () => {
     identity,
     identityError,
     identityReady,
+    isVisible: visibilityReady
+      ? isHomeTargetInCatalog(target, visibleFeeds, visibleCategories)
+      : null,
     path: getHomeTargetPath(target),
     setTarget: setCurrentHomeTarget,
     target,
+    visibilityReady,
   }
 }
 

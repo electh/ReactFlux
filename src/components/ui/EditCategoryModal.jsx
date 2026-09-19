@@ -5,6 +5,8 @@ import AccessibleModal from "./AccessibleModal"
 
 import useCategoryOperations from "@/hooks/useCategoryOperations"
 import { polyglotState } from "@/hooks/useLanguage"
+import useRefreshCounts from "@/hooks/useRefreshCounts"
+import { invalidateArticleList } from "@/store/contentState"
 
 const EditCategoryModal = ({
   visible,
@@ -18,6 +20,7 @@ const EditCategoryModal = ({
 }) => {
   const { polyglot } = useStore(polyglotState)
   const { editCategory } = useCategoryOperations(useNotification)
+  const refreshCounts = useRefreshCounts()
 
   const handleCancel = () => {
     setVisible(false)
@@ -25,10 +28,15 @@ const EditCategoryModal = ({
   }
 
   const handleSubmit = async (values) => {
+    const visibilityChanged = Boolean(values.hidden) !== Boolean(selectedCategory.hide_globally)
     const success = await editCategory(selectedCategory.id, values.title, values.hidden)
     if (success) {
       setVisible(false)
       categoryForm.resetFields()
+      if (visibilityChanged) {
+        invalidateArticleList()
+        await refreshCounts({ force: true })
+      }
       if (onSuccess) {
         onSuccess()
       }

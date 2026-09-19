@@ -5,7 +5,9 @@ import AccessibleModal from "./AccessibleModal"
 
 import { updateFeed } from "@/apis"
 import { polyglotState } from "@/hooks/useLanguage"
+import useRefreshCounts from "@/hooks/useRefreshCounts"
 import { authState } from "@/store/authState"
+import { invalidateArticleList } from "@/store/contentState"
 import { catalogCategoriesState, setFeedsData } from "@/store/dataState"
 
 const EditFeedModal = ({
@@ -18,6 +20,7 @@ const EditFeedModal = ({
   useNotification = false,
 }) => {
   const { polyglot } = useStore(polyglotState)
+  const refreshCounts = useRefreshCounts()
   const auth = useStore(authState)
   const categories = useStore(catalogCategoriesState)
 
@@ -27,10 +30,22 @@ const EditFeedModal = ({
 
   const editFeed = async (newDetails) => {
     try {
+      const nextCategory = categories.find(
+        (category) => category.id === Number(newDetails.categoryId),
+      )
+      const wasGloballyHidden = Boolean(
+        (selectedFeed.hide_globally ?? selectedFeed.hidden) || selectedFeed.category?.hide_globally,
+      )
+      const willBeGloballyHidden = Boolean(newDetails.hidden || nextCategory?.hide_globally)
+      const visibilityChanged = wasGloballyHidden !== willBeGloballyHidden
       const data = await updateFeed(feedId, newDetails)
       setFeedsData((feeds) =>
         feeds.map((feed) => (feed.id === feedId ? { ...feed, ...data } : feed)),
       )
+      if (visibilityChanged) {
+        invalidateArticleList()
+        await refreshCounts({ force: true })
+      }
 
       const successMessage = polyglot.t("feed_table.update_feed_success")
 

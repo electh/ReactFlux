@@ -1,6 +1,7 @@
 import apiClient from "./ofetch"
 
 import { contentState } from "@/store/contentState"
+import { isEntryScopeFullyVisible } from "@/store/dataState"
 import { getSettings } from "@/store/settingsState"
 import {
   ENTRY_UPDATE_BATCH_SIZE,
@@ -22,12 +23,18 @@ export const updateEntriesStatus = async (entryIds, newStatus) =>
 
 export const setEntriesStarred = async (entryIds, starred) => updateEntries(entryIds, { starred })
 
+const getEntryVisibilityParams = () => ({
+  globally_visible: !getSettings("showHiddenFeeds"),
+})
+
 export const markEntriesAsReadInBatches = async (fetchEntries) => {
+  const visibilityParams = getEntryVisibilityParams()
   let markedEntryCount = 0
 
   while (true) {
     // Always fetch from offset zero because marking a batch read removes it from the result set.
     const response = await fetchEntries("unread", {
+      ...visibilityParams,
       limit: MAX_ENTRIES_PER_PAGE,
       offset: 0,
     })
@@ -146,7 +153,6 @@ const updateEntryIdsInBatches = async (entryIds, updates) => {
 export const getAllEntries = async (status = null, filterParams = {}) => {
   const orderBy = getSettings("orderBy")
   const pageSize = getSettings("pageSize")
-  const showHiddenFeeds = getSettings("showHiddenFeeds")
 
   const baseParams = {
     baseUrl: "/v1/entries",
@@ -156,7 +162,7 @@ export const getAllEntries = async (status = null, filterParams = {}) => {
   }
 
   const extraParams = {
-    globally_visible: !showHiddenFeeds,
+    ...getEntryVisibilityParams(),
     ...filterParams,
   }
 
@@ -166,7 +172,6 @@ export const getAllEntries = async (status = null, filterParams = {}) => {
 const fetchTodayEntries = async (status, filterParams, applyDateFilter) => {
   const orderBy = getSettings("orderBy")
   const pageSize = getSettings("pageSize")
-  const showHiddenFeeds = getSettings("showHiddenFeeds")
   const timestamp = get24HoursAgoTimestamp()
 
   const baseParams = {
@@ -177,7 +182,7 @@ const fetchTodayEntries = async (status, filterParams, applyDateFilter) => {
   }
 
   const extraParams = {
-    globally_visible: !showHiddenFeeds,
+    ...getEntryVisibilityParams(),
     published_after: timestamp,
     ...filterParams,
   }
@@ -188,7 +193,7 @@ const fetchTodayEntries = async (status, filterParams, applyDateFilter) => {
 export const getTodayEntries = async (status = null, filterParams = {}) =>
   fetchTodayEntries(status, filterParams, false)
 
-const fetchStarredEntries = async (status, filterParams) => {
+const fetchStarredEntries = async (status, filterParams, applyDateFilter = true) => {
   const pageSize = getSettings("pageSize")
 
   const baseParams = {
@@ -199,11 +204,12 @@ const fetchStarredEntries = async (status, filterParams) => {
   }
 
   const extraParams = {
+    ...getEntryVisibilityParams(),
     starred: true,
     ...filterParams,
   }
 
-  return apiClient.get(buildEntriesUrl(baseParams, extraParams))
+  return apiClient.get(buildEntriesUrl(baseParams, extraParams, applyDateFilter))
 }
 
 export const getStarredEntries = async (status = null, filterParams = {}) =>
@@ -219,7 +225,9 @@ export const markStarredEntriesAsRead = async () => {
 }
 
 const getStarredCountData = async (status = null) =>
-  getEntryIds({ starred: true, status, limit: 1 })
+  isEntryScopeFullyVisible("global")
+    ? getEntryIds({ starred: true, status, limit: 1 })
+    : fetchStarredEntries(status, { limit: 1 }, false)
 
 export const getEntryCountSummary = async () => {
   const [starredData, unreadStarredData, unreadTodayData] = await Promise.all([
@@ -245,7 +253,10 @@ export const getHistoryEntries = async (filterParams = {}) => {
     status: "read",
   }
 
-  const extraParams = { ...filterParams }
+  const extraParams = {
+    ...getEntryVisibilityParams(),
+    ...filterParams,
+  }
 
   return apiClient.get(buildEntriesUrl(baseParams, extraParams))
 }
@@ -258,7 +269,6 @@ export const getCategoryEntries = async (
 ) => {
   const orderBy = getSettings("orderBy")
   const pageSize = getSettings("pageSize")
-  const showHiddenFeeds = getSettings("showHiddenFeeds")
 
   const baseParams = {
     baseUrl: `/v1/categories/${categoryId}/entries`,
@@ -268,7 +278,7 @@ export const getCategoryEntries = async (
   }
 
   const extraParams = {
-    globally_visible: !showHiddenFeeds,
+    ...getEntryVisibilityParams(),
     ...filterParams,
   }
 

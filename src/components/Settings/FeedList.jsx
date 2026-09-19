@@ -31,6 +31,8 @@ import CustomTooltip from "@/components/ui/CustomTooltip"
 import EditFeedModal from "@/components/ui/EditFeedModal"
 import { handleFeedRefresh, updateFeedStatus, useFeedOperations } from "@/hooks/useFeedOperations"
 import { polyglotState } from "@/hooks/useLanguage"
+import useRefreshCounts from "@/hooks/useRefreshCounts"
+import { invalidateArticleList } from "@/store/contentState"
 import { dataState, setFeedsData } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
 import { generateRelativeTime } from "@/utils/date"
@@ -250,9 +252,13 @@ const RefreshModal = ({ visible, setVisible }) => {
   )
 }
 
+const isFeedEffectivelyHidden = (feed) =>
+  Boolean((feed.hide_globally ?? feed.hidden) || feed.category?.hide_globally)
+
 const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete }) => {
   const { polyglot } = useStore(polyglotState)
   const { categoriesData } = useStore(dataState, { keys: ["categoriesData"] })
+  const refreshCounts = useRefreshCounts()
 
   const [operationType, setOperationType] = useState("")
   const [newCategoryId, setNewCategoryId] = useState("")
@@ -285,6 +291,13 @@ const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete })
         return
       }
 
+      const nextCategory = categoriesData.find((category) => category.id === updateData.categoryId)
+      const visibilityChanged = selectedFeeds.some((feed) => {
+        const nextFeedHidden = updateData.hidden ?? feed.hide_globally ?? feed.hidden
+        const nextCategoryHidden = (nextCategory ?? feed.category)?.hide_globally
+        return Boolean(nextFeedHidden || nextCategoryHidden) !== isFeedEffectivelyHidden(feed)
+      })
+
       const updatedFeeds = await Promise.all(
         selectedFeeds.map(async (feed) => {
           const data = await updateFeed(feed.key, updateData)
@@ -299,9 +312,17 @@ const BulkOperationsModal = ({ visible, setVisible, selectedFeeds, onComplete })
         }),
       )
 
+      if (visibilityChanged) {
+        invalidateArticleList()
+      }
+
       Message.success(polyglot.t("feed_table.bulk_operation_success"))
       onComplete()
       setVisible(false)
+
+      if (visibilityChanged) {
+        await refreshCounts({ force: true })
+      }
     } catch (error) {
       console.error("Failed to bulk update feeds:", error)
       Message.error(polyglot.t("feed_table.bulk_operation_error"))

@@ -35,7 +35,7 @@ const createArticleListRequestKey = ({ content, settings, info }) => {
   if (["starred", "history"].includes(contentKey.infoFrom)) {
     settingsKey.orderBy = null
   }
-  if (["feed", "starred", "history"].includes(contentKey.infoFrom)) {
+  if (contentKey.infoFrom === "feed") {
     settingsKey.showHiddenFeeds = null
   }
 

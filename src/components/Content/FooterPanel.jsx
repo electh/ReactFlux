@@ -18,10 +18,14 @@ import {
   markEntriesAsReadInBatches,
 } from "@/apis"
 import CustomTooltip from "@/components/ui/CustomTooltip"
-import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
+import useRefreshCounts from "@/hooks/useRefreshCounts"
 import { contentState, setActiveContent, setEntries } from "@/store/contentState"
-import { filteredCategoriesState, filteredFeedsState } from "@/store/dataState"
+import {
+  isEntryScopeFullyVisible,
+  visibleCategoriesState,
+  visibleFeedsState,
+} from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import findAdjacentItem from "@/utils/navigation"
 import "./FooterPanel.css"
@@ -92,18 +96,16 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
     keys: ["markAllReadJumpToNext", "showStatus"],
   })
   const { polyglot } = useStore(polyglotState)
-  const filteredCategories = useStore(filteredCategoriesState)
-  const filteredFeeds = useStore(filteredFeedsState)
-  const { refreshCounts } = useAppData()
+  const categories = useStore(visibleCategoriesState)
+  const feeds = useStore(visibleFeedsState)
+  const refreshCounts = useRefreshCounts()
   const navigate = useNavigate()
   const refreshLabel = polyglot.t("article_list.refresh_tooltip")
 
   const jumpToNext = () => {
     if (source === "category") {
-      const currentIndex = filteredCategories.findIndex(
-        (category) => category.id === Number(sourceId),
-      )
-      const next = findAdjacentItem(filteredCategories, currentIndex, "next", {
+      const currentIndex = categories.findIndex((category) => category.id === Number(sourceId))
+      const next = findAdjacentItem(categories, currentIndex, "next", {
         predicate: (category) => category.unreadCount > 0,
         wrap: true,
       })
@@ -111,8 +113,8 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
         navigate(`/category/${next.id}`)
       }
     } else if (source === "feed") {
-      const orderedFeeds = filteredCategories.flatMap((cat) =>
-        filteredFeeds.filter((f) => f.category.id === cat.id),
+      const orderedFeeds = categories.flatMap((category) =>
+        feeds.filter((feed) => feed.category.id === category.id),
       )
       const currentIndex = orderedFeeds.findIndex((feed) => feed.id === Number(sourceId))
       const next = findAdjacentItem(orderedFeeds, currentIndex, "next", {
@@ -136,6 +138,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       }
     } catch (error) {
       console.error("Failed to mark all as read:", error)
+      await refreshArticleList()
       Notification.error({
         title: polyglot.t("article_list.mark_all_as_read_error"),
         content: error.message,
@@ -145,11 +148,16 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
 
   const handleFilteredMarkAsRead = async () => {
     const starred = showStatus === "starred"
+    const includeEntireScope = isEntryScopeFullyVisible(source, sourceId)
+    const withScopeVisibility = (options) =>
+      includeEntireScope ? { ...options, globally_visible: false } : options
 
     const entryFetchers = {
       all: getAllEntries,
-      feed: (status, options) => getFeedEntries(sourceId, status, starred, options),
-      category: (status, options) => getCategoryEntries(sourceId, status, starred, options),
+      feed: (status, options) =>
+        getFeedEntries(sourceId, status, starred, withScopeVisibility(options)),
+      category: (status, options) =>
+        getCategoryEntries(sourceId, status, starred, withScopeVisibility(options)),
       starred: getStarredEntries,
     }
 
@@ -159,9 +167,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
 
   const updateUIAfterMarkAsRead = async () => {
     updateAllEntriesAsRead()
-    await refreshCounts({ force: true, includeEntrySummary: true }).catch((error) => {
-      console.error("Failed to refresh counts after marking entries as read:", error)
-    })
+    await refreshCounts({ force: true })
 
     Notification.success({
       title: polyglot.t("article_list.mark_all_as_read_success"),

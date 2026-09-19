@@ -1,7 +1,8 @@
 {
   "app": {
     "new_version_available": "New version available",
-    "new_version_available_description": "Please check the latest version on GitHub"
+    "new_version_available_description": "Please check the latest version on GitHub",
+    "counts_refresh_error": "Some counts could not be refreshed and may be temporarily out of date"
   },
   "login": {
     "success": "Login successfully",
@@ -65,8 +66,8 @@
     "expand": "Expand sidebar",
     "user_menu": "User menu",
     "more_options": "More feed options",
-    "show_hidden_feeds": "Show hidden feeds",
-    "hide_hidden_feeds": "Hide hidden feeds",
+    "show_hidden_sources": "Show hidden items",
+    "hide_hidden_sources": "Don't show hidden items",
     "show_read_feeds": "Show read feeds",
     "hide_read_feeds": "Hide read feeds",
     "import_opml": "Import OPML",

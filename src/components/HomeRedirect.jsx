@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from "react-router"
 
 import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
-import { dataState } from "@/store/dataState"
+import { dataState, visibleCategoriesState, visibleFeedsState } from "@/store/dataState"
 import { currentHomeTargetState, homeIdentityState } from "@/store/homePageState"
 import { getHomeTargetPath, isHomeTargetInCatalog } from "@/utils/home-page"
 import { clearSession } from "@/utils/session"
@@ -39,9 +39,9 @@ const ErrorState = ({ description, logoutLabel, retryLabel, title, onLogout, onR
 const HomeRedirect = () => {
   const identity = useStore(homeIdentityState)
   const target = useStore(currentHomeTargetState)
-  const { categoriesData, feedsData, loadState } = useStore(dataState, {
-    keys: ["categoriesData", "feedsData", "loadState"],
-  })
+  const { loadState } = useStore(dataState, { keys: ["loadState"] })
+  const categories = useStore(visibleCategoriesState)
+  const feeds = useStore(visibleFeedsState)
   const { polyglot } = useStore(polyglotState)
   const { refreshFeedData, refreshIdentity } = useAppData()
   const navigate = useNavigate()
@@ -89,7 +89,7 @@ const HomeRedirect = () => {
     return <LoadingState label={polyglot.t("home_page.catalog_loading")} />
   }
 
-  const targetExists = isHomeTargetInCatalog(target, feedsData, categoriesData)
+  const targetExists = isHomeTargetInCatalog(target, feeds, categories)
   return <Navigate replace to={targetExists ? getHomeTargetPath(target) : "/all"} />
 }
 

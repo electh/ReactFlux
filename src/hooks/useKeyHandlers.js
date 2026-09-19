@@ -17,7 +17,7 @@ import {
   prevContentState,
   setActiveContent,
 } from "@/store/contentState"
-import { filteredCategoriesState } from "@/store/dataState"
+import { visibleCategoriesState } from "@/store/dataState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { getPreferredScrollBehavior } from "@/utils/dom"
 import buildArticleImageModel from "@/utils/images"
@@ -127,9 +127,9 @@ const useKeyHandlers = () => {
       return
     }
 
-    const filteredCategories = filteredCategoriesState.get()
-    const currentIndex = filteredCategories.findIndex((category) => category.id === Number(infoId))
-    const adjacentCategory = findAdjacentItem(filteredCategories, currentIndex, direction)
+    const categories = visibleCategoriesState.get()
+    const currentIndex = categories.findIndex((category) => category.id === Number(infoId))
+    const adjacentCategory = findAdjacentItem(categories, currentIndex, direction)
 
     if (adjacentCategory) {
       navigate(`/category/${adjacentCategory.id}`)

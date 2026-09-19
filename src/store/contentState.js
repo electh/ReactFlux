@@ -1,6 +1,12 @@
 import { computed, map } from "nanostores"
 
-import { dataState, feedsState, unreadTotalState } from "./dataState"
+import {
+  dataState,
+  feedsState,
+  isEntryScopeFullyVisible,
+  unreadTotalState,
+  visibleFeedsState,
+} from "./dataState"
 import { settingsState } from "./settingsState"
 
 import removeDuplicateEntries from "@/utils/deduplicate"
@@ -44,15 +50,15 @@ export const articleHeadingsState = selectStore(activeContentState, (activeConte
 export const filteredEntriesState = computed(contentState, (content) => content.entries)
 
 export const dynamicCountState = computed(
-  [contentState, dataState, unreadTotalState, settingsState, feedsState],
-  (content, data, unreadTotal, settings, feeds) => {
+  [contentState, dataState, unreadTotalState, settingsState, feedsState, visibleFeedsState],
+  (content, data, unreadTotal, settings, feeds, visibleFeeds) => {
     const { filterString, infoFrom, total } = content
     const { showStatus } = settings
 
     if (filterString) {
       return total
     }
-    const { unreadStarredCount, unreadTodayCount, historyCount, starredCount, unreadInfo } = data
+    const { unreadStarredCount, unreadTodayCount, historyCount, starredCount } = data
 
     if (infoFrom === "starred") {
       return showStatus === "unread" ? unreadStarredCount : starredCount
@@ -73,15 +79,16 @@ export const dynamicCountState = computed(
         case "feed": {
           const id = content.infoId
           if (id) {
-            return unreadInfo[id] || 0
+            return feeds.find((feed) => feed.id === Number(id))?.unreadCount ?? 0
           }
           return total
         }
         case "category": {
           const id = content.infoId
           if (id) {
-            const feedsInCategory = feeds.filter((feed) => feed.category.id === Number(id))
-            return feedsInCategory.reduce((acc, feed) => acc + (unreadInfo[feed.id] || 0), 0)
+            const sourceFeeds = isEntryScopeFullyVisible("category", id) ? feeds : visibleFeeds
+            const feedsInCategory = sourceFeeds.filter((feed) => feed.category.id === Number(id))
+            return feedsInCategory.reduce((acc, feed) => acc + feed.unreadCount, 0)
           }
           return total
         }
@@ -153,10 +160,14 @@ const isFeedInCurrentArticleList = (feed, { infoFrom, infoId }) => {
   }
 }
 
+export const invalidateArticleList = () => {
+  const { articleListRevision } = contentState.get()
+  contentState.setKey("articleListRevision", (articleListRevision ?? 0) + 1)
+}
+
 export const invalidateArticleListForFeed = (feed) => {
-  const content = contentState.get()
-  if (isFeedInCurrentArticleList(feed, content)) {
-    contentState.setKey("articleListRevision", (content.articleListRevision ?? 0) + 1)
+  if (isFeedInCurrentArticleList(feed, contentState.get())) {
+    invalidateArticleList()
   }
 }
 
