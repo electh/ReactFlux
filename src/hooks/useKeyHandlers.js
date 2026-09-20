@@ -18,6 +18,7 @@ import {
   setActiveContent,
 } from "@/store/contentState"
 import { visibleCategoriesState } from "@/store/dataState"
+import { settingsState } from "@/store/settingsState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { getPreferredScrollBehavior } from "@/utils/dom"
 import buildArticleImageModel from "@/utils/images"
@@ -42,12 +43,75 @@ const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
   return searchRange.find((entry) => entry.status === "unread")
 }
 
+let lastScrollTimestamp = 0
+let cachedLineHeight = null
+let cachedLineHeightTimestamp = 0
+
+const REPEAT_THRESHOLD_MS = 160
+
+const getArticleScrollElement = (entryDetailRef) => {
+  const articleContainer = entryDetailRef.current
+  if (!articleContainer) {
+    return null
+  }
+  return (
+    articleContainer.querySelector(".simplebar-content-wrapper") ||
+    articleContainer.querySelector("[data-native-scroll='true']") ||
+    articleContainer.querySelector(".scroll-container")
+  )
+}
+
+const getArticleLineHeight = (entryDetailRef) => {
+  const now = performance.now()
+  if (cachedLineHeight && now - cachedLineHeightTimestamp < 2000) {
+    return cachedLineHeight
+  }
+
+  const articleContainer = entryDetailRef.current
+  const articleBody = articleContainer?.querySelector(".article-body")
+  if (articleBody) {
+    const computedStyle = globalThis.getComputedStyle(articleBody)
+    const lineHeight = Number.parseFloat(computedStyle.lineHeight)
+    if (Number.isFinite(lineHeight) && lineHeight > 0) {
+      cachedLineHeight = lineHeight
+      cachedLineHeightTimestamp = now
+      return lineHeight
+    }
+  }
+
+  const fontSize = settingsState.get().fontSize ?? 1
+  const estimatedLineHeight = fontSize * 16 * 1.8
+  cachedLineHeight = estimatedLineHeight
+  cachedLineHeightTimestamp = now
+  return estimatedLineHeight
+}
+
+const scrollArticle = (direction, entryDetailRef) => {
+  const scrollElement = getArticleScrollElement(entryDetailRef)
+  if (!scrollElement) {
+    return
+  }
+
+  const now = performance.now()
+  const isRepeating = now - lastScrollTimestamp < REPEAT_THRESHOLD_MS
+  lastScrollTimestamp = now
+
+  const lineHeight = getArticleLineHeight(entryDetailRef)
+  const step = Math.round(lineHeight * (isRepeating ? 2 : 7))
+  const topDelta = direction === "down" ? step : -step
+
+  scrollElement.scrollBy({
+    top: topDelta,
+    behavior: isRepeating ? "auto" : getPreferredScrollBehavior(),
+  })
+}
+
 const useKeyHandlers = () => {
   const { polyglot } = useStore(polyglotState)
   const { isBelowMedium } = useScreenWidth()
   const navigate = useNavigate()
 
-  const { entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
+  const { entryDetailRef, entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
 
   const scrollSelectedCardIntoView = () => {
     if (entryListRef.current) {
@@ -191,6 +255,14 @@ const useKeyHandlers = () => {
     showPhotoSlider(0)
   })
 
+  const scrollArticleDown = withActiveContent(
+    withPhotoSliderCheck(() => scrollArticle("down", entryDetailRef)),
+  )
+
+  const scrollArticleUp = withActiveContent(
+    withPhotoSliderCheck(() => scrollArticle("up", entryDetailRef)),
+  )
+
   return {
     exitDetailView,
     fetchOriginalArticle,
@@ -203,6 +275,8 @@ const useKeyHandlers = () => {
     openLinkExternally,
     openPhotoSlider,
     saveToThirdPartyServices,
+    scrollArticleDown,
+    scrollArticleUp,
     showHotkeysSettings,
     toggleReadStatus,
     toggleStarStatus,

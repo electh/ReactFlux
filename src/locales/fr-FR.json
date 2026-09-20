@@ -449,6 +449,8 @@
     "openSearchModal": "Ouvrir la boîte de dialogue de recherche d’articles",
     "refreshArticleList": "Rafraîchir la liste des articles",
     "saveToThirdPartyServices": "Sauvegarder l'article actuel dans les services tiers",
+    "scrollArticleDown": "Faire défiler l'article actuel vers le bas",
+    "scrollArticleUp": "Faire défiler l'article actuel vers le haut",
     "showHotkeysSettings": "Afficher les paramètres de raccourcis clavier",
     "toggleReadStatus": "Basculer le statut de lecture de l'article actuel",
     "toggleStarStatus": "Basculer le statut de favori de l'article actuel"

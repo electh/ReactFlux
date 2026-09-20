@@ -449,6 +449,8 @@
     "openSearchModal": "Abrir el cuadro de diálogo de búsqueda de artículos",
     "refreshArticleList": "Actualizar la lista de artículos",
     "saveToThirdPartyServices": "Guardar el artículo actual en servicios de terceros",
+    "scrollArticleDown": "Desplazar hacia abajo en el artículo actual",
+    "scrollArticleUp": "Desplazar hacia arriba en el artículo actual",
     "showHotkeysSettings": "Mostrar los ajustes de los atajos de teclado",
     "toggleReadStatus": "Alternar el estado de lectura del artículo actual",
     "toggleStarStatus": "Activar o desactivar el estado de la estrella (marcador) del artículo actual"

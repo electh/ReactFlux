@@ -33,6 +33,8 @@ const useContentHotkeys = ({ handleRefreshArticleList }) => {
     openLinkExternally,
     openPhotoSlider,
     saveToThirdPartyServices,
+    scrollArticleDown,
+    scrollArticleUp,
     showHotkeysSettings,
     toggleReadStatus,
     toggleStarStatus,
@@ -71,6 +73,24 @@ const useContentHotkeys = ({ handleRefreshArticleList }) => {
 
   useHotkeys(filteredHotkeys.saveToThirdPartyServices, () =>
     saveToThirdPartyServices(handleSaveToThirdPartyServices),
+  )
+
+  useHotkeys(
+    filteredHotkeys.scrollArticleDown,
+    (event) => {
+      event.preventDefault()
+      scrollArticleDown()
+    },
+    { preventDefault: true },
+  )
+
+  useHotkeys(
+    filteredHotkeys.scrollArticleUp,
+    (event) => {
+      event.preventDefault()
+      scrollArticleUp()
+    },
+    { preventDefault: true },
   )
 
   useHotkeys(filteredHotkeys.showHotkeysSettings, showHotkeysSettings, {

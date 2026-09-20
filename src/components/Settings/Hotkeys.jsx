@@ -17,6 +17,8 @@ const Hotkeys = () => {
     "navigateToNextArticle",
     "navigateToNextUnreadArticle",
     "navigateToNextCategory",
+    "scrollArticleUp",
+    "scrollArticleDown",
     "openLinkExternally",
     "toggleReadStatus",
     "fetchOriginalArticle",
