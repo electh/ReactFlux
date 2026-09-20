@@ -18,7 +18,7 @@ import {
   setActiveContent,
 } from "@/store/contentState"
 import { visibleCategoriesState } from "@/store/dataState"
-import { settingsState } from "@/store/settingsState"
+import { getDefaultSettings, settingsState } from "@/store/settingsState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { getPreferredScrollBehavior } from "@/utils/dom"
 import buildArticleImageModel from "@/utils/images"
@@ -43,12 +43,18 @@ const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
   return searchRange.find((entry) => entry.status === "unread")
 }
 
+const REPEAT_THRESHOLD_MS = 160
+const SCROLL_STEP_LINES_SINGLE = 8
+const SCROLL_STEP_LINES_REPEAT = 2
+const LINE_HEIGHT_CACHE_TTL_MS = 2000
+const FALLBACK_LINE_HEIGHT_RATIO = 1.8
+const FALLBACK_BASE_FONT_SIZE_PX = 16
+
 let lastScrollTimestamp = 0
 let cachedLineHeight = null
 let cachedLineHeightTimestamp = 0
 
-const REPEAT_THRESHOLD_MS = 160
-
+// Support SimpleBar wrapper on desktop as well as native scroll containers
 const getArticleScrollElement = (entryDetailRef) => {
   const articleContainer = entryDetailRef.current
   if (!articleContainer) {
@@ -63,7 +69,8 @@ const getArticleScrollElement = (entryDetailRef) => {
 
 const getArticleLineHeight = (entryDetailRef) => {
   const now = performance.now()
-  if (cachedLineHeight && now - cachedLineHeightTimestamp < 2000) {
+  // Cache lineHeight to prevent layout thrashing on frequent key presses
+  if (cachedLineHeight && now - cachedLineHeightTimestamp < LINE_HEIGHT_CACHE_TTL_MS) {
     return cachedLineHeight
   }
 
@@ -79,11 +86,11 @@ const getArticleLineHeight = (entryDetailRef) => {
     }
   }
 
-  const fontSize = settingsState.get().fontSize ?? 1
-  const estimatedLineHeight = fontSize * 16 * 1.8
-  cachedLineHeight = estimatedLineHeight
+  const fontSize = settingsState.get().fontSize ?? getDefaultSettings().fontSize
+  const fallbackLineHeight = fontSize * FALLBACK_BASE_FONT_SIZE_PX * FALLBACK_LINE_HEIGHT_RATIO
+  cachedLineHeight = fallbackLineHeight
   cachedLineHeightTimestamp = now
-  return estimatedLineHeight
+  return fallbackLineHeight
 }
 
 const scrollArticle = (direction, entryDetailRef) => {
@@ -97,11 +104,13 @@ const scrollArticle = (direction, entryDetailRef) => {
   lastScrollTimestamp = now
 
   const lineHeight = getArticleLineHeight(entryDetailRef)
-  const step = Math.round(lineHeight * (isRepeating ? 2 : 7))
+  const lines = isRepeating ? SCROLL_STEP_LINES_REPEAT : SCROLL_STEP_LINES_SINGLE
+  const step = Math.round(lineHeight * lines)
   const topDelta = direction === "down" ? step : -step
 
   scrollElement.scrollBy({
     top: topDelta,
+    // Use "auto" during rapid key repeat to avoid browser animation cancellation stutter
     behavior: isRepeating ? "auto" : getPreferredScrollBehavior(),
   })
 }
