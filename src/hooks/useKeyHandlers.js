@@ -96,7 +96,7 @@ const getArticleLineHeight = (entryDetailRef) => {
 const scrollArticle = (direction, entryDetailRef) => {
   const scrollElement = getArticleScrollElement(entryDetailRef)
   if (!scrollElement) {
-    return
+    return false
   }
 
   const now = performance.now()
@@ -113,6 +113,7 @@ const scrollArticle = (direction, entryDetailRef) => {
     // Use "auto" during rapid key repeat to avoid browser animation cancellation stutter
     behavior: isRepeating ? "auto" : getPreferredScrollBehavior(),
   })
+  return true
 }
 
 const useKeyHandlers = () => {

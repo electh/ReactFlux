@@ -6,6 +6,24 @@ import useEntryActions from "@/hooks/useEntryActions"
 import useKeyHandlers from "@/hooks/useKeyHandlers"
 import { duplicateHotkeysState, hotkeysState } from "@/store/hotkeysState"
 
+const INTERACTIVE_HOTKEY_TARGET_SELECTOR = [
+  "a[href]",
+  "audio[controls]",
+  "button",
+  "input",
+  "select",
+  "summary",
+  "textarea",
+  "video[controls]",
+  "[contenteditable]:not([contenteditable='false'])",
+  "[role='button']",
+  "[role='link']",
+].join(", ")
+
+const SCROLL_HOTKEY_OPTIONS = {
+  ignoreEventWhen: ({ target }) => Boolean(target?.closest?.(INTERACTIVE_HOTKEY_TARGET_SELECTOR)),
+}
+
 const useContentHotkeys = ({ handleRefreshArticleList }) => {
   const duplicateHotkeys = useStore(duplicateHotkeysState)
   const hotkeys = useStore(hotkeysState)
@@ -78,19 +96,23 @@ const useContentHotkeys = ({ handleRefreshArticleList }) => {
   useHotkeys(
     filteredHotkeys.scrollArticleDown,
     (event) => {
+      if (event.defaultPrevented || !scrollArticleDown()) {
+        return
+      }
       event.preventDefault()
-      scrollArticleDown()
     },
-    { preventDefault: true },
+    SCROLL_HOTKEY_OPTIONS,
   )
 
   useHotkeys(
     filteredHotkeys.scrollArticleUp,
     (event) => {
+      if (event.defaultPrevented || !scrollArticleUp()) {
+        return
+      }
       event.preventDefault()
-      scrollArticleUp()
     },
-    { preventDefault: true },
+    SCROLL_HOTKEY_OPTIONS,
   )
 
   useHotkeys(filteredHotkeys.showHotkeysSettings, showHotkeysSettings, {
