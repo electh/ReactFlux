@@ -449,6 +449,8 @@
     "openSearchModal": "Dialog für die Artikelsuche öffnen",
     "refreshArticleList": "Artikelliste neu laden",
     "saveToThirdPartyServices": "Derzeitigen Artikel bei Drittanbieter speichern",
+    "scrollArticleDown": "Im aktuellen Artikel nach unten scrollen",
+    "scrollArticleUp": "Im aktuellen Artikel nach oben scrollen",
     "showHotkeysSettings": "Tastenkürzeleinstellungen anzeigen",
     "toggleReadStatus": "Lesezustand des derzeitigen Artikels umschalten",
     "toggleStarStatus": "Lesezeichenzustand des derzeitigen Artikels umschalten"

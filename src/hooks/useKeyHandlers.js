@@ -18,6 +18,7 @@ import {
   setActiveContent,
 } from "@/store/contentState"
 import { visibleCategoriesState } from "@/store/dataState"
+import { getDefaultSettings, settingsState } from "@/store/settingsState"
 import { ANIMATION_DURATION_MS } from "@/utils/constants"
 import { getPreferredScrollBehavior } from "@/utils/dom"
 import buildArticleImageModel from "@/utils/images"
@@ -42,12 +43,79 @@ const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
   return searchRange.find((entry) => entry.status === "unread")
 }
 
+const SCROLL_STEP_LINES_SINGLE = 8
+const SCROLL_STEP_LINES_REPEAT = 2
+const LINE_HEIGHT_CACHE_TTL_MS = 2000
+const FALLBACK_LINE_HEIGHT_RATIO = 1.8
+const FALLBACK_BASE_FONT_SIZE_PX = 16
+
+let cachedLineHeight = null
+let cachedLineHeightTimestamp = 0
+
+// Support SimpleBar wrapper on desktop as well as native scroll containers
+const getArticleScrollElement = (entryDetailRef) => {
+  const articleContainer = entryDetailRef.current
+  if (!articleContainer) {
+    return null
+  }
+  return (
+    articleContainer.querySelector(".simplebar-content-wrapper") ||
+    articleContainer.querySelector("[data-native-scroll='true']") ||
+    articleContainer.querySelector(".scroll-container")
+  )
+}
+
+const getArticleLineHeight = (entryDetailRef) => {
+  const now = performance.now()
+  // Cache lineHeight to prevent layout thrashing on frequent key presses
+  if (cachedLineHeight && now - cachedLineHeightTimestamp < LINE_HEIGHT_CACHE_TTL_MS) {
+    return cachedLineHeight
+  }
+
+  const articleContainer = entryDetailRef.current
+  const articleBody = articleContainer?.querySelector(".article-body")
+  if (articleBody) {
+    const computedStyle = globalThis.getComputedStyle(articleBody)
+    const lineHeight = Number.parseFloat(computedStyle.lineHeight)
+    if (Number.isFinite(lineHeight) && lineHeight > 0) {
+      cachedLineHeight = lineHeight
+      cachedLineHeightTimestamp = now
+      return lineHeight
+    }
+  }
+
+  const fontSize = settingsState.get().fontSize ?? getDefaultSettings().fontSize
+  const fallbackLineHeight = fontSize * FALLBACK_BASE_FONT_SIZE_PX * FALLBACK_LINE_HEIGHT_RATIO
+  cachedLineHeight = fallbackLineHeight
+  cachedLineHeightTimestamp = now
+  return fallbackLineHeight
+}
+
+const scrollArticle = (direction, entryDetailRef, isRepeating) => {
+  const scrollElement = getArticleScrollElement(entryDetailRef)
+  if (!scrollElement) {
+    return false
+  }
+
+  const lineHeight = getArticleLineHeight(entryDetailRef)
+  const lines = isRepeating ? SCROLL_STEP_LINES_REPEAT : SCROLL_STEP_LINES_SINGLE
+  const step = Math.round(lineHeight * lines)
+  const topDelta = direction === "down" ? step : -step
+
+  scrollElement.scrollBy({
+    top: topDelta,
+    // Use "auto" during rapid key repeat to avoid browser animation cancellation stutter
+    behavior: isRepeating ? "auto" : getPreferredScrollBehavior(),
+  })
+  return true
+}
+
 const useKeyHandlers = () => {
   const { polyglot } = useStore(polyglotState)
   const { isBelowMedium } = useScreenWidth()
   const navigate = useNavigate()
 
-  const { entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
+  const { entryDetailRef, entryListRef, handleEntryClick, closeActiveContent } = useContentContext()
 
   const scrollSelectedCardIntoView = () => {
     if (entryListRef.current) {
@@ -191,6 +259,18 @@ const useKeyHandlers = () => {
     showPhotoSlider(0)
   })
 
+  const scrollArticleDown = withActiveContent(
+    withPhotoSliderCheck((_activeContent, isRepeating) =>
+      scrollArticle("down", entryDetailRef, isRepeating),
+    ),
+  )
+
+  const scrollArticleUp = withActiveContent(
+    withPhotoSliderCheck((_activeContent, isRepeating) =>
+      scrollArticle("up", entryDetailRef, isRepeating),
+    ),
+  )
+
   return {
     exitDetailView,
     fetchOriginalArticle,
@@ -203,6 +283,8 @@ const useKeyHandlers = () => {
     openLinkExternally,
     openPhotoSlider,
     saveToThirdPartyServices,
+    scrollArticleDown,
+    scrollArticleUp,
     showHotkeysSettings,
     toggleReadStatus,
     toggleStarStatus,

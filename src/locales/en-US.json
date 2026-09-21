@@ -449,6 +449,8 @@
     "openSearchModal": "Open the article search dialog",
     "refreshArticleList": "Refresh the article list",
     "saveToThirdPartyServices": "Save the current article to third-party services",
+    "scrollArticleDown": "Scroll down the current article",
+    "scrollArticleUp": "Scroll up the current article",
     "showHotkeysSettings": "Show the hotkeys settings",
     "toggleReadStatus": "Toggle the read status of the current article",
     "toggleStarStatus": "Toggle the star status (bookmark) of the current article"

@@ -18,6 +18,8 @@ const DEFAULT_HOTKEYS = {
   openSearchModal: ["/"],
   refreshArticleList: ["r"],
   saveToThirdPartyServices: ["s"],
+  scrollArticleDown: [],
+  scrollArticleUp: [],
   showHotkeysSettings: ["shift+?"],
   toggleReadStatus: ["m"],
   toggleStarStatus: ["f"],

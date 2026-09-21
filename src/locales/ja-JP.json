@@ -449,6 +449,8 @@
     "openSearchModal": "記事検索ダイアログを開く",
     "refreshArticleList": "記事一覧を更新",
     "saveToThirdPartyServices": "現在の記事をサードパーティサービスに保存",
+    "scrollArticleDown": "現在の記事を下にスクロール",
+    "scrollArticleUp": "現在の記事を上にスクロール",
     "showHotkeysSettings": "ショートカットキー設定を表示",
     "toggleReadStatus": "現在の記事の既読/未読状態を切り替え",
     "toggleStarStatus": "現在の記事のスター状態（お気に入り）を切り替え"
