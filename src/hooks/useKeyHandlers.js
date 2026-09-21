@@ -43,14 +43,12 @@ const findAdjacentUnreadEntry = (currentIndex, direction, entries) => {
   return searchRange.find((entry) => entry.status === "unread")
 }
 
-const REPEAT_THRESHOLD_MS = 160
 const SCROLL_STEP_LINES_SINGLE = 8
 const SCROLL_STEP_LINES_REPEAT = 2
 const LINE_HEIGHT_CACHE_TTL_MS = 2000
 const FALLBACK_LINE_HEIGHT_RATIO = 1.8
 const FALLBACK_BASE_FONT_SIZE_PX = 16
 
-let lastScrollTimestamp = 0
 let cachedLineHeight = null
 let cachedLineHeightTimestamp = 0
 
@@ -93,15 +91,11 @@ const getArticleLineHeight = (entryDetailRef) => {
   return fallbackLineHeight
 }
 
-const scrollArticle = (direction, entryDetailRef) => {
+const scrollArticle = (direction, entryDetailRef, isRepeating) => {
   const scrollElement = getArticleScrollElement(entryDetailRef)
   if (!scrollElement) {
     return false
   }
-
-  const now = performance.now()
-  const isRepeating = now - lastScrollTimestamp < REPEAT_THRESHOLD_MS
-  lastScrollTimestamp = now
 
   const lineHeight = getArticleLineHeight(entryDetailRef)
   const lines = isRepeating ? SCROLL_STEP_LINES_REPEAT : SCROLL_STEP_LINES_SINGLE
@@ -266,11 +260,15 @@ const useKeyHandlers = () => {
   })
 
   const scrollArticleDown = withActiveContent(
-    withPhotoSliderCheck(() => scrollArticle("down", entryDetailRef)),
+    withPhotoSliderCheck((_activeContent, isRepeating) =>
+      scrollArticle("down", entryDetailRef, isRepeating),
+    ),
   )
 
   const scrollArticleUp = withActiveContent(
-    withPhotoSliderCheck(() => scrollArticle("up", entryDetailRef)),
+    withPhotoSliderCheck((_activeContent, isRepeating) =>
+      scrollArticle("up", entryDetailRef, isRepeating),
+    ),
   )
 
   return {
