@@ -4,10 +4,9 @@ ARG VITE_BASE_PATH=/
 # Specify the version to ensure consistent builds
 FROM --platform=$BUILDPLATFORM node:22-alpine AS build
 
+ARG SOURCE_COMMIT
+ARG SOURCE_COMMIT_DATE
 ARG VITE_BASE_PATH
-
-# Install git
-RUN apk add --no-cache git
 
 # enable corepack to use pnpm
 RUN corepack enable

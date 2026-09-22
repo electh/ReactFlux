@@ -1,0 +1,32 @@
+# Git metadata is injected through Docker build arguments.
+.git
+
+# Dependencies
+node_modules
+
+# Build, test, and analysis outputs
+build
+dist
+dist-ssr
+dev-dist
+coverage
+graphify-out
+stats.html
+src/version-info.json
+
+# Logs and caches
+logs
+*.log
+.eslintcache
+
+# Local tooling and editor state
+.pi
+.vscode
+.idea
+.DS_Store
+
+# Repository-only content
+.github
+docs
+images
+tests
