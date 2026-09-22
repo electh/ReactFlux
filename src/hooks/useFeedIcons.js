@@ -3,45 +3,64 @@ import { useEffect } from "react"
 
 import { getFeedIcon } from "@/apis"
 import { authState } from "@/store/authState"
+import { dataState, getDataSessionRevision } from "@/store/dataState"
 import { defaultIcon, feedIconsState } from "@/store/feedIconsState"
 
-const loadingIcons = new Set()
+const pendingIconRequests = new Map()
 
-const useFeedIcons = (id, feed = null) => {
-  const auth = useStore(authState)
-  const feedIcons = useStore(feedIconsState)
+const isCurrentIconRequest = (id, request) =>
+  pendingIconRequests.get(id) === request && request.sessionRevision === getDataSessionRevision()
 
-  useEffect(() => {
-    if (feedIcons[id] || loadingIcons.has(id)) {
+const loadFeedIcon = async (id, request) => {
+  try {
+    const { data: iconData } = await getFeedIcon(id)
+    if (!isCurrentIconRequest(id, request)) {
       return
     }
 
-    loadingIcons.add(id)
+    feedIconsState.setKey(id, { ...defaultIcon, url: `data:${iconData}` })
+  } catch {
+    // FeedIcon falls back to the website icon when the API icon cannot be loaded.
+  } finally {
+    if (pendingIconRequests.get(id) === request) {
+      pendingIconRequests.delete(id)
+    }
+  }
+}
 
-    if (feed?.icon?.external_icon_id) {
-      const iconURL = `${auth.server}/feed-icon/${feed.icon.external_icon_id}`
+const useFeedIcons = (id, feed = null) => {
+  const { server } = useStore(authState)
+  const { sessionRevision } = useStore(dataState, { keys: ["sessionRevision"] })
+  const feedIcons = useStore(feedIconsState)
+  const feedIcon = feedIcons[id]
+  const externalIconId = feed?.icon?.external_icon_id
 
-      feedIconsState.setKey(id, { ...defaultIcon, url: iconURL })
-      loadingIcons.delete(id)
-    } else {
-      getFeedIcon(id)
-        .then((data) => {
-          const iconURL = `data:${data.data}`
-          feedIconsState.setKey(id, { ...defaultIcon, url: iconURL })
-          loadingIcons.delete(id)
-          return null
-        })
-        .catch(() => {
-          loadingIcons.delete(id)
-        })
+  useEffect(() => {
+    if (externalIconId) {
+      pendingIconRequests.delete(id)
+
+      const iconURL = `${server}/feed-icon/${externalIconId}`
+      if (feedIcon?.url !== iconURL) {
+        feedIconsState.setKey(id, { ...defaultIcon, url: iconURL })
+      }
+      return
     }
 
-    return () => {
-      loadingIcons.delete(id)
+    if (feedIcon) {
+      return
     }
-  }, [id])
 
-  return feedIcons[id]
+    const pendingRequest = pendingIconRequests.get(id)
+    if (pendingRequest?.sessionRevision === sessionRevision && pendingRequest.server === server) {
+      return
+    }
+
+    const request = { server, sessionRevision }
+    pendingIconRequests.set(id, request)
+    void loadFeedIcon(id, request)
+  }, [externalIconId, feedIcon, id, server, sessionRevision])
+
+  return feedIcon
 }
 
 export default useFeedIcons
