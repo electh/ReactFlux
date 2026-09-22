@@ -9,7 +9,15 @@ import {
   updateEntriesStatus,
 } from "@/apis"
 import { polyglotState } from "@/hooks/useLanguage"
-import { contentState, setActiveContent, setEntries } from "@/store/contentState"
+import {
+  acquireOriginalContentRequest,
+  contentState,
+  isOriginalContentRequestCurrent,
+  markOriginalContentFetched,
+  releaseOriginalContentRequest,
+  setActiveContent,
+  setEntries,
+} from "@/store/contentState"
 import {
   setHistoryCount,
   setStarredCount,
@@ -434,31 +442,53 @@ const useEntryActions = () => {
   }
 
   const handleFetchContent = async () => {
-    const { activeContent } = contentState.get()
-    if (!activeContent) {
-      return
+    const { activeContent, isOriginalContentFetched } = contentState.get()
+    if (!activeContent || isOriginalContentFetched) {
+      return false
+    }
+
+    const { id: entryId } = activeContent
+    const requestToken = acquireOriginalContentRequest(entryId)
+    if (requestToken === null) {
+      return false
     }
 
     try {
-      const { content: newContent, reading_time: readingTime } = await getOriginalContent(
-        activeContent.id,
-      )
-      const currentActiveContent = contentState.get().activeContent
-      if (currentActiveContent?.id !== activeContent.id) {
-        return
+      const { content: newContent, reading_time: readingTime } = await getOriginalContent(entryId)
+      if (!isOriginalContentRequestCurrent(entryId, requestToken)) {
+        return false
       }
 
-      Message.success(polyglot.t("actions.fetched_content_success"))
+      const currentActiveContent = contentState.get().activeContent
+      if (currentActiveContent?.id !== entryId) {
+        return false
+      }
+
       const newReadingTime = readingTime ?? currentActiveContent.reading_time
-      setActiveContent({
+      const updatedActiveContent = {
         ...currentActiveContent,
         content: newContent,
         headings: extractHeadings(newContent),
         reading_time: newReadingTime,
+      }
+      batch(() => {
+        setActiveContent(updatedActiveContent)
+        markOriginalContentFetched(entryId)
       })
+      Message.success(polyglot.t("actions.fetched_content_success"))
+      return true
     } catch (error) {
+      if (
+        !isOriginalContentRequestCurrent(entryId, requestToken) ||
+        contentState.get().activeContent?.id !== entryId
+      ) {
+        return false
+      }
       console.error("Failed to fetch content:", error)
       Message.error(polyglot.t("actions.fetched_content_error"))
+      return false
+    } finally {
+      releaseOriginalContentRequest(entryId, requestToken)
     }
   }
 

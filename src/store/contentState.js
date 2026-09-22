@@ -25,6 +25,8 @@ const defaultValue = {
   infoId: null, // feed 或 category 的 id
   isArticleListReady: false, // 文章列表是否加载完成
   isArticleLoading: false, // 文章是否正在加载
+  isOriginalContentFetched: false,
+  originalContentRequestTokens: {},
   loadMoreError: false,
   loadMoreVisible: false, // 加载更多元素可见性
   total: 0, // 接口返回文章总数原始值，不受接口返回数据长度限制
@@ -36,6 +38,11 @@ export const activeContentState = selectStore(contentState, ({ activeContent }) 
 const activeContentIdState = selectStore(
   activeContentState,
   (activeContent) => activeContent?.id ?? null,
+)
+export const isOriginalContentLoadingState = selectStore(
+  contentState,
+  ({ activeContent, originalContentRequestTokens }) =>
+    activeContent ? Object.hasOwn(originalContentRequestTokens, activeContent.id) : false,
 )
 export const createEntrySelectedState = (entryId) =>
   selectStore(activeContentIdState, (activeContentId) => activeContentId === entryId)
@@ -123,7 +130,20 @@ export const nextContentState = computed(
   },
 )
 
-export const setActiveContent = createSetter(contentState, "activeContent")
+export const setActiveContent = (updater) => {
+  const state = contentState.get()
+  const nextActiveContent = typeof updater === "function" ? updater(state.activeContent) : updater
+  if (Object.is(state.activeContent, nextActiveContent)) {
+    return
+  }
+
+  const activeEntryChanged = state.activeContent?.id !== nextActiveContent?.id
+  contentState.set({
+    ...state,
+    activeContent: nextActiveContent,
+    isOriginalContentFetched: activeEntryChanged ? false : state.isOriginalContentFetched,
+  })
+}
 export const setArticleListError = createSetter(contentState, "articleListError")
 export const incrementArticleListSnapshotRevision = () =>
   contentState.setKey(
@@ -137,6 +157,45 @@ export const setInfoFrom = createSetter(contentState, "infoFrom")
 export const setInfoId = createSetter(contentState, "infoId")
 export const setIsArticleListReady = createSetter(contentState, "isArticleListReady")
 export const setIsArticleLoading = createSetter(contentState, "isArticleLoading")
+const setOriginalContentRequestTokens = createSetter(contentState, "originalContentRequestTokens")
+
+export const markOriginalContentFetched = (entryId) => {
+  const { activeContent, isOriginalContentFetched } = contentState.get()
+  if (activeContent?.id !== entryId || isOriginalContentFetched) {
+    return false
+  }
+
+  contentState.setKey("isOriginalContentFetched", true)
+  return true
+}
+
+export const acquireOriginalContentRequest = (entryId) => {
+  const { originalContentRequestTokens: requestTokens } = contentState.get()
+  if (Object.hasOwn(requestTokens, entryId)) {
+    return null
+  }
+
+  const requestToken = Symbol()
+  setOriginalContentRequestTokens({ ...requestTokens, [entryId]: requestToken })
+  return requestToken
+}
+
+export const isOriginalContentRequestCurrent = (entryId, requestToken) => {
+  const { originalContentRequestTokens: requestTokens } = contentState.get()
+  return Object.hasOwn(requestTokens, entryId) && requestTokens[entryId] === requestToken
+}
+
+export const releaseOriginalContentRequest = (entryId, requestToken) => {
+  const { originalContentRequestTokens: requestTokens } = contentState.get()
+  if (!Object.hasOwn(requestTokens, entryId) || requestTokens[entryId] !== requestToken) {
+    return
+  }
+
+  const remainingRequestTokens = { ...requestTokens }
+  delete remainingRequestTokens[entryId]
+  setOriginalContentRequestTokens(remainingRequestTokens)
+}
+
 export const setLoadMoreError = createSetter(contentState, "loadMoreError")
 export const setLoadMoreVisible = createSetter(contentState, "loadMoreVisible")
 export const setTotal = createSetter(contentState, "total")

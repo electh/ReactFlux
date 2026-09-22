@@ -32,6 +32,7 @@ import useScreenWidth from "@/hooks/useScreenWidth"
 import {
   articleHeadingsState,
   contentState,
+  isOriginalContentLoadingState,
   nextContentState,
   prevContentState,
 } from "@/store/contentState"
@@ -102,7 +103,10 @@ MobileButtons.displayName = "MobileButtons"
 
 const ActionButtons = () => {
   const { detailCloseButtonRef } = useDesktopSidebar()
-  const { activeContent } = useStore(contentState, { keys: ["activeContent"] })
+  const { activeContent, isOriginalContentFetched } = useStore(contentState, {
+    keys: ["activeContent", "isOriginalContentFetched"],
+  })
+  const isOriginalContentLoading = useStore(isOriginalContentLoadingState)
   const { hasIntegrations } = useStore(dataState, { keys: ["hasIntegrations"] })
   const { polyglot } = useStore(polyglotState)
   const headings = useStore(articleHeadingsState)
@@ -132,15 +136,8 @@ const ActionButtons = () => {
 
   const [dropdownVisible, setDropdownVisible] = useState(false)
   const [isCompactTocVisible, setIsCompactTocVisible] = useState(false)
-  const [isFetchedOriginal, setIsFetchedOriginal] = useState(false)
-  const [lastActiveContentId, setLastActiveContentId] = useState(activeContent?.id)
   const compactTocMenuItemRef = useRef(null)
   const moreButtonRef = useRef(null)
-
-  if (activeContent?.id !== lastActiveContentId) {
-    setLastActiveContentId(activeContent?.id)
-    setIsFetchedOriginal(false)
-  }
 
   const hasHeadings = headings.length > 0
 
@@ -177,6 +174,12 @@ const ActionButtons = () => {
   }
 
   const fontFamilyOptions = createFontFamilyOptions(polyglot)
+
+  const isOriginalContentFetchDisabled = isOriginalContentFetched || isOriginalContentLoading
+
+  const handleFetchOriginalContent = () => {
+    void handleFetchContent()
+  }
 
   const handleShare = async () => {
     if (!navigator.share) {
@@ -310,14 +313,13 @@ const ActionButtons = () => {
     fetch: (
       <CustomTooltip mini content={actionLabels.fetch}>
         <Button
+          aria-busy={isOriginalContentLoading || undefined}
           aria-label={actionLabels.fetch}
-          disabled={isFetchedOriginal}
+          disabled={isOriginalContentFetchDisabled}
           icon={<IconCloudDownload aria-hidden="true" />}
+          loading={isOriginalContentLoading}
           shape="circle"
-          onClick={async () => {
-            await handleFetchContent()
-            setIsFetchedOriginal(true)
-          }}
+          onClick={handleFetchOriginalContent}
         />
       </CustomTooltip>
     ),
@@ -345,11 +347,9 @@ const ActionButtons = () => {
               {showFetchInMenu && (
                 <Menu.Item
                   key="fetch_original"
-                  disabled={isFetchedOriginal}
-                  onClick={async () => {
-                    await handleFetchContent()
-                    setIsFetchedOriginal(true)
-                  }}
+                  aria-busy={isOriginalContentLoading || undefined}
+                  disabled={isOriginalContentFetchDisabled}
+                  onClick={handleFetchOriginalContent}
                 >
                   <div className="settings-menu-item">
                     <span>{actionLabels.fetch}</span>
@@ -516,11 +516,7 @@ const ActionButtons = () => {
           commonButtons={commonButtons}
           handleSaveToThirdPartyServices={() => handleSaveToThirdPartyServices(activeContent)}
           hasIntegrations={hasIntegrations}
-          navigateToNextArticle={navigateToNextArticle}
-          navigateToPreviousArticle={navigateToPreviousArticle}
-          nextContent={nextContent}
           polyglot={polyglot}
-          prevContent={prevContent}
         />
       )}
     </div>
