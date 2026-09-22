@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Button,
   Collapse,
   Divider,
@@ -11,7 +10,6 @@ import {
   Typography,
 } from "@arco-design/web-react"
 import {
-  IconBook,
   IconCalendar,
   IconDelete,
   IconDownload,
@@ -81,6 +79,7 @@ import { createEntityHomeTarget, isSameHomeTarget } from "@/utils/home-page"
 
 import "./Sidebar.css"
 
+const LOGO_URL = `${import.meta.env.BASE_URL}logo192.png`
 const MenuItem = Menu.Item
 
 const CategoryTitle = ({
@@ -852,9 +851,14 @@ const Sidebar = ({ headerAction, onNavigate }) => {
                   type="button"
                   onClick={handleHomeNavigation}
                 >
-                  <Avatar className="avatar" size={32}>
-                    <IconBook aria-hidden="true" style={{ color: "var(--color-bg-1)" }} />
-                  </Avatar>
+                  <img
+                    alt=""
+                    className="home-brand-logo"
+                    decoding="async"
+                    height="32"
+                    src={LOGO_URL}
+                    width="32"
+                  />
                   <span className="home-brand-title">ReactFlux</span>
                 </button>
               </span>

@@ -45,9 +45,12 @@
   align-items: center;
 }
 
-.menu-header .avatar {
+.home-brand-logo {
+  box-sizing: border-box;
+  flex: none;
   margin-right: 10px;
-  background-color: var(--color-text-1);
+  border: 1px solid var(--color-border-2);
+  border-radius: 8px;
 }
 
 .home-brand-tooltip-anchor {
