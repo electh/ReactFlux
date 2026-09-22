@@ -443,7 +443,7 @@ const ArticleDetail = forwardRef((_, ref) => {
 
   const attachments = activeContent.attachments ?? EMPTY_ATTACHMENTS
   const { items: attachmentItems, primaryMedia } = attachments
-  const { getImageIndex, imageSources, visibleAttachments } = useMemo(
+  const { getImageIndex, imageSlides, visibleAttachments } = useMemo(
     () => buildArticleImageModel(renderableContentHtml, attachmentItems),
     [attachmentItems, renderableContentHtml],
   )
@@ -457,7 +457,6 @@ const ArticleDetail = forwardRef((_, ref) => {
     () => ReactHtmlParser(renderableContentHtml, htmlParserOptions),
     [htmlParserOptions, renderableContentHtml],
   )
-  const lightboxSlides = useMemo(() => imageSources.map((src) => ({ src })), [imageSources])
 
   const handlePhotoSliderView = ({ index }) => {
     const session = photoSliderSessionRef.current
@@ -676,7 +675,7 @@ const ArticleDetail = forwardRef((_, ref) => {
                       direction={contentBrowsingDirection}
                       index={selectedIndex}
                       open={isPhotoSliderVisible}
-                      slides={lightboxSlides}
+                      slides={imageSlides}
                       onClose={completePhotoSliderClose}
                       onExited={handlePhotoSliderExited}
                       onExiting={handlePhotoSliderExiting}

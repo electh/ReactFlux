@@ -248,11 +248,11 @@ const useKeyHandlers = () => {
       return
     }
 
-    const { imageSources } = buildArticleImageModel(
+    const { imageSlides } = buildArticleImageModel(
       activeContent.content,
       activeContent.attachments?.items,
     )
-    if (imageSources.length === 0) {
+    if (imageSlides.length === 0) {
       return
     }
 
