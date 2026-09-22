@@ -104,6 +104,7 @@
     "close_dialog": "%{name} schließen",
     "copy_to_clipboard_tooltip": "In die Zwischenablage kopieren",
     "code_language": "Code-Sprache",
+    "scrollable_table": "Scrollbare Tabelle",
     "enable_syntax_highlighting": "Syntaxhervorhebung aktivieren",
     "copied": "Kopiert!",
     "copy_failed": "Kopieren fehlgeschlagen, bitte später erneut versuchen",

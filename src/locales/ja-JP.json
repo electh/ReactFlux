@@ -104,6 +104,7 @@
     "close_dialog": "%{name} を閉じる",
     "copy_to_clipboard_tooltip": "クリップボードにコピー",
     "code_language": "コード言語",
+    "scrollable_table": "スクロール可能な表",
     "enable_syntax_highlighting": "シンタックスハイライトを有効化",
     "copied": "コピーしました！",
     "copy_failed": "コピーに失敗しました。後で再試行してください",

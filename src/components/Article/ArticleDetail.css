@@ -153,8 +153,104 @@
 .article-body td {
   vertical-align: top;
   padding: 8px 8px 8px 0;
+  color: var(--color-text-2);
   word-wrap: break-word;
   overflow-wrap: break-word;
+}
+
+.article-body .article-table-scroll {
+  margin-block: 1.25em;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  border: 1px solid var(--color-border-2);
+  border-radius: var(--border-radius-medium);
+  -webkit-overflow-scrolling: touch;
+}
+
+.article-body .article-table-scroll:focus-visible {
+  outline: 2px solid rgb(var(--primary-6));
+  outline-offset: 3px;
+}
+
+.article-body .article-table-scroll[data-table-display-none] {
+  display: contents;
+}
+
+.article-body .article-table-scroll[data-table-visibility-hidden] {
+  overflow-x: hidden;
+  border-color: transparent;
+}
+
+.article-body .article-table-scroll > table {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 100%;
+  width: max-content;
+  table-layout: auto;
+}
+
+.article-body .article-table-scroll > table > caption {
+  padding: 10px 14px;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+.article-body .article-table-scroll > table > caption,
+.article-body .article-table-scroll > table > tr > th,
+.article-body .article-table-scroll > table > :is(thead, tbody, tfoot) > tr > th {
+  background-color: var(--color-fill-1);
+  color: var(--color-text-1);
+  font-weight: var(--font-weight-500);
+}
+
+.article-body .article-table-scroll > table > tr > :is(th, td),
+.article-body .article-table-scroll > table > :is(thead, tbody, tfoot) > tr > :is(th, td) {
+  max-width: min(32rem, 80vw);
+  padding: 10px 14px;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.article-body .article-table-scroll > table > tr > :is(th, td):not([align]),
+.article-body
+  .article-table-scroll
+  > table
+  > :is(thead, tbody, tfoot)
+  > tr
+  > :is(th, td):not([align]) {
+  text-align: start;
+}
+
+.article-body .article-table-scroll > table > thead > tr > th,
+.article-body .article-table-scroll > table > tbody > tr:not(:last-child) > :is(th, td) {
+  border-block-end: 1px solid var(--color-border-2);
+}
+
+.article-body .article-table-scroll > table > tfoot > tr:first-child > :is(th, td) {
+  border-block-start: 1px solid var(--color-border-2);
+}
+
+.article-body .article-table-scroll > table > tr > :is(th, td) > p:first-child,
+.article-body
+  .article-table-scroll
+  > table
+  > :is(thead, tbody, tfoot)
+  > tr
+  > :is(th, td)
+  > p:first-child {
+  margin-block-start: 0;
+}
+
+.article-body .article-table-scroll > table > tr > :is(th, td) > p:last-child,
+.article-body
+  .article-table-scroll
+  > table
+  > :is(thead, tbody, tfoot)
+  > tr
+  > :is(th, td)
+  > p:last-child {
+  margin-block-end: 0;
 }
 
 .article-body td img {
@@ -193,26 +289,6 @@
     max-width: var(--image-scale);
   }
 
-  .article-body table {
-    display: block;
-    max-width: 100%;
-  }
-
-  .article-body tbody {
-    display: block;
-    width: 100%;
-  }
-
-  .article-body tr {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .article-body td {
-    display: block;
-    width: 100%;
-  }
-
   .article-body td .big-image,
   .article-body td .image-overlay-button {
     margin: 10px 0;
@@ -241,11 +317,6 @@
   background-color: #282c34;
   border-radius: var(--border-radius-small);
   padding: 0.2em 0.4em;
-}
-
-/*code 相关样式 - 表格 */
-.article-content td {
-  color: var(--color-text-2);
 }
 
 .article-lightbox .yarl__slide_image {

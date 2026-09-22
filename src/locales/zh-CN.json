@@ -104,6 +104,7 @@
     "close_dialog": "关闭%{name}",
     "copy_to_clipboard_tooltip": "复制到剪贴板",
     "code_language": "代码语言",
+    "scrollable_table": "可滚动表格",
     "enable_syntax_highlighting": "启用语法高亮",
     "copied": "已复制！",
     "copy_failed": "复制失败，请稍后再试",

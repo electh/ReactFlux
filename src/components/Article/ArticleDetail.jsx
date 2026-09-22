@@ -17,6 +17,7 @@ import {
 import { useNavigate } from "react-router"
 
 import ArticleEnclosures from "./ArticleEnclosures"
+import ArticleTable from "./ArticleTable"
 import DeferredCodeBlock from "./DeferredCodeBlock"
 import EnclosurePlayer from "./EnclosurePlayer"
 import ImageLinkTag from "./ImageLinkTag"
@@ -173,25 +174,26 @@ const handleTableBasedCode = (node) => {
   return decodeAndParseCodeContent(codePre)
 }
 
-// Remove empty td elements from table-based layout content
-const handleContentTable = (node) => {
-  const tbody = node.children.find((child) => child.name === "tbody")
-  if (!tbody) {
-    return null
+// Preserve presentational tables; normalize and wrap data tables for horizontal scrolling.
+const handleContentTable = (node, parserOptions) => {
+  const tableRole = node.attribs?.role?.trim().toLowerCase()
+  if (tableRole === "none" || tableRole === "presentation") {
+    return node
   }
 
-  for (const tr of tbody.children) {
-    if (tr.name === "tr") {
-      tr.children = tr.children.filter(
-        (td) =>
-          td.name === "td" &&
-          td.children?.length > 0 &&
-          td.children.some((child) => child.data?.trim() || child.children?.length),
-      )
+  const tbody = node.children.find((child) => child.name === "tbody")
+  if (tbody) {
+    for (const row of tbody.children) {
+      if (row.name !== "tr") {
+        continue
+      }
+
+      // Keep empty cells because their positions and spans are part of the table's semantics.
+      row.children = row.children.filter(({ name }) => name === "td" || name === "th")
     }
   }
 
-  return node
+  return <ArticleTable node={node} options={parserOptions} />
 }
 
 // Helper function to process figcaption content
@@ -353,7 +355,7 @@ const getHtmlParserOptions = (getImageIndex, togglePhotoSlider) => {
           return handleIframe(node)
         }
         case "table": {
-          return handleContentTable(node)
+          return handleContentTable(node, options)
         }
         default: {
           return node

@@ -104,6 +104,7 @@
     "close_dialog": "Close %{name}",
     "copy_to_clipboard_tooltip": "Copy to clipboard",
     "code_language": "Code language",
+    "scrollable_table": "Scrollable table",
     "enable_syntax_highlighting": "Enable syntax highlighting",
     "copied": "Copied!",
     "copy_failed": "Failed to copy, please try again later",
