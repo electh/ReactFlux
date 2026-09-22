@@ -1,0 +1,140 @@
+.about-modal {
+  width: 440px;
+  overflow: hidden;
+}
+
+.about-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 4px;
+}
+
+.about-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.about-logo {
+  box-sizing: border-box;
+  border: 1px solid var(--color-border-2);
+  border-radius: 20px;
+  width: 80px;
+  height: 80px;
+  box-shadow: var(--shadow);
+}
+
+.about-product-name {
+  margin: 16px 0 0;
+  color: var(--color-text-1);
+  font-size: 26px;
+  font-weight: 650;
+  line-height: 34px;
+  letter-spacing: -0.02em;
+}
+
+.about-description {
+  max-width: 320px;
+  margin: 6px 0 0;
+  color: var(--color-text-2);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.about-build {
+  border: 1px solid var(--color-border-2);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--color-fill-1);
+  padding: 14px 16px;
+}
+
+.about-build-title {
+  margin: 0 0 8px;
+  color: var(--color-text-1);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.about-build-list {
+  margin: 0;
+}
+
+.about-build-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 16px;
+  padding: 9px 0;
+}
+
+.about-build-row + .about-build-row {
+  border-top: 1px solid var(--color-border-2);
+}
+
+.about-build-row dt {
+  color: var(--color-text-2);
+}
+
+.about-build-row dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--color-text-1);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.about-build-row code {
+  border: 1px solid var(--color-border-2);
+  border-radius: 6px;
+  background-color: var(--color-bg-2);
+  padding: 3px 7px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.about-github-button.arco-btn {
+  margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .about-modal {
+    width: calc(100% - 16px);
+    max-width: 440px;
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+
+  .about-modal .arco-modal-title {
+    font-size: 18px;
+  }
+
+  .about-modal .arco-modal-content {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .about-modal-content {
+    gap: 20px;
+  }
+
+  .about-github-button.arco-btn {
+    min-height: var(--mobile-form-control-size);
+    font-size: var(--mobile-form-font-size);
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .about-build-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .about-build-row dd {
+    text-align: left;
+  }
+}

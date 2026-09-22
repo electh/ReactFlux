@@ -1,5 +1,5 @@
 .arco-modal:has(.accessible-modal-close-button) .arco-modal-header {
-  padding-right: 52px;
+  padding-inline: 52px;
 }
 
 .arco-modal .arco-modal-close-icon:has(.accessible-modal-close-button) {

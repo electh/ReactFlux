@@ -2,6 +2,7 @@ import { Button, Divider, Dropdown, Menu, Modal, Notification, Radio } from "@ar
 import {
   IconDesktop,
   IconExclamationCircle,
+  IconInfoCircle,
   IconInfoCircleFill,
   IconLink,
   IconMoonFill,
@@ -15,6 +16,7 @@ import { useStore } from "@nanostores/react"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 
+import AboutModal from "@/components/About/AboutModal"
 import { polyglotState } from "@/hooks/useLanguage"
 import useModalToggle from "@/hooks/useModalToggle"
 import { authState } from "@/store/authState"
@@ -41,6 +43,7 @@ export default function Profile() {
   const { themeMode } = useStore(settingsState, { keys: ["themeMode"] })
 
   const { setSettingsModalVisible } = useModalToggle()
+  const [aboutModalVisible, setAboutModalVisible] = useState(false)
   const [menuVisible, setMenuVisible] = useState(false)
 
   const handleMenuVisibleChange = (isVisible) => {
@@ -89,80 +92,97 @@ export default function Profile() {
   }
 
   return (
-    <div className="user-profile-container">
-      <div>
-        <Dropdown
-          popupVisible={menuVisible}
-          position="br"
-          trigger="click"
-          droplist={
-            <Menu className="mobile-action-menu">
-              <Radio.Group
-                className="profile-theme-options"
-                name="theme"
-                size="small"
-                type="button"
-                value={themeMode}
-                onChange={(value) => updateSettings({ themeMode: value })}
-              >
-                {THEME_MODE_OPTIONS.map(({ labelKey, value }) => {
-                  const ThemeIcon = THEME_MODE_ICONS[value]
+    <>
+      <div className="user-profile-container">
+        <div>
+          <Dropdown
+            popupVisible={menuVisible}
+            position="br"
+            trigger="click"
+            droplist={
+              <Menu className="mobile-action-menu">
+                <Radio.Group
+                  className="profile-theme-options"
+                  name="theme"
+                  size="small"
+                  type="button"
+                  value={themeMode}
+                  onChange={(value) => updateSettings({ themeMode: value })}
+                >
+                  {THEME_MODE_OPTIONS.map(({ labelKey, value }) => {
+                    const ThemeIcon = THEME_MODE_ICONS[value]
 
-                  return (
-                    <Radio key={value} value={value}>
-                      <ThemeIcon aria-hidden="true" />
-                      <span className="visually-hidden">{polyglot.t(labelKey)}</span>
-                    </Radio>
-                  )
-                })}
-              </Radio.Group>
-              <Divider style={{ margin: "4px 0" }} />
-              <Menu.Item
-                key="0"
-                aria-haspopup="dialog"
-                onClick={() => setSettingsModalVisible(true)}
-              >
-                <IconSettings aria-hidden="true" className="icon-right" />
-                {polyglot.t("sidebar.settings")}
-              </Menu.Item>
-              <Menu.Item key="1" onClick={() => window.open(`${server}/settings`, "_blank")}>
-                <IconLink aria-hidden="true" className="icon-right" />
-                {polyglot.t("sidebar.miniflux_settings")}
-              </Menu.Item>
-              <Menu.Item
-                key="2"
-                onClick={() =>
-                  window.open(`https://github.com/${GITHUB_REPO_PATH}/issues/new/choose`, "_blank")
-                }
-              >
-                <IconExclamationCircle aria-hidden="true" className="icon-right" />
-                {polyglot.t("sidebar.report_issue")}
-              </Menu.Item>
-              <Divider style={{ margin: "4px 0" }} />
-              <Menu.Item key="3" onClick={handleResetSettings}>
-                <IconRefresh aria-hidden="true" className="icon-right" />
-                {polyglot.t("sidebar.reset_settings")}
-              </Menu.Item>
-              <Menu.Item key="4" onClick={handleLogout}>
-                <IconPoweroff aria-hidden="true" className="icon-right" />
-                {polyglot.t("sidebar.logout")}
-              </Menu.Item>
-            </Menu>
-          }
-          onVisibleChange={handleMenuVisibleChange}
-        >
-          <Button
-            aria-expanded={menuVisible}
-            aria-haspopup="menu"
-            aria-label={polyglot.t("sidebar.user_menu")}
-            className="sidebar-profile-trigger"
-            icon={<IconUser aria-hidden="true" />}
-            shape="circle"
-            size="small"
-            style={{ marginRight: 8 }}
-          />
-        </Dropdown>
+                    return (
+                      <Radio key={value} value={value}>
+                        <ThemeIcon aria-hidden="true" />
+                        <span className="visually-hidden">{polyglot.t(labelKey)}</span>
+                      </Radio>
+                    )
+                  })}
+                </Radio.Group>
+                <Divider style={{ margin: "4px 0" }} />
+                <Menu.Item
+                  key="settings"
+                  aria-haspopup="dialog"
+                  onClick={() => setSettingsModalVisible(true)}
+                >
+                  <IconSettings aria-hidden="true" className="icon-right" />
+                  {polyglot.t("sidebar.settings")}
+                </Menu.Item>
+                <Menu.Item
+                  key="miniflux-settings"
+                  onClick={() => window.open(`${server}/settings`, "_blank")}
+                >
+                  <IconLink aria-hidden="true" className="icon-right" />
+                  {polyglot.t("sidebar.miniflux_settings")}
+                </Menu.Item>
+                <Menu.Item
+                  key="report-issue"
+                  onClick={() =>
+                    window.open(
+                      `https://github.com/${GITHUB_REPO_PATH}/issues/new/choose`,
+                      "_blank",
+                    )
+                  }
+                >
+                  <IconExclamationCircle aria-hidden="true" className="icon-right" />
+                  {polyglot.t("sidebar.report_issue")}
+                </Menu.Item>
+                <Menu.Item
+                  key="about"
+                  aria-haspopup="dialog"
+                  onClick={() => setAboutModalVisible(true)}
+                >
+                  <IconInfoCircle aria-hidden="true" className="icon-right" />
+                  {polyglot.t("sidebar.about")}
+                </Menu.Item>
+                <Divider style={{ margin: "4px 0" }} />
+                <Menu.Item key="reset-settings" onClick={handleResetSettings}>
+                  <IconRefresh aria-hidden="true" className="icon-right" />
+                  {polyglot.t("sidebar.reset_settings")}
+                </Menu.Item>
+                <Menu.Item key="logout" onClick={handleLogout}>
+                  <IconPoweroff aria-hidden="true" className="icon-right" />
+                  {polyglot.t("sidebar.logout")}
+                </Menu.Item>
+              </Menu>
+            }
+            onVisibleChange={handleMenuVisibleChange}
+          >
+            <Button
+              aria-expanded={menuVisible}
+              aria-haspopup="menu"
+              aria-label={polyglot.t("sidebar.user_menu")}
+              className="sidebar-profile-trigger"
+              icon={<IconUser aria-hidden="true" />}
+              shape="circle"
+              size="small"
+              style={{ marginRight: 8 }}
+            />
+          </Dropdown>
+        </div>
       </div>
-    </div>
+      <AboutModal visible={aboutModalVisible} onClose={() => setAboutModalVisible(false)} />
+    </>
   )
 }

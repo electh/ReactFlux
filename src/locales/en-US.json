@@ -78,6 +78,7 @@
     "export_opml_error": "Failed to export OPML",
     "settings": "Settings",
     "miniflux_settings": "Miniflux Settings",
+    "about": "About",
     "report_issue": "Report an issue",
     "reset_settings": "Reset Settings",
     "logout": "Logout",
@@ -85,6 +86,16 @@
     "settings_reset_description": "Are you sure you want to reset your settings? This action cannot be undone.",
     "logout_confirm": "Confirm Logout",
     "logout_description": "Are you sure you want to logout? This action cannot be undone."
+  },
+  "about": {
+    "title": "About",
+    "description": "A simple but powerful RSS reader for Miniflux.",
+    "build_information": "Build information",
+    "commit": "Commit hash",
+    "build_date": "Build date",
+    "unknown": "Unknown",
+    "view_on_github": "View on GitHub",
+    "github_link_label": "View ReactFlux on GitHub (opens in a new tab)"
   },
   "actions": {
     "check": "Check",
