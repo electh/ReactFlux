@@ -4,24 +4,55 @@
 }
 
 .deferred-code-block-placeholder {
+  --code-placeholder-background: #ffffff;
+  --code-placeholder-border: #d0d7de;
+  --code-placeholder-control-background: #f6f8fa;
+  --code-placeholder-control-hover-background: #eef1f4;
+  --code-placeholder-text: #24292e;
   position: relative;
+  margin-block: 1em;
+}
+
+body[arco-theme="dark"] .deferred-code-block-placeholder {
+  --code-placeholder-background: #0d1117;
+  --code-placeholder-border: #30363d;
+  --code-placeholder-control-background: #21262d;
+  --code-placeholder-control-hover-background: #30363d;
+  --code-placeholder-text: #c9d1d9;
+}
+
+.code-block-loading {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  overflow-x: auto;
+  border: 1px solid var(--code-placeholder-border);
+  border-radius: var(--border-radius-medium);
+  background: var(--code-placeholder-background);
+  padding: 16px;
+  color: var(--code-placeholder-text);
 }
 
 .enable-code-highlighting {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  inset-block-start: 8px;
+  inset-inline-end: 8px;
   z-index: 1;
-  border: 1px solid rgb(255 255 255 / 24%);
+  max-width: calc(100% - 16px);
+  transition:
+    border-color 0.1s linear,
+    background-color 0.1s linear;
+  border: 1px solid var(--code-placeholder-border);
   border-radius: var(--border-radius-small);
-  background: rgb(255 255 255 / 10%);
+  background: var(--code-placeholder-control-background);
   padding: 6px 10px;
-  color: #e5e7eb;
+  color: var(--code-placeholder-text);
+  font: inherit;
   cursor: pointer;
 }
 
 .enable-code-highlighting:hover {
-  background: rgb(255 255 255 / 18%);
+  background: var(--code-placeholder-control-hover-background);
 }
 
 .enable-code-highlighting:focus-visible {

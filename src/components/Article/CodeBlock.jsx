@@ -2,7 +2,6 @@ import { Button, Message, Select } from "@arco-design/web-react"
 import { IconCopy } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs"
 
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import { polyglotState } from "@/hooks/useLanguage"
@@ -13,6 +12,7 @@ import {
   SUPPORTED_LANGUAGES,
   SyntaxHighlighter,
 } from "@/utils/highlighter"
+import scheduleWhenIdle from "@/utils/idle-callback"
 import "./CodeBlock.css"
 
 registerLanguages()
@@ -36,13 +36,13 @@ const CodeBlock = ({ children }) => {
 
   const copyToClipboard = useCallback(() => {
     navigator.clipboard
-      .writeText(children.trim())
+      .writeText(code)
       .then(() => Message.success(polyglot.t("actions.copied")))
       .catch((error) => {
         console.error(error)
         Message.error(polyglot.t("actions.copy_failed"))
       })
-  }, [children, polyglot])
+  }, [code, polyglot])
 
   const showLineNumbers = useMemo(
     () => code.split("\n", MAX_NUMBERED_LINES + 1).length <= MAX_NUMBERED_LINES,
@@ -70,13 +70,7 @@ const CodeBlock = ({ children }) => {
       }
     }
 
-    if (typeof globalThis.requestIdleCallback === "function") {
-      const idleCallbackId = globalThis.requestIdleCallback(detectLanguage, { timeout: 500 })
-      return () => globalThis.cancelIdleCallback(idleCallbackId)
-    }
-
-    const timeoutId = setTimeout(detectLanguage, 50)
-    return () => clearTimeout(timeoutId)
+    return scheduleWhenIdle(detectLanguage)
   }, [code])
 
   return (
@@ -89,7 +83,11 @@ const CodeBlock = ({ children }) => {
         />
         <CopyButton onClick={copyToClipboard} />
       </div>
-      <SyntaxHighlighter language={language} showLineNumbers={showLineNumbers} style={atomOneDark}>
+      <SyntaxHighlighter
+        language={language}
+        showLineNumbers={showLineNumbers}
+        useInlineStyles={false}
+      >
         {code}
       </SyntaxHighlighter>
     </div>

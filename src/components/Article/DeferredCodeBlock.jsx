@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect, useMemo, useState } from "react"
 import { useInView } from "react-intersection-observer"
 
 import { polyglotState } from "@/hooks/useLanguage"
+import scheduleWhenIdle from "@/utils/idle-callback"
 
 import "./DeferredCodeBlock.css"
 
@@ -10,16 +11,6 @@ const CodeBlock = lazy(() => import("./CodeBlock"))
 
 const MAX_AUTOMATIC_HIGHLIGHT_CHARACTERS = 50_000
 const MAX_AUTOMATIC_HIGHLIGHT_LINES = 1000
-
-const scheduleWhenIdle = (callback) => {
-  if (typeof globalThis.requestIdleCallback === "function") {
-    const idleCallbackId = globalThis.requestIdleCallback(callback, { timeout: 500 })
-    return () => globalThis.cancelIdleCallback(idleCallbackId)
-  }
-
-  const timeoutId = setTimeout(callback, 50)
-  return () => clearTimeout(timeoutId)
-}
 
 const PlainCodeBlock = ({ code, enableLabel, isWaiting, onEnable }) => (
   <div className="deferred-code-block-placeholder">
