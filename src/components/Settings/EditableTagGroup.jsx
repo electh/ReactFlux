@@ -50,12 +50,14 @@ const EditableTagGroup = ({ keys, record }) => {
 
   useEffect(() => {
     if (!isEditing) {
-      const newKeys = keys.filter((key) => key !== "")
-      if (newKeys.length !== keys.length) {
-        updateHotkey(record.action, newKeys)
+      const nonEmptyKeys = keys.filter((key) => key !== "")
+      if (nonEmptyKeys.length !== keys.length) {
+        updateHotkey(record.action, nonEmptyKeys)
       }
     }
-  }, [isEditing])
+  }, [isEditing, keys, record.action])
+
+  const hasDuplicateKey = keys.some((key) => duplicateHotkeys.includes(key))
 
   return (
     <div ref={groupRef}>
@@ -103,12 +105,10 @@ const EditableTagGroup = ({ keys, record }) => {
         <Tag
           style={{
             cursor: "pointer",
-            backgroundColor: keys.some((key) => duplicateHotkeys.includes(key))
+            backgroundColor: hasDuplicateKey
               ? "var(--color-danger-light-4)"
               : "var(--color-fill-2)",
-            color: keys.some((key) => duplicateHotkeys.includes(key))
-              ? "white"
-              : "var(--color-text-1)",
+            color: hasDuplicateKey ? "white" : "var(--color-text-1)",
           }}
           onClick={() => setIsEditing(true)}
         >
