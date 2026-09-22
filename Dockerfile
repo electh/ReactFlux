@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 ARG VITE_BASE_PATH=/
 
 # Stage 1: Build the React application
@@ -8,17 +10,21 @@ ARG SOURCE_COMMIT
 ARG SOURCE_COMMIT_DATE
 ARG VITE_BASE_PATH
 
+ENV PNPM_HOME=/pnpm \
+    PATH=/pnpm:$PATH
+
 # enable corepack to use pnpm
 RUN corepack enable
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the package.json and pnpm-lock.yaml files
-COPY package.json pnpm-lock.yaml ./
+# Copy dependency files first to preserve the install layer cache
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install dependencies using pnpm
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy the rest of the code
 COPY . .
