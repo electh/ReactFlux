@@ -64,7 +64,7 @@ export default defineConfig(({ mode }) => ({
         ],
         theme_color: "#1F2327",
         background_color: "#ffffff",
-        display: "fullscreen",
+        display: "standalone",
       },
       workbox: {
         cleanupOutdatedCaches: true,
