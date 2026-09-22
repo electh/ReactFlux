@@ -396,6 +396,7 @@ const ArticleDetail = forwardRef((_, ref) => {
     isPhotoSliderVisible,
     markPhotoSliderClosing,
     openPhotoSlider,
+    resetPhotoSlider,
     selectedIndex,
     setSelectedIndex,
   } = usePhotoSlider()
@@ -539,8 +540,10 @@ const ArticleDetail = forwardRef((_, ref) => {
     return () => {
       photoSliderSessionRef.current = null
       preparedPhotoSliderSessionRef.current = false
+      previousPhotoSliderVisibleRef.current = false
+      resetPhotoSlider()
     }
-  }, [activeContent.id])
+  }, [activeContent.id, resetPhotoSlider])
 
   useLayoutEffect(() => {
     const wasPhotoSliderVisible = previousPhotoSliderVisibleRef.current

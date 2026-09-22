@@ -3,13 +3,15 @@ import { map } from "nanostores"
 
 import createSetter from "@/utils/nanostores"
 
-const state = map({
+const createDefaultPhotoSliderState = (photoSliderSessionId = 0) => ({
   isPhotoSliderCloseRequested: false,
   isPhotoSliderClosing: false,
   isPhotoSliderVisible: false,
-  photoSliderSessionId: 0,
+  photoSliderSessionId,
   selectedIndex: 0,
 })
+
+const state = map(createDefaultPhotoSliderState())
 
 const setSelectedIndex = createSetter(state, "selectedIndex")
 
@@ -53,6 +55,11 @@ const completePhotoSliderClose = () => {
   })
 }
 
+const resetPhotoSlider = () => {
+  // Preserve the monotonic session id so stale tooltip state cannot match a later lightbox session.
+  state.set(createDefaultPhotoSliderState(state.get().photoSliderSessionId))
+}
+
 const usePhotoSlider = () => {
   const { isPhotoSliderCloseRequested, isPhotoSliderVisible, photoSliderSessionId, selectedIndex } =
     useStore(state)
@@ -65,6 +72,7 @@ const usePhotoSlider = () => {
     openPhotoSlider,
     photoSliderSessionId,
     requestPhotoSliderClose,
+    resetPhotoSlider,
     selectedIndex,
     setSelectedIndex,
   }
