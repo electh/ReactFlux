@@ -78,6 +78,14 @@ a {
 }
 
 @media screen and (max-width: 768px) {
+  .arco-notification-wrapper-topLeft,
+  .arco-notification-wrapper-topRight {
+    top: calc(
+      env(safe-area-inset-top, 0px) + var(--mobile-navigation-control-size) +
+        var(--mobile-navigation-spacing) + var(--mobile-navigation-spacing) + 8px
+    );
+  }
+
   .arco-notification {
     width: min(
       340px,
