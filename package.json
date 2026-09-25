@@ -31,7 +31,7 @@
     "@nanostores/react": "^2.0.1",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.23",
-    "framer-motion": "^13.4.0",
+    "framer-motion": "^13.4.2",
     "highlight.js": "^11.12.0",
     "hls.js": "^1.7.3",
     "html-react-parser": "^6.1.7",
