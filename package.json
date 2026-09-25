@@ -71,7 +71,7 @@
     "eslint-plugin-react-refresh": "^0.5.7",
     "eslint-plugin-unicorn": "^65.0.1",
     "globals": "^17.12.0",
-    "knip": "^6.35.1",
+    "knip": "^6.38.0",
     "lefthook": "^2.1.14",
     "prettier": "^3.9.7",
     "rollup-plugin-visualizer": "^7.1.1",
