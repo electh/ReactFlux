@@ -81,8 +81,8 @@ importers:
         specifier: ^13.15.35
         version: 13.15.35
       virtua:
-        specifier: ^0.50.5
-        version: 0.50.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^0.52.7
+        version: 0.52.7(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       yet-another-react-lightbox:
         specifier: ^3.32.2
         version: 3.32.2(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -3778,8 +3778,8 @@ packages:
     resolution: {integrity: sha512-zj/ob3UsvJGN0whEAKFp53REA5X66hvffVqoCtVQAakJKnKlH+/PcOfMoFwIG/o4rElqLv/ycAFlx8ZlXUorCg==}
     engines: {node: '>=18.12.0'}
 
-  virtua@0.50.5:
-    resolution: {integrity: sha512-dhr2b3fiK8jWlXzTZr1lICU6gIjF+Q9ftzlDR9KoAbW4vgusx0hEsNwdhxrEVVnm7ZpB+40jgGtJH8/BSsfrZg==}
+  virtua@0.52.7:
+    resolution: {integrity: sha512-3xdhgKCbetu7Gez+DJfjmE+1zI7tsCN+07ZpUBhABDyqqT5r+fji6c0vmQCZlxI8o022d/LdIm2E/9T/LE9rPA==}
     peerDependencies:
       '@angular/common': '>=20.0.0'
       '@angular/core': '>=20.0.0'
@@ -7746,7 +7746,7 @@ snapshots:
 
   verkit@0.3.2: {}
 
-  virtua@0.50.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+  virtua@0.52.7(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
     optionalDependencies:
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
