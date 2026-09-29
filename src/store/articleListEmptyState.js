@@ -20,7 +20,7 @@ const getEffectiveStatus = (source, selectedStatus) => {
   return "all"
 }
 
-export const resolveArticleListEmptyState = ({
+const resolveArticleListEmptyState = ({
   articleListError,
   catalogLoadState,
   entryCount,
@@ -64,7 +64,7 @@ export const resolveArticleListEmptyState = ({
   return { phase: "empty", reason, filters }
 }
 
-export const articleListEmptyState = computed(
+const articleListEmptyState = computed(
   [contentState, dataState, settingsState],
   (content, data, settings) =>
     resolveArticleListEmptyState({
@@ -79,3 +79,5 @@ export const articleListEmptyState = computed(
       showStatus: settings.showStatus,
     }),
 )
+
+export default articleListEmptyState
