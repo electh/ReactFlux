@@ -70,7 +70,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
     "eslint-plugin-unicorn": "^65.0.1",
-    "globals": "^17.12.0",
+    "globals": "^17.13.0",
     "knip": "^6.39.0",
     "lefthook": "^2.1.14",
     "prettier": "^3.9.9",
