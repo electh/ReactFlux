@@ -1,5 +1,5 @@
 {
-  "lastUpdate": "2025-10-20T08:02:26.751Z",
+  "lastUpdate": "2026-10-03T02:25:10.367Z",
   "fonts": {
     "Fira Sans": {
       "dir": "fira-sans",
@@ -163,31 +163,31 @@
       "hashes": [
         {
           "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qNa7lqDY.woff2",
-          "hash": "d58dafd8f0b43c7b"
+          "hash": "fe7567ff731b9467"
         },
         {
           "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qPK7lqDY.woff2",
-          "hash": "a5984c2e2d01b200"
+          "hash": "9be8743208049099"
         },
         {
           "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qNK7lqDY.woff2",
-          "hash": "300aa5a91d8d582a"
+          "hash": "b37896355585ae27"
         },
         {
           "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qO67lqDY.woff2",
-          "hash": "fa58f80d5251de70"
+          "hash": "e19ebf91f4c1d799"
         },
         {
           "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qN67lqDY.woff2",
-          "hash": "26d1dbd047f3e316"
+          "hash": "9560f99936f265a0"
         },
         {
           "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qNq7lqDY.woff2",
-          "hash": "f61f863b7dcf4f83"
+          "hash": "6bcddc1c2f471632"
         },
         {
           "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7l.woff2",
-          "hash": "691491f1fc8badab"
+          "hash": "fb7b366bd65fb747"
         }
       ]
     },
@@ -197,27 +197,27 @@
       "hashes": [
         {
           "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXk-oBOL.woff2",
-          "hash": "b3316205d99a3efb"
+          "hash": "6917c10daa0762ed"
         },
         {
           "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXA-oBOL.woff2",
-          "hash": "e0ed59ebe251c686"
+          "hash": "9955db6d72474985"
         },
         {
           "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXc-oBOL.woff2",
-          "hash": "4ad6c509f5378925"
+          "hash": "90a8b0e2a12908c1"
         },
         {
           "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXs-oBOL.woff2",
-          "hash": "9086e45da52706fb"
+          "hash": "d983a0b145daaa97"
         },
         {
           "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXo-oBOL.woff2",
-          "hash": "0fdc666ecbc14cb4"
+          "hash": "35eb7a043a89058c"
         },
         {
           "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeauXQ-oA.woff2",
-          "hash": "1647670822e9a715"
+          "hash": "6bae98b6ef3e41f8"
         }
       ]
     }
