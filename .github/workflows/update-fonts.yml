@@ -58,6 +58,7 @@ jobs:
           git commit -m "chore(fonts): update fonts to latest versions"
 
       - name: Create Pull Request
+        id: create-pull-request
         if: steps.check-changes.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
@@ -85,14 +86,38 @@ jobs:
 
       - name: Summary
         if: always()
+        env:
+          CHANGES_DETECTED: ${{ steps.check-changes.outputs.changes }}
+          PR_OUTCOME: ${{ steps.create-pull-request.outcome }}
+          PR_OPERATION: ${{ steps.create-pull-request.outputs.pull-request-operation }}
+          PR_URL: ${{ steps.create-pull-request.outputs.pull-request-url }}
+          FONT_COUNT: ${{ steps.update-info.outputs.font_count }}
+          FILE_COUNT: ${{ steps.update-info.outputs.file_count }}
         run: |
-          echo "### Font Update Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.check-changes.outputs.changes }}" == "true" ]; then
-            echo "✅ Changes detected and PR created" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "- Font families: ${{ steps.update-info.outputs.font_count }}" >> $GITHUB_STEP_SUMMARY
-            echo "- Total files: ${{ steps.update-info.outputs.file_count }}" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "ℹ️ No changes detected - fonts are up to date" >> $GITHUB_STEP_SUMMARY
-          fi
+          {
+            echo "### Font Update Summary"
+            echo
+
+            if [[ "$CHANGES_DETECTED" != "true" ]]; then
+              echo "ℹ️ No changes detected - fonts are up to date"
+            elif [[ "$PR_OUTCOME" != "success" ]]; then
+              echo "❌ Changes detected, but pull request creation failed"
+              echo
+              echo "Review the \`Create Pull Request\` step for details."
+            elif [[ -n "$PR_URL" ]]; then
+              case "$PR_OPERATION" in
+                created | updated)
+                  echo "✅ Changes detected and pull request $PR_OPERATION"
+                  ;;
+                *)
+                  echo "ℹ️ Changes detected and pull request processed ($PR_OPERATION)"
+                  ;;
+              esac
+              echo
+              echo "- Pull request: $PR_URL"
+              echo "- Font families: $FONT_COUNT"
+              echo "- Total files: $FILE_COUNT"
+            else
+              echo "⚠️ Changes detected, but no pull request was created or updated"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
