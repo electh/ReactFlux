@@ -13,8 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  # Enable only after reviewing a successful dry-run.
-  AUTO_MERGE_ENABLED: "false"
+  AUTO_MERGE_ENABLED: "true"
 
 jobs:
   authorize:
