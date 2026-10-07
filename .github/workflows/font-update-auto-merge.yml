@@ -85,7 +85,7 @@ jobs:
 
           commit_data="$(
             gh api "repos/$GH_REPO/commits/$head_sha" \
-              --jq '[.parents | length, .parents[0].sha, (.author.login // "-")] | @tsv'
+              --jq '[(.parents | length), .parents[0].sha, (.author.login // "-")] | @tsv'
           )"
           IFS=$'\t' read -r parent_count parent_sha commit_author <<< "$commit_data"
           if [[ "$parent_count" != "1" || "$parent_sha" != "$RUN_HEAD_SHA" ||
@@ -231,5 +231,5 @@ jobs:
           PR_NUMBER: ${{ needs.authorize.outputs.pr_number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh pr comment "$PR_NUMBER" --repo "$GH_REPO" --body \
-            "❌ Automatic font validation or merge failed. Inspect: $RUN_URL"
+          gh api --method POST "repos/$GH_REPO/issues/$PR_NUMBER/comments" \
+            -f body="❌ Automatic font validation or merge failed. Inspect: $RUN_URL" >/dev/null
