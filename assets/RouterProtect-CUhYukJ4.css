@@ -1,0 +1,1 @@
+.compatibility-gate{background-color:var(--app-shell-background)}.compatibility-gate-result-state{box-sizing:border-box;place-items:center;min-height:100%;padding:24px;display:grid}.compatibility-gate-result{width:min(640px,100%)}.compatibility-gate-actions{flex-wrap:wrap;justify-content:center;gap:12px;display:flex}
