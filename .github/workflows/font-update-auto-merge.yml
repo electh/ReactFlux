@@ -1,0 +1,230 @@
+name: Font update auto-merge
+
+on:
+  workflow_run:
+    workflows: ["Update Fonts"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: font-update-pipeline
+  cancel-in-progress: false
+
+env:
+  # Enable only after reviewing a successful dry-run.
+  AUTO_MERGE_ENABLED: "false"
+
+jobs:
+  authorize:
+    name: Authorize generated font PR
+    if: >-
+      github.repository == 'electh/ReactFlux' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      (github.event.workflow_run.event == 'schedule' ||
+       github.event.workflow_run.event == 'workflow_dispatch') &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      base_sha: ${{ steps.authorize.outputs.base_sha }}
+      eligible: ${{ steps.authorize.outputs.eligible }}
+      head_sha: ${{ steps.authorize.outputs.head_sha }}
+      pr_number: ${{ steps.authorize.outputs.pr_number }}
+      pr_url: ${{ steps.authorize.outputs.pr_url }}
+    steps:
+      - name: Verify provenance and changed paths
+        id: authorize
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          echo "eligible=false" >> "$GITHUB_OUTPUT"
+          owner="${GH_REPO%%/*}"
+          mapfile -t pull_requests < <(
+            gh api --method GET "repos/$GH_REPO/pulls" \
+              -f state=open -f base=main -f "head=$owner:bot/update-fonts" \
+              --jq '.[] | [.number, .head.sha, .html_url, .user.login, .draft] | @tsv'
+          )
+
+          if ((${#pull_requests[@]} == 0)); then
+            echo "No font update PR was produced by run $RUN_ID"
+            exit 0
+          fi
+          if ((${#pull_requests[@]} != 1)); then
+            echo "Expected one open font update PR, found ${#pull_requests[@]}" >&2
+            exit 1
+          fi
+
+          IFS=$'\t' read -r pr_number head_sha pr_url author draft <<< "${pull_requests[0]}"
+          {
+            echo "head_sha=$head_sha"
+            echo "pr_number=$pr_number"
+            echo "pr_url=$pr_url"
+          } >> "$GITHUB_OUTPUT"
+
+          commit_message="$(gh api "repos/$GH_REPO/commits/$head_sha" --jq .commit.message)"
+          if ! grep -Fxq "Font-Update-Run: $RUN_ID" <<< "$commit_message"; then
+            echo "The existing font PR was not updated by this run; skipping"
+            exit 0
+          fi
+          if [[ "$author" != "github-actions[bot]" || "$draft" != "false" ]]; then
+            echo "Font PR has an unexpected author or draft state" >&2
+            exit 1
+          fi
+
+          commit_data="$(
+            gh api "repos/$GH_REPO/commits/$head_sha" \
+              --jq '[.parents | length, .parents[0].sha, (.author.login // "-")] | @tsv'
+          )"
+          IFS=$'\t' read -r parent_count parent_sha commit_author <<< "$commit_data"
+          if [[ "$parent_count" != "1" || "$parent_sha" != "$RUN_HEAD_SHA" ||
+                "$commit_author" != "github-actions[bot]" ]]; then
+            echo "Font PR is not the single trusted child of $RUN_HEAD_SHA" >&2
+            exit 1
+          fi
+
+          main_sha="$(gh api "repos/$GH_REPO/commits/main" --jq .sha)"
+          if [[ "$main_sha" != "$parent_sha" ]]; then
+            echo "main advanced from $parent_sha to $main_sha; rerun Update Fonts" >&2
+            exit 1
+          fi
+
+          saw_manifest=false
+          while IFS=$'\t' read -r status filename; do
+            if [[ "$filename" == "public/fonts/version.json" ]]; then
+              saw_manifest=true
+            elif [[ "$filename" == "public/styles/fonts.css" ]]; then
+              :
+            elif [[ "$filename" =~ ^public/fonts/(fira-sans|noto-sans|noto-serif|open-sans|source-sans-pro|source-serif-pro)/[A-Za-z0-9_-]+\.woff2$ ]]; then
+              :
+            else
+              echo "Font PR contains forbidden path: $filename" >&2
+              exit 1
+            fi
+            if [[ "$status" == "renamed" || "$status" == "copied" ]]; then
+              echo "Font PR contains a forbidden $status path: $filename" >&2
+              exit 1
+            fi
+          done < <(
+            gh api --paginate "repos/$GH_REPO/pulls/$pr_number/files" \
+              --jq '.[] | [.status, .filename] | @tsv'
+          )
+          if [[ "$saw_manifest" != "true" ]]; then
+            echo "Font PR must update version.json" >&2
+            exit 1
+          fi
+
+          {
+            echo "base_sha=$parent_sha"
+            echo "eligible=true"
+          } >> "$GITHUB_OUTPUT"
+
+  validate:
+    name: Validate exact font PR head
+    needs: authorize
+    if: needs.authorize.outputs.eligible == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ needs.authorize.outputs.head_sha }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Validate assets and application
+        env:
+          BASE_SHA: ${{ needs.authorize.outputs.base_sha }}
+        run: |
+          pnpm test:fonts
+          pnpm validate:fonts --base-ref "$BASE_SHA"
+          pnpm lint
+          pnpm format:check
+          pnpm build
+
+  merge:
+    name: Merge validated font PR
+    needs: [authorize, validate]
+    if: >-
+      needs.authorize.outputs.eligible == 'true' &&
+      needs.validate.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Reverify and merge or record dry-run
+        env:
+          BASE_SHA: ${{ needs.authorize.outputs.base_sha }}
+          EXPECTED_HEAD: ${{ needs.authorize.outputs.head_sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ needs.authorize.outputs.pr_number }}
+          PR_URL: ${{ needs.authorize.outputs.pr_url }}
+        run: |
+          pr_data="$(
+            gh api "repos/$GH_REPO/pulls/$PR_NUMBER" \
+              --jq '[.state, .draft, .user.login, .base.ref, .head.ref, .head.repo.full_name, .head.sha] | @tsv'
+          )"
+          IFS=$'\t' read -r state draft author base_ref head_ref head_repo head_sha <<< "$pr_data"
+          main_sha="$(gh api "repos/$GH_REPO/commits/main" --jq .sha)"
+          if [[ "$state" != "open" || "$draft" != "false" ||
+                "$author" != "github-actions[bot]" || "$base_ref" != "main" ||
+                "$head_ref" != "bot/update-fonts" || "$head_repo" != "$GH_REPO" ||
+                "$head_sha" != "$EXPECTED_HEAD" || "$main_sha" != "$BASE_SHA" ]]; then
+            echo "Font PR changed after validation" >&2
+            exit 1
+          fi
+
+          if [[ "$AUTO_MERGE_ENABLED" != "true" ]]; then
+            echo "✅ Exact head \`$EXPECTED_HEAD\` passed the auto-merge dry-run." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          gh pr merge --squash --delete-branch --match-head-commit "$EXPECTED_HEAD" "$PR_URL"
+          gh workflow run reconcile-deployments.yml --repo "$GH_REPO" --ref main
+
+  report_failure:
+    name: Report font pipeline failure
+    needs: [authorize, validate, merge]
+    if: >-
+      always() &&
+      needs.authorize.outputs.pr_number != '' &&
+      (needs.authorize.result == 'failure' ||
+       needs.validate.result == 'failure' ||
+       needs.merge.result == 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Comment on the font PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.authorize.outputs.pr_number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh pr comment "$PR_NUMBER" --body \
+            "❌ Automatic font validation or merge failed. Inspect: $RUN_URL"

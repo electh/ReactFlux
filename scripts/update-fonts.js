@@ -1,400 +1,459 @@
-import { createHash } from "node:crypto"
-import { existsSync } from "node:fs"
-import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises"
+import {
+  appendFile,
+  copyFile,
+  mkdir,
+  mkdtemp,
+  readFile,
+  rename,
+  rm,
+  writeFile,
+} from "node:fs/promises"
 import path from "node:path"
+import { setTimeout as sleep } from "node:timers/promises"
 import { fileURLToPath } from "node:url"
 
-const { dirname, join } = path
+import {
+  calculateHash,
+  FONT_FAMILIES,
+  FONT_LIMITS,
+  inspectWoff2,
+  localizeGoogleFontCss,
+  validateFontAssets,
+  validateRemoteUrl,
+} from "./font-assets.js"
+
+const { dirname, join, resolve } = path
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const PROJECT_ROOT = join(__dirname, "..")
-const FONTS_DIR = join(PROJECT_ROOT, "public", "fonts")
-const STYLES_DIR = join(PROJECT_ROOT, "public", "styles")
-const FONTS_CSS = join(STYLES_DIR, "fonts.css")
+const PUBLIC_DIR = join(PROJECT_ROOT, "public")
+const FONTS_DIR = join(PUBLIC_DIR, "fonts")
+const FONTS_CSS = join(PUBLIC_DIR, "styles", "fonts.css")
 const VERSION_FILE = join(FONTS_DIR, "version.json")
 
 const GOOGLE_FONTS_API = "https://fonts.googleapis.com/css2"
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+const FETCH_ATTEMPTS = 3
+const FETCH_TIMEOUT_MS = 30_000
 
-// Font families configuration
-const FONT_FAMILIES = [
-  {
-    name: "Fira Sans",
-    dir: "fira-sans",
-    weights: [400],
-    styles: ["normal"],
-  },
-  {
-    name: "Noto Sans",
-    dir: "noto-sans",
-    weights: [400],
-    styles: ["normal"],
-  },
-  {
-    name: "Noto Serif",
-    dir: "noto-serif",
-    weights: [400],
-    styles: ["normal"],
-  },
-  {
-    name: "Open Sans",
-    dir: "open-sans",
-    weights: [400],
-    styles: ["normal"],
-  },
-  {
-    name: "Source Sans Pro",
-    dir: "source-sans-pro",
-    weights: [400],
-    styles: ["normal"],
-  },
-  {
-    name: "Source Serif Pro",
-    dir: "source-serif-pro",
-    weights: [400],
-    styles: ["normal"],
-  },
-]
+class AssetRollbackError extends AggregateError {}
+class PermanentFetchError extends Error {}
+class RetryableFetchError extends Error {}
 
-/**
- * Calculate SHA-256 hash of buffer
- * @param {ArrayBuffer | Buffer} buffer - Data to hash
- * @returns {string} Truncated hash string
- */
-function calculateHash(buffer) {
-  return createHash("sha256").update(Buffer.from(buffer)).digest("hex").slice(0, 16)
-}
-
-/**
- * Build Google Fonts API URL
- * @param {string} fontFamily - Font family name
- * @param {number[]} weights - Font weights
- * @param {string[]} styles - Font styles
- * @returns {string} Google Fonts API URL
- */
-function buildGoogleFontsURL(fontFamily, weights, styles) {
+function buildGoogleFontsUrl(fontFamily, weights, styles) {
   const familyParam = fontFamily.replaceAll(" ", "+")
-
   const styleSpecs = weights.flatMap((weight) =>
     styles.map((style) => (style === "italic" ? `1,${weight}` : `${weight}`)),
   )
-
-  return `${GOOGLE_FONTS_API}?family=${familyParam}:wght@${styleSpecs.join(";")}&display=swap`
+  const url = `${GOOGLE_FONTS_API}?family=${familyParam}:wght@${styleSpecs.join(";")}&display=swap`
+  validateRemoteUrl(url, "fonts.googleapis.com")
+  return url
 }
 
-/**
- * Extract filename from URL
- * @param {string} url - Font file URL
- * @returns {string} Filename
- */
-function extractFilename(url) {
-  return url.split("/").pop().split("?", 1)[0]
-}
-
-/**
- * Log progress message
- * @param {number} current - Current index
- * @param {number} total - Total count
- * @param {string} message - Message to log
- */
-function logProgress(current, total, message) {
-  console.log(`  [${current}/${total}] ${message}`)
-}
-
-/**
- * Fetch Google Fonts CSS
- * @param {string} fontFamily - Font family name
- * @param {number[]} weights - Font weights
- * @param {string[]} styles - Font styles
- * @returns {Promise<string>} CSS content
- */
-async function fetchGoogleFontsCSS(fontFamily, weights, styles) {
-  const url = buildGoogleFontsURL(fontFamily, weights, styles)
-
-  console.log(`Fetching CSS for ${fontFamily}...`)
-
-  const response = await fetch(url, { headers: { "User-Agent": USER_AGENT } })
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch CSS for ${fontFamily}: ${response.statusText}`)
+async function readResponseBody(response, maxBytes) {
+  const contentLength = response.headers.get("content-length")
+  let declaredLength = null
+  if (contentLength !== null) {
+    declaredLength = Number(contentLength)
+    if (!Number.isSafeInteger(declaredLength) || declaredLength < 0) {
+      throw new PermanentFetchError(`Invalid Content-Length: ${contentLength}`)
+    }
+    if (declaredLength > maxBytes) {
+      throw new PermanentFetchError(
+        `Response declares ${declaredLength} bytes, exceeding the ${maxBytes}-byte limit`,
+      )
+    }
+  }
+  if (!response.body) {
+    throw new RetryableFetchError("Response body is empty")
   }
 
-  return response.text()
-}
-
-/**
- * Parse @font-face blocks from CSS
- * @param {string} css - CSS content
- * @returns {Array<{css: string, url: string}>} Parsed font faces
- */
-function parseFontCSS(css) {
-  const fontFaceRegex = /@font-face\s*\{[^}]+}/g
-  const urlRegex = /url\(([^)]+)\)/
-  const fontFaces = css.match(fontFaceRegex) || []
-
-  return fontFaces
-    .map((fontFace) => {
-      const urlMatch = fontFace.match(urlRegex)
-      return urlMatch ? { css: fontFace, url: urlMatch[1] } : null
-    })
-    .filter(Boolean)
-}
-
-/**
- * Download font file from URL
- * @param {string} url - Font file URL
- * @param {string} outputPath - Local output path
- * @returns {Promise<ArrayBuffer>} Downloaded file buffer
- */
-async function downloadFont(url, outputPath) {
-  const response = await fetch(url)
-
-  if (!response.ok) {
-    throw new Error(`Failed to download font from ${url}: ${response.statusText}`)
+  const chunks = []
+  let received = 0
+  for await (const chunk of response.body) {
+    const buffer = Buffer.from(chunk)
+    received += buffer.length
+    if (received > maxBytes) {
+      throw new PermanentFetchError(`Response exceeded the ${maxBytes}-byte limit`)
+    }
+    chunks.push(buffer)
   }
 
-  const buffer = await response.arrayBuffer()
-  await writeFile(outputPath, Buffer.from(buffer))
-
-  return buffer
-}
-
-/**
- * Process and download a single font file
- * @param {Object} font - Font metadata
- * @param {string} fontDir - Font directory path
- * @param {string} dirName - Directory name for URL path
- * @param {number} index - Current index
- * @param {number} total - Total count
- * @returns {Promise<{css: string, filename: string, hash: string} | null>}
- */
-async function processFontFile(font, fontDir, dirName, index, total) {
-  const { url, css } = font
-  const filename = extractFilename(url)
-  const outputPath = join(fontDir, filename)
-
-  logProgress(index + 1, total, `Downloading ${filename}...`)
-
-  try {
-    const buffer = await downloadFont(url, outputPath)
-    const hash = calculateHash(buffer)
-    const localPath = `../fonts/${dirName}/${filename}`
-    const updatedCSS = css.replace(url, localPath)
-
-    return { css: updatedCSS, filename, hash }
-  } catch (error) {
-    console.error(`  Failed to download ${filename}:`, error.message)
-    return null
+  if (received === 0) {
+    throw new RetryableFetchError("Response body is empty")
   }
-}
-
-/**
- * Clean old font files from directory
- * @param {string} fontDir - Font directory path
- * @param {string[]} currentFilenames - List of current filenames to keep
- */
-async function cleanFontDirectory(fontDir, currentFilenames) {
-  if (!existsSync(fontDir)) {
-    return
-  }
-
-  try {
-    const existingFiles = await readdir(fontDir)
-    const filesToDelete = existingFiles.filter(
-      (file) => file.endsWith(".woff2") && !currentFilenames.includes(file),
+  if (declaredLength !== null && received !== declaredLength) {
+    throw new RetryableFetchError(
+      `Response body has ${received} bytes, but Content-Length declared ${declaredLength}`,
     )
-
-    if (filesToDelete.length > 0) {
-      console.log(`  Cleaning ${filesToDelete.length} old font file(s)...`)
-
-      for (const file of filesToDelete) {
-        await rm(join(fontDir, file))
-        console.log(`  ✓ Deleted: ${file}`)
-      }
-    }
-  } catch (error) {
-    console.error(`  Failed to clean directory:`, error.message)
   }
+  return Buffer.concat(chunks, received)
 }
 
-/**
- * Update a single font family
- * @param {Object} fontConfig - Font configuration
- * @returns {Promise<{name: string, css: string, hashes: Array}>}
- */
-async function updateFontFamily(fontConfig) {
-  const { name, dir, weights, styles } = fontConfig
-
-  console.log(`\n=== Updating ${name} ===`)
-
-  // Fetch and parse CSS
-  const css = await fetchGoogleFontsCSS(name, weights, styles)
-  const fonts = parseFontCSS(css)
-
-  console.log(`Found ${fonts.length} font file(s)`)
-
-  // Ensure font directory exists
-  const fontDir = join(FONTS_DIR, dir)
-  await mkdir(fontDir, { recursive: true })
-
-  // Download all font files
-  const downloadPromises = fonts.map((font, index) =>
-    processFontFile(font, fontDir, dir, index, fonts.length),
-  )
-
-  const results = await Promise.all(downloadPromises)
-  const successfulDownloads = results.filter(Boolean)
-
-  // Extract data from successful downloads
-  const downloadedCSS = successfulDownloads.map((result) => result.css)
-  const fontHashes = successfulDownloads.map(({ filename, hash }) => ({
-    filename,
-    hash,
-  }))
-  const filenames = successfulDownloads.map((result) => result.filename)
-
-  // Clean old files
-  await cleanFontDirectory(fontDir, filenames)
-
-  return {
-    name,
-    css: downloadedCSS.join("\n"),
-    hashes: fontHashes,
-  }
+function isRetryableStatus(status) {
+  return status === 408 || status === 429 || status >= 500
 }
 
-/**
- * Check if fonts have changed compared to version file
- * @param {Object} newVersionInfo - New version information
- * @returns {Promise<boolean>} True if changes detected
- */
-async function checkForChanges(newVersionInfo) {
-  try {
-    if (!existsSync(VERSION_FILE)) {
-      return true
-    }
+export async function fetchWithPolicy(
+  url,
+  {
+    contentType,
+    expectedHostname,
+    fetchImplementation = globalThis.fetch,
+    headers = {},
+    maxBytes,
+    random = Math.random,
+    sleepImplementation = sleep,
+  },
+) {
+  const validatedUrl = validateRemoteUrl(url, expectedHostname)
+  let lastError
 
-    const oldContent = await readFile(VERSION_FILE, "utf8")
-    const oldVersionInfo = JSON.parse(oldContent)
-
-    // Check each font family for changes
-    for (const [fontName, fontData] of Object.entries(newVersionInfo.fonts)) {
-      const oldFontData = oldVersionInfo.fonts[fontName]
-
-      // New font family
-      if (!oldFontData) {
-        console.log(`\n⚠ New font detected: ${fontName}`)
-        return true
-      }
-
-      // File count changed
-      if (oldFontData.files !== fontData.files) {
-        console.log(
-          `\n⚠ File count changed for ${fontName}: ${oldFontData.files} → ${fontData.files}`,
-        )
-        return true
-      }
-
-      // Check individual file hashes
-      const hasHashChanges = fontData.hashes.some((newHash) => {
-        const oldHash = oldFontData.hashes.find((h) => h.filename === newHash.filename)
-        return !oldHash || oldHash.hash !== newHash.hash
+  for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      const response = await fetchImplementation(validatedUrl, {
+        headers,
+        redirect: "manual",
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       })
 
-      if (hasHashChanges) {
-        console.log(`\n⚠ Font files changed for ${fontName}`)
-        return true
+      if (response.status >= 300 && response.status < 400) {
+        throw new PermanentFetchError(`Redirects are not allowed (${response.status})`)
       }
-    }
+      if (!response.ok) {
+        const ErrorType = isRetryableStatus(response.status)
+          ? RetryableFetchError
+          : PermanentFetchError
+        throw new ErrorType(`HTTP ${response.status} ${response.statusText}`)
+      }
 
-    console.log("\n✓ No changes detected")
-    return false
-  } catch (error) {
-    console.error("❌ Error checking for changes:", error.message)
-    return true
+      let finalUrl
+      try {
+        finalUrl = validateRemoteUrl(response.url || validatedUrl.href, expectedHostname)
+      } catch (error) {
+        throw new PermanentFetchError(error.message, { cause: error })
+      }
+      if (finalUrl.href !== validatedUrl.href) {
+        throw new PermanentFetchError(`Response URL changed unexpectedly to ${finalUrl.href}`)
+      }
+
+      const actualContentType = response.headers.get("content-type")?.split(";", 1)[0].trim()
+      if (actualContentType !== contentType) {
+        throw new PermanentFetchError(
+          `Expected Content-Type ${contentType}, got ${actualContentType || "missing"}`,
+        )
+      }
+
+      return await readResponseBody(response, maxBytes)
+    } catch (error) {
+      if (error instanceof PermanentFetchError) {
+        throw new Error(`Rejected ${validatedUrl.href}: ${error.message}`, { cause: error })
+      }
+
+      lastError = error
+      if (attempt === FETCH_ATTEMPTS) {
+        break
+      }
+
+      const delay = 500 * 2 ** (attempt - 1) + Math.floor(random() * 250)
+      console.warn(
+        `  Attempt ${attempt}/${FETCH_ATTEMPTS} failed for ${validatedUrl.hostname}; retrying in ${delay}ms: ${error.message}`,
+      )
+      await sleepImplementation(delay)
+    }
+  }
+
+  throw new Error(`Failed to fetch ${validatedUrl.href} after ${FETCH_ATTEMPTS} attempts`, {
+    cause: lastError,
+  })
+}
+
+async function fetchGoogleFontsCss(fontConfig) {
+  const url = buildGoogleFontsUrl(fontConfig.name, fontConfig.weights, fontConfig.styles)
+  console.log(`Fetching CSS for ${fontConfig.name}...`)
+  const buffer = await fetchWithPolicy(url, {
+    contentType: "text/css",
+    expectedHostname: "fonts.googleapis.com",
+    headers: { "User-Agent": USER_AGENT },
+    maxBytes: FONT_LIMITS.cssBytes,
+  })
+  const css = buffer.toString("utf8")
+  if (css.includes("\u0000")) {
+    throw new Error(`${fontConfig.name} CSS contains a null byte`)
+  }
+  return css
+}
+
+async function copyImmutableTtf(fontConfig, stagedFontDir) {
+  for (const { filename } of fontConfig.ttf) {
+    await copyFile(join(FONTS_DIR, fontConfig.dir, filename), join(stagedFontDir, filename))
   }
 }
 
-/**
- * Build version information object
- * @param {Array<Object>} results - Update results
- * @param {Array<Object>} fontConfigs - Font configurations
- * @returns {Object} Version information
- */
-function buildVersionInfo(results, fontConfigs) {
-  const versionInfo = {
-    lastUpdate: new Date().toISOString(),
-    fonts: {},
+async function updateFontFamily(fontConfig, stagedFontsDir) {
+  console.log(`\n=== Updating ${fontConfig.name} ===`)
+  const remoteCss = await fetchGoogleFontsCss(fontConfig)
+  const { css: localizedCss, fonts: remoteFonts } = localizeGoogleFontCss(remoteCss, fontConfig)
+  console.log(`Found ${remoteFonts.length} font file(s)`)
+
+  const stagedFontDir = join(stagedFontsDir, fontConfig.dir)
+  await mkdir(stagedFontDir, { recursive: true })
+  await copyImmutableTtf(fontConfig, stagedFontDir)
+
+  const downloadResults = await Promise.allSettled(
+    remoteFonts.map(async ({ filename, url }, index) => {
+      console.log(`  [${index + 1}/${remoteFonts.length}] Downloading ${filename}...`)
+      const buffer = await fetchWithPolicy(url, {
+        contentType: "font/woff2",
+        expectedHostname: "fonts.gstatic.com",
+        maxBytes: FONT_LIMITS.fontBytesMax,
+      })
+      if (buffer.length < FONT_LIMITS.fontBytesMin) {
+        throw new Error(`${fontConfig.name}/${filename} is only ${buffer.length} bytes`)
+      }
+      inspectWoff2(buffer)
+      await writeFile(join(stagedFontDir, filename), buffer)
+      return { filename, hash: calculateHash(buffer), size: buffer.length }
+    }),
+  )
+  const failures = downloadResults.filter((result) => result.status === "rejected")
+  if (failures.length > 0) {
+    throw new AggregateError(
+      failures.map(({ reason }) => reason),
+      `${fontConfig.name} failed to download ${failures.length} font file(s)`,
+    )
+  }
+  const downloadedFonts = downloadResults.map(({ value }) => value)
+
+  const familyBytes = downloadedFonts.reduce((total, font) => total + font.size, 0)
+  if (familyBytes > FONT_LIMITS.familyBytes) {
+    throw new Error(`${fontConfig.name} totals ${familyBytes} bytes, exceeding its limit`)
   }
 
+  return {
+    css: localizedCss,
+    hashes: downloadedFonts.map(({ filename, hash }) => ({ filename, hash })),
+  }
+}
+
+function buildVersionInfo(results) {
+  const fonts = {}
   for (const [index, result] of results.entries()) {
-    const fontConfig = fontConfigs[index]
-    versionInfo.fonts[fontConfig.name] = {
+    const fontConfig = FONT_FAMILIES[index]
+    fonts[fontConfig.name] = {
       dir: fontConfig.dir,
       files: result.hashes.length,
       hashes: result.hashes,
     }
   }
 
-  return versionInfo
+  return { lastUpdate: new Date().toISOString(), fonts }
 }
 
-/**
- * Update all fonts
- * @returns {Promise<boolean>} True if changes were made
- */
-async function updateFonts() {
-  console.log("Starting font update process...\n")
+function comparableManifest(versionInfo) {
+  return JSON.stringify(versionInfo.fonts)
+}
 
-  // Update each font family
-  const results = []
+async function assetsChanged(versionInfo, cssContent) {
+  try {
+    const [oldVersionText, oldCss] = await Promise.all([
+      readFile(VERSION_FILE, "utf8"),
+      readFile(FONTS_CSS, "utf8"),
+    ])
+    const oldVersion = JSON.parse(oldVersionText)
+    return (
+      comparableManifest(oldVersion) !== comparableManifest(versionInfo) || oldCss !== cssContent
+    )
+  } catch {
+    return true
+  }
+}
 
-  for (const fontConfig of FONT_FAMILIES) {
-    try {
-      const result = await updateFontFamily(fontConfig)
-      results.push(result)
-    } catch (error) {
-      console.error(`Failed to update ${fontConfig.name}:`, error.message)
-      // Continue with other fonts even if one fails
-      results.push({ name: fontConfig.name, css: "", hashes: [] })
+async function rollbackAssetSwap(
+  {
+    backupCss,
+    backupFonts,
+    cssBackedUp,
+    cssInstalled,
+    fontsBackedUp,
+    fontsCss,
+    fontsDir,
+    fontsInstalled,
+  },
+  { renameImplementation, rmImplementation },
+) {
+  const rollbackErrors = []
+
+  try {
+    if (cssInstalled) {
+      await rmImplementation(fontsCss, { force: true })
+    }
+    if (cssBackedUp) {
+      await renameImplementation(backupCss, fontsCss)
+    }
+  } catch (error) {
+    rollbackErrors.push(error)
+  }
+
+  try {
+    if (fontsInstalled) {
+      await rmImplementation(fontsDir, { force: true, recursive: true })
+    }
+    if (fontsBackedUp) {
+      await renameImplementation(backupFonts, fontsDir)
+    }
+  } catch (error) {
+    rollbackErrors.push(error)
+  }
+
+  return rollbackErrors
+}
+
+export async function installStagedAssets({
+  fontsCss = FONTS_CSS,
+  fontsDir = FONTS_DIR,
+  renameImplementation = rename,
+  rmImplementation = rm,
+  stageRoot,
+  stagedCssPath,
+  stagedFontsDir,
+}) {
+  const backupFonts = join(stageRoot, "backup-fonts")
+  const backupCss = join(stageRoot, "backup-fonts.css")
+  const state = {
+    backupCss,
+    backupFonts,
+    cssBackedUp: false,
+    cssInstalled: false,
+    fontsBackedUp: false,
+    fontsCss,
+    fontsDir,
+    fontsInstalled: false,
+  }
+
+  try {
+    await renameImplementation(fontsDir, backupFonts)
+    state.fontsBackedUp = true
+    await renameImplementation(stagedFontsDir, fontsDir)
+    state.fontsInstalled = true
+
+    await renameImplementation(fontsCss, backupCss)
+    state.cssBackedUp = true
+    await renameImplementation(stagedCssPath, fontsCss)
+    state.cssInstalled = true
+  } catch (error) {
+    const rollbackErrors = await rollbackAssetSwap(state, {
+      renameImplementation,
+      rmImplementation,
+    })
+    if (rollbackErrors.length > 0) {
+      throw new AssetRollbackError(
+        [error, ...rollbackErrors],
+        `Font asset installation and rollback failed; recovery files remain in ${stageRoot}`,
+      )
+    }
+    throw error
+  }
+}
+
+async function writeGithubOutputs(result) {
+  if (!process.env.GITHUB_OUTPUT) {
+    return
+  }
+
+  await appendFile(
+    process.env.GITHUB_OUTPUT,
+    [
+      `changes=${result.changed}`,
+      `font_count=${FONT_FAMILIES.length}`,
+      `file_count=${result.totalFiles}`,
+      `structural_change=${result.structuralChanges.length > 0}`,
+      "",
+    ].join("\n"),
+  )
+}
+
+export async function commitValidatedUpdate(
+  result,
+  { installImplementation, writeOutputsImplementation = writeGithubOutputs },
+) {
+  await writeOutputsImplementation(result)
+  if (result.changed) {
+    await installImplementation()
+  }
+}
+
+export async function updateFonts() {
+  console.log("Starting transactional font update process...\n")
+  const stageRoot = await mkdtemp(join(PUBLIC_DIR, ".font-update-"))
+  let preserveStageForRecovery = false
+  const stagedFontsDir = join(stageRoot, "fonts")
+  const stagedCssPath = join(stageRoot, "fonts.css")
+  const stagedVersionPath = join(stagedFontsDir, "version.json")
+
+  try {
+    await mkdir(stagedFontsDir, { recursive: true })
+    const results = []
+    for (const fontConfig of FONT_FAMILIES) {
+      results.push(await updateFontFamily(fontConfig, stagedFontsDir))
+    }
+
+    const versionInfo = buildVersionInfo(results)
+    const cssContent = `${results.map(({ css }) => css.trim()).join("\n\n")}\n`
+    await Promise.all([
+      writeFile(stagedCssPath, cssContent, "utf8"),
+      writeFile(stagedVersionPath, `${JSON.stringify(versionInfo, null, 2)}\n`, "utf8"),
+    ])
+
+    const validation = await validateFontAssets({
+      cssPath: stagedCssPath,
+      fontsDir: stagedFontsDir,
+      versionPath: stagedVersionPath,
+    })
+    const changed = await assetsChanged(versionInfo, cssContent)
+    const result = { changed, ...validation }
+
+    // Publish fallible metadata before committing the staged filesystem transaction.
+    await commitValidatedUpdate(result, {
+      installImplementation: () =>
+        installStagedAssets({ stageRoot, stagedFontsDir, stagedCssPath }),
+    })
+    if (changed) {
+      console.log("\n✓ Validated assets installed transactionally")
+    } else {
+      console.log("\n✓ Fonts are already up to date")
+    }
+
+    console.log(`Validated ${validation.totalFiles} files across ${FONT_FAMILIES.length} families`)
+    if (validation.structuralChanges.length > 0) {
+      console.warn(
+        "⚠ Font paths differ from the reviewed baseline; automatic merge will remain blocked",
+      )
+    }
+    return result
+  } catch (error) {
+    preserveStageForRecovery = error instanceof AssetRollbackError
+    throw error
+  } finally {
+    if (preserveStageForRecovery) {
+      console.error(`Preserving ${stageRoot} for manual recovery`)
+    } else {
+      try {
+        await rm(stageRoot, { force: true, recursive: true })
+      } catch (error) {
+        console.error(`Could not remove temporary directory ${stageRoot}: ${error.message}`)
+      }
     }
   }
-
-  // Generate version information
-  const versionInfo = buildVersionInfo(results, FONT_FAMILIES)
-
-  // Check for changes
-  const hasChanges = await checkForChanges(versionInfo)
-
-  // Write combined CSS file
-  console.log("\n=== Generating fonts.css ===")
-  const cssContent = results.map((result) => result.css).join("\n")
-  await writeFile(FONTS_CSS, cssContent, "utf8")
-  console.log(`✓ Written to ${FONTS_CSS}`)
-
-  // Save version information
-  if (hasChanges) {
-    await writeFile(VERSION_FILE, JSON.stringify(versionInfo, null, 2), "utf8")
-    console.log(`✓ Version info saved to ${VERSION_FILE}`)
-  }
-
-  // Print summary
-  console.log("\n=== Update Complete ===")
-  console.log(`Updated ${results.length} font family(s)`)
-
-  const totalFiles = Object.values(versionInfo.fonts).reduce((sum, font) => sum + font.files, 0)
-  console.log(`Total font files: ${totalFiles}`)
-
-  return hasChanges
 }
 
-try {
-  const hasChanges = await updateFonts()
-  const message = hasChanges ? "\n✓ Fonts have been updated!" : "\n✓ Fonts are up to date!"
-  console.log(message)
-  process.exit(0)
-} catch (error) {
-  console.error("\n✗ Update failed:", error)
-  process.exit(1)
+if (resolve(process.argv[1] ?? "") === __filename) {
+  try {
+    const result = await updateFonts()
+    console.log(result.changed ? "\n✓ Fonts have been updated!" : "\n✓ Fonts are up to date!")
+  } catch (error) {
+    console.error("\n✗ Update failed:", error)
+    process.exitCode = 1
+  }
 }

@@ -1,0 +1,116 @@
+{
+  "families": {
+    "Fira Sans": {
+      "dir": "fira-sans",
+      "woff2": [
+        "va9E4kDNxMZdWfMOD5Vvk4jLeTY.woff2",
+        "va9E4kDNxMZdWfMOD5Vvl4jL.woff2",
+        "va9E4kDNxMZdWfMOD5VvlIjLeTY.woff2",
+        "va9E4kDNxMZdWfMOD5Vvm4jLeTY.woff2",
+        "va9E4kDNxMZdWfMOD5VvmIjLeTY.woff2",
+        "va9E4kDNxMZdWfMOD5VvmYjLeTY.woff2",
+        "va9E4kDNxMZdWfMOD5VvmojLeTY.woff2"
+      ],
+      "ttf": [
+        {
+          "filename": "va9E4kDNxMZdWfMOD5VfkA.ttf",
+          "hash": "848a44b912bc756fe5b1be7a0a82e58b38da321ce29970d69d38dd864790c8c5"
+        }
+      ]
+    },
+    "Noto Sans": {
+      "dir": "noto-sans",
+      "woff2": [
+        "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9U6VLKzA.woff2",
+        "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9V6VLKzA.woff2",
+        "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9W6VLKzA.woff2",
+        "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9X6VLKzA.woff2",
+        "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9Z6VLKzA.woff2",
+        "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9a6VI.woff2",
+        "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9b6VLKzA.woff2",
+        "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9e6VLKzA.woff2"
+      ],
+      "ttf": [
+        {
+          "filename": "o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A99d.ttf",
+          "hash": "5be701a9511117e73603bdab95947feef4f18bd1851dbddc30659370b26c69f1"
+        }
+      ]
+    },
+    "Noto Serif": {
+      "dir": "noto-serif",
+      "woff2": [
+        "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTu8cKtq8.woff2",
+        "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTw8cKtq8.woff2",
+        "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTx8cK.woff2",
+        "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTxMcKtq8.woff2",
+        "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTy8cKtq8.woff2",
+        "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTyMcKtq8.woff2",
+        "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTyccKtq8.woff2",
+        "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCTyscKtq8.woff2"
+      ],
+      "ttf": [
+        {
+          "filename": "ga6iaw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTa32J4wsL2JAlAhZqFCjwA.ttf",
+          "hash": "5473d2e43bdd018ee124a4addba8091fd0a29894b121cbb741023af6549662b6"
+        }
+      ]
+    },
+    "Open Sans": {
+      "dir": "open-sans",
+      "woff2": [
+        "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4gaVI.woff2",
+        "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4iaVIGxA.woff2",
+        "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4jaVIGxA.woff2",
+        "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4kaVIGxA.woff2",
+        "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4saVIGxA.woff2",
+        "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4taVIGxA.woff2",
+        "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4uaVIGxA.woff2",
+        "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B4vaVIGxA.woff2",
+        "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B5OaVIGxA.woff2",
+        "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0B5caVIGxA.woff2"
+      ],
+      "ttf": [
+        {
+          "filename": "memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0C4n.ttf",
+          "hash": "47ed1cfaa7ffca04a04ab850b2938fd52c09d1b44cfa3e2980878e166b0cbd87"
+        }
+      ]
+    },
+    "Source Sans Pro": {
+      "dir": "source-sans-pro",
+      "woff2": [
+        "6xK3dSBYKcSV-LCoeQqfX1RYOo3qN67lqDY.woff2",
+        "6xK3dSBYKcSV-LCoeQqfX1RYOo3qNK7lqDY.woff2",
+        "6xK3dSBYKcSV-LCoeQqfX1RYOo3qNa7lqDY.woff2",
+        "6xK3dSBYKcSV-LCoeQqfX1RYOo3qNq7lqDY.woff2",
+        "6xK3dSBYKcSV-LCoeQqfX1RYOo3qO67lqDY.woff2",
+        "6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7l.woff2",
+        "6xK3dSBYKcSV-LCoeQqfX1RYOo3qPK7lqDY.woff2"
+      ],
+      "ttf": [
+        {
+          "filename": "6xK3dSBYKcSV-LCoeQqfX1RYOo3aPw.ttf",
+          "hash": "34abc200f93a80cdfe82091de3f72e396e965f63f388be38f448db473c87f9cd"
+        }
+      ]
+    },
+    "Source Serif Pro": {
+      "dir": "source-serif-pro",
+      "woff2": [
+        "neIQzD-0qpwxpaWvjeD0X88SAOeauXA-oBOL.woff2",
+        "neIQzD-0qpwxpaWvjeD0X88SAOeauXQ-oA.woff2",
+        "neIQzD-0qpwxpaWvjeD0X88SAOeauXc-oBOL.woff2",
+        "neIQzD-0qpwxpaWvjeD0X88SAOeauXk-oBOL.woff2",
+        "neIQzD-0qpwxpaWvjeD0X88SAOeauXo-oBOL.woff2",
+        "neIQzD-0qpwxpaWvjeD0X88SAOeauXs-oBOL.woff2"
+      ],
+      "ttf": [
+        {
+          "filename": "neIQzD-0qpwxpaWvjeD0X88SAOeaiXM.ttf",
+          "hash": "20a1b7c53e92f3fcc58e2e8aecb9438748b50b89f2384589d73e9d29b90bd9b9"
+        }
+      ]
+    }
+  }
+}

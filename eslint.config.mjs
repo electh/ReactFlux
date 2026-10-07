@@ -149,10 +149,10 @@ export default [
     },
   },
   {
-    files: ["scripts/update-fonts.js"],
+    files: ["scripts/**/*.js"],
     languageOptions: { globals: globals.node },
     rules: {
-      "unicorn/no-process-exit": "off",
+      "import/extensions": "off",
     },
   },
 ]
