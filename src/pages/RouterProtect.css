@@ -1,23 +1,13 @@
 .compatibility-gate {
+  background-color: var(--app-shell-background);
+}
+
+.compatibility-gate-result-state {
   display: grid;
   place-items: center;
   box-sizing: border-box;
   min-height: 100%;
   padding: 24px;
-  background-color: var(--color-bg-1);
-}
-
-.compatibility-gate-status {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  color: var(--color-text-1);
-  text-align: center;
-}
-
-.compatibility-gate-status p {
-  margin: 0;
 }
 
 .compatibility-gate-result {

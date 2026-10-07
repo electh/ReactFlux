@@ -199,7 +199,9 @@ const ArticleList = forwardRef(
           <div className="article-list-state" role="status">
             <IconEmpty aria-hidden="true" className="article-list-state-icon" />
             <div className="article-list-state-copy">
-              <Typography.Text>{polyglot.t(emptyMessageKey)}</Typography.Text>
+              <Typography.Text className="article-list-empty-message">
+                {polyglot.t(emptyMessageKey)}
+              </Typography.Text>
               {emptySummary && (
                 <Typography.Text className="article-list-state-summary">
                   {emptySummary}

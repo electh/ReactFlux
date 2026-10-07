@@ -63,6 +63,10 @@
   gap: 6px;
 }
 
+.article-list-empty-message {
+  color: var(--color-text-2);
+}
+
 .article-list-state-summary {
   max-width: 100%;
   color: var(--color-text-3);

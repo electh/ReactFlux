@@ -1,7 +1,8 @@
-import { Button, Result, Spin } from "@arco-design/web-react"
+import { Button, Result } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import { Navigate, useNavigate } from "react-router"
 
+import RouteLoadingState from "@/components/ui/RouteLoadingState"
 import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
 import { dataState, visibleCategoriesState, visibleFeedsState } from "@/store/dataState"
@@ -10,13 +11,6 @@ import { getHomeTargetPath, isHomeTargetInCatalog } from "@/utils/home-page"
 import { clearSession } from "@/utils/session"
 
 import "./HomeRedirect.css"
-
-const LoadingState = ({ label }) => (
-  <main aria-busy="true" className="home-route-state" role="status">
-    <Spin aria-hidden="true" />
-    <p>{label}</p>
-  </main>
-)
 
 const ErrorState = ({ description, logoutLabel, retryLabel, title, onLogout, onRetry }) => (
   <main className="home-route-state" role="alert">
@@ -65,7 +59,7 @@ const HomeRedirect = () => {
       )
     }
 
-    return <LoadingState label={polyglot.t("home_page.identity_loading")} />
+    return <RouteLoadingState label={polyglot.t("home_page.identity_loading")} />
   }
 
   if (target.type === "view") {
@@ -86,7 +80,7 @@ const HomeRedirect = () => {
       )
     }
 
-    return <LoadingState label={polyglot.t("home_page.catalog_loading")} />
+    return <RouteLoadingState label={polyglot.t("home_page.catalog_loading")} />
   }
 
   const targetExists = isHomeTargetInCatalog(target, feeds, categories)

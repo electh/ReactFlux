@@ -27,6 +27,20 @@ const useTheme = () => {
       const themeMode = isDarkMode ? "dark" : "light"
       document.body.setAttribute("arco-theme", themeMode)
       document.body.style.colorScheme = themeMode
+
+      const shellBackground = getComputedStyle(document.body)
+        .getPropertyValue("--color-neutral-2")
+        .trim()
+      if (shellBackground) {
+        document.documentElement.style.setProperty("--app-shell-background", shellBackground)
+        for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+          meta.setAttribute("content", shellBackground)
+        }
+      }
+
+      document
+        .querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')
+        ?.setAttribute("content", isDarkMode ? "black" : "default")
     }
 
     applyColor(themeColor)

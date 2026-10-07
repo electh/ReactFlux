@@ -196,6 +196,14 @@
   overflow: hidden;
 }
 
+.installed-pwa .sidebar {
+  height: var(--installed-app-viewport-height, 100%);
+}
+
+.installed-pwa .sidebar .arco-menu-light {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 .sidebar.sidebar-collapsed {
   display: none;
 }
@@ -256,7 +264,7 @@
 
 @media screen and (display-mode: fullscreen), screen and (display-mode: standalone) {
   .sidebar .desktop-sidebar-toggle.arco-btn {
-    top: calc(max(env(safe-area-inset-top, 0px), 20px) + 10px);
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
   }
 }
 

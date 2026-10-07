@@ -1,8 +1,9 @@
-import { Button, Result, Spin } from "@arco-design/web-react"
+import { Button, Result } from "@arco-design/web-react"
 import { useStore } from "@nanostores/react"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router"
 
+import RouteLoadingState from "@/components/ui/RouteLoadingState"
 import useLanguage, { polyglotState } from "@/hooks/useLanguage"
 import useTheme from "@/hooks/useTheme"
 import { authState } from "@/store/authState"
@@ -44,17 +45,10 @@ const CompatibilityGate = ({ checkState, onLogout, onRetry }) => {
 
   if (checkState.status === "checking") {
     return (
-      <main className="compatibility-gate">
-        <div
-          aria-busy="true"
-          aria-live="polite"
-          className="compatibility-gate-status"
-          role="status"
-        >
-          <Spin aria-hidden="true" />
-          <p>{polyglot.t("compatibility.checking")}</p>
-        </div>
-      </main>
+      <RouteLoadingState
+        className="compatibility-gate"
+        label={polyglot.t("compatibility.checking")}
+      />
     )
   }
 
@@ -74,7 +68,7 @@ const CompatibilityGate = ({ checkState, onLogout, onRetry }) => {
   )
 
   return (
-    <main className="compatibility-gate">
+    <main className="compatibility-gate compatibility-gate-result-state">
       <div ref={alertRef} className="compatibility-gate-result" role="alert" tabIndex={-1}>
         <Result
           status="error"

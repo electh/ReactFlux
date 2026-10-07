@@ -1,7 +1,6 @@
-.home-route-state {
+.route-loading-state {
   display: flex;
   flex: 1 1 auto;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
@@ -12,9 +11,13 @@
   text-align: center;
 }
 
-.home-route-actions {
+.route-loading-status {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.route-loading-status p {
+  margin: 0;
 }

@@ -1,3 +1,13 @@
+:root {
+  --app-shell-background: #f2f3f5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --app-shell-background: #2e2e30;
+  }
+}
+
 ::-webkit-input-placeholder,
 button,
 input,
@@ -44,7 +54,38 @@ body,
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
-  background-color: var(--color-bg-1);
+  background-color: var(--app-shell-background);
+}
+
+.installed-pwa #root {
+  height: var(--installed-app-viewport-height, 100%);
+}
+
+/* Expose a fixed background-color sample without painting over app controls. */
+.pwa-status-bar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: none;
+  z-index: 2147483647;
+  height: 11px;
+  background-color: var(--app-shell-background);
+  -webkit-background-clip: text;
+  background-clip: text;
+  pointer-events: none;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .installed-pwa .pwa-status-bar {
+    display: block;
+  }
+
+  @media screen and (display-mode: fullscreen), screen and (display-mode: standalone) {
+    .pwa-status-bar {
+      display: block;
+    }
+  }
 }
 
 a {

@@ -33,6 +33,30 @@ const handlePreloadError = (event) => {
 
 globalThis.addEventListener("vite:preloadError", handlePreloadError)
 
+const isInstalledIOSApp = globalThis.navigator.standalone === true
+
+// Keep iOS standalone mode explicit because its default status bar can shrink innerHeight
+// without changing the CSS initial containing block.
+document.documentElement.classList.toggle("installed-pwa", isInstalledIOSApp)
+
+if (isInstalledIOSApp) {
+  const syncInstalledAppViewportHeight = () => {
+    const viewportHeight = globalThis.innerHeight
+    if (!Number.isFinite(viewportHeight) || viewportHeight <= 0) {
+      return
+    }
+
+    document.documentElement.style.setProperty(
+      "--installed-app-viewport-height",
+      `${Math.round(viewportHeight)}px`,
+    )
+  }
+
+  syncInstalledAppViewportHeight()
+  // Keyboard-only visual viewport changes should not collapse the entire app shell.
+  globalThis.addEventListener("resize", syncInstalledAppViewportHeight)
+}
+
 ReactDOM.createRoot(document.querySelector("#root")).render(<RouterProvider router={router} />)
 
 const RUNTIME_ASSET_PATTERN = /\/(?:assets\/.*\.(?:css|js)|fonts\/.*\.woff2)$/
