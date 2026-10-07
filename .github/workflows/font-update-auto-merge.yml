@@ -45,11 +45,9 @@ jobs:
           RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           echo "eligible=false" >> "$GITHUB_OUTPUT"
-          owner="${GH_REPO%%/*}"
           mapfile -t pull_requests < <(
-            gh api --method GET "repos/$GH_REPO/pulls" \
-              -f state=open -f base=main -f "head=$owner:bot/update-fonts" \
-              --jq '.[] | [.number, .head.sha, .html_url, .user.login, .draft] | @tsv'
+            gh pr list --repo "$GH_REPO" --state open --base main \
+              --head bot/update-fonts --json number --jq '.[].number'
           )
 
           if ((${#pull_requests[@]} == 0)); then
@@ -61,7 +59,12 @@ jobs:
             exit 1
           fi
 
-          IFS=$'\t' read -r pr_number head_sha pr_url author draft <<< "${pull_requests[0]}"
+          pr_number="${pull_requests[0]}"
+          pr_data="$(
+            gh api "repos/$GH_REPO/pulls/$pr_number" \
+              --jq '[.head.sha, .html_url, .user.login, .draft, .head.repo.full_name, .head.ref, .base.ref] | @tsv'
+          )"
+          IFS=$'\t' read -r head_sha pr_url author draft head_repo head_ref base_ref <<< "$pr_data"
           {
             echo "head_sha=$head_sha"
             echo "pr_number=$pr_number"
@@ -73,8 +76,10 @@ jobs:
             echo "The existing font PR was not updated by this run; skipping"
             exit 0
           fi
-          if [[ "$author" != "github-actions[bot]" || "$draft" != "false" ]]; then
-            echo "Font PR has an unexpected author or draft state" >&2
+          if [[ "$author" != "github-actions[bot]" || "$draft" != "false" ||
+                "$head_repo" != "$GH_REPO" || "$head_ref" != "bot/update-fonts" ||
+                "$base_ref" != "main" ]]; then
+            echo "Font PR has unexpected identity, source, or target metadata" >&2
             exit 1
           fi
 
@@ -226,5 +231,5 @@ jobs:
           PR_NUMBER: ${{ needs.authorize.outputs.pr_number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh pr comment "$PR_NUMBER" --body \
+          gh pr comment "$PR_NUMBER" --repo "$GH_REPO" --body \
             "❌ Automatic font validation or merge failed. Inspect: $RUN_URL"
