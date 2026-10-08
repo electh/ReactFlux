@@ -1,13 +1,23 @@
 import { useStore } from "@nanostores/react"
-import { useEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useState } from "react"
 
+import useScreenWidth from "@/hooks/useScreenWidth"
+import { activeContentState } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
 import { applyColor } from "@/utils/colors"
+import { selectStore } from "@/utils/nanostores"
+
+const hasActiveArticleState = selectStore(activeContentState, Boolean)
 
 const useTheme = () => {
-  const { themeColor, themeMode } = useStore(settingsState, {
-    keys: ["themeColor", "themeMode"],
+  const { articleListLayout, themeColor, themeMode } = useStore(settingsState, {
+    keys: ["articleListLayout", "themeColor", "themeMode"],
   })
+  const hasActiveArticle = useStore(hasActiveArticleState)
+  const { isBelowMedium } = useScreenWidth()
+  const isDetailLayerActive =
+    hasActiveArticle &&
+    (isBelowMedium || articleListLayout === "card" || articleListLayout === "list")
   const [isSystemDark, setIsSystemDark] = useState(
     globalThis.matchMedia("(prefers-color-scheme: dark)").matches,
   )
@@ -18,23 +28,32 @@ const useTheme = () => {
 
     mediaQuery.addEventListener("change", updateSystemDarkMode)
 
-    // 在组件卸载时清除监听器
+    // Remove the system theme listener when the component unmounts.
     return () => mediaQuery.removeEventListener("change", updateSystemDarkMode)
   }, [])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const applyColorScheme = (isDarkMode) => {
       const themeMode = isDarkMode ? "dark" : "light"
       document.body.setAttribute("arco-theme", themeMode)
       document.body.style.colorScheme = themeMode
 
-      const shellBackground = getComputedStyle(document.body)
-        .getPropertyValue("--color-neutral-2")
-        .trim()
+      const bodyStyle = getComputedStyle(document.body)
+      const shellBackground = bodyStyle.getPropertyValue("--color-neutral-2").trim()
       if (shellBackground) {
         document.documentElement.style.setProperty("--app-shell-background", shellBackground)
+      }
+
+      const statusBarBackground = isDetailLayerActive
+        ? bodyStyle.getPropertyValue("--color-bg-1").trim() || shellBackground
+        : shellBackground
+      if (statusBarBackground) {
+        document.documentElement.style.setProperty(
+          "--app-status-bar-background",
+          statusBarBackground,
+        )
         for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
-          meta.setAttribute("content", shellBackground)
+          meta.setAttribute("content", statusBarBackground)
         }
       }
 
@@ -45,12 +64,9 @@ const useTheme = () => {
 
     applyColor(themeColor)
 
-    if (themeMode === "system") {
-      applyColorScheme(isSystemDark)
-    } else {
-      applyColorScheme(themeMode === "dark")
-    }
-  }, [isSystemDark, themeMode, themeColor])
+    const isDarkMode = themeMode === "system" ? isSystemDark : themeMode === "dark"
+    applyColorScheme(isDarkMode)
+  }, [isDetailLayerActive, isSystemDark, themeMode, themeColor])
 }
 
 export default useTheme

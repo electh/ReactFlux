@@ -70,7 +70,7 @@ body,
   display: none;
   z-index: 2147483647;
   height: 11px;
-  background-color: var(--app-shell-background);
+  background-color: var(--app-status-bar-background, var(--app-shell-background));
   -webkit-background-clip: text;
   background-clip: text;
   pointer-events: none;
