@@ -319,6 +319,10 @@ body[arco-theme="dark"] .article-content :not(pre) > code {
   color: #c9d1d9;
 }
 
+.article-lightbox {
+  --yarl__container_background_color: var(--app-lightbox-background);
+}
+
 .article-lightbox .yarl__slide_image {
   -webkit-touch-callout: initial;
 }

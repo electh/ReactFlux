@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/react"
 import { map } from "nanostores"
 
-import createSetter from "@/utils/nanostores"
+import createSetter, { selectStore } from "@/utils/nanostores"
 
 const createDefaultPhotoSliderState = (photoSliderSessionId = 0) => ({
   isPhotoSliderCloseRequested: false,
@@ -12,6 +12,11 @@ const createDefaultPhotoSliderState = (photoSliderSessionId = 0) => ({
 })
 
 const state = map(createDefaultPhotoSliderState())
+
+export const isPhotoSliderVisibleState = selectStore(
+  state,
+  ({ isPhotoSliderVisible }) => isPhotoSliderVisible,
+)
 
 const setSelectedIndex = createSetter(state, "selectedIndex")
 

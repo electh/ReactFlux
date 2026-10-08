@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/react"
 import { useEffect, useLayoutEffect, useState } from "react"
 
+import { isPhotoSliderVisibleState } from "@/hooks/usePhotoSlider"
 import useScreenWidth from "@/hooks/useScreenWidth"
 import { activeContentState } from "@/store/contentState"
 import { settingsState } from "@/store/settingsState"
@@ -14,6 +15,7 @@ const useTheme = () => {
     keys: ["articleListLayout", "themeColor", "themeMode"],
   })
   const hasActiveArticle = useStore(hasActiveArticleState)
+  const isPhotoSliderVisible = useStore(isPhotoSliderVisibleState)
   const { isBelowMedium } = useScreenWidth()
   const isDetailLayerActive =
     hasActiveArticle &&
@@ -44,9 +46,12 @@ const useTheme = () => {
         document.documentElement.style.setProperty("--app-shell-background", shellBackground)
       }
 
-      const statusBarBackground = isDetailLayerActive
+      const pageBackground = isDetailLayerActive
         ? bodyStyle.getPropertyValue("--color-bg-1").trim() || shellBackground
         : shellBackground
+      const statusBarBackground =
+        (isPhotoSliderVisible && bodyStyle.getPropertyValue("--app-lightbox-background").trim()) ||
+        pageBackground
       if (statusBarBackground) {
         document.documentElement.style.setProperty(
           "--app-status-bar-background",
@@ -59,14 +64,14 @@ const useTheme = () => {
 
       document
         .querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')
-        ?.setAttribute("content", isDarkMode ? "black" : "default")
+        ?.setAttribute("content", isPhotoSliderVisible || isDarkMode ? "black" : "default")
     }
 
     applyColor(themeColor)
 
     const isDarkMode = themeMode === "system" ? isSystemDark : themeMode === "dark"
     applyColorScheme(isDarkMode)
-  }, [isDetailLayerActive, isSystemDark, themeMode, themeColor])
+  }, [isDetailLayerActive, isPhotoSliderVisible, isSystemDark, themeMode, themeColor])
 }
 
 export default useTheme
