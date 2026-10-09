@@ -75,7 +75,7 @@
     "fontkit": "2.0.4",
     "globals": "^17.13.0",
     "knip": "^6.39.0",
-    "lefthook": "^2.1.15",
+    "lefthook": "^2.2.0",
     "postcss": "8.5.29",
     "prettier": "^3.9.9",
     "rollup-plugin-visualizer": "^7.1.1",
