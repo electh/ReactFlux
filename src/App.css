@@ -129,6 +129,10 @@
 }
 
 @media screen and (max-width: 768px) {
+  .app {
+    border-radius: 0;
+  }
+
   .home-identity-notice {
     top: max(8px, env(safe-area-inset-top, 0px));
     width: calc(100% - 32px);
