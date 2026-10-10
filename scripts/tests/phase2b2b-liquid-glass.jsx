@@ -131,13 +131,25 @@ const ActionButtonsPreview = () => (
   </>
 )
 
-const ListView = ({ filterValue, onFilterChange }) => (
+const ListView = ({ activeControl, filterValue, onActiveSelect, onFilterChange }) => (
   <>
     <section aria-label="List controls" className="demo-list-toolbar">
-      <Button aria-label="Search" className="nf-glass-control" shape="circle">
+      <Button
+        aria-label="Search"
+        aria-pressed={activeControl === "search"}
+        className={`nf-glass-control${activeControl === "search" ? " nf-glass-control-active" : ""}`}
+        shape="circle"
+        onClick={() => onActiveSelect("search")}
+      >
         ⌕
       </Button>
-      <Button aria-label="Filter by date" className="nf-glass-control" shape="circle">
+      <Button
+        aria-label="Filter by date"
+        aria-pressed={activeControl === "date"}
+        className={`nf-glass-control${activeControl === "date" ? " nf-glass-control-active" : ""}`}
+        shape="circle"
+        onClick={() => onActiveSelect("date")}
+      >
         ▦
       </Button>
       <Button aria-label="Sort articles" className="nf-glass-control" shape="circle">
@@ -196,6 +208,7 @@ const Harness = () => {
   const [safeAreaSimulation, setSafeAreaSimulation] = useState(false)
   const [view, setView] = useState("list")
   const [filterValue, setFilterValue] = useState("all")
+  const [activeControl, setActiveControl] = useState(null)
 
   useEffect(() => {
     if (theme === "dark") {
@@ -252,13 +265,20 @@ const Harness = () => {
       </header>
       <div className="demo-stage" data-view={view}>
         {view === "list" ? (
-          <ListView filterValue={filterValue} onFilterChange={setFilterValue} />
+          <ListView
+            activeControl={activeControl}
+            filterValue={filterValue}
+            onActiveSelect={setActiveControl}
+            onFilterChange={setFilterValue}
+          />
         ) : (
           <DetailView />
         )}
       </div>
       <aside aria-label="Interaction state guidance" className="demo-state-legend">
-        <span>rest</span>
+        <span>REST — inactive control</span>
+        <span>ACTIVE_SELECTED — click Search or date</span>
+        <span>PRESSED — hold a selected control</span>
         <span>hover any control</span>
         <span>press any control</span>
         <span>Tab to focus</span>
