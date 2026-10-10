@@ -19,8 +19,8 @@
   flex: 0 0 auto;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-radius: var(--border-radius-medium);
-  background-color: var(--color-fill-2);
+  border-radius: var(--nf-radius-card, var(--border-radius-medium));
+  background-color: var(--nf-surface-media, var(--color-fill-2));
 }
 
 .grid-card-cover {
@@ -30,9 +30,7 @@
   object-fit: contain;
   object-position: center;
   opacity: 0;
-  transition:
-    filter 0.15s,
-    opacity 0.15s;
+  transition: opacity var(--nf-motion-medium, 220ms) ease-out;
 }
 
 .grid-card-cover-cropped {
@@ -62,7 +60,7 @@
   justify-content: space-between;
   gap: 8px;
   min-width: 0;
-  color: var(--color-text-3);
+  color: var(--nf-text-tertiary, var(--color-text-3));
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
   line-height: 1.35;
@@ -73,7 +71,7 @@
   align-items: center;
   gap: 7px;
   min-width: 0;
-  color: var(--color-text-3);
+  color: var(--nf-text-tertiary, var(--color-text-3));
   font-weight: 500;
 }
 
@@ -97,7 +95,7 @@
 .grid-card-title {
   display: -webkit-box;
   margin: 0;
-  color: var(--color-text-2);
+  color: var(--nf-text-primary, var(--color-text-2));
   font-size: 1.1875rem;
   font-weight: 600;
   line-height: 1.32;
@@ -123,7 +121,7 @@
 .grid-card-summary {
   display: -webkit-box;
   margin: 0;
-  color: var(--color-text-3);
+  color: var(--nf-text-secondary, var(--color-text-3));
   font-size: 0.9375rem;
   line-height: 1.5;
   -webkit-box-orient: vertical;
@@ -137,7 +135,7 @@
   align-items: center;
   min-height: 18px;
   margin-top: auto;
-  color: var(--color-text-3);
+  color: var(--nf-text-tertiary, var(--color-text-3));
   font-size: 0.8125rem;
   line-height: 1.35;
 }
@@ -157,7 +155,7 @@
 .grid-card-star {
   flex: 0 0 auto;
   margin-left: auto;
-  color: #ffcd00;
+  color: var(--nf-favorite);
 }
 
 @media (prefers-reduced-motion: reduce) {

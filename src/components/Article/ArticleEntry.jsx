@@ -143,7 +143,7 @@ const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter
                   : polyglot.t("article_card.star_tooltip")}
               </span>
               {isStarred ? (
-                <IconStarFill aria-hidden="true" style={{ color: "#ffcd00" }} />
+                <IconStarFill aria-hidden="true" style={{ color: "var(--nf-favorite)" }} />
               ) : (
                 <IconStar aria-hidden="true" />
               )}

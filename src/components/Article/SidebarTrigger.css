@@ -22,7 +22,7 @@
 }
 
 .sidebar-drawer .mobile-sidebar-close.arco-btn:focus-visible {
-  outline: 2px solid rgb(var(--primary-6));
+  outline: 2px solid var(--nf-focus-ring, rgb(var(--primary-6)));
   outline-offset: 1px;
 }
 
@@ -38,7 +38,7 @@
 
 .desktop-sidebar-reopen.arco-btn:focus-visible,
 .trigger.arco-btn:focus-visible {
-  outline: 2px solid rgb(var(--primary-6));
+  outline: 2px solid var(--nf-focus-ring, rgb(var(--primary-6)));
   outline-offset: 1px;
 }
 
