@@ -1,0 +1,164 @@
+/* Shared Liquid Glass surface for navigation and interactive chrome only. */
+:is(.nf-glass, .nf-glass-control, .nf-glass-group) {
+  color: var(--nf-text-primary);
+  background-color: var(--nf-glass-fill);
+  border: 1px solid var(--nf-glass-border);
+  box-shadow: var(--nf-glass-shadow);
+  -webkit-backdrop-filter: saturate(115%) blur(min(var(--nf-glass-blur), 16px));
+  backdrop-filter: saturate(115%) blur(min(var(--nf-glass-blur), 16px));
+  transition:
+    background-color var(--nf-motion-fast) ease,
+    border-color var(--nf-motion-fast) ease,
+    box-shadow var(--nf-motion-fast) ease;
+}
+
+.nf-glass {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--nf-radius-control);
+}
+
+.nf-glass::before,
+.nf-glass-group::before {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 var(--nf-glass-highlight);
+  content: "";
+  pointer-events: none;
+}
+
+.nf-glass-control,
+.arco-btn.nf-glass-control {
+  position: relative;
+  isolation: isolate;
+  border-color: var(--nf-glass-border);
+  background-color: var(--nf-glass-fill);
+  background-image: none;
+  color: var(--nf-text-primary);
+  touch-action: manipulation;
+}
+
+.nf-glass-control::before {
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 var(--nf-glass-highlight);
+  content: "";
+  pointer-events: none;
+}
+
+.nf-glass-control > * {
+  position: relative;
+  z-index: 1;
+}
+
+.arco-btn.arco-btn-secondary.nf-glass-control:not(.arco-btn-disabled),
+.arco-btn.nf-glass-control:not(:disabled):not(.arco-btn-disabled) {
+  border-color: var(--nf-glass-border);
+  background-color: var(--nf-glass-fill);
+  color: var(--nf-text-primary);
+}
+
+.arco-btn.nf-glass-control:hover:not(:disabled):not(.arco-btn-disabled) {
+  background-color: var(--nf-glass-fill);
+  background-image: linear-gradient(var(--nf-state-hover), var(--nf-state-hover));
+  color: var(--nf-text-primary);
+}
+
+.nf-glass-control:active:not(:disabled):not(.arco-btn-disabled),
+.nf-glass-control-active,
+.arco-btn.nf-glass-control:active:not(:disabled):not(.arco-btn-disabled),
+.arco-btn.nf-glass-control.nf-glass-control-active {
+  border-color: var(--nf-glass-border);
+  background-color: var(--nf-glass-fill);
+  background-image: linear-gradient(var(--nf-state-pressed), var(--nf-state-pressed));
+  color: var(--nf-text-primary);
+}
+
+.nf-glass-control:focus-visible {
+  outline: 2px solid var(--nf-focus-ring);
+  outline-offset: 2px;
+}
+
+.nf-glass-control:disabled,
+.nf-glass-control.arco-btn-disabled {
+  color: var(--nf-text-muted);
+  cursor: not-allowed;
+}
+
+.nf-glass-group {
+  position: relative;
+  isolation: isolate;
+  border-radius: 999px;
+}
+
+.nf-glass-group > *,
+.nf-glass-group .arco-btn,
+.nf-glass-group .arco-radio-button {
+  position: relative;
+  z-index: 1;
+  transition:
+    background-color var(--nf-motion-fast) ease,
+    color var(--nf-motion-fast) ease,
+    border-color var(--nf-motion-fast) ease;
+}
+
+.nf-glass-group .arco-btn {
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
+  color: var(--nf-text-primary);
+}
+
+.nf-glass-group .arco-btn:hover:not(.arco-btn-disabled),
+.nf-glass-group .arco-btn.arco-btn-secondary:not(.arco-btn-disabled):has(svg):hover,
+.nf-glass-group .arco-radio-button:not(.arco-radio-checked):hover {
+  background-color: var(--nf-state-hover);
+  color: var(--nf-text-primary);
+}
+
+.nf-glass-group .arco-btn:active:not(.arco-btn-disabled),
+.nf-glass-group .arco-btn.arco-btn-secondary:not(.arco-btn-disabled):has(svg):active,
+.nf-glass-group .arco-radio-button:active {
+  background-color: var(--nf-state-pressed);
+}
+
+.nf-glass-group .arco-btn:focus-visible,
+.nf-glass-group .arco-radio-button:focus-within {
+  outline: 2px solid var(--nf-focus-ring);
+  outline-offset: 2px;
+  z-index: 2;
+}
+
+.nf-glass-group .arco-btn.arco-btn-disabled {
+  color: var(--nf-text-muted);
+  opacity: 0.62;
+}
+
+.nf-glass-group .arco-radio-button {
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--nf-text-secondary);
+}
+
+.nf-glass-group .arco-radio-button.arco-radio-checked {
+  border-color: transparent;
+  border-radius: 999px;
+  background-color: var(--nf-state-selected);
+  color: var(--nf-text-primary);
+}
+
+.nf-glass-group .arco-radio-button.arco-radio-checked:hover {
+  background-color: var(--nf-state-selected);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.nf-glass, .nf-glass-control, .nf-glass-group),
+  .nf-glass-group > *,
+  .nf-glass-group .arco-btn,
+  .nf-glass-group .arco-radio-button {
+    transition-duration: 0ms;
+  }
+}

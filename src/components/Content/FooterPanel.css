@@ -11,6 +11,13 @@
   background-color: transparent;
 }
 
+.entry-panel-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+}
+
 .entry-panel-filter-label {
   margin-left: 4px;
 }
@@ -59,6 +66,11 @@
     padding: 0;
     line-height: var(--mobile-edge-control-size);
     overflow: hidden;
+  }
+
+  .entry-panel .entry-panel-filter-group {
+    gap: 0;
+    padding: 2px;
   }
 
   .entry-panel .arco-radio-button {

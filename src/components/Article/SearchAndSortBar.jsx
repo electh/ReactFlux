@@ -111,12 +111,10 @@ const ActiveButton = ({ active, expanded, icon, tooltip, onClick }) => (
       aria-expanded={expanded}
       aria-haspopup="dialog"
       aria-label={tooltip}
+      className={`nf-glass-control${active ? " nf-glass-control-active" : ""}`}
       icon={icon}
       shape="circle"
       size="small"
-      style={{
-        backgroundColor: active ? "rgb(var(--primary-6))" : "inherit",
-      }}
       onClick={onClick}
     />
   </CustomTooltip>
@@ -158,12 +156,10 @@ const DateFilter = ({ filterDate, polyglot }) => {
             aria-expanded={calendarVisible}
             aria-haspopup="dialog"
             aria-label={selectDateLabel}
+            className={`nf-glass-control${filterDate ? " nf-glass-control-active" : ""}`}
             icon={<IconCalendar aria-hidden="true" />}
             shape="circle"
             size="small"
-            style={{
-              backgroundColor: filterDate ? "rgb(var(--primary-6))" : "inherit",
-            }}
           />
         </CustomTooltip>
       }
@@ -295,6 +291,7 @@ const SearchAndSortBar = ({ fullWidth = false }) => {
         <CustomTooltip mini content={sortLabel}>
           <Button
             aria-label={sortLabel}
+            className="nf-glass-control"
             shape="circle"
             size="small"
             icon={

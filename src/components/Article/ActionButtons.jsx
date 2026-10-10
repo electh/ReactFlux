@@ -57,12 +57,12 @@ const TITLE_ALIGNMENT_ICONS = {
 const DesktopButtons = memo(
   ({ commonButtons, hasIntegrations, handleSaveToThirdPartyServices, polyglot }) => (
     <>
-      <div className="left-side">
+      <div className="left-side nf-glass-group">
         {commonButtons.close}
         {commonButtons.navigationLeft}
         {commonButtons.navigationRight}
       </div>
-      <div className="right-side">
+      <div className="right-side nf-glass-group">
         {commonButtons.status}
         {commonButtons.star}
         {commonButtons.fetch}
@@ -88,7 +88,7 @@ const DesktopButtons = memo(
 DesktopButtons.displayName = "DesktopButtons"
 
 const MobileButtons = memo(({ commonButtons, hasHeadings, moveContextActionToMenu }) => (
-  <div className="mobile-buttons">
+  <div className="mobile-buttons nf-glass-group">
     {commonButtons.status}
     {commonButtons.star}
     {commonButtons.navigationLeft}

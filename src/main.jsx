@@ -9,6 +9,7 @@ import "simplebar-react/dist/simplebar.min.css"
 import "./index.css"
 import router from "./routes"
 import "./theme.css"
+import "./liquid-glass.css"
 
 const PRELOAD_ERROR_RELOAD_KEY = "reactflux:preload-error-reload"
 const PRELOAD_ERROR_RELOAD_COOLDOWN_MS = 10_000
