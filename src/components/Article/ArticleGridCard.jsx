@@ -10,12 +10,39 @@ import { generateReadingTime, generateRelativeTime } from "@/utils/date"
 import "./ArticleGridCard.css"
 
 const MAX_CARD_SUMMARY_LENGTH = 320
+const MIN_COVER_ASPECT_RATIO = 3 / 2
+const MAX_COVER_ASPECT_RATIO = 2
 
-const getInitialCoverState = (entry) => ({
-  coverSource: entry.coverSource,
-  hasError: false,
-  isReady: false,
-})
+const getAspectRatio = (width, height) => {
+  const numericWidth = Number(width)
+  const numericHeight = Number(height)
+  if (
+    !Number.isFinite(numericWidth) ||
+    numericWidth <= 0 ||
+    !Number.isFinite(numericHeight) ||
+    numericHeight <= 0
+  ) {
+    return null
+  }
+
+  return numericWidth / numericHeight
+}
+
+const shouldCropCover = (aspectRatio) =>
+  aspectRatio !== null &&
+  aspectRatio >= MIN_COVER_ASPECT_RATIO &&
+  aspectRatio <= MAX_COVER_ASPECT_RATIO
+
+const getInitialCoverState = (entry) => {
+  const aspectRatio = getAspectRatio(entry.coverWidth, entry.coverHeight)
+
+  return {
+    coverSource: entry.coverSource,
+    hasError: false,
+    isReady: aspectRatio !== null,
+    shouldCrop: aspectRatio === null ? false : shouldCropCover(aspectRatio),
+  }
+}
 
 const getCardSummary = (summary) =>
   summary.length > MAX_CARD_SUMMARY_LENGTH
@@ -28,15 +55,18 @@ const ArticleGridCard = ({ entry, previewContent }) => {
   const [coverState, setCoverState] = useState(() => getInitialCoverState(entry))
   const isCurrentCover = coverState.coverSource === entry.coverSource
   const currentCoverState = isCurrentCover ? coverState : getInitialCoverState(entry)
-  const { hasError, isReady } = currentCoverState
+  const { hasError, isReady, shouldCrop } = currentCoverState
   const hasCover = Boolean(entry.coverSource) && !hasError
   const cardSummary = getCardSummary(previewContent)
 
-  const handleCoverLoad = () => {
+  const handleCoverLoad = (event) => {
+    const { naturalHeight, naturalWidth } = event.currentTarget
+
     setCoverState({
       coverSource: entry.coverSource,
       hasError: false,
       isReady: true,
+      shouldCrop: shouldCropCover(getAspectRatio(naturalWidth, naturalHeight)),
     })
   }
 
@@ -45,6 +75,7 @@ const ArticleGridCard = ({ entry, previewContent }) => {
       coverSource: entry.coverSource,
       hasError: true,
       isReady: false,
+      shouldCrop: false,
     })
   }
 
@@ -61,6 +92,7 @@ const ArticleGridCard = ({ entry, previewContent }) => {
             width={entry.coverWidth || undefined}
             className={classNames("grid-card-cover", {
               "grid-card-cover-ready": isReady,
+              "grid-card-cover-cropped": shouldCrop,
             })}
             onError={handleCoverError}
             onLoad={handleCoverLoad}

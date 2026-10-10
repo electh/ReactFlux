@@ -93,8 +93,4 @@
   .entry-list {
     width: calc(100% - 20px);
   }
-
-  .article-card-grid-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }

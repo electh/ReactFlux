@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 
 const CARD_GRID_GAP = 12
-const CARD_GRID_MAX_COLUMNS = 4
-const CARD_GRID_MIN_WIDTH = 280
-const CARD_GRID_MOBILE_QUERY = "(max-width: 768px)"
+const CARD_GRID_MAX_COLUMNS = 3
+const CARD_GRID_MIN_WIDTH = 300
 
 const requestFrame = (callback) =>
   typeof globalThis.requestAnimationFrame === "function"
@@ -29,7 +28,7 @@ const setRefValue = (ref, value) => {
 const getLayoutElement = (scrollRoot) => scrollRoot?.closest?.(".entry-list") ?? scrollRoot
 
 const getCardColumnCount = (layoutElement) => {
-  if (!layoutElement || globalThis.matchMedia?.(CARD_GRID_MOBILE_QUERY).matches) {
+  if (!layoutElement) {
     return 1
   }
 
@@ -138,22 +137,17 @@ const useArticleListLayout = ({ entries, layout, scrollRootRef }) => {
     updateColumnCount()
     scheduleAnchorCapture()
 
-    const mobileMediaQuery = globalThis.matchMedia?.(CARD_GRID_MOBILE_QUERY)
-    mobileMediaQuery?.addEventListener?.("change", updateColumnCount)
-
     if (typeof globalThis.ResizeObserver === "function") {
       const resizeObserver = new globalThis.ResizeObserver(updateColumnCount)
       resizeObserver.observe(layoutElement)
       return () => {
         resizeObserver.disconnect()
-        mobileMediaQuery?.removeEventListener?.("change", updateColumnCount)
       }
     }
 
     globalThis.addEventListener?.("resize", updateColumnCount)
     return () => {
       globalThis.removeEventListener?.("resize", updateColumnCount)
-      mobileMediaQuery?.removeEventListener?.("change", updateColumnCount)
     }
   }, [captureVisibleAnchor, layout, scheduleAnchorCapture, scrollRootRef, scrollRootRevision])
 
