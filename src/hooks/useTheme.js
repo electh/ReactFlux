@@ -41,13 +41,13 @@ const useTheme = () => {
       document.body.style.colorScheme = themeMode
 
       const bodyStyle = getComputedStyle(document.body)
-      const shellBackground = bodyStyle.getPropertyValue("--color-neutral-2").trim()
+      const shellBackground = bodyStyle.getPropertyValue("--nf-canvas").trim()
       if (shellBackground) {
         document.documentElement.style.setProperty("--app-shell-background", shellBackground)
       }
 
       const pageBackground = isDetailLayerActive
-        ? bodyStyle.getPropertyValue("--color-bg-1").trim() || shellBackground
+        ? bodyStyle.getPropertyValue("--nf-surface-content").trim() || shellBackground
         : shellBackground
       const statusBarBackground =
         (isPhotoSliderVisible && bodyStyle.getPropertyValue("--app-lightbox-background").trim()) ||

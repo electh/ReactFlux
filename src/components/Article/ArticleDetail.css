@@ -126,7 +126,7 @@
 
 .article-body a:focus-visible {
   border-radius: var(--border-radius-small);
-  outline: 2px solid rgb(var(--primary-6));
+  outline: 2px solid var(--nf-focus-ring, rgb(var(--primary-6)));
   outline-offset: 3px;
 }
 
@@ -161,7 +161,7 @@
 }
 
 .article-body .article-table-scroll:focus-visible {
-  outline: 2px solid rgb(var(--primary-6));
+  outline: 2px solid var(--nf-focus-ring, rgb(var(--primary-6)));
   outline-offset: 3px;
 }
 

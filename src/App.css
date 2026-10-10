@@ -80,7 +80,7 @@
 
   body {
     min-height: 100vh;
-    background-color: var(--color-bg-1);
+    background-color: var(--app-shell-background);
   }
 
   .app {
@@ -361,7 +361,8 @@
   }
 
   .app-confirm-modal .destructive-confirm-action.arco-btn-primary:focus-visible {
-    box-shadow: 0 0 0 2px rgb(var(--danger-3));
+    outline: 2px solid var(--nf-focus-ring, rgb(var(--danger-3)));
+    outline-offset: 2px;
   }
 
   .app-confirm-modal .destructive-confirm-action.arco-btn-primary.arco-btn-disabled {

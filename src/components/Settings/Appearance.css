@@ -42,5 +42,5 @@
 }
 
 .theme-color-input:focus-visible + .theme-color-swatch {
-  box-shadow: 0 0 0 4px var(--color-primary-light-3);
+  box-shadow: 0 0 0 2px var(--nf-focus-ring, var(--color-primary-light-3));
 }

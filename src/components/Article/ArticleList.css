@@ -39,12 +39,12 @@
 
 .article-list-divider.arco-divider-horizontal {
   margin: 8px 0;
-  border-bottom: 1px solid var(--color-border-2);
+  border-bottom: 1px solid var(--nf-separator-subtle, var(--color-border-2));
 }
 
 .entry-list-layout-list .article-list-divider.arco-divider-horizontal {
   margin: 0;
-  border-bottom-color: var(--color-border-1);
+  border-bottom-color: var(--nf-separator-subtle, var(--color-border-1));
 }
 
 .article-list-state {
@@ -53,13 +53,13 @@
   align-items: center;
   gap: 16px;
   padding: 48px 16px;
-  color: var(--color-text-2);
+  color: var(--nf-text-secondary, var(--color-text-2));
   text-align: center;
 }
 
 .article-list-state-icon {
   font-size: 48px;
-  color: var(--color-text-3);
+  color: var(--nf-text-tertiary, var(--color-text-3));
 }
 
 .article-list-state-copy {
@@ -71,12 +71,12 @@
 }
 
 .article-list-empty-message {
-  color: var(--color-text-2);
+  color: var(--nf-text-secondary, var(--color-text-2));
 }
 
 .article-list-state-summary {
   max-width: 100%;
-  color: var(--color-text-3);
+  color: var(--nf-text-tertiary, var(--color-text-3));
   font-size: 12px;
   overflow-wrap: anywhere;
 }
@@ -87,8 +87,8 @@
   align-items: center;
   margin: 10px auto;
   border-radius: var(--border-radius-medium);
-  background-color: var(--color-bg-2);
-  color: var(--color-text-2);
+  background-color: var(--nf-surface-elevated, var(--color-bg-2));
+  color: var(--nf-text-secondary, var(--color-text-2));
 }
 
 @media screen and (max-width: 768px) {

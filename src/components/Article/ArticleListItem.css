@@ -1,7 +1,7 @@
 .list-entry-wrapper {
   contain: content;
   margin-inline: 0;
-  border-radius: var(--border-radius-small);
+  border-radius: var(--nf-radius-control, var(--border-radius-small));
   padding: 6px 10px 6px 18px;
 }
 
@@ -12,12 +12,12 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: rgb(var(--primary-6));
+  background-color: var(--nf-status-unread, rgb(var(--primary-6)));
   content: "";
   opacity: 0;
   pointer-events: none;
   transform: translateY(-50%);
-  transition: opacity 0.15s;
+  transition: opacity var(--nf-motion-fast, 180ms) ease-out;
 }
 
 .list-entry-wrapper.unread::before {
@@ -51,7 +51,7 @@
 }
 
 .list-entry-source-title {
-  color: var(--color-text-2);
+  color: var(--nf-text-secondary, var(--color-text-2));
   font-size: 0.8125rem;
   font-weight: 600;
   line-height: 1.35;
@@ -72,7 +72,7 @@
   min-width: 0;
   max-width: 100%;
   margin: 0;
-  color: var(--color-text-2);
+  color: var(--nf-text-primary, var(--color-text-2));
   font-size: 0.9375rem;
   font-weight: 600;
   line-height: 1.4;
@@ -88,13 +88,13 @@
 
 .list-entry-summary-separator {
   margin-right: 4px;
-  color: var(--color-text-3);
+  color: var(--nf-text-secondary, var(--color-text-3));
 }
 
 .list-entry-summary {
   flex: 1 4 auto;
   min-width: 0;
-  color: var(--color-text-3);
+  color: var(--nf-text-secondary, var(--color-text-3));
   font-size: 0.875rem;
   line-height: 1.4;
   overflow: hidden;
@@ -107,7 +107,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  color: var(--color-text-3);
+  color: var(--nf-text-tertiary, var(--color-text-3));
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
   line-height: 1.35;
@@ -122,7 +122,7 @@
 
 .list-entry-star {
   flex: 0 0 auto;
-  color: #ffcd00;
+  color: var(--nf-favorite);
 }
 
 .list-entry-time {

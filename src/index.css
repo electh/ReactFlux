@@ -5,7 +5,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --app-shell-background: #2e2e30;
+    --app-shell-background: #0b0d10;
   }
 }
 
@@ -60,6 +60,11 @@ body,
 
 .installed-pwa #root {
   height: var(--installed-app-viewport-height, 100%);
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--nf-focus-ring);
+  outline-offset: 2px;
 }
 
 /* Expose a fixed background-color sample without painting over app controls. */

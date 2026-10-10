@@ -290,7 +290,7 @@ const ActionButtons = () => {
           shape="circle"
           icon={
             isStarred ? (
-              <IconStarFill aria-hidden="true" style={{ color: "#ffcd00" }} />
+              <IconStarFill aria-hidden="true" style={{ color: "var(--nf-favorite)" }} />
             ) : (
               <IconStar aria-hidden="true" />
             )

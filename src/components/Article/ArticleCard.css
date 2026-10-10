@@ -1,5 +1,5 @@
 .card-author {
-  color: var(--color-text-3);
+  color: var(--nf-text-tertiary, var(--color-text-3));
   font-size: 0.8125rem;
   font-weight: normal;
   line-height: 1.4;
@@ -23,18 +23,18 @@
 .card-image-mini {
   width: 80px;
   height: 80px;
-  border-radius: var(--border-radius-medium);
+  border-radius: var(--nf-radius-card, var(--border-radius-medium));
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: none;
 }
 
 .card-image-wide {
   width: 100%;
   aspect-ratio: var(--card-cover-aspect-ratio, 16 / 9);
   margin: 4px 0;
-  border-radius: var(--border-radius-medium);
+  border-radius: var(--nf-radius-card, var(--border-radius-medium));
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: none;
 }
 
 .card-image-wide .card-thumbnail img {
@@ -51,7 +51,7 @@
 }
 
 .card-preview {
-  color: var(--color-text-2);
+  color: var(--nf-text-secondary, var(--color-text-2));
   font-size: 0.9rem;
   line-height: 1.5;
   margin: 0;
@@ -64,7 +64,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: var(--color-text-3);
+  color: var(--nf-text-tertiary, var(--color-text-3));
   font-size: 0.8125rem;
   line-height: 1.4;
   margin-bottom: 4px;
@@ -85,7 +85,7 @@
 }
 
 .card-source-title {
-  color: var(--color-text-2);
+  color: var(--nf-text-secondary, var(--color-text-2));
   font-size: 0.8125rem;
   font-weight: 600;
   line-height: 1.4;
@@ -101,7 +101,7 @@
   height: 100%;
   position: relative;
   overflow: hidden;
-  background-color: var(--color-neutral-3);
+  background-color: var(--nf-surface-media, var(--color-neutral-3));
 }
 
 .card-thumbnail img {
@@ -112,16 +112,12 @@
   top: 0;
 }
 
-.article-entry.read .card-thumbnail img {
-  filter: saturate(0.88);
-}
-
 .card-time {
   white-space: nowrap;
 }
 
 .card-time-wrapper {
-  color: var(--color-text-3);
+  color: var(--nf-text-tertiary, var(--color-text-3));
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
   line-height: 1.4;
@@ -131,7 +127,7 @@
 }
 
 .card-title {
-  color: var(--color-text-2);
+  color: var(--nf-text-primary, var(--color-text-2));
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.4;
@@ -145,7 +141,7 @@
 
 .card-wrapper {
   contain: content;
-  border-radius: var(--border-radius-medium);
+  border-radius: var(--nf-radius-card, var(--border-radius-medium));
   padding: 12px;
 }
 
@@ -155,7 +151,7 @@
 }
 
 .icon-starred {
-  color: #ffcd00;
+  color: var(--nf-favorite);
   transition: opacity 0.2s;
 }
 

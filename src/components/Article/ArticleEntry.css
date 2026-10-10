@@ -8,16 +8,23 @@
   overflow: hidden;
   background-color: transparent;
   transition:
-    background-color 0.15s,
-    border-color 0.15s;
+    background-color var(--nf-motion-fast, 180ms) ease-out,
+    box-shadow var(--nf-motion-fast, 180ms) ease-out;
 }
 
-.article-entry:hover {
-  background-color: var(--color-fill-1);
+.article-entry:hover:not(.selected) {
+  background-color: var(--nf-state-hover, var(--color-fill-1));
 }
 
-.article-entry.selected {
-  background-color: var(--color-fill-2);
+.article-entry:active:not(.selected) {
+  background-color: var(--nf-state-pressed, var(--color-fill-2));
+}
+
+.article-entry.selected,
+.article-entry.selected:hover,
+.article-entry.selected:active {
+  background-color: var(--nf-state-selected, var(--color-fill-2));
+  box-shadow: inset 2px 0 0 var(--nf-accent, rgb(var(--primary-6)));
 }
 
 .article-entry-title {
@@ -33,14 +40,14 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: rgb(var(--primary-6));
+  background-color: var(--nf-status-unread, rgb(var(--primary-6)));
   content: "";
   opacity: 0;
-  transition: opacity 0.15s;
+  transition: opacity var(--nf-motion-fast, 180ms) ease-out;
 }
 
 .article-entry.unread .article-entry-title {
-  color: var(--color-text-1);
+  color: var(--nf-text-primary, var(--color-text-1));
   font-weight: 700;
 }
 
@@ -49,7 +56,7 @@
 }
 
 .article-entry.read .article-entry-title {
-  color: var(--color-text-2);
+  color: var(--nf-text-primary, var(--color-text-1));
   font-weight: 400;
 }
 
@@ -60,19 +67,19 @@
 .article-entry.read .grid-card-time,
 .article-entry.read .list-entry-source-title,
 .article-entry.read .list-entry-meta {
-  color: var(--color-text-2);
+  color: var(--nf-text-secondary, var(--color-text-2));
 }
 
 .article-entry.read .grid-card-footer,
 .article-entry.read .grid-card-reading-time,
 .article-entry.read .card-reading-time {
-  color: var(--color-text-2);
+  color: var(--nf-text-secondary, var(--color-text-2));
 }
 
 .article-entry.read .card-preview,
 .article-entry.read .grid-card-summary,
 .article-entry.read .list-entry-summary {
-  color: var(--color-text-2);
+  color: var(--nf-text-secondary, var(--color-text-2));
 }
 
 .article-entry.context-menu-enabled {
@@ -80,8 +87,8 @@
 }
 
 .article-entry:focus-visible {
-  outline: 2px solid rgb(var(--primary-6));
-  outline-offset: -2px;
+  outline: 2px solid var(--nf-focus-ring, rgb(var(--primary-6)));
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
