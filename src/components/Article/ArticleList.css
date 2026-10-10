@@ -17,7 +17,12 @@
   grid-template-columns: repeat(var(--article-card-grid-columns, 1), minmax(0, 1fr));
   align-items: stretch;
   gap: 12px;
-  padding-bottom: 12px;
+  padding-bottom: 22px;
+}
+
+.entry-list-layout-card {
+  max-width: 1440px;
+  margin-inline: auto;
 }
 
 .article-card-grid-cell {
@@ -87,9 +92,5 @@
 @media screen and (max-width: 768px) {
   .entry-list {
     width: calc(100% - 20px);
-  }
-
-  .article-card-grid-row {
-    grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -35,11 +35,12 @@ const shouldCropCover = (aspectRatio) =>
 
 const getInitialCoverState = (entry) => {
   const aspectRatio = getAspectRatio(entry.coverWidth, entry.coverHeight)
+
   return {
     coverSource: entry.coverSource,
     hasError: false,
     isReady: aspectRatio !== null,
-    shouldCrop: shouldCropCover(aspectRatio),
+    shouldCrop: aspectRatio === null ? false : shouldCropCover(aspectRatio),
   }
 }
 
@@ -58,13 +59,14 @@ const ArticleGridCard = ({ entry, previewContent }) => {
   const hasCover = Boolean(entry.coverSource) && !hasError
   const cardSummary = getCardSummary(previewContent)
 
-  const handleCoverLoad = ({ currentTarget }) => {
-    const aspectRatio = getAspectRatio(currentTarget.naturalWidth, currentTarget.naturalHeight)
+  const handleCoverLoad = (event) => {
+    const { naturalHeight, naturalWidth } = event.currentTarget
+
     setCoverState({
       coverSource: entry.coverSource,
       hasError: false,
       isReady: true,
-      shouldCrop: shouldCropCover(aspectRatio),
+      shouldCrop: shouldCropCover(getAspectRatio(naturalWidth, naturalHeight)),
     })
   }
 
@@ -78,9 +80,9 @@ const ArticleGridCard = ({ entry, previewContent }) => {
   }
 
   return (
-    <div className="grid-card-content">
-      <div className={classNames("grid-card-media", { "grid-card-media-fallback": !hasCover })}>
-        {hasCover ? (
+    <div className={classNames("grid-card-content", { "grid-card-content-no-cover": !hasCover })}>
+      {hasCover && (
+        <div className="grid-card-media">
           <img
             alt=""
             decoding="async"
@@ -89,30 +91,21 @@ const ArticleGridCard = ({ entry, previewContent }) => {
             src={entry.coverSource}
             width={entry.coverWidth || undefined}
             className={classNames("grid-card-cover", {
-              "grid-card-cover-cropped": shouldCrop,
               "grid-card-cover-ready": isReady,
+              "grid-card-cover-cropped": shouldCrop,
             })}
             onError={handleCoverError}
             onLoad={handleCoverLoad}
           />
-        ) : (
-          <div className="grid-card-fallback-source">
-            {showFeedIcon && (
-              <FeedIcon className="grid-card-fallback-feed-icon" feed={entry.feed} />
-            )}
-            <span>{entry.feed.title}</span>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="grid-card-copy">
-        <div className={classNames("grid-card-meta", { "grid-card-meta-time-only": !hasCover })}>
-          {hasCover && (
-            <div className="grid-card-source">
-              {showFeedIcon && <FeedIcon className="grid-card-feed-icon" feed={entry.feed} />}
-              <span>{entry.feed.title}</span>
-            </div>
-          )}
+        <div className="grid-card-meta">
+          <div className="grid-card-source">
+            {showFeedIcon && <FeedIcon className="grid-card-feed-icon" feed={entry.feed} />}
+            <span>{entry.feed.title}</span>
+          </div>
           <time className="grid-card-time" dateTime={entry.published_at}>
             {generateRelativeTime(entry.published_at, showDetailedRelativeTime)}
           </time>

@@ -4,13 +4,8 @@
   width: 100%;
   height: 100%;
   margin-inline: 0;
-  border: 1px solid var(--color-border-2);
-  border-radius: var(--border-radius-medium);
-}
-
-.grid-card-wrapper:hover,
-.grid-card-wrapper.selected {
-  border-color: var(--color-border-3);
+  border: 0;
+  border-radius: 0;
 }
 
 .grid-card-content {
@@ -18,13 +13,13 @@
   flex: 1;
   flex-direction: column;
   min-width: 0;
-  overflow: hidden;
 }
 
 .grid-card-media {
   flex: 0 0 auto;
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  border-radius: var(--border-radius-medium);
   background-color: var(--color-fill-2);
 }
 
@@ -46,53 +41,17 @@
   opacity: 1;
 }
 
-.grid-card-media-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  padding: 20px;
-  background-color: var(--color-fill-1);
-}
-
-.grid-card-fallback-source {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-width: 0;
-  max-width: 100%;
-  color: var(--color-text-3);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1.4;
-  text-align: center;
-}
-
-.grid-card-fallback-source > span {
-  display: -webkit-box;
-  max-width: 100%;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-  overflow-wrap: anywhere;
-}
-
-.grid-card-fallback-feed-icon {
-  width: 32px;
-  height: 32px;
-  opacity: 0.8;
-}
-
 .grid-card-copy {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
-  padding: 12px;
+  padding-block: 10px 12px;
+}
+
+.grid-card-media + .grid-card-copy {
+  padding-top: 12px;
 }
 
 .grid-card-meta {
@@ -107,17 +66,13 @@
   line-height: 1.35;
 }
 
-.grid-card-meta-time-only {
-  justify-content: flex-end;
-}
-
 .grid-card-source {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   min-width: 0;
-  color: var(--color-text-2);
-  font-weight: 600;
+  color: var(--color-text-3);
+  font-weight: 500;
 }
 
 .grid-card-source > span {
@@ -127,9 +82,9 @@
 }
 
 .grid-card-feed-icon {
-  flex: 0 0 16px;
-  width: 16px;
-  height: 16px;
+  flex: 0 0 15px;
+  width: 15px;
+  height: 15px;
 }
 
 .grid-card-time {
@@ -141,22 +96,34 @@
   display: -webkit-box;
   margin: 0;
   color: var(--color-text-2);
-  font-size: 1rem;
+  font-size: 1.1875rem;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.32;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   overflow: hidden;
   overflow-wrap: anywhere;
+}
+
+.grid-card-wrapper .grid-card-title {
+  padding-inline-start: 0;
+}
+
+.grid-card-wrapper.unread .grid-card-title {
+  padding-inline-start: 12px;
+}
+
+.grid-card-content-no-cover .grid-card-title {
+  font-size: 1.25rem;
 }
 
 .grid-card-summary {
   display: -webkit-box;
   margin: 0;
   color: var(--color-text-3);
-  font-size: 0.875rem;
-  line-height: 1.45;
+  font-size: 0.9375rem;
+  line-height: 1.5;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -171,6 +138,10 @@
   color: var(--color-text-3);
   font-size: 0.8125rem;
   line-height: 1.35;
+}
+
+.grid-card-content-no-cover .grid-card-footer {
+  margin-top: 0;
 }
 
 .grid-card-reading-time {
@@ -194,9 +165,18 @@
 }
 
 @media screen and (max-width: 768px) {
-  .grid-card-fallback-source,
-  .grid-card-title {
-    font-size: 1.0625rem;
+  .grid-card-copy {
+    gap: 9px;
+    padding-block: 8px 10px;
+  }
+
+  .grid-card-media + .grid-card-copy {
+    padding-top: 10px;
+  }
+
+  .grid-card-title,
+  .grid-card-content-no-cover .grid-card-title {
+    font-size: 1.125rem;
   }
 
   .grid-card-summary {
