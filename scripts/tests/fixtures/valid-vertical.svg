@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 1000" role="img" aria-label="Vertical editorial test image">
+  <defs>
+    <linearGradient id="vertical" x2="0" y2="1">
+      <stop stop-color="#3d5676" />
+      <stop offset=".56" stop-color="#c69e74" />
+      <stop offset="1" stop-color="#342e3a" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="1000" fill="url(#vertical)" />
+  <circle cx="300" cy="360" r="120" fill="#dfc3a0" />
+  <path d="M75 885c25-215 96-330 225-330s200 115 225 330v115H75Z" fill="#252c3d" />
+  <path d="M0 865h600v135H0Z" fill="#191e2b" opacity=".8" />
+</svg>

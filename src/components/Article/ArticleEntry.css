@@ -53,6 +53,20 @@
   font-weight: 600;
 }
 
+.article-entry.read .card-source-title,
+.article-entry.read .card-time-wrapper,
+.article-entry.read .grid-card-meta,
+.article-entry.read .grid-card-source,
+.article-entry.read .grid-card-time,
+.article-entry.read .list-entry-source-title,
+.article-entry.read .list-entry-meta {
+  color: var(--color-text-3);
+}
+
+.article-entry.read .card-preview {
+  color: var(--color-text-3);
+}
+
 .article-entry.context-menu-enabled {
   -webkit-touch-callout: none;
 }

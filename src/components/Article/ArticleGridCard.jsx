@@ -33,16 +33,12 @@ const shouldCropCover = (aspectRatio) =>
   aspectRatio >= MIN_COVER_ASPECT_RATIO &&
   aspectRatio <= MAX_COVER_ASPECT_RATIO
 
-const getInitialCoverState = (entry) => {
-  const aspectRatio = getAspectRatio(entry.coverWidth, entry.coverHeight)
-
-  return {
-    coverSource: entry.coverSource,
-    hasError: false,
-    isReady: aspectRatio !== null,
-    shouldCrop: aspectRatio === null ? false : shouldCropCover(aspectRatio),
-  }
-}
+const getCoverCandidates = (entry) =>
+  entry.coverCandidates?.length
+    ? entry.coverCandidates
+    : entry.coverSource
+      ? [{ height: entry.coverHeight, src: entry.coverSource, width: entry.coverWidth }]
+      : []
 
 const getCardSummary = (summary) =>
   summary.length > MAX_CARD_SUMMARY_LENGTH
@@ -52,31 +48,48 @@ const getCardSummary = (summary) =>
 const ArticleGridCard = ({ entry, previewContent }) => {
   const { showCardSummary, showDetailedRelativeTime, showEstimatedReadingTime, showFeedIcon } =
     useStore(articleGridCardSettingsState)
-  const [coverState, setCoverState] = useState(() => getInitialCoverState(entry))
-  const isCurrentCover = coverState.coverSource === entry.coverSource
-  const currentCoverState = isCurrentCover ? coverState : getInitialCoverState(entry)
-  const { hasError, isReady, shouldCrop } = currentCoverState
-  const hasCover = Boolean(entry.coverSource) && !hasError
+  const [coverState, setCoverState] = useState(() => ({
+    entryId: entry.id,
+    failedSources: [],
+    loaded: null,
+  }))
+  const candidates = getCoverCandidates(entry)
+  const activeCoverState =
+    coverState.entryId === entry.id
+      ? coverState
+      : { entryId: entry.id, failedSources: [], loaded: null }
+  const currentCover =
+    candidates.find(({ src }) => !activeCoverState.failedSources.includes(src)) ?? null
+  const loadedCover =
+    activeCoverState.loaded?.src === currentCover?.src ? activeCoverState.loaded : null
+  const aspectRatio = getAspectRatio(
+    loadedCover?.width ?? currentCover?.width,
+    loadedCover?.height ?? currentCover?.height,
+  )
+  const isReady = aspectRatio !== null || loadedCover !== null
+  const shouldCrop = shouldCropCover(aspectRatio)
+  const hasCover = currentCover !== null
   const cardSummary = getCardSummary(previewContent)
 
-  const handleCoverLoad = (event) => {
-    const { naturalHeight, naturalWidth } = event.currentTarget
+  const handleCoverLoad = ({ currentTarget }) => {
+    const { naturalHeight, naturalWidth } = currentTarget
 
-    setCoverState({
-      coverSource: entry.coverSource,
-      hasError: false,
-      isReady: true,
-      shouldCrop: shouldCropCover(getAspectRatio(naturalWidth, naturalHeight)),
-    })
+    setCoverState((previous) => ({
+      entryId: entry.id,
+      failedSources: previous.entryId === entry.id ? previous.failedSources : [],
+      loaded: { height: naturalHeight, src: currentCover.src, width: naturalWidth },
+    }))
   }
 
   const handleCoverError = () => {
-    setCoverState({
-      coverSource: entry.coverSource,
-      hasError: true,
-      isReady: false,
-      shouldCrop: false,
-    })
+    setCoverState((previous) => ({
+      entryId: entry.id,
+      failedSources:
+        previous.entryId === entry.id
+          ? [...new Set([...previous.failedSources, currentCover.src])]
+          : [currentCover.src],
+      loaded: null,
+    }))
   }
 
   return (
@@ -86,10 +99,10 @@ const ArticleGridCard = ({ entry, previewContent }) => {
           <img
             alt=""
             decoding="async"
-            height={entry.coverHeight || undefined}
+            height={currentCover.height || undefined}
             loading="lazy"
-            src={entry.coverSource}
-            width={entry.coverWidth || undefined}
+            src={currentCover.src}
+            width={currentCover.width || undefined}
             className={classNames("grid-card-cover", {
               "grid-card-cover-ready": isReady,
               "grid-card-cover-cropped": shouldCrop,
