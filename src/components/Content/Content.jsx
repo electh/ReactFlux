@@ -232,7 +232,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     <>
       <div
         aria-hidden={isDetailLayerActive || undefined}
-        className={classNames("entry-col", { "entry-col-full-width": isFullWidthLayout })}
+        className={classNames("entry-col", { "entry-col-full-width": isFullWidthLayout || !isDetailLayerActive })}
         inert={isDetailLayerActive || undefined}
         style={{
           opacity: isBelowMedium && isArticleLoading ? 0 : 1,
@@ -281,9 +281,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           )}
           {isBelowMedium && <ActionButtons />}
         </div>
-      ) : (
-        !isFullWidthLayout && <div className="content-empty content-wrapper" />
-      )}
+      ) : null}
     </>
   )
 }
