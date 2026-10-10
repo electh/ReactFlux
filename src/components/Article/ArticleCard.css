@@ -112,6 +112,10 @@
   top: 0;
 }
 
+.article-entry.read .card-thumbnail img {
+  filter: saturate(0.88);
+}
+
 .card-time {
   white-space: nowrap;
 }

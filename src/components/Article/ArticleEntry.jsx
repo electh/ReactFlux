@@ -77,7 +77,13 @@ const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter
     return observeRead(entryRef.current, entry)
   }, [entry, infoFrom, isUnread, markReadOnScroll, observeRead])
 
-  const previewContent = useMemo(() => extractTextFromHtml(entry.content), [entry.content])
+  const previewContent = useMemo(
+    () =>
+      typeof entry.previewText === "string"
+        ? entry.previewText
+        : extractTextFromHtml(entry.content),
+    [entry.content, entry.previewText],
+  )
   const { getPrimaryLinkProps, openInReactFlux, opensSourceOnCardClick } = articleActivation
   const primaryLinkProps = getPrimaryLinkProps(entry)
   const accessibleLabel = isUnread
