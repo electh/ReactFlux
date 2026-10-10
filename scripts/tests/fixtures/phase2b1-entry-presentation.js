@@ -468,6 +468,7 @@ const makeCardDeckFixture = (
   content,
   {
     expectedDeck,
+    expectedPresenterDeck = expectedDeck,
     expectedSource = "sentence",
     expectedSentenceIndex = 1,
     expectedPreviewNonempty = expectedSource !== "none",
@@ -485,6 +486,7 @@ const makeCardDeckFixture = (
     title,
   },
   expectedDeck,
+  expectedPresenterDeck,
   expectedSentenceIndex,
   expectedSource,
   expectedPreviewNonempty,
@@ -499,7 +501,8 @@ export const cardDeckFixtures = [
     "<p>The court session started at 14:00 on Tuesday after the justices arrived at the building. The STF resumed its judgment on platform responsibility, considering how companies must respond to illegal posts.</p>",
     {
       expectedDeck:
-        "The court session started at 14:00 on Tuesday after the justices arrived at the building.",
+        "The STF resumed its judgment on platform responsibility, considering how companies must respond to illegal posts.",
+      expectedSentenceIndex: 2,
     },
   ),
   makeCardDeckFixture(
@@ -508,7 +511,8 @@ export const cardDeckFixtures = [
     "<p>Apple held its launch event this morning before a group of invited journalists and developers. The new MacBook Pro uses the M6 chip and promises longer battery life for demanding creative work.</p>",
     {
       expectedDeck:
-        "Apple held its launch event this morning before a group of invited journalists and developers.",
+        "The new MacBook Pro uses the M6 chip and promises longer battery life for demanding creative work.",
+      expectedSentenceIndex: 2,
     },
   ),
   makeCardDeckFixture(
@@ -545,7 +549,8 @@ export const cardDeckFixtures = [
     "<p>A sessão começou às 14h desta terça-feira, com a chegada dos ministros ao tribunal. O STF retomou o julgamento sobre a responsabilidade das plataformas digitais por publicações ilegais.</p>",
     {
       expectedDeck:
-        "A sessão começou às 14h desta terça-feira, com a chegada dos ministros ao tribunal.",
+        "O STF retomou o julgamento sobre a responsabilidade das plataformas digitais por publicações ilegais.",
+      expectedSentenceIndex: 2,
     },
   ),
   makeCardDeckFixture(
@@ -554,7 +559,8 @@ export const cardDeckFixtures = [
     "<p>A Apple realizou o evento de lançamento nesta manhã diante de jornalistas e desenvolvedores convidados. O novo MacBook Pro usa o chip M6 e promete mais autonomia para trabalhos criativos.</p>",
     {
       expectedDeck:
-        "A Apple realizou o evento de lançamento nesta manhã diante de jornalistas e desenvolvedores convidados.",
+        "O novo MacBook Pro usa o chip M6 e promete mais autonomia para trabalhos criativos.",
+      expectedSentenceIndex: 2,
     },
   ),
   makeCardDeckFixture(
@@ -569,10 +575,10 @@ export const cardDeckFixtures = [
   makeCardDeckFixture(
     9,
     "Senado aprova projeto climático após debate de cinco horas",
-    "<p>Senado aprova projeto climático após debate de cinco horas. A proposta segue agora para o presidente, que tem dez dias para sancionar o texto ou devolvê-lo ao Congresso.</p>",
+    "<p>Senado aprova projeto climático após debate de cinco horas. A proposta climática segue agora para o presidente, que tem dez dias para sancionar o texto ou devolvê-lo ao Congresso.</p>",
     {
       expectedDeck:
-        "A proposta segue agora para o presidente, que tem dez dias para sancionar o texto ou devolvê-lo ao Congresso.",
+        "A proposta climática segue agora para o presidente, que tem dez dias para sancionar o texto ou devolvê-lo ao Congresso.",
       expectedSentenceIndex: 2,
     },
   ),
@@ -601,10 +607,10 @@ export const cardDeckFixtures = [
     "Prefeitura divulga plano de transporte para a região metropolitana",
     "<p>A prefeitura divulgou nesta terça um plano detalhado de transporte para bairros da região metropolitana, com alterações de linhas, horários e integração tarifária</p>",
     {
-      expectedDeck:
-        "A prefeitura divulgou nesta terça um plano detalhado de transporte para bairros da região metropolitana, com alterações de linhas, horários e integração tarifária",
-      expectedSource: "excerpt",
+      expectedDeck: "",
+      expectedSource: "none",
       expectedSentenceIndex: null,
+      expectedPreviewNonempty: true,
     },
   ),
   makeCardDeckFixture(
@@ -677,10 +683,10 @@ export const cardDeckFixtures = [
     "Governo amplia vacinação na capital",
     "<div>O governo confirmou nesta manhã uma nova etapa do programa de vacinação com atendimento ampliado nas unidades de saúde da capital</div>",
     {
-      expectedDeck:
-        "O governo confirmou nesta manhã uma nova etapa do programa de vacinação com atendimento ampliado nas unidades de saúde da capital",
-      expectedSource: "excerpt",
+      expectedDeck: "",
+      expectedSource: "none",
       expectedSentenceIndex: null,
+      expectedPreviewNonempty: true,
     },
   ),
   makeCardDeckFixture(
@@ -703,6 +709,72 @@ export const cardDeckFixtures = [
       expectedPreviewNonempty: false,
     },
   ),
+  makeCardDeckFixture(
+    24,
+    "Nicolas Cage diz que não trabalhará com Amazon por conta de IA",
+    "<p>Durante a participação de Nicolas Cage no painel Spotlight, o ator conversou com fãs sobre seus projetos recentes e respondeu perguntas sobre a carreira.</p><p>O ator afirmou que não pretende voltar a trabalhar com a Amazon por causa do uso de inteligência artificial.</p>",
+    {
+      expectedDeck:
+        "O ator afirmou que não pretende voltar a trabalhar com a Amazon por causa do uso de inteligência artificial.",
+      expectedSentenceIndex: 2,
+    },
+  ),
+  makeCardDeckFixture(
+    25,
+    "Mostra SP anuncia sessão com autógrafos e encontro com diretora",
+    "<p>A programação da Mostra SP reúne filmes premiados de diversos países e debates sobre o cinema contemporâneo.</p><p>A sessão terá encontro e autógrafos com a diretora Anna Muylaert após a exibição do novo filme.</p>",
+    {
+      expectedDeck:
+        "A sessão terá encontro e autógrafos com a diretora Anna Muylaert após a exibição do novo filme.",
+      expectedSentenceIndex: 2,
+    },
+  ),
+  makeCardDeckFixture(
+    26,
+    "Kleber Mendonça Filho, Wagner Moura e mais assinam carta aberta",
+    "<p>Durante o encontro, artistas e profissionais conversaram sobre o futuro da produção audiovisual brasileira.</p><p>A carta pede ao Congresso que proteja a democracia e a liberdade no cinema.</p>",
+    {
+      expectedDeck: "A carta pede ao Congresso que proteja a democracia e a liberdade no cinema.",
+      expectedSentenceIndex: 2,
+    },
+  ),
+  makeCardDeckFixture(
+    27,
+    "TechCrunch: startup launches AI app for researcher interviews",
+    "<p>Researchers can search interview notes and action items in one shared workspace.</p>",
+    {
+      expectedDeck:
+        "Researchers can search interview notes and action items in one shared workspace.",
+    },
+  ),
+  makeCardDeckFixture(
+    28,
+    "Amazon launches a new AI assistant for smart home devices",
+    "<p>Amazon launched its new AI assistant for smart home devices after a long development program involving usability studies and extensive integration testing across household appliances.</p><p>The AI assistant controls lights, speakers, and home thermostats.</p>",
+    {
+      expectedDeck:
+        "Amazon launched its new AI assistant for smart home devices after a long development program involving usability studies and extensive integration testing across household appliances.",
+      expectedSentenceIndex: 1,
+      expectedPresenterDeck: "The AI assistant controls lights, speakers, and home thermostats.",
+    },
+  ),
+  makeCardDeckFixture(
+    29,
+    "Amazon smart home assistant gains new connected-device controls",
+    "<p>The Amazon home assistant coordinates voice commands, connected speakers, thermostats, lighting systems, and household schedules across devices in every room through a single smart interface.</p><p>The assistant's expanded home controls add device routines, family profiles, energy reports, and usage history while keeping Amazon's connected equipment synchronized throughout the household.</p>",
+    {
+      expectedDeck:
+        "The Amazon home assistant coordinates voice commands, connected speakers, thermostats, lighting systems, and household schedules across devices in every room through a single smart interface.",
+      expectedSentenceIndex: 1,
+      expectedPresenterDeck: "",
+    },
+  ),
+  makeCardDeckFixture(30, "Hacker News story without a body", "", {
+    expectedDeck: "",
+    expectedSource: "none",
+    expectedSentenceIndex: null,
+    expectedPreviewNonempty: false,
+  }),
 ]
 
 export const cardDeckPresenterFixtures = [
@@ -710,6 +782,8 @@ export const cardDeckPresenterFixtures = [
     entry: {
       author: "",
       cardDeck: "",
+      cardDeckCandidates: [],
+      cardDeckFallback: null,
       cardDeckSource: "none",
       content: "",
       coverCandidates: [],
