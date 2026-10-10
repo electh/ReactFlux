@@ -226,8 +226,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   }, [entryId, fetchSingleEntry, restoreEntryListFocus, source, sourceId])
 
-  const isFullSizeDetail = isFullWidthLayout || isBelowMedium
-  const isDetailLayerActive = Boolean(activeContent) && isFullSizeDetail
+  const isDetailLayerActive = Boolean(activeContent)
 
   return (
     <>
@@ -255,9 +254,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
       </div>
       {activeContent ? (
         <div
-          className={classNames("article-container", "content-wrapper", {
-            "article-container-full-size": isFullWidthLayout,
-          })}
+          className="article-container article-container-full-size content-wrapper"
           {...handlers}
         >
           {!isBelowMedium && <ActionButtons />}
