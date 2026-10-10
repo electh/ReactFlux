@@ -462,218 +462,267 @@ export const entryPresentationFixtures = [
 
 export { ARTICLE_PARAGRAPH }
 
-const makeSynopsisFixture = (
+const makeCardDeckFixture = (
   id,
   title,
   content,
   {
-    expectedSentence,
-    expectedSentenceIndex,
+    expectedDeck,
     expectedSource = "sentence",
-    expectedPreviewNonempty = false,
-    titleOverlapAssisted = false,
-    truncated = expectedSentence ? expectedSentence.length > 60 : false,
+    expectedSentenceIndex = 1,
+    expectedPreviewNonempty = expectedSource !== "none",
   },
 ) => ({
   entry: {
     author: "",
     content,
     enclosures: [],
-    feed: { site_url: "https://example.test/feed", title: "Synopsis Desk" },
-    id: `synopsis-${id}`,
+    feed: { site_url: "https://example.test/feed", title: "Deck Desk" },
+    id: `deck-${id}`,
     published_at: "2026-10-10T12:00:00.000Z",
     reading_time: 3,
     starred: false,
     title,
   },
-  expectedSentence,
+  expectedDeck,
   expectedSentenceIndex,
   expectedSource,
   expectedPreviewNonempty,
-  expectedTitleOverlapAssisted: titleOverlapAssisted,
-  expectedTruncated: truncated,
-  id: `S${String(id).padStart(2, "0")}`,
+  id: `D${String(id).padStart(2, "0")}`,
   name: title,
 })
 
-export const cardSynopsisFixtures = [
-  makeSynopsisFixture(
+export const cardDeckFixtures = [
+  makeCardDeckFixture(
     1,
     "STF resumes judgment on platform responsibility",
     "<p>The court session started at 14:00 on Tuesday after the justices arrived at the building. The STF resumed its judgment on platform responsibility, considering how companies must respond to illegal posts.</p>",
     {
-      expectedSentence:
-        "The STF resumed its judgment on platform responsibility, considering how companies must respond to illegal posts.",
-      expectedSentenceIndex: 2,
-      titleOverlapAssisted: true,
+      expectedDeck:
+        "The court session started at 14:00 on Tuesday after the justices arrived at the building.",
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     2,
     "Apple introduces MacBook Pro with the M6 chip",
     "<p>Apple held its launch event this morning before a group of invited journalists and developers. The new MacBook Pro uses the M6 chip and promises longer battery life for demanding creative work.</p>",
     {
-      expectedSentence:
-        "The new MacBook Pro uses the M6 chip and promises longer battery life for demanding creative work.",
-      expectedSentenceIndex: 2,
-      titleOverlapAssisted: true,
+      expectedDeck:
+        "Apple held its launch event this morning before a group of invited journalists and developers.",
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     3,
     "Study finds vaccine reduced severe illness by 42 percent",
     "<p>Researchers found that the new vaccine reduced severe illness by 42% in a year-long study involving 18,000 adults.</p>",
     {
-      expectedSentence:
+      expectedDeck:
         "Researchers found that the new vaccine reduced severe illness by 42% in a year-long study involving 18,000 adults.",
-      expectedSentenceIndex: 1,
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     4,
     "The Senate approves the climate bill after a five-hour debate",
     "<p>The Senate approves the climate bill after a five-hour debate. The measure now heads to the president, who has ten days to sign it or send it back to Congress.</p>",
     {
-      expectedSentence:
+      expectedDeck:
         "The measure now heads to the president, who has ten days to sign it or send it back to Congress.",
       expectedSentenceIndex: 2,
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     5,
     "City opens a new bridge over the Blue River",
     "<p>The city opened the new bridge over the Blue River on Wednesday, after completing final safety tests.</p><p>The lengthy infrastructure program involved several contractors, months of road closures, detailed environmental reviews, and a large budget approved by the city council.</p>",
     {
-      expectedSentence:
+      expectedDeck:
         "The city opened the new bridge over the Blue River on Wednesday, after completing final safety tests.",
-      expectedSentenceIndex: 1,
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     6,
     "STF retoma julgamento sobre responsabilidade das plataformas",
     "<p>A sessão começou às 14h desta terça-feira, com a chegada dos ministros ao tribunal. O STF retomou o julgamento sobre a responsabilidade das plataformas digitais por publicações ilegais.</p>",
     {
-      expectedSentence:
-        "O STF retomou o julgamento sobre a responsabilidade das plataformas digitais por publicações ilegais.",
-      expectedSentenceIndex: 2,
-      titleOverlapAssisted: true,
+      expectedDeck:
+        "A sessão começou às 14h desta terça-feira, com a chegada dos ministros ao tribunal.",
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     7,
     "Apple lança MacBook Pro com chip M6",
     "<p>A Apple realizou o evento de lançamento nesta manhã diante de jornalistas e desenvolvedores convidados. O novo MacBook Pro usa o chip M6 e promete mais autonomia para trabalhos criativos.</p>",
     {
-      expectedSentence:
-        "O novo MacBook Pro usa o chip M6 e promete mais autonomia para trabalhos criativos.",
-      expectedSentenceIndex: 2,
-      titleOverlapAssisted: true,
+      expectedDeck:
+        "A Apple realizou o evento de lançamento nesta manhã diante de jornalistas e desenvolvedores convidados.",
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     8,
     "Estudo aponta queda de 42% nos casos graves da doença",
     "<p>Pesquisadores observaram que a nova vacina reduziu os casos graves em 42% durante um estudo de um ano com 18 mil adultos.</p>",
     {
-      expectedSentence:
+      expectedDeck:
         "Pesquisadores observaram que a nova vacina reduziu os casos graves em 42% durante um estudo de um ano com 18 mil adultos.",
-      expectedSentenceIndex: 1,
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     9,
     "Senado aprova projeto climático após debate de cinco horas",
     "<p>Senado aprova projeto climático após debate de cinco horas. A proposta segue agora para o presidente, que tem dez dias para sancionar o texto ou devolvê-lo ao Congresso.</p>",
     {
-      expectedSentence:
+      expectedDeck:
         "A proposta segue agora para o presidente, que tem dez dias para sancionar o texto ou devolvê-lo ao Congresso.",
       expectedSentenceIndex: 2,
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     10,
     "Cidade inaugura nova ponte sobre o Rio Azul",
     "<p>A cidade inaugurou a nova ponte sobre o Rio Azul nesta quarta-feira, após concluir os testes finais de segurança.</p><p>O longo programa de infraestrutura envolveu diversas empreiteiras, meses de bloqueios viários, análises ambientais detalhadas e um orçamento aprovado pela câmara municipal.</p>",
     {
-      expectedSentence:
+      expectedDeck:
         "A cidade inaugurou a nova ponte sobre o Rio Azul nesta quarta-feira, após concluir os testes finais de segurança.",
-      expectedSentenceIndex: 1,
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     11,
     "New transit plan brings changes across the city",
-    `<p>The regional transit authority published a detailed service plan this morning, listing new schedules, station changes, transfer rules, and several other updates for commuters across the city. ${"The extended notice also repeats background information for passengers. ".repeat(4)}</p>`,
-    { expectedSentenceIndex: 1, truncated: true },
+    `<p>The regional transit authority published a detailed service plan this morning, listing new schedules, station changes, transfer rules, and several other updates for commuters across the city. ${"The extended notice also repeats background information for passengers. ".repeat(
+      4,
+    )}</p>`,
+    {
+      expectedDeck:
+        "The regional transit authority published a detailed service plan this morning, listing new schedules, station changes, transfer rules, and several other updates for commuters across the city.",
+    },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     12,
     "Prefeitura divulga plano de transporte para a região metropolitana",
     "<p>A prefeitura divulgou nesta terça um plano detalhado de transporte para bairros da região metropolitana, com alterações de linhas, horários e integração tarifária</p>",
     {
+      expectedDeck:
+        "A prefeitura divulgou nesta terça um plano detalhado de transporte para bairros da região metropolitana, com alterações de linhas, horários e integração tarifária",
+      expectedSource: "excerpt",
       expectedSentenceIndex: null,
-      expectedSource: "none",
-      expectedPreviewNonempty: true,
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     13,
     "Senado aprova novo plano de transporte urbano",
     "<p>O Senado aprovou nesta terça o novo plano de transporte urbano.</p>",
-    {
-      expectedSentence: "O Senado aprovou nesta terça o novo plano de transporte urbano.",
-      expectedSentenceIndex: 1,
-    },
+    { expectedDeck: "O Senado aprovou nesta terça o novo plano de transporte urbano." },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     14,
     "NASA confirma missão Artemis III para 2027",
     "<p>NASA's Artemis III mission will launch from Kennedy Space Center in 2027.</p>",
     {
-      expectedSentence: "NASA's Artemis III mission will launch from Kennedy Space Center in 2027.",
-      expectedSentenceIndex: 1,
+      expectedDeck: "NASA's Artemis III mission will launch from Kennedy Space Center in 2027.",
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     15,
     "Pesquisadora apresenta medidas para infraestrutura metropolitana",
     "<p>A pesquisadora Mariana Costa apresentou em São José dos Campos 18 medidas de interoperabilidade para a infraestrutura metropolitana.</p>",
     {
-      expectedSentence:
+      expectedDeck:
         "A pesquisadora Mariana Costa apresentou em São José dos Campos 18 medidas de interoperabilidade para a infraestrutura metropolitana.",
-      expectedSentenceIndex: 1,
     },
   ),
-  makeSynopsisFixture(
+  makeCardDeckFixture(
     16,
     "Researchers find vulnerabilities in satellite-navigation networks",
     "<p>Researchers at the Massachusetts Institute of Technology identified 37 vulnerabilities in satellite-navigation infrastructure used by regional carriers.</p>",
     {
-      expectedSentence:
+      expectedDeck:
         "Researchers at the Massachusetts Institute of Technology identified 37 vulnerabilities in satellite-navigation infrastructure used by regional carriers.",
-      expectedSentenceIndex: 1,
+    },
+  ),
+  makeCardDeckFixture(
+    17,
+    "Kleber Mendonça Filho, Wagner Moura e mais assinam carta aberta",
+    "<p>Nós, profissionais brasileiros do cinema e integrantes da indústria audiovisual, nos reunimos para defender a liberdade de expressão e pedir que o Congresso preserve as garantias constitucionais de artistas, produtores e trabalhadores do setor.</p>",
+    {
+      expectedDeck:
+        "Nós, profissionais brasileiros do cinema e integrantes da indústria audiovisual, nos reunimos para defender a liberdade de expressão e pedir que o Congresso preserve as garantias constitucionais de artistas, produtores e trabalhadores do setor.",
+    },
+  ),
+  makeCardDeckFixture(
+    18,
+    "Blade Runner 2099 | Novo cartaz oficial da série é divulgado",
+    "<p>Neste sábado (10), o Prime Video divulgou um novo cartaz oficial de Blade Runner 2099, que mostra os protagonistas em uma paisagem futurista e apresenta detalhes da produção antes da estreia da série.</p>",
+    {
+      expectedDeck:
+        "Neste sábado (10), o Prime Video divulgou um novo cartaz oficial de Blade Runner 2099, que mostra os protagonistas em uma paisagem futurista e apresenta detalhes da produção antes da estreia da série.",
+    },
+  ),
+  makeCardDeckFixture(
+    19,
+    "Apple anuncia novo iPad Pro com chip M5",
+    "<p>Apple anuncia novo iPad Pro com chip M5. O tablet estreia na próxima semana com tela OLED e preço inicial de R$ 7.499.</p>",
+    {
+      expectedDeck: "O tablet estreia na próxima semana com tela OLED e preço inicial de R$ 7.499.",
+      expectedSentenceIndex: 2,
+    },
+  ),
+  makeCardDeckFixture(20, "Story with no content", "", {
+    expectedDeck: "",
+    expectedSource: "none",
+    expectedSentenceIndex: null,
+    expectedPreviewNonempty: false,
+  }),
+  makeCardDeckFixture(
+    21,
+    "Governo amplia vacinação na capital",
+    "<div>O governo confirmou nesta manhã uma nova etapa do programa de vacinação com atendimento ampliado nas unidades de saúde da capital</div>",
+    {
+      expectedDeck:
+        "O governo confirmou nesta manhã uma nova etapa do programa de vacinação com atendimento ampliado nas unidades de saúde da capital",
+      expectedSource: "excerpt",
+      expectedSentenceIndex: null,
+    },
+  ),
+  makeCardDeckFixture(
+    22,
+    "Ministério amplia atendimento em bairros",
+    '<div class="comments">23 comentários. Compartilhe esta notícia com seus amigos.</div><p>O Ministério da Saúde anunciou nesta quarta-feira que abrirá novos postos de atendimento em oito bairros da capital.</p>',
+    {
+      expectedDeck:
+        "O Ministério da Saúde anunciou nesta quarta-feira que abrirá novos postos de atendimento em oito bairros da capital.",
+    },
+  ),
+  makeCardDeckFixture(
+    23,
+    "Only boilerplate",
+    '<div class="comments">12 comentários</div><div class="newsletter">Assine nossa newsletter para receber notícias.</div>',
+    {
+      expectedDeck: "",
+      expectedSource: "none",
+      expectedSentenceIndex: null,
+      expectedPreviewNonempty: false,
     },
   ),
 ]
 
-export const cardSynopsisPresenterFixtures = [
+export const cardDeckPresenterFixtures = [
   {
     entry: {
       author: "",
-      cardSynopsis: "",
+      cardDeck: "",
+      cardDeckSource: "none",
       content: "",
       coverCandidates: [],
-      feed: { site_url: "https://example.test/feed", title: "Synopsis Desk" },
-      id: "presenter-empty-synopsis",
+      feed: { site_url: "https://example.test/feed", title: "Deck Desk" },
+      id: "presenter-empty-deck",
       previewText: ARTICLE_PARAGRAPH,
       published_at: "2026-10-10T12:00:00.000Z",
       reading_time: 3,
       starred: false,
-      title: "Excerpt present without a card synopsis",
+      title: "Excerpt present without a card deck",
     },
     expectedRenderedSummary: null,
-    id: "presenter-empty-synopsis",
+    id: "presenter-empty-deck",
     name: "presenter-explicit-empty",
   },
 ]

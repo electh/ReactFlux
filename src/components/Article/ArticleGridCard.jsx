@@ -63,7 +63,7 @@ const ArticleGridCard = ({ entry }) => {
   const isReady = aspectRatio !== null || loadedCover !== null
   const shouldCrop = shouldCropCover(aspectRatio)
   const hasCover = currentCover !== null
-  const cardSummary = entry.cardSynopsis
+  const { cardDeck } = entry
 
   const handleCoverLoad = ({ currentTarget }) => {
     const { naturalHeight, naturalWidth } = currentTarget
@@ -120,7 +120,7 @@ const ArticleGridCard = ({ entry }) => {
 
         <h3 className="article-entry-title grid-card-title">{entry.title}</h3>
 
-        {showCardSummary && cardSummary && <p className="grid-card-summary">{cardSummary}</p>}
+        {showCardSummary && cardDeck && <p className="grid-card-summary">{cardDeck}</p>}
 
         <div className="grid-card-footer">
           {showEstimatedReadingTime && (

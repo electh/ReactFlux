@@ -51,45 +51,11 @@ const MAX_COVER_CANDIDATES = 12
 const MAX_PREVIEW_LENGTH = 320
 const MIN_ELIGIBLE_PREVIEW_LENGTH = 45
 const IDEAL_SUBSTANTIVE_PREVIEW_LENGTH = 80
-const MAX_CARD_SYNOPSIS_LENGTH = 60
-const MAX_SYNOPSIS_BLOCKS = 5
-const MAX_SYNOPSIS_SENTENCES = 10
+const MAX_CARD_DECK_BLOCKS = 5
 const SENTENCE_SEGMENTER =
   typeof Intl.Segmenter === "function"
     ? new Intl.Segmenter("pt-BR", { granularity: "sentence" })
     : null
-const SYNOPSIS_STOP_WORDS = new Set([
-  "a",
-  "as",
-  "ao",
-  "aos",
-  "com",
-  "da",
-  "das",
-  "de",
-  "do",
-  "dos",
-  "e",
-  "em",
-  "na",
-  "nas",
-  "no",
-  "nos",
-  "o",
-  "os",
-  "para",
-  "por",
-  "que",
-  "the",
-  "and",
-  "for",
-  "from",
-  "in",
-  "of",
-  "on",
-  "to",
-  "with",
-])
 const DECORATIVE_IMAGE_PATTERN =
   /(?:^|[\W_])(?:logo|favicon|avatar|author|profile|social|share|icon|sprite|badge|ad|ads|advert|advertisement|sponsor|tracking|tracker|pixel|beacon|spacer|blank|analytics)(?:$|[\W_])/i
 const DECORATIVE_CONTEXT_PATTERN =
@@ -761,92 +727,30 @@ const splitIntoSentences = (text) => {
     .filter(Boolean)
 }
 
-const getSynopsisTerms = (text) =>
-  normalizeBoilerplateText(text)
-    .split(/[^\p{L}\p{N}]+/u)
-    .filter((term) => (term.length >= 3 || /\d/u.test(term)) && !SYNOPSIS_STOP_WORDS.has(term))
-
-const getTitleOverlap = (sentence, titleTerms) => {
-  const sentenceTerms = new Set(getSynopsisTerms(sentence))
-  const matches = titleTerms.filter((term) => sentenceTerms.has(term))
-  return {
-    count: matches.length,
-    ratio: titleTerms.length > 0 ? matches.length / titleTerms.length : 0,
-  }
-}
-
-const scoreSynopsisSentence = ({
-  blockIndex,
-  linkDensity,
-  sentence,
-  sentenceIndex,
-  title,
-  titleTerms,
-}) => {
-  const words = sentence.split(/\s+/).filter(Boolean)
-  const { count: titleOverlapCount, ratio: titleOverlapRatio } = getTitleOverlap(
-    sentence,
-    titleTerms,
-  )
-  const comparableSentence = normalizeComparableText(sentence)
-  const comparableTitle = normalizeComparableText(title)
-  const isTitleRepeat =
-    comparableSentence === comparableTitle ||
-    (titleOverlapRatio >= 0.85 && sentence.length <= title.length * 1.5)
-  let score = Math.max(0, 18 - blockIndex * 4) + Math.max(0, 10 - sentenceIndex * 4)
-
-  score += Math.min(32, titleOverlapCount * 9) + Math.round(titleOverlapRatio * 10)
-  if (/\b\d+(?:[.,:/-]\d+)*\b/u.test(sentence)) {
-    score += 4
-  }
-  if (/[.!?][”’"')\]]?$/u.test(sentence) && words.length >= 7) {
-    score += 7
-  }
-  if (sentence.length >= 55 && sentence.length <= 160) {
-    score += 6
-  } else if (sentence.length > 200) {
-    score -= 12
-  }
-  if (linkDensity > 0.1) {
-    score -= Math.round(linkDensity * 30)
-  }
-  if (isTitleRepeat) {
-    score -= 80
-  }
-
-  return { isTitleRepeat, score, titleOverlapCount }
-}
-
-const isEligibleSynopsisSentence = (sentence) =>
-  sentence.length >= MIN_ELIGIBLE_PREVIEW_LENGTH &&
+const isEligibleCardDeckSentence = (sentence) =>
   sentence.split(/\s+/).filter(Boolean).length >= 6 &&
   /[.!?][”’"')\]]?$/u.test(sentence) &&
   !isBoilerplateText(sentence)
 
-const compactSynopsis = (text) => {
-  const normalizedText = normalizeText(text)
-  if (normalizedText.length <= MAX_CARD_SYNOPSIS_LENGTH) {
-    return { text: normalizedText, truncated: false }
+const isCardDeckTitleRepeat = (sentence, title) => {
+  const comparableSentence = normalizeComparableText(sentence)
+  const comparableTitle = normalizeComparableText(title)
+  if (!comparableSentence || !comparableTitle) {
+    return false
+  }
+  if (comparableSentence === comparableTitle) {
+    return true
   }
 
-  const words = normalizedText.split(" ")
-  let prefix = ""
-  for (const word of words) {
-    const candidate = prefix ? `${prefix} ${word}` : word
-    if (candidate.length > MAX_CARD_SYNOPSIS_LENGTH - 1) {
-      break
-    }
-    prefix = candidate
-  }
+  const titleWords = [...new Set(comparableTitle.split(/\s+/).filter((word) => word.length >= 3))]
+  const sentenceWords = new Set(comparableSentence.split(/\s+/).filter(Boolean))
+  const overlap = titleWords.filter((word) => sentenceWords.has(word)).length
 
-  if (!prefix) {
-    return { text: normalizedText, truncated: false }
-  }
-
-  return {
-    text: `${prefix}…`,
-    truncated: true,
-  }
+  return (
+    titleWords.length > 0 &&
+    overlap / titleWords.length >= 0.85 &&
+    sentence.length <= title.length * 1.5
+  )
 }
 
 const collectDocumentTextSegments = (root) => {
@@ -998,7 +902,7 @@ const extractSemanticPreview = (doc, entry) => {
   }
 }
 
-const collectSynopsisBlocks = (doc, entry) => {
+const collectCardDeckBlocks = (doc, entry) => {
   const title = normalizeComparableText(entry.title ?? "")
   const author = normalizeComparableText(entry.author ?? "")
   const paragraphs = []
@@ -1012,7 +916,7 @@ const collectSynopsisBlocks = (doc, entry) => {
     })
     if (candidate) {
       paragraphs.push(candidate)
-      if (paragraphs.length >= MAX_SYNOPSIS_BLOCKS) {
+      if (paragraphs.length >= MAX_CARD_DECK_BLOCKS) {
         break
       }
     }
@@ -1039,7 +943,7 @@ const collectSynopsisBlocks = (doc, entry) => {
     })
     if (candidate) {
       semanticBlocks.push(candidate)
-      if (semanticBlocks.length >= MAX_SYNOPSIS_BLOCKS) {
+      if (semanticBlocks.length >= MAX_CARD_DECK_BLOCKS) {
         break
       }
     }
@@ -1058,88 +962,43 @@ const collectSynopsisBlocks = (doc, entry) => {
       return linkDensity <= 0.55 ? { ...candidate, linkDensity } : null
     })
     .filter(Boolean)
-    .slice(0, MAX_SYNOPSIS_BLOCKS)
+    .slice(0, MAX_CARD_DECK_BLOCKS)
 }
 
-const extractCardSynopsis = (doc, entry, preview) => {
-  const blocks = collectSynopsisBlocks(doc, entry)
+const extractCardDeck = (doc, entry, preview) => {
+  const blocks = collectCardDeckBlocks(doc, entry)
   const title = normalizeText(entry.title ?? "")
-  const titleTerms = [...new Set(getSynopsisTerms(title))]
   const candidates = []
-  let sourceSentenceIndex = 0
+  let sentenceIndex = 0
 
-  for (const [blockIndex, block] of blocks.entries()) {
-    for (const [sentencePosition, sentence] of splitIntoSentences(block.text).entries()) {
-      sourceSentenceIndex += 1
-      if (!isEligibleSynopsisSentence(sentence)) {
-        continue
+  for (const block of blocks) {
+    for (const sentence of splitIntoSentences(block.text)) {
+      sentenceIndex += 1
+      if (isEligibleCardDeckSentence(sentence)) {
+        candidates.push({ sentence, sentenceIndex })
       }
-
-      const score = scoreSynopsisSentence({
-        blockIndex,
-        linkDensity: block.linkDensity,
-        sentence,
-        sentenceIndex: sentencePosition,
-        title,
-        titleTerms,
-      })
-      if (score.isTitleRepeat) {
-        continue
-      }
-
-      candidates.push({
-        ...score,
-        sentence,
-        sentenceIndex: sourceSentenceIndex,
-      })
-      if (candidates.length >= MAX_SYNOPSIS_SENTENCES) {
-        break
-      }
-    }
-    if (candidates.length >= MAX_SYNOPSIS_SENTENCES) {
-      break
     }
   }
 
-  const selected = candidates.toSorted(
-    (left, right) => right.score - left.score || left.sentenceIndex - right.sentenceIndex,
-  )[0]
-  if (selected) {
-    const compacted = compactSynopsis(selected.sentence)
+  const firstCandidate = candidates[0]
+  const selectedCandidate =
+    firstCandidate && isCardDeckTitleRepeat(firstCandidate.sentence, title)
+      ? (candidates[1] ?? firstCandidate)
+      : firstCandidate
+
+  if (selectedCandidate) {
     return {
-      cardSynopsis: compacted.text,
-      cardSynopsisSource: "sentence",
-      cardSynopsisSentenceIndex: selected.sentenceIndex,
-      cardSynopsisTruncated: compacted.truncated,
-      cardSynopsisIsFirstSentence: selected.sentenceIndex === 1,
-      cardSynopsisTitleOverlapAssisted:
-        selected.titleOverlapCount > 0 && selected.sentenceIndex > 1,
+      cardDeck: selectedCandidate.sentence,
+      cardDeckSource: "sentence",
+      cardDeckSentenceIndex: selectedCandidate.sentenceIndex,
     }
   }
 
-  const excerptSentence =
-    splitIntoSentences(preview.previewText).find((sentence) =>
-      isEligibleSynopsisSentence(sentence),
-    ) ?? ""
-  if (excerptSentence && isEligibleSynopsisSentence(excerptSentence)) {
-    const compacted = compactSynopsis(excerptSentence)
-    return {
-      cardSynopsis: compacted.text,
-      cardSynopsisSource: "excerpt-fallback",
-      cardSynopsisSentenceIndex: null,
-      cardSynopsisTruncated: compacted.truncated,
-      cardSynopsisIsFirstSentence: true,
-      cardSynopsisTitleOverlapAssisted: false,
-    }
-  }
-
+  const excerpt = normalizeText(preview.previewText ?? "")
   return {
-    cardSynopsis: "",
-    cardSynopsisSource: "none",
-    cardSynopsisSentenceIndex: null,
-    cardSynopsisTruncated: false,
-    cardSynopsisIsFirstSentence: false,
-    cardSynopsisTitleOverlapAssisted: false,
+    cardDeck: excerpt,
+    cardDeckSource: excerpt ? "excerpt" : "none",
+    cardDeckSentenceIndex: null,
   }
 }
 
@@ -1159,7 +1018,7 @@ const prepareEntry = (entry) => {
   )
   const cover = imageSelection.candidates[0] ?? null
   const preview = extractSemanticPreview(doc, entry)
-  const synopsis = extractCardSynopsis(doc, entry, preview)
+  const cardDeck = extractCardDeck(doc, entry, preview)
 
   return {
     ...entry,
@@ -1175,10 +1034,10 @@ const prepareEntry = (entry) => {
     coverCandidateCount: imageSelection.candidateCount,
     coverRejectedReasons: imageSelection.rejectedReasons,
     ...preview,
-    ...synopsis,
+    ...cardDeck,
     isMedia: Boolean(attachments.primaryMedia || embeddedMedia),
   }
 }
 
-export { extractCardSynopsis, extractImageCandidates, extractSemanticPreview }
+export { extractCardDeck, extractImageCandidates, extractSemanticPreview }
 export default prepareEntry
