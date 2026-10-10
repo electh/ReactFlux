@@ -51,6 +51,49 @@ const MAX_COVER_CANDIDATES = 12
 const MAX_PREVIEW_LENGTH = 320
 const MIN_ELIGIBLE_PREVIEW_LENGTH = 45
 const IDEAL_SUBSTANTIVE_PREVIEW_LENGTH = 80
+const MAX_CARD_DECK_BLOCKS = 5
+const MAX_CARD_DECK_CANDIDATES = 8
+const CARD_DECK_TITLE_STOP_WORDS = new Set([
+  "a",
+  "as",
+  "ao",
+  "aos",
+  "com",
+  "da",
+  "das",
+  "de",
+  "do",
+  "dos",
+  "e",
+  "em",
+  "na",
+  "nas",
+  "no",
+  "nos",
+  "o",
+  "os",
+  "ou",
+  "para",
+  "por",
+  "que",
+  "the",
+  "and",
+  "for",
+  "from",
+  "in",
+  "of",
+  "on",
+  "to",
+  "with",
+])
+const CARD_DECK_TERM_ALIASES = {
+  ai: ["artificial", "intelligence", "inteligencia"],
+  ia: ["artificial", "intelligence", "inteligencia"],
+}
+const SENTENCE_SEGMENTER =
+  typeof Intl.Segmenter === "function"
+    ? new Intl.Segmenter("pt-BR", { granularity: "sentence" })
+    : null
 const DECORATIVE_IMAGE_PATTERN =
   /(?:^|[\W_])(?:logo|favicon|avatar|author|profile|social|share|icon|sprite|badge|ad|ads|advert|advertisement|sponsor|tracking|tracker|pixel|beacon|spacer|blank|analytics)(?:$|[\W_])/i
 const DECORATIVE_CONTEXT_PATTERN =
@@ -705,6 +748,181 @@ const selectBestPreviewCandidate = (candidates) =>
   candidates.toSorted((left, right) => right.score - left.score || left.index - right.index)[0] ??
   null
 
+const splitIntoSentences = (text) => {
+  const normalizedText = normalizeText(text)
+  if (!normalizedText) {
+    return []
+  }
+
+  if (SENTENCE_SEGMENTER) {
+    return [...SENTENCE_SEGMENTER.segment(normalizedText)]
+      .map(({ segment }) => normalizeText(segment))
+      .filter(Boolean)
+  }
+
+  return (normalizedText.match(/[^.!?]+[.!?]+[”’"')\]]*|[^.!?]+$/gu) ?? [])
+    .map((sentence) => normalizeText(sentence))
+    .filter(Boolean)
+}
+
+const isEligibleCardDeckSentence = (sentence) =>
+  sentence.split(/\s+/).filter(Boolean).length >= 6 &&
+  /[.!?][”’"')\]]?$/u.test(sentence) &&
+  !isBoilerplateText(sentence)
+
+const isCardDeckTitleRepeat = (sentence, title) => {
+  const comparableSentence = normalizeComparableText(sentence)
+  const comparableTitle = normalizeComparableText(title)
+  if (!comparableSentence || !comparableTitle) {
+    return false
+  }
+  if (comparableSentence === comparableTitle) {
+    return true
+  }
+
+  const titleWords = [...new Set(comparableTitle.split(/\s+/).filter((word) => word.length >= 3))]
+  const sentenceWords = new Set(comparableSentence.split(/\s+/).filter(Boolean))
+  const overlap = titleWords.filter((word) => sentenceWords.has(word)).length
+
+  return (
+    titleWords.length > 0 &&
+    overlap / titleWords.length >= 0.85 &&
+    sentence.length <= title.length * 1.5
+  )
+}
+
+const normalizeCardDeckTerm = (term) => {
+  const normalizedTerm = term
+    .normalize("NFD")
+    .replaceAll(/\p{Diacritic}/gu, "")
+    .toLocaleLowerCase()
+  if (normalizedTerm.length < 6) {
+    return normalizedTerm
+  }
+
+  if (normalizedTerm.endsWith("oes") || normalizedTerm.endsWith("aes")) {
+    return `${normalizedTerm.slice(0, -3)}ao`
+  }
+  if (normalizedTerm.endsWith("ais")) {
+    return `${normalizedTerm.slice(0, -3)}al`
+  }
+  if (normalizedTerm.endsWith("eis")) {
+    return `${normalizedTerm.slice(0, -3)}el`
+  }
+  if (normalizedTerm.endsWith("ois")) {
+    return `${normalizedTerm.slice(0, -3)}ol`
+  }
+
+  return normalizedTerm.endsWith("s") ? normalizedTerm.slice(0, -1) : normalizedTerm
+}
+
+const getCardDeckTerms = (text) => {
+  const rawTerms = text.match(/[\p{L}\p{N}]+/gu) ?? []
+  const terms = new Set()
+
+  for (const rawTerm of rawTerms) {
+    const term = normalizeCardDeckTerm(rawTerm)
+    const isAcronym = rawTerm.length <= 3 && rawTerm === rawTerm.toLocaleUpperCase()
+    if (CARD_DECK_TITLE_STOP_WORDS.has(term) || (term.length < 3 && !isAcronym)) {
+      continue
+    }
+
+    terms.add(term)
+    for (const alias of CARD_DECK_TERM_ALIASES[term] ?? []) {
+      terms.add(alias)
+    }
+  }
+
+  return terms
+}
+
+const areCardDeckTermsRelated = (left, right) => {
+  if (left === right) {
+    return true
+  }
+
+  const shorter = left.length <= right.length ? left : right
+  const longer = left.length <= right.length ? right : left
+  return shorter.length >= 5 && longer.startsWith(shorter)
+}
+
+const scoreCardDeckCandidate = ({ linkDensity, sentence, sentenceIndex, titleTerms, title }) => {
+  if (
+    !isEligibleCardDeckSentence(sentence) ||
+    isCardDeckTitleRepeat(sentence, title) ||
+    linkDensity > 0.55
+  ) {
+    return null
+  }
+
+  const sentenceTerms = getCardDeckTerms(sentence)
+  const matchedTitleTerms = []
+  for (const titleTerm of titleTerms) {
+    let hasRelatedSentenceTerm = false
+    for (const sentenceTerm of sentenceTerms) {
+      if (areCardDeckTermsRelated(titleTerm, sentenceTerm)) {
+        hasRelatedSentenceTerm = true
+        break
+      }
+    }
+
+    if (hasRelatedSentenceTerm) {
+      matchedTitleTerms.push(titleTerm)
+    }
+  }
+  const relevance = titleTerms.size > 0 ? matchedTitleTerms.length / titleTerms.size : 0
+  const words = sentence.split(/\s+/).filter(Boolean)
+  const wordCount = words.length
+  const properTerms = words
+    .slice(1)
+    .filter((word) => /^[\p{Lu}][\p{Ll}\p{M}]{2,}$/u.test(word)).length
+  const numericTerms = sentence.match(/\d+(?:[.,]\d+)?%?/gu)?.length ?? 0
+  const reasons = []
+  let score = Math.round(relevance * 60)
+
+  if (matchedTitleTerms.length > 0) {
+    reasons.push(`title-term-overlap:${matchedTitleTerms.join(",")}`)
+  }
+
+  const positionScore = Math.max(0, 8 - (sentenceIndex - 1) * 2)
+  score += positionScore
+  reasons.push(`article-position:${sentenceIndex}`)
+
+  score += 8
+  reasons.push("complete-sentence")
+
+  const usefulTermScore = Math.min(6, properTerms * 2) + Math.min(4, numericTerms * 2)
+  score += usefulTermScore
+  if (usefulTermScore > 0) {
+    reasons.push("useful-proper-or-numeric-terms")
+  }
+
+  if (wordCount >= 10 && wordCount <= 32) {
+    score += 6
+    reasons.push("concise-editorial-sentence")
+  } else if (wordCount < 10) {
+    score += 3
+    reasons.push("short-complete-sentence")
+  } else if (wordCount > 40) {
+    score -= 4
+    reasons.push("length-soft-penalty")
+  }
+
+  if (linkDensity > 0) {
+    score -= Math.round(linkDensity * 20)
+    reasons.push("link-density-soft-penalty")
+  }
+
+  return { linkDensity, reasons, score, sentenceIndex, source: "sentence", text: sentence }
+}
+
+const isEligibleCardDeckFallback = (text, title, author) =>
+  text.split(/\s+/).filter(Boolean).length >= 6 &&
+  /[.!?][”’"')\]]?$/u.test(text) &&
+  !isBoilerplateText(text) &&
+  !isCardDeckTitleRepeat(text, title) &&
+  (!author || normalizeComparableText(text) !== normalizeComparableText(author))
+
 const collectDocumentTextSegments = (root) => {
   const segments = []
   let text = ""
@@ -854,6 +1072,126 @@ const extractSemanticPreview = (doc, entry) => {
   }
 }
 
+const collectCardDeckBlocks = (doc, entry) => {
+  const title = normalizeComparableText(entry.title ?? "")
+  const author = normalizeComparableText(entry.author ?? "")
+  const paragraphs = []
+  for (const [index, paragraph] of [...doc.querySelectorAll("p")].entries()) {
+    const candidate = createPreviewCandidate({
+      author,
+      element: paragraph,
+      index,
+      text: getNodeText(paragraph),
+      title,
+    })
+    if (candidate) {
+      paragraphs.push(candidate)
+      if (paragraphs.length >= MAX_CARD_DECK_BLOCKS) {
+        break
+      }
+    }
+  }
+  if (paragraphs.length > 0) {
+    return paragraphs
+  }
+
+  const semanticBlocks = []
+  for (const [index, block] of [
+    ...doc.querySelectorAll("article, main, section, div, li, blockquote"),
+  ].entries()) {
+    const ownText = block.cloneNode(true)
+    for (const child of ownText.querySelectorAll(SEMANTIC_TEXT_BLOCK_SELECTOR)) {
+      child.remove()
+    }
+    const candidate = createPreviewCandidate({
+      author,
+      element: block,
+      index,
+      linkElement: ownText,
+      text: getNodeText(ownText),
+      title,
+    })
+    if (candidate) {
+      semanticBlocks.push(candidate)
+      if (semanticBlocks.length >= MAX_CARD_DECK_BLOCKS) {
+        break
+      }
+    }
+  }
+  if (semanticBlocks.length > 0) {
+    return semanticBlocks
+  }
+
+  return prepareDocumentFallback(doc)
+    .map(({ linkedTextLength, text }, index) => {
+      const candidate = createPreviewCandidate({ author, index, text, title })
+      if (!candidate) {
+        return null
+      }
+      const linkDensity = Math.min(1, linkedTextLength / text.length)
+      return linkDensity <= 0.55 ? { ...candidate, linkDensity } : null
+    })
+    .filter(Boolean)
+    .slice(0, MAX_CARD_DECK_BLOCKS)
+}
+
+const extractCardDeck = (doc, entry, preview) => {
+  const blocks = collectCardDeckBlocks(doc, entry)
+  const title = normalizeText(entry.title ?? "")
+  const titleTerms = getCardDeckTerms(title)
+  const author = normalizeText(entry.author ?? "")
+  const candidates = []
+  let sentenceIndex = 0
+
+  for (const block of blocks) {
+    for (const sentence of splitIntoSentences(block.text)) {
+      sentenceIndex += 1
+      const candidate = scoreCardDeckCandidate({
+        linkDensity: block.linkDensity ?? 0,
+        sentence,
+        sentenceIndex,
+        titleTerms,
+        title,
+      })
+      if (candidate) {
+        candidates.push(candidate)
+      }
+
+      if (candidates.length >= MAX_CARD_DECK_CANDIDATES) {
+        break
+      }
+    }
+
+    if (candidates.length >= MAX_CARD_DECK_CANDIDATES) {
+      break
+    }
+  }
+
+  const excerpt = normalizeText(preview.previewText ?? "")
+  const cardDeckFallback = isEligibleCardDeckFallback(excerpt, title, author)
+    ? {
+        linkDensity: 0,
+        reasons: ["cleaned-r2-excerpt-fallback"],
+        score: null,
+        sentenceIndex: null,
+        source: "excerpt",
+        text: excerpt,
+      }
+    : null
+  const rankedCandidates = candidates
+    .toSorted((left, right) => right.score - left.score || left.sentenceIndex - right.sentenceIndex)
+    .slice(0, MAX_CARD_DECK_CANDIDATES)
+  const bestCandidate = rankedCandidates[0] ?? null
+
+  return {
+    cardDeck: bestCandidate?.text ?? "",
+    cardDeckCandidates: rankedCandidates,
+    cardDeckFallback,
+    cardDeckSource: bestCandidate?.source ?? (cardDeckFallback ? "excerpt" : "none"),
+    cardDeckSentenceIndex: bestCandidate?.sentenceIndex ?? null,
+  }
+}
+
 const prepareEntry = (entry) => {
   const content = typeof entry.content === "string" ? entry.content : ""
   const doc = new DOMParser().parseFromString(content, "text/html")
@@ -870,6 +1208,7 @@ const prepareEntry = (entry) => {
   )
   const cover = imageSelection.candidates[0] ?? null
   const preview = extractSemanticPreview(doc, entry)
+  const cardDeck = extractCardDeck(doc, entry, preview)
 
   return {
     ...entry,
@@ -885,9 +1224,10 @@ const prepareEntry = (entry) => {
     coverCandidateCount: imageSelection.candidateCount,
     coverRejectedReasons: imageSelection.rejectedReasons,
     ...preview,
+    ...cardDeck,
     isMedia: Boolean(attachments.primaryMedia || embeddedMedia),
   }
 }
 
-export { extractImageCandidates, extractSemanticPreview }
+export { extractCardDeck, extractImageCandidates, extractSemanticPreview }
 export default prepareEntry
