@@ -180,8 +180,8 @@ const runCorpus = () => {
       ).length,
       nonemptyActual: actualNonempty.length,
       nonemptyExpected: expectedNonempty.length,
-      precision: actualNonempty.length > 0 ? truePositive.length / actualNonempty.length : 1,
-      coverage: expectedNonempty.length > 0 ? truePositive.length / expectedNonempty.length : 1,
+      precision: actualNonempty.length > 0 ? truePositive.length / actualNonempty.length : null,
+      coverage: expectedNonempty.length > 0 ? truePositive.length / expectedNonempty.length : null,
       sourceCounts,
     },
     imageFixturesPass: imageResults.filter(

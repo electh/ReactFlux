@@ -679,7 +679,7 @@ const isBoilerplateText = (text) =>
   PREVIEW_BOILERPLATE_PATTERN.test(normalizeBoilerplateText(text)) ||
   /^(?:by|written by|author|por|escrito por)\s+/i.test(text)
 
-const createPreviewCandidate = ({ author, element, index, text, title }) => {
+const createPreviewCandidate = ({ author, element, index, linkElement = element, text, title }) => {
   const normalizedText = normalizeText(text)
   const comparableText = normalizeComparableText(normalizedText)
   if (
@@ -692,7 +692,7 @@ const createPreviewCandidate = ({ author, element, index, text, title }) => {
     return null
   }
 
-  const linkDensity = element ? getParagraphLinkDensity(element, normalizedText.length) : 0
+  const linkDensity = linkElement ? getParagraphLinkDensity(linkElement, normalizedText.length) : 0
   if (linkDensity > 0.55) {
     return null
   }
@@ -803,6 +803,7 @@ const extractSemanticPreview = (doc, entry) => {
           author,
           element: block,
           index,
+          linkElement: ownText,
           text: getNodeText(ownText),
           title,
         })
