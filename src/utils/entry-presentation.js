@@ -51,7 +51,7 @@ const MAX_COVER_CANDIDATES = 12
 const MAX_PREVIEW_LENGTH = 320
 const MIN_ELIGIBLE_PREVIEW_LENGTH = 45
 const IDEAL_SUBSTANTIVE_PREVIEW_LENGTH = 80
-const MAX_CARD_SYNOPSIS_LENGTH = 180
+const MAX_CARD_SYNOPSIS_LENGTH = 60
 const MAX_SYNOPSIS_BLOCKS = 5
 const MAX_SYNOPSIS_SENTENCES = 10
 const SENTENCE_SEGMENTER =
@@ -824,18 +824,27 @@ const isEligibleSynopsisSentence = (sentence) =>
   !isBoilerplateText(sentence)
 
 const compactSynopsis = (text) => {
-  if (text.length <= MAX_CARD_SYNOPSIS_LENGTH) {
-    return { text, truncated: false }
+  const normalizedText = normalizeText(text)
+  if (normalizedText.length <= MAX_CARD_SYNOPSIS_LENGTH) {
+    return { text: normalizedText, truncated: false }
   }
 
-  const prefix = text.slice(0, MAX_CARD_SYNOPSIS_LENGTH - 1)
-  const lastSpace = prefix.lastIndexOf(" ")
-  if (lastSpace <= 0) {
-    return { text, truncated: false }
+  const words = normalizedText.split(" ")
+  let prefix = ""
+  for (const word of words) {
+    const candidate = prefix ? `${prefix} ${word}` : word
+    if (candidate.length > MAX_CARD_SYNOPSIS_LENGTH - 1) {
+      break
+    }
+    prefix = candidate
+  }
+
+  if (!prefix) {
+    return { text: normalizedText, truncated: false }
   }
 
   return {
-    text: `${prefix.slice(0, lastSpace).trimEnd()}…`,
+    text: `${prefix}…`,
     truncated: true,
   }
 }

@@ -39,7 +39,7 @@ const getCoverCandidates = (entry) =>
       ? [{ height: entry.coverHeight, src: entry.coverSource, width: entry.coverWidth }]
       : []
 
-const ArticleGridCard = ({ entry, previewContent }) => {
+const ArticleGridCard = ({ entry }) => {
   const { showCardSummary, showDetailedRelativeTime, showEstimatedReadingTime, showFeedIcon } =
     useStore(articleGridCardSettingsState)
   const [coverState, setCoverState] = useState(() => ({
@@ -63,7 +63,7 @@ const ArticleGridCard = ({ entry, previewContent }) => {
   const isReady = aspectRatio !== null || loadedCover !== null
   const shouldCrop = shouldCropCover(aspectRatio)
   const hasCover = currentCover !== null
-  const cardSummary = entry.cardSynopsis || previewContent
+  const cardSummary = entry.cardSynopsis
 
   const handleCoverLoad = ({ currentTarget }) => {
     const { naturalHeight, naturalWidth } = currentTarget

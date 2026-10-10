@@ -466,7 +466,14 @@ const makeSynopsisFixture = (
   id,
   title,
   content,
-  { expectedSentence, expectedSentenceIndex, titleOverlapAssisted = false, truncated = false },
+  {
+    expectedSentence,
+    expectedSentenceIndex,
+    expectedSource = "sentence",
+    expectedPreviewNonempty = false,
+    titleOverlapAssisted = false,
+    truncated = expectedSentence ? expectedSentence.length > 60 : false,
+  },
 ) => ({
   entry: {
     author: "",
@@ -474,10 +481,15 @@ const makeSynopsisFixture = (
     enclosures: [],
     feed: { site_url: "https://example.test/feed", title: "Synopsis Desk" },
     id: `synopsis-${id}`,
+    published_at: "2026-10-10T12:00:00.000Z",
+    reading_time: 3,
+    starred: false,
     title,
   },
   expectedSentence,
   expectedSentenceIndex,
+  expectedSource,
+  expectedPreviewNonempty,
   expectedTitleOverlapAssisted: titleOverlapAssisted,
   expectedTruncated: truncated,
   id: `S${String(id).padStart(2, "0")}`,
@@ -595,4 +607,73 @@ export const cardSynopsisFixtures = [
     `<p>The regional transit authority published a detailed service plan this morning, listing new schedules, station changes, transfer rules, and several other updates for commuters across the city. ${"The extended notice also repeats background information for passengers. ".repeat(4)}</p>`,
     { expectedSentenceIndex: 1, truncated: true },
   ),
+  makeSynopsisFixture(
+    12,
+    "Prefeitura divulga plano de transporte para a região metropolitana",
+    "<p>A prefeitura divulgou nesta terça um plano detalhado de transporte para bairros da região metropolitana, com alterações de linhas, horários e integração tarifária</p>",
+    {
+      expectedSentenceIndex: null,
+      expectedSource: "none",
+      expectedPreviewNonempty: true,
+    },
+  ),
+  makeSynopsisFixture(
+    13,
+    "Senado aprova novo plano de transporte urbano",
+    "<p>O Senado aprovou nesta terça o novo plano de transporte urbano.</p>",
+    {
+      expectedSentence: "O Senado aprovou nesta terça o novo plano de transporte urbano.",
+      expectedSentenceIndex: 1,
+    },
+  ),
+  makeSynopsisFixture(
+    14,
+    "NASA confirma missão Artemis III para 2027",
+    "<p>NASA's Artemis III mission will launch from Kennedy Space Center in 2027.</p>",
+    {
+      expectedSentence: "NASA's Artemis III mission will launch from Kennedy Space Center in 2027.",
+      expectedSentenceIndex: 1,
+    },
+  ),
+  makeSynopsisFixture(
+    15,
+    "Pesquisadora apresenta medidas para infraestrutura metropolitana",
+    "<p>A pesquisadora Mariana Costa apresentou em São José dos Campos 18 medidas de interoperabilidade para a infraestrutura metropolitana.</p>",
+    {
+      expectedSentence:
+        "A pesquisadora Mariana Costa apresentou em São José dos Campos 18 medidas de interoperabilidade para a infraestrutura metropolitana.",
+      expectedSentenceIndex: 1,
+    },
+  ),
+  makeSynopsisFixture(
+    16,
+    "Researchers find vulnerabilities in satellite-navigation networks",
+    "<p>Researchers at the Massachusetts Institute of Technology identified 37 vulnerabilities in satellite-navigation infrastructure used by regional carriers.</p>",
+    {
+      expectedSentence:
+        "Researchers at the Massachusetts Institute of Technology identified 37 vulnerabilities in satellite-navigation infrastructure used by regional carriers.",
+      expectedSentenceIndex: 1,
+    },
+  ),
+]
+
+export const cardSynopsisPresenterFixtures = [
+  {
+    entry: {
+      author: "",
+      cardSynopsis: "",
+      content: "",
+      coverCandidates: [],
+      feed: { site_url: "https://example.test/feed", title: "Synopsis Desk" },
+      id: "presenter-empty-synopsis",
+      previewText: ARTICLE_PARAGRAPH,
+      published_at: "2026-10-10T12:00:00.000Z",
+      reading_time: 3,
+      starred: false,
+      title: "Excerpt present without a card synopsis",
+    },
+    expectedRenderedSummary: null,
+    id: "presenter-empty-synopsis",
+    name: "presenter-explicit-empty",
+  },
 ]

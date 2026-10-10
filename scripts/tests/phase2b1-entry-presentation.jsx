@@ -9,6 +9,7 @@ import ReactDOM from "react-dom/client"
 import {
   ARTICLE_PARAGRAPH,
   cardSynopsisFixtures,
+  cardSynopsisPresenterFixtures,
   entryPresentationFixtures,
 } from "./fixtures/phase2b1-entry-presentation"
 
@@ -95,6 +96,18 @@ const visualEntries = [
   },
 ]
 
+const synopsisPresentationEntries = [
+  ...cardSynopsisFixtures.map((fixture) => ({
+    entry: prepareEntry(fixture.entry),
+    name: `synopsis-${fixture.id}`,
+    state: fixture.expectedSource === "none" ? "No eligible sentence" : fixture.id,
+  })),
+  ...cardSynopsisPresenterFixtures.map((fixture) => ({
+    ...fixture,
+    state: "Excerpt without synopsis",
+  })),
+]
+
 const makeBenchmarkEntry = (id, content) => ({
   content,
   enclosures: [],
@@ -179,18 +192,29 @@ const runCorpus = () => {
   )
   const synopsisResults = cardSynopsisFixtures.map((fixture) => {
     const entry = prepareEntry(fixture.entry)
-    const textPass = fixture.expectedSentence
-      ? entry.cardSynopsis === fixture.expectedSentence
-      : true
+    const textPass =
+      fixture.expectedSource === "none"
+        ? entry.cardSynopsis === ""
+        : fixture.expectedSentence
+          ? entry.cardSynopsisTruncated
+            ? entry.cardSynopsis.endsWith("…") &&
+              fixture.expectedSentence.startsWith(entry.cardSynopsis.slice(0, -1)) &&
+              /\s/u.test(fixture.expectedSentence[entry.cardSynopsis.length - 1] ?? "")
+            : entry.cardSynopsis === fixture.expectedSentence
+          : Boolean(entry.cardSynopsis)
     const indexPass = entry.cardSynopsisSentenceIndex === fixture.expectedSentenceIndex
+    const sourcePass = entry.cardSynopsisSource === fixture.expectedSource
     const overlapPass =
       entry.cardSynopsisTitleOverlapAssisted === fixture.expectedTitleOverlapAssisted
     const truncatedPass = entry.cardSynopsisTruncated === fixture.expectedTruncated
+    const previewPass = fixture.expectedPreviewNonempty ? Boolean(entry.previewText) : true
 
     return {
       actualSentenceIndex: entry.cardSynopsisSentenceIndex,
       expectedSentence: fixture.expectedSentence ?? null,
       expectedSentenceIndex: fixture.expectedSentenceIndex,
+      expectedSource: fixture.expectedSource,
+      expectedPreviewNonempty: fixture.expectedPreviewNonempty,
       expectedTitleOverlapAssisted: fixture.expectedTitleOverlapAssisted,
       expectedTruncated: fixture.expectedTruncated,
       id: fixture.id,
@@ -201,7 +225,10 @@ const runCorpus = () => {
       titleOverlapAssisted: entry.cardSynopsisTitleOverlapAssisted,
       truncated: entry.cardSynopsisTruncated,
       length: entry.cardSynopsis.length,
-      pass: textPass && indexPass && overlapPass && truncatedPass,
+      previewText: entry.previewText,
+      pass: textPass && indexPass && sourcePass && overlapPass && truncatedPass && previewPass,
+      previewPass,
+      sourcePass,
     }
   })
   const synopsisLengths = synopsisResults.map(({ length }) => length).filter((length) => length > 0)
@@ -238,6 +265,8 @@ const runCorpus = () => {
       differsFromFirstSentence: synopsisResults.filter(({ isFirstSentence }) => !isFirstSentence)
         .length,
       fallbackToExcerpt: synopsisSourceCounts["excerpt-fallback"],
+      synopsisNone: synopsisSourceCounts.none,
+      excerptFallbackInternal: synopsisSourceCounts["excerpt-fallback"],
       length: {
         maximum: Math.max(0, ...synopsisLengths),
         minimum: Math.min(...synopsisLengths),
@@ -289,6 +318,63 @@ const runBenchmarks = () => {
   }
 }
 
+const measureNaturalSummary = (summary) => {
+  const computed = getComputedStyle(summary)
+  const bounds = summary.getBoundingClientRect()
+  const clone = summary.cloneNode(true)
+  const copiedProperties = [
+    "font-family",
+    "font-size",
+    "font-style",
+    "font-weight",
+    "line-height",
+    "letter-spacing",
+    "text-align",
+    "text-indent",
+    "text-transform",
+    "white-space",
+    "word-break",
+    "overflow-wrap",
+    "box-sizing",
+    "padding-inline-start",
+    "padding-inline-end",
+    "border-inline-start-width",
+    "border-inline-end-width",
+  ]
+
+  for (const property of copiedProperties) {
+    clone.style.setProperty(property, computed.getPropertyValue(property))
+  }
+  clone.style.setProperty("position", "fixed")
+  clone.style.setProperty("left", "-10000px")
+  clone.style.setProperty("top", "0")
+  clone.style.setProperty("visibility", "hidden")
+  clone.style.setProperty("pointer-events", "none")
+  clone.style.setProperty("display", "block")
+  clone.style.setProperty("width", `${bounds.width}px`)
+  clone.style.setProperty("height", "auto")
+  clone.style.setProperty("min-height", "0")
+  clone.style.setProperty("max-height", "none")
+  clone.style.setProperty("overflow", "visible")
+  clone.style.setProperty("-webkit-line-clamp", "unset")
+  clone.style.setProperty("line-clamp", "none")
+  clone.style.setProperty("-webkit-box-orient", "initial")
+  document.body.append(clone)
+
+  const naturalUnclampedHeight = clone.getBoundingClientRect().height
+  clone.remove()
+  const lineHeight = Number.parseFloat(computed.lineHeight)
+
+  return {
+    lineHeight,
+    naturalLineCount:
+      lineHeight > 0 ? Math.max(1, Math.ceil(naturalUnclampedHeight / lineHeight - 0.01)) : null,
+    naturalUnclampedHeight,
+    renderedClampedHeight: bounds.height,
+    text: summary.textContent ?? "",
+  }
+}
+
 const runVisualChecks = () => {
   const unread = document.querySelector('[data-example="unread"] .grid-card-title')
   const read = document.querySelector('[data-example="read-starred"] .grid-card-title')
@@ -321,6 +407,50 @@ const runVisualChecks = () => {
   const verticalFit = verticalImage ? getComputedStyle(verticalImage).objectFit : ""
   const focusOutline = focusTarget ? getComputedStyle(focusTarget).outlineStyle : ""
   const truncatedSynopsis = truncatedEntry?.cardSynopsis ?? ""
+  const fitMeasurements = [
+    ...document.querySelectorAll("[data-synopsis-fit] .grid-card-summary"),
+  ].map((summary) => {
+    const measured = measureNaturalSummary(summary)
+    return {
+      ...measured,
+      name: summary.closest("[data-example]")?.dataset.example ?? "unknown",
+      length: measured.text.length,
+      clampRequired: measured.naturalLineCount > 2,
+    }
+  })
+  const pipelineNoSynopsisEntry = synopsisPresentationEntries.find(
+    ({ entry }) => entry.cardSynopsisSource === "none",
+  )?.entry
+  const pipelineNoSynopsisSummary = document.querySelector(
+    '[data-example="synopsis-S12"] .grid-card-summary',
+  )
+  const explicitEmptySynopsisFixture = cardSynopsisPresenterFixtures[0]
+  const explicitEmptySynopsisSummary = document.querySelector(
+    '[data-example="presenter-explicit-empty"] .grid-card-summary',
+  )
+  const rawExcerptFallbackCount = [
+    {
+      entry: explicitEmptySynopsisFixture.entry,
+      selector: '[data-example="presenter-explicit-empty"] .grid-card-summary',
+    },
+    {
+      entry: pipelineNoSynopsisEntry,
+      selector: '[data-example="synopsis-S12"] .grid-card-summary',
+    },
+  ].filter(({ entry, selector }) => {
+    const summary = document.querySelector(selector)
+    return (
+      Boolean(entry?.previewText) &&
+      !entry?.cardSynopsis &&
+      summary?.textContent.trim() === entry.previewText.trim()
+    )
+  }).length
+  const synopsisLengths = fitMeasurements.map(({ length }) => length)
+  const clampRequiredCount = fitMeasurements.filter(({ clampRequired }) => clampRequired).length
+  const maxNaturalLines = Math.max(
+    0,
+    ...fitMeasurements.map(({ naturalLineCount }) => naturalLineCount ?? 0),
+  )
   const truncatedPrefix = truncatedSynopsis.endsWith("…") ? truncatedSynopsis.slice(0, -1) : ""
   const truncatedOriginal = truncatedEntry?.content
     ?.replaceAll(/<[^>]*>/g, "")
@@ -342,6 +472,34 @@ const runVisualChecks = () => {
       /\s/u.test(truncatedOriginal?.[truncatedPrefix.length] ?? ""),
     ellipsisWhenNeeded:
       Boolean(truncatedEntry?.cardSynopsisTruncated) && truncatedSynopsis.endsWith("…"),
+    presenterExplicitEmptySuppressesSummary:
+      explicitEmptySynopsisFixture.expectedRenderedSummary === null &&
+      Boolean(explicitEmptySynopsisFixture.entry.previewText) &&
+      !explicitEmptySynopsisFixture.entry.cardSynopsis &&
+      explicitEmptySynopsisSummary === null,
+    pipelineExcerptWithoutSynopsisSuppressesSummary:
+      Boolean(pipelineNoSynopsisEntry?.previewText) &&
+      pipelineNoSynopsisEntry?.cardSynopsisSource === "none" &&
+      !pipelineNoSynopsisEntry?.cardSynopsis &&
+      pipelineNoSynopsisSummary === null,
+    presenterRawExcerptFallbackCount: rawExcerptFallbackCount,
+    presenterRawExcerptFallbackZero: rawExcerptFallbackCount === 0,
+    naturalSynopsisLinesLe2: fitMeasurements.length > 0 && clampRequiredCount === 0,
+    naturalSynopsisFit: {
+      averageSynopsisLength:
+        synopsisLengths.length > 0
+          ? Number(
+              (
+                synopsisLengths.reduce((sum, length) => sum + length, 0) / synopsisLengths.length
+              ).toFixed(1),
+            )
+          : 0,
+      clampRequiredCount,
+      count: fitMeasurements.length,
+      maxNaturalLines,
+      maximumSynopsisLength: Math.max(0, ...synopsisLengths),
+      measurements: fitMeasurements,
+    },
     synopsisDebug: {
       lineClamp: truncatedSummary
         ? truncatedSummaryStyle.getPropertyValue("-webkit-line-clamp")
@@ -366,6 +524,8 @@ const runVisualChecks = () => {
     verticalContain: verticalFit === "contain",
   }
 }
+
+globalThis.__phase2b1RunVisualChecks = runVisualChecks
 
 const Harness = () => {
   const [suiteResult, setSuiteResult] = useState(null)
@@ -408,6 +568,28 @@ const Harness = () => {
             <a
               aria-label={entry.title}
               className={`article-entry grid-card-wrapper ${name === "unread" ? "unread" : "read"} ${name === "read-starred" ? "selected" : ""}`}
+              href="#"
+              tabIndex={0}
+              onClick={(event) => event.preventDefault()}
+            >
+              <ArticleGridCard entry={entry} previewContent={entry.previewText} />
+            </a>
+          </div>
+        ))}
+      </section>
+      <h2 className="phase2b1-preview-heading">Synopsis selection and natural fit</h2>
+      <section className="phase2b1-preview-grid phase2b1-synopsis-grid">
+        {synopsisPresentationEntries.map(({ entry, name, state }) => (
+          <div
+            key={entry.id}
+            className="phase2b1-preview-card"
+            data-example={name}
+            data-synopsis-fit=""
+          >
+            <span className="phase2b1-preview-state">{state}</span>
+            <a
+              aria-label={entry.title}
+              className="article-entry grid-card-wrapper read"
               href="#"
               tabIndex={0}
               onClick={(event) => event.preventDefault()}
