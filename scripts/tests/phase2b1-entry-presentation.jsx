@@ -121,6 +121,7 @@ const runCorpus = () => {
     const excerptConfidencePass = entry.previewText
       ? entry.previewConfidence > 0 && entry.previewConfidence <= 0.95
       : entry.previewConfidence === 0
+    const excerptSourcePass = entry.previewSource === fixture.expectedPreviewSource
 
     return {
       coverReason: imageReason,
@@ -129,8 +130,10 @@ const runCorpus = () => {
       excerptConfidence: entry.previewConfidence,
       excerptPass,
       excerptConfidencePass,
+      excerptSourcePass,
       excerptReasonPass,
       expectedExcerpt: fixture.expectedExcerpt,
+      expectedPreviewSource: fixture.expectedPreviewSource,
       expectedImage: fixture.expectedImage,
       expectedReason: fixture.expectedImageReason || fixture.expectedPreviewReason,
       id: fixture.id,
@@ -149,16 +152,46 @@ const runCorpus = () => {
 
   const imageResults = results.filter(({ kind }) => kind === "image")
   const excerptResults = results.filter(({ kind }) => kind === "excerpt")
+  const expectedNonempty = excerptResults.filter(
+    ({ expectedExcerpt }) => expectedExcerpt.trim().length > 0,
+  )
+  const actualNonempty = excerptResults.filter(
+    ({ selectedExcerpt }) => selectedExcerpt.trim().length > 0,
+  )
+  const truePositive = excerptResults.filter(
+    ({ expectedExcerpt, selectedExcerpt }) => expectedExcerpt.trim() && selectedExcerpt.trim(),
+  )
+  const sourceCounts = Object.fromEntries(
+    ["paragraph", "block", "document-fallback", "none"].map((source) => [
+      source,
+      excerptResults.filter(({ excerptSource }) => excerptSource === source).length,
+    ]),
+  )
 
   return {
+    excerptCoverage: {
+      falseEmpty: excerptResults.filter(
+        ({ expectedExcerpt, selectedExcerpt }) =>
+          expectedExcerpt.trim().length > 0 && selectedExcerpt.trim().length === 0,
+      ).length,
+      falsePositive: excerptResults.filter(
+        ({ expectedExcerpt, selectedExcerpt }) =>
+          expectedExcerpt.trim().length === 0 && selectedExcerpt.trim().length > 0,
+      ).length,
+      nonemptyActual: actualNonempty.length,
+      nonemptyExpected: expectedNonempty.length,
+      precision: actualNonempty.length > 0 ? truePositive.length / actualNonempty.length : 1,
+      coverage: expectedNonempty.length > 0 ? truePositive.length / expectedNonempty.length : 1,
+      sourceCounts,
+    },
     imageFixturesPass: imageResults.filter(
       ({ imagePass, imageReasonPass, imageRejectedReasonPass }) =>
         imagePass && imageReasonPass && imageRejectedReasonPass,
     ).length,
     imageFixturesTotal: imageResults.length,
     excerptFixturesPass: excerptResults.filter(
-      ({ excerptPass, excerptReasonPass, excerptConfidencePass }) =>
-        excerptPass && excerptReasonPass && excerptConfidencePass,
+      ({ excerptPass, excerptReasonPass, excerptConfidencePass, excerptSourcePass }) =>
+        excerptPass && excerptReasonPass && excerptConfidencePass && excerptSourcePass,
     ).length,
     excerptFixturesTotal: excerptResults.length,
     noExtraNetworkRequests: globalThis.__phase2b1FetchCalls === fetchBefore,
@@ -193,6 +226,9 @@ const runVisualChecks = () => {
   const unread = document.querySelector('[data-example="unread"] .grid-card-title')
   const read = document.querySelector('[data-example="read-starred"] .grid-card-title')
   const readStar = document.querySelector('[data-example="read-starred"] .grid-card-star')
+  const readImage = document.querySelector('[data-example="read-starred"] .grid-card-cover')
+  const readSummary = document.querySelector('[data-example="read-starred"] .grid-card-summary')
+  const readMeta = document.querySelector('[data-example="read-starred"] .grid-card-meta')
   const horizontalImage = document.querySelector('[data-example="unread"] .grid-card-cover')
   const verticalImage = document.querySelector('[data-example="read-starred"] .grid-card-cover')
   const noImageCard = document.querySelector('[data-example="no-image"]')
@@ -201,6 +237,10 @@ const runVisualChecks = () => {
 
   const unreadWeight = unread ? getComputedStyle(unread).fontWeight : ""
   const readWeight = read ? getComputedStyle(read).fontWeight : ""
+  const readTitleColor = read ? getComputedStyle(read).color : ""
+  const readImageFilter = readImage ? getComputedStyle(readImage).filter : ""
+  const readSummaryColor = readSummary ? getComputedStyle(readSummary).color : ""
+  const readMetaColor = readMeta ? getComputedStyle(readMeta).color : ""
   const horizontalFit = horizontalImage ? getComputedStyle(horizontalImage).objectFit : ""
   const verticalFit = verticalImage ? getComputedStyle(verticalImage).objectFit : ""
   const focusOutline = focusTarget ? getComputedStyle(focusTarget).outlineStyle : ""
@@ -209,6 +249,10 @@ const runVisualChecks = () => {
     focusVisible: focusOutline !== "none" && getComputedStyle(focusTarget).outlineWidth !== "0px",
     horizontalCover: horizontalFit === "cover",
     noImageIsTextFirst: noImageCard?.querySelector("img") === null,
+    readImageUndesaturated: readImageFilter === "none",
+    readMetadataContrast: readMetaColor === readTitleColor,
+    readPreviewContrast: readSummaryColor === readTitleColor,
+    readTitleNormalWeight: Number(readWeight) <= 400,
     readStarredDistinct: readStar ? Number(getComputedStyle(readStar).opacity) === 1 : false,
     readUnreadDistinct: Number(unreadWeight) > Number(readWeight),
     verticalContain: verticalFit === "contain",

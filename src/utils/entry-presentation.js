@@ -49,7 +49,8 @@ const IMAGE_FILE_EXTENSION = /\.(?:avif|gif|jpe?g|png|webp)$/i
 const FILE_SIZE_UNITS = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"]
 const MAX_COVER_CANDIDATES = 12
 const MAX_PREVIEW_LENGTH = 320
-const MIN_PREVIEW_LENGTH = 80
+const MIN_ELIGIBLE_PREVIEW_LENGTH = 45
+const IDEAL_SUBSTANTIVE_PREVIEW_LENGTH = 80
 const DECORATIVE_IMAGE_PATTERN =
   /(?:^|[\W_])(?:logo|favicon|avatar|author|profile|social|share|icon|sprite|badge|ad|ads|advert|advertisement|sponsor|tracking|tracker|pixel|beacon|spacer|blank|analytics)(?:$|[\W_])/i
 const DECORATIVE_CONTEXT_PATTERN =
@@ -57,9 +58,12 @@ const DECORATIVE_CONTEXT_PATTERN =
 const PREVIEW_BOILERPLATE_PATTERN =
   /(?:\b(?:\d+\s+)?comments?\b|\b(?:\d+\s+)?comentarios?\b|\bshare (?:this|the) (?:article|story)\b|\bcompartilh(?:ar|e)\b|\bread more\b|\bleia mais\b|\bcontinue reading\b|\bcontinue lendo\b|\bsubscribe (?:to|for) (?:our )?(?:newsletter|updates)\b|\bassine\b|\bnewsletter\b|\bnewsletter signup\b|\b(?:materias|noticias)\s+relacionadas\b|^\s*related (?:stories|articles|posts)\b|\b(?:publicidade|anuncio)\b|^\s*advertisement\s*$|\bphoto\s*(?:credit|:)|\bfoto\s*[:/]|\bimage\s*credit\b|\bcreditos?(?:\s+da\s+imagem)?\s*:|\bimagem\s*:|\bdivulgacao\b|\bgetty images\b|\b(?:all rights reserved|direitos reservados)\b|\bcopyright\b|©)/i
 const PREVIEW_CONTEXT_PATTERN =
-  /(?:^|[\W_])(?:caption|credit|byline|author|social|share|comment|related|newsletter|advert|advertisement|sponsor)(?:$|[\W_])/i
+  /(?:^|[\W_])(?:caption|credit|byline|author|social|shares?|comments?|comment[-_]?count|related|newsletter|subscriptions?|subscribe|ads?|advert|advertisement|sponsor|hidden)(?:$|[\W_])/i
 const EXCLUDED_PREVIEW_SELECTOR =
-  "script, style, noscript, nav, footer, aside, figcaption, [hidden], [aria-hidden='true']"
+  "script, style, noscript, nav, footer, aside, figcaption, form, button, [hidden], [inert], [aria-hidden='true']"
+const SEMANTIC_TEXT_BLOCK_SELECTOR = "article, main, section, div, li, blockquote, p"
+const DOCUMENT_BLOCK_SELECTOR =
+  "address, article, blockquote, dd, div, dl, dt, fieldset, figcaption, h1, h2, h3, h4, h5, h6, li, main, ol, p, pre, section, table, td, th, tr, ul"
 
 const getUriScheme = (url) => {
   const match = /^([a-z][a-z\d+.-]*):/i.exec(url)
@@ -550,7 +554,12 @@ const hasBoilerplateContext = (element) => {
   let depth = 0
 
   while (current && depth < 6) {
-    if (current.matches(EXCLUDED_PREVIEW_SELECTOR)) {
+    const inlineStyle = current.getAttribute("style") ?? ""
+    if (
+      current.matches(EXCLUDED_PREVIEW_SELECTOR) ||
+      current.matches("input[type='hidden']") ||
+      /\b(?:display\s*:\s*none|visibility\s*:\s*hidden)\b/i.test(inlineStyle)
+    ) {
       return true
     }
 
@@ -592,7 +601,7 @@ const truncateAtSentenceBoundary = (text, maxLength) => {
     .slice(0, maxLength)
     .match(/^.{0,320}?[.!?](?:\s|$)/u)?.[0]
     ?.trim()
-  if (sentence && sentence.length >= Math.min(MIN_PREVIEW_LENGTH, maxLength * 0.55)) {
+  if (sentence && sentence.length >= Math.min(MIN_ELIGIBLE_PREVIEW_LENGTH, maxLength * 0.55)) {
     return sentence
   }
 
@@ -601,7 +610,7 @@ const truncateAtSentenceBoundary = (text, maxLength) => {
   return `${prefix.slice(0, lastSpace > 0 ? lastSpace : maxLength).trimEnd()}…`
 }
 
-const getParagraphScore = ({ index, linkDensity, text }) => {
+const getTextCandidateScore = ({ index, linkDensity, text }) => {
   const wordCount = text.split(/\s+/).filter(Boolean).length
   const sentenceCount = (text.match(/[.!?](?:\s|$)/g) ?? []).length
   const reasons = ["substantive-paragraph"]
@@ -613,9 +622,12 @@ const getParagraphScore = ({ index, linkDensity, text }) => {
   } else if (text.length >= 120) {
     score += 14
     reasons.push("useful-length")
-  } else {
+  } else if (text.length >= IDEAL_SUBSTANTIVE_PREVIEW_LENGTH) {
     score += 8
     reasons.push("minimum-substantive-length")
+  } else {
+    score += 4
+    reasons.push("short-editorial-lead")
   }
 
   if (wordCount >= 18) {
@@ -644,41 +656,185 @@ const getParagraphScore = ({ index, linkDensity, text }) => {
   return { score, reasons }
 }
 
+const getNodeText = (node) => {
+  if (!node.querySelector("br")) {
+    return normalizeText(node.textContent ?? "")
+  }
+
+  const clone = node.cloneNode(true)
+  for (const lineBreak of clone.querySelectorAll("br")) {
+    lineBreak.replaceWith(clone.ownerDocument.createTextNode(" "))
+  }
+  return normalizeText(clone.textContent ?? "")
+}
+
+const isSentenceLikeLead = (text) =>
+  text.split(/\s+/).filter(Boolean).length >= 6 && /[.!?][”’"')\]]?$/u.test(text)
+
+const isEligiblePreviewText = (text) =>
+  text.length >= MIN_ELIGIBLE_PREVIEW_LENGTH &&
+  (text.length >= IDEAL_SUBSTANTIVE_PREVIEW_LENGTH || isSentenceLikeLead(text))
+
+const isBoilerplateText = (text) =>
+  PREVIEW_BOILERPLATE_PATTERN.test(normalizeBoilerplateText(text)) ||
+  /^(?:by|written by|author|por|escrito por)\s+/i.test(text)
+
+const createPreviewCandidate = ({ author, element, index, text, title }) => {
+  const normalizedText = normalizeText(text)
+  const comparableText = normalizeComparableText(normalizedText)
+  if (
+    !isEligiblePreviewText(normalizedText) ||
+    isBoilerplateText(normalizedText) ||
+    (title && comparableText === title) ||
+    (author && comparableText === author) ||
+    (element && hasBoilerplateContext(element))
+  ) {
+    return null
+  }
+
+  const linkDensity = element ? getParagraphLinkDensity(element, normalizedText.length) : 0
+  if (linkDensity > 0.55) {
+    return null
+  }
+
+  const score = getTextCandidateScore({ index, linkDensity, text: normalizedText })
+  return { ...score, index, linkDensity, text: normalizedText }
+}
+
+const selectBestPreviewCandidate = (candidates) =>
+  candidates.toSorted((left, right) => right.score - left.score || left.index - right.index)[0] ??
+  null
+
+const collectDocumentTextSegments = (root) => {
+  const segments = []
+  let text = ""
+  let linkedTextLength = 0
+  const flush = () => {
+    const normalizedText = normalizeText(text)
+    if (normalizedText) {
+      segments.push({ linkedTextLength, text: normalizedText })
+    }
+    text = ""
+    linkedTextLength = 0
+  }
+  const walker = root.ownerDocument.createTreeWalker(
+    root,
+    NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT,
+  )
+
+  while (walker.nextNode()) {
+    const node = walker.currentNode
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const tagName = node.tagName.toLowerCase()
+      if (tagName === "br") {
+        flush()
+      } else if (
+        node !== root &&
+        node.matches(DOCUMENT_BLOCK_SELECTOR) &&
+        (text.trim() || linkedTextLength)
+      ) {
+        flush()
+      }
+      continue
+    }
+
+    const nodeText = node.nodeValue ?? ""
+    text += nodeText
+    if (node.parentElement?.closest("a")) {
+      linkedTextLength += nodeText.length
+    }
+  }
+
+  flush()
+  return segments
+}
+
+const prepareDocumentFallback = (doc) => {
+  const root = doc.body?.cloneNode(true) ?? doc.documentElement?.cloneNode(true)
+  if (!root) {
+    return []
+  }
+
+  for (const element of root.querySelectorAll("*")) {
+    if (element.parentElement && hasBoilerplateContext(element)) {
+      element.remove()
+    }
+  }
+  for (const node of root.querySelectorAll(
+    "img, video, audio, iframe, canvas, svg, picture, source",
+  )) {
+    node.remove()
+  }
+  for (const figure of root.querySelectorAll("figure")) {
+    if (!normalizeText(figure.textContent ?? "")) {
+      figure.remove()
+    }
+  }
+
+  return collectDocumentTextSegments(root)
+}
+
 const extractSemanticPreview = (doc, entry) => {
   const title = normalizeComparableText(entry.title ?? "")
   const author = normalizeComparableText(entry.author ?? "")
-  const paragraphs = [...doc.querySelectorAll("p")]
-  const candidates = []
+  const paragraphCandidates = [...doc.querySelectorAll("p")]
+    .map((paragraph, index) =>
+      createPreviewCandidate({
+        author,
+        element: paragraph,
+        index,
+        text: getNodeText(paragraph),
+        title,
+      }),
+    )
+    .filter(Boolean)
+  let selected = selectBestPreviewCandidate(paragraphCandidates)
+  let previewSource = "paragraph"
 
-  for (const [index, paragraph] of paragraphs.entries()) {
-    if (hasBoilerplateContext(paragraph)) {
-      continue
-    }
-
-    const text = normalizeText(paragraph.textContent ?? "")
-    const comparableText = normalizeComparableText(text)
-    if (
-      text.length < MIN_PREVIEW_LENGTH ||
-      PREVIEW_BOILERPLATE_PATTERN.test(normalizeBoilerplateText(text)) ||
-      (title && comparableText === title) ||
-      (author && comparableText === author) ||
-      /^(?:by|written by|author)\s+/i.test(text)
-    ) {
-      continue
-    }
-
-    const linkDensity = getParagraphLinkDensity(paragraph, text.length)
-    if (linkDensity > 0.55) {
-      continue
-    }
-
-    const score = getParagraphScore({ index, linkDensity, text })
-    candidates.push({ ...score, index, linkDensity, text })
+  if (!selected) {
+    const semanticBlocks = [...doc.querySelectorAll("article, main, section, div, li, blockquote")]
+    const blockCandidates = semanticBlocks
+      .map((block, index) => {
+        const ownText = block.cloneNode(true)
+        for (const child of ownText.querySelectorAll(SEMANTIC_TEXT_BLOCK_SELECTOR)) {
+          child.remove()
+        }
+        return createPreviewCandidate({
+          author,
+          element: block,
+          index,
+          text: getNodeText(ownText),
+          title,
+        })
+      })
+      .filter(Boolean)
+    selected = selectBestPreviewCandidate(blockCandidates)
+    previewSource = "block"
   }
 
-  const selected = candidates.toSorted(
-    (left, right) => right.score - left.score || left.index - right.index,
-  )[0]
+  if (!selected) {
+    const fallbackCandidates = prepareDocumentFallback(doc)
+      .map(({ linkedTextLength, text }, index) => {
+        const candidate = createPreviewCandidate({ author, index, text, title })
+        if (!candidate) {
+          return null
+        }
+        const linkDensity = Math.min(1, linkedTextLength / text.length)
+        if (linkDensity > 0.55) {
+          return null
+        }
+        return {
+          ...getTextCandidateScore({ index, linkDensity, text }),
+          index,
+          linkDensity,
+          text,
+        }
+      })
+      .filter(Boolean)
+    selected = selectBestPreviewCandidate(fallbackCandidates)
+    previewSource = "document-fallback"
+  }
+
   if (!selected) {
     return {
       previewConfidence: 0,
@@ -690,9 +846,9 @@ const extractSemanticPreview = (doc, entry) => {
 
   return {
     previewConfidence: Number(Math.min(0.95, selected.score / 100).toFixed(2)),
-    previewParagraphIndex: selected.index,
+    previewParagraphIndex: previewSource === "paragraph" ? selected.index : undefined,
     previewReason: selected.reasons.join("; "),
-    previewSource: "article-paragraph",
+    previewSource,
     previewText: truncateAtSentenceBoundary(selected.text, MAX_PREVIEW_LENGTH),
   }
 }

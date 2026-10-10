@@ -35,10 +35,6 @@
     opacity 0.15s;
 }
 
-.grid-card-wrapper.read .grid-card-cover {
-  filter: saturate(0.88);
-}
-
 .grid-card-cover-cropped {
   object-fit: cover;
 }

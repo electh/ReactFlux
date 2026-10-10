@@ -15,6 +15,8 @@ const makeFixture = (id, title, content, expected = {}) => ({
   expectedImage: expected.image ?? null,
   expectedImageReason: expected.imageReason ?? "",
   expectedRejectedImageReason: expected.rejectedImageReason ?? "",
+  expectedPreviewSource:
+    expected.previewSource ?? ((expected.excerpt ?? ARTICLE_PARAGRAPH) ? "paragraph" : "none"),
   kind: expected.kind ?? "excerpt",
   expectedPreviewReason: expected.previewReason ?? "substantive-paragraph",
   id: String(id).padStart(2, "0"),
@@ -334,6 +336,127 @@ export const entryPresentationFixtures = [
     "PT-BR boilerplate only",
     `<p>Foto: Agência Reuters. Publicidade. Compartilhe esta notícia. Leia mais e continue lendo. Assine nossa newsletter. Matérias relacionadas. Notícias relacionadas. Anúncio. Créditos da imagem: Getty Images. Imagem: divulgação. Direitos reservados. ${"Esta área reúne avisos de navegação e interação da publicação. ".repeat(2)}</p>`,
     { excerpt: "", name: "PT-BR boilerplate only", previewReason: "no-substantive-paragraph" },
+  ),
+  makeFixture(
+    54,
+    "Div-only article text",
+    `<div>O tribunal retomará o julgamento nesta terça-feira, após receber os dados atualizados das partes envolvidas.</div>`,
+    {
+      excerpt:
+        "O tribunal retomará o julgamento nesta terça-feira, após receber os dados atualizados das partes envolvidas.",
+      previewSource: "block",
+    },
+  ),
+  makeFixture(
+    55,
+    "Direct text-node content",
+    "A prefeitura confirmou nesta segunda-feira que as obras serão retomadas após a conclusão da vistoria técnica.",
+    {
+      excerpt:
+        "A prefeitura confirmou nesta segunda-feira que as obras serão retomadas após a conclusão da vistoria técnica.",
+      previewSource: "document-fallback",
+    },
+  ),
+  makeFixture(
+    56,
+    "BR-separated summary",
+    `<div>O governo publicou nesta terça o calendário atualizado da vacinação<br>e confirmou que os postos funcionarão também durante o próximo fim de semana.</div>`,
+    {
+      excerpt:
+        "O governo publicou nesta terça o calendário atualizado da vacinação e confirmou que os postos funcionarão também durante o próximo fim de semana.",
+      previewSource: "block",
+    },
+  ),
+  makeFixture(
+    57,
+    "Section-only content",
+    `<section>A universidade anunciou nesta quarta a abertura de novas vagas para o programa de bolsas, com inscrições disponíveis até o fim do mês.</section>`,
+    {
+      excerpt:
+        "A universidade anunciou nesta quarta a abertura de novas vagas para o programa de bolsas, com inscrições disponíveis até o fim do mês.",
+      previewSource: "block",
+    },
+  ),
+  makeFixture(
+    58,
+    "Description-class content",
+    `<div class="description">A comissão divulgou o relatório final nesta manhã e explicou quais medidas serão adotadas nos próximos meses.</div>`,
+    {
+      excerpt:
+        "A comissão divulgou o relatório final nesta manhã e explicou quais medidas serão adotadas nos próximos meses.",
+      previewSource: "block",
+    },
+  ),
+  makeFixture(
+    59,
+    "Short valid paragraph",
+    "<p>A equipe confirmou nesta quarta que o serviço será retomado amanhã.</p>",
+    {
+      excerpt: "A equipe confirmou nesta quarta que o serviço será retomado amanhã.",
+      previewSource: "paragraph",
+    },
+  ),
+  makeFixture(60, "Short PT-BR lead", "<p>STF retoma nesta terça o julgamento sobre o tema.</p>", {
+    excerpt: "STF retoma nesta terça o julgamento sobre o tema.",
+    previewSource: "paragraph",
+  }),
+  makeFixture(
+    61,
+    "Nested divs without duplicate text",
+    `<div><div>${ARTICLE_PARAGRAPH}</div></div>`,
+    { excerpt: ARTICLE_PARAGRAPH, previewSource: "block" },
+  ),
+  makeFixture(
+    62,
+    "Image followed by direct editorial text",
+    `<img src="https://example.test/story/hero-photo.jpg" width="1200" height="675"> O ministério confirmou nesta quinta que a nova etapa do programa começa na próxima semana, com atendimento em todas as capitais.`,
+    {
+      excerpt:
+        "O ministério confirmou nesta quinta que a nova etapa do programa começa na próxima semana, com atendimento em todas as capitais.",
+      previewSource: "document-fallback",
+    },
+  ),
+  makeFixture(
+    63,
+    "Boilerplate div and valid direct text",
+    `<div class="newsletter-signup">Subscribe to our newsletter for the latest updates and special offers from the publication.</div> A defesa civil confirmou nesta manhã que as equipes seguem monitorando o nível dos rios depois das chuvas intensas.`,
+    {
+      excerpt:
+        "A defesa civil confirmou nesta manhã que as equipes seguem monitorando o nível dos rios depois das chuvas intensas.",
+      previewSource: "document-fallback",
+    },
+  ),
+  makeFixture(
+    64,
+    "Thirty-five character fragment",
+    `<p>Julgamento será retomado nesta terça.</p>`,
+    { excerpt: "", previewReason: "no-substantive-paragraph" },
+  ),
+  makeFixture(
+    65,
+    "Ninety-character paragraph",
+    `<p>O governo anunciou nesta terça uma nova etapa do programa, com início previsto para novembro.</p>`,
+    {
+      excerpt:
+        "O governo anunciou nesta terça uma nova etapa do programa, com início previsto para novembro.",
+      previewSource: "paragraph",
+    },
+  ),
+  makeFixture(
+    66,
+    "Boilerplate-only block content",
+    `<div class="newsletter-signup">Assine a newsletter para receber as principais notícias e atualizações da publicação.</div><div class="related-stories">Matérias relacionadas e leia mais.</div>`,
+    { excerpt: "", previewReason: "no-substantive-paragraph" },
+  ),
+  makeFixture(
+    67,
+    "Hidden and comments content removed before direct text fallback",
+    `<div class="comments">${ARTICLE_PARAGRAPH}</div><div hidden>${ARTICLE_PARAGRAPH}</div><figure><img src="https://example.test/story/hero.jpg" width="1200" height="675"><figcaption>Créditos da imagem: Getty Images.</figcaption></figure> A prefeitura informou nesta manhã que o atendimento será retomado em todas as unidades da região após a conclusão dos reparos.`,
+    {
+      excerpt:
+        "A prefeitura informou nesta manhã que o atendimento será retomado em todas as unidades da região após a conclusão dos reparos.",
+      previewSource: "document-fallback",
+    },
   ),
 ]
 

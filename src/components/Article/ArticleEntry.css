@@ -50,7 +50,7 @@
 
 .article-entry.read .article-entry-title {
   color: var(--color-text-2);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .article-entry.read .card-source-title,
@@ -60,11 +60,19 @@
 .article-entry.read .grid-card-time,
 .article-entry.read .list-entry-source-title,
 .article-entry.read .list-entry-meta {
-  color: var(--color-text-3);
+  color: var(--color-text-2);
 }
 
-.article-entry.read .card-preview {
-  color: var(--color-text-3);
+.article-entry.read .grid-card-footer,
+.article-entry.read .grid-card-reading-time,
+.article-entry.read .card-reading-time {
+  color: var(--color-text-2);
+}
+
+.article-entry.read .card-preview,
+.article-entry.read .grid-card-summary,
+.article-entry.read .list-entry-summary {
+  color: var(--color-text-2);
 }
 
 .article-entry.context-menu-enabled {
