@@ -461,3 +461,138 @@ export const entryPresentationFixtures = [
 ]
 
 export { ARTICLE_PARAGRAPH }
+
+const makeSynopsisFixture = (
+  id,
+  title,
+  content,
+  { expectedSentence, expectedSentenceIndex, titleOverlapAssisted = false, truncated = false },
+) => ({
+  entry: {
+    author: "",
+    content,
+    enclosures: [],
+    feed: { site_url: "https://example.test/feed", title: "Synopsis Desk" },
+    id: `synopsis-${id}`,
+    title,
+  },
+  expectedSentence,
+  expectedSentenceIndex,
+  expectedTitleOverlapAssisted: titleOverlapAssisted,
+  expectedTruncated: truncated,
+  id: `S${String(id).padStart(2, "0")}`,
+  name: title,
+})
+
+export const cardSynopsisFixtures = [
+  makeSynopsisFixture(
+    1,
+    "STF resumes judgment on platform responsibility",
+    "<p>The court session started at 14:00 on Tuesday after the justices arrived at the building. The STF resumed its judgment on platform responsibility, considering how companies must respond to illegal posts.</p>",
+    {
+      expectedSentence:
+        "The STF resumed its judgment on platform responsibility, considering how companies must respond to illegal posts.",
+      expectedSentenceIndex: 2,
+      titleOverlapAssisted: true,
+    },
+  ),
+  makeSynopsisFixture(
+    2,
+    "Apple introduces MacBook Pro with the M6 chip",
+    "<p>Apple held its launch event this morning before a group of invited journalists and developers. The new MacBook Pro uses the M6 chip and promises longer battery life for demanding creative work.</p>",
+    {
+      expectedSentence:
+        "The new MacBook Pro uses the M6 chip and promises longer battery life for demanding creative work.",
+      expectedSentenceIndex: 2,
+      titleOverlapAssisted: true,
+    },
+  ),
+  makeSynopsisFixture(
+    3,
+    "Study finds vaccine reduced severe illness by 42 percent",
+    "<p>Researchers found that the new vaccine reduced severe illness by 42% in a year-long study involving 18,000 adults.</p>",
+    {
+      expectedSentence:
+        "Researchers found that the new vaccine reduced severe illness by 42% in a year-long study involving 18,000 adults.",
+      expectedSentenceIndex: 1,
+    },
+  ),
+  makeSynopsisFixture(
+    4,
+    "The Senate approves the climate bill after a five-hour debate",
+    "<p>The Senate approves the climate bill after a five-hour debate. The measure now heads to the president, who has ten days to sign it or send it back to Congress.</p>",
+    {
+      expectedSentence:
+        "The measure now heads to the president, who has ten days to sign it or send it back to Congress.",
+      expectedSentenceIndex: 2,
+    },
+  ),
+  makeSynopsisFixture(
+    5,
+    "City opens a new bridge over the Blue River",
+    "<p>The city opened the new bridge over the Blue River on Wednesday, after completing final safety tests.</p><p>The lengthy infrastructure program involved several contractors, months of road closures, detailed environmental reviews, and a large budget approved by the city council.</p>",
+    {
+      expectedSentence:
+        "The city opened the new bridge over the Blue River on Wednesday, after completing final safety tests.",
+      expectedSentenceIndex: 1,
+    },
+  ),
+  makeSynopsisFixture(
+    6,
+    "STF retoma julgamento sobre responsabilidade das plataformas",
+    "<p>A sessão começou às 14h desta terça-feira, com a chegada dos ministros ao tribunal. O STF retomou o julgamento sobre a responsabilidade das plataformas digitais por publicações ilegais.</p>",
+    {
+      expectedSentence:
+        "O STF retomou o julgamento sobre a responsabilidade das plataformas digitais por publicações ilegais.",
+      expectedSentenceIndex: 2,
+      titleOverlapAssisted: true,
+    },
+  ),
+  makeSynopsisFixture(
+    7,
+    "Apple lança MacBook Pro com chip M6",
+    "<p>A Apple realizou o evento de lançamento nesta manhã diante de jornalistas e desenvolvedores convidados. O novo MacBook Pro usa o chip M6 e promete mais autonomia para trabalhos criativos.</p>",
+    {
+      expectedSentence:
+        "O novo MacBook Pro usa o chip M6 e promete mais autonomia para trabalhos criativos.",
+      expectedSentenceIndex: 2,
+      titleOverlapAssisted: true,
+    },
+  ),
+  makeSynopsisFixture(
+    8,
+    "Estudo aponta queda de 42% nos casos graves da doença",
+    "<p>Pesquisadores observaram que a nova vacina reduziu os casos graves em 42% durante um estudo de um ano com 18 mil adultos.</p>",
+    {
+      expectedSentence:
+        "Pesquisadores observaram que a nova vacina reduziu os casos graves em 42% durante um estudo de um ano com 18 mil adultos.",
+      expectedSentenceIndex: 1,
+    },
+  ),
+  makeSynopsisFixture(
+    9,
+    "Senado aprova projeto climático após debate de cinco horas",
+    "<p>Senado aprova projeto climático após debate de cinco horas. A proposta segue agora para o presidente, que tem dez dias para sancionar o texto ou devolvê-lo ao Congresso.</p>",
+    {
+      expectedSentence:
+        "A proposta segue agora para o presidente, que tem dez dias para sancionar o texto ou devolvê-lo ao Congresso.",
+      expectedSentenceIndex: 2,
+    },
+  ),
+  makeSynopsisFixture(
+    10,
+    "Cidade inaugura nova ponte sobre o Rio Azul",
+    "<p>A cidade inaugurou a nova ponte sobre o Rio Azul nesta quarta-feira, após concluir os testes finais de segurança.</p><p>O longo programa de infraestrutura envolveu diversas empreiteiras, meses de bloqueios viários, análises ambientais detalhadas e um orçamento aprovado pela câmara municipal.</p>",
+    {
+      expectedSentence:
+        "A cidade inaugurou a nova ponte sobre o Rio Azul nesta quarta-feira, após concluir os testes finais de segurança.",
+      expectedSentenceIndex: 1,
+    },
+  ),
+  makeSynopsisFixture(
+    11,
+    "New transit plan brings changes across the city",
+    `<p>The regional transit authority published a detailed service plan this morning, listing new schedules, station changes, transfer rules, and several other updates for commuters across the city. ${"The extended notice also repeats background information for passengers. ".repeat(4)}</p>`,
+    { expectedSentenceIndex: 1, truncated: true },
+  ),
+]

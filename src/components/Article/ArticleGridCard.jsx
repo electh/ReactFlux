@@ -9,7 +9,6 @@ import { generateReadingTime, generateRelativeTime } from "@/utils/date"
 
 import "./ArticleGridCard.css"
 
-const MAX_CARD_SUMMARY_LENGTH = 320
 const MIN_COVER_ASPECT_RATIO = 3 / 2
 const MAX_COVER_ASPECT_RATIO = 2
 
@@ -40,11 +39,6 @@ const getCoverCandidates = (entry) =>
       ? [{ height: entry.coverHeight, src: entry.coverSource, width: entry.coverWidth }]
       : []
 
-const getCardSummary = (summary) =>
-  summary.length > MAX_CARD_SUMMARY_LENGTH
-    ? `${summary.slice(0, MAX_CARD_SUMMARY_LENGTH - 1).trimEnd()}…`
-    : summary
-
 const ArticleGridCard = ({ entry, previewContent }) => {
   const { showCardSummary, showDetailedRelativeTime, showEstimatedReadingTime, showFeedIcon } =
     useStore(articleGridCardSettingsState)
@@ -69,7 +63,7 @@ const ArticleGridCard = ({ entry, previewContent }) => {
   const isReady = aspectRatio !== null || loadedCover !== null
   const shouldCrop = shouldCropCover(aspectRatio)
   const hasCover = currentCover !== null
-  const cardSummary = getCardSummary(previewContent)
+  const cardSummary = entry.cardSynopsis || previewContent
 
   const handleCoverLoad = ({ currentTarget }) => {
     const { naturalHeight, naturalWidth } = currentTarget

@@ -51,6 +51,45 @@ const MAX_COVER_CANDIDATES = 12
 const MAX_PREVIEW_LENGTH = 320
 const MIN_ELIGIBLE_PREVIEW_LENGTH = 45
 const IDEAL_SUBSTANTIVE_PREVIEW_LENGTH = 80
+const MAX_CARD_SYNOPSIS_LENGTH = 180
+const MAX_SYNOPSIS_BLOCKS = 5
+const MAX_SYNOPSIS_SENTENCES = 10
+const SENTENCE_SEGMENTER =
+  typeof Intl.Segmenter === "function"
+    ? new Intl.Segmenter("pt-BR", { granularity: "sentence" })
+    : null
+const SYNOPSIS_STOP_WORDS = new Set([
+  "a",
+  "as",
+  "ao",
+  "aos",
+  "com",
+  "da",
+  "das",
+  "de",
+  "do",
+  "dos",
+  "e",
+  "em",
+  "na",
+  "nas",
+  "no",
+  "nos",
+  "o",
+  "os",
+  "para",
+  "por",
+  "que",
+  "the",
+  "and",
+  "for",
+  "from",
+  "in",
+  "of",
+  "on",
+  "to",
+  "with",
+])
 const DECORATIVE_IMAGE_PATTERN =
   /(?:^|[\W_])(?:logo|favicon|avatar|author|profile|social|share|icon|sprite|badge|ad|ads|advert|advertisement|sponsor|tracking|tracker|pixel|beacon|spacer|blank|analytics)(?:$|[\W_])/i
 const DECORATIVE_CONTEXT_PATTERN =
@@ -705,6 +744,102 @@ const selectBestPreviewCandidate = (candidates) =>
   candidates.toSorted((left, right) => right.score - left.score || left.index - right.index)[0] ??
   null
 
+const splitIntoSentences = (text) => {
+  const normalizedText = normalizeText(text)
+  if (!normalizedText) {
+    return []
+  }
+
+  if (SENTENCE_SEGMENTER) {
+    return [...SENTENCE_SEGMENTER.segment(normalizedText)]
+      .map(({ segment }) => normalizeText(segment))
+      .filter(Boolean)
+  }
+
+  return (normalizedText.match(/[^.!?]+[.!?]+[”’"')\]]*|[^.!?]+$/gu) ?? [])
+    .map((sentence) => normalizeText(sentence))
+    .filter(Boolean)
+}
+
+const getSynopsisTerms = (text) =>
+  normalizeBoilerplateText(text)
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter((term) => (term.length >= 3 || /\d/u.test(term)) && !SYNOPSIS_STOP_WORDS.has(term))
+
+const getTitleOverlap = (sentence, titleTerms) => {
+  const sentenceTerms = new Set(getSynopsisTerms(sentence))
+  const matches = titleTerms.filter((term) => sentenceTerms.has(term))
+  return {
+    count: matches.length,
+    ratio: titleTerms.length > 0 ? matches.length / titleTerms.length : 0,
+  }
+}
+
+const scoreSynopsisSentence = ({
+  blockIndex,
+  linkDensity,
+  sentence,
+  sentenceIndex,
+  title,
+  titleTerms,
+}) => {
+  const words = sentence.split(/\s+/).filter(Boolean)
+  const { count: titleOverlapCount, ratio: titleOverlapRatio } = getTitleOverlap(
+    sentence,
+    titleTerms,
+  )
+  const comparableSentence = normalizeComparableText(sentence)
+  const comparableTitle = normalizeComparableText(title)
+  const isTitleRepeat =
+    comparableSentence === comparableTitle ||
+    (titleOverlapRatio >= 0.85 && sentence.length <= title.length * 1.5)
+  let score = Math.max(0, 18 - blockIndex * 4) + Math.max(0, 10 - sentenceIndex * 4)
+
+  score += Math.min(32, titleOverlapCount * 9) + Math.round(titleOverlapRatio * 10)
+  if (/\b\d+(?:[.,:/-]\d+)*\b/u.test(sentence)) {
+    score += 4
+  }
+  if (/[.!?][”’"')\]]?$/u.test(sentence) && words.length >= 7) {
+    score += 7
+  }
+  if (sentence.length >= 55 && sentence.length <= 160) {
+    score += 6
+  } else if (sentence.length > 200) {
+    score -= 12
+  }
+  if (linkDensity > 0.1) {
+    score -= Math.round(linkDensity * 30)
+  }
+  if (isTitleRepeat) {
+    score -= 80
+  }
+
+  return { isTitleRepeat, score, titleOverlapCount }
+}
+
+const isEligibleSynopsisSentence = (sentence) =>
+  sentence.length >= MIN_ELIGIBLE_PREVIEW_LENGTH &&
+  sentence.split(/\s+/).filter(Boolean).length >= 6 &&
+  /[.!?][”’"')\]]?$/u.test(sentence) &&
+  !isBoilerplateText(sentence)
+
+const compactSynopsis = (text) => {
+  if (text.length <= MAX_CARD_SYNOPSIS_LENGTH) {
+    return { text, truncated: false }
+  }
+
+  const prefix = text.slice(0, MAX_CARD_SYNOPSIS_LENGTH - 1)
+  const lastSpace = prefix.lastIndexOf(" ")
+  if (lastSpace <= 0) {
+    return { text, truncated: false }
+  }
+
+  return {
+    text: `${prefix.slice(0, lastSpace).trimEnd()}…`,
+    truncated: true,
+  }
+}
+
 const collectDocumentTextSegments = (root) => {
   const segments = []
   let text = ""
@@ -854,6 +989,151 @@ const extractSemanticPreview = (doc, entry) => {
   }
 }
 
+const collectSynopsisBlocks = (doc, entry) => {
+  const title = normalizeComparableText(entry.title ?? "")
+  const author = normalizeComparableText(entry.author ?? "")
+  const paragraphs = []
+  for (const [index, paragraph] of [...doc.querySelectorAll("p")].entries()) {
+    const candidate = createPreviewCandidate({
+      author,
+      element: paragraph,
+      index,
+      text: getNodeText(paragraph),
+      title,
+    })
+    if (candidate) {
+      paragraphs.push(candidate)
+      if (paragraphs.length >= MAX_SYNOPSIS_BLOCKS) {
+        break
+      }
+    }
+  }
+  if (paragraphs.length > 0) {
+    return paragraphs
+  }
+
+  const semanticBlocks = []
+  for (const [index, block] of [
+    ...doc.querySelectorAll("article, main, section, div, li, blockquote"),
+  ].entries()) {
+    const ownText = block.cloneNode(true)
+    for (const child of ownText.querySelectorAll(SEMANTIC_TEXT_BLOCK_SELECTOR)) {
+      child.remove()
+    }
+    const candidate = createPreviewCandidate({
+      author,
+      element: block,
+      index,
+      linkElement: ownText,
+      text: getNodeText(ownText),
+      title,
+    })
+    if (candidate) {
+      semanticBlocks.push(candidate)
+      if (semanticBlocks.length >= MAX_SYNOPSIS_BLOCKS) {
+        break
+      }
+    }
+  }
+  if (semanticBlocks.length > 0) {
+    return semanticBlocks
+  }
+
+  return prepareDocumentFallback(doc)
+    .map(({ linkedTextLength, text }, index) => {
+      const candidate = createPreviewCandidate({ author, index, text, title })
+      if (!candidate) {
+        return null
+      }
+      const linkDensity = Math.min(1, linkedTextLength / text.length)
+      return linkDensity <= 0.55 ? { ...candidate, linkDensity } : null
+    })
+    .filter(Boolean)
+    .slice(0, MAX_SYNOPSIS_BLOCKS)
+}
+
+const extractCardSynopsis = (doc, entry, preview) => {
+  const blocks = collectSynopsisBlocks(doc, entry)
+  const title = normalizeText(entry.title ?? "")
+  const titleTerms = [...new Set(getSynopsisTerms(title))]
+  const candidates = []
+  let sourceSentenceIndex = 0
+
+  for (const [blockIndex, block] of blocks.entries()) {
+    for (const [sentencePosition, sentence] of splitIntoSentences(block.text).entries()) {
+      sourceSentenceIndex += 1
+      if (!isEligibleSynopsisSentence(sentence)) {
+        continue
+      }
+
+      const score = scoreSynopsisSentence({
+        blockIndex,
+        linkDensity: block.linkDensity,
+        sentence,
+        sentenceIndex: sentencePosition,
+        title,
+        titleTerms,
+      })
+      if (score.isTitleRepeat) {
+        continue
+      }
+
+      candidates.push({
+        ...score,
+        sentence,
+        sentenceIndex: sourceSentenceIndex,
+      })
+      if (candidates.length >= MAX_SYNOPSIS_SENTENCES) {
+        break
+      }
+    }
+    if (candidates.length >= MAX_SYNOPSIS_SENTENCES) {
+      break
+    }
+  }
+
+  const selected = candidates.toSorted(
+    (left, right) => right.score - left.score || left.sentenceIndex - right.sentenceIndex,
+  )[0]
+  if (selected) {
+    const compacted = compactSynopsis(selected.sentence)
+    return {
+      cardSynopsis: compacted.text,
+      cardSynopsisSource: "sentence",
+      cardSynopsisSentenceIndex: selected.sentenceIndex,
+      cardSynopsisTruncated: compacted.truncated,
+      cardSynopsisIsFirstSentence: selected.sentenceIndex === 1,
+      cardSynopsisTitleOverlapAssisted:
+        selected.titleOverlapCount > 0 && selected.sentenceIndex > 1,
+    }
+  }
+
+  const excerptSentence =
+    splitIntoSentences(preview.previewText).find((sentence) =>
+      isEligibleSynopsisSentence(sentence),
+    ) ?? ""
+  if (excerptSentence && isEligibleSynopsisSentence(excerptSentence)) {
+    const compacted = compactSynopsis(excerptSentence)
+    return {
+      cardSynopsis: compacted.text,
+      cardSynopsisSource: "excerpt-fallback",
+      cardSynopsisSentenceIndex: null,
+      cardSynopsisTruncated: compacted.truncated,
+      cardSynopsisIsFirstSentence: true,
+      cardSynopsisTitleOverlapAssisted: false,
+    }
+  }
+
+  return {
+    cardSynopsis: "",
+    cardSynopsisSource: "none",
+    cardSynopsisSentenceIndex: null,
+    cardSynopsisTruncated: false,
+    cardSynopsisIsFirstSentence: false,
+    cardSynopsisTitleOverlapAssisted: false,
+  }
+}
+
 const prepareEntry = (entry) => {
   const content = typeof entry.content === "string" ? entry.content : ""
   const doc = new DOMParser().parseFromString(content, "text/html")
@@ -870,6 +1150,7 @@ const prepareEntry = (entry) => {
   )
   const cover = imageSelection.candidates[0] ?? null
   const preview = extractSemanticPreview(doc, entry)
+  const synopsis = extractCardSynopsis(doc, entry, preview)
 
   return {
     ...entry,
@@ -885,9 +1166,10 @@ const prepareEntry = (entry) => {
     coverCandidateCount: imageSelection.candidateCount,
     coverRejectedReasons: imageSelection.rejectedReasons,
     ...preview,
+    ...synopsis,
     isMedia: Boolean(attachments.primaryMedia || embeddedMedia),
   }
 }
 
-export { extractImageCandidates, extractSemanticPreview }
+export { extractCardSynopsis, extractImageCandidates, extractSemanticPreview }
 export default prepareEntry

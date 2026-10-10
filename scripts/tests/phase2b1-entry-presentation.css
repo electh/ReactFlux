@@ -93,8 +93,8 @@ body {
 }
 
 .phase2b1-preview-card .grid-card-summary {
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 @media (max-width: 760px) {

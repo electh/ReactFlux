@@ -124,6 +124,8 @@ Home (future editorial entry point; current home target can still be a view/feed
 
 Before implementing the future home or navigation, review this document with product/design and validate the 884 × 1104 foldable case. Confirm state ownership for Later and Bookmarks, confirm whether current Starred maps to Favorites, and test contrast, focus, transparency fallback, keyboard, touch and reduced motion. This specification does not authorize new routes, persistence, APIs or a reader redesign in Phase 2B.1.
 
+`READ_STATE_FINAL_VISUAL = PHASE_2B2`
+
 ## Sources
 
 - Apple Human Interface Guidelines: [Layout](https://developer.apple.com/design/human-interface-guidelines/layout), [Materials](https://developer.apple.com/design/human-interface-guidelines/materials), [Color](https://developer.apple.com/design/human-interface-guidelines/color), [Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode).

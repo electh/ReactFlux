@@ -8,6 +8,7 @@ import ReactDOM from "react-dom/client"
 
 import {
   ARTICLE_PARAGRAPH,
+  cardSynopsisFixtures,
   entryPresentationFixtures,
 } from "./fixtures/phase2b1-entry-presentation"
 
@@ -82,6 +83,15 @@ const visualEntries = [
     }),
     name: "no-image",
     state: "No image",
+  },
+  {
+    entry: makeVisualEntry({
+      content: `<p>The regional transit authority published a detailed service plan this morning, listing new schedules, station changes, transfer rules, and several other updates for commuters across the city. ${"The extended notice also repeats background information for passengers. ".repeat(4)}</p>`,
+      id: 90_005,
+      title: "Regional transit authority publishes a detailed city service plan",
+    }),
+    name: "synopsis-truncated",
+    state: "Two-line synopsis",
   },
 ]
 
@@ -167,6 +177,40 @@ const runCorpus = () => {
       excerptResults.filter(({ excerptSource }) => excerptSource === source).length,
     ]),
   )
+  const synopsisResults = cardSynopsisFixtures.map((fixture) => {
+    const entry = prepareEntry(fixture.entry)
+    const textPass = fixture.expectedSentence
+      ? entry.cardSynopsis === fixture.expectedSentence
+      : true
+    const indexPass = entry.cardSynopsisSentenceIndex === fixture.expectedSentenceIndex
+    const overlapPass =
+      entry.cardSynopsisTitleOverlapAssisted === fixture.expectedTitleOverlapAssisted
+    const truncatedPass = entry.cardSynopsisTruncated === fixture.expectedTruncated
+
+    return {
+      actualSentenceIndex: entry.cardSynopsisSentenceIndex,
+      expectedSentence: fixture.expectedSentence ?? null,
+      expectedSentenceIndex: fixture.expectedSentenceIndex,
+      expectedTitleOverlapAssisted: fixture.expectedTitleOverlapAssisted,
+      expectedTruncated: fixture.expectedTruncated,
+      id: fixture.id,
+      isFirstSentence: entry.cardSynopsisIsFirstSentence,
+      name: fixture.name,
+      selectedSynopsis: entry.cardSynopsis,
+      source: entry.cardSynopsisSource,
+      titleOverlapAssisted: entry.cardSynopsisTitleOverlapAssisted,
+      truncated: entry.cardSynopsisTruncated,
+      length: entry.cardSynopsis.length,
+      pass: textPass && indexPass && overlapPass && truncatedPass,
+    }
+  })
+  const synopsisLengths = synopsisResults.map(({ length }) => length).filter((length) => length > 0)
+  const synopsisSourceCounts = Object.fromEntries(
+    ["sentence", "excerpt-fallback", "none"].map((source) => [
+      source,
+      synopsisResults.filter((result) => result.source === source).length,
+    ]),
+  )
 
   return {
     excerptCoverage: {
@@ -189,6 +233,29 @@ const runCorpus = () => {
         imagePass && imageReasonPass && imageRejectedReasonPass,
     ).length,
     imageFixturesTotal: imageResults.length,
+    synopsis: {
+      equalsFirstSentence: synopsisResults.filter(({ isFirstSentence }) => isFirstSentence).length,
+      differsFromFirstSentence: synopsisResults.filter(({ isFirstSentence }) => !isFirstSentence)
+        .length,
+      fallbackToExcerpt: synopsisSourceCounts["excerpt-fallback"],
+      length: {
+        maximum: Math.max(0, ...synopsisLengths),
+        minimum: Math.min(...synopsisLengths),
+      },
+      selectionCount: synopsisSourceCounts.sentence,
+      sourceSentenceIndices: synopsisResults.map(({ actualSentenceIndex, id }) => ({
+        id,
+        index: actualSentenceIndex,
+      })),
+      sourceCounts: synopsisSourceCounts,
+      titleOverlapAssistedSelection: synopsisResults.filter(
+        ({ titleOverlapAssisted }) => titleOverlapAssisted,
+      ).length,
+      truncatedCount: synopsisResults.filter(({ truncated }) => truncated).length,
+      fixturesPass: synopsisResults.filter(({ pass }) => pass).length,
+      fixturesTotal: synopsisResults.length,
+      results: synopsisResults,
+    },
     excerptFixturesPass: excerptResults.filter(
       ({ excerptPass, excerptReasonPass, excerptConfidencePass, excerptSourcePass }) =>
         excerptPass && excerptReasonPass && excerptConfidencePass && excerptSourcePass,
@@ -233,6 +300,15 @@ const runVisualChecks = () => {
   const verticalImage = document.querySelector('[data-example="read-starred"] .grid-card-cover')
   const noImageCard = document.querySelector('[data-example="no-image"]')
   const focusTarget = document.querySelector('[data-example="unread"] .grid-card-wrapper')
+  const truncatedEntry = visualEntries.find(({ name }) => name === "synopsis-truncated")?.entry
+  const truncatedSummary = document.querySelector(
+    '[data-example="synopsis-truncated"] .grid-card-summary',
+  )
+  const truncatedSummaryStyle = truncatedSummary ? getComputedStyle(truncatedSummary) : null
+  const synopsisLineHeight = truncatedSummaryStyle
+    ? Number.parseFloat(truncatedSummaryStyle.lineHeight)
+    : 0
+  const synopsisHeight = truncatedSummary?.getBoundingClientRect().height ?? 0
   focusTarget?.focus({ focusVisible: true })
 
   const unreadWeight = unread ? getComputedStyle(unread).fontWeight : ""
@@ -244,8 +320,40 @@ const runVisualChecks = () => {
   const horizontalFit = horizontalImage ? getComputedStyle(horizontalImage).objectFit : ""
   const verticalFit = verticalImage ? getComputedStyle(verticalImage).objectFit : ""
   const focusOutline = focusTarget ? getComputedStyle(focusTarget).outlineStyle : ""
+  const truncatedSynopsis = truncatedEntry?.cardSynopsis ?? ""
+  const truncatedPrefix = truncatedSynopsis.endsWith("…") ? truncatedSynopsis.slice(0, -1) : ""
+  const truncatedOriginal = truncatedEntry?.content
+    ?.replaceAll(/<[^>]*>/g, "")
+    .replaceAll(/\s+/g, " ")
+    .trim()
 
   return {
+    twoLineSynopsis:
+      Boolean(truncatedSummary) &&
+      (truncatedSummaryStyle?.getPropertyValue("-webkit-line-clamp") === "2" ||
+        truncatedSummaryStyle?.getPropertyValue("line-clamp") === "2") &&
+      synopsisHeight <= synopsisLineHeight * 2 + 1,
+    noHorizontalOverflow:
+      document.documentElement.scrollWidth <= window.innerWidth &&
+      document.body.scrollWidth <= window.innerWidth,
+    noMidWordCut:
+      Boolean(truncatedPrefix) &&
+      truncatedOriginal?.startsWith(truncatedPrefix) &&
+      /\s/u.test(truncatedOriginal?.[truncatedPrefix.length] ?? ""),
+    ellipsisWhenNeeded:
+      Boolean(truncatedEntry?.cardSynopsisTruncated) && truncatedSynopsis.endsWith("…"),
+    synopsisDebug: {
+      lineClamp: truncatedSummary
+        ? truncatedSummaryStyle.getPropertyValue("-webkit-line-clamp")
+        : "missing-summary",
+      lineHeight: synopsisLineHeight,
+      renderedHeight: synopsisHeight,
+      synopsis: truncatedSynopsis,
+      truncated: truncatedEntry?.cardSynopsisTruncated ?? null,
+    },
+    viewport: { height: window.innerHeight, width: window.innerWidth },
+    textFirstCard: noImageCard?.querySelector("img") === null,
+    imageCard: Boolean(document.querySelector('[data-example="unread"] .grid-card-cover')),
     focusVisible: focusOutline !== "none" && getComputedStyle(focusTarget).outlineWidth !== "0px",
     horizontalCover: horizontalFit === "cover",
     noImageIsTextFirst: noImageCard?.querySelector("img") === null,
