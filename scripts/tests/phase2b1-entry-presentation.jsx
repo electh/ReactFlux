@@ -113,6 +113,9 @@ const runCorpus = () => {
     const imageReasonPass = fixture.expectedImageReason
       ? imageReason.includes(fixture.expectedImageReason)
       : true
+    const imageRejectedReasonPass = fixture.expectedRejectedImageReason
+      ? (entry.coverRejectedReasons[fixture.expectedRejectedImageReason] ?? 0) > 0
+      : true
     const excerptPass = entry.previewText === fixture.expectedExcerpt
     const excerptReasonPass = entry.previewReason.includes(fixture.expectedPreviewReason)
     const excerptConfidencePass = entry.previewText
@@ -131,29 +134,33 @@ const runCorpus = () => {
       expectedImage: fixture.expectedImage,
       expectedReason: fixture.expectedImageReason || fixture.expectedPreviewReason,
       id: fixture.id,
+      imageRejectedReasonPass,
       imagePass,
       imageReasonPass,
       imageScore: selectedCandidate?.score ?? null,
       imageSourceType: selectedCandidate?.kind ?? "none",
       name: fixture.name,
+      kind: fixture.kind,
       selectedExcerpt: entry.previewText,
       selectedImage: entry.coverSource,
       selectedReason: selectedCandidate?.reason ?? imageReason,
     }
   })
 
+  const imageResults = results.filter(({ kind }) => kind === "image")
+  const excerptResults = results.filter(({ kind }) => kind === "excerpt")
+
   return {
-    imageFixturesPass: results
-      .slice(0, 16)
-      .filter(({ imagePass, imageReasonPass }) => imagePass && imageReasonPass).length,
-    imageFixturesTotal: 16,
-    excerptFixturesPass: results
-      .slice(16)
-      .filter(
-        ({ excerptPass, excerptReasonPass, excerptConfidencePass }) =>
-          excerptPass && excerptReasonPass && excerptConfidencePass,
-      ).length,
-    excerptFixturesTotal: 11,
+    imageFixturesPass: imageResults.filter(
+      ({ imagePass, imageReasonPass, imageRejectedReasonPass }) =>
+        imagePass && imageReasonPass && imageRejectedReasonPass,
+    ).length,
+    imageFixturesTotal: imageResults.length,
+    excerptFixturesPass: excerptResults.filter(
+      ({ excerptPass, excerptReasonPass, excerptConfidencePass }) =>
+        excerptPass && excerptReasonPass && excerptConfidencePass,
+    ).length,
+    excerptFixturesTotal: excerptResults.length,
     noExtraNetworkRequests: globalThis.__phase2b1FetchCalls === fetchBefore,
     results,
   }

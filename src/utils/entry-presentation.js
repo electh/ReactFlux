@@ -55,7 +55,7 @@ const DECORATIVE_IMAGE_PATTERN =
 const DECORATIVE_CONTEXT_PATTERN =
   /(?:^|[\W_])(?:logo|favicon|avatar|author|byline|profile|portrait|social|share|comment|related|newsletter|ad|ads|advert|advertisement|sponsor|badge|sprite|track|tracker|analytics)(?:$|[\W_])/i
 const PREVIEW_BOILERPLATE_PATTERN =
-  /(?:^\s*(?:\d+\s+)?comments?(?:\s*\(\s*\d+\s*\))?\s*$|\bshare (?:this|the) (?:article|story)\b|\bread more\b|\bcontinue reading\b|\bsubscribe (?:to|for) (?:our )?(?:newsletter|updates)\b|\bnewsletter signup\b|^\s*related (?:stories|articles|posts)\b|^\s*advertisement\s*$|\bphoto\s*(?:credit|:)|\bimage\s*credit\b|\bgetty images\b|\ball rights reserved\b|\bcopyright\b|©)/i
+  /(?:\b(?:\d+\s+)?comments?\b|\b(?:\d+\s+)?comentarios?\b|\bshare (?:this|the) (?:article|story)\b|\bcompartilh(?:ar|e)\b|\bread more\b|\bleia mais\b|\bcontinue reading\b|\bcontinue lendo\b|\bsubscribe (?:to|for) (?:our )?(?:newsletter|updates)\b|\bassine\b|\bnewsletter\b|\bnewsletter signup\b|\b(?:materias|noticias)\s+relacionadas\b|^\s*related (?:stories|articles|posts)\b|\b(?:publicidade|anuncio)\b|^\s*advertisement\s*$|\bphoto\s*(?:credit|:)|\bfoto\s*[:/]|\bimage\s*credit\b|\bcreditos?(?:\s+da\s+imagem)?\s*:|\bimagem\s*:|\bdivulgacao\b|\bgetty images\b|\b(?:all rights reserved|direitos reservados)\b|\bcopyright\b|©)/i
 const PREVIEW_CONTEXT_PATTERN =
   /(?:^|[\W_])(?:caption|credit|byline|author|social|share|comment|related|newsletter|advert|advertisement|sponsor)(?:$|[\W_])/i
 const EXCLUDED_PREVIEW_SELECTOR =
@@ -277,7 +277,7 @@ const getImageAspectRatio = (width, height) =>
 const scoreImageCandidate = (candidate) => {
   const rejectionReasons = []
   const reasons = []
-  const lowerTokens = `${candidate.source} ${candidate.alt} ${candidate.tokens}`.toLowerCase()
+  const lowerTokens = `${candidate.src} ${candidate.alt} ${candidate.tokens}`.toLowerCase()
   const aspectRatio = getImageAspectRatio(candidate.width, candidate.height)
   const largestKnownDimension = Math.max(candidate.width ?? 0, candidate.height ?? 0)
   const resolutionHint = Math.max(candidate.resolutionHint ?? 0, largestKnownDimension)
@@ -534,6 +534,12 @@ const extractImageCandidates = (doc, attachments, preferredImageSource = "") => 
 
 const normalizeText = (text) => text.replaceAll(/[\s\u00A0]+/g, " ").trim()
 
+const normalizeBoilerplateText = (text) =>
+  normalizeText(text)
+    .normalize("NFD")
+    .replaceAll(/\p{Diacritic}/gu, "")
+    .toLocaleLowerCase()
+
 const normalizeComparableText = (text) =>
   normalizeText(text)
     .toLocaleLowerCase()
@@ -653,7 +659,7 @@ const extractSemanticPreview = (doc, entry) => {
     const comparableText = normalizeComparableText(text)
     if (
       text.length < MIN_PREVIEW_LENGTH ||
-      PREVIEW_BOILERPLATE_PATTERN.test(text) ||
+      PREVIEW_BOILERPLATE_PATTERN.test(normalizeBoilerplateText(text)) ||
       (title && comparableText === title) ||
       (author && comparableText === author) ||
       /^(?:by|written by|author)\s+/i.test(text)

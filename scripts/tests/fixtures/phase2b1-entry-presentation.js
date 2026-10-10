@@ -14,21 +14,34 @@ const makeFixture = (id, title, content, expected = {}) => ({
   expectedExcerpt: expected.excerpt ?? ARTICLE_PARAGRAPH,
   expectedImage: expected.image ?? null,
   expectedImageReason: expected.imageReason ?? "",
+  expectedRejectedImageReason: expected.rejectedImageReason ?? "",
+  kind: expected.kind ?? "excerpt",
   expectedPreviewReason: expected.previewReason ?? "substantive-paragraph",
   id: String(id).padStart(2, "0"),
   name: expected.name ?? title,
 })
 
+const makeImageFixture = (id, title, content, expected = {}) =>
+  makeFixture(id, title, content, { ...expected, kind: "image" })
+
+const makePortugueseBoilerplateFixture = (id, title, phrase) =>
+  makeFixture(
+    id,
+    title,
+    `<p>${phrase}. ${"Esta área reúne avisos de navegação e interação da publicação. ".repeat(2)}</p><p>${ARTICLE_PARAGRAPH}</p>`,
+    { name: title },
+  )
+
 const paragraph = `<p>${ARTICLE_PARAGRAPH}</p>`
 
 export const entryPresentationFixtures = [
-  makeFixture(
+  makeImageFixture(
     1,
     "Normal article with hero",
     `<figure><img src="/scripts/tests/fixtures/valid-horizontal.svg" width="1600" height="900" alt="Readers at a newsroom desk"></figure>${paragraph}`,
     { image: "/scripts/tests/fixtures/valid-horizontal.svg", imageReason: "figure" },
   ),
-  makeFixture(
+  makeImageFixture(
     2,
     "Logo before hero",
     `<img src="https://example.test/assets/site-logo.png" width="1200" height="400" alt="Publication logo">` +
@@ -38,7 +51,7 @@ export const entryPresentationFixtures = [
       imageReason: "editorial-aspect-ratio",
     },
   ),
-  makeFixture(
+  makeImageFixture(
     3,
     "Avatar before hero",
     `<div class="author-avatar"><img src="https://example.test/avatar/editor.png" width="600" height="600" alt="Author portrait"></div>` +
@@ -48,7 +61,7 @@ export const entryPresentationFixtures = [
       imageReason: "editorial-aspect-ratio",
     },
   ),
-  makeFixture(
+  makeImageFixture(
     4,
     "Tracker before hero",
     `<img src="https://example.test/track/pixel.gif" width="1" height="1" alt="">` +
@@ -58,7 +71,7 @@ export const entryPresentationFixtures = [
       imageReason: "editorial-aspect-ratio",
     },
   ),
-  makeFixture(
+  makeImageFixture(
     5,
     "Social icon before hero",
     `<div class="share-buttons"><img src="https://example.test/social/share.svg" width="512" height="512" alt="Share"></div>` +
@@ -68,7 +81,7 @@ export const entryPresentationFixtures = [
       imageReason: "editorial-aspect-ratio",
     },
   ),
-  makeFixture(
+  makeImageFixture(
     6,
     "Ad image before hero",
     `<img class="ad-banner" src="https://example.test/campaign/ad-banner.jpg" width="1600" height="900" alt="Sponsored offer">` +
@@ -78,20 +91,20 @@ export const entryPresentationFixtures = [
       imageReason: "editorial-aspect-ratio",
     },
   ),
-  makeFixture(
+  makeImageFixture(
     7,
     "Multiple reasonable images",
     `<img src="https://example.test/story/inline.jpg" width="640" height="360" alt="Street scene">` +
       `<figure><img src="https://example.test/story/feature.jpg" width="1800" height="1000" alt="The central subject of the report"></figure>${paragraph}`,
     { image: "https://example.test/story/feature.jpg", imageReason: "high-resolution" },
   ),
-  makeFixture(
+  makeImageFixture(
     8,
     "Vertical editorial image",
     `<figure><img src="https://example.test/story/portrait.jpg" width="600" height="1000" alt="Vertical editorial portrait"></figure>${paragraph}`,
     { image: "https://example.test/story/portrait.jpg", imageReason: "usable-aspect-ratio" },
   ),
-  makeFixture(
+  makeImageFixture(
     9,
     "Ultrawide editorial image",
     `<img src="https://example.test/story/panorama.jpg" width="2400" height="400" alt="Panoramic landscape">${paragraph}`,
@@ -100,25 +113,25 @@ export const entryPresentationFixtures = [
       imageReason: "extreme-aspect-ratio-penalty",
     },
   ),
-  makeFixture(
+  makeImageFixture(
     10,
     "Image without dimensions",
     `<img src="/scripts/tests/fixtures/valid-horizontal.svg" alt="Editorial photograph">${paragraph}`,
     { image: "/scripts/tests/fixtures/valid-horizontal.svg", imageReason: "content-image" },
   ),
-  makeFixture(
+  makeImageFixture(
     11,
     "Picture with srcset",
     `<picture><source type="image/webp" srcset="/scripts/tests/fixtures/valid-horizontal.svg 640w, /scripts/tests/fixtures/valid-hero.svg 1600w"><img src="/scripts/tests/fixtures/valid-horizontal.svg" srcset="/scripts/tests/fixtures/valid-horizontal.svg 640w, /scripts/tests/fixtures/valid-hero.svg 1200w" width="800" height="450" alt="Editorial feature image"></picture>${paragraph}`,
     { image: "/scripts/tests/fixtures/valid-hero.svg", imageReason: "high-resolution" },
   ),
-  makeFixture(
+  makeImageFixture(
     12,
     "Video poster",
     `<video poster="/scripts/tests/fixtures/valid-horizontal.svg" width="1280" height="720"></video>${paragraph}`,
     { image: "/scripts/tests/fixtures/valid-horizontal.svg", imageReason: "video-poster" },
   ),
-  makeFixture(13, "Image enclosure only", paragraph, {
+  makeImageFixture(13, "Image enclosure only", paragraph, {
     image: "https://example.test/enclosures/report-cover.jpg",
     imageReason: "image-enclosure",
     name: "Enclosure only",
@@ -134,7 +147,7 @@ export const entryPresentationFixtures = [
       ],
     },
   }),
-  makeFixture(
+  makeImageFixture(
     14,
     "Enclosure and superior content hero",
     `<figure><img src="https://example.test/story/feature.jpg" width="1800" height="1000" alt="Feature photograph"></figure>${paragraph}`,
@@ -155,14 +168,14 @@ export const entryPresentationFixtures = [
       },
     },
   ),
-  makeFixture(
+  makeImageFixture(
     15,
     "Broken first candidate and valid second",
     `<img src="/scripts/tests/fixtures/broken-image.jpg" width="1800" height="1000" alt="First editorial candidate">` +
       `<img src="/scripts/tests/fixtures/valid-horizontal.svg" width="1200" height="675" alt="Second editorial candidate">${paragraph}`,
     { image: "/scripts/tests/fixtures/broken-image.jpg", imageReason: "high-resolution" },
   ),
-  makeFixture(
+  makeImageFixture(
     16,
     "No valid image",
     `<img src="https://example.test/tracking/pixel.gif" width="1" height="1" alt="">` +
@@ -238,6 +251,89 @@ export const entryPresentationFixtures = [
     "No valid excerpt",
     `<p>12 comments</p><p>Photo credit: Getty Images.</p><figcaption>Continue reading this story.</figcaption><div class="related-posts">More related articles.</div>`,
     { excerpt: "", name: "No valid excerpt", previewReason: "no-substantive-paragraph" },
+  ),
+  makeImageFixture(
+    28,
+    "URL-only publication logo",
+    `<img src="https://example.test/publication-logo.png" width="1200" height="675">`,
+    {
+      rejectedImageReason: "decorative-image-token",
+      imageReason: "no-eligible-image-candidate",
+    },
+  ),
+  makeImageFixture(
+    29,
+    "URL-only author avatar",
+    `<img src="https://example.test/author-avatar.jpg" width="1200" height="675">`,
+    {
+      rejectedImageReason: "decorative-image-token",
+      imageReason: "no-eligible-image-candidate",
+    },
+  ),
+  makeImageFixture(
+    30,
+    "URL-only tracking pixel",
+    `<img src="https://example.test/tracking-pixel.gif" width="1200" height="675">`,
+    {
+      rejectedImageReason: "decorative-image-token",
+      imageReason: "no-eligible-image-candidate",
+    },
+  ),
+  makeImageFixture(
+    31,
+    "URL-only social share icon",
+    `<img src="https://example.test/social-share-icon.png" width="1200" height="675">`,
+    {
+      rejectedImageReason: "decorative-image-token",
+      imageReason: "no-eligible-image-candidate",
+    },
+  ),
+  makeImageFixture(
+    32,
+    "URL-only ad banner",
+    `<img src="https://example.test/ad-banner.jpg" width="1200" height="675">`,
+    {
+      rejectedImageReason: "decorative-image-token",
+      imageReason: "no-eligible-image-candidate",
+    },
+  ),
+  makeImageFixture(
+    33,
+    "URL-only editorial hero control",
+    `<img src="https://example.test/story/hero-photo.jpg" width="1200" height="675">`,
+    {
+      image: "https://example.test/story/hero-photo.jpg",
+      imageReason: "editorial-aspect-ratio",
+    },
+  ),
+  makePortugueseBoilerplateFixture(34, "PT-BR photo credit Reuters", "Foto: Agência Reuters"),
+  makePortugueseBoilerplateFixture(
+    35,
+    "PT-BR photo credit and disclosure",
+    "Foto: João Silva / Divulgação",
+  ),
+  makePortugueseBoilerplateFixture(36, "PT-BR image credits", "Créditos da imagem: Getty Images"),
+  makePortugueseBoilerplateFixture(37, "PT-BR comments count", "23 COMENTÁRIOS"),
+  makePortugueseBoilerplateFixture(38, "PT-BR share action", "Compartilhe esta notícia"),
+  makePortugueseBoilerplateFixture(39, "PT-BR read more", "Leia mais"),
+  makePortugueseBoilerplateFixture(40, "PT-BR continue reading", "Continue lendo"),
+  makePortugueseBoilerplateFixture(41, "PT-BR advertising", "Publicidade"),
+  makePortugueseBoilerplateFixture(42, "PT-BR related stories", "MATÉRIAS RELACIONADAS"),
+  makePortugueseBoilerplateFixture(43, "PT-BR related news", "Notícias relacionadas"),
+  makePortugueseBoilerplateFixture(44, "PT-BR newsletter subscription", "Assine nossa newsletter"),
+  makePortugueseBoilerplateFixture(45, "PT-BR advertisement", "ANÚNCIO"),
+  makePortugueseBoilerplateFixture(46, "PT-BR photo slash credit", "Foto / Agência Reuters"),
+  makePortugueseBoilerplateFixture(47, "PT-BR image credit label", "Crédito: Agência Reuters"),
+  makePortugueseBoilerplateFixture(48, "PT-BR image label", "Imagem: Banco de imagens"),
+  makePortugueseBoilerplateFixture(49, "PT-BR standalone disclosure", "Divulgação"),
+  makePortugueseBoilerplateFixture(50, "PT-BR rights notice", "Direitos reservados"),
+  makePortugueseBoilerplateFixture(51, "PT-BR singular comment", "1 comentário"),
+  makePortugueseBoilerplateFixture(52, "PT-BR share infinitive", "Compartilhar esta notícia"),
+  makeFixture(
+    53,
+    "PT-BR boilerplate only",
+    `<p>Foto: Agência Reuters. Publicidade. Compartilhe esta notícia. Leia mais e continue lendo. Assine nossa newsletter. Matérias relacionadas. Notícias relacionadas. Anúncio. Créditos da imagem: Getty Images. Imagem: divulgação. Direitos reservados. ${"Esta área reúne avisos de navegação e interação da publicação. ".repeat(2)}</p>`,
+    { excerpt: "", name: "PT-BR boilerplate only", previewReason: "no-substantive-paragraph" },
   ),
 ]
 
