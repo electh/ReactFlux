@@ -21,6 +21,8 @@
 }
 
 .entry-list-layout-card {
+  box-sizing: border-box;
+  width: 100%;
   max-width: 1440px;
   margin-inline: auto;
 }
@@ -92,5 +94,9 @@
 @media screen and (max-width: 768px) {
   .entry-list {
     width: calc(100% - 20px);
+  }
+
+  .entry-list-layout-card {
+    width: 100%;
   }
 }
