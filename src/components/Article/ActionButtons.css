@@ -1,6 +1,6 @@
 .action-buttons {
-  position: absolute;
-  inset-block-start: 0;
+  position: sticky;
+  top: 0;
   inset-inline: 0;
   display: flex;
   flex-direction: row;

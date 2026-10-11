@@ -109,6 +109,12 @@
   overscroll-behavior-y: contain;
 }
 
+/* SimpleBar's inner content wrapper owns desktop scrolling; let sticky children
+   bind to it instead of this non-scrolling outer root. */
+.scroll-container[data-simplebar] {
+  overflow: visible;
+}
+
 /* 文章标题链接样式 */
 .article-title a {
   color: var(--color-text-1);

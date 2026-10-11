@@ -47,10 +47,6 @@
   box-shadow: none;
 }
 
-.article-container-full-size .article-content .article-header {
-  padding-top: calc(68px + env(safe-area-inset-top, 0px));
-}
-
 .swipe-hint {
   --hint-size: 24px;
   --hint-padding: 12px;
