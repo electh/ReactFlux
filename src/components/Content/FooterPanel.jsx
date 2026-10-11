@@ -57,6 +57,7 @@ const MarkAllReadButton = ({ from, onConfirm }) => {
       <Button
         aria-expanded={skipMarkAllReadConfirmation ? undefined : confirmVisible}
         aria-label={markAllReadLabel}
+        className="nf-glass-control"
         icon={<IconCheck aria-hidden="true" />}
         shape="circle"
         style={{ visibility: isHidden ? "hidden" : "visible" }}
@@ -221,6 +222,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
     <div className="entry-panel">
       <MarkAllReadButton from={source} onConfirm={handleMarkAllAsRead} />
       <Radio.Group
+        className="nf-glass-group entry-panel-filter-group"
         style={{ visibility: source === "history" ? "hidden" : "visible" }}
         type="button"
         value={showStatus}
@@ -231,6 +233,7 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       <CustomTooltip mini content={refreshLabel}>
         <Button
           aria-label={refreshLabel}
+          className="nf-glass-control"
           icon={<IconRefresh aria-hidden="true" />}
           loading={!isArticleListReady}
           shape="circle"

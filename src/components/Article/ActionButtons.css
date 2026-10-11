@@ -9,23 +9,22 @@
 .action-buttons .left-side,
 .action-buttons .right-side {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
+  padding: 3px;
 }
 
 .action-buttons .left-side .arco-btn-secondary.arco-btn-disabled {
   background-color: transparent;
 }
 
-.action-buttons .arco-btn-secondary:not(.arco-btn-disabled) {
-  background-color: var(--color-bg-1);
-}
-
 .action-buttons.mobile {
   align-items: center;
   padding: var(--mobile-bottom-bar-vertical-spacing) var(--mobile-edge-spacing)
     calc(var(--mobile-bottom-bar-vertical-spacing) + env(safe-area-inset-bottom, 0px));
-  background-color: var(--color-bg-1);
+  box-sizing: border-box;
+  background-color: transparent;
 }
 
 .action-buttons.mobile .arco-btn-shape-circle {
@@ -49,6 +48,19 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+}
+
+.action-buttons:not(.mobile) {
+  padding-top: calc(8px + env(safe-area-inset-top, 0px));
+}
+
+.action-buttons.mobile .mobile-buttons.nf-glass-group {
+  justify-content: center;
+  box-sizing: border-box;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 4px;
 }
 
 .settings-menu-item {
