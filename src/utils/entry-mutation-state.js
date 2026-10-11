@@ -5,6 +5,7 @@ let mutationSessionRevision = getDataSessionRevision()
 const mutationIdleWaitersBySession = new Map()
 const pendingMutationRequestsBySession = new Map()
 const sessionResetCallbacks = new Set()
+const mutationIdleListeners = new Set()
 
 const resolveMutationWaiters = (sessionRevision, isCurrentSession) => {
   const waiters = mutationIdleWaitersBySession.get(sessionRevision)
@@ -68,9 +69,23 @@ export const recordEntryMutationRequestEnd = (sessionRevision) => {
   }
 }
 
+export const subscribeEntryMutationIdle = (listener) => {
+  mutationIdleListeners.add(listener)
+  return () => mutationIdleListeners.delete(listener)
+}
+
 export const notifyEntryMutationIdle = (sessionRevision) => {
-  if ((pendingMutationRequestsBySession.get(sessionRevision) ?? 0) === 0) {
-    resolveMutationWaiters(sessionRevision, sessionRevision === mutationSessionRevision)
+  if ((pendingMutationRequestsBySession.get(sessionRevision) ?? 0) !== 0) {
+    return
+  }
+
+  const isCurrentSession = sessionRevision === getEntryMutationSessionRevision()
+  resolveMutationWaiters(sessionRevision, isCurrentSession)
+  if (!isCurrentSession) {
+    return
+  }
+  for (const listener of mutationIdleListeners) {
+    listener()
   }
 }
 
