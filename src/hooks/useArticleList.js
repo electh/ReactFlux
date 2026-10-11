@@ -146,7 +146,7 @@ const useArticleList = (source, sourceId, getEntries) => {
 
       handleResponses(response)
 
-      if (!content.filterDate && !content.filterString) {
+      if (!content.filterString && (source === "today" || !content.filterDate)) {
         switch (source) {
           case "feed": {
             if (settings.showStatus === "unread") {

@@ -59,10 +59,11 @@ export const filteredEntriesState = computed(contentState, (content) => content.
 export const dynamicCountState = computed(
   [contentState, dataState, unreadTotalState, settingsState, feedsState, visibleFeedsState],
   (content, data, unreadTotal, settings, feeds, visibleFeeds) => {
-    const { filterString, infoFrom, total } = content
+    const { filterDate, filterString, infoFrom, total } = content
     const { showStatus } = settings
 
-    if (filterString) {
+    // Search and non-"today" date filters use query totals, not unfiltered sidebar counts.
+    if (filterString || (infoFrom !== "today" && filterDate)) {
       return total
     }
     const { unreadStarredCount, unreadTodayCount, historyCount, starredCount } = data
