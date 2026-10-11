@@ -1,18 +1,47 @@
-import { Button, Radio } from "@arco-design/web-react"
-import React, { useEffect, useState } from "react"
+import { Button, Input, Radio } from "@arco-design/web-react"
+import React, { useEffect, useRef, useState } from "react"
 import ReactDOM from "react-dom/client"
 
 import "@arco-design/web-react/dist/css/arco.css"
 import "@/App.css"
 import "@/components/Article/ActionButtons.css"
 import "@/components/Article/ArticleDetail.css"
+import "@/components/Article/SearchAndSortBar.css"
 import "@/components/Content/Content.css"
 import "@/components/Content/FooterPanel.css"
+import AccessibleModal from "@/components/ui/AccessibleModal"
+import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
+import FadeTransition from "@/components/ui/FadeTransition"
 import "@/theme.css"
 import "@/liquid-glass.css"
 import "./phase2b2b-liquid-glass.css"
 
 const samplePhoto = new URL("../../src/pages/images/background.jpg", import.meta.url).href
+
+const ARTICLE_TITLE_VARIANTS = {
+  centeredMetadata: {
+    alignment: "center",
+    metadata: true,
+    title:
+      "A longer headline demonstrates the initial title clearance while the article actions stay above the reader",
+  },
+  leftMetadata: {
+    alignment: "left",
+    metadata: true,
+    title:
+      "A longer headline demonstrates the initial title clearance while the article actions stay above the reader",
+  },
+  centeredMinimal: {
+    alignment: "center",
+    metadata: false,
+    title: "A concise one-line headline",
+  },
+  leftMinimal: {
+    alignment: "left",
+    metadata: false,
+    title: "A concise one-line headline",
+  },
+}
 
 const ArticleBody = () => (
   <article className="demo-opaque-content">
@@ -29,16 +58,22 @@ const ArticleBody = () => (
   </article>
 )
 
-const ImageSample = ({ tone = "high" }) => (
-  <figure aria-label={`${tone} contrast image sample`} className={`demo-image demo-image-${tone}`}>
+const ImageSample = ({ tone = "high", underlayTarget }) => (
+  <figure
+    aria-label={`${tone} contrast image sample`}
+    className={`demo-image demo-image-${tone}`}
+    data-underlay-target={underlayTarget}
+  >
     <img alt="" src={samplePhoto} />
-    <Button
-      aria-label="Open image preview"
-      className="nf-glass-control demo-overlay-control"
-      shape="circle"
-    >
-      ⤢
-    </Button>
+    {!underlayTarget && (
+      <Button
+        aria-label="Open image preview"
+        className="nf-glass-control demo-overlay-control"
+        shape="circle"
+      >
+        ⤢
+      </Button>
+    )}
     <figcaption className="demo-image-caption">{tone.toUpperCase()} CONTRAST / IMAGE</figcaption>
   </figure>
 )
@@ -185,15 +220,24 @@ const ActionButtonsPreview = () => (
   </>
 )
 
-const ListView = ({ activeControl, filterValue, onActiveSelect, onFilterChange }) => (
+const ListView = ({
+  activeControl,
+  filterValue,
+  onActiveSelect,
+  onFilterChange,
+  onSearchOpen,
+  searchModalVisible,
+}) => (
   <>
     <section aria-label="List controls" className="demo-list-toolbar">
       <Button
+        aria-expanded={searchModalVisible}
+        aria-haspopup="dialog"
         aria-label="Search"
         aria-pressed={activeControl === "search"}
         className={`nf-glass-control${activeControl === "search" ? " nf-glass-control-active" : ""}`}
         shape="circle"
-        onClick={() => onActiveSelect("search")}
+        onClick={onSearchOpen}
       >
         ⌕
       </Button>
@@ -246,37 +290,124 @@ const ListView = ({ activeControl, filterValue, onActiveSelect, onFilterChange }
   </>
 )
 
-const DetailView = () => (
-  <section
-    aria-label="Scrollable article with floating actions"
-    className="article-container article-container-full-size demo-detail-layout"
-    data-gate="article-content-scrolls-behind-action-glass"
+const SearchModalPreview = ({ visible, onClose }) => (
+  <AccessibleModal
+    className="search-modal"
+    closeLabel="Close search dialog"
+    title="Search"
+    visible={visible}
+    footer={
+      <>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button type="primary" onClick={onClose}>
+          Search
+        </Button>
+      </>
+    }
+    onCancel={onClose}
   >
-    <article className="article-content demo-reader-content">
-      <div className="scroll-container demo-reader-scroll">
-        <div className="demo-reader-copy">
-          <span className="demo-kicker">LIVE BACKDROP / ARTICLE READER</span>
-          <h2>Chrome stays above the story as the article moves underneath</h2>
-          <p>
-            Scroll this opaque article. The action groups remain fixed at the top while text and
-            photography pass behind their translucent surfaces.
-          </p>
-          <ImageSample tone="high" />
-          <p>
-            A second paragraph gives the controls visible letterforms to blur. The reader body has
-            no glass fill and no backdrop filter of its own.
-          </p>
-          <ImageSample tone="low" />
-          <p>
-            Repeating story copy keeps the scroll test realistic: the controls should preserve
-            contrast and remain distinct over both text and image content.
-          </p>
-        </div>
-      </div>
-    </article>
-    <ActionButtonsPreview />
-  </section>
+    <div className="search-modal-content">
+      <Input.Search aria-label="Search articles" placeholder="Search articles" />
+    </div>
+  </AccessibleModal>
 )
+
+const DetailView = ({
+  scrollAreaRef,
+  titleVariant,
+  onTitleVariantChange,
+  scrollPreviewRef,
+  scrollStatusRef,
+}) => {
+  const variant = ARTICLE_TITLE_VARIANTS[titleVariant]
+
+  return (
+    <>
+      <div className="demo-detail-tools">
+        <label className="demo-title-variant">
+          Article header example
+          <select
+            value={titleVariant}
+            onChange={(event) => onTitleVariantChange(event.target.value)}
+          >
+            <option value="centeredMetadata">Centered / metadata / multiline</option>
+            <option value="leftMetadata">Left / metadata / multiline</option>
+            <option value="centeredMinimal">Centered / no optional metadata / one line</option>
+            <option value="leftMinimal">Left / no optional metadata / one line</option>
+          </select>
+        </label>
+        <span>Scroll the article to move text and images behind the action groups.</span>
+      </div>
+      <section
+        ref={scrollPreviewRef}
+        aria-label="Scrollable article with sticky actions"
+        className="article-container article-container-full-size demo-detail-layout"
+        data-gate="article-chrome-shares-the-real-scroll-context"
+      >
+        <article className="article-content demo-reader-content">
+          <AdaptiveScrollArea
+            ref={scrollAreaRef}
+            className="scroll-container demo-reader-scroll"
+            scrollableNodeProps={{ tabIndex: -1 }}
+          >
+            <ActionButtonsPreview />
+            <FadeTransition>
+              <>
+                <header
+                  className="article-header demo-reader-header"
+                  data-underlay-target="header"
+                  style={{ textAlign: variant.alignment }}
+                >
+                  <span className="demo-kicker">ARTICLE HEADER / INITIAL CLEARANCE</span>
+                  <h2 className="article-title">{variant.title}</h2>
+                  {variant.metadata && (
+                    <div className="article-meta">
+                      <span>ReactFlux Design Notes</span>
+                      <span> · Editorial</span>
+                      <time>October 11, 2026</time>
+                    </div>
+                  )}
+                  <p className="demo-reading-time">6 min read</p>
+                </header>
+                <div className="article-body demo-reader-body">
+                  <p data-underlay-target="text">
+                    The article text moves through the same scroll viewport as the sticky action
+                    groups. Keep scrolling until this paragraph reaches the glass controls; the
+                    words should remain visible and soften through the backdrop.
+                  </p>
+                  <p>
+                    This second paragraph provides more letterforms and varied line lengths for the
+                    text underlay check. The editorial surface stays opaque while the action groups
+                    sample what moves beneath them.
+                  </p>
+                  <ImageSample tone="high" underlayTarget="image-high" />
+                  <p>
+                    After the high-contrast image, keep scrolling to bring the low-contrast image
+                    beneath the action groups. The same sticky chrome remains in place while the
+                    backdrop changes with the article content.
+                  </p>
+                  <ImageSample tone="low" underlayTarget="image-low" />
+                  <p>
+                    Repeated body copy confirms that the reader continues beyond the initial
+                    clearance. The action controls should not reserve a toolbar-height gap through
+                    the entire article.
+                  </p>
+                  <p>
+                    Scroll back to the top to verify that the headline and metadata clear the
+                    controls. Then select the centered and left-aligned title examples above.
+                  </p>
+                </div>
+              </>
+            </FadeTransition>
+          </AdaptiveScrollArea>
+        </article>
+      </section>
+      <output ref={scrollStatusRef} aria-live="polite" className="demo-scroll-status">
+        Waiting for article scroll measurements.
+      </output>
+    </>
+  )
+}
 
 const Harness = () => {
   const [theme, setTheme] = useState("dark")
@@ -285,6 +416,11 @@ const Harness = () => {
   const [view, setView] = useState("list")
   const [filterValue, setFilterValue] = useState("all")
   const [activeControl, setActiveControl] = useState(null)
+  const [searchModalVisible, setSearchModalVisible] = useState(false)
+  const [titleVariant, setTitleVariant] = useState("centeredMetadata")
+  const articleScrollAreaRef = useRef(null)
+  const articlePreviewRef = useRef(null)
+  const scrollStatusRef = useRef(null)
 
   useEffect(() => {
     if (theme === "dark") {
@@ -293,6 +429,143 @@ const Harness = () => {
       document.body.removeAttribute("arco-theme")
     }
   }, [theme])
+
+  useEffect(() => {
+    if (view !== "article") {
+      return
+    }
+
+    const scrollElement = articleScrollAreaRef.current?.getScrollElement()
+    const previewElement = articlePreviewRef.current
+    if (!scrollElement || !previewElement) {
+      return
+    }
+
+    let animationFrame = 0
+    const updateScrollEvidence = () => {
+      if (animationFrame) {
+        return
+      }
+
+      animationFrame = requestAnimationFrame(() => {
+        animationFrame = 0
+        const { scrollTop } = scrollElement
+        const scrollRootRect = scrollElement.getBoundingClientRect()
+        const toolbar = [...scrollElement.querySelectorAll(".action-buttons")].find(
+          (element) => getComputedStyle(element).display !== "none",
+        )
+        const toolbarRect = toolbar?.getBoundingClientRect()
+        let stickyScrollElement = toolbar?.parentElement
+        while (stickyScrollElement && stickyScrollElement !== previewElement) {
+          const { overflowY } = getComputedStyle(stickyScrollElement)
+          if (["auto", "scroll", "hidden", "overlay"].includes(overflowY)) {
+            break
+          }
+          stickyScrollElement = stickyScrollElement.parentElement
+        }
+        const glassGroups = [...(toolbar?.querySelectorAll(".nf-glass-group") ?? [])].filter(
+          (element) => {
+            const rect = element.getBoundingClientRect()
+            return rect.width > 0 && rect.height > 0
+          },
+        )
+        const header = scrollElement.querySelector(".demo-reader-header")
+        const headerTop = header?.getBoundingClientRect().top ?? 0
+        if (scrollTop === 0 && header) {
+          previewElement.dataset.initialHeaderTop = String(headerTop)
+        }
+        const initialTop = Number(previewElement.dataset.initialHeaderTop)
+        const intersectsGlass = (target) => {
+          const targetRect = target?.getBoundingClientRect()
+          if (!targetRect) {
+            return false
+          }
+          return glassGroups.some((group) => {
+            const groupRect = group.getBoundingClientRect()
+            return (
+              targetRect.left < groupRect.right &&
+              targetRect.right > groupRect.left &&
+              targetRect.top < groupRect.bottom &&
+              targetRect.bottom > groupRect.top
+            )
+          })
+        }
+        const textUnderGlass = intersectsGlass(
+          scrollElement.querySelector('[data-underlay-target="text"]'),
+        )
+        const highImageUnderGlass = intersectsGlass(
+          scrollElement.querySelector('[data-underlay-target="image-high"]'),
+        )
+        const lowImageUnderGlass = intersectsGlass(
+          scrollElement.querySelector('[data-underlay-target="image-low"]'),
+        )
+        const sample = textUnderGlass
+          ? "text"
+          : highImageUnderGlass
+            ? "image-high"
+            : lowImageUnderGlass
+              ? "image-low"
+              : "none"
+        const toolbarPinned =
+          Boolean(toolbarRect) && Math.abs(toolbarRect.top - scrollRootRect.top) <= 1
+        const backdropFilter = glassGroups[0]
+          ? getComputedStyle(glassGroups[0]).backdropFilter
+          : "unavailable"
+
+        previewElement.dataset.scrollOwner = scrollElement.dataset.nativeScroll
+          ? "native"
+          : "simplebar-content-wrapper"
+        previewElement.dataset.stickyScrollOwner = stickyScrollElement?.classList.contains(
+          "simplebar-content-wrapper",
+        )
+          ? "simplebar-content-wrapper"
+          : stickyScrollElement?.dataset.nativeScroll
+            ? "native"
+            : "other"
+        previewElement.dataset.stickySharesScrollOwner = String(
+          stickyScrollElement === scrollElement,
+        )
+        previewElement.dataset.articleScrollTop = String(Math.round(scrollTop))
+        previewElement.dataset.toolbarPinned = String(toolbarPinned)
+        previewElement.dataset.textUnderGlass = String(textUnderGlass)
+        previewElement.dataset.highImageUnderGlass = String(highImageUnderGlass)
+        previewElement.dataset.lowImageUnderGlass = String(lowImageUnderGlass)
+        previewElement.dataset.backdropSample = sample
+        previewElement.dataset.backdropFilter = backdropFilter
+        previewElement.dataset.initialTitleClearance = String(
+          scrollTop === 0 && Boolean(toolbarRect) && headerTop >= toolbarRect.bottom,
+        )
+        previewElement.dataset.clearanceScrollsAway = String(
+          scrollTop > 0 && Number.isFinite(initialTop) && headerTop < initialTop,
+        )
+        previewElement.dataset.contentMoves = String(scrollTop > 0)
+
+        if (scrollStatusRef.current) {
+          scrollStatusRef.current.textContent = `owner=${
+            previewElement.dataset.scrollOwner
+          } · sticky-owner=${previewElement.dataset.stickyScrollOwner} · same-owner=${
+            previewElement.dataset.stickySharesScrollOwner
+          } · scrollTop=${previewElement.dataset.articleScrollTop} · sticky=${
+            toolbarPinned
+          } · underlay=${sample} · backdrop-filter=${backdropFilter}`
+        }
+      })
+    }
+
+    scrollElement.addEventListener("scroll", updateScrollEvidence, { passive: true })
+    window.addEventListener("resize", updateScrollEvidence)
+    globalThis.addEventListener("orientationchange", updateScrollEvidence)
+    updateScrollEvidence()
+
+    return () => {
+      scrollElement.removeEventListener("scroll", updateScrollEvidence)
+      window.removeEventListener("resize", updateScrollEvidence)
+      globalThis.removeEventListener("orientationchange", updateScrollEvidence)
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame)
+      }
+    }
+  }, [titleVariant, view])
 
   return (
     <main
@@ -347,12 +620,23 @@ const Harness = () => {
             <ListView
               activeControl={activeControl}
               filterValue={filterValue}
+              searchModalVisible={searchModalVisible}
               onActiveSelect={setActiveControl}
               onFilterChange={setFilterValue}
+              onSearchOpen={() => {
+                setActiveControl("search")
+                setSearchModalVisible(true)
+              }}
             />
           </>
         ) : (
-          <DetailView />
+          <DetailView
+            scrollAreaRef={articleScrollAreaRef}
+            scrollPreviewRef={articlePreviewRef}
+            scrollStatusRef={scrollStatusRef}
+            titleVariant={titleVariant}
+            onTitleVariantChange={setTitleVariant}
+          />
         )}
       </div>
       <aside aria-label="Interaction state guidance" className="demo-state-legend">
@@ -366,7 +650,12 @@ const Harness = () => {
         <span>sidebar trigger stays embedded/opaque</span>
         <span>opaque content has no glass fill or backdrop filter</span>
         <span>opaque does not mean adding a gray card</span>
+        <span>Search trigger is glass; the Search dialog stays opaque.</span>
       </aside>
+      <SearchModalPreview
+        visible={searchModalVisible}
+        onClose={() => setSearchModalVisible(false)}
+      />
     </main>
   )
 }

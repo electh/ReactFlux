@@ -16,6 +16,7 @@ import {
 } from "react"
 import { useNavigate } from "react-router"
 
+import ActionButtons from "./ActionButtons"
 import ArticleEnclosures from "./ArticleEnclosures"
 import ArticleTable from "./ArticleTable"
 import DeferredCodeBlock from "./DeferredCodeBlock"
@@ -598,6 +599,7 @@ const ArticleDetail = forwardRef((_, ref) => {
         className="scroll-container"
         scrollableNodeProps={{ tabIndex: -1 }}
       >
+        <ActionButtons />
         <FadeTransition>
           <div
             className="article-header"

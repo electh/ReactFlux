@@ -9,7 +9,6 @@ import { useSwipeable } from "react-swipeable"
 import FooterPanel from "./FooterPanel"
 
 import { getEntry } from "@/apis"
-import ActionButtons from "@/components/Article/ActionButtons"
 import ArticleList from "@/components/Article/ArticleList"
 import SearchAndSortBar from "@/components/Article/SearchAndSortBar"
 import FadeTransition from "@/components/ui/FadeTransition"
@@ -258,7 +257,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           className="article-container article-container-full-size content-wrapper"
           {...handlers}
         >
-          <ActionButtons />
           {isArticleLoading ? (
             <div style={{ flex: 1 }} />
           ) : (
