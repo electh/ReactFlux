@@ -258,7 +258,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           className="article-container article-container-full-size content-wrapper"
           {...handlers}
         >
-          {!isBelowMedium && <ActionButtons />}
+          <ActionButtons />
           {isArticleLoading ? (
             <div style={{ flex: 1 }} />
           ) : (
@@ -280,7 +280,6 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
               </Suspense>
             </>
           )}
-          {isBelowMedium && <ActionButtons />}
         </div>
       ) : null}
     </>

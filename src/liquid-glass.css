@@ -4,8 +4,8 @@
   background-color: var(--nf-glass-fill);
   border: 1px solid var(--nf-glass-border);
   box-shadow: var(--nf-glass-shadow);
-  -webkit-backdrop-filter: saturate(115%) blur(min(var(--nf-glass-blur), 16px));
-  backdrop-filter: saturate(115%) blur(min(var(--nf-glass-blur), 16px));
+  -webkit-backdrop-filter: saturate(130%) blur(var(--nf-glass-blur));
+  backdrop-filter: saturate(130%) blur(var(--nf-glass-blur));
   transition:
     background-color var(--nf-motion-fast) ease,
     border-color var(--nf-motion-fast) ease,
@@ -22,7 +22,9 @@
 .nf-glass-group::before {
   position: absolute;
   inset: 0;
+  z-index: 0;
   border-radius: inherit;
+  background-image: linear-gradient(180deg, var(--nf-glass-highlight), transparent 48%);
   box-shadow: inset 0 1px 0 var(--nf-glass-highlight);
   content: "";
   pointer-events: none;
@@ -44,6 +46,7 @@
   inset: 1px;
   z-index: 0;
   border-radius: inherit;
+  background-image: linear-gradient(180deg, var(--nf-glass-highlight), transparent 48%);
   box-shadow: inset 0 1px 0 var(--nf-glass-highlight);
   content: "";
   pointer-events: none;
@@ -139,8 +142,8 @@
 }
 
 .nf-glass-group .arco-btn.arco-btn-disabled {
-  color: var(--nf-text-muted);
-  opacity: 0.62;
+  color: var(--nf-text-tertiary);
+  opacity: 1;
 }
 
 .nf-glass-group .arco-radio-button {

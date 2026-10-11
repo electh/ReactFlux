@@ -5,10 +5,14 @@ import ReactDOM from "react-dom/client"
 import "@arco-design/web-react/dist/css/arco.css"
 import "@/App.css"
 import "@/components/Article/ActionButtons.css"
+import "@/components/Article/ArticleDetail.css"
+import "@/components/Content/Content.css"
 import "@/components/Content/FooterPanel.css"
 import "@/theme.css"
 import "@/liquid-glass.css"
 import "./phase2b2b-liquid-glass.css"
+
+const samplePhoto = new URL("../../src/pages/images/background.jpg", import.meta.url).href
 
 const ArticleBody = () => (
   <article className="demo-opaque-content">
@@ -25,24 +29,9 @@ const ArticleBody = () => (
   </article>
 )
 
-const ImageSample = () => (
-  <div aria-label="Abstract landscape image sample" className="demo-image" role="img">
-    <svg aria-hidden="true" preserveAspectRatio="xMidYMid slice" viewBox="0 0 720 360">
-      <defs>
-        <linearGradient id="sky" x2="0" y2="1">
-          <stop offset="0" stopColor="#6e91be" />
-          <stop offset="1" stopColor="#e2b787" />
-        </linearGradient>
-        <linearGradient id="hill" x2="0" y2="1">
-          <stop offset="0" stopColor="#566f64" />
-          <stop offset="1" stopColor="#273e3c" />
-        </linearGradient>
-      </defs>
-      <rect fill="url(#sky)" height="360" width="720" />
-      <circle cx="535" cy="94" fill="#f5dfbd" opacity="0.9" r="37" />
-      <path d="M0 260 140 152l119 94 131-126 169 141 72-67 89 67v99H0Z" fill="#71877b" />
-      <path d="m0 300 169-92 128 71 162-99 261 118v62H0Z" fill="url(#hill)" />
-    </svg>
+const ImageSample = ({ tone = "high" }) => (
+  <figure aria-label={`${tone} contrast image sample`} className={`demo-image demo-image-${tone}`}>
+    <img alt="" src={samplePhoto} />
     <Button
       aria-label="Open image preview"
       className="nf-glass-control demo-overlay-control"
@@ -50,8 +39,73 @@ const ImageSample = () => (
     >
       ⤢
     </Button>
-    <span className="demo-image-caption">IMAGE / CHROME OVER MEDIA</span>
-  </div>
+    <figcaption className="demo-image-caption">{tone.toUpperCase()} CONTRAST / IMAGE</figcaption>
+  </figure>
+)
+
+const SurfaceComparison = () => (
+  <section aria-label="Opaque and glass control comparison" className="demo-material-comparison">
+    <div className="demo-comparison-copy">
+      <span className="demo-kicker">SAME CONTROL / SAME FLAT BACKDROP</span>
+      <p>
+        Opaque means no glass fill or backdrop filter. It preserves the surface color without adding
+        a gray card.
+      </p>
+    </div>
+    <div className="demo-comparison-samples">
+      <div className="demo-comparison-sample">
+        <Button
+          aria-label="Opaque control"
+          className="demo-comparison-control demo-opaque-control"
+          shape="circle"
+        >
+          ◉
+        </Button>
+        <span>OPAQUE_CONTROL</span>
+      </div>
+      <div className="demo-comparison-sample">
+        <Button
+          aria-label="Glass control"
+          className="demo-comparison-control nf-glass-control"
+          shape="circle"
+        >
+          ◉
+        </Button>
+        <span>GLASS_CONTROL</span>
+      </div>
+    </div>
+  </section>
+)
+
+const MaterialSamples = () => (
+  <section aria-label="Glass over different backgrounds" className="demo-material-grid">
+    <div className="demo-material-sample demo-flat-material">
+      <span className="demo-kicker">FLAT NEAR-BLACK CANVAS</span>
+      <Button
+        aria-label="Glass over flat canvas"
+        className="nf-glass-control demo-sample-control"
+        shape="circle"
+      >
+        ◌
+      </Button>
+    </div>
+    <div className="demo-material-sample demo-text-material">
+      <span className="demo-kicker">ARTICLE TEXT</span>
+      <p>
+        The controls stay legible above an article while the words behind the surface soften with
+        the backdrop. The reading surface remains opaque.
+      </p>
+      <Button
+        aria-label="Glass over article text"
+        className="nf-glass-control demo-sample-control"
+        shape="circle"
+      >
+        ⋯
+      </Button>
+    </div>
+    <ImageSample tone="high" />
+    <ImageSample tone="low" />
+  </section>
 )
 
 const ControlPill = ({ filterValue, onChange }) => (
@@ -193,12 +247,34 @@ const ListView = ({ activeControl, filterValue, onActiveSelect, onFilterChange }
 )
 
 const DetailView = () => (
-  <section className="demo-detail-layout">
+  <section
+    aria-label="Scrollable article with floating actions"
+    className="article-container article-container-full-size demo-detail-layout"
+    data-gate="article-content-scrolls-behind-action-glass"
+  >
+    <article className="article-content demo-reader-content">
+      <div className="scroll-container demo-reader-scroll">
+        <div className="demo-reader-copy">
+          <span className="demo-kicker">LIVE BACKDROP / ARTICLE READER</span>
+          <h2>Chrome stays above the story as the article moves underneath</h2>
+          <p>
+            Scroll this opaque article. The action groups remain fixed at the top while text and
+            photography pass behind their translucent surfaces.
+          </p>
+          <ImageSample tone="high" />
+          <p>
+            A second paragraph gives the controls visible letterforms to blur. The reader body has
+            no glass fill and no backdrop filter of its own.
+          </p>
+          <ImageSample tone="low" />
+          <p>
+            Repeating story copy keeps the scroll test realistic: the controls should preserve
+            contrast and remain distinct over both text and image content.
+          </p>
+        </div>
+      </div>
+    </article>
     <ActionButtonsPreview />
-    <ArticleBody />
-    <div className="demo-detail-overlay">
-      <ImageSample />
-    </div>
   </section>
 )
 
@@ -235,7 +311,7 @@ const Harness = () => {
         </Button>
         <div className="demo-brand">
           <span>ReactFlux</span>
-          <span className="demo-subtitle">Liquid Glass / Interaction Gate</span>
+          <span className="demo-subtitle">Liquid Glass / Perception Gate R2</span>
         </div>
         <nav aria-label="Preview view" className="demo-view-switch">
           <button
@@ -265,12 +341,16 @@ const Harness = () => {
       </header>
       <div className="demo-stage" data-view={view}>
         {view === "list" ? (
-          <ListView
-            activeControl={activeControl}
-            filterValue={filterValue}
-            onActiveSelect={setActiveControl}
-            onFilterChange={setFilterValue}
-          />
+          <>
+            <SurfaceComparison />
+            <MaterialSamples />
+            <ListView
+              activeControl={activeControl}
+              filterValue={filterValue}
+              onActiveSelect={setActiveControl}
+              onFilterChange={setFilterValue}
+            />
+          </>
         ) : (
           <DetailView />
         )}
@@ -284,6 +364,8 @@ const Harness = () => {
         <span>Tab to focus</span>
         <span>disabled example in list view</span>
         <span>sidebar trigger stays embedded/opaque</span>
+        <span>opaque content has no glass fill or backdrop filter</span>
+        <span>opaque does not mean adding a gray card</span>
       </aside>
     </main>
   )

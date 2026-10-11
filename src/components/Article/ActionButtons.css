@@ -1,9 +1,16 @@
 .action-buttons {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
   display: flex;
   flex-direction: row;
+  align-items: flex-start;
   justify-content: space-between;
-  z-index: 2;
-  padding: 8px 10px;
+  z-index: 4;
+  box-sizing: border-box;
+  padding: calc(8px + env(safe-area-inset-top, 0px)) calc(10px + env(safe-area-inset-right, 0px))
+    8px calc(10px + env(safe-area-inset-left, 0px));
+  pointer-events: none;
 }
 
 .action-buttons .left-side,
@@ -13,6 +20,7 @@
   justify-content: space-between;
   gap: 6px;
   padding: 3px;
+  pointer-events: auto;
 }
 
 .action-buttons .left-side .arco-btn-secondary.arco-btn-disabled {
@@ -21,8 +29,10 @@
 
 .action-buttons.mobile {
   align-items: center;
-  padding: var(--mobile-bottom-bar-vertical-spacing) var(--mobile-edge-spacing)
-    calc(var(--mobile-bottom-bar-vertical-spacing) + env(safe-area-inset-bottom, 0px));
+  justify-content: center;
+  padding: calc(8px + env(safe-area-inset-top, 0px))
+    calc(var(--mobile-edge-spacing) + env(safe-area-inset-right, 0px)) 0
+    calc(var(--mobile-edge-spacing) + env(safe-area-inset-left, 0px));
   box-sizing: border-box;
   background-color: transparent;
 }
@@ -50,10 +60,6 @@
   width: 100%;
 }
 
-.action-buttons:not(.mobile) {
-  padding-top: calc(8px + env(safe-area-inset-top, 0px));
-}
-
 .action-buttons.mobile .mobile-buttons.nf-glass-group {
   justify-content: center;
   box-sizing: border-box;
@@ -61,6 +67,7 @@
   width: fit-content;
   max-width: 100%;
   padding: 4px;
+  pointer-events: auto;
 }
 
 .settings-menu-item {
