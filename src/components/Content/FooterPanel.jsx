@@ -7,42 +7,79 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 
-import {
-  getAllEntries,
-  getCategoryEntries,
-  getFeedEntries,
-  getStarredEntries,
-  markEntriesAsReadInBatches,
-} from "@/apis"
+import { markEntriesAsReadInBatches } from "@/apis"
 import CustomTooltip from "@/components/ui/CustomTooltip"
 import { polyglotState } from "@/hooks/useLanguage"
 import useRefreshCounts from "@/hooks/useRefreshCounts"
 import { contentState, setActiveContent, setEntries } from "@/store/contentState"
 import {
+  getDataSessionRevision,
   isEntryScopeFullyVisible,
   visibleCategoriesState,
   visibleFeedsState,
 } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
+import { hasArticleListFilters } from "@/utils/article-list-filters"
+import createArticleListRequestKey from "@/utils/article-list-request-key"
+import { get24HoursAgoTimestamp } from "@/utils/date"
+import { runEntryMutation } from "@/utils/entry-mutation-state"
 import findAdjacentItem from "@/utils/navigation"
 import "./FooterPanel.css"
 
-const updateAllEntriesAsRead = () => {
-  const { activeContent } = contentState.get()
-  if (activeContent) {
+const isEntryInMarkAllReadScope = (
+  entry,
+  { globallyVisible, source, sourceId, visibleFeedIds },
+) => {
+  const feedId = Number(entry.feed?.id ?? entry.feed_id)
+  if (globallyVisible && !visibleFeedIds.has(feedId)) {
+    return false
+  }
+  switch (source) {
+    case "all": {
+      return true
+    }
+    case "feed": {
+      return feedId === Number(sourceId)
+    }
+    case "category": {
+      return Number(entry.feed?.category?.id) === Number(sourceId)
+    }
+    case "starred": {
+      return Boolean(entry.starred)
+    }
+    default: {
+      return false
+    }
+  }
+}
+
+const updateEntriesAsRead = (entryIds = null, scope = null) => {
+  const { activeContent, entries } = contentState.get()
+  const markedEntryIds = new Set(
+    entryIds ??
+      entries
+        .filter((entry) => !scope || isEntryInMarkAllReadScope(entry, scope))
+        .map((entry) => entry.id),
+  )
+  const isActiveEntryMarkedRead =
+    activeContent &&
+    (scope ? isEntryInMarkAllReadScope(activeContent, scope) : markedEntryIds.has(activeContent.id))
+  if (isActiveEntryMarkedRead) {
     setActiveContent({ ...activeContent, status: "read" })
   }
-  setEntries((prev) => prev.map((entry) => ({ ...entry, status: "read" })))
+  setEntries((prev) =>
+    prev.map((entry) => (markedEntryIds.has(entry.id) ? { ...entry, status: "read" } : entry)),
+  )
 }
 
 const handleFilterChange = (value) => {
   updateSettings({ showStatus: value })
 }
 
-const MarkAllReadButton = ({ from, onConfirm }) => {
+const MarkAllReadButton = ({ disabled, from, loading, onConfirm }) => {
   const { polyglot } = useStore(polyglotState)
   const { skipMarkAllReadConfirmation } = useStore(settingsState, {
     keys: ["skipMarkAllReadConfirmation"],
@@ -55,9 +92,12 @@ const MarkAllReadButton = ({ from, onConfirm }) => {
   const button = (
     <CustomTooltip mini content={markAllReadLabel}>
       <Button
+        aria-busy={loading}
         aria-expanded={skipMarkAllReadConfirmation ? undefined : confirmVisible}
         aria-label={markAllReadLabel}
+        disabled={disabled || loading}
         icon={<IconCheck aria-hidden="true" />}
+        loading={loading}
         shape="circle"
         style={{ visibility: isHidden ? "hidden" : "visible" }}
         onClick={skipMarkAllReadConfirmation ? onConfirm : undefined}
@@ -87,11 +127,11 @@ const MarkAllReadButton = ({ from, onConfirm }) => {
   )
 }
 
-const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
+const FooterPanel = ({ getEntries, info, refreshArticleList, markAllAsRead }) => {
   const { from: source, id: sourceId } = info
-  const { filterDate, isArticleListReady } = useStore(contentState, {
-    keys: ["filterDate", "isArticleListReady"],
-  })
+  const { isArticleListReady } = useStore(contentState, { keys: ["isArticleListReady"] })
+  const [markingAllRead, setMarkingAllRead] = useState(false)
+  const markingAllReadRef = useRef(false)
   const { markAllReadJumpToNext, showStatus } = useStore(settingsState, {
     keys: ["markAllReadJumpToNext", "showStatus"],
   })
@@ -128,50 +168,103 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
   }
 
   const handleMarkAllAsRead = async () => {
+    if (
+      markingAllReadRef.current ||
+      !contentState.get().isArticleListReady ||
+      source === "history"
+    ) {
+      return
+    }
+
+    const content = { ...contentState.get(), infoFrom: source, infoId: sourceId }
+    const settings = settingsState.get()
+    const sessionRevision = getDataSessionRevision()
+    const requestKey = createArticleListRequestKey({ content, settings })
+    const isCurrentSession = () => sessionRevision === getDataSessionRevision()
+    const isCurrentList = () =>
+      isCurrentSession() &&
+      requestKey ===
+        createArticleListRequestKey({
+          content: contentState.get(),
+          settings: settingsState.get(),
+        })
+    const isFeedOrCategory = ["feed", "category"].includes(source)
+    const starred = isFeedOrCategory && settings.showStatus === "starred"
+    const useBatches = hasArticleListFilters(content) || starred || source === "today"
+    const scope = isFeedOrCategory ? source : "global"
+    const filterParams = {
+      filterDate: source === "today" ? null : content.filterDate,
+      globally_visible: !isEntryScopeFullyVisible(scope, sourceId),
+      order: source === "starred" ? "changed_at" : settings.orderBy,
+      direction: settings.orderDirection,
+      ...(content.filterString && { search: content.filterString }),
+      ...(source === "today" && { published_after: get24HoursAgoTimestamp() }),
+    }
+
+    const fastPathScope = {
+      source,
+      sourceId,
+      globallyVisible: filterParams.globally_visible,
+      visibleFeedIds: new Set(visibleFeedsState.get().map((feed) => Number(feed.id))),
+    }
+
+    markingAllReadRef.current = true
+    setMarkingAllRead(true)
     try {
-      await (filterDate && source !== "today" ? handleFilteredMarkAsRead() : markAllAsRead())
+      await runEntryMutation(() => {
+        if (!useBatches) {
+          return markAllAsRead()
+        }
 
-      await updateUIAfterMarkAsRead()
+        return markEntriesAsReadInBatches(
+          (status, options) => getEntries(status, starred, options),
+          {
+            filterParams,
+            onBatchMarkedRead: (entryIds) => {
+              if (isCurrentList()) {
+                updateEntriesAsRead(entryIds)
+              }
+            },
+          },
+        )
+      })
 
-      if (markAllReadJumpToNext) {
+      if (!isCurrentSession()) {
+        return
+      }
+      if (!useBatches && isCurrentList()) {
+        updateEntriesAsRead(null, fastPathScope)
+      }
+      await refreshCounts({ force: true })
+      if (!isCurrentSession()) {
+        return
+      }
+
+      Notification.success({
+        title: polyglot.t("article_list.mark_all_as_read_success"),
+      })
+      if (markAllReadJumpToNext && isCurrentList()) {
         jumpToNext()
       }
     } catch (error) {
+      if (!isCurrentSession()) {
+        return
+      }
       console.error("Failed to mark all as read:", error)
-      await refreshArticleList()
-      Notification.error({
-        title: polyglot.t("article_list.mark_all_as_read_error"),
-        content: error.message,
-      })
+      if (isCurrentList()) {
+        await refreshArticleList()
+      }
+      await refreshCounts({ force: true })
+      if (isCurrentSession()) {
+        Notification.error({
+          title: polyglot.t("article_list.mark_all_as_read_error"),
+          content: error.message,
+        })
+      }
+    } finally {
+      markingAllReadRef.current = false
+      setMarkingAllRead(false)
     }
-  }
-
-  const handleFilteredMarkAsRead = async () => {
-    const starred = showStatus === "starred"
-    const includeEntireScope = isEntryScopeFullyVisible(source, sourceId)
-    const withScopeVisibility = (options) =>
-      includeEntireScope ? { ...options, globally_visible: false } : options
-
-    const entryFetchers = {
-      all: getAllEntries,
-      feed: (status, options) =>
-        getFeedEntries(sourceId, status, starred, withScopeVisibility(options)),
-      category: (status, options) =>
-        getCategoryEntries(sourceId, status, starred, withScopeVisibility(options)),
-      starred: getStarredEntries,
-    }
-
-    const fetchEntries = entryFetchers[source]
-    return markEntriesAsReadInBatches(fetchEntries)
-  }
-
-  const updateUIAfterMarkAsRead = async () => {
-    updateAllEntriesAsRead()
-    await refreshCounts({ force: true })
-
-    Notification.success({
-      title: polyglot.t("article_list.mark_all_as_read_success"),
-    })
   }
 
   const baseFilterOptions = [
@@ -219,7 +312,12 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
 
   return (
     <div className="entry-panel">
-      <MarkAllReadButton from={source} onConfirm={handleMarkAllAsRead} />
+      <MarkAllReadButton
+        disabled={!isArticleListReady}
+        from={source}
+        loading={markingAllRead}
+        onConfirm={handleMarkAllAsRead}
+      />
       <Radio.Group
         style={{ visibility: source === "history" ? "hidden" : "visible" }}
         type="button"

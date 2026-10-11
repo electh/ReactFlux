@@ -22,6 +22,7 @@ import {
   setUnreadTodayCount,
 } from "@/store/dataState"
 import { articleListRequestSettingsState, settingsState } from "@/store/settingsState"
+import { hasArticleListFilters } from "@/utils/article-list-filters"
 import createArticleListRequestKey from "@/utils/article-list-request-key"
 import {
   getEntryMutationSnapshot,
@@ -146,7 +147,7 @@ const useArticleList = (source, sourceId, getEntries) => {
 
       handleResponses(response)
 
-      if (!content.filterString && (source === "today" || !content.filterDate)) {
+      if (!hasArticleListFilters({ ...content, infoFrom: source })) {
         switch (source) {
           case "feed": {
             if (settings.showStatus === "unread") {

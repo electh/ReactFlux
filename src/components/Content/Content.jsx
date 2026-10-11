@@ -248,6 +248,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           retryArticleList={fetchArticleList}
         />
         <FooterPanel
+          getEntries={getEntries}
           info={info}
           markAllAsRead={markAllAsRead}
           refreshArticleList={fetchArticleListWithRelatedData}

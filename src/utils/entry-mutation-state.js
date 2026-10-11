@@ -74,6 +74,17 @@ export const notifyEntryMutationIdle = (sessionRevision) => {
   }
 }
 
+export const runEntryMutation = async (mutate) => {
+  const sessionRevision = recordEntryMutationIntent()
+  recordEntryMutationRequestStart(sessionRevision)
+  try {
+    return await mutate()
+  } finally {
+    recordEntryMutationRequestEnd(sessionRevision)
+    notifyEntryMutationIdle(sessionRevision)
+  }
+}
+
 export const getEntryMutationSnapshot = () => {
   const sessionRevision = getEntryMutationSessionRevision()
   return {

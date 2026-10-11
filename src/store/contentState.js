@@ -9,6 +9,7 @@ import {
 } from "./dataState"
 import { settingsState } from "./settingsState"
 
+import { hasArticleListFilters } from "@/utils/article-list-filters"
 import removeDuplicateEntries from "@/utils/deduplicate"
 import { extractHeadings } from "@/utils/dom"
 import createSetter, { selectStore } from "@/utils/nanostores"
@@ -59,11 +60,11 @@ export const filteredEntriesState = computed(contentState, (content) => content.
 export const dynamicCountState = computed(
   [contentState, dataState, unreadTotalState, settingsState, feedsState, visibleFeedsState],
   (content, data, unreadTotal, settings, feeds, visibleFeeds) => {
-    const { filterDate, filterString, infoFrom, total } = content
+    const { infoFrom, total } = content
     const { showStatus } = settings
 
     // Search and non-"today" date filters use query totals, not unfiltered sidebar counts.
-    if (filterString || (infoFrom !== "today" && filterDate)) {
+    if (hasArticleListFilters(content)) {
       return total
     }
     const { unreadStarredCount, unreadTodayCount, historyCount, starredCount } = data
