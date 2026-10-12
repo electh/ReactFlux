@@ -11,8 +11,9 @@
 
 .grid-card-loading-item {
   overflow: hidden;
-  border: 1px solid var(--color-border-2);
-  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--nf-separator-subtle, var(--color-border-2));
+  border-radius: var(--nf-radius-card, var(--border-radius-medium));
+  background-color: var(--nf-surface-content, var(--color-bg-1));
 }
 
 .grid-card-loading-media {
