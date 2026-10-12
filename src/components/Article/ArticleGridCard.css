@@ -1,11 +1,13 @@
-.grid-card-wrapper {
+.article-entry.grid-card-wrapper {
   display: flex;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
   margin-inline: 0;
-  border: 0;
-  border-radius: 0;
+  overflow: hidden;
+  border: 1px solid var(--nf-separator-subtle, var(--color-border-2));
+  border-radius: var(--nf-radius-card, var(--border-radius-medium));
+  background-color: var(--nf-surface-content, var(--color-bg-1));
 }
 
 .grid-card-content {
@@ -19,7 +21,7 @@
   flex: 0 0 auto;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-radius: var(--nf-radius-card, var(--border-radius-medium));
+  border-radius: 0;
   background-color: var(--nf-surface-media, var(--color-fill-2));
 }
 

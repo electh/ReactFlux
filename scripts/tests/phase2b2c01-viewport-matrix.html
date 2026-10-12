@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Phase 2B.2C-01 — Viewport Matrix</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+      }
+
+      body {
+        margin: 0;
+        background: #f2f3f5;
+        color: #1d2129;
+      }
+
+      main {
+        padding: 16px;
+      }
+
+      iframe {
+        display: block;
+        max-width: none;
+        margin-block: 16px 32px;
+        border: 1px solid #7d8792;
+        background: white;
+      }
+
+      pre {
+        overflow: auto;
+        max-height: 320px;
+        background: white;
+        padding: 12px;
+      }
+
+      body.single-viewport main {
+        padding: 0;
+      }
+
+      body.single-viewport h1,
+      body.single-viewport #matrix-status,
+      body.single-viewport #matrix-report {
+        display: none;
+      }
+
+      body.single-viewport iframe {
+        margin: 0;
+        border: 0;
+      }
+
+      body.single-viewport #viewport-cases {
+        display: grid;
+        width: 100vw;
+        height: 100vh;
+        place-items: start center;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Responsive card structural gate</h1>
+      <p id="matrix-status">Rendering the six requested CSS viewport sizes…</p>
+      <pre id="matrix-report">Waiting for each in-frame harness…</pre>
+      <div id="viewport-cases"></div>
+    </main>
+    <script type="module" src="/scripts/tests/phase2b2c01-viewport-matrix.js"></script>
+  </body>
+</html>

@@ -27,6 +27,33 @@
   box-shadow: inset 2px 0 0 var(--nf-accent, rgb(var(--primary-6)));
 }
 
+.article-entry.grid-card-wrapper:hover:not(.selected) {
+  background-color: var(--nf-surface-content, var(--color-bg-1));
+  background-image: linear-gradient(
+    var(--nf-state-hover, var(--color-fill-1)),
+    var(--nf-state-hover, var(--color-fill-1))
+  );
+}
+
+.article-entry.grid-card-wrapper:active:not(.selected) {
+  background-color: var(--nf-surface-content, var(--color-bg-1));
+  background-image: linear-gradient(
+    var(--nf-state-pressed, var(--color-fill-2)),
+    var(--nf-state-pressed, var(--color-fill-2))
+  );
+}
+
+.article-entry.grid-card-wrapper.selected,
+.article-entry.grid-card-wrapper.selected:hover,
+.article-entry.grid-card-wrapper.selected:active {
+  background-color: var(--nf-surface-content, var(--color-bg-1));
+  background-image: linear-gradient(
+    var(--nf-state-selected, var(--color-fill-2)),
+    var(--nf-state-selected, var(--color-fill-2))
+  );
+  box-shadow: inset 2px 0 0 var(--nf-accent, rgb(var(--primary-6)));
+}
+
 .article-entry-title {
   position: relative;
   box-sizing: border-box;
