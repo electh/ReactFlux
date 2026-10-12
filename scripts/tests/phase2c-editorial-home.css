@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+}
+
+.harness-controls {
+  padding: 16px;
+}
+
+.harness-stage {
+  display: flex;
+  height: 600px;
+  position: relative;
+}
+
+.harness-stage > .sidebar-container {
+  flex: 0 0 240px;
+}
+
+.harness-content {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}

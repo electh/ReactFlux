@@ -49,7 +49,13 @@ const isInHorizontalScrollable = (element) => {
 const shouldIgnoreSwipe = (element) =>
   isInHorizontalScrollable(element) || Boolean(element?.closest?.(".plyr, audio, video"))
 
-const Content = ({ info, getEntries, markAllAsRead }) => {
+const Content = ({
+  info,
+  getEntries,
+  markAllAsRead,
+  listContent: ListContent,
+  entryIdOverride,
+}) => {
   const { from: source, id: sourceId } = info
   const { activeContent, isArticleLoading } = useStore(contentState, {
     keys: ["activeContent", "isArticleLoading"],
@@ -68,7 +74,8 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const ignoreSwipeRef = useRef(false)
   const swipeDirectionRef = useRef(null)
 
-  const { entryId } = useParams()
+  const { entryId: routeEntryId } = useParams()
+  const entryId = entryIdOverride ?? routeEntryId
 
   useDocumentTitle()
 
@@ -238,20 +245,32 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           opacity: isBelowMedium && isArticleLoading ? 0 : 1,
         }}
       >
-        <SearchAndSortBar fullWidth={isFullWidthLayout} />
-        <ArticleList
-          ref={entryListRef}
-          cardsRef={cardsRef}
-          getEntries={getEntries}
-          handleEntryClick={handleEntryClick}
-          retryArticleList={fetchArticleList}
-        />
-        <FooterPanel
-          getEntries={getEntries}
-          info={info}
-          markAllAsRead={markAllAsRead}
-          refreshArticleList={fetchArticleListWithRelatedData}
-        />
+        {ListContent ? (
+          <ListContent
+            cardsRef={cardsRef}
+            entryListRef={entryListRef}
+            getEntries={getEntries}
+            handleEntryClick={handleEntryClick}
+            retryArticleList={fetchArticleList}
+          />
+        ) : (
+          <>
+            <SearchAndSortBar fullWidth={isFullWidthLayout} />
+            <ArticleList
+              ref={entryListRef}
+              cardsRef={cardsRef}
+              getEntries={getEntries}
+              handleEntryClick={handleEntryClick}
+              retryArticleList={fetchArticleList}
+            />
+            <FooterPanel
+              getEntries={getEntries}
+              info={info}
+              markAllAsRead={markAllAsRead}
+              refreshArticleList={fetchArticleListWithRelatedData}
+            />
+          </>
+        )}
       </div>
       {activeContent ? (
         <div

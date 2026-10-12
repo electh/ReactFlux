@@ -49,7 +49,7 @@ export const ContextProvider = ({ children }) => {
     const currentPath = location.pathname
     const basePath = extractBasePath(currentPath)
 
-    if (isEntryDetailPath(currentPath) && basePath) {
+    if (isEntryDetailPath(currentPath)) {
       navigate(basePath)
     }
     restoreEntryListFocus(activeEntryId)

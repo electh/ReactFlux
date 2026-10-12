@@ -2,7 +2,7 @@ import { Button, Message } from "@arco-design/web-react"
 import { IconRefresh } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
 import { useEffect } from "react"
-import { useLocation, useNavigate } from "react-router"
+import { useLocation, useMatch, useNavigate } from "react-router"
 
 import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
@@ -20,6 +20,7 @@ import {
   getHomeTargetPath,
   isHomeTargetInCatalog,
 } from "@/utils/home-page"
+import { clearSession } from "@/utils/session"
 
 const HomePageManager = () => {
   const identity = useStore(homeIdentityState)
@@ -31,6 +32,8 @@ const HomePageManager = () => {
   const { polyglot } = useStore(polyglotState)
   const location = useLocation()
   const navigate = useNavigate()
+  const rootReaderMatch = useMatch("/entry/:entryId")
+  const isHomeRoute = location.pathname === "/" || Boolean(rootReaderMatch)
   const { refreshIdentity } = useAppData()
 
   const identityKey = getHomeIdentityKey(identity)
@@ -67,7 +70,7 @@ const HomePageManager = () => {
   }, [catalogSnapshotRevision, identityKey, location.pathname, navigate, polyglot, targetKey])
 
   const identityLoadState = loadState.identity
-  if (location.pathname === "/" || identityLoadState.hasSnapshot || !identityLoadState.error) {
+  if (identityLoadState.hasSnapshot || !identityLoadState.error) {
     return null
   }
 
@@ -82,6 +85,17 @@ const HomePageManager = () => {
       >
         {polyglot.t("actions.retry")}
       </Button>
+      {isHomeRoute && (
+        <Button
+          size="small"
+          onClick={() => {
+            clearSession()
+            navigate("/login", { replace: true, state: { from: location.pathname } })
+          }}
+        >
+          {polyglot.t("sidebar.logout")}
+        </Button>
+      )}
     </div>
   )
 }

@@ -697,11 +697,7 @@ const Sidebar = ({ headerAction, onNavigate }) => {
   const refreshCounts = useRefreshCounts()
   const { infoFrom, infoId } = useStore(contentState, { keys: ["infoFrom", "infoId"] })
   const {
-    identityError,
     identityReady: homeIdentityReady,
-    isVisible: homePageVisible,
-    label: homePageLabel,
-    path: homePagePath,
     setTarget: setHomePageTarget,
     target: homeTarget,
     visibilityReady: homeVisibilityReady,
@@ -814,25 +810,12 @@ const Sidebar = ({ headerAction, onNavigate }) => {
     }
   }
 
-  const visibleHomePageLabel = homePageVisible ? homePageLabel : polyglot.t("sidebar.all")
-  const visibleHomePagePath = homePageVisible ? homePagePath : "/all"
-
-  let homePageActionLabel
-  if (homePageReady) {
-    homePageActionLabel = polyglot.t("home_page.go_to", { name: visibleHomePageLabel })
-  } else {
-    const statusKey = identityError
-      ? "home_page.identity_unavailable"
-      : "home_page.identity_loading"
-    homePageActionLabel = polyglot.t(statusKey)
-  }
+  const homePageActionLabel = polyglot.t("home_page.go_to", {
+    name: polyglot.t("settings.post_login_page_option_home"),
+  })
 
   const handleHomeNavigation = () => {
-    if (!homePageReady) {
-      return
-    }
-
-    navigate(visibleHomePagePath)
+    navigate("/")
     setActiveContent(null)
     onNavigate?.()
   }
@@ -847,7 +830,6 @@ const Sidebar = ({ headerAction, onNavigate }) => {
                 <button
                   aria-label={homePageActionLabel}
                   className="home-brand"
-                  disabled={!homePageReady}
                   type="button"
                   onClick={handleHomeNavigation}
                 >

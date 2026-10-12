@@ -43,7 +43,11 @@ const router = createBrowserRouter(
           lazy: loadAuthenticatedRoute,
           children: [
             ...routes,
-            { index: true, lazy: lazyRoute(() => import("./components/HomeRedirect")) },
+            {
+              path: "/",
+              lazy: lazyRoute(() => import("./pages/Home")),
+              children: [{ index: true }, { path: "entry/:entryId" }],
+            },
           ],
         },
       ],
