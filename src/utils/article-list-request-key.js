@@ -24,7 +24,7 @@ const pickFields = (source, fields) => {
   return picked
 }
 
-const createArticleListRequestKey = ({ content, settings, info }) => {
+const createArticleListRequestKey = ({ content, settings, info, sessionRevision }) => {
   const contentKey = pickFields(content, articleListContentKeyFields)
   const settingsKey = pickFields(settings, articleListSettingsKeyFields)
 
@@ -32,6 +32,17 @@ const createArticleListRequestKey = ({ content, settings, info }) => {
     contentKey.infoFrom = info.from
     contentKey.infoId = info.id
   }
+  if (contentKey.infoFrom === "home") {
+    return JSON.stringify({
+      articleListRevision: contentKey.articleListRevision,
+      infoFrom: contentKey.infoFrom,
+      infoId: contentKey.infoId,
+      pageSize: settings.pageSize,
+      showHiddenFeeds: settings.showHiddenFeeds,
+      sessionRevision,
+    })
+  }
+
   if (["starred", "history"].includes(contentKey.infoFrom)) {
     settingsKey.orderBy = null
   }

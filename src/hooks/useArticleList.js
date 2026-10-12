@@ -14,6 +14,7 @@ import {
   setTotal,
 } from "@/store/contentState"
 import {
+  dataState,
   getDataSessionRevision,
   setHistoryCount,
   setStarredCount,
@@ -32,7 +33,7 @@ import {
 } from "@/utils/entry-mutation-state"
 import prepareEntry from "@/utils/entry-presentation"
 
-const handleResponses = (response) => {
+const handleResponses = (response, isHome) => {
   const isValidResponse =
     Array.isArray(response?.entries) && Number.isFinite(response?.total) && response.total >= 0
   if (!isValidResponse) {
@@ -40,8 +41,12 @@ const handleResponses = (response) => {
   }
 
   const preparedEntries = response.entries.map((entry) => prepareEntry(entry))
-  const duplicateEntries = setEntriesWithDeduplication(preparedEntries)
-  markDuplicatesAsRead(duplicateEntries)
+  if (isHome) {
+    setEntries(preparedEntries)
+  } else {
+    const duplicateEntries = setEntriesWithDeduplication(preparedEntries)
+    markDuplicatesAsRead(duplicateEntries)
+  }
   setTotal(response.total)
   setLoadMoreVisible(preparedEntries.length < response.total)
   incrementArticleListSnapshotRevision()
@@ -52,12 +57,15 @@ const useArticleList = (source, sourceId, getEntries) => {
     keys: ["articleListRevision", "filterDate", "filterString", "infoFrom", "infoId"],
   })
   const settingsSnapshot = useStore(articleListRequestSettingsState)
+  const { sessionRevision } = useStore(dataState, { keys: ["sessionRevision"] })
   const automaticRequestKey = createArticleListRequestKey({
     content: contentSnapshot,
     settings: settingsSnapshot,
     info: { from: source, id: sourceId },
+    sessionRevision,
   })
 
+  const committedHomeSnapshot = useRef(null)
   const latestRequestId = useRef(0)
   const loadingRequestKey = useRef(null)
   const currentRequestKey = useRef(null)
@@ -77,8 +85,13 @@ const useArticleList = (source, sourceId, getEntries) => {
     const content = contentState.get()
     const settings = settingsState.get()
     const info = { from: source, id: sourceId }
-    const requestKey = createArticleListRequestKey({ content, settings, info })
     const requestSessionRevision = getDataSessionRevision()
+    const requestKey = createArticleListRequestKey({
+      content,
+      settings,
+      info,
+      sessionRevision: requestSessionRevision,
+    })
     const loadingKey = `${requestSessionRevision}:${requestKey}`
 
     if (loadingRequestKey.current === loadingKey) {
@@ -96,6 +109,7 @@ const useArticleList = (source, sourceId, getEntries) => {
           content: contentState.get(),
           settings: settingsState.get(),
           info,
+          sessionRevision: getDataSessionRevision(),
         })
 
     setArticleListError(false)
@@ -118,18 +132,22 @@ const useArticleList = (source, sourceId, getEntries) => {
           continue
         }
 
-        switch (settings.showStatus) {
-          case "starred": {
-            response = await getEntries(null, true, filterParams)
-            break
-          }
-          case "unread": {
-            response = await getEntries("unread", false, filterParams)
-            break
-          }
-          default: {
-            response = await getEntries(null, false, filterParams)
-            break
+        if (source === "home") {
+          response = await getEntries({ pageSize: settings.pageSize })
+        } else {
+          switch (settings.showStatus) {
+            case "starred": {
+              response = await getEntries(null, true, filterParams)
+              break
+            }
+            case "unread": {
+              response = await getEntries("unread", false, filterParams)
+              break
+            }
+            default: {
+              response = await getEntries(null, false, filterParams)
+              break
+            }
           }
         }
 
@@ -146,7 +164,14 @@ const useArticleList = (source, sourceId, getEntries) => {
         }
       } while (shouldRetry)
 
-      handleResponses(response)
+      handleResponses(response, source === "home")
+      if (source === "home") {
+        committedHomeSnapshot.current = {
+          sessionRevision: requestSessionRevision,
+          pageSize: settings.pageSize,
+          showHiddenFeeds: settings.showHiddenFeeds,
+        }
+      }
 
       if (!hasArticleListFilters({ ...content, infoFrom: source })) {
         switch (source) {
@@ -185,9 +210,17 @@ const useArticleList = (source, sourceId, getEntries) => {
       }
 
       console.error("Error fetching articles:", error)
-      setEntries([])
-      setTotal(0)
-      setLoadMoreVisible(false)
+      const snapshot = committedHomeSnapshot.current
+      const preservesHomeSnapshot =
+        source === "home" &&
+        snapshot?.sessionRevision === requestSessionRevision &&
+        snapshot.pageSize === settings.pageSize &&
+        snapshot.showHiddenFeeds === settings.showHiddenFeeds
+      if (!preservesHomeSnapshot) {
+        setEntries([])
+        setTotal(0)
+        setLoadMoreVisible(false)
+      }
       setArticleListError(true)
     } finally {
       if (requestId === latestRequestId.current && loadingRequestKey.current === loadingKey) {
@@ -199,10 +232,13 @@ const useArticleList = (source, sourceId, getEntries) => {
     }
   }, [getEntries, source, sourceId])
 
-  useEffect(
-    () => subscribeArticleListTotalRefresh(getEntries, { from: source, id: sourceId }),
-    [automaticRequestKey, getEntries, source, sourceId],
-  )
+  useEffect(() => {
+    // Home count settlement is wired to the canonical count adapter by its session owner.
+    if (source === "home") {
+      return
+    }
+    return subscribeArticleListTotalRefresh(getEntries, { from: source, id: sourceId })
+  }, [automaticRequestKey, getEntries, source, sourceId])
 
   useEffect(() => {
     void fetchArticleList()

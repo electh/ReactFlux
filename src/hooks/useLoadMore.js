@@ -7,6 +7,7 @@ import { markDuplicatesAsRead } from "@/hooks/useEntryActions"
 import { polyglotState } from "@/hooks/useLanguage"
 import {
   contentState,
+  setEntries,
   setEntriesWithDeduplication,
   setLoadMoreError,
   setLoadMoreVisible,
@@ -57,8 +58,12 @@ const useLoadMore = () => {
       return true
     })
     const combinedEntries = [...currentEntries, ...uniqueNewEntries]
-    const duplicateEntries = setEntriesWithDeduplication(combinedEntries)
-    markDuplicatesAsRead(duplicateEntries)
+    if (infoFrom === "home") {
+      setEntries(combinedEntries)
+    } else {
+      const duplicateEntries = setEntriesWithDeduplication(combinedEntries)
+      markDuplicatesAsRead(duplicateEntries)
+    }
   }
 
   const getFilterParams = (currentEntries) => {
@@ -74,13 +79,19 @@ const useLoadMore = () => {
     return buildFilterParams(referenceEntry)
   }
 
-  const sortProperty = ["starred", "history"].includes(infoFrom) ? "changed_at" : orderBy
+  const sortProperty =
+    infoFrom === "home"
+      ? "published_at"
+      : ["starred", "history"].includes(infoFrom)
+        ? "changed_at"
+        : orderBy
+  const cursorDirection = infoFrom === "home" ? "desc" : orderDirection
 
   const getReferenceEntry = (currentEntries) => {
     const sortedEntries = [...currentEntries].toSorted((a, b) => {
       const aValue = getTimestamp(a[sortProperty])
       const bValue = getTimestamp(b[sortProperty])
-      return orderDirection === "desc" ? bValue - aValue : aValue - bValue
+      return cursorDirection === "desc" ? bValue - aValue : aValue - bValue
     })
 
     const entriesByTimestamp = {}
@@ -94,7 +105,7 @@ const useLoadMore = () => {
 
     const timestamps = Object.keys(entriesByTimestamp)
       .map(Number)
-      .toSorted((a, b) => (orderDirection === "desc" ? b - a : a - b))
+      .toSorted((a, b) => (cursorDirection === "desc" ? b - a : a - b))
 
     if (timestamps.length === 0) {
       return null
@@ -109,19 +120,19 @@ const useLoadMore = () => {
 
   const buildFilterParams = (referenceEntry) => {
     if (sortProperty === "changed_at") {
-      return orderDirection === "desc"
+      return cursorDirection === "desc"
         ? { changed_before: getTimestamp(referenceEntry.changed_at) }
         : { changed_after: getTimestamp(referenceEntry.changed_at) }
     }
 
     if (sortProperty === "created_at") {
-      return orderDirection === "desc"
+      return cursorDirection === "desc"
         ? { before_entry_id: referenceEntry.id }
         : { after_entry_id: referenceEntry.id }
     }
 
     if (sortProperty === "published_at") {
-      return orderDirection === "desc"
+      return cursorDirection === "desc"
         ? { published_before: getTimestamp(referenceEntry.published_at) }
         : { published_after: getTimestamp(referenceEntry.published_at) }
     }
@@ -133,6 +144,7 @@ const useLoadMore = () => {
     createArticleListRequestKey({
       content: contentState.get(),
       settings: settingsState.get(),
+      sessionRevision: getDataSessionRevision(),
     })
 
   const handleLoadMore = async (getEntries) => {
@@ -183,7 +195,7 @@ const useLoadMore = () => {
 
         synchronizePaginationProgress()
         const filterParams = getFilterParams(contentState.get().entries)
-        if (filterString) {
+        if (infoFrom !== "home" && filterString) {
           filterParams.search = filterString
         }
 
@@ -192,18 +204,22 @@ const useLoadMore = () => {
         } else if (infoFrom === "history") {
           response = await getEntries(null, null, filterParams)
         } else {
-          switch (showStatus) {
-            case "starred": {
-              response = await getEntries(null, true, filterParams)
-              break
-            }
-            case "unread": {
-              response = await getEntries("unread", false, filterParams)
-              break
-            }
-            default: {
-              response = await getEntries(null, false, filterParams)
-              break
+          if (infoFrom === "home") {
+            response = await getEntries({ pageSize, cursor: filterParams.published_before })
+          } else {
+            switch (showStatus) {
+              case "starred": {
+                response = await getEntries(null, true, filterParams)
+                break
+              }
+              case "unread": {
+                response = await getEntries("unread", false, filterParams)
+                break
+              }
+              default: {
+                response = await getEntries(null, false, filterParams)
+                break
+              }
             }
           }
         }

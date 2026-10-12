@@ -9,6 +9,7 @@ import {
   MAX_ENTRY_IDS_PER_PAGE,
 } from "@/utils/constants"
 import { get24HoursAgoTimestamp, getDayEndTimestamp, getTimestamp } from "@/utils/date"
+import { buildHomeEntryRequest } from "@/utils/home-entry-request"
 
 export const getEntry = async (entryId) => apiClient.get(`/v1/entries/${entryId}`)
 
@@ -105,13 +106,17 @@ const addDateFilters = (orderField, queryParams, filterDate) => {
 }
 
 const buildEntriesUrl = (baseParams, extraParams = {}, applyDateFilter = true) => {
-  const { baseUrl, orderField, limit, status } = baseParams
+  const {
+    baseUrl,
+    orderField,
+    limit,
+    status,
+    direction = getSettings("orderDirection"),
+  } = baseParams
   const { filterDate = contentState.get().filterDate, ...queryFilters } = extraParams
-  const orderDirection = getSettings("orderDirection")
-
   const queryParams = new URLSearchParams({
     order: orderField,
-    direction: orderDirection,
+    direction,
     limit,
     ...queryFilters,
   })
@@ -176,6 +181,22 @@ const updateEntryIdsInBatches = async (entryIds, updates) => {
   }
 
   return entryIds.length
+}
+
+export const getHomeEntries = async ({ pageSize = getSettings("pageSize"), cursor } = {}) => {
+  const { status, order, direction, limit, ...filters } = buildHomeEntryRequest({
+    pageSize,
+    showHiddenFeeds: getSettings("showHiddenFeeds"),
+    cursor,
+  })
+
+  return apiClient.get(
+    buildEntriesUrl(
+      { baseUrl: "/v1/entries", orderField: order, status, direction, limit },
+      { ...filters, filterDate: null },
+      false,
+    ),
+  )
 }
 
 export const getAllEntries = async (status = null, filterParams = {}) => {
