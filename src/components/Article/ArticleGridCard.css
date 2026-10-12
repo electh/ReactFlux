@@ -109,10 +109,6 @@
 }
 
 .grid-card-wrapper .grid-card-title {
-  padding-inline-start: 0;
-}
-
-.grid-card-wrapper.unread .grid-card-title {
   padding-inline-start: 12px;
 }
 
