@@ -270,9 +270,38 @@ const Harness = () => {
     [
       "HOME_ID_ONLY_INITIAL",
       async () => {
-        await mount("home", { removeDuplicates: "title" }, {}, homeEntries)
+        await mount("home", { removeDuplicates: "title" }, {}, [
+          ...homeEntries,
+          { ...homeEntries[0], title: "Duplicate must not replace first" },
+        ])
         assertIds([101, 102])
+        assert(
+          contentState.get().entries[0].title === "Same title",
+          "Home replaced the first occurrence",
+        )
         assert(mutationRequests === 0, "Home marked functional duplicates read")
+      },
+    ],
+    [
+      "HOME_ID_ONLY_REFRESH",
+      async () => {
+        await mount("home", { removeDuplicates: "title" }, {}, homeEntries)
+        respond = () => ({
+          entries: [
+            homeEntries[1],
+            homeEntries[0],
+            { ...homeEntries[1], title: "Duplicate must not replace first" },
+          ],
+          total: 8,
+        })
+        await controls.current.fetchArticleList()
+        await settle()
+        assertIds([102, 101])
+        assert(
+          contentState.get().entries[0].title === "Same title",
+          "Home refresh replaced the first occurrence",
+        )
+        assert(mutationRequests === 0, "Home refresh marked functional duplicates read")
       },
     ],
     [

@@ -42,7 +42,16 @@ const handleResponses = (response, isHome) => {
 
   const preparedEntries = response.entries.map((entry) => prepareEntry(entry))
   if (isHome) {
-    setEntries(preparedEntries)
+    const seenEntryIds = new Set()
+    setEntries(
+      preparedEntries.filter(({ id }) => {
+        if (seenEntryIds.has(id)) {
+          return false
+        }
+        seenEntryIds.add(id)
+        return true
+      }),
+    )
   } else {
     const duplicateEntries = setEntriesWithDeduplication(preparedEntries)
     markDuplicatesAsRead(duplicateEntries)
