@@ -89,16 +89,11 @@
 
 .article-entry.read .card-source-title,
 .article-entry.read .card-time-wrapper,
-.article-entry.read .grid-card-meta,
-.article-entry.read .grid-card-source,
-.article-entry.read .grid-card-time,
 .article-entry.read .list-entry-source-title,
 .article-entry.read .list-entry-meta {
   color: var(--nf-text-secondary, var(--color-text-2));
 }
 
-.article-entry.read .grid-card-footer,
-.article-entry.read .grid-card-reading-time,
 .article-entry.read .card-reading-time {
   color: var(--nf-text-secondary, var(--color-text-2));
 }

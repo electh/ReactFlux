@@ -224,7 +224,7 @@ const runStructuralGate = () => {
     `expected=${expectedRadius}px; actual=${cards.map((card) => getComputedStyle(card).borderTopLeftRadius).join(",")}`,
   )
   check(
-    "GRID_CARD_OPAQUE_SURFACE",
+    "GRID_CARD_SURFACE_UNCHANGED",
     cards.every((card) => {
       const background = getComputedStyle(card).backgroundColor
       return colorIsOpaque(background) && background === expectedSurface
@@ -232,7 +232,7 @@ const runStructuralGate = () => {
     `expected=${expectedSurface}; actual=${cards.map((card) => getComputedStyle(card).backgroundColor).join(" | ")}`,
   )
   check(
-    "GRID_CARD_SUBTLE_BORDER",
+    "GRID_CARD_BORDER_UNCHANGED",
     cards.every((card) => {
       const style = getComputedStyle(card)
       return (
@@ -310,7 +310,7 @@ const runStructuralGate = () => {
     "text-only cards without a deck render no summary",
   )
   check(
-    "TEXT_ONLY_16PX_INLINE_INSET",
+    "TEXT_ONLY_16PX_INLINE_INSET_UNCHANGED",
     textOnlyCopyStyles.length > 0 &&
       textOnlyCopyStyles.every(
         (style) => style.paddingInlineStart === "16px" && style.paddingInlineEnd === "16px",
@@ -434,7 +434,7 @@ const runStructuralGate = () => {
     return `${(cardBottom - footerBottom).toFixed(1)}px/${expectedBottomGap.toFixed(1)}px`
   }
   check(
-    "TEXT_ONLY_FOOTER_BOTTOM_ANCHORED",
+    "TEXT_ONLY_FOOTER_BOTTOM_ANCHORED_UNCHANGED",
     !mixedRowTextOnlyCards.some(({ card }) => !isFooterBottomAnchored(card)),
     mixedRowTextOnlyCards.length === 0
       ? "not applicable: no image/text-only mixed row at this viewport"
@@ -509,6 +509,154 @@ const runStructuralGate = () => {
   const imageRead = getFixtureCard("read")
   const imageStarred = getFixtureCard("favorite")
   const imageSelected = getFixtureCard("selected")
+  const imageSelectedRead = getFixtureCard("selected-read")
+  const getTitleTextStart = (card) => {
+    const title = card?.querySelector(".grid-card-title")
+    if (!title) {
+      return null
+    }
+
+    const cardLeft = card.getBoundingClientRect().left
+    const titleLeft = title.getBoundingClientRect().left
+    const inlineInset = Number.parseFloat(getComputedStyle(title).paddingInlineStart) || 0
+    return titleLeft - cardLeft + inlineInset
+  }
+  const imageTitleAlignment =
+    getTitleTextStart(imageRead) !== null && getTitleTextStart(imageUnread) !== null
+      ? Math.abs(getTitleTextStart(imageRead) - getTitleTextStart(imageUnread))
+      : Number.POSITIVE_INFINITY
+  const textOnlyTitleAlignment =
+    getTitleTextStart(textOnlyRead) !== null && getTitleTextStart(textOnlyUnread) !== null
+      ? Math.abs(getTitleTextStart(textOnlyRead) - getTitleTextStart(textOnlyUnread))
+      : Number.POSITIVE_INFINITY
+  check(
+    "READ_UNREAD_TITLE_ALIGNMENT",
+    imageTitleAlignment < 0.6 && textOnlyTitleAlignment < 0.6,
+    `image delta=${imageTitleAlignment.toFixed(1)}px; text-only delta=${textOnlyTitleAlignment.toFixed(1)}px`,
+  )
+  check(
+    "GRID_IMAGE_READ_UNREAD_TITLE_ALIGNMENT",
+    imageTitleAlignment < 0.6,
+    `read=${getTitleTextStart(imageRead)}px; unread=${getTitleTextStart(imageUnread)}px; delta=${imageTitleAlignment.toFixed(1)}px`,
+  )
+  check(
+    "GRID_TEXT_ONLY_READ_UNREAD_TITLE_ALIGNMENT",
+    textOnlyTitleAlignment < 0.6,
+    `read=${getTitleTextStart(textOnlyRead)}px; unread=${getTitleTextStart(textOnlyUnread)}px; delta=${textOnlyTitleAlignment.toFixed(1)}px`,
+  )
+  check(
+    "READ_TITLE_WEIGHT_400",
+    Boolean(imageRead) &&
+      getComputedStyle(imageRead.querySelector(".grid-card-title")).fontWeight === "400",
+    `weight=${imageRead ? getComputedStyle(imageRead.querySelector(".grid-card-title")).fontWeight : "none"}`,
+  )
+  check(
+    "UNREAD_TITLE_WEIGHT_700",
+    Boolean(imageUnread) &&
+      getComputedStyle(imageUnread.querySelector(".grid-card-title")).fontWeight === "700",
+    `weight=${imageUnread ? getComputedStyle(imageUnread.querySelector(".grid-card-title")).fontWeight : "none"}`,
+  )
+  const unreadMarkerStyle = imageUnread
+    ? getComputedStyle(imageUnread.querySelector(".grid-card-title"), "::before")
+    : null
+  const readMarkerStyle = imageRead
+    ? getComputedStyle(imageRead.querySelector(".grid-card-title"), "::before")
+    : null
+  const expectedUnreadMarkerColor = tokenColor(
+    getComputedStyle(document.body).getPropertyValue("--nf-status-unread").trim(),
+  )
+  check(
+    "UNREAD_MARKER_VISIBLE",
+    Boolean(unreadMarkerStyle) && unreadMarkerStyle.opacity === "1",
+    `opacity=${unreadMarkerStyle?.opacity}`,
+  )
+  check(
+    "READ_MARKER_HIDDEN",
+    Boolean(readMarkerStyle) && readMarkerStyle.opacity === "0",
+    `opacity=${readMarkerStyle?.opacity}`,
+  )
+  check(
+    "UNREAD_MARKER_SIZE_UNCHANGED",
+    Boolean(unreadMarkerStyle) &&
+      unreadMarkerStyle.width === "6px" &&
+      unreadMarkerStyle.height === "6px",
+    `size=${unreadMarkerStyle?.width}x${unreadMarkerStyle?.height}`,
+  )
+  check(
+    "UNREAD_MARKER_COLOR_UNCHANGED",
+    Boolean(unreadMarkerStyle) && unreadMarkerStyle.backgroundColor === expectedUnreadMarkerColor,
+    `color=${unreadMarkerStyle?.backgroundColor}; expected=${expectedUnreadMarkerColor}`,
+  )
+  const hasFullTextOpacity = (card) =>
+    Boolean(card) &&
+    [
+      card,
+      ...card.querySelectorAll(
+        ".grid-card-meta, .grid-card-title, .grid-card-summary, .grid-card-footer",
+      ),
+    ].every((element) => getComputedStyle(element).opacity === "1")
+  check(
+    "FULL_TEXT_OPACITY_UNCHANGED",
+    hasFullTextOpacity(imageRead) &&
+      hasFullTextOpacity(imageUnread) &&
+      hasFullTextOpacity(textOnlyRead) &&
+      hasFullTextOpacity(textOnlyUnread),
+    "read and unread text, metadata, deck, and footer remain fully opaque",
+  )
+  const hasFullImageOpacity = (card) =>
+    Boolean(card) &&
+    [...card.querySelectorAll(".grid-card-media, .grid-card-cover")].every(
+      (element) => getComputedStyle(element).opacity === "1",
+    )
+  check(
+    "IMAGE_OPACITY_UNCHANGED",
+    hasFullImageOpacity(imageRead) && hasFullImageOpacity(imageUnread),
+    "read and unread article images remain fully opaque",
+  )
+  const gridTertiary = tokenColor(
+    getComputedStyle(document.body).getPropertyValue("--nf-text-tertiary").trim(),
+  )
+  const gridSecondary = tokenColor(
+    getComputedStyle(document.body).getPropertyValue("--nf-text-secondary").trim(),
+  )
+  const gridReadCards = [imageRead, textOnlyRead]
+  const gridUnreadCards = [imageUnread, textOnlyUnread]
+  const hasTertiaryMetadata = (card) =>
+    Boolean(card) &&
+    [...card.querySelectorAll(".grid-card-meta, .grid-card-source, .grid-card-time")].every(
+      (element) => getComputedStyle(element).color === gridTertiary,
+    )
+  const hasTertiaryFooter = (card) =>
+    Boolean(card) &&
+    [...card.querySelectorAll(".grid-card-footer, .grid-card-reading-time")].every(
+      (element) => getComputedStyle(element).color === gridTertiary,
+    )
+  check(
+    "GRID_READ_METADATA_TERTIARY",
+    gridReadCards.every((card) => hasTertiaryMetadata(card)),
+    `read metadata=${gridReadCards.map((card) => card?.querySelector(".grid-card-meta") && getComputedStyle(card.querySelector(".grid-card-meta")).color).join(",")}; expected=${gridTertiary}`,
+  )
+  check(
+    "GRID_READ_FOOTER_TERTIARY",
+    gridReadCards.every((card) => hasTertiaryFooter(card)),
+    `read footer=${gridReadCards.map((card) => card?.querySelector(".grid-card-footer") && getComputedStyle(card.querySelector(".grid-card-footer")).color).join(",")}; expected=${gridTertiary}`,
+  )
+  check(
+    "GRID_UNREAD_METADATA_TERTIARY",
+    gridUnreadCards.every((card) => hasTertiaryMetadata(card)),
+    `unread metadata=${gridUnreadCards.map((card) => card?.querySelector(".grid-card-meta") && getComputedStyle(card.querySelector(".grid-card-meta")).color).join(",")}; expected=${gridTertiary}`,
+  )
+  check(
+    "GRID_UNREAD_FOOTER_TERTIARY",
+    gridUnreadCards.every((card) => hasTertiaryFooter(card)),
+    `unread footer=${gridUnreadCards.map((card) => card?.querySelector(".grid-card-footer") && getComputedStyle(card.querySelector(".grid-card-footer")).color).join(",")}; expected=${gridTertiary}`,
+  )
+  const imageReadDeck = imageRead?.querySelector(".grid-card-summary")
+  check(
+    "DECK_SECONDARY_UNCHANGED",
+    Boolean(imageReadDeck) && getComputedStyle(imageReadDeck).color === gridSecondary,
+    `read deck=${imageReadDeck ? getComputedStyle(imageReadDeck).color : "none"}; expected=${gridSecondary}`,
+  )
   check(
     "READ_STATE_UNCHANGED",
     Boolean(textOnlyRead && imageRead) &&
@@ -539,14 +687,26 @@ const runStructuralGate = () => {
     `starred=${textOnlyStarred?.querySelector(".grid-card-star")?.style.opacity}/${imageStarred?.querySelector(".grid-card-star")?.style.opacity}; unstarred=${textOnlyUnread?.querySelector(".grid-card-star")?.style.opacity}`,
   )
   check(
-    "SELECTED_STATE_UNCHANGED",
+    "SELECTED_UNREAD_UNCHANGED",
     Boolean(textOnlySelected && imageSelected) &&
       textOnlySelected.classList.contains("selected") &&
       imageSelected.classList.contains("selected") &&
+      imageSelected.classList.contains("unread") &&
       getComputedStyle(textOnlySelected).backgroundImage ===
         getComputedStyle(imageSelected).backgroundImage &&
       getComputedStyle(textOnlySelected).boxShadow === getComputedStyle(imageSelected).boxShadow,
     `selected overlays=${textOnlySelected ? getComputedStyle(textOnlySelected).backgroundImage : "none"}/${imageSelected ? getComputedStyle(imageSelected).backgroundImage : "none"}`,
+  )
+  check(
+    "SELECTED_READ_UNCHANGED",
+    Boolean(imageSelectedRead && imageSelected) &&
+      imageSelectedRead.classList.contains("read") &&
+      imageSelectedRead.classList.contains("selected") &&
+      !imageSelectedRead.classList.contains("unread") &&
+      getComputedStyle(imageSelectedRead).backgroundImage ===
+        getComputedStyle(imageSelected).backgroundImage &&
+      getComputedStyle(imageSelectedRead).boxShadow === getComputedStyle(imageSelected).boxShadow,
+    `selected read=${imageSelectedRead?.className}; overlay=${imageSelectedRead ? getComputedStyle(imageSelectedRead).backgroundImage : "none"}; selected unread overlay=${imageSelected ? getComputedStyle(imageSelected).backgroundImage : "none"}`,
   )
   check(
     "IMAGE_CARD_INLINE_PADDING_UNCHANGED",
@@ -558,7 +718,7 @@ const runStructuralGate = () => {
     `image-card insets=${mediaCards.map((card) => getComputedStyle(card.querySelector(".grid-card-copy")).paddingInlineStart).join(",")}`,
   )
   check(
-    "IMAGE_CARD_GEOMETRY_UNCHANGED",
+    "GRID_IMAGE_GEOMETRY_UNCHANGED",
     mediaCards.length > 0 && mediaCards.every((card) => card.querySelector(".grid-card-media")),
     `image cards=${mediaCards.length}; media elements present`,
   )
@@ -765,8 +925,9 @@ const App = () => {
       <section aria-label="Editorial card fixtures" className="phase2b2c01-grid">
         <FixtureCard id="unread" />
         <FixtureCard deck noCover id="text-only-unread" />
-        <FixtureCard read id="read" />
+        <FixtureCard deck read id="read" />
         <FixtureCard selected id="selected" />
+        <FixtureCard deck read selected id="selected-read" />
         <FixtureCard starred id="favorite" />
         <FixtureCard noCover read id="text-only-read" />
         <FixtureCard noCover selected id="text-only-selected" />
