@@ -147,8 +147,8 @@ const General = () => {
         </SettingItem>
 
         <SettingItem
-          description={polyglot.t("settings.default_home_page_description")}
-          title={polyglot.t("settings.default_home_page_label")}
+          description={polyglot.t("settings.post_login_page_description")}
+          title={polyglot.t("settings.post_login_page_label")}
         >
           <Tooltip
             content={homePageSummaryLabel}

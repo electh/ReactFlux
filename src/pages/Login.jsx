@@ -19,8 +19,10 @@ import { Navigate, useLocation, useNavigate, useSearchParams } from "react-route
 import useLanguage, { polyglotState } from "@/hooks/useLanguage"
 import useTheme from "@/hooks/useTheme"
 import { authState } from "@/store/authState"
+import { settingsState, updateSettings } from "@/store/settingsState"
 import isValidAuth from "@/utils/auth"
 import { handleEnterKeyToSubmit, validateAndFormatFormFields } from "@/utils/form"
+import { createHomeIdentity, ensureHomeIdentity, getPostLoginPath } from "@/utils/home-page"
 import hideSpinner from "@/utils/loading"
 import {
   checkMinifluxCompatibility,
@@ -153,8 +155,17 @@ const Login = () => {
       Notification.success({
         title: polyglot.t("login.success"),
       })
+      const identity = createHomeIdentity(server, userId)
+      const { homePages, homePage: legacyHomePage } = settingsState.get()
+      const postLoginPath = getPostLoginPath({
+        homePages,
+        identity,
+        legacyHomePage,
+        explicitFrom: redirectTo,
+      })
+      updateSettings({ homePages: ensureHomeIdentity(homePages, identity, legacyHomePage) })
       startSession({ server, token, username, password }, compatibility.version, currentUser)
-      navigate(redirectTo || "/", { replace: true })
+      navigate(postLoginPath, { replace: true })
     } finally {
       setLoading(false)
     }

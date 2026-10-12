@@ -120,7 +120,7 @@ const SETTINGS_SCHEMA = {
   fontSize: numberSetting(1.05, MIN_ARTICLE_FONT_SIZE, MAX_ARTICLE_FONT_SIZE, {
     precision: 2,
   }),
-  // Retained for local data and v1/v2 backup migration. New settings use homePages.
+  // Legacy migration/import input only. Post-login targets and migration markers use homePages.
   homePage: enumSetting("all", ["all", "today", "starred", "history"]),
   homePages: {
     defaultValue: createDefaultHomePages(),

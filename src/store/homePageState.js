@@ -39,7 +39,7 @@ export const getCurrentHomePath = () => {
     visibleFeedsState.get(),
     visibleCategoriesState.get(),
   )
-  return targetIsVisible ? getHomeTargetPath(target) : "/all"
+  return getHomeTargetPath(targetIsVisible ? target : DEFAULT_HOME_TARGET)
 }
 
 export const ensureCurrentHomePage = () => {
@@ -53,12 +53,15 @@ export const ensureCurrentHomePage = () => {
   const hasCurrentIdentity = settings.homePages.entries.some(
     (entry) => getHomeIdentityKey(entry) === identityKey,
   )
-  if (settings.homePages.legacyMigrated && hasCurrentIdentity) {
+  if (
+    settings.homePages.legacyMigrated &&
+    settings.homePages.postLoginMigrated &&
+    hasCurrentIdentity
+  ) {
     return false
   }
 
   updateSettings({
-    homePage: "all",
     homePages: ensureHomeIdentity(settings.homePages, identity, settings.homePage),
   })
   return true
@@ -72,7 +75,6 @@ export const setCurrentHomeTarget = (target) => {
 
   const settings = settingsState.get()
   updateSettings({
-    homePage: "all",
     homePages: setHomeTargetForIdentity(settings.homePages, identity, target),
   })
   return true

@@ -1,5 +1,5 @@
-export const HOME_PAGE_VIEWS = ["all", "today", "starred", "history"]
-export const DEFAULT_HOME_TARGET = Object.freeze({ type: "view", id: "all" })
+export const HOME_PAGE_VIEWS = ["home", "all", "today", "starred", "history"]
+export const DEFAULT_HOME_TARGET = Object.freeze({ type: "view", id: "home" })
 
 const HOME_PAGE_VIEW_SET = new Set(HOME_PAGE_VIEWS)
 const MAX_SERVER_LENGTH = 2048
@@ -64,6 +64,7 @@ const sanitizeHomeTarget = (value, fallback = DEFAULT_HOME_TARGET) => {
 
 export const createDefaultHomePages = () => ({
   legacyMigrated: false,
+  postLoginMigrated: false,
   entries: [],
 })
 
@@ -92,7 +93,26 @@ export const sanitizeHomePages = (value, fallback = createDefaultHomePages()) =>
 
   return {
     legacyMigrated: source?.legacyMigrated === true,
+    postLoginMigrated: source?.postLoginMigrated === true,
     entries: [...entriesByIdentity.values()],
+  }
+}
+
+const migratePostLoginHomePages = (homePages) => {
+  const sanitizedHomePages = sanitizeHomePages(homePages)
+  if (sanitizedHomePages.postLoginMigrated) {
+    return sanitizedHomePages
+  }
+
+  return {
+    ...sanitizedHomePages,
+    postLoginMigrated: true,
+    entries: sanitizedHomePages.entries.map((entry) => ({
+      ...entry,
+      target: isSameHomeTarget(entry.target, { type: "view", id: "all" })
+        ? { ...DEFAULT_HOME_TARGET }
+        : entry.target,
+    })),
   }
 }
 
@@ -107,6 +127,10 @@ export const getHomeTargetKey = (target) => (target ? `${target.type}:${target.i
 
 export const getHomeTargetPath = (target) => {
   const sanitizedTarget = sanitizeHomeTarget(target)
+  if (sanitizedTarget.type === "view" && sanitizedTarget.id === "home") {
+    return "/"
+  }
+
   return sanitizedTarget.type === "view"
     ? `/${sanitizedTarget.id}`
     : `/${sanitizedTarget.type}/${sanitizedTarget.id}`
@@ -117,7 +141,7 @@ export const getHomeTargetForIdentity = (homePages, identity, legacyHomePage = "
     return { ...DEFAULT_HOME_TARGET }
   }
 
-  const sanitizedHomePages = sanitizeHomePages(homePages)
+  const sanitizedHomePages = migratePostLoginHomePages(homePages)
   const identityKey = getHomeIdentityKey(identity)
   const entry = sanitizedHomePages.entries.find(
     (candidate) => getHomeIdentityKey(candidate) === identityKey,
@@ -128,7 +152,7 @@ export const getHomeTargetForIdentity = (homePages, identity, legacyHomePage = "
   }
 
   if (!sanitizedHomePages.legacyMigrated) {
-    return createViewHomeTarget(legacyHomePage)
+    return createViewHomeTarget(legacyHomePage === "all" ? "home" : legacyHomePage)
   }
 
   return { ...DEFAULT_HOME_TARGET }
@@ -139,7 +163,7 @@ export const setHomeTargetForIdentity = (homePages, identity, target) => {
     return sanitizeHomePages(homePages)
   }
 
-  const sanitizedHomePages = sanitizeHomePages(homePages)
+  const sanitizedHomePages = migratePostLoginHomePages(homePages)
   const identityKey = getHomeIdentityKey(identity)
   const nextEntry = { ...identity, target: sanitizeHomeTarget(target) }
   const entries = sanitizedHomePages.entries.filter(
@@ -147,7 +171,7 @@ export const setHomeTargetForIdentity = (homePages, identity, target) => {
   )
 
   entries.push(nextEntry)
-  return sanitizeHomePages({ legacyMigrated: true, entries })
+  return sanitizeHomePages({ ...sanitizedHomePages, legacyMigrated: true, entries })
 }
 
 export const ensureHomeIdentity = (homePages, identity, legacyHomePage = "all") => {
@@ -156,7 +180,7 @@ export const ensureHomeIdentity = (homePages, identity, legacyHomePage = "all") 
   }
 
   const target = getHomeTargetForIdentity(homePages, identity, legacyHomePage)
-  const sanitizedHomePages = sanitizeHomePages(homePages)
+  const sanitizedHomePages = migratePostLoginHomePages(homePages)
   const identityKey = getHomeIdentityKey(identity)
   const hasIdentity = sanitizedHomePages.entries.some(
     (entry) => getHomeIdentityKey(entry) === identityKey,
@@ -178,3 +202,6 @@ export const isHomeTargetInCatalog = (target, feeds, categories) => {
   const entities = sanitizedTarget.type === "feed" ? feeds : categories
   return Array.isArray(entities) && entities.some((entity) => entity.id === sanitizedTarget.id)
 }
+
+export const getPostLoginPath = ({ homePages, identity, legacyHomePage, explicitFrom }) =>
+  explicitFrom ?? getHomeTargetPath(getHomeTargetForIdentity(homePages, identity, legacyHomePage))

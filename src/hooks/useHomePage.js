@@ -16,7 +16,7 @@ import {
 } from "@/store/homePageState"
 import { getHomeTargetPath, isHomeTargetInCatalog } from "@/utils/home-page"
 
-const getViewLabel = (polyglot, id) => polyglot.t(`settings.default_home_page_option_${id}`)
+const getViewLabel = (polyglot, id) => polyglot.t(`settings.post_login_page_option_${id}`)
 
 export const describeHomeTarget = ({ categories, feeds, polyglot, target }) => {
   if (target.type === "view") {

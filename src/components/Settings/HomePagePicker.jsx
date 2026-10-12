@@ -5,6 +5,7 @@ import {
   IconEyeInvisible,
   IconFolder,
   IconHistory,
+  IconHome,
   IconRight,
   IconStar,
   IconUnorderedList,
@@ -31,6 +32,7 @@ import {
 import "./HomePagePicker.css"
 
 const VIEW_ICONS = {
+  home: IconHome,
   all: IconUnorderedList,
   today: IconCalendar,
   starred: IconStar,
@@ -140,7 +142,7 @@ const HomePagePicker = ({ visible, onClose }) => {
     return groupedFeeds
   }, [feeds])
 
-  const getViewLabel = (view) => polyglot.t(`settings.default_home_page_option_${view}`)
+  const getViewLabel = (view) => polyglot.t(`settings.post_login_page_option_${view}`)
   const hiddenLabel = polyglot.t("home_page.hidden")
 
   const selectTarget = (nextTarget) => {
@@ -175,7 +177,7 @@ const HomePagePicker = ({ visible, onClose }) => {
 
     const results = []
     for (const view of HOME_PAGE_VIEWS) {
-      const label = polyglot.t(`settings.default_home_page_option_${view}`)
+      const label = polyglot.t(`settings.post_login_page_option_${view}`)
       if (includesIgnoreCase(label, searchText)) {
         results.push({
           icon: VIEW_ICONS[view],
