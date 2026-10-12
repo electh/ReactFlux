@@ -15,6 +15,10 @@ import Sidebar from "@/components/Sidebar/Sidebar"
 import AppDataContext from "@/contexts/app-data-context"
 import DesktopSidebarContext from "@/contexts/desktop-sidebar-context"
 import useContentContext from "@/hooks/useContentContext"
+import useEntryActions, {
+  markEntriesAsRead,
+  updateEntriesStatusOptimistically,
+} from "@/hooks/useEntryActions"
 import { polyglotState } from "@/hooks/useLanguage"
 import englishPhrases from "@/locales/en-US.json"
 import productionRouter from "@/routes"
@@ -44,6 +48,12 @@ const fixtureAuth = {
   password: "",
 }
 const requests = []
+let fixtureEntries = routeEntries
+let fixtureTotal = 2
+let failStatusMutation = false
+let failCount = false
+let deferredCount = null
+let unloadedStatus = "read"
 let articleFailure = false
 let identityRetries = 0
 let router
@@ -62,7 +72,14 @@ apiClient.get = async (url) => {
     if (articleFailure) {
       throw new Error("Expected local article query failure")
     }
-    return { entries: routeEntries, total: 2 }
+    const params = new URL(url, "https://fixture.invalid").searchParams
+    if (params.get("limit") === "1" && failCount) {
+      throw new Error("Expected local canonical count failure")
+    }
+    if (params.get("limit") === "1" && deferredCount) {
+      return deferredCount.promise
+    }
+    return { entries: fixtureEntries, total: fixtureTotal }
   }
   const id = Number(url.match(/^\/v1\/entries\/(\d+)$/)?.[1])
   const entry = routeEntries.find((candidate) => candidate.id === id)
@@ -71,8 +88,28 @@ apiClient.get = async (url) => {
   }
   throw new Error(`Unexpected local fixture GET: ${url}`)
 }
-apiClient.put = async () => {
-  throw new Error("Unexpected mutation in routing fixture")
+apiClient.put = async (url, body) => {
+  if (url !== "/v1/entries" || !body?.status) {
+    throw new Error("Unexpected mutation in routing fixture")
+  }
+  if (failStatusMutation) {
+    throw new Error("Expected local status mutation failure")
+  }
+  for (const id of body.entry_ids) {
+    const loaded = fixtureEntries.find((entry) => entry.id === id)
+    const previous = loaded?.status ?? (id === 303 ? unloadedStatus : null)
+    if (previous && previous !== body.status) {
+      fixtureTotal += body.status === "unread" ? 1 : -1
+    }
+    if (loaded) {
+      fixtureEntries = fixtureEntries.map((entry) =>
+        entry.id === id ? { ...entry, status: body.status } : entry,
+      )
+    }
+    if (id === 303) {
+      unloadedStatus = body.status
+    }
+  }
 }
 polyglotState.setKey("polyglot", new Polyglot({ phrases: englishPhrases, locale: "en-US" }))
 const appData = {
@@ -86,13 +123,28 @@ const appData = {
 
 const FixtureReaderControls = () => {
   const { handleEntryClick } = useContentContext()
+  const { handleToggleStatus } = useEntryActions()
   return (
-    <button
-      aria-label="Open local Home article"
-      onClick={() => handleEntryClick(contentState.get().entries[0])}
-    >
-      Open fixture article
-    </button>
+    <>
+      <button
+        aria-label="Open local Home article"
+        onClick={() => handleEntryClick(contentState.get().entries[0])}
+      >
+        Open fixture article
+      </button>
+      <button
+        aria-label="Fixture card status action"
+        onClick={() => handleToggleStatus(contentState.get().entries[0])}
+      >
+        Card status action
+      </button>
+      <button
+        aria-label="Fixture scroll read action"
+        onClick={() => markEntriesAsRead([contentState.get().entries[0]])}
+      >
+        Scroll read action
+      </button>
+    </>
   )
 }
 
@@ -159,7 +211,14 @@ const Harness = () => {
   const [results, setResults] = useState([])
   const mount = async (
     path = "/",
-    { identity = "ready", queryError = false, catalogError = false } = {},
+    {
+      identity = "ready",
+      queryError = false,
+      catalogError = false,
+      entries = routeEntries,
+      total = 2,
+      markReadBy = "manually",
+    } = {},
   ) => {
     setProbe(null)
     await settle()
@@ -169,8 +228,14 @@ const Harness = () => {
     requests.length = 0
     identityRetries = 0
     articleFailure = queryError
+    fixtureEntries = entries.map((entry) => ({ ...entry }))
+    fixtureTotal = total
+    failStatusMutation = false
+    failCount = false
+    deferredCount = null
+    unloadedStatus = "read"
     authState.set(fixtureAuth)
-    settingsState.set({ ...getDefaultSettings(), markReadBy: "none", removeDuplicates: "none" })
+    settingsState.set({ ...getDefaultSettings(), markReadBy, removeDuplicates: "none" })
     if (identity === "ready") {
       commitIdentityData({ id: 1, username: "fixture" })
     } else {
@@ -344,6 +409,186 @@ const Harness = () => {
         assert(
           homeRoot() && requests.some((url) => url.startsWith("/v1/entries?")),
           "Catalog failure blocked canonical Home query",
+        )
+      },
+    ],
+    [
+      "HOME_LAST_READ_TRANSITIONS_TO_TUDO_EM_DIA",
+      async () => {
+        await mount("/", { entries: routeEntries.slice(0, 1), total: 1 })
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        updateEntriesStatusOptimistically([contentState.get().entries[0]], "read")
+        await waitFor(
+          () => contentState.get().total === 0,
+          "Confirmed last read did not reconcile canonical zero",
+        )
+        assert(contentState.get().loadMoreVisible === false, "Zero total retained pagination")
+        assert(
+          requests.some(
+            (url) => new URL(url, "https://fixture.invalid").searchParams.get("limit") === "1",
+          ),
+          "Canonical count request missing",
+        )
+      },
+    ],
+    [
+      "HOME_READ_FAILURE_DOES_NOT_ZERO_TOTAL",
+      async () => {
+        await mount("/", { entries: routeEntries.slice(0, 1), total: 1 })
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        failStatusMutation = true
+        updateEntriesStatusOptimistically([contentState.get().entries[0]], "read")
+        await waitFor(
+          () => contentState.get().entries[0]?.status === "unread",
+          "Rejected read did not roll back",
+        )
+        await new Promise((resolve) => setTimeout(resolve, 220))
+        assert(contentState.get().total === 1, "Rejected read replaced valid total")
+        assert(
+          !requests.some(
+            (url) => new URL(url, "https://fixture.invalid").searchParams.get("limit") === "1",
+          ),
+          "Rejected read issued canonical count",
+        )
+      },
+    ],
+    [
+      "HOME_COUNT_FAILURE_PRESERVES_TOTAL_AND_PAGINATION",
+      async () => {
+        await mount("/", { entries: routeEntries.slice(0, 1), total: 2 })
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        assert(contentState.get().loadMoreVisible, "Fixture did not start with pagination")
+        failCount = true
+        updateEntriesStatusOptimistically([contentState.get().entries[0]], "read")
+        await waitFor(
+          () =>
+            requests.some(
+              (url) => new URL(url, "https://fixture.invalid").searchParams.get("limit") === "1",
+            ),
+          "Failed count request missing",
+        )
+        await settle()
+        assert(
+          contentState.get().total === 2 && contentState.get().loadMoreVisible,
+          "Failed count replaced valid total or pagination",
+        )
+      },
+    ],
+    [
+      "HOME_MARK_UNREAD_RECONCILES_TOTAL",
+      async () => {
+        await mount()
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        updateEntriesStatusOptimistically([contentState.get().entries[0]], "read")
+        await waitFor(() => contentState.get().total === 1, "Read did not settle")
+        updateEntriesStatusOptimistically([contentState.get().entries[0]], "unread")
+        await waitFor(() => contentState.get().total === 2, "Unread did not reconcile total")
+      },
+    ],
+    [
+      "HOME_UNLOADED_MARK_UNREAD_REENABLES_PAGINATION",
+      async () => {
+        await mount()
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        const ids = contentState.get().entries.map(({ id }) => id)
+        const requestCount = requests.length
+        updateEntriesStatusOptimistically(
+          [{ ...routeEntries[0], id: 303, status: "read" }],
+          "unread",
+        )
+        await waitFor(() => contentState.get().total === 3, "Unread count did not grow")
+        assert(
+          JSON.stringify(contentState.get().entries.map(({ id }) => id)) === JSON.stringify(ids),
+          "Unloaded record was inserted",
+        )
+        assert(contentState.get().loadMoreVisible, "Unread count growth did not expose pagination")
+        assert(
+          requests.length === requestCount + 1 &&
+            requests.every((url) => !url.includes("/v1/entries/303")),
+          "Unloaded unread triggered an entry fetch",
+        )
+      },
+    ],
+    [
+      "HOME_TOTAL_RECONCILIATION_STALE_SESSION_PROTECTED",
+      async () => {
+        await mount("/", { entries: routeEntries.slice(0, 1), total: 1 })
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        let resolveCount
+        deferredCount = {
+          promise: new Promise((resolve) => {
+            resolveCount = resolve
+          }),
+        }
+        updateEntriesStatusOptimistically([contentState.get().entries[0]], "read")
+        await waitFor(
+          () =>
+            requests.some(
+              (url) => new URL(url, "https://fixture.invalid").searchParams.get("limit") === "1",
+            ),
+          "Deferred count did not start",
+        )
+        fixtureTotal = 9
+        settingsState.set({ ...settingsState.get(), showHiddenFeeds: true })
+        await waitFor(
+          () => contentState.get().isArticleListReady && contentState.get().total === 9,
+          "New Home session did not commit",
+        )
+        resolveCount({ entries: [], total: 0 })
+        await settle()
+        assert(
+          contentState.get().total === 9 && contentState.get().loadMoreVisible,
+          "Old count mutated newer Home session",
+        )
+      },
+    ],
+    [
+      "HOME_READ_ON_VIEW_STATUS_PATH",
+      async () => {
+        await mount("/", { entries: routeEntries.slice(0, 1), total: 1, markReadBy: "view" })
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        clickLabel("Open local Home article")
+        await waitFor(
+          () => contentState.get().total === 0,
+          "Read-on-view did not use Home count path",
+        )
+      },
+    ],
+    [
+      "HOME_READER_STATUS_ACTION_PATH",
+      async () => {
+        await mount("/", { entries: routeEntries.slice(0, 1), total: 1 })
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        clickLabel("Open local Home article")
+        await waitFor(() => readerIs(101), "Reader did not open")
+        clickLabel(englishPhrases.article_card.mark_as_read_tooltip)
+        await waitFor(
+          () => contentState.get().total === 0,
+          "Reader status action did not use Home count path",
+        )
+      },
+    ],
+    [
+      "HOME_CARD_STATUS_ACTION_PATH",
+      async () => {
+        await mount("/", { entries: routeEntries.slice(0, 1), total: 1 })
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        clickLabel("Fixture card status action")
+        await waitFor(
+          () => contentState.get().total === 0,
+          "Card action path did not reconcile total",
+        )
+      },
+    ],
+    [
+      "HOME_MARK_READ_ON_SCROLL_STATUS_PATH",
+      async () => {
+        await mount("/", { entries: routeEntries.slice(0, 1), total: 1 })
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        clickLabel("Fixture scroll read action")
+        await waitFor(
+          () => contentState.get().total === 0,
+          "Scroll read helper did not reconcile total",
         )
       },
     ],

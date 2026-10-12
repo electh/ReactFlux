@@ -5,9 +5,12 @@ import { useStore } from "@nanostores/react"
 import Polyglot from "node-polyglot"
 import React, { useLayoutEffect, useState } from "react"
 import { createRoot } from "react-dom/client"
+import { MemoryRouter, useLocation } from "react-router"
 
 import * as entriesApi from "@/apis/entries"
 import apiClient from "@/apis/ofetch"
+import FooterPanel from "@/components/Content/FooterPanel"
+import AppDataContext from "@/contexts/app-data-context"
 import useArticleList from "@/hooks/useArticleList"
 import { polyglotState } from "@/hooks/useLanguage"
 import useLoadMore from "@/hooks/useLoadMore"
@@ -48,6 +51,8 @@ const homeEntries = [
   entry(102, "2026-10-11T10:00:00Z", { title: "Same title" }),
 ]
 const allAdapter = (status, _starred, filters) => entriesApi.getAllEntries(status, filters)
+const feedAdapter = (status, starred, filters) =>
+  entriesApi.getFeedEntries(1, status, starred, filters)
 // Fallback exposes pre-implementation Home leaks while keeping the harness executable in RED.
 const homeAdapter = (...args) =>
   entriesApi.getHomeEntries ? entriesApi.getHomeEntries(...args) : allAdapter(...args)
@@ -55,32 +60,66 @@ const controls = { current: null }
 const requests = []
 let respond
 let mutationRequests = 0
+let mutationFailure = false
+let mutationFailureAfter = Infinity
+let countRefreshes = 0
+let serverEntries = []
+let deferredMutation = null
 apiClient.get = async (url) => {
   requests.push(url)
   return respond(url)
 }
-apiClient.put = async () => {
+apiClient.put = async (url, body) => {
   mutationRequests += 1
-  throw new Error("Unexpected mutation in request fixture")
+  if (deferredMutation) {
+    await deferredMutation.promise
+  }
+  if (mutationFailure || mutationRequests > mutationFailureAfter) {
+    throw new Error("Expected local mark-all failure")
+  }
+  const ids = url === "/v1/entries" ? body.entry_ids : serverEntries.map(({ id }) => id)
+  serverEntries = serverEntries.map((item) =>
+    ids.includes(item.id) ? { ...item, status: "read" } : item,
+  )
 }
 polyglotState.setKey("polyglot", new Polyglot({ phrases: englishPhrases, locale: "en-US" }))
 
 const ListProbe = ({ source }) => {
-  const adapter = source === "home" ? homeAdapter : allAdapter
-  const list = useArticleList(source, null, adapter)
+  const adapter = source === "home" ? homeAdapter : source === "feed" ? feedAdapter : allAdapter
+  const sourceId = source === "feed" ? 1 : null
+  const list = useArticleList(source, sourceId, adapter)
   const pagination = useLoadMore()
   const content = useStore(contentState)
+  const location = useLocation()
   useLayoutEffect(() => {
-    controls.current = { ...list, loadMore: () => pagination.handleLoadMore(adapter) }
+    controls.current = {
+      ...list,
+      loadMore: () => pagination.handleLoadMore(adapter),
+      path: location.pathname,
+    }
   })
   return (
-    <ol aria-label="Committed entries">
-      {content.entries.map(({ id, title }, index) => (
-        <li key={`${id}:${index}`} data-entry-id={id}>
-          {title} ({id})
-        </li>
-      ))}
-    </ol>
+    <>
+      <ol aria-label="Committed entries">
+        {content.entries.map(({ id, title }, index) => (
+          <li key={`${id}:${index}`} data-entry-id={id}>
+            {title} ({id})
+          </li>
+        ))}
+      </ol>
+      {source !== "home" && (
+        <FooterPanel
+          getEntries={adapter}
+          info={{ from: source, id: sourceId }}
+          refreshArticleList={list.fetchArticleList}
+          markAllAsRead={() =>
+            apiClient.put(
+              source === "feed" ? "/v1/feeds/1/mark-all-as-read" : "/v1/users/1/mark-all-as-read",
+            )
+          }
+        />
+      )}
+    </>
   )
 }
 
@@ -127,6 +166,39 @@ const canonical = (params, limit, cursor, globallyVisible = true) => {
     `Noncanonical Home query: ${params}`,
   )
 }
+const serverRespond = (url) => {
+  const params = new URL(url, "https://fixture.invalid").searchParams
+  let matching = serverEntries
+  if (params.get("status")) {
+    matching = matching.filter(({ status }) => status === params.get("status"))
+  }
+  if (params.get("search")) {
+    matching = matching.filter(({ title }) => title.includes(params.get("search")))
+  }
+  if (params.get("published_after")) {
+    matching = matching.filter(
+      ({ published_at }) =>
+        Date.parse(published_at) / 1000 >= Number(params.get("published_after")),
+    )
+  }
+  if (params.get("published_before")) {
+    matching = matching.filter(
+      ({ published_at }) =>
+        Date.parse(published_at) / 1000 <= Number(params.get("published_before")),
+    )
+  }
+  if (url.startsWith("/v1/feeds/1/")) {
+    matching = matching.filter((item) => item.feed.id === 1)
+  }
+  return { entries: matching.slice(0, Number(params.get("limit") || 1000)), total: matching.length }
+}
+const clickMarkAll = () => {
+  const button = document.querySelector(
+    `button[aria-label="${CSS.escape(englishPhrases.article_list.mark_all_as_read_tooltip)}"]`,
+  )
+  assert(button && !button.disabled, "Real FooterPanel Mark All Read control missing")
+  button.click()
+}
 
 const Harness = () => {
   const [probe, setProbe] = useState(null)
@@ -143,6 +215,11 @@ const Harness = () => {
     controls.current = null
     requests.length = 0
     mutationRequests = 0
+    mutationFailure = false
+    mutationFailureAfter = Infinity
+    countRefreshes = 0
+    deferredMutation = null
+    serverEntries = entries.map((item) => ({ ...item }))
     respond = () => ({ entries, total: 8 })
     dataState.setKey("sessionRevision", dataState.get().sessionRevision + 1)
     settingsState.set({
@@ -151,6 +228,7 @@ const Harness = () => {
       pageSize: 2,
       showHiddenFeeds: false,
       showStatus: "all",
+      skipMarkAllReadConfirmation: true,
       orderBy: "created_at",
       orderDirection: "asc",
       ...settingChanges,
@@ -164,11 +242,17 @@ const Harness = () => {
       filterString: "",
       filterDate: null,
       infoFrom: source,
-      infoId: null,
+      infoId: source === "feed" ? 1 : null,
       isArticleListReady: false,
       loadMoreVisible: false,
       ...contentChanges,
     })
+    dataState.setKey("feedsData", [
+      feed,
+      { ...feed, id: 2, title: "Next fixture feed", category: { id: 2, title: "Next category" } },
+    ])
+    dataState.setKey("categoriesData", [feed.category, { id: 2, title: "Next category" }])
+    dataState.setKey("unreadInfo", { 1: 2, 2: 3 })
     setProbe({ source, key: contentState.get().articleListRevision })
     await waitFor(() => contentState.get().isArticleListReady && controls.current)
     await settle()
@@ -346,6 +430,153 @@ const Harness = () => {
         )
       },
     ],
+    [
+      "MARK_ALL_READ_SUCCESS",
+      async () => {
+        await mount("all", { showStatus: "unread" }, {}, ordinaryEntries)
+        respond = serverRespond
+        clickMarkAll()
+        await waitFor(() => mutationRequests === 1 && countRefreshes === 1)
+        assertIds([])
+        assert(
+          serverEntries.every(({ status }) => status === "read"),
+          "Fast-path mutation did not mark server entries",
+        )
+      },
+    ],
+    [
+      "MARK_ALL_READ_FILTER_SCOPE",
+      async () => {
+        const scoped = [
+          entry(41, "2026-10-10T10:00:00Z", { title: "climate A" }),
+          entry(42, "2026-10-10T11:00:00Z", { title: "climate B" }),
+          entry(43, "2026-10-11T10:00:00Z", { title: "other" }),
+        ]
+        await mount(
+          "all",
+          { showStatus: "unread" },
+          { filterString: "climate", filterDate: "2026-10-10" },
+          scoped,
+        )
+        respond = serverRespond
+        clickMarkAll()
+        await waitFor(() => countRefreshes === 1)
+        const batchQuery = requests
+          .map((url) => new URL(url, "https://fixture.invalid").searchParams)
+          .find((params) => params.get("limit") === "1000")
+        assert(
+          batchQuery?.get("search") === "climate" &&
+            batchQuery.has("published_after") &&
+            batchQuery.has("published_before"),
+          "Batch request lost search/date scope",
+        )
+        assert(
+          serverEntries.find(({ id }) => id === 43).status === "unread",
+          "Out-of-scope entry was marked read",
+        )
+        assertIds([43])
+      },
+    ],
+    [
+      "MARK_ALL_READ_NO_JUMP_ON_FAILURE",
+      async () => {
+        await mount(
+          "feed",
+          { showStatus: "unread", markAllReadJumpToNext: true },
+          {},
+          ordinaryEntries,
+        )
+        respond = serverRespond
+        mutationFailure = true
+        clickMarkAll()
+        await waitFor(() => countRefreshes === 1)
+        assert(controls.current.path === "/feed/1", "Failed Mark All Read navigated away")
+        assert(
+          serverEntries.every(({ status }) => status === "unread"),
+          "Failed mutation changed server fixture",
+        )
+      },
+    ],
+    [
+      "MARK_ALL_READ_JUMP_TO_NEXT",
+      async () => {
+        await mount(
+          "feed",
+          { showStatus: "unread", markAllReadJumpToNext: true },
+          {},
+          ordinaryEntries,
+        )
+        respond = serverRespond
+        clickMarkAll()
+        await waitFor(() => controls.current.path === "/feed/2")
+        assert(countRefreshes === 1, "Jump happened before refreshed counts")
+      },
+    ],
+    [
+      "STALE_SESSION_PROTECTION",
+      async () => {
+        await mount(
+          "feed",
+          { showStatus: "unread", markAllReadJumpToNext: true },
+          {},
+          ordinaryEntries,
+        )
+        respond = serverRespond
+        let resolveMutation
+        deferredMutation = {
+          promise: new Promise((resolve) => {
+            resolveMutation = resolve
+          }),
+        }
+        clickMarkAll()
+        await waitFor(() => mutationRequests === 1)
+        dataState.setKey("sessionRevision", dataState.get().sessionRevision + 1)
+        resolveMutation()
+        await settle()
+        assert(
+          countRefreshes === 0 && controls.current.path === "/feed/1",
+          "Old session mutation committed FooterPanel effects",
+        )
+      },
+    ],
+    [
+      "PARTIAL_FAILURE_RECONCILIATION",
+      async () => {
+        const scoped = ordinaryEntries.map((item) => ({ ...item, title: `scope ${item.id}` }))
+        await mount("all", { showStatus: "unread" }, { filterString: "scope" }, scoped)
+        respond = (url) => {
+          const response = serverRespond(url)
+          const params = new URL(url, "https://fixture.invalid").searchParams
+          return params.get("limit") === "1000"
+            ? { ...response, entries: response.entries.slice(0, 2) }
+            : response
+        }
+        mutationFailureAfter = 1
+        clickMarkAll()
+        await waitFor(() => mutationRequests === 2 && countRefreshes === 1)
+        assertIds([24])
+        assert(
+          serverEntries.filter(({ status }) => status === "read").length === 2,
+          "Failed later batch lost confirmed work",
+        )
+      },
+    ],
+    [
+      "COUNTS_REFRESH",
+      async () => {
+        await mount("all", { showStatus: "unread" }, {}, ordinaryEntries)
+        respond = serverRespond
+        clickMarkAll()
+        await waitFor(() => countRefreshes === 1)
+        assert(dataState.get().unreadInfo[1] === 0, "Success did not refresh source count")
+        await mount("all", { showStatus: "unread" }, {}, ordinaryEntries)
+        respond = serverRespond
+        mutationFailure = true
+        clickMarkAll()
+        await waitFor(() => countRefreshes === 1)
+        assert(dataState.get().unreadInfo[1] === 2, "Failure did not refresh source count")
+      },
+    ],
   ]
   const run = async () => {
     setRunning(true)
@@ -374,7 +605,24 @@ const Harness = () => {
           ? "RUNNING"
           : `${results.filter(({ status }) => status === "PASS").length}/${results.length} PASS`}
       </p>
-      {probe && <ListProbe key={probe.key} source={probe.source} />}
+      {probe && (
+        <AppDataContext.Provider
+          value={{
+            refreshCounts: async () => {
+              countRefreshes += 1
+              dataState.setKey("unreadInfo", {
+                1: serverEntries.filter((item) => item.feed.id === 1 && item.status === "unread")
+                  .length,
+                2: 3,
+              })
+            },
+          }}
+        >
+          <MemoryRouter initialEntries={[probe.source === "feed" ? "/feed/1" : "/all"]}>
+            <ListProbe key={probe.key} source={probe.source} />
+          </MemoryRouter>
+        </AppDataContext.Provider>
+      )}
       <pre data-testid="suite-results">{JSON.stringify(results, null, 2)}</pre>
     </main>
   )

@@ -242,10 +242,8 @@ const useArticleList = (source, sourceId, getEntries) => {
   }, [getEntries, source, sourceId])
 
   useEffect(() => {
-    // Home count settlement is wired to the canonical count adapter by its session owner.
-    if (source === "home") {
-      return
-    }
+    // The existing list owner also owns Home's guarded canonical count reconciliation.
+    // Task 2's Home skip lived here, so subscribing here preserves its request/session lifecycle.
     return subscribeArticleListTotalRefresh(getEntries, { from: source, id: sourceId })
   }, [automaticRequestKey, getEntries, source, sourceId])
 

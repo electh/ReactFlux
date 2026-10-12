@@ -1,7 +1,8 @@
 import { Message } from "@arco-design/web-react"
+import { batch } from "nanostores"
 
 import { polyglotState } from "@/hooks/useLanguage"
-import { contentState, setTotal } from "@/store/contentState"
+import { contentState, setLoadMoreVisible, setTotal } from "@/store/contentState"
 import { getDataSessionRevision } from "@/store/dataState"
 import { settingsState } from "@/store/settingsState"
 import { shouldRefreshArticleListTotal } from "@/utils/article-list-filters"
@@ -11,6 +12,7 @@ import {
   isEntryMutationSnapshotCurrent,
   subscribeEntryMutationIdle,
 } from "@/utils/entry-mutation-state"
+import { subscribeEntryStatusMutationEvents } from "@/utils/entry-status-mutation-events"
 
 const COUNT_REFRESH_DELAY_MS = 150
 
@@ -19,13 +21,14 @@ const subscribeArticleListTotalRefresh = (getEntries, info) => {
   let disposed = false
   let refreshRevision = 0
   let timer
+  let homeSettlementPending = false
 
   const refreshTotal = async (revision) => {
     const content = contentState.get()
     const settings = settingsState.get()
     const mutationSnapshot = getEntryMutationSnapshot()
-    const requestKey = createArticleListRequestKey({ content, settings, info })
     const sessionRevision = getDataSessionRevision()
+    const requestKey = createArticleListRequestKey({ content, settings, info, sessionRevision })
     const snapshotRevision = content.articleListSnapshotRevision
     const isCurrentRequest = () => {
       const currentContent = contentState.get()
@@ -34,7 +37,11 @@ const subscribeArticleListTotalRefresh = (getEntries, info) => {
         revision === refreshRevision &&
         sessionRevision === getDataSessionRevision() &&
         requestKey ===
-          createArticleListRequestKey({ content: currentContent, settings: settingsState.get() }) &&
+          createArticleListRequestKey({
+            content: currentContent,
+            settings: settingsState.get(),
+            sessionRevision: getDataSessionRevision(),
+          }) &&
         snapshotRevision === currentContent.articleListSnapshotRevision &&
         currentContent.isArticleListReady &&
         !currentContent.articleListError
@@ -44,21 +51,26 @@ const subscribeArticleListTotalRefresh = (getEntries, info) => {
     if (
       !isCurrentRequest() ||
       mutationSnapshot.pendingRequests > 0 ||
-      !shouldRefreshArticleListTotal(content, settings)
+      (info.from === "home"
+        ? !homeSettlementPending
+        : !shouldRefreshArticleListTotal(content, settings))
     ) {
       return
     }
 
     try {
-      const response = await getEntries(
-        settings.showStatus === "unread" ? "unread" : null,
-        settings.showStatus === "starred",
-        {
-          filterDate: content.filterDate,
-          ...(content.filterString && { search: content.filterString }),
-          limit: 1,
-        },
-      )
+      const response =
+        info.from === "home"
+          ? await getEntries({ pageSize: 1 })
+          : await getEntries(
+              settings.showStatus === "unread" ? "unread" : null,
+              settings.showStatus === "starred",
+              {
+                filterDate: content.filterDate,
+                ...(content.filterString && { search: content.filterString }),
+                limit: 1,
+              },
+            )
 
       if (!isCurrentRequest()) {
         return
@@ -71,7 +83,21 @@ const subscribeArticleListTotalRefresh = (getEntries, info) => {
         throw new TypeError("Invalid entries count response")
       }
 
-      setTotal(response.total)
+      if (info.from === "home") {
+        const loadedEligibleCount = new Set(
+          contentState
+            .get()
+            .entries.filter(({ status }) => status === "unread")
+            .map(({ id }) => id),
+        ).size
+        batch(() => {
+          setTotal(response.total)
+          setLoadMoreVisible(loadedEligibleCount < response.total)
+        })
+        homeSettlementPending = false
+      } else {
+        setTotal(response.total)
+      }
     } catch (error) {
       if (!isCurrentRequest()) {
         return
@@ -92,12 +118,31 @@ const subscribeArticleListTotalRefresh = (getEntries, info) => {
     }, COUNT_REFRESH_DELAY_MS)
   }
 
-  const unsubscribe = subscribeEntryMutationIdle(scheduleRefresh)
+  const unsubscribeIdle = subscribeEntryMutationIdle(() => {
+    if (info.from !== "home" || homeSettlementPending) {
+      scheduleRefresh()
+    }
+  })
+  const unsubscribeStatus =
+    info.from === "home"
+      ? subscribeEntryStatusMutationEvents((event) => {
+          if (
+            event.outcome !== "confirmed" ||
+            (event.targetStatus !== "read" && event.targetStatus !== "unread") ||
+            event.sessionRevision !== getDataSessionRevision()
+          ) {
+            return
+          }
+          homeSettlementPending = true
+          scheduleRefresh()
+        })
+      : () => {}
 
   return () => {
     disposed = true
     clearTimeout(timer)
-    unsubscribe()
+    unsubscribeIdle()
+    unsubscribeStatus()
   }
 }
 

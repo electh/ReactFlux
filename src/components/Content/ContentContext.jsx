@@ -60,6 +60,11 @@ export const ContextProvider = ({ children }) => {
       const shouldAutoMarkAsRead = markReadBy === "view"
       const updatedEntry = shouldAutoMarkAsRead ? { ...entry, status: "read" } : { ...entry }
 
+      if (shouldAutoMarkAsRead && entry.status === "unread") {
+        void updateEntriesStatusOptimistically([entry], "read", () => {
+          Message.error(polyglot.t("content.mark_as_read_error"))
+        })
+      }
       setActiveContent(updatedEntry)
 
       const currentPath = location.pathname
@@ -78,12 +83,6 @@ export const ContextProvider = ({ children }) => {
           articleContent.focus()
         }
       })
-
-      if (shouldAutoMarkAsRead && entry.status === "unread") {
-        void updateEntriesStatusOptimistically([entry], "read", () => {
-          Message.error(polyglot.t("content.mark_as_read_error"))
-        })
-      }
     },
     [polyglot, markReadBy, location.pathname, navigate],
   )

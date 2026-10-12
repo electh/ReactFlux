@@ -35,6 +35,7 @@ import {
   recordEntryMutationRequestStart,
   registerEntryMutationSessionReset,
 } from "@/utils/entry-mutation-state"
+import { publishEntryStatusMutationEvent } from "@/utils/entry-status-mutation-events"
 import { openExternalUrl } from "@/utils/url"
 
 const updateEntries = (entries, updatedEntries) => {
@@ -167,6 +168,8 @@ function settleStatusMutationBatch(attempts, targetStatus, succeeded, error) {
   const errorCallbacks = new Set()
   const nextStatesByStatus = new Map()
   const rollbackEntriesByStatus = new Map()
+  const settledEntryIds = []
+  const previousStatuses = {}
 
   for (const attempt of attempts) {
     const { state, version } = attempt
@@ -174,6 +177,8 @@ function settleStatusMutationBatch(attempts, targetStatus, succeeded, error) {
       continue
     }
 
+    settledEntryIds.push(state.entryId)
+    previousStatuses[state.entryId] = state.confirmedStatus
     state.inFlight = false
     if (succeeded) {
       state.confirmedStatus = targetStatus
@@ -204,6 +209,16 @@ function settleStatusMutationBatch(attempts, targetStatus, succeeded, error) {
   for (const [rollbackStatus, rollbackEntries] of rollbackEntriesByStatus) {
     handleEntriesStatusUpdate(rollbackEntries, rollbackStatus)
   }
+  publishEntryStatusMutationEvent(
+    {
+      entryIds: settledEntryIds,
+      previousStatuses,
+      targetStatus,
+      outcome: succeeded ? "confirmed" : "rejected",
+      sessionRevision,
+    },
+    getEntryMutationSessionRevision(),
+  )
   for (const onError of errorCallbacks) {
     onError(error)
   }
@@ -223,6 +238,16 @@ export const updateEntriesStatusOptimistically = (entries, newStatus, onError) =
   }
 
   const sessionRevision = recordEntryMutationIntent()
+  publishEntryStatusMutationEvent(
+    {
+      entryIds: optimisticEntries.map(({ id }) => id),
+      previousStatuses: Object.fromEntries(optimisticEntries.map(({ id, status }) => [id, status])),
+      targetStatus: newStatus,
+      outcome: "intent",
+      sessionRevision,
+    },
+    getEntryMutationSessionRevision(),
+  )
   const version = ++nextStatusMutationVersion
   const statesToStart = []
   for (const entry of optimisticEntries) {

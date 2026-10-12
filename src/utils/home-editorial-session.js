@@ -1,0 +1,97 @@
+// Node's direct unit runner requires the extension; Vite resolves the same module.
+// eslint-disable-next-line import/extensions
+import { selectBackfillCandidate, selectInitialHighlightIds } from "./home-editorial-projection.js"
+
+// The request generation is intentionally absent: a refresh retains the committed projection
+// until its canonical response succeeds.
+export const createHomeSessionKey = ({ identityKey, showHiddenFeeds, pageSize, sessionRevision }) =>
+  JSON.stringify({ identityKey, showHiddenFeeds, pageSize, sessionRevision })
+
+export const createHomeEditorialSession = ({
+  requestKey,
+  sessionRevision,
+  entries,
+  scrollRoot = null,
+}) => ({
+  requestKey,
+  sessionRevision,
+  highlightIds: selectInitialHighlightIds(entries),
+  pendingStatusById: {},
+  scrollRoot,
+})
+
+const byPublishedAt = (left, right) =>
+  Date.parse(right.published_at) - Date.parse(left.published_at) ||
+  Number(left.id) - Number(right.id)
+
+export const projectHomeSession = (session, entries) => {
+  const highlighted = new Set(session.highlightIds)
+  const seen = new Set()
+  const eligible = entries.filter((entry) => {
+    if (seen.has(entry.id)) {
+      return false
+    }
+    seen.add(entry.id)
+    const pending = session.pendingStatusById[entry.id]
+    return pending ? pending.previousStatus === "unread" : entry.status === "unread"
+  })
+  return {
+    highlightIds: session.highlightIds.filter(
+      (id) => id != null && eligible.some((entry) => entry.id === id),
+    ),
+    recentIds: eligible
+      .filter((entry) => !highlighted.has(entry.id))
+      .toSorted(byPublishedAt)
+      .map((entry) => entry.id),
+  }
+}
+
+export const transitionHomeSession = (session, event, entries) => {
+  if (!session || event.sessionRevision !== session.sessionRevision) {
+    return session
+  }
+  if (event.targetStatus !== "read" && event.targetStatus !== "unread") {
+    return session
+  }
+  const pendingStatusById = { ...session.pendingStatusById }
+  const highlightIds = [...session.highlightIds]
+  const confirmedReadIds = new Set(
+    event.outcome === "confirmed" && event.targetStatus === "read"
+      ? event.entryIds.filter((id) => pendingStatusById[id]?.targetStatus !== "unread")
+      : [],
+  )
+  for (const id of event.entryIds) {
+    const pending = pendingStatusById[id]
+    if (event.outcome === "intent") {
+      pendingStatusById[id] = {
+        previousStatus: pending?.previousStatus ?? event.previousStatuses[id],
+        targetStatus: event.targetStatus,
+      }
+      continue
+    }
+    if (pending && pending.targetStatus !== event.targetStatus) {
+      continue
+    }
+    delete pendingStatusById[id]
+    if (event.outcome !== "confirmed" || event.targetStatus !== "read") {
+      continue
+    }
+    const vacancy = highlightIds.indexOf(id)
+    if (vacancy === -1) {
+      continue
+    }
+    const survivingIds = new Set(
+      highlightIds.filter((candidate) => candidate != null && !confirmedReadIds.has(candidate)),
+    )
+    const surviving = entries.filter((entry) => survivingIds.has(entry.id))
+    const recent = entries.filter(
+      (entry) =>
+        entry.status === "unread" &&
+        !confirmedReadIds.has(entry.id) &&
+        !survivingIds.has(entry.id) &&
+        pendingStatusById[entry.id]?.previousStatus !== "read",
+    )
+    highlightIds[vacancy] = selectBackfillCandidate(recent, surviving)?.id ?? null
+  }
+  return { ...session, highlightIds, pendingStatusById }
+}
