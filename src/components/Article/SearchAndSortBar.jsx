@@ -68,7 +68,6 @@ const SearchModal = memo(({ value, visible, onCancel, onConfirm, onChange }) => 
         <Input.Search
           ref={searchInputRef}
           allowClear
-          data-autofocus
           aria-label={polyglot.t("search.article_input_label")}
           placeholder={polyglot.t("search.article_placeholder")}
           value={value}
