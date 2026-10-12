@@ -35,10 +35,9 @@ export const projectHomeSession = (session, entries) => {
     const pending = session.pendingStatusById[entry.id]
     return pending ? pending.previousStatus === "unread" : entry.status === "unread"
   })
+  const eligibleIds = new Set(eligible.map(({ id }) => id))
   return {
-    highlightIds: session.highlightIds.filter(
-      (id) => id != null && eligible.some((entry) => entry.id === id),
-    ),
+    highlightIds: session.highlightIds.map((id) => (eligibleIds.has(id) ? id : null)),
     recentIds: eligible
       .filter((entry) => !highlighted.has(entry.id))
       .toSorted(byPublishedAt)
@@ -55,10 +54,22 @@ export const transitionHomeSession = (session, event, entries) => {
   }
   const pendingStatusById = { ...session.pendingStatusById }
   const highlightIds = [...session.highlightIds]
+  const pendingAfterSettlement = new Set(
+    event.pendingEntryIds ??
+      event.entryIds.filter(
+        (id) => pendingStatusById[id] && pendingStatusById[id].targetStatus !== event.targetStatus,
+      ),
+  )
+  const settledStatus = (id) =>
+    event.outcome === "confirmed"
+      ? event.targetStatus
+      : (pendingStatusById[id]?.confirmedStatus ?? event.previousStatuses[id])
   const confirmedReadIds = new Set(
-    event.outcome === "confirmed" && event.targetStatus === "read"
-      ? event.entryIds.filter((id) => pendingStatusById[id]?.targetStatus !== "unread")
-      : [],
+    event.outcome === "intent"
+      ? []
+      : event.entryIds.filter(
+          (id) => !pendingAfterSettlement.has(id) && settledStatus(id) === "read",
+        ),
   )
   for (const id of event.entryIds) {
     const pending = pendingStatusById[id]
@@ -66,14 +77,19 @@ export const transitionHomeSession = (session, event, entries) => {
       pendingStatusById[id] = {
         previousStatus: pending?.previousStatus ?? event.previousStatuses[id],
         targetStatus: event.targetStatus,
+        confirmedStatus: pending?.confirmedStatus ?? event.previousStatuses[id],
       }
       continue
     }
-    if (pending && pending.targetStatus !== event.targetStatus) {
+    if (pendingAfterSettlement.has(id)) {
+      pendingStatusById[id] = {
+        ...pending,
+        confirmedStatus: settledStatus(id),
+      }
       continue
     }
     delete pendingStatusById[id]
-    if (event.outcome !== "confirmed" || event.targetStatus !== "read") {
+    if (!confirmedReadIds.has(id)) {
       continue
     }
     const vacancy = highlightIds.indexOf(id)

@@ -99,7 +99,23 @@ test("candidate absent from loaded Recent leaves a vacancy", () => {
       confirmed,
       loaded.slice(0, 3).map((item) => (item.id === 1 ? { ...item, status: "read" } : item)),
     ).highlightIds,
-    [2, 3],
+    [null, 2, 3],
+  )
+})
+
+test("vacant Secondary slot keeps Primary and the other Secondary in place", () => {
+  const confirmed = transitionHomeSession(
+    start(loaded.slice(0, 3)),
+    event(2, "read", "confirmed"),
+    loaded.slice(0, 3).map((item) => (item.id === 2 ? { ...item, status: "read" } : item)),
+  )
+  assert.deepEqual(confirmed.highlightIds, [1, null, 3])
+  assert.deepEqual(
+    projectHomeSession(
+      confirmed,
+      loaded.slice(0, 3).map((item) => (item.id === 2 ? { ...item, status: "read" } : item)),
+    ).highlightIds,
+    [1, null, 3],
   )
 })
 
@@ -131,6 +147,30 @@ test("repeated status toggles retain the original placement until the latest set
     loaded,
   )
   assert.deepEqual(settled.highlightIds, [1, 2, 3])
+})
+
+test("rejected unread reversal applies earlier confirmed read and backfills", () => {
+  const reading = transitionHomeSession(start(), event(1, "read", "intent"), loaded)
+  const reversing = transitionHomeSession(reading, event(1, "unread", "intent", "read"), loaded)
+  const readConfirmed = transitionHomeSession(
+    reversing,
+    { ...event(1, "read", "confirmed"), pendingEntryIds: [1] },
+    loaded,
+  )
+  assert.deepEqual(readConfirmed.highlightIds, [1, 2, 3])
+  assert.equal(readConfirmed.pendingStatusById[1].confirmedStatus, "read")
+  assert.deepEqual(projectHomeSession(readConfirmed, loaded).highlightIds, [1, 2, 3])
+
+  const rolledBack = loaded.map((item) => (item.id === 1 ? { ...item, status: "read" } : item))
+  const final = transitionHomeSession(
+    readConfirmed,
+    { ...event(1, "unread", "rejected", "read"), pendingEntryIds: [] },
+    rolledBack,
+  )
+  assert.deepEqual(final.highlightIds, [4, 2, 3])
+  assert.deepEqual(final.pendingStatusById, {})
+  assert.deepEqual(projectHomeSession(final, rolledBack).highlightIds, [4, 2, 3])
+  assert.equal(projectHomeSession(final, rolledBack).recentIds.includes(1), false)
 })
 
 test("confirmed mark-unread inserts an already-loaded entry only into Recent", () => {

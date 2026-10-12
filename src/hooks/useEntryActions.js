@@ -215,6 +215,7 @@ function settleStatusMutationBatch(attempts, targetStatus, succeeded, error) {
       previousStatuses,
       targetStatus,
       outcome: succeeded ? "confirmed" : "rejected",
+      pendingEntryIds: settledEntryIds.filter((id) => statusMutationByEntryId.has(id)),
       sessionRevision,
     },
     getEntryMutationSessionRevision(),

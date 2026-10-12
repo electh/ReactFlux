@@ -1,5 +1,4 @@
 // Local fixtures exercise production routes, Home/Content, reader, context, manager and brand.
-/* eslint-disable react-compiler/react-compiler -- Imperative deterministic fixture orchestration replaces only network/provider boundaries. */
 import "@arco-design/web-react/es/_util/react-19-adapter"
 import Polyglot from "node-polyglot"
 import React, { useState } from "react"
@@ -32,6 +31,12 @@ import {
 } from "@/store/dataState"
 import { setCurrentHomeTarget } from "@/store/homePageState"
 import { getDefaultSettings, settingsState } from "@/store/settingsState"
+import { subscribeEntryStatusMutationEvents } from "@/utils/entry-status-mutation-events"
+import {
+  createHomeEditorialSession,
+  projectHomeSession,
+  transitionHomeSession,
+} from "@/utils/home-editorial-session"
 import "@arco-design/web-react/dist/css/arco.css"
 import "simplebar-react/dist/simplebar.min.css"
 import "@/index.css"
@@ -51,6 +56,9 @@ const requests = []
 let fixtureEntries = routeEntries
 let fixtureTotal = 2
 let failStatusMutation = false
+let statusMutationRequests = 0
+let deferredFirstStatusMutation = null
+let rejectStatusMutationCall = null
 let failCount = false
 let deferredCount = null
 let unloadedStatus = "read"
@@ -92,7 +100,11 @@ apiClient.put = async (url, body) => {
   if (url !== "/v1/entries" || !body?.status) {
     throw new Error("Unexpected mutation in routing fixture")
   }
-  if (failStatusMutation) {
+  const mutationCall = ++statusMutationRequests
+  if (mutationCall === 1 && deferredFirstStatusMutation) {
+    await deferredFirstStatusMutation.promise
+  }
+  if (failStatusMutation || mutationCall === rejectStatusMutationCall) {
     throw new Error("Expected local status mutation failure")
   }
   for (const id of body.entry_ids) {
@@ -231,6 +243,9 @@ const Harness = () => {
     fixtureEntries = entries.map((entry) => ({ ...entry }))
     fixtureTotal = total
     failStatusMutation = false
+    statusMutationRequests = 0
+    deferredFirstStatusMutation = null
+    rejectStatusMutationCall = null
     failCount = false
     deferredCount = null
     unloadedStatus = "read"
@@ -483,6 +498,73 @@ const Harness = () => {
         await waitFor(() => contentState.get().total === 1, "Read did not settle")
         updateEntriesStatusOptimistically([contentState.get().entries[0]], "unread")
         await waitFor(() => contentState.get().total === 2, "Unread did not reconcile total")
+      },
+    ],
+    [
+      "HOME_REJECTED_UNREAD_REVERSAL_RECONCILES_CONFIRMED_READ",
+      async () => {
+        const entries = [
+          routeEntries[0],
+          routeEntries[1],
+          { ...routeEntries[0], id: 303, title: "Third loaded article" },
+          { ...routeEntries[0], id: 404, title: "Loaded backfill article" },
+        ]
+        await mount("/", { entries, total: 4 })
+        await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        let releaseFirstMutation
+        deferredFirstStatusMutation = {
+          promise: new Promise((resolve) => {
+            releaseFirstMutation = resolve
+          }),
+        }
+        rejectStatusMutationCall = 2
+        let observedSession = createHomeEditorialSession({
+          requestKey: "fixture",
+          sessionRevision: dataState.get().sessionRevision,
+          entries: contentState.get().entries,
+        })
+        const unsubscribe = subscribeEntryStatusMutationEvents((statusEvent) => {
+          observedSession = transitionHomeSession(
+            observedSession,
+            statusEvent,
+            contentState.get().entries,
+          )
+        })
+        try {
+          updateEntriesStatusOptimistically([contentState.get().entries[0]], "read")
+          await waitFor(() => statusMutationRequests === 1, "Read request did not start")
+          updateEntriesStatusOptimistically([contentState.get().entries[0]], "unread")
+          assert(
+            JSON.stringify(
+              projectHomeSession(observedSession, contentState.get().entries).highlightIds,
+            ) === JSON.stringify([101, 202, 303]),
+            "Queued reversal changed Highlight placement before settlement",
+          )
+          releaseFirstMutation()
+          await waitFor(() => statusMutationRequests === 2, "Queued unread request did not start")
+          await waitFor(
+            () =>
+              contentState.get().total === 3 &&
+              contentState.get().entries.find(({ id }) => id === 101)?.status === "read" &&
+              observedSession.highlightIds[0] === 404,
+            "Rejected reversal did not reconcile the confirmed read",
+          )
+          assert(
+            JSON.stringify(
+              projectHomeSession(observedSession, contentState.get().entries).highlightIds,
+            ) === JSON.stringify([404, 202, 303]),
+            "Confirmed read ID remained projected or displaced surviving Highlights",
+          )
+          assert(
+            Object.keys(observedSession.pendingStatusById).length === 0 &&
+              fixtureEntries.find(({ id }) => id === 101).status === "read" &&
+              fixtureTotal === 3,
+            "Rejected unread status or pending mutation survived",
+          )
+        } finally {
+          unsubscribe()
+          releaseFirstMutation()
+        }
       },
     ],
     [
