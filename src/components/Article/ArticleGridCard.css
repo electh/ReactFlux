@@ -146,10 +146,6 @@
   line-height: 1.35;
 }
 
-.grid-card-content-no-cover .grid-card-footer {
-  margin-top: 0;
-}
-
 .grid-card-reading-time {
   display: inline-flex;
   align-items: center;

@@ -331,12 +331,23 @@ const runStructuralGate = () => {
     "TEXT_ONLY_NO_MEDIA",
     textOnlyCards.length > 0 &&
       textOnlyCards.every(
-        (card) => !card.querySelector(".grid-card-media, img, .grid-card-loading-media"),
+        (card) =>
+          !card.querySelector(".grid-card-media, .grid-card-cover, .grid-card-loading-media"),
       ),
-    `text-only cards=${textOnlyCards.length}`,
+    `text-only cards contain no article media frame or cover image; feed-icon cards=${textOnlyCards.filter((card) => card.querySelector(".grid-card-feed-icon")).length}`,
   )
   check(
-    "TEXT_ONLY_OPAQUE_ROOT",
+    "FEED_ICON_ALLOWED",
+    textOnlyCards.some((card) => card.querySelector(".grid-card-feed-icon")) &&
+      textOnlyCards.every((card) =>
+        [...card.querySelectorAll("img")].every((image) =>
+          image.classList.contains("grid-card-feed-icon"),
+        ),
+      ),
+    "feed/source icon images remain allowed metadata and are not article-cover media",
+  )
+  check(
+    "TEXT_ONLY_OPAQUE",
     textOnlyCards.length > 0 &&
       textOnlyCards.every((card) => {
         const background = getComputedStyle(card).backgroundColor
@@ -345,7 +356,7 @@ const runStructuralGate = () => {
     `surface=${textOnlyCards.map((card) => getComputedStyle(card).backgroundColor).join(",")}`,
   )
   check(
-    "TEXT_ONLY_NO_NESTED_SURFACE",
+    "TEXT_ONLY_NO_NESTED_CARD",
     textOnlyCards.length > 0 &&
       textOnlyCards.every((card) => {
         const copyStyle = getComputedStyle(card.querySelector(".grid-card-copy"))
@@ -384,6 +395,78 @@ const runStructuralGate = () => {
         )
       }),
     "source/time precedes title; optional deck and footer follow",
+  )
+  const cardRects = cards.map((card) => ({
+    card,
+    rect: card.getBoundingClientRect(),
+  }))
+  const mixedRowTextOnlyCards = cardRects
+    .filter(({ card }) => card.querySelector(".grid-card-content-no-cover"))
+    .filter(({ rect: textRect }) =>
+      cardRects.some(
+        ({ card: otherCard, rect: otherRect }) =>
+          otherCard.querySelector(".grid-card-media") &&
+          Math.abs(textRect.top - otherRect.top) <= 1,
+      ),
+    )
+  const isFooterBottomAnchored = (card) => {
+    const copy = card.querySelector(".grid-card-copy")
+    const footer = card.querySelector(".grid-card-footer")
+    if (!copy || !footer) {
+      return false
+    }
+
+    const cardBottom = card.getBoundingClientRect().bottom
+    const footerBottom = footer.getBoundingClientRect().bottom
+    const expectedBottomGap =
+      Number.parseFloat(getComputedStyle(copy).paddingBottom) +
+      Number.parseFloat(getComputedStyle(card).borderBottomWidth)
+    return Math.abs(cardBottom - footerBottom - expectedBottomGap) <= 2
+  }
+  const footerGeometry = (card) => {
+    const cardBottom = card.getBoundingClientRect().bottom
+    const footerBottom = card.querySelector(".grid-card-footer")?.getBoundingClientRect().bottom
+    const copy = card.querySelector(".grid-card-copy")
+    const expectedBottomGap = copy
+      ? Number.parseFloat(getComputedStyle(copy).paddingBottom) +
+        Number.parseFloat(getComputedStyle(card).borderBottomWidth)
+      : Number.NaN
+    return `${(cardBottom - footerBottom).toFixed(1)}px/${expectedBottomGap.toFixed(1)}px`
+  }
+  check(
+    "TEXT_ONLY_FOOTER_BOTTOM_ANCHORED",
+    !mixedRowTextOnlyCards.some(({ card }) => !isFooterBottomAnchored(card)),
+    mixedRowTextOnlyCards.length === 0
+      ? "not applicable: no image/text-only mixed row at this viewport"
+      : `mixed text-only footer gap/expected=${mixedRowTextOnlyCards.map(({ card }) => footerGeometry(card)).join(",")}`,
+  )
+  check(
+    "TEXT_ONLY_EDITORIAL_CONTENT_TOP_ALIGNED",
+    textOnlyCards.length > 0 &&
+      textOnlyCards.every((card) => {
+        const copy = card.querySelector(".grid-card-copy")
+        const meta = card.querySelector(".grid-card-meta")
+        const title = card.querySelector(".grid-card-title")
+        const deck = card.querySelector(".grid-card-summary:not(.grid-card-summary-measure-probe)")
+        const footer = card.querySelector(".grid-card-footer")
+        const copyRect = copy?.getBoundingClientRect()
+        const metaRect = meta?.getBoundingClientRect()
+        const titleRect = title?.getBoundingClientRect()
+        const deckRect = deck?.getBoundingClientRect()
+        const footerRect = footer?.getBoundingClientRect()
+        const expectedTopGap = Number.parseFloat(getComputedStyle(copy).paddingTop)
+        return (
+          copyRect &&
+          metaRect &&
+          titleRect &&
+          footerRect &&
+          Math.abs(metaRect.top - copyRect.top - expectedTopGap) <= 2 &&
+          metaRect.bottom <= titleRect.top + 1 &&
+          (!deckRect || titleRect.bottom <= deckRect.top + 1) &&
+          (deckRect ? deckRect.bottom : titleRect.bottom) <= footerRect.top + 1
+        )
+      }),
+    "metadata/title/deck stay at the normal top inset and precede the footer",
   )
   check(
     "TEXT_ONLY_NOT_PLACEHOLDER_LIKE",
@@ -480,6 +563,42 @@ const runStructuralGate = () => {
     `image cards=${mediaCards.length}; media elements present`,
   )
   check(
+    "IMAGE_CARD_FOOTER_BEHAVIOR_UNCHANGED",
+    mediaCards.length > 0 && mediaCards.every((card) => isFooterBottomAnchored(card)),
+    `image footer gap/expected=${mediaCards.map((card) => footerGeometry(card)).join(",")}`,
+  )
+  const mixedRowPairs = cardRects.filter(
+    ({ card, rect }) =>
+      card.querySelector(".grid-card-content-no-cover") &&
+      cardRects.some(
+        ({ card: otherCard, rect: otherRect }) =>
+          otherCard.querySelector(".grid-card-media") && Math.abs(rect.top - otherRect.top) <= 1,
+      ),
+  )
+  check(
+    "MIXED_ROW_WHITESPACE_ACCEPTABLE",
+    !mixedRowPairs.some(({ card, rect }) => {
+      const imageCard = cardRects.find(
+        ({ card: otherCard, rect: otherRect }) =>
+          otherCard.querySelector(".grid-card-media") && Math.abs(rect.top - otherRect.top) <= 1,
+      )
+      const editorialBottom =
+        card
+          .querySelector(".grid-card-summary:not(.grid-card-summary-measure-probe)")
+          ?.getBoundingClientRect().bottom ??
+        card.querySelector(".grid-card-title").getBoundingClientRect().bottom
+      return (
+        !imageCard ||
+        Math.abs(rect.height - imageCard.rect.height) > 1 ||
+        !isFooterBottomAnchored(card) ||
+        card.querySelector(".grid-card-footer").getBoundingClientRect().top - editorialBottom < 16
+      )
+    }),
+    mixedRowPairs.length === 0
+      ? "not applicable: no image/text-only mixed row at this viewport"
+      : `mixed pairs=${mixedRowPairs.length}; equal-height rows retain top copy, flexible middle space, and bottom footer`,
+  )
+  check(
     "NO_CONTENT_COLLISION",
     cards.every((card, index) => {
       const rect = card.getBoundingClientRect()
@@ -494,6 +613,28 @@ const runStructuralGate = () => {
       })
     }),
     `cards=${cards.length}`,
+  )
+  check(
+    "NO_TEXT_CLIPPING",
+    cards.length > 0 &&
+      cards.every((card) => {
+        const cardRect = card.getBoundingClientRect()
+        const border = Number.parseFloat(getComputedStyle(card).borderTopWidth)
+        return [
+          ...card.querySelectorAll(
+            ".grid-card-meta, .grid-card-title, .grid-card-summary:not(.grid-card-summary-measure-probe), .grid-card-footer",
+          ),
+        ].every((element) => {
+          const rect = element.getBoundingClientRect()
+          return (
+            rect.left >= cardRect.left + border - 1 &&
+            rect.right <= cardRect.right - border + 1 &&
+            rect.top >= cardRect.top + border - 1 &&
+            rect.bottom <= cardRect.bottom - border + 1
+          )
+        })
+      }),
+    "metadata, title, deck, and footer remain inside their card surface",
   )
 
   if (textOnlyCopyNodes[0] && textOnlyTitles[0]) {
