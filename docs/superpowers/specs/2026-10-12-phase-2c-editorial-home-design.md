@@ -83,6 +83,8 @@ On initial composition and explicit refresh:
 
 Source/category diversity is preferred but is not an eligibility requirement. When all candidates share a source or category, still select valid candidates.
 
+For Secondary selection, an image tie-break means preferring an entry with an eligible, usable image under the existing article presentation/image semantics only after source diversity, category diversity, and recency tie. Image presence never overrides any of those higher-priority criteria, never affects Primary selection, and lack of an image never makes an entry ineligible.
+
 Initial counts:
 - at least three eligible entries: three Highlights;
 - two eligible entries: two Highlights;
@@ -97,7 +99,7 @@ After initial composition, highlightIds are stable ephemeral session state. Do n
 
 Load-more appends entries to Recent and expands the loaded candidate pool, but it does not fill an empty Highlight slot or reorganize existing Highlights.
 
-Explicit refresh fetches canonical Home data, discards the previous editorial projection, and recomputes Highlights from scratch.
+On successful explicit refresh, fetch canonical Home data, discard the previous editorial projection, and recompute Highlights from scratch. If an explicit refresh fails after valid Home content exists, preserve the current projection as specified in §26.
 
 ## 7. Successful read mutation and one-slot backfill
 
@@ -106,11 +108,14 @@ Reuse the existing functional mutation pipeline; do not create a separate mutati
 If the read article occupied a Highlight:
 - vacate exactly that slot;
 - choose a backfill candidate only from currently loaded, eligible entries in Recent;
+- rank candidates relative to the Highlights that survive in their existing slots, preferring in order: a source not already represented by those surviving Highlights, a category not already represented, newer published_at, an eligible/usable image, then the stable entry.id tie-break;
 - promote that candidate to the vacant slot and remove its entry.id from Recent;
 - preserve all other Highlight positions;
 - do not fetch more entries.
 
-If no loaded eligible Recent candidate exists, temporarily show fewer Highlights. The initial “Primary is newest” rule applies to initial composition and explicit refresh. During mutation backfill, stable slots take precedence over globally recomputing Highlight order.
+Source and category are soft diversity preferences, never eligibility requirements. Apply each preference when it distinguishes the candidates; when surviving Highlights provide no meaningful distinction, or all candidates are already represented, fall through to the next criterion. Image presence is only a late tie-break after source diversity, category diversity, and recency; it never overrides them, never affects Primary selection, and absence of an image never disqualifies a candidate.
+
+The same comparator applies whether the vacancy is Primary or Secondary. It applies only to the vacant slot: do not move or reorder surviving Highlights. If no loaded eligible Recent candidate exists, temporarily show fewer Highlights. The “Primary is newest” guarantee applies to initial composition and successful explicit refresh only. During mutation backfill, session stability takes precedence over recomputing Highlight order.
 
 Do not commit structural backfill based only on an unconfirmed mutation. If the mutation fails, reconcile with existing Miniflux-backed functional state and ensure no removal or backfill derived from that failed mutation survives.
 
@@ -236,9 +241,11 @@ When the successful canonical Home query returns zero unread, stay on / and rend
 
 An explicit CTA to /all is allowed with wording such as “Ver todos os artigos.” Final wording can be refined during UI implementation without changing these semantics.
 
-## 26. Initial error
+## 26. Initial and explicit refresh errors
 
-When the initial Home query fails, remain on / and show a clear global Home error with “Tentar novamente.” Retry the same canonical query. Do not redirect to /all, show “Tudo em dia,” or silently present stale content as a successful refresh.
+When the initial Home query fails, remain on / and show a clear global Home error with “Tentar novamente.” Retry the same canonical query. Do not redirect to /all or show “Tudo em dia.”
+
+When an explicit refresh fails after valid Home content is already loaded, preserve the currently valid Highlights, Recent entries, and editorial session/projection. Do not replace Home with the initial global error state or recompute Highlights. Clearly show that the refresh failed and provide a retry action; do not imply that the visible content was freshly updated successfully. This Home-level refresh error is distinct from the local load-more error at the end of Recent. A later successful refresh follows §6: it may replace the canonical loaded data, discard the prior projection, and recompute Highlights from scratch.
 
 ## 27. Load-more error
 
@@ -299,7 +306,7 @@ At minimum, test:
 - source diversity priority;
 - category diversity priority;
 - recency after diversity;
-- image as a late tie-break only;
+- image presence as a late tie-break for Secondary selection/backfill only, never for Primary selection or eligibility;
 - stable entry.id tie-break;
 - valid selection when candidates share source/category;
 - no entry rendered in both sections;
@@ -307,6 +314,8 @@ At minimum, test:
 - load-more does not recompute Highlights;
 - mark-unread returns an entry to Recent;
 - successful read of Primary and Secondary each cause one-slot backfill;
+- backfill candidate preference is source diversity, category diversity, recency, usable-image presence, then stable entry.id, relative to surviving Highlights;
+- Primary and Secondary vacancy backfill each preserve every surviving Highlight slot;
 - read failure does not commit an editorial transition;
 - refresh completely recomputes the projection.
 
@@ -342,6 +351,7 @@ Require at least:
 - HOME_SCROLL_RESTORE
 - HOME_ZERO_UNREAD
 - HOME_INITIAL_ERROR
+- HOME_REFRESH_ERROR_PRESERVES_CONTENT
 - HOME_LOAD_MORE_ERROR
 
 ## 36. Existing regression gates
@@ -366,9 +376,9 @@ Implementation must create a Phase 2C-specific visual/runtime harness. This spec
 
 Cover all six required viewports (390x844, 768x1024, 884x1104, 1024x768, 1280x800, 1440x900) and light plus dark/OLED themes.
 
-Scenarios: three or more unread with image Primary; three or more unread with text-only Primary; two unread; one unread; zero unread; mixed image/text-only; diverse source/category; same source/category; loading; initial error; load-more error; after read/backfill; after mark-unread; after star/unstar.
+Scenarios: three or more unread with image Primary; three or more unread with text-only Primary; two unread; one unread; zero unread; mixed image/text-only; diverse source/category; same source/category; loading; initial error; failed explicit refresh with valid content retained and retry available; load-more error; after read/backfill; after mark-unread; after star/unstar.
 
-Expected visual gates: HOME_NO_OVERFLOW, HOME_SECTION_HIERARCHY, HOME_PRIMARY_TEXT_ONLY, HOME_SECONDARY_LAYOUT, HOME_RECENT_GRID, HOME_EMPTY_RECENT, HOME_LOADING, HOME_LIGHT, and HOME_DARK.
+Expected visual gates: HOME_NO_OVERFLOW, HOME_SECTION_HIERARCHY, HOME_PRIMARY_TEXT_ONLY, HOME_SECONDARY_LAYOUT, HOME_RECENT_GRID, HOME_EMPTY_RECENT, HOME_LOADING, HOME_REFRESH_ERROR_WITH_CONTENT, HOME_LIGHT, and HOME_DARK.
 
 ## 38. Real-device gate
 
@@ -452,14 +462,11 @@ The approved contract fixes product behavior but leaves the following implementa
 3. **Home request integration:** decide how to request unread, published_at descending, and existing visibility policy while bypassing All/Unread sort preferences and reusing the existing request/session guards.
 4. **Ephemeral session holder:** select the smallest existing in-memory state boundary that retains highlightIds and scroll through a valid reader visit without creating a second article cache.
 5. **Primary timestamp ties:** when multiple eligible entries share the newest published_at, use a stable entry.id tie-break; specify its ascending or descending direction.
-6. **Secondary ID tie-break direction:** specify ascending or descending entry.id when the approved Secondary comparator dimensions tie.
-7. **Backfill comparator:** choose a deterministic candidate order from currently loaded Recent entries; it must not disturb other Highlight slots or fetch more.
-8. **Missing metadata:** define comparison behavior when source or category is absent, while keeping diversity a preference rather than an eligibility requirement.
-9. **Image tie-break direction:** specify whether image presence is preferred when all higher-priority comparator dimensions tie; it remains a late tie-break and never affects Primary.
-10. **Zero-unread versus empty loaded page:** distinguish a successful canonical total of zero from no currently loaded eligible entries while additional pages may exist. “Tudo em dia” is for a successful global zero-unread result, not a transient empty Recent/Highlight projection.
-11. **Optimistic read mutation:** determine how the UI represents a pending read without committing irreversible removal/backfill until success, and how failure restores the same projection.
-12. **Refresh failure with existing content:** specify whether old content remains visibly marked stale or is replaced by the error state; do not present stale data as a successful refresh.
-13. **Sentinel with empty Recent:** determine how the shared sentinel remains observable when Recent has no rendered rows but more server pages may exist, without changing Highlight stability.
+6. **Stable ID tie-break direction:** specify ascending or descending entry.id for Secondary selection and backfill after all approved comparator dimensions tie.
+7. **Missing metadata representation:** choose the technical representation for absent source or category metadata so the approved soft-preference comparator can operate without making diversity an eligibility requirement.
+8. **Zero-unread versus empty loaded page representation:** select the repository-specific response/count and pagination signals that implement the specified distinction between a successful canonical zero-unread result and no currently loaded eligible entries while additional pages may exist. “Tudo em dia” remains limited to the successful global zero-unread result.
+9. **Optimistic read mutation mechanics:** choose the in-memory pending-state mechanism that avoids committing removal/backfill until mutation success and restores the same projection on failure.
+10. **Sentinel with empty Recent:** determine how the shared sentinel remains observable when Recent has no rendered rows but more server pages may exist, without changing Highlight stability.
 
 ## Prior work to preserve
 
