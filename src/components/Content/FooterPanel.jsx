@@ -27,6 +27,7 @@ import createArticleListRequestKey from "@/utils/article-list-request-key"
 import { get24HoursAgoTimestamp } from "@/utils/date"
 import { runEntryMutation } from "@/utils/entry-mutation-state"
 import findAdjacentItem from "@/utils/navigation"
+import reconcileEntriesAfterMarkRead from "@/utils/reconcile-entries-after-mark-read"
 import "./FooterPanel.css"
 
 const isEntryInMarkAllReadScope = (
@@ -58,6 +59,7 @@ const isEntryInMarkAllReadScope = (
 
 const updateEntriesAsRead = (entryIds = null, scope = null) => {
   const { activeContent, entries } = contentState.get()
+  const { showStatus } = settingsState.get()
   const markedEntryIds = new Set(
     entryIds ??
       entries
@@ -70,9 +72,7 @@ const updateEntriesAsRead = (entryIds = null, scope = null) => {
   if (isActiveEntryMarkedRead) {
     setActiveContent({ ...activeContent, status: "read" })
   }
-  setEntries((prev) =>
-    prev.map((entry) => (markedEntryIds.has(entry.id) ? { ...entry, status: "read" } : entry)),
-  )
+  setEntries((prev) => reconcileEntriesAfterMarkRead(prev, markedEntryIds, showStatus))
 }
 
 const handleFilterChange = (value) => {
