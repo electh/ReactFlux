@@ -120,6 +120,10 @@
   font-size: 1.25rem;
 }
 
+.grid-card-content-no-cover .grid-card-copy {
+  padding-inline: 16px;
+}
+
 .grid-card-summary {
   display: -webkit-box;
   margin: 0;
@@ -140,10 +144,6 @@
   color: var(--nf-text-tertiary, var(--color-text-3));
   font-size: 0.8125rem;
   line-height: 1.35;
-}
-
-.grid-card-content-no-cover .grid-card-footer {
-  margin-top: 0;
 }
 
 .grid-card-reading-time {
