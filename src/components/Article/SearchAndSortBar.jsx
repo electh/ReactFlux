@@ -174,9 +174,10 @@ const DateFilter = ({ filterDate, polyglot }) => {
 }
 
 const SearchAndSortBar = ({ fullWidth = false }) => {
-  const { filterDate, filterString, infoFrom, isArticleListReady } = useStore(contentState, {
-    keys: ["filterDate", "filterString", "infoFrom", "isArticleListReady"],
-  })
+  const { articleListError, filterDate, filterString, infoFrom, isArticleListReady } = useStore(
+    contentState,
+    { keys: ["articleListError", "filterDate", "filterString", "infoFrom", "isArticleListReady"] },
+  )
   const { orderDirection } = useStore(settingsState, { keys: ["orderDirection"] })
   const { polyglot } = useStore(polyglotState)
   const feeds = useStore(catalogFeedsState)
@@ -275,7 +276,7 @@ const SearchAndSortBar = ({ fullWidth = false }) => {
             <div className="placeholder-title"></div>
           )}
         </div>
-        {isArticleListReady && count > 0 && (
+        {isArticleListReady && !articleListError && count >= 0 && (
           <Typography.Text className="count-label">({count})</Typography.Text>
         )}
       </div>

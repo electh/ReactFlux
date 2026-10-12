@@ -22,7 +22,9 @@ import {
   setUnreadTodayCount,
 } from "@/store/dataState"
 import { articleListRequestSettingsState, settingsState } from "@/store/settingsState"
+import { hasArticleListFilters } from "@/utils/article-list-filters"
 import createArticleListRequestKey from "@/utils/article-list-request-key"
+import subscribeArticleListTotalRefresh from "@/utils/article-list-total-refresh"
 import {
   getEntryMutationSnapshot,
   isEntryMutationSnapshotCurrent,
@@ -146,7 +148,7 @@ const useArticleList = (source, sourceId, getEntries) => {
 
       handleResponses(response)
 
-      if (!content.filterDate && !content.filterString) {
+      if (!hasArticleListFilters({ ...content, infoFrom: source })) {
         switch (source) {
           case "feed": {
             if (settings.showStatus === "unread") {
@@ -196,6 +198,11 @@ const useArticleList = (source, sourceId, getEntries) => {
       }
     }
   }, [getEntries, source, sourceId])
+
+  useEffect(
+    () => subscribeArticleListTotalRefresh(getEntries, { from: source, id: sourceId }),
+    [automaticRequestKey, getEntries, source, sourceId],
+  )
 
   useEffect(() => {
     void fetchArticleList()
