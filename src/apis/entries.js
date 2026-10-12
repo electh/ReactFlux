@@ -1,7 +1,7 @@
 import apiClient from "./ofetch"
 
 import { contentState } from "@/store/contentState"
-import { isEntryScopeFullyVisible } from "@/store/dataState"
+import { getDataSessionRevision, isEntryScopeFullyVisible } from "@/store/dataState"
 import { getSettings } from "@/store/settingsState"
 import {
   ENTRY_UPDATE_BATCH_SIZE,
@@ -27,26 +27,54 @@ const getEntryVisibilityParams = () => ({
   globally_visible: !getSettings("showHiddenFeeds"),
 })
 
-export const markEntriesAsReadInBatches = async (fetchEntries) => {
-  const visibilityParams = getEntryVisibilityParams()
-  let markedEntryCount = 0
+export const markEntriesAsReadInBatches = async (
+  fetchEntries,
+  { filterParams = {}, onBatchMarkedRead } = {},
+) => {
+  const requestSessionRevision = getDataSessionRevision()
+  const assertCurrentSession = () => {
+    if (requestSessionRevision !== getDataSessionRevision()) {
+      throw new Error("Stale mark-as-read session")
+    }
+  }
+
+  // Bulk requests must opt into date filtering instead of inheriting mutable UI state.
+  const requestParams = {
+    filterDate: null,
+    direction: getSettings("orderDirection"),
+    ...getEntryVisibilityParams(),
+    ...filterParams,
+  }
+  const markedEntryIds = new Set()
 
   while (true) {
+    assertCurrentSession()
+
     // Always fetch from offset zero because marking a batch read removes it from the result set.
     const response = await fetchEntries("unread", {
-      ...visibilityParams,
+      ...requestParams,
       limit: MAX_ENTRIES_PER_PAGE,
       offset: 0,
     })
-    const unreadEntries = response?.entries ?? []
-    const unreadEntryIds = [...new Set(unreadEntries.map((entry) => entry.id))]
+    assertCurrentSession()
+    if (!Array.isArray(response?.entries)) {
+      throw new TypeError("Invalid entries response")
+    }
+    const unreadEntryIds = [...new Set(response.entries.map((entry) => entry.id))]
 
     if (unreadEntryIds.length === 0) {
-      return markedEntryCount
+      return markedEntryIds.size
+    }
+    if (unreadEntryIds.some((entryId) => markedEntryIds.has(entryId))) {
+      throw new Error("Mark-as-read pagination did not advance")
     }
 
     await updateEntriesStatus(unreadEntryIds, "read")
-    markedEntryCount += unreadEntryIds.length
+    assertCurrentSession()
+    for (const entryId of unreadEntryIds) {
+      markedEntryIds.add(entryId)
+    }
+    onBatchMarkedRead?.(unreadEntryIds)
   }
 }
 
@@ -78,14 +106,14 @@ const addDateFilters = (orderField, queryParams, filterDate) => {
 
 const buildEntriesUrl = (baseParams, extraParams = {}, applyDateFilter = true) => {
   const { baseUrl, orderField, limit, status } = baseParams
-  const { filterDate } = contentState.get()
+  const { filterDate = contentState.get().filterDate, ...queryFilters } = extraParams
   const orderDirection = getSettings("orderDirection")
 
   const queryParams = new URLSearchParams({
     order: orderField,
     direction: orderDirection,
     limit,
-    ...extraParams,
+    ...queryFilters,
   })
 
   if (status) {
