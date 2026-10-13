@@ -147,14 +147,16 @@ const HomeEditorial = ({
               recentIds={projection.recentIds}
               scrollRootRef={cardsRef}
             />
-            <HomeStates
-              refreshError={Boolean(articleListError)}
-              retryArticleList={retryArticleList}
-            />
             <LoadMoreSentinel getEntries={getEntries} scrollRootRef={cardsRef} />
           </>
         )}
         {isZeroUnread && <HomeStates isZeroUnread />}
+        {projection && (
+          <HomeStates
+            refreshError={Boolean(articleListError)}
+            retryArticleList={retryArticleList}
+          />
+        )}
         {projection && isZeroUnread && loadMoreVisible && (
           <LoadMoreSentinel getEntries={getEntries} scrollRootRef={cardsRef} />
         )}

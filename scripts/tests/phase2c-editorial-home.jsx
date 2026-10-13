@@ -1357,6 +1357,58 @@ const Harness = () => {
       },
     ],
     [
+      "HOME_ZERO_UNREAD_REFRESH_ERROR_RETRY",
+      async () => {
+        await mount("/", emptyHomeFixtures.zeroUnread)
+        await waitFor(
+          () => document.querySelector(".home-state-zero-unread"),
+          "Successful canonical zero did not render before refresh",
+        )
+        const initialRequests = listRequests().length
+        articleFailure = true
+        document.body.focus()
+        document.body.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            bubbles: true,
+            cancelable: true,
+            code: "KeyR",
+            key: "r",
+            keyCode: 82,
+            which: 82,
+          }),
+        )
+        await waitFor(
+          () => contentState.get().articleListError,
+          "Zero-session explicit refresh rejection missing",
+        )
+        assert(
+          document.querySelector(".home-state-zero-unread"),
+          "Failed refresh replaced the valid zero-unread state",
+        )
+        assert(
+          document.querySelector(".home-state-refresh-error[role='alert'] button"),
+          "Zero-unread refresh failure did not expose retry",
+        )
+        articleFailure = false
+        clickLabel(englishPhrases.actions.retry)
+        await waitFor(
+          () =>
+            homeRoot()?.getAttribute("aria-busy") === "false" &&
+            !contentState.get().articleListError,
+          "Zero-session refresh retry did not complete",
+        )
+        assert(
+          document.querySelector(".home-state-zero-unread") &&
+            !document.querySelector(".home-state-refresh-error"),
+          "Successful zero-session retry did not restore the calm zero state",
+        )
+        assert(
+          listRequests().length === initialRequests + 2,
+          "Zero-session refresh/retry started unexpected requests",
+        )
+      },
+    ],
+    [
       "HOME_INITIAL_ERROR",
       async () => {
         await mount("/", { queryError: true })
