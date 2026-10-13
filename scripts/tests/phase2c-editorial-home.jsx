@@ -1389,14 +1389,33 @@ const Harness = () => {
           document.querySelector(".home-state-refresh-error[role='alert'] button"),
           "Zero-unread refresh failure did not expose retry",
         )
+        const priorSnapshotRevision = contentState.get().articleListSnapshotRevision
         articleFailure = false
+        deferredArticleQuery = (() => {
+          let release
+          const promise = new Promise((resolve) => {
+            release = resolve
+          })
+          return { promise, resolve: release }
+        })()
         clickLabel(englishPhrases.actions.retry)
         await waitFor(
-          () =>
-            homeRoot()?.getAttribute("aria-busy") === "false" &&
-            !contentState.get().articleListError,
-          "Zero-session refresh retry did not complete",
+          () => listRequests().length === initialRequests + 2,
+          "Zero-session retry request did not start",
         )
+        const retryCompleted = () =>
+          contentState.get().isArticleListReady &&
+          !contentState.get().articleListError &&
+          contentState.get().articleListSnapshotRevision > priorSnapshotRevision
+        assert(
+          contentState.get().articleListSnapshotRevision === priorSnapshotRevision &&
+            !contentState.get().isArticleListReady,
+          "Zero-session retry committed before its response was released",
+        )
+        assert(!retryCompleted(), "Zero-session retry completed without a response")
+        deferredArticleQuery.resolve()
+        deferredArticleQuery = null
+        await waitFor(retryCompleted, "Zero-session refresh retry did not complete")
         assert(
           document.querySelector(".home-state-zero-unread") &&
             !document.querySelector(".home-state-refresh-error"),
