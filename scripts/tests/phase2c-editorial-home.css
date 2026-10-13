@@ -14,6 +14,29 @@ body,
   padding: 16px;
 }
 
+.harness-controls > button {
+  margin: 4px;
+}
+
+.harness-matrix-report,
+.harness-manual-report {
+  border: 1px solid #c5cbd2;
+  margin-block: 12px;
+  max-width: 100%;
+  padding: 8px 12px;
+}
+
+.harness-matrix-report pre,
+.harness-controls > pre {
+  max-height: 320px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+.harness-manual-report strong {
+  color: #8a4b08;
+}
+
 .harness-stage {
   display: flex;
   height: min(760px, calc(100vh - 180px));

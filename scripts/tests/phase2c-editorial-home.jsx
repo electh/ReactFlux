@@ -10,6 +10,7 @@ import {
   fixtureFeed,
   highlightFixtures,
   paginationEntries,
+  phase2cEditorialHomeMatrix,
   routeEntries,
 } from "./fixtures/phase2c-editorial-home"
 
@@ -270,6 +271,81 @@ const listRequests = () => requests.filter((url) => url.startsWith("/v1/entries?
 const scrollRoot = () =>
   homeRoot()?.querySelector(".simplebar-content-wrapper, .adaptive-scroll-area-native")
 const sentinels = () => [...document.querySelectorAll(".home-editorial .load-more-container")]
+const MATRIX_RUNS_STORAGE_KEY = "phase2c-editorial-home-task10-matrix-runs-v1"
+const matrixPairId = (viewport, theme) => `${viewport.width}x${viewport.height}:${theme}`
+const readMatrixRuns = () => {
+  try {
+    return JSON.parse(sessionStorage.getItem(MATRIX_RUNS_STORAGE_KEY) ?? "{}")
+  } catch {
+    return {}
+  }
+}
+const resetHarness = () => {
+  globalThis.sessionStorage.removeItem(MATRIX_RUNS_STORAGE_KEY)
+  globalThis.location.reload()
+}
+const captureHomeHarnessMetrics = (theme) => {
+  const state = contentState.get()
+  const home = homeRoot()
+  const root = scrollRoot()
+  const renderedEntryIds = [...document.querySelectorAll(".article-entry[data-entry-id]")].map(
+    (node) => Number(node.dataset.entryId),
+  )
+  const countQueries = listRequests()
+    .map((request) => Object.fromEntries(new URL(request, "https://fixture.invalid").searchParams))
+    .filter((params) => params.limit === "1")
+  const recentRows = [...document.querySelectorAll(".home-recent .article-card-grid-row")]
+  const recentColumns = recentRows.map((row) => {
+    const value = Number.parseInt(row.style.getPropertyValue("--article-card-grid-columns"), 10)
+    return Number.isFinite(value)
+      ? value
+      : getComputedStyle(row).gridTemplateColumns.split(" ").filter(Boolean).length
+  })
+  const scrollRect = root?.getBoundingClientRect()
+  return {
+    viewport: { width: innerWidth, height: innerHeight },
+    theme,
+    document: {
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    },
+    sectionOrder: [...(home?.querySelectorAll("section[aria-label]") ?? [])].map((section) =>
+      section.getAttribute("aria-label"),
+    ),
+    duplicateEntryIds: renderedEntryIds.length - new Set(renderedEntryIds).size,
+    domCounts: {
+      highlights: cards().length,
+      recent: recentIds().length,
+      entries: renderedEntryIds.length,
+      sentinels: sentinels().length,
+    },
+    recentColumns,
+    countQueryVisibility: countQueries,
+    loadedEligibleUnreadIds: new Set(
+      state.entries.filter((entry) => entry.status === "unread").map((entry) => entry.id),
+    ).size,
+    pageSize: settingsState.get().pageSize,
+    loadMoreVisible: state.loadMoreVisible,
+    listState: { total: state.total, isArticleListReady: state.isArticleListReady },
+    scrollRoot: root
+      ? {
+          clientWidth: root.clientWidth,
+          clientHeight: root.clientHeight,
+          scrollWidth: root.scrollWidth,
+          scrollHeight: root.scrollHeight,
+          scrollTop: Math.round(root.scrollTop),
+          bounds: scrollRect
+            ? {
+                x: Math.round(scrollRect.x),
+                y: Math.round(scrollRect.y),
+                width: Math.round(scrollRect.width),
+                height: Math.round(scrollRect.height),
+              }
+            : null,
+        }
+      : null,
+  }
+}
 const loadNextPage = async (loadedCount) => {
   const root = scrollRoot()
   assert(root && sentinels().length === 1, "Expected one Home pagination sentinel")
@@ -313,6 +389,10 @@ const Harness = () => {
   const [probe, setProbe] = useState(null)
   const [running, setRunning] = useState(false)
   const [results, setResults] = useState([])
+  const [selectedTheme, setSelectedTheme] = useState(() =>
+    new URLSearchParams(globalThis.location.search).get("theme") === "dark" ? "dark" : "light",
+  )
+  const [matrixRuns, setMatrixRuns] = useState(readMatrixRuns)
   const mount = async (
     path = "/",
     {
@@ -327,6 +407,7 @@ const Harness = () => {
       deferInitial = false,
       emptyPagePagination: nextEmptyPagePagination = false,
       layout = getDefaultSettings().articleListLayout,
+      enableSwipeGesture = getDefaultSettings().enableSwipeGesture,
       orderBy = getDefaultSettings().orderBy,
       orderDirection = getDefaultSettings().orderDirection,
     } = {},
@@ -382,6 +463,7 @@ const Harness = () => {
       removeDuplicates: "none",
       enableContextMenu: true,
       showFeedIcon: true,
+      enableSwipeGesture,
     })
     if (identity === "ready") {
       commitIdentityData({ id: 1, username: "fixture" })
@@ -445,7 +527,7 @@ const Harness = () => {
     [
       "HOME_READER_PARAM_BRIDGE",
       async () => {
-        await mount("/entry/101")
+        await mount("/entry/101", { enableSwipeGesture: false })
         await waitFor(() => readerIs(101), "Home parent did not forward child ID 101 into Content")
         await waitFor(() => contentState.get().isArticleListReady, "Reader list did not load")
         clickLabel(englishPhrases.article_card.next_tooltip)
@@ -460,7 +542,7 @@ const Harness = () => {
           router.state.location.pathname === "/entry/101",
           "Previous reader action lost Home origin",
         )
-        await mount("/entry/202")
+        await mount("/entry/202", { enableSwipeGesture: false })
         await waitFor(() => readerIs(202), "Direct root reader 202 did not render")
         assert(router.state.location.pathname === "/entry/202", "Direct reader URL changed")
       },
@@ -607,21 +689,16 @@ const Harness = () => {
     [
       "HOME_COUNT_FAILURE_PRESERVES_TOTAL_AND_PAGINATION",
       async () => {
-        await mount("/", { entries: routeEntries.slice(0, 1), total: 2 })
+        await mount("/", { entries: paginationEntries(20), total: 21, pageSize: 20 })
         await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
         assert(contentState.get().loadMoreVisible, "Fixture did not start with pagination")
+        const initialRequests = listRequests().length
         failCount = true
         updateEntriesStatusOptimistically([contentState.get().entries[0]], "read")
-        await waitFor(
-          () =>
-            requests.some(
-              (url) => new URL(url, "https://fixture.invalid").searchParams.get("limit") === "1",
-            ),
-          "Failed count request missing",
-        )
+        await waitFor(() => listRequests().length > initialRequests, "Failed count request missing")
         await settle()
         assert(
-          contentState.get().total === 2 && contentState.get().loadMoreVisible,
+          contentState.get().total === 21 && contentState.get().loadMoreVisible,
           "Failed count replaced valid total or pagination",
         )
       },
@@ -707,7 +784,7 @@ const Harness = () => {
     [
       "HOME_UNLOADED_MARK_UNREAD_REENABLES_PAGINATION",
       async () => {
-        await mount()
+        await mount("/", { entries: paginationEntries(20), total: 20, pageSize: 20 })
         await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
         const ids = contentState.get().entries.map(({ id }) => id)
         const requestCount = requests.length
@@ -715,7 +792,10 @@ const Harness = () => {
           [{ ...routeEntries[0], id: 303, status: "read" }],
           "unread",
         )
-        await waitFor(() => contentState.get().total === 3, "Unread count did not grow")
+        await waitFor(
+          () => contentState.get().total === 21,
+          `Unread count did not grow: total=${contentState.get().total}, entries=${contentState.get().entries.length}, pageSize=${settingsState.get().pageSize}, requests=${requests.length}`,
+        )
         assert(
           JSON.stringify(contentState.get().entries.map(({ id }) => id)) === JSON.stringify(ids),
           "Unloaded record was inserted",
@@ -731,8 +811,9 @@ const Harness = () => {
     [
       "HOME_TOTAL_RECONCILIATION_STALE_SESSION_PROTECTED",
       async () => {
-        await mount("/", { entries: routeEntries.slice(0, 1), total: 1 })
+        await mount("/", { entries: paginationEntries(20), total: 20, pageSize: 20 })
         await waitFor(() => contentState.get().isArticleListReady, "Initial Home page missing")
+        const initialRequests = listRequests().length
         let resolveCount
         deferredCount = {
           promise: new Promise((resolve) => {
@@ -740,23 +821,17 @@ const Harness = () => {
           }),
         }
         updateEntriesStatusOptimistically([contentState.get().entries[0]], "read")
-        await waitFor(
-          () =>
-            requests.some(
-              (url) => new URL(url, "https://fixture.invalid").searchParams.get("limit") === "1",
-            ),
-          "Deferred count did not start",
-        )
-        fixtureTotal = 9
+        await waitFor(() => listRequests().length > initialRequests, "Deferred count did not start")
+        fixtureTotal = 30
         settingsState.set({ ...settingsState.get(), showHiddenFeeds: true })
         await waitFor(
-          () => contentState.get().isArticleListReady && contentState.get().total === 9,
-          "New Home session did not commit",
+          () => contentState.get().isArticleListReady && contentState.get().total === 30,
+          `New Home session did not commit: total=${contentState.get().total}, entries=${contentState.get().entries.length}, pageSize=${settingsState.get().pageSize}, ready=${contentState.get().isArticleListReady}, requests=${listRequests().length}`,
         )
         resolveCount({ entries: [], total: 0 })
         await settle()
         assert(
-          contentState.get().total === 9 && contentState.get().loadMoreVisible,
+          contentState.get().total === 30 && contentState.get().loadMoreVisible,
           "Old count mutated newer Home session",
         )
       },
@@ -1480,7 +1555,7 @@ const Harness = () => {
       },
     ],
     [
-      "HOME_REFRESH_ERROR_PRESERVES_CONTENT",
+      "HOME_REFRESH_ERROR_WITH_CONTENT",
       async () => {
         await mountHighlights(highlightFixtures.image)
         const originalCards = cards()
@@ -1902,55 +1977,232 @@ const Harness = () => {
       },
     ],
   ]
-  const run = async (selectedScenarios = scenarios) => {
-    const responsiveMode = selectedScenarios === responsiveScenarios
+  const matrixScenarios = [
+    [
+      "HARNESS_SCENARIO_MATRIX_COMPLETE",
+      async () => {
+        const requiredViewports = [
+          "390x844",
+          "768x1024",
+          "884x1104",
+          "1024x768",
+          "1280x800",
+          "1440x900",
+        ]
+        const requiredThemes = ["light", "dark"]
+        const requiredGates = [
+          "HOME_NO_OVERFLOW",
+          "HOME_SECTION_HIERARCHY",
+          "HOME_PRIMARY_TEXT_ONLY",
+          "HOME_SECONDARY_LAYOUT",
+          "HOME_RECENT_GRID",
+          "HOME_EMPTY_RECENT",
+          "HOME_LOADING",
+          "HOME_REFRESH_ERROR_WITH_CONTENT",
+          "HOME_LIGHT",
+          "HOME_DARK",
+          "HOME_IDENTITY_FAILURE_RECOVERY",
+          "HOME_LAST_READ_TRANSITIONS_TO_TUDO_EM_DIA",
+          "HOME_READ_FAILURE_DOES_NOT_ZERO_TOTAL",
+          "HOME_MARK_UNREAD_RECONCILES_TOTAL",
+          "HOME_UNLOADED_MARK_UNREAD_REENABLES_PAGINATION",
+          "HOME_TOTAL_RECONCILIATION_STALE_SESSION_PROTECTED",
+        ]
+        const requiredProductScenarios = [
+          "THREE_PLUS_UNREAD_WITH_IMAGE_PRIMARY",
+          "THREE_PLUS_UNREAD_WITH_TEXT_ONLY_PRIMARY",
+          "TWO_UNREAD",
+          "ONE_UNREAD",
+          "ZERO_UNREAD",
+          "MIXED_IMAGE_AND_TEXT_ONLY",
+          "DIVERSE_SOURCE_AND_CATEGORY",
+          "SAME_SOURCE_AND_CATEGORY",
+          "LOADING",
+          "INITIAL_ERROR",
+          "REFRESH_ERROR_RETAINS_CONTENT",
+          "LOAD_MORE_ERROR",
+          "AFTER_READ_BACKFILL",
+          "AFTER_MARK_UNREAD",
+          "AFTER_STAR_AND_UNSTAR",
+        ]
+        const requiredManualGates = [
+          "EDITORIAL_HIERARCHY_CLEAR",
+          "PRIMARY_NOT_OVERSIZED",
+          "SECONDARIES_BALANCED",
+          "RECENT_VISIBLE_AS_CONTINUATION",
+          "TEXT_ONLY_PRIMARY_FEELS_INTENTIONAL",
+          "NO_GLASS_CONTENT_SURFACES",
+          "OLED_SURFACE_SEPARATION",
+          "NO_LAYOUT_JUMP_ON_READER_RETURN",
+          "NO_UNEXPECTED_RECOMPOSE",
+          "TOUCH_TARGETS_USABLE",
+          "MOBILE_SINGLE_PANE",
+        ]
+        const allScenarios = [
+          ...scenarios,
+          ...highlightScenarios,
+          ...recentScenarios,
+          ...listSentinelScenarios,
+          ...stateScenarios,
+          ...responsiveScenarios,
+          ...matrixScenarios,
+        ]
+        const gateNames = new Set(allScenarios.map(([name]) => name))
+        const matrix = phase2cEditorialHomeMatrix
+        const viewportIds = matrix.viewports.map(({ width, height }) => `${width}x${height}`)
+        const productScenarioIds = new Set(matrix.scenarios.map(({ id }) => id))
+        const manualGateIds = matrix.manualGates.map(({ name }) => name)
+        const missing = {
+          viewports: requiredViewports.filter((viewport) => !viewportIds.includes(viewport)),
+          unexpectedViewports: viewportIds.filter(
+            (viewport) => !requiredViewports.includes(viewport),
+          ),
+          themes: requiredThemes.filter((theme) => !matrix.themes.includes(theme)),
+          unexpectedThemes: matrix.themes.filter((theme) => !requiredThemes.includes(theme)),
+          gates: [...new Set([...requiredGates, ...matrix.automatedGates])].filter(
+            (gate) => !matrix.automatedGates.includes(gate) || !gateNames.has(gate),
+          ),
+          productScenarios: requiredProductScenarios.filter(
+            (scenario) => !productScenarioIds.has(scenario),
+          ),
+          scenarios: matrix.scenarios
+            .filter(
+              ({ id, covers, fixtures }) =>
+                !id ||
+                covers.length === 0 ||
+                fixtures.length === 0 ||
+                covers.some((gate) => !gateNames.has(gate)),
+            )
+            .map(({ id, covers, fixtures }) => {
+              const missingCoverage = covers.filter((gate) => !gateNames.has(gate))
+              return `${id || "UNNAMED"}${missingCoverage.length > 0 ? ` missing gates ${missingCoverage.join(",")}` : " missing fixture/coverage"}`
+            }),
+          manualGates: matrix.manualGates
+            .filter(({ name, status }) => !name || status !== "MANUAL_REQUIRED")
+            .map(({ name }) => name || "UNNAMED"),
+          unexpectedManualGates: manualGateIds.filter(
+            (gate) => !requiredManualGates.includes(gate),
+          ),
+          missingManualGates: requiredManualGates.filter((gate) => !manualGateIds.includes(gate)),
+        }
+        const missingSummary = Object.entries(missing)
+          .filter(([, values]) => values.length)
+          .map(([type, values]) => `${type}=[${values.join(", ")}]`)
+          .join("; ")
+        assert(!missingSummary, `Harness scenario matrix is incomplete: ${missingSummary}`)
+      },
+    ],
+  ]
+  const scenarioSuites = [
+    { name: "routes", scenarios },
+    { name: "highlights", scenarios: highlightScenarios },
+    { name: "recent", scenarios: recentScenarios },
+    { name: "list-sentinel-regression", scenarios: listSentinelScenarios },
+    { name: "states-and-recovery", scenarios: stateScenarios },
+    { name: "responsive-visual", scenarios: responsiveScenarios },
+    { name: "matrix-completeness", scenarios: matrixScenarios },
+  ]
+  const runSuites = async (selectedSuites, { recordViewportTheme = false } = {}) => {
     setRunning(true)
     setResults([])
-    if (responsiveMode) {
-      document.body.classList.add("phase2c-responsive-running")
-      await new Promise((resolve) => {
-        requestAnimationFrame(() => requestAnimationFrame(resolve))
-      })
-    }
     const next = []
     try {
-      for (const [name, scenario] of selectedScenarios) {
-        try {
-          await scenario()
-          next.push({
-            name,
-            status: "PASS",
-            ...(name === "HOME_SECONDARY_LAYOUT" || name === "HOME_RECENT_GRID"
-              ? { metrics: globalThis.__phase2cHomeResponsive }
-              : {}),
-            ...(name === "HOME_LIGHT" || name === "HOME_DARK"
-              ? { themes: globalThis.__phase2cHomeThemeMetrics }
-              : {}),
-          })
-        } catch (error) {
-          next.push({
-            name,
-            status: "FAIL",
-            error: error.message,
-            path: router?.state.location.pathname,
-            activeId: contentState.get().activeContent?.id,
-            readerText: document.querySelector(".article-body")?.textContent,
+      for (const { name: suite, scenarios: selectedScenarios } of selectedSuites) {
+        const responsiveMode = selectedScenarios === responsiveScenarios
+        if (responsiveMode) {
+          document.body.classList.add("phase2c-responsive-running")
+          await new Promise((resolve) => {
+            requestAnimationFrame(() => requestAnimationFrame(resolve))
           })
         }
-        setResults([...next])
+        try {
+          for (const [name, scenario] of selectedScenarios) {
+            if (selectedTheme === "dark") {
+              document.body.setAttribute("arco-theme", "dark")
+            } else {
+              document.body.removeAttribute("arco-theme")
+            }
+            try {
+              await scenario()
+              next.push({
+                suite,
+                name,
+                status: "PASS",
+                gateClass: "AUTOMATED",
+                metrics: captureHomeHarnessMetrics(selectedTheme),
+                ...(name === "HOME_SECONDARY_LAYOUT" || name === "HOME_RECENT_GRID"
+                  ? { responsive: globalThis.__phase2cHomeResponsive }
+                  : {}),
+                ...(name === "HOME_LIGHT" || name === "HOME_DARK"
+                  ? { themes: globalThis.__phase2cHomeThemeMetrics }
+                  : {}),
+              })
+            } catch (error) {
+              next.push({
+                suite,
+                name,
+                status: "FAIL",
+                gateClass: "AUTOMATED",
+                error: error.message,
+                path: router?.state.location.pathname,
+                activeId: contentState.get().activeContent?.id,
+                readerText: document.querySelector(".article-body")?.textContent,
+                metrics: captureHomeHarnessMetrics(selectedTheme),
+              })
+            }
+            setResults([...next])
+          }
+        } finally {
+          if (responsiveMode) {
+            document.body.classList.remove("phase2c-responsive-running")
+          }
+        }
+      }
+      if (recordViewportTheme) {
+        const viewport = phase2cEditorialHomeMatrix.viewports.find(
+          ({ width, height }) => width === innerWidth && height === innerHeight,
+        )
+        if (viewport) {
+          const id = matrixPairId(viewport, selectedTheme)
+          const run = {
+            viewport: id.split(":", 1)[0],
+            theme: selectedTheme,
+            passed: next.filter(({ status }) => status === "PASS").length,
+            total: next.length,
+            status: next.every(({ status }) => status === "PASS") ? "PASS" : "FAIL",
+            completedAt: new Date().toISOString(),
+          }
+          const records = { ...readMatrixRuns(), [id]: run }
+          sessionStorage.setItem(MATRIX_RUNS_STORAGE_KEY, JSON.stringify(records))
+          setMatrixRuns(records)
+        }
       }
     } finally {
-      if (responsiveMode) {
-        document.body.classList.remove("phase2c-responsive-running")
-      }
+      document.body.classList.remove("phase2c-responsive-running")
       setRunning(false)
     }
   }
+  const run = async (selectedScenarios = scenarios) => {
+    const suite = scenarioSuites.find(({ scenarios: candidate }) => candidate === selectedScenarios)
+    return runSuites([{ name: suite?.name ?? "selected", scenarios: selectedScenarios }])
+  }
+  const runCompleteMatrix = () => runSuites(scenarioSuites, { recordViewportTheme: true })
   return (
     <main>
       <div className="harness-controls">
         <h1>Phase 2C editorial Home harness</h1>
         <p>Local deterministic network fixtures, production route and reader lifecycle.</p>
+        <label htmlFor="phase2c-harness-theme">Run theme</label>
+        <select
+          data-testid="harness-theme"
+          disabled={running}
+          id="phase2c-harness-theme"
+          value={selectedTheme}
+          onChange={(event) => setSelectedTheme(event.target.value)}
+        >
+          <option value="light">Light</option>
+          <option value="dark">Dark / OLED</option>
+        </select>
         <button disabled={running} onClick={() => void run(scenarios)}>
           Run route scenario
         </button>
@@ -1969,11 +2221,43 @@ const Harness = () => {
         <button disabled={running} onClick={() => void run(responsiveScenarios)}>
           Run Home responsive visual gates
         </button>
+        <button disabled={running} onClick={() => void run(matrixScenarios)}>
+          Run scenario matrix completeness gate
+        </button>
+        <button disabled={running} onClick={() => void runCompleteMatrix()}>
+          Run all scenarios at this viewport and theme
+        </button>
+        <button data-testid="reset-harness" disabled={running} onClick={resetHarness}>
+          Reset harness session
+        </button>
         <p data-testid="suite-summary">
           {running
             ? "RUNNING"
-            : `${results.filter(({ status }) => status === "PASS").length}/${results.length} PASS`}
+            : `${results.filter(({ status }) => status === "PASS").length}/${results.length} automated gates PASS`}
         </p>
+        <section aria-labelledby="harness-matrix-heading" className="harness-matrix-report">
+          <h2 id="harness-matrix-heading">Viewport and theme matrix</h2>
+          <p data-testid="matrix-coverage-summary">
+            {Object.values(matrixRuns).filter(({ status }) => status === "PASS").length}/
+            {phase2cEditorialHomeMatrix.viewports.length * phase2cEditorialHomeMatrix.themes.length}{" "}
+            viewport/theme pairs PASS
+          </p>
+          <pre data-testid="matrix-coverage">{JSON.stringify(matrixRuns, null, 2)}</pre>
+        </section>
+        <section aria-labelledby="harness-manual-heading" className="harness-manual-report">
+          <h2 id="harness-manual-heading">Perceptual device gates</h2>
+          <p>
+            These checks require human review on the deployed device and are not automated PASS
+            results.
+          </p>
+          <ul data-testid="manual-gates">
+            {phase2cEditorialHomeMatrix.manualGates.map(({ name, status }) => (
+              <li key={name}>
+                <code>{name}</code>: <strong>{status}</strong>
+              </li>
+            ))}
+          </ul>
+        </section>
         <pre data-testid="suite-results">{JSON.stringify(results, null, 2)}</pre>
       </div>
       {probe && <RouterProvider key={probe.key} router={probe.router} />}
