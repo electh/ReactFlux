@@ -1,7 +1,11 @@
 import { useStore } from "@nanostores/react"
 import { useEffect, useState } from "react"
 
+import HomeHighlights from "./HomeHighlights"
+
 import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
+import useArticleCardActivation from "@/hooks/useArticleCardActivation"
+import useReadOnScroll from "@/hooks/useReadOnScroll"
 import { contentState } from "@/store/contentState"
 import { dataState, getDataSessionRevision } from "@/store/dataState"
 import { homeIdentityState } from "@/store/homePageState"
@@ -10,6 +14,7 @@ import { subscribeEntryStatusMutationEvents } from "@/utils/entry-status-mutatio
 import {
   createHomeEditorialSession,
   createHomeSessionKey,
+  projectHomeSession,
   transitionHomeSession,
 } from "@/utils/home-editorial-session"
 import { getHomeIdentityKey } from "@/utils/home-page"
@@ -24,7 +29,10 @@ const currentHomeSessionKey = () => {
   })
 }
 
-const HomeEditorial = ({ entryListRef }) => {
+const HomeEditorial = ({ cardsRef, entryListRef, handleEntryClick }) => {
+  const { entries } = useStore(contentState, { keys: ["entries"] })
+  const articleActivation = useArticleCardActivation(handleEntryClick)
+  const observeRead = useReadOnScroll(cardsRef)
   const identity = useStore(homeIdentityState)
   const { sessionRevision } = useStore(dataState, { keys: ["sessionRevision"] })
   const { pageSize, showHiddenFeeds } = useStore(settingsState, {
@@ -96,13 +104,23 @@ const HomeEditorial = ({ entryListRef }) => {
   )
 
   const activeSession = session?.requestKey === requestKey ? session : null
+  const projection = activeSession ? projectHomeSession(activeSession, entries) : null
   return (
     <div aria-busy={!activeSession} className="home-editorial" style={{ flex: 1, minHeight: 0 }}>
       <AdaptiveScrollArea
         ref={entryListRef}
-        scrollableNodeProps={{ tabIndex: -1 }}
+        scrollableNodeProps={{ ref: cardsRef, tabIndex: -1 }}
         style={{ height: "100%" }}
-      />
+      >
+        {projection && (
+          <HomeHighlights
+            articleActivation={articleActivation}
+            entries={entries}
+            highlightIds={projection.highlightIds}
+            observeRead={observeRead}
+          />
+        )}
+      </AdaptiveScrollArea>
     </div>
   )
 }

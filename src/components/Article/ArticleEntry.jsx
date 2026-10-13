@@ -48,7 +48,14 @@ const extractTextFromHtml = (html) => {
     .trim()
 }
 
-const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter: Presenter }) => {
+const ArticleEntry = ({
+  articleActivation,
+  entry,
+  layout,
+  observeRead,
+  presentationClassName,
+  presenter: Presenter,
+}) => {
   const { enableContextMenu, markReadOnScroll } = useStore(articleEntryInteractionSettingsState)
   const { infoFrom } = useStore(contentState, { keys: ["infoFrom"] })
   const hasIntegrations = useStore(hasIntegrationsState)
@@ -170,7 +177,7 @@ const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter
         {...longPressProps}
         aria-label={accessibleLabel}
         data-entry-id={entry.id}
-        className={classNames("article-entry", ENTRY_CLASS_NAMES[layout], {
+        className={classNames("article-entry", ENTRY_CLASS_NAMES[layout], presentationClassName, {
           "context-menu-enabled": enableContextMenu,
           read: !isUnread,
           selected: isSelected,

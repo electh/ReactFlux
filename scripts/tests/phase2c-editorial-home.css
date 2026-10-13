@@ -21,3 +21,18 @@ body {
   flex: 1;
   min-width: 0;
 }
+
+/* Harness staging only; production Home geometry is Task 9. */
+.home-highlights {
+  padding: 16px;
+}
+
+.home-highlight-secondaries {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.home-highlight-slot {
+  min-width: 0;
+}

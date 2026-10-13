@@ -5,7 +5,7 @@ import React, { useState } from "react"
 import { createRoot } from "react-dom/client"
 import { createMemoryRouter, Outlet, RouterProvider } from "react-router"
 
-import { fixtureFeed, routeEntries } from "./fixtures/phase2c-editorial-home"
+import { fixtureFeed, highlightFixtures, routeEntries } from "./fixtures/phase2c-editorial-home"
 
 import apiClient from "@/apis/ofetch"
 import { ContextProvider } from "@/components/Content/ContentContext"
@@ -29,6 +29,7 @@ import {
   resetData,
   setDataResourceLoadState,
 } from "@/store/dataState"
+import { feedIconsState } from "@/store/feedIconsState"
 import { setCurrentHomeTarget } from "@/store/homePageState"
 import { getDefaultSettings, settingsState } from "@/store/settingsState"
 import { subscribeEntryStatusMutationEvents } from "@/utils/entry-status-mutation-events"
@@ -56,6 +57,7 @@ const requests = []
 let fixtureEntries = routeEntries
 let fixtureTotal = 2
 let failStatusMutation = false
+let starMutationRequests = 0
 let statusMutationRequests = 0
 let deferredFirstStatusMutation = null
 let rejectStatusMutationCall = null
@@ -90,13 +92,20 @@ apiClient.get = async (url) => {
     return { entries: fixtureEntries, total: fixtureTotal }
   }
   const id = Number(url.match(/^\/v1\/entries\/(\d+)$/)?.[1])
-  const entry = routeEntries.find((candidate) => candidate.id === id)
+  const entry = fixtureEntries.find((candidate) => candidate.id === id)
   if (entry) {
     return entry
   }
   throw new Error(`Unexpected local fixture GET: ${url}`)
 }
 apiClient.put = async (url, body) => {
+  if (url === "/v1/entries" && typeof body?.starred === "boolean") {
+    starMutationRequests += 1
+    fixtureEntries = fixtureEntries.map((entry) =>
+      body.entry_ids.includes(entry.id) ? { ...entry, starred: body.starred } : entry,
+    )
+    return
+  }
   if (url !== "/v1/entries" || !body?.status) {
     throw new Error("Unexpected mutation in routing fixture")
   }
@@ -217,6 +226,33 @@ const clickLabel = (label) => {
   button.click()
 }
 
+const cards = () => [...document.querySelectorAll(".home-highlights .article-entry")]
+const ids = () => cards().map((card) => Number(card.dataset.entryId))
+const clickMenu = (label) => {
+  const item = [...document.querySelectorAll('.mobile-action-menu [role="menuitem"]')].find(
+    (node) => node.textContent.includes(label),
+  )
+  assert(item, `Missing existing menu action ${label}`)
+  item.click()
+}
+
+const openMenu = async (id) => {
+  const card = cards().find((node) => Number(node.dataset.entryId) === id)
+  assert(card, `Missing Highlight ${id}`)
+  card.dispatchEvent(
+    new MouseEvent("contextmenu", {
+      bubbles: true,
+      cancelable: true,
+      clientX: 350,
+      clientY: 250,
+    }),
+  )
+  await waitFor(
+    () => document.querySelector(".mobile-action-menu"),
+    "Existing ArticleEntry menu did not open",
+  )
+}
+
 const Harness = () => {
   const [probe, setProbe] = useState(null)
   const [running, setRunning] = useState(false)
@@ -243,6 +279,7 @@ const Harness = () => {
     fixtureEntries = entries.map((entry) => ({ ...entry }))
     fixtureTotal = total
     failStatusMutation = false
+    starMutationRequests = 0
     statusMutationRequests = 0
     deferredFirstStatusMutation = null
     rejectStatusMutationCall = null
@@ -250,7 +287,13 @@ const Harness = () => {
     deferredCount = null
     unloadedStatus = "read"
     authState.set(fixtureAuth)
-    settingsState.set({ ...getDefaultSettings(), markReadBy, removeDuplicates: "none" })
+    settingsState.set({
+      ...getDefaultSettings(),
+      markReadBy,
+      removeDuplicates: "none",
+      enableContextMenu: true,
+      showFeedIcon: true,
+    })
     if (identity === "ready") {
       commitIdentityData({ id: 1, username: "fixture" })
     } else {
@@ -259,6 +302,11 @@ const Harness = () => {
         error: identity === "error" ? new Error("Expected local identity failure") : null,
       })
     }
+    feedIconsState.setKey(991, {
+      height: 16,
+      width: 16,
+      url: `${globalThis.location.origin}/default-feed-icon.png`,
+    })
     dataState.setKey("feedsData", [fixtureFeed])
     dataState.setKey("categoriesData", [fixtureFeed.category])
     setDataResourceLoadState("catalog", {
@@ -675,11 +723,221 @@ const Harness = () => {
       },
     ],
   ]
-  const run = async () => {
+  const mountHighlights = async (entries) => {
+    await mount("/", {
+      entries,
+      total: new Set(entries.filter((entry) => entry.status === "unread").map((entry) => entry.id))
+        .size,
+    })
+    await waitFor(
+      () => homeRoot()?.getAttribute("aria-busy") === "false",
+      "Home session did not become ready",
+    )
+  }
+  const highlightScenarios = [
+    [
+      "HOME_PRIMARY_NEWEST",
+      async () => {
+        for (const entries of [highlightFixtures.image, highlightFixtures.textOnly]) {
+          await mountHighlights(entries)
+          assert(
+            cards()[0]?.classList.contains("home-highlight-primary") && ids()[0] === 101,
+            "Newest unread entry is not Primary",
+          )
+          if (entries === highlightFixtures.image) {
+            assert(
+              cards()[0].querySelector(".grid-card-cover"),
+              "Image Primary lost the existing Grid media presenter",
+            )
+          }
+        }
+      },
+    ],
+    [
+      "HOME_MAX_THREE_HIGHLIGHTS",
+      async () => {
+        for (const [entries, count] of [
+          [highlightFixtures.image, 3],
+          [highlightFixtures.two, 2],
+          [highlightFixtures.one, 1],
+        ]) {
+          await mountHighlights(entries)
+          assert(cards().length === count, `Expected ${count} real ArticleEntry Highlights`)
+        }
+      },
+    ],
+    [
+      "HOME_PRIMARY_TEXT_ONLY",
+      async () => {
+        await mountHighlights(highlightFixtures.textOnly)
+        const primary = cards()[0]
+        assert(primary?.classList.contains("home-highlight-primary"), "Text-only Primary missing")
+        assert(
+          primary.querySelector(".grid-card-content-no-cover") &&
+            !primary.querySelector(".grid-card-media, .grid-card-cover"),
+          "Text-only Primary reserved empty media",
+        )
+        assert(
+          primary.querySelector(".grid-card-copy")?.textContent.includes("Highlight article 101"),
+          "Text-only Primary copy missing",
+        )
+      },
+    ],
+    [
+      "HOME_SECONDARIES_BALANCED_ORDER",
+      async () => {
+        for (const entries of [highlightFixtures.image, highlightFixtures.shared]) {
+          await mountHighlights(entries)
+          assert(
+            JSON.stringify(ids()) === "[101,202,303]",
+            "Highlights lost deterministic slot order",
+          )
+          const [first, second] = cards().slice(1)
+          assert(
+            first.classList.contains("home-highlight-secondary-1") &&
+              second.classList.contains("home-highlight-secondary-2"),
+            "Secondary slot identities missing",
+          )
+          assert(
+            first.closest(".home-highlight-secondaries") ===
+              second.closest(".home-highlight-secondaries") &&
+              Math.abs(first.getBoundingClientRect().width - second.getBoundingClientRect().width) <
+                1,
+            "Secondaries are not equivalent siblings",
+          )
+        }
+        // No Recent candidate remains: Primary and then Secondary 1 must stay vacant.
+        await mountHighlights(highlightFixtures.textOnly)
+        await openMenu(101)
+        clickMenu(englishPhrases.article_card.mark_as_read_tooltip)
+        await waitFor(
+          () => statusMutationRequests === 1 && contentState.get().total === 2,
+          "Primary read did not settle",
+        )
+        await settle()
+        assert(
+          ids().join(",") === "202,303" &&
+            !document.querySelector(".home-highlight-primary") &&
+            cards()[0]?.classList.contains("home-highlight-secondary-1"),
+          "Vacant Primary promoted a Secondary",
+        )
+        await openMenu(202)
+        clickMenu(englishPhrases.article_card.mark_as_read_tooltip)
+        await waitFor(
+          () => statusMutationRequests === 2 && contentState.get().total === 1,
+          "Secondary read did not settle",
+        )
+        await settle()
+        assert(
+          ids().join(",") === "303" && cards()[0]?.classList.contains("home-highlight-secondary-2"),
+          "Vacant Secondary compacted surviving slot",
+        )
+      },
+    ],
+    [
+      "HOME_HIGHLIGHT_ACTIONS",
+      async () => {
+        await mountHighlights(highlightFixtures.textOnly)
+        const before = ids().join(",")
+        assert(
+          cards()[0]?.classList.contains("unread") &&
+            cards()[1]?.querySelector(".grid-card-star")?.style.opacity === "1",
+          "Existing unread/starred presentation missing",
+        )
+        cards()[0].focus()
+        assert(document.activeElement === cards()[0], "Highlight is not keyboard focusable")
+        await openMenu(101)
+        clickMenu(englishPhrases.article_card.star_tooltip)
+        await waitFor(
+          () =>
+            starMutationRequests === 1 &&
+            contentState.get().entries.find((entry) => entry.id === 101)?.starred,
+          "Highlight star action did not use existing mutation",
+        )
+        await settle()
+        assert(
+          ids().join(",") === before &&
+            cards()[0]?.querySelector(".grid-card-star")?.style.opacity === "1",
+          "Star recomposed Highlights or lost presenter status",
+        )
+        await openMenu(101)
+        clickMenu(englishPhrases.article_card.unstar_tooltip)
+        await waitFor(
+          () =>
+            starMutationRequests === 2 &&
+            !contentState.get().entries.find((entry) => entry.id === 101)?.starred,
+          "Highlight unstar action did not use existing mutation",
+        )
+        await settle()
+        assert(
+          ids().join(",") === before &&
+            cards()[0]?.querySelector(".grid-card-star")?.style.opacity === "0",
+          "Unstar recomposed Highlights or lost presenter status",
+        )
+        cards()[0].click()
+        await waitFor(() => readerIs(101), "Actual Highlight activation did not open reader")
+        assert(
+          router.state.location.pathname === "/entry/101" &&
+            cards()[0]?.classList.contains("selected"),
+          "Existing Highlight selection/origin missing",
+        )
+        clickLabel(englishPhrases.article_card.close_tooltip)
+        await waitFor(
+          () => router.state.location.pathname === "/",
+          "Highlight reader did not close to Home",
+        )
+        await openMenu(101)
+        clickMenu(englishPhrases.article_card.mark_as_read_tooltip)
+        await waitFor(
+          () => contentState.get().total === 2,
+          "Highlight read action did not use existing status mutation",
+        )
+        await settle()
+        assert(!ids().includes(101), "Confirmed Highlight read did not remove card")
+        await mountHighlights(highlightFixtures.image)
+        const stage = document.querySelector(".harness-stage")
+        stage.style.height = "260px"
+        settingsState.set({ ...settingsState.get(), markReadOnScroll: true })
+        await settle()
+        const scrollRoot = homeRoot().querySelector(
+          ".simplebar-content-wrapper, .adaptive-scroll-area-native",
+        )
+        assert(
+          scrollRoot && scrollRoot.scrollHeight > scrollRoot.clientHeight,
+          "Highlight scroll root missing",
+        )
+        scrollRoot.scrollTop = scrollRoot.scrollHeight
+        await waitFor(
+          () => statusMutationRequests > 0 && !ids().includes(101),
+          "Mounted Highlight read-on-scroll did not use existing observer/mutation",
+        )
+        settingsState.set({ ...settingsState.get(), markReadOnScroll: false })
+        stage.style.height = ""
+      },
+    ],
+    [
+      "HOME_DEDUPE_BY_ENTRY_ID",
+      async () => {
+        await mountHighlights(highlightFixtures.image)
+        assert(
+          cards().length === 3 &&
+            new Set(ids()).size === cards().length &&
+            ids().join(",") === "101,202,303",
+          "Duplicate ID rendered or an eligible Highlight was missing",
+        )
+        await mountHighlights(highlightFixtures.shared)
+        assert(
+          ids().join(",") === "101,202,303",
+          "Shared feed/category incorrectly deduped distinct IDs",
+        )
+      },
+    ],
+  ]
+  const run = async (selectedScenarios = scenarios) => {
     setRunning(true)
     setResults([])
     const next = []
-    for (const [name, scenario] of scenarios) {
+    for (const [name, scenario] of selectedScenarios) {
       try {
         await scenario()
         next.push({ name, status: "PASS" })
@@ -700,10 +958,13 @@ const Harness = () => {
   return (
     <main>
       <div className="harness-controls">
-        <h1>Phase 2C editorial Home route scenario</h1>
+        <h1>Phase 2C editorial Home harness</h1>
         <p>Local deterministic network fixtures, production route and reader lifecycle.</p>
-        <button disabled={running} onClick={() => void run()}>
+        <button disabled={running} onClick={() => void run(scenarios)}>
           Run route scenario
+        </button>
+        <button disabled={running} onClick={() => void run(highlightScenarios)}>
+          Run Highlights scenario
         </button>
         <p data-testid="suite-summary">
           {running
