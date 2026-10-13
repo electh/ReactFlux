@@ -1,5 +1,6 @@
 // Local deterministic harness: real list hooks/API adapters, mocked network boundary only.
 /* eslint-disable react-compiler/react-compiler -- Deterministic fixture orchestration controls the mocked network boundary. */
+/* eslint-disable react-hooks/globals, react-hooks/immutability -- Isolated scenarios reset module-scoped fixture state outside React render. */
 import "@arco-design/web-react/es/_util/react-19-adapter"
 import { useStore } from "@nanostores/react"
 import Polyglot from "node-polyglot"
@@ -257,7 +258,70 @@ const Harness = () => {
     await waitFor(() => contentState.get().isArticleListReady && controls.current)
     await settle()
   }
+  const requiredListRegressionGates = [
+    "NO_ALL_RANKING",
+    "NO_UNREAD_RANKING",
+    "ALL_SORT_PREFERENCE_PRESERVED",
+    "UNREAD_FILTER_PRESERVED",
+    "MARK_ALL_READ_SUCCESS",
+    "MARK_ALL_READ_FILTER_SCOPE",
+    "MARK_ALL_READ_NO_JUMP_ON_FAILURE",
+    "MARK_ALL_READ_JUMP_TO_NEXT",
+    "STALE_SESSION_PROTECTION",
+    "PARTIAL_FAILURE_RECONCILIATION",
+    "COUNTS_REFRESH",
+  ]
+  const requiredHomeQueryGates = [
+    "HOME_CANONICAL_QUERY",
+    "HOME_ID_ONLY_INITIAL",
+    "HOME_ID_ONLY_REFRESH",
+    "HOME_ID_ONLY_APPEND",
+    "HOME_REFRESH_FAILURE_PRESERVES",
+  ]
+  const expectedHelperSuites = [
+    {
+      file: "src/utils/article-list-request-key.test.js",
+      coverage: ["ALL_SORT_PREFERENCE_PRESERVED", "UNREAD_FILTER_PRESERVED"],
+    },
+    {
+      file: "src/utils/article-list-filters.test.js",
+      coverage: ["filtered-total-refresh-predicate"],
+    },
+    {
+      file: "src/utils/reconcile-entries-after-mark-read.test.js",
+      coverage: ["successful-mark-read-subset", "batch-reconciliation"],
+    },
+  ]
   const scenarios = [
+    [
+      "LIST_REGRESSION_MATRIX_COMPLETE",
+      async () => {
+        const registry = listRegressionMatrix
+        const registered = registry.runtimeGates.map(({ name }) => name)
+        const plannedNames = [...requiredListRegressionGates, ...requiredHomeQueryGates]
+        const scenarioNames = scenarios
+          .map(([name]) => name)
+          .filter((name) => name !== "LIST_REGRESSION_MATRIX_COMPLETE")
+        assert(
+          JSON.stringify(registered.toSorted()) === JSON.stringify(plannedNames.toSorted()) &&
+            JSON.stringify(registered.toSorted()) === JSON.stringify(scenarioNames.toSorted()),
+          "Runtime gate registry does not exactly match the named integration scenarios",
+        )
+        const planOwned = registry.runtimeGates.filter(({ name }) =>
+          requiredListRegressionGates.includes(name),
+        )
+        assert(
+          JSON.stringify(planOwned.map(({ name }) => name).toSorted()) ===
+            JSON.stringify(requiredListRegressionGates.toSorted()) &&
+            planOwned.every(({ owner }) => owner === "scripts/tests/phase2c-list-regression.jsx"),
+          "Plan-owned runtime gates are missing, renamed, duplicated, or assigned to another owner",
+        )
+        assert(
+          JSON.stringify(registry.helperSuites) === JSON.stringify(expectedHelperSuites),
+          "Helper-level suites are missing or claim broader coverage than their tests",
+        )
+      },
+    ],
     [
       "NO_ALL_RANKING",
       async () => {
@@ -578,6 +642,18 @@ const Harness = () => {
       },
     ],
   ]
+  const listRegressionMatrix = {
+    completenessGate: "LIST_REGRESSION_MATRIX_COMPLETE",
+    runtimeGates: scenarios.slice(1).map(([name]) => ({
+      name,
+      owner: "scripts/tests/phase2c-list-regression.jsx",
+      scope: requiredListRegressionGates.includes(name) ? "list-integration" : "home-query",
+    })),
+    helperSuites: expectedHelperSuites,
+  }
+  const runtimeOwners = new Map(
+    listRegressionMatrix.runtimeGates.map(({ name, owner }) => [name, owner]),
+  )
   const run = async () => {
     setRunning(true)
     setResults([])
@@ -585,9 +661,26 @@ const Harness = () => {
     for (const [name, scenario] of scenarios) {
       try {
         await scenario()
-        nextResults.push({ name, status: "PASS", requests: [...requests] })
+        nextResults.push({
+          name,
+          status: "PASS",
+          owner:
+            name === "LIST_REGRESSION_MATRIX_COMPLETE"
+              ? "matrix-registry"
+              : runtimeOwners.get(name),
+          requests: [...requests],
+        })
       } catch (error) {
-        nextResults.push({ name, status: "FAIL", error: error.message, requests: [...requests] })
+        nextResults.push({
+          name,
+          status: "FAIL",
+          owner:
+            name === "LIST_REGRESSION_MATRIX_COMPLETE"
+              ? "matrix-registry"
+              : runtimeOwners.get(name),
+          error: error.message,
+          requests: [...requests],
+        })
       }
       setResults([...nextResults])
     }
@@ -605,6 +698,14 @@ const Harness = () => {
           ? "RUNNING"
           : `${results.filter(({ status }) => status === "PASS").length}/${results.length} PASS`}
       </p>
+      <section aria-labelledby="list-regression-matrix-heading">
+        <h2 id="list-regression-matrix-heading">Regression matrix ownership</h2>
+        <p>
+          Integration behavior is exercised by its named runtime scenario. Helper suites below
+          provide narrower unit coverage and do not replace those scenarios.
+        </p>
+        <pre data-testid="regression-matrix">{JSON.stringify(listRegressionMatrix, null, 2)}</pre>
+      </section>
       {probe && (
         <AppDataContext.Provider
           value={{
