@@ -479,6 +479,8 @@
     "time_ago": "hace %{time}"
   },
   "home_page": {
+    "section_highlights": "Destacados",
+    "section_recent": "Más recientes",
     "type_view": "Vista",
     "type_category": "Categoría",
     "type_feed": "Feed",

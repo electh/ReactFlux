@@ -479,6 +479,8 @@
     "time_ago": "%{time}前"
   },
   "home_page": {
+    "section_highlights": "注目記事",
+    "section_recent": "最新記事",
     "type_view": "ビュー",
     "type_category": "カテゴリ",
     "type_feed": "フィード",

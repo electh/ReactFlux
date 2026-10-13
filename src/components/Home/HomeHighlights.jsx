@@ -1,8 +1,13 @@
+import { useStore } from "@nanostores/react"
+
 import HomeHighlightCard from "./HomeHighlightCard"
+
+import { polyglotState } from "@/hooks/useLanguage"
 
 const HIGHLIGHT_SLOTS = ["primary", "secondary-1", "secondary-2"]
 
 const HomeHighlights = ({ articleActivation, entries, highlightIds, observeRead }) => {
+  const { polyglot } = useStore(polyglotState)
   // Resolve each ID in place: a vacant slot never promotes a surviving Secondary.
   const entryById = new Map()
   for (const entry of entries) {
@@ -35,8 +40,8 @@ const HomeHighlights = ({ articleActivation, entries, highlightIds, observeRead 
   }
 
   return (
-    <section aria-label="Destaques" className="home-highlights">
-      <h2 className="home-section-heading">Destaques</h2>
+    <section aria-label={polyglot.t("home_page.section_highlights")} className="home-highlights">
+      <h2 className="home-section-heading">{polyglot.t("home_page.section_highlights")}</h2>
       {slots[0]}
       {slots.slice(1).some(Boolean) && (
         <div className="home-highlight-secondaries">{slots.slice(1)}</div>

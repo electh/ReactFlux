@@ -1,6 +1,9 @@
+import { useStore } from "@nanostores/react"
+
 import ArticleEntry from "@/components/Article/ArticleEntry"
 import ArticleGridCard from "@/components/Article/ArticleGridCard"
 import useArticleListLayout from "@/hooks/useArticleListLayout"
+import { polyglotState } from "@/hooks/useLanguage"
 import { projectRecentEntries } from "@/utils/home-editorial-projection"
 
 import "@/components/Article/ArticleList.css"
@@ -13,6 +16,7 @@ const HomeRecent = ({
   recentIds,
   scrollRootRef,
 }) => {
+  const { polyglot } = useStore(polyglotState)
   const entryById = new Map(
     projectRecentEntries(entries, highlightIds).map((entry) => [entry.id, entry]),
   )
@@ -28,8 +32,8 @@ const HomeRecent = ({
   }
 
   return (
-    <section aria-label="Recentes" className="home-recent">
-      <h2 className="home-section-heading">Mais recentes</h2>
+    <section aria-label={polyglot.t("home_page.section_recent")} className="home-recent">
+      <h2 className="home-section-heading">{polyglot.t("home_page.section_recent")}</h2>
       <div role="list">
         {rows.map((row) => (
           <div

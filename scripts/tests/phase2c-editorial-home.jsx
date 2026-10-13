@@ -1690,14 +1690,14 @@ const Harness = () => {
           node.textContent.trim(),
         )
         assert(
-          JSON.stringify(headings) === JSON.stringify(["Destaques", "Mais recentes"]),
+          JSON.stringify(headings) === JSON.stringify(["Highlights", "Latest"]),
           `Expected editorial section hierarchy; found ${headings.join(" / ")}`,
         )
         const sections = [...homeRoot().querySelectorAll("section[aria-label]")].map((node) =>
           node.getAttribute("aria-label"),
         )
         assert(
-          sections.indexOf("Destaques") < sections.indexOf("Recentes"),
+          sections.indexOf("Highlights") < sections.indexOf("Latest"),
           "Home section DOM order is not Highlights then Recent",
         )
       },

@@ -479,6 +479,8 @@
     "time_ago": "vor %{time}"
   },
   "home_page": {
+    "section_highlights": "Highlights",
+    "section_recent": "Neueste",
     "type_view": "Ansicht",
     "type_category": "Kategorie",
     "type_feed": "Feed",

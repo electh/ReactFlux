@@ -479,6 +479,8 @@
     "time_ago": "%{time}前"
   },
   "home_page": {
+    "section_highlights": "精选",
+    "section_recent": "最新文章",
     "type_view": "视图",
     "type_category": "分类",
     "type_feed": "订阅源",

@@ -173,6 +173,30 @@ test("rejected unread reversal applies earlier confirmed read and backfills", ()
   assert.equal(projectHomeSession(final, rolledBack).recentIds.includes(1), false)
 })
 
+test("pending unread reversal is not a backfill candidate before its mutation succeeds", () => {
+  const initial = start()
+  const readingRecentEntry = transitionHomeSession(initial, event(4, "read", "intent"), loaded)
+  const reversingRecentEntry = transitionHomeSession(
+    readingRecentEntry,
+    event(4, "unread", "intent", "read"),
+    loaded,
+  )
+  const readConfirmedUnreadPending = transitionHomeSession(
+    reversingRecentEntry,
+    { ...event(4, "read", "confirmed"), pendingEntryIds: [4] },
+    loaded,
+  )
+  assert.equal(readConfirmedUnreadPending.pendingStatusById[4].confirmedStatus, "read")
+
+  const afterAnotherHighlightRead = transitionHomeSession(
+    readConfirmedUnreadPending,
+    event(2, "read", "confirmed"),
+    loaded.map((item) => (item.id === 2 ? { ...item, status: "read" } : item)),
+  )
+
+  assert.deepEqual(afterAnotherHighlightRead.highlightIds, [1, 5, 3])
+})
+
 test("confirmed mark-unread inserts an already-loaded entry only into Recent", () => {
   const readEntry = entry(6, 13, 6, "read")
   const session = start([...loaded, readEntry])

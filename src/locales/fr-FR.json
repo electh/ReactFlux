@@ -479,6 +479,8 @@
     "time_ago": "il y a %{time}"
   },
   "home_page": {
+    "section_highlights": "À la une",
+    "section_recent": "Plus récents",
     "type_view": "Vue",
     "type_category": "Catégorie",
     "type_feed": "Flux",

@@ -105,7 +105,8 @@ export const transitionHomeSession = (session, event, entries) => {
         entry.status === "unread" &&
         !confirmedReadIds.has(entry.id) &&
         !survivingIds.has(entry.id) &&
-        pendingStatusById[entry.id]?.previousStatus !== "read",
+        pendingStatusById[entry.id]?.previousStatus !== "read" &&
+        pendingStatusById[entry.id]?.confirmedStatus !== "read",
     )
     highlightIds[vacancy] = selectBackfillCandidate(recent, surviving)?.id ?? null
   }
