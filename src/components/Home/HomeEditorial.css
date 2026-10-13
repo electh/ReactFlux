@@ -1,0 +1,114 @@
+.home-editorial {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  background: var(--nf-canvas, var(--color-bg-1));
+}
+
+.search-and-sort-bar.search-and-sort-bar-home {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border-bottom: 1px solid var(--nf-separator-subtle, var(--color-border-2));
+  background: var(--nf-canvas, var(--color-bg-1));
+  padding-inline: 12px;
+}
+
+.home-editorial-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.home-editorial-scroll .simplebar-content,
+.home-editorial-scroll.adaptive-scroll-area-native {
+  min-width: 0;
+  min-height: 100%;
+}
+
+.home-editorial-content {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  max-width: 1440px;
+  min-width: 0;
+  margin-inline: auto;
+  padding: 18px 12px 32px;
+}
+
+.home-highlights,
+.home-recent {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  min-width: 0;
+}
+
+.home-section-heading {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--nf-text-primary, var(--color-text-1));
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.home-highlight-slot,
+.home-highlight-secondaries,
+.home-highlight-secondaries > .home-highlight-slot,
+.home-recent [role="list"],
+.home-recent .article-card-grid-row,
+.home-recent .article-card-grid-cell {
+  min-width: 0;
+}
+
+.home-highlight-secondaries {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.home-recent [role="list"] {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.home-recent .article-card-grid-row {
+  width: 100%;
+}
+
+.home-recent .article-card-grid-cell > .article-entry {
+  flex: 1;
+  height: 100%;
+}
+
+@media (min-width: 700px) {
+  .home-highlight-secondaries {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1180px) {
+  .home-editorial-content {
+    gap: 32px;
+    padding-top: 24px;
+  }
+
+  .home-highlights,
+  .home-recent {
+    gap: 20px;
+  }
+
+  .home-highlight-secondaries {
+    gap: 20px;
+  }
+}

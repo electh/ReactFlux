@@ -9,7 +9,7 @@ import {
 import { useStore } from "@nanostores/react"
 import { Fragment, memo, useMemo, useRef, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 
 import SidebarTrigger from "./SidebarTrigger.jsx"
 
@@ -173,7 +173,7 @@ const DateFilter = ({ filterDate, polyglot }) => {
   )
 }
 
-const SearchAndSortBar = ({ fullWidth = false }) => {
+const SearchAndSortBar = ({ fullWidth = false, homeMode = false }) => {
   const { articleListError, filterDate, filterString, infoFrom, isArticleListReady } = useStore(
     contentState,
     { keys: ["articleListError", "filterDate", "filterString", "infoFrom", "isArticleListReady"] },
@@ -187,6 +187,7 @@ const SearchAndSortBar = ({ fullWidth = false }) => {
   const hotkeys = useStore(hotkeysState)
 
   const { id } = useParams()
+  const navigate = useNavigate()
   const { closeActiveContent, entryListRef } = useContentContext()
   const { isBelowMedium } = useScreenWidth()
 
@@ -254,32 +255,37 @@ const SearchAndSortBar = ({ fullWidth = false }) => {
       setFilterString(normalizedQuery)
     }
     closeSearchModal()
+    if (homeMode) {
+      navigate("/all")
+    }
   }
 
   return (
     <div
-      className="search-and-sort-bar"
+      className={`search-and-sort-bar${homeMode ? " search-and-sort-bar-home" : ""}`}
       style={{ width: isBelowMedium || fullWidth ? "100%" : 370 }}
     >
       <SidebarTrigger />
-      <div className="page-info">
-        <div className="title-container">
-          {title ? (
-            <Typography.Ellipsis
-              expandable={false}
-              showTooltip={!isBelowMedium}
-              style={{ fontWeight: 500 }}
-            >
-              {title}
-            </Typography.Ellipsis>
-          ) : (
-            <div className="placeholder-title"></div>
+      {!homeMode && (
+        <div className="page-info">
+          <div className="title-container">
+            {title ? (
+              <Typography.Ellipsis
+                expandable={false}
+                showTooltip={!isBelowMedium}
+                style={{ fontWeight: 500 }}
+              >
+                {title}
+              </Typography.Ellipsis>
+            ) : (
+              <div className="placeholder-title"></div>
+            )}
+          </div>
+          {isArticleListReady && !articleListError && count >= 0 && (
+            <Typography.Text className="count-label">({count})</Typography.Text>
           )}
         </div>
-        {isArticleListReady && !articleListError && count >= 0 && (
-          <Typography.Text className="count-label">({count})</Typography.Text>
-        )}
-      </div>
+      )}
       <div className="button-group">
         <ActiveButton
           active={!!filterString}
@@ -288,23 +294,27 @@ const SearchAndSortBar = ({ fullWidth = false }) => {
           tooltip={searchLabel}
           onClick={openSearchModal}
         />
-        {infoFrom !== "today" && <DateFilter filterDate={filterDate} polyglot={polyglot} />}
-        <CustomTooltip mini content={sortLabel}>
-          <Button
-            aria-label={sortLabel}
-            className="nf-glass-control"
-            shape="circle"
-            size="small"
-            icon={
-              orderDirection === "desc" ? (
-                <IconSortDescending aria-hidden="true" />
-              ) : (
-                <IconSortAscending aria-hidden="true" />
-              )
-            }
-            onClick={toggleOrderDirection}
-          />
-        </CustomTooltip>
+        {!homeMode && infoFrom !== "today" && (
+          <DateFilter filterDate={filterDate} polyglot={polyglot} />
+        )}
+        {!homeMode && (
+          <CustomTooltip mini content={sortLabel}>
+            <Button
+              aria-label={sortLabel}
+              className="nf-glass-control"
+              shape="circle"
+              size="small"
+              icon={
+                orderDirection === "desc" ? (
+                  <IconSortDescending aria-hidden="true" />
+                ) : (
+                  <IconSortAscending aria-hidden="true" />
+                )
+              }
+              onClick={toggleOrderDirection}
+            />
+          </CustomTooltip>
+        )}
       </div>
       <SearchModal
         value={modalInputValue}

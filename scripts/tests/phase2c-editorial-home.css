@@ -2,13 +2,22 @@ body {
   margin: 0;
 }
 
+html,
+body,
+#root {
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+}
+
 .harness-controls {
   padding: 16px;
 }
 
 .harness-stage {
   display: flex;
-  height: 600px;
+  height: min(760px, calc(100vh - 180px));
+  min-height: 420px;
   position: relative;
 }
 
@@ -19,20 +28,36 @@ body {
 .harness-content {
   display: flex;
   flex: 1;
+  flex-direction: column;
   min-width: 0;
+  min-height: 0;
 }
 
-/* Harness staging only; production Home geometry is Task 9. */
-.home-highlights {
-  padding: 16px;
+.harness-content > .entry-col {
+  min-height: 0;
 }
 
-.home-highlight-secondaries {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+.harness-fixture-controls {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.home-highlight-slot {
-  min-width: 0;
+body.phase2c-responsive-running .harness-controls,
+body.phase2c-responsive-running .harness-fixture-controls {
+  display: none;
+}
+
+body.phase2c-responsive-running .harness-stage {
+  height: 100vh;
+  min-height: 0;
+}
+
+/* Home composition is supplied by the production stylesheet. */
+
+@media (max-width: 992px) {
+  .harness-stage > .sidebar-container {
+    display: none;
+  }
 }

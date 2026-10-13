@@ -29,7 +29,7 @@ const HomeRecent = ({
 
   return (
     <section aria-label="Recentes" className="home-recent">
-      <h2 className="home-section-heading">Recentes</h2>
+      <h2 className="home-section-heading">Mais recentes</h2>
       <div role="list">
         {rows.map((row) => (
           <div

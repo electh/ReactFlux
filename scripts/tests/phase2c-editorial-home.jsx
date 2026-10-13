@@ -27,6 +27,7 @@ import useEntryActions, {
 import { polyglotState } from "@/hooks/useLanguage"
 import englishPhrases from "@/locales/en-US.json"
 import productionRouter from "@/routes"
+import "@/liquid-glass.css"
 import { authState } from "@/store/authState"
 import { contentState, resetContent } from "@/store/contentState"
 import {
@@ -217,7 +218,9 @@ const FixtureFrame = () => (
         <Sidebar />
         <div className="harness-content">
           <ContextProvider>
-            <FixtureReaderControls />
+            <div className="harness-fixture-controls">
+              <FixtureReaderControls />
+            </div>
             <Outlet />
           </ContextProvider>
         </div>
@@ -982,23 +985,46 @@ const Harness = () => {
         assert(!ids().includes(101), "Confirmed Highlight read did not remove card")
         await mountHighlights(highlightFixtures.image)
         const stage = document.querySelector(".harness-stage")
-        stage.style.height = "260px"
+        const scrollSpacer = document.createElement("div")
+        scrollSpacer.style.height = `${globalThis.innerHeight}px`
+        document.body.append(scrollSpacer)
+        stage.scrollIntoView({ block: "start" })
+        stage.style.height = "320px"
+        stage.style.minHeight = "0px"
         settingsState.set({ ...settingsState.get(), markReadOnScroll: true })
-        await settle()
-        const scrollRoot = homeRoot().querySelector(
-          ".simplebar-content-wrapper, .adaptive-scroll-area-native",
-        )
-        assert(
-          scrollRoot && scrollRoot.scrollHeight > scrollRoot.clientHeight,
-          "Highlight scroll root missing",
-        )
-        scrollRoot.scrollTop = scrollRoot.scrollHeight
-        await waitFor(
-          () => statusMutationRequests > 0 && !ids().includes(101),
-          "Mounted Highlight read-on-scroll did not use existing observer/mutation",
-        )
-        settingsState.set({ ...settingsState.get(), markReadOnScroll: false })
-        stage.style.height = ""
+        try {
+          await settle()
+          const scrollRoot = homeRoot().querySelector(
+            ".simplebar-content-wrapper, .adaptive-scroll-area-native",
+          )
+          assert(
+            scrollRoot && scrollRoot.scrollHeight > scrollRoot.clientHeight,
+            `Highlight scroll root missing: ${scrollRoot?.scrollHeight ?? "none"}/${scrollRoot?.clientHeight ?? "none"}`,
+          )
+          const primaryRect = homeRoot()
+            .querySelector(".home-highlight-slot-primary")
+            .getBoundingClientRect()
+          const scrollRootRect = scrollRoot.getBoundingClientRect()
+          const initiallyVisibleHeight = Math.max(
+            0,
+            Math.min(primaryRect.bottom, scrollRootRect.bottom, globalThis.innerHeight) -
+              Math.max(primaryRect.top, scrollRootRect.top, 0),
+          )
+          assert(
+            initiallyVisibleHeight / primaryRect.height >= 0.2,
+            "Primary Highlight must be visible at the read observer threshold before scroll",
+          )
+          scrollRoot.scrollTop = scrollRoot.scrollHeight
+          await waitFor(
+            () => statusMutationRequests > 0 && !ids().includes(101),
+            "Mounted Highlight read-on-scroll did not use existing observer/mutation",
+          )
+        } finally {
+          settingsState.set({ ...settingsState.get(), markReadOnScroll: false })
+          stage.style.height = ""
+          stage.style.minHeight = ""
+          scrollSpacer.remove()
+        }
       },
     ],
     [
@@ -1552,27 +1578,373 @@ const Harness = () => {
       },
     ],
   ]
+  const responsiveScenarios = [
+    [
+      "HOME_RESPONSIVE_VIEWPORT_STAGE",
+      async () => {
+        await mountHighlights(highlightFixtures.image)
+        const stage = document.querySelector(".harness-stage")
+        const stageRect = stage?.getBoundingClientRect()
+        assert(
+          stageRect && Math.abs(stageRect.top) < 1 && Math.abs(stageRect.height - innerHeight) < 1,
+          `Responsive fixture did not use the exact viewport height: top=${stageRect?.top}, height=${stageRect?.height}, viewport=${innerHeight}`,
+        )
+        assert(
+          getComputedStyle(document.querySelector(".harness-controls")).display === "none" &&
+            getComputedStyle(document.querySelector(".harness-fixture-controls")).display ===
+              "none",
+          "Harness controls reduced the Home viewport during the responsive matrix",
+        )
+      },
+    ],
+    [
+      "HOME_NO_OVERFLOW",
+      async () => {
+        await mountHighlights(highlightFixtures.image)
+        assert(
+          document.documentElement.scrollWidth <= window.innerWidth,
+          `Home overflowed: ${document.documentElement.scrollWidth}px > ${window.innerWidth}px`,
+        )
+      },
+    ],
+    [
+      "HOME_SECTION_HIERARCHY",
+      async () => {
+        await mountHighlights(highlightFixtures.image)
+        const headings = [...homeRoot().querySelectorAll(".home-section-heading")].map((node) =>
+          node.textContent.trim(),
+        )
+        assert(
+          JSON.stringify(headings) === JSON.stringify(["Destaques", "Mais recentes"]),
+          `Expected editorial section hierarchy; found ${headings.join(" / ")}`,
+        )
+        const sections = [...homeRoot().querySelectorAll("section[aria-label]")].map((node) =>
+          node.getAttribute("aria-label"),
+        )
+        assert(
+          sections.indexOf("Destaques") < sections.indexOf("Recentes"),
+          "Home section DOM order is not Highlights then Recent",
+        )
+      },
+    ],
+    [
+      "HOME_SECONDARY_LAYOUT",
+      async () => {
+        await mountPagination(12)
+        const primary = homeRoot().querySelector(".home-highlight-slot-primary")
+        const secondaries = [
+          ...homeRoot().querySelectorAll(".home-highlight-secondaries .article-entry"),
+        ]
+        assert(primary && secondaries.length === 2, "Primary or both Secondary cards are missing")
+        const primaryRect = primary.getBoundingClientRect()
+        const secondaryRects = secondaries.map((node) => node.getBoundingClientRect())
+        const expectedWide = window.innerWidth >= 700
+        assert(
+          expectedWide
+            ? Math.abs(secondaryRects[0].top - secondaryRects[1].top) < 2
+            : secondaryRects[1].top > secondaryRects[0].top,
+          `Secondary layout did not match ${window.innerWidth}px viewport`,
+        )
+        if (window.innerWidth >= 884) {
+          const highlightsRect = homeRoot()
+            .querySelector(".home-highlights")
+            .getBoundingClientRect()
+          assert(
+            Math.abs(primaryRect.width - highlightsRect.width) < 2,
+            `At 884px and wider, Primary (${primaryRect.width}px) does not span Highlights (${highlightsRect.width}px)`,
+          )
+        }
+        globalThis.__phase2cHomeResponsive = {
+          viewport: [window.innerWidth, window.innerHeight],
+          contentWidth: homeRoot().querySelector(".home-editorial-content").clientWidth,
+          primaryWidth: Math.round(primaryRect.width),
+          highlightsWidth: Math.round(homeRoot().querySelector(".home-highlights").clientWidth),
+          secondaryWidths: secondaryRects.map((rect) => Math.round(rect.width)),
+          secondaryColumns: expectedWide ? 2 : 1,
+          recentTop: Math.round(
+            homeRoot().querySelector(".home-recent").getBoundingClientRect().top,
+          ),
+          appHeight: document.querySelector(".harness-stage").clientHeight,
+        }
+      },
+    ],
+    [
+      "HOME_RECENT_GRID",
+      async () => {
+        await mountPagination(12)
+        const row = homeRoot().querySelector(".home-recent .article-card-grid-row")
+        assert(row, "Recent Grid row missing")
+        const cells = [...row.children]
+        const viewportWidth = window.innerWidth
+        const availableWidth = homeRoot().querySelector(".home-editorial-content").clientWidth
+        const expectedColumns = Math.max(1, Math.min(3, Math.floor((availableWidth + 12) / 312)))
+        assert(
+          cells.length === expectedColumns,
+          `Recent Grid columns were ${cells.length}; expected ${expectedColumns} from ${availableWidth}px at ${viewportWidth}px`,
+        )
+        assert(
+          [...homeRoot().querySelectorAll(".home-recent .article-card-grid-row")].every(
+            (node) => Number(node.style.getPropertyValue("--article-card-grid-columns")) <= 3,
+          ),
+          "Recent exceeded the existing three-column Grid maximum",
+        )
+        const widths = cells.map((cell) => Math.round(cell.getBoundingClientRect().width))
+        let density = null
+        if (viewportWidth === 1024 && window.innerHeight === 768) {
+          const scrollRoot = homeRoot().querySelector(
+            ".simplebar-content-wrapper, .adaptive-scroll-area-native",
+          )
+          const recent = homeRoot().querySelector(".home-recent")
+          const heading = recent?.querySelector(".home-section-heading")
+          assert(scrollRoot && recent && heading, "1024×768 Home density elements are missing")
+          assert(
+            scrollRoot.scrollHeight > scrollRoot.clientHeight,
+            "Recent is not reachable inside the Home scroll area at 1024×768",
+          )
+          const rootRect = scrollRoot.getBoundingClientRect()
+          const recentRect = recent.getBoundingClientRect()
+          const headingHeight = heading.getBoundingClientRect().height
+          const recentOffset = scrollRoot.scrollTop + recentRect.top - rootRect.top
+          const desiredScroll = Math.min(
+            Math.max(0, recentOffset + headingHeight + 12 - scrollRoot.clientHeight),
+            scrollRoot.scrollHeight - scrollRoot.clientHeight,
+          )
+          scrollRoot.scrollTop = desiredScroll
+          await settle()
+          const updatedRootRect = scrollRoot.getBoundingClientRect()
+          const updatedHeadingRect = heading.getBoundingClientRect()
+          const headingVisible =
+            updatedHeadingRect.top < updatedRootRect.bottom &&
+            updatedHeadingRect.bottom > updatedRootRect.top
+          assert(headingVisible, "Recent heading is not discoverable by scrolling at 1024×768")
+          density = {
+            scrollClientHeight: scrollRoot.clientHeight,
+            scrollHeight: scrollRoot.scrollHeight,
+            scrollTop: Math.round(scrollRoot.scrollTop),
+            recentHeadingVisibleAfterScroll: headingVisible,
+            recentColumns: cells.length,
+            recentCardWidths: widths,
+          }
+        }
+        globalThis.__phase2cHomeResponsive = {
+          ...globalThis.__phase2cHomeResponsive,
+          recentColumns: cells.length,
+          recentCardWidths: widths,
+          recentGridWidth: Math.round(row.getBoundingClientRect().width),
+          ...(density ? { density } : {}),
+        }
+      },
+    ],
+    [
+      "HOME_SEARCH_ONLY",
+      async () => {
+        await mountHighlights(highlightFixtures.image)
+        const controls = [...document.querySelectorAll(".home-editorial .search-and-sort-bar")]
+        assert(controls.length === 1, "Home search control missing")
+        const buttons = [...controls[0].querySelectorAll(".button-group button")]
+        assert(buttons.length === 1, `Home exposed ${buttons.length} search/filter controls`)
+        assert(
+          !controls[0].querySelector(".arco-picker, [aria-label*='Sort'], .status-filter"),
+          "Date, sort, or status control leaked onto Home",
+        )
+      },
+    ],
+    [
+      "HOME_SEARCH_ROUTES_TO_ALL",
+      async () => {
+        await mountHighlights(highlightFixtures.image)
+        const searchButton = document.querySelector(".home-editorial .button-group button")
+        assert(searchButton, "Home search button missing")
+        searchButton.click()
+        await waitFor(() => document.querySelector(".search-modal input"), "Search modal missing")
+        const input = document.querySelector(".search-modal input")
+        const inputValueSetter = Object.getOwnPropertyDescriptor(
+          HTMLInputElement.prototype,
+          "value",
+        ).set
+        inputValueSetter.call(input, "editorial fixture query")
+        input.dispatchEvent(new Event("input", { bubbles: true }))
+        await settle()
+        clickLabel(englishPhrases.search.confirm)
+        await waitFor(
+          () => router.state.location.pathname === "/all",
+          "Home search did not route to /all",
+        )
+        assert(
+          contentState.get().filterString === "editorial fixture query",
+          "Home search did not reuse the existing query state",
+        )
+      },
+    ],
+    [
+      "LIST_SEARCH_DATE_SORT_PRESERVED",
+      async () => {
+        await mount("/all")
+        const bar = document.querySelector(".entry-col .search-and-sort-bar")
+        const buttons = [...bar.querySelectorAll(".button-group button")]
+        assert(buttons.length === 3, "Ordinary list lost Search, Date, or Sort")
+        const initialDirection = settingsState.get().orderDirection
+        buttons[2].click()
+        await waitFor(
+          () => settingsState.get().orderDirection !== initialDirection,
+          "Ordinary Sort no longer updates the existing order preference",
+        )
+        assert(router.state.location.pathname === "/all", "Ordinary Sort changed routes")
+
+        buttons[0].click()
+        await waitFor(
+          () => document.querySelector(".search-modal input"),
+          "List Search modal missing",
+        )
+        const input = document.querySelector(".search-modal input")
+        const inputValueSetter = Object.getOwnPropertyDescriptor(
+          HTMLInputElement.prototype,
+          "value",
+        ).set
+        inputValueSetter.call(input, "ordinary list query")
+        input.dispatchEvent(new Event("input", { bubbles: true }))
+        await settle()
+        clickLabel(englishPhrases.search.confirm)
+        await waitFor(
+          () => contentState.get().filterString === "ordinary list query",
+          "Ordinary Search did not update its existing query state",
+        )
+        assert(router.state.location.pathname === "/all", "Ordinary Search added Home navigation")
+
+        const dateButton = [...document.querySelectorAll(".entry-col .button-group button")].find(
+          (button) => button.getAttribute("aria-label") === englishPhrases.search.select_date,
+        )
+        assert(dateButton, "Ordinary Date control missing")
+        dateButton.click()
+        await waitFor(
+          () => document.querySelector(".arco-picker-container"),
+          "Ordinary Date control did not open the existing calendar",
+        )
+        const clearDateButton = [...document.querySelectorAll(".calendar-actions button")].find(
+          (button) => button.textContent.trim() === englishPhrases.search.clear_date,
+        )
+        assert(clearDateButton, "Ordinary Date clear action missing")
+        clearDateButton.click()
+        assert(contentState.get().filterDate === null, "Ordinary Date clear did not preserve state")
+        assert(router.state.location.pathname === "/all", "Ordinary Date changed routes")
+      },
+    ],
+    [
+      "HOME_LIGHT",
+      async () => {
+        await mountHighlights(highlightFixtures.image)
+        document.body.removeAttribute("arco-theme")
+        await new Promise((resolve) => setTimeout(resolve, 240))
+        const card = homeRoot().querySelector(".grid-card-wrapper")
+        const control = homeRoot().querySelector(".nf-glass-control")
+        const cardStyle = card && getComputedStyle(card)
+        const controlStyle = control && getComputedStyle(control)
+        const contentToken = getComputedStyle(document.body)
+          .getPropertyValue("--nf-surface-content")
+          .trim()
+        assert(
+          cardStyle &&
+            cardStyle.backgroundColor !== "rgba(0, 0, 0, 0)" &&
+            cardStyle.backdropFilter === "none",
+          "Light Home content surface is not opaque",
+        )
+        assert(
+          controlStyle && controlStyle.backdropFilter !== "none",
+          "Light Home chrome is not Liquid Glass",
+        )
+        globalThis.__phase2cHomeThemeMetrics = {
+          ...globalThis.__phase2cHomeThemeMetrics,
+          light: {
+            card: cardStyle.backgroundColor,
+            contentToken,
+            chromeBlur: controlStyle.backdropFilter,
+          },
+        }
+      },
+    ],
+    [
+      "HOME_DARK",
+      async () => {
+        await mountHighlights(highlightFixtures.image)
+        document.body.setAttribute("arco-theme", "dark")
+        await new Promise((resolve) => setTimeout(resolve, 240))
+        const card = homeRoot().querySelector(".grid-card-wrapper")
+        const control = homeRoot().querySelector(".nf-glass-control")
+        const cardStyle = card && getComputedStyle(card)
+        const controlStyle = control && getComputedStyle(control)
+        const contentToken = getComputedStyle(document.body)
+          .getPropertyValue("--nf-surface-content")
+          .trim()
+        assert(
+          cardStyle &&
+            cardStyle.backgroundColor !== "rgba(0, 0, 0, 0)" &&
+            cardStyle.backdropFilter === "none",
+          "Dark Home content surface is not opaque",
+        )
+        assert(
+          document.body.getAttribute("arco-theme") === "dark" &&
+            contentToken === "#101317" &&
+            cardStyle.backgroundColor === "rgb(16, 19, 23)",
+          `Dark content surface did not apply: body=${contentToken}, computed=${cardStyle.backgroundColor}`,
+        )
+        assert(
+          controlStyle && controlStyle.backdropFilter !== "none",
+          "Dark Home chrome is not Liquid Glass",
+        )
+        globalThis.__phase2cHomeThemeMetrics = {
+          ...globalThis.__phase2cHomeThemeMetrics,
+          dark: {
+            card: cardStyle.backgroundColor,
+            contentToken,
+            chromeBlur: controlStyle.backdropFilter,
+          },
+        }
+      },
+    ],
+  ]
   const run = async (selectedScenarios = scenarios) => {
+    const responsiveMode = selectedScenarios === responsiveScenarios
     setRunning(true)
     setResults([])
-    const next = []
-    for (const [name, scenario] of selectedScenarios) {
-      try {
-        await scenario()
-        next.push({ name, status: "PASS" })
-      } catch (error) {
-        next.push({
-          name,
-          status: "FAIL",
-          error: error.message,
-          path: router?.state.location.pathname,
-          activeId: contentState.get().activeContent?.id,
-          readerText: document.querySelector(".article-body")?.textContent,
-        })
-      }
-      setResults([...next])
+    if (responsiveMode) {
+      document.body.classList.add("phase2c-responsive-running")
+      await new Promise((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(resolve))
+      })
     }
-    setRunning(false)
+    const next = []
+    try {
+      for (const [name, scenario] of selectedScenarios) {
+        try {
+          await scenario()
+          next.push({
+            name,
+            status: "PASS",
+            ...(name === "HOME_SECONDARY_LAYOUT" || name === "HOME_RECENT_GRID"
+              ? { metrics: globalThis.__phase2cHomeResponsive }
+              : {}),
+            ...(name === "HOME_LIGHT" || name === "HOME_DARK"
+              ? { themes: globalThis.__phase2cHomeThemeMetrics }
+              : {}),
+          })
+        } catch (error) {
+          next.push({
+            name,
+            status: "FAIL",
+            error: error.message,
+            path: router?.state.location.pathname,
+            activeId: contentState.get().activeContent?.id,
+            readerText: document.querySelector(".article-body")?.textContent,
+          })
+        }
+        setResults([...next])
+      }
+    } finally {
+      if (responsiveMode) {
+        document.body.classList.remove("phase2c-responsive-running")
+      }
+      setRunning(false)
+    }
   }
   return (
     <main>
@@ -1593,6 +1965,9 @@ const Harness = () => {
         </button>
         <button disabled={running} onClick={() => void run(stateScenarios)}>
           Run Home loading and recovery scenario
+        </button>
+        <button disabled={running} onClick={() => void run(responsiveScenarios)}>
+          Run Home responsive visual gates
         </button>
         <p data-testid="suite-summary">
           {running

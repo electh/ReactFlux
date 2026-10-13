@@ -6,6 +6,7 @@ import HomeRecent from "./HomeRecent"
 import HomeStates from "./HomeStates"
 
 import LoadMoreSentinel from "@/components/Article/LoadMoreSentinel"
+import SearchAndSortBar from "@/components/Article/SearchAndSortBar"
 import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import useArticleCardActivation from "@/hooks/useArticleCardActivation"
 import useReadOnScroll from "@/hooks/useReadOnScroll"
@@ -21,6 +22,8 @@ import {
   transitionHomeSession,
 } from "@/utils/home-editorial-session"
 import { getHomeIdentityKey } from "@/utils/home-page"
+
+import "./HomeEditorial.css"
 
 const currentHomeSessionKey = () => {
   const { pageSize, showHiddenFeeds } = settingsState.get()
@@ -123,43 +126,47 @@ const HomeEditorial = ({
   const isInitialLoading = !activeSession && !isArticleListReady && !articleListError
   const isInitialError = !activeSession && isArticleListReady && articleListError
   return (
-    <div aria-busy={isInitialLoading} className="home-editorial" style={{ flex: 1, minHeight: 0 }}>
+    <div aria-busy={isInitialLoading} className="home-editorial">
+      <SearchAndSortBar fullWidth homeMode />
       <AdaptiveScrollArea
         ref={entryListRef}
+        className="home-editorial-scroll"
         scrollableNodeProps={{ ref: cardsRef, tabIndex: -1 }}
         style={{ height: "100%" }}
       >
-        {isInitialLoading && <HomeStates.Loading />}
-        {isInitialError && <HomeStates initialError retryArticleList={retryArticleList} />}
-        {projection && !isZeroUnread && (
-          <>
-            <HomeHighlights
-              articleActivation={articleActivation}
-              entries={entries}
-              highlightIds={projection.highlightIds}
-              observeRead={observeRead}
+        <div className="home-editorial-content">
+          {isInitialLoading && <HomeStates.Loading />}
+          {isInitialError && <HomeStates initialError retryArticleList={retryArticleList} />}
+          {projection && !isZeroUnread && (
+            <>
+              <HomeHighlights
+                articleActivation={articleActivation}
+                entries={entries}
+                highlightIds={projection.highlightIds}
+                observeRead={observeRead}
+              />
+              <HomeRecent
+                articleActivation={articleActivation}
+                entries={entries}
+                highlightIds={projection.highlightIds}
+                observeRead={observeRead}
+                recentIds={projection.recentIds}
+                scrollRootRef={cardsRef}
+              />
+              <LoadMoreSentinel getEntries={getEntries} scrollRootRef={cardsRef} />
+            </>
+          )}
+          {isZeroUnread && <HomeStates isZeroUnread />}
+          {projection && (
+            <HomeStates
+              refreshError={Boolean(articleListError)}
+              retryArticleList={retryArticleList}
             />
-            <HomeRecent
-              articleActivation={articleActivation}
-              entries={entries}
-              highlightIds={projection.highlightIds}
-              observeRead={observeRead}
-              recentIds={projection.recentIds}
-              scrollRootRef={cardsRef}
-            />
+          )}
+          {projection && isZeroUnread && loadMoreVisible && (
             <LoadMoreSentinel getEntries={getEntries} scrollRootRef={cardsRef} />
-          </>
-        )}
-        {isZeroUnread && <HomeStates isZeroUnread />}
-        {projection && (
-          <HomeStates
-            refreshError={Boolean(articleListError)}
-            retryArticleList={retryArticleList}
-          />
-        )}
-        {projection && isZeroUnread && loadMoreVisible && (
-          <LoadMoreSentinel getEntries={getEntries} scrollRootRef={cardsRef} />
-        )}
+          )}
+        </div>
       </AdaptiveScrollArea>
     </div>
   )
