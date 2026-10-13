@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 
 import HomeHighlights from "./HomeHighlights"
 import HomeRecent from "./HomeRecent"
+import HomeStates from "./HomeStates"
 
 import LoadMoreSentinel from "@/components/Article/LoadMoreSentinel"
 import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
@@ -31,8 +32,17 @@ const currentHomeSessionKey = () => {
   })
 }
 
-const HomeEditorial = ({ cardsRef, entryListRef, getEntries, handleEntryClick }) => {
-  const { entries } = useStore(contentState, { keys: ["entries"] })
+const HomeEditorial = ({
+  cardsRef,
+  entryListRef,
+  getEntries,
+  handleEntryClick,
+  retryArticleList,
+}) => {
+  const { articleListError, entries, isArticleListReady, loadMoreVisible, total } = useStore(
+    contentState,
+    { keys: ["articleListError", "entries", "isArticleListReady", "loadMoreVisible", "total"] },
+  )
   const articleActivation = useArticleCardActivation(handleEntryClick)
   const observeRead = useReadOnScroll(cardsRef)
   const identity = useStore(homeIdentityState)
@@ -107,14 +117,21 @@ const HomeEditorial = ({ cardsRef, entryListRef, getEntries, handleEntryClick })
 
   const activeSession = session?.requestKey === requestKey ? session : null
   const projection = activeSession ? projectHomeSession(activeSession, entries) : null
+  const hasProjectedEntries =
+    projection?.highlightIds.some((id) => id != null) || projection?.recentIds.length > 0
+  const isZeroUnread = Boolean(activeSession && total === 0 && !hasProjectedEntries)
+  const isInitialLoading = !activeSession && !isArticleListReady && !articleListError
+  const isInitialError = !activeSession && isArticleListReady && articleListError
   return (
-    <div aria-busy={!activeSession} className="home-editorial" style={{ flex: 1, minHeight: 0 }}>
+    <div aria-busy={isInitialLoading} className="home-editorial" style={{ flex: 1, minHeight: 0 }}>
       <AdaptiveScrollArea
         ref={entryListRef}
         scrollableNodeProps={{ ref: cardsRef, tabIndex: -1 }}
         style={{ height: "100%" }}
       >
-        {projection && (
+        {isInitialLoading && <HomeStates.Loading />}
+        {isInitialError && <HomeStates initialError retryArticleList={retryArticleList} />}
+        {projection && !isZeroUnread && (
           <>
             <HomeHighlights
               articleActivation={articleActivation}
@@ -130,8 +147,16 @@ const HomeEditorial = ({ cardsRef, entryListRef, getEntries, handleEntryClick })
               recentIds={projection.recentIds}
               scrollRootRef={cardsRef}
             />
+            <HomeStates
+              refreshError={Boolean(articleListError)}
+              retryArticleList={retryArticleList}
+            />
             <LoadMoreSentinel getEntries={getEntries} scrollRootRef={cardsRef} />
           </>
+        )}
+        {isZeroUnread && <HomeStates isZeroUnread />}
+        {projection && isZeroUnread && loadMoreVisible && (
+          <LoadMoreSentinel getEntries={getEntries} scrollRootRef={cardsRef} />
         )}
       </AdaptiveScrollArea>
     </div>

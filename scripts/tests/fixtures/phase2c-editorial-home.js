@@ -74,3 +74,12 @@ export const paginationEntries = (count, offset = 0) =>
       content: `<p>Local pagination article ${id}.</p>`,
     }
   })
+
+export const emptyHomeFixtures = {
+  zeroUnread: { entries: [], total: 0 },
+  emptyPageWithMore: {
+    entries: [],
+    total: 12,
+    nextPage: paginationEntries(12),
+  },
+}

@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client"
 import { createMemoryRouter, Outlet, RouterProvider } from "react-router"
 
 import {
+  emptyHomeFixtures,
   fixtureFeed,
   highlightFixtures,
   paginationEntries,
@@ -63,6 +64,10 @@ let fixtureEntries = routeEntries
 let fixtureTotal = 2
 let paginationPages = null
 let deferredPagination = null
+let deferredArticleQuery = null
+let failPagination = false
+let emptyPagePagination = false
+let initialHomeQueryServed = false
 let failStatusMutation = false
 let starMutationRequests = 0
 let statusMutationRequests = 0
@@ -96,13 +101,24 @@ apiClient.get = async (url) => {
     if (params.get("limit") === "1" && deferredCount) {
       return deferredCount.promise
     }
-    if (params.has("published_before") && paginationPages) {
+    const isEmptyHomePageAppend = emptyPagePagination && initialHomeQueryServed
+    if ((params.has("published_before") || isEmptyHomePageAppend) && paginationPages) {
+      if (failPagination) {
+        throw new Error("Expected local pagination failure")
+      }
       if (deferredPagination) {
         await deferredPagination.promise
       }
       const page = paginationPages.shift()
       assert(page, "Unexpected extra Home page request")
       return { entries: page, total: fixtureTotal }
+    }
+    if (!params.has("published_before") && deferredArticleQuery) {
+      await deferredArticleQuery.promise
+      deferredArticleQuery = null
+    }
+    if (emptyPagePagination) {
+      initialHomeQueryServed = true
     }
     return { entries: fixtureEntries, total: fixtureTotal }
   }
@@ -305,6 +321,8 @@ const Harness = () => {
       markReadBy = "manually",
       pageSize = getDefaultSettings().pageSize,
       pages = null,
+      deferInitial = false,
+      emptyPagePagination: nextEmptyPagePagination = false,
       layout = getDefaultSettings().articleListLayout,
       orderBy = getDefaultSettings().orderBy,
       orderDirection = getDefaultSettings().orderDirection,
@@ -330,6 +348,18 @@ const Harness = () => {
           return { promise, resolve: release }
         })()
       : null
+    deferredArticleQuery = deferInitial
+      ? (() => {
+          let release
+          const promise = new Promise((resolve) => {
+            release = resolve
+          })
+          return { promise, resolve: release }
+        })()
+      : null
+    failPagination = false
+    emptyPagePagination = nextEmptyPagePagination
+    initialHomeQueryServed = false
     failStatusMutation = false
     starMutationRequests = 0
     statusMutationRequests = 0
@@ -1222,6 +1252,235 @@ const Harness = () => {
       },
     ],
   ]
+  const stateScenarios = [
+    [
+      "HOME_LOADING",
+      async () => {
+        await mount("/", { deferInitial: true, entries: [], total: 0 })
+        assert(
+          document.querySelector(".home-state-loading[aria-busy='true']"),
+          "Initial canonical query did not render the Home editorial skeleton",
+        )
+        assert(
+          !document.querySelector(".home-state-zero-unread"),
+          "Pending query was presented as global zero unread",
+        )
+        deferredArticleQuery?.resolve()
+        deferredArticleQuery = null
+        await waitFor(
+          () => document.querySelector(".home-state-zero-unread"),
+          "Successful zero result did not replace initial loading",
+        )
+      },
+    ],
+    [
+      "HOME_LOW_UNREAD_COUNTS",
+      async () => {
+        for (const [entries, expected] of [
+          [highlightFixtures.one, 1],
+          [highlightFixtures.two, 2],
+        ]) {
+          await mountHighlights(entries)
+          assert(cards().length === expected, `Expected exactly ${expected} loaded Highlights`)
+          assert(
+            !document.querySelector(".home-highlight-slot-placeholder"),
+            "A filler card rendered",
+          )
+          assert(!document.querySelector(".home-recent"), "Empty Recent section rendered")
+        }
+      },
+    ],
+    [
+      "HOME_EMPTY_RECENT",
+      async () => {
+        await mount("/", {
+          entries: emptyHomeFixtures.emptyPageWithMore.entries,
+          total: emptyHomeFixtures.emptyPageWithMore.total,
+          pageSize: 20,
+          pages: [emptyHomeFixtures.emptyPageWithMore.nextPage],
+          emptyPagePagination: true,
+        })
+        await waitFor(
+          () => homeRoot()?.getAttribute("aria-busy") === "false",
+          "Empty Home query did not become ready",
+        )
+        assert(cards().length === 0 && recentIds().length === 0, "Empty loaded page rendered cards")
+        assert(!document.querySelector(".home-recent"), "Empty Recent section rendered")
+        assert(
+          !document.querySelector(".home-state-zero-unread"),
+          "Positive total rendered zero state",
+        )
+        assert(
+          sentinels().length === 1,
+          `Empty loaded page lost its shared sentinel (ready=${contentState.get().isArticleListReady}, total=${contentState.get().total}, loadMore=${contentState.get().loadMoreVisible}, session=${homeRoot()?.getAttribute("aria-busy")})`,
+        )
+        assert(contentState.get().loadMoreVisible, "Positive total did not preserve pagination")
+        deferredPagination?.resolve()
+        deferredPagination = null
+        await waitFor(
+          () => contentState.get().entries.length === 12,
+          "Empty page sentinel did not append",
+        )
+      },
+    ],
+    [
+      "HOME_ZERO_UNREAD",
+      async () => {
+        await mount("/", emptyHomeFixtures.zeroUnread)
+        await waitFor(
+          () => document.querySelector(".home-state-zero-unread"),
+          "Successful canonical zero did not render the calm Home state",
+        )
+        assert(
+          document
+            .querySelector(".home-state-zero-unread")
+            ?.textContent.includes(englishPhrases.article_list.no_unread_articles),
+          "Global zero state did not use the existing localized no-unread message",
+        )
+
+        await mount("/", { entries: routeEntries.slice(0, 1), total: 2 })
+        await waitFor(() => contentState.get().isArticleListReady, "Home query did not load")
+        failCount = true
+        updateEntriesStatusOptimistically([contentState.get().entries[0]], "read")
+        await waitFor(
+          () =>
+            requests.some(
+              (url) => new URL(url, "https://fixture.invalid").searchParams.get("limit") === "1",
+            ),
+          "Failed guarded count reconciliation was not requested",
+        )
+        await settle()
+        assert(
+          !document.querySelector(".home-state-zero-unread") && contentState.get().total === 2,
+          "Failed count reconciliation produced a false zero-unread state",
+        )
+      },
+    ],
+    [
+      "HOME_INITIAL_ERROR",
+      async () => {
+        await mount("/", { queryError: true })
+        await waitFor(() => contentState.get().articleListError, "Initial query rejection missing")
+        assert(
+          document.querySelector(".home-state-initial-error[role='alert']"),
+          "Initial article-query failure did not render an in-surface Home error",
+        )
+        assert(
+          !document.querySelector(".home-state-zero-unread"),
+          "Failed initial query was presented as global zero unread",
+        )
+        articleFailure = false
+        clickLabel(englishPhrases.actions.retry)
+        await waitFor(
+          () => homeRoot()?.getAttribute("aria-busy") === "false",
+          "Retry did not recover Home",
+        )
+        assert(
+          homeRoot().querySelector(".home-state-initial-error") === null,
+          "Retry left initial error visible",
+        )
+        assert(listRequests().length === 2, "Retry did not use the existing canonical query")
+      },
+    ],
+    [
+      "HOME_REFRESH_ERROR_PRESERVES_CONTENT",
+      async () => {
+        await mountHighlights(highlightFixtures.image)
+        const originalCards = cards()
+        const initialRequests = listRequests().length
+        articleFailure = true
+        document.body.focus()
+        document.body.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            bubbles: true,
+            cancelable: true,
+            code: "KeyR",
+            key: "r",
+            keyCode: 82,
+            which: 82,
+          }),
+        )
+        document.body.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            bubbles: true,
+            cancelable: true,
+            code: "KeyR",
+            key: "r",
+            keyCode: 82,
+            which: 82,
+          }),
+        )
+        await waitFor(
+          () => contentState.get().articleListError,
+          "Explicit refresh rejection missing",
+        )
+        assert(
+          listRequests().length === initialRequests + 1,
+          "Repeated refresh started overlapping canonical requests",
+        )
+        assert(
+          document.querySelector(".home-state-refresh-error[role='alert']"),
+          "Refresh rejection did not render its distinct in-surface error",
+        )
+        assert(
+          originalCards.length === cards().length &&
+            originalCards.every((card, index) => card === cards()[index]),
+          "Failed refresh replaced the exact valid Home projection",
+        )
+        assert(
+          !document.querySelector(".home-state-initial-error"),
+          "Refresh used initial-error state",
+        )
+        articleFailure = false
+        clickLabel(englishPhrases.actions.retry)
+        await waitFor(
+          () =>
+            homeRoot()?.getAttribute("aria-busy") === "false" &&
+            !contentState.get().articleListError,
+          "Refresh retry did not complete",
+        )
+        assert(
+          listRequests().length === initialRequests + 2,
+          "Refresh/retry started unexpected requests",
+        )
+      },
+    ],
+    [
+      "HOME_LOAD_MORE_ERROR",
+      async () => {
+        await mountPagination(20, { pages: [paginationEntries(20, 18)] })
+        const originalCards = cards()
+        failPagination = true
+        const root = scrollRoot()
+        root.scrollTop = root.scrollHeight
+        sentinels()[0].scrollIntoView({ block: "end" })
+        root.dispatchEvent(new Event("scroll"))
+        await waitFor(() => contentState.get().loadMoreError, "Load-more rejection missing")
+        assert(
+          originalCards.every((card, index) => card === cards()[index]),
+          "Load-more failure replaced Home Highlights",
+        )
+        assert(
+          document.querySelectorAll(".home-editorial .load-more-container").length === 1 &&
+            sentinels()[0].querySelector("button"),
+          "Load-more retry was not local to the sole shared sentinel",
+        )
+        assert(
+          !document.querySelector(".home-state-refresh-error, .home-state-initial-error"),
+          "Page error duplicated sentinel error",
+        )
+        failPagination = false
+        deferredPagination?.resolve()
+        deferredPagination = null
+        sentinels()[0].querySelector("button").click()
+        await waitFor(
+          () => contentState.get().entries.length > 20,
+          "Sentinel retry did not append page",
+        )
+        assert(contentState.get().loadMoreError === false, "Sentinel retry left error state active")
+      },
+    ],
+  ]
   const run = async (selectedScenarios = scenarios) => {
     setRunning(true)
     setResults([])
@@ -1260,6 +1519,9 @@ const Harness = () => {
         </button>
         <button disabled={running} onClick={() => void run(listSentinelScenarios)}>
           Run shared list sentinel regression
+        </button>
+        <button disabled={running} onClick={() => void run(stateScenarios)}>
+          Run Home loading and recovery scenario
         </button>
         <p data-testid="suite-summary">
           {running
