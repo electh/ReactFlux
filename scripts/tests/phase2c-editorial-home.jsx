@@ -5,7 +5,12 @@ import React, { useState } from "react"
 import { createRoot } from "react-dom/client"
 import { createMemoryRouter, Outlet, RouterProvider } from "react-router"
 
-import { fixtureFeed, highlightFixtures, routeEntries } from "./fixtures/phase2c-editorial-home"
+import {
+  fixtureFeed,
+  highlightFixtures,
+  paginationEntries,
+  routeEntries,
+} from "./fixtures/phase2c-editorial-home"
 
 import apiClient from "@/apis/ofetch"
 import { ContextProvider } from "@/components/Content/ContentContext"
@@ -56,6 +61,8 @@ const fixtureAuth = {
 const requests = []
 let fixtureEntries = routeEntries
 let fixtureTotal = 2
+let paginationPages = null
+let deferredPagination = null
 let failStatusMutation = false
 let starMutationRequests = 0
 let statusMutationRequests = 0
@@ -88,6 +95,14 @@ apiClient.get = async (url) => {
     }
     if (params.get("limit") === "1" && deferredCount) {
       return deferredCount.promise
+    }
+    if (params.has("published_before") && paginationPages) {
+      if (deferredPagination) {
+        await deferredPagination.promise
+      }
+      const page = paginationPages.shift()
+      assert(page, "Unexpected extra Home page request")
+      return { entries: page, total: fixtureTotal }
     }
     return { entries: fixtureEntries, total: fixtureTotal }
   }
@@ -228,6 +243,28 @@ const clickLabel = (label) => {
 
 const cards = () => [...document.querySelectorAll(".home-highlights .article-entry")]
 const ids = () => cards().map((card) => Number(card.dataset.entryId))
+const recentIds = () =>
+  [...document.querySelectorAll(".home-recent .article-entry")].map((node) =>
+    Number(node.dataset.entryId),
+  )
+const listRequests = () => requests.filter((url) => url.startsWith("/v1/entries?"))
+const scrollRoot = () =>
+  homeRoot()?.querySelector(".simplebar-content-wrapper, .adaptive-scroll-area-native")
+const sentinels = () => [...document.querySelectorAll(".home-editorial .load-more-container")]
+const loadNextPage = async (loadedCount) => {
+  const root = scrollRoot()
+  assert(root && sentinels().length === 1, "Expected one Home pagination sentinel")
+  root.scrollTop = root.scrollHeight
+  sentinels()[0].scrollIntoView({ block: "end" })
+  deferredPagination?.resolve()
+  deferredPagination = null
+  root.dispatchEvent(new Event("scroll"))
+  await waitFor(
+    () => contentState.get().entries.length > loadedCount,
+    "Home sentinel did not append the next page",
+  )
+  await settle()
+}
 const clickMenu = (label) => {
   const item = [...document.querySelectorAll('.mobile-action-menu [role="menuitem"]')].find(
     (node) => node.textContent.includes(label),
@@ -266,6 +303,11 @@ const Harness = () => {
       entries = routeEntries,
       total = 2,
       markReadBy = "manually",
+      pageSize = getDefaultSettings().pageSize,
+      pages = null,
+      layout = getDefaultSettings().articleListLayout,
+      orderBy = getDefaultSettings().orderBy,
+      orderDirection = getDefaultSettings().orderDirection,
     } = {},
   ) => {
     setProbe(null)
@@ -278,6 +320,16 @@ const Harness = () => {
     articleFailure = queryError
     fixtureEntries = entries.map((entry) => ({ ...entry }))
     fixtureTotal = total
+    paginationPages = pages?.map((page) => page.map((entry) => ({ ...entry }))) ?? null
+    deferredPagination = pages?.length
+      ? (() => {
+          let release
+          const promise = new Promise((resolve) => {
+            release = resolve
+          })
+          return { promise, resolve: release }
+        })()
+      : null
     failStatusMutation = false
     starMutationRequests = 0
     statusMutationRequests = 0
@@ -290,6 +342,10 @@ const Harness = () => {
     settingsState.set({
       ...getDefaultSettings(),
       markReadBy,
+      pageSize,
+      articleListLayout: layout,
+      orderBy,
+      orderDirection,
       removeDuplicates: "none",
       enableContextMenu: true,
       showFeedIcon: true,
@@ -933,6 +989,239 @@ const Harness = () => {
       },
     ],
   ]
+  const mountPagination = async (count, { total = count + 1000, pages = [] } = {}) => {
+    await mount("/", { entries: paginationEntries(count), total, pageSize: count, pages })
+    await waitFor(
+      () => homeRoot()?.getAttribute("aria-busy") === "false",
+      "Home pagination session did not become ready",
+    )
+  }
+  const recentScenarios = [
+    [
+      "HOME_RECENT_GRID",
+      async () => {
+        for (const count of [3, 20, 250]) {
+          await mountPagination(count)
+          assert(ids().join(",") === "10000,10001,10002", "Initial Highlights changed")
+          assert(
+            recentIds().join(",") ===
+              paginationEntries(count)
+                .slice(3)
+                .map(({ id }) => id)
+                .join(","),
+            `Recent lost canonical order at ${count} loaded records`,
+          )
+          assert(sentinels().length === 1, "Home composition must own one sentinel")
+          assert(
+            [...document.querySelectorAll(".home-recent .article-entry")].every((node) =>
+              node.classList.contains("grid-card-wrapper"),
+            ),
+            "Recent did not reuse the existing Grid card presenter",
+          )
+          const recent = homeRoot().querySelector(".home-recent")
+          assert(
+            homeRoot().querySelector(".home-highlights").compareDocumentPosition(sentinels()[0]) &
+              Node.DOCUMENT_POSITION_FOLLOWING &&
+              (!recent ||
+                recent.compareDocumentPosition(sentinels()[0]) & Node.DOCUMENT_POSITION_FOLLOWING),
+            "Sentinel did not follow Highlights and Recent",
+          )
+          assert(Boolean(recent) === count > 3, "Empty Recent section was rendered")
+          assert(
+            sentinels()[0]
+              .closest(".simplebar-content, .adaptive-scroll-area-native")
+              ?.contains(homeRoot().querySelector(".home-highlights")),
+            "Sentinel is outside the persistent composition scroll root",
+          )
+        }
+      },
+    ],
+    [
+      "HOME_DEDUPE_BY_ENTRY_ID",
+      async () => {
+        const entries = paginationEntries(20)
+        await mount("/", { entries: [...entries.toReversed(), entries[0], entries[6]], total: 20 })
+        await waitFor(() => ids().length === 3, "Highlights missing")
+        const rendered = [...ids(), ...recentIds()]
+        assert(
+          rendered.length === 20 && new Set(rendered).size === 20,
+          "Home deduped distinct records by shared title/hash/URL or repeated entry IDs",
+        )
+        assert(
+          recentIds().join(",") ===
+            entries
+              .slice(3)
+              .map(({ id }) => id)
+              .join(","),
+          "Recent order did not follow published_at descending",
+        )
+      },
+    ],
+    [
+      "HOME_LOAD_MORE_STABLE",
+      async () => {
+        await mountPagination(20, { pages: [paginationEntries(20, 18)] })
+        const highlights = cards()
+        const root = scrollRoot()
+        await loadNextPage(20)
+        assert(ids().join(",") === "10000,10001,10002", "Append changed Highlight slots/order")
+        assert(
+          cards().every((node, index) => node === highlights[index]),
+          "Append remounted Highlights",
+        )
+        assert(scrollRoot() === root, "Append replaced the persistent scroll root")
+        assert(
+          recentIds().join(",") ===
+            paginationEntries(38)
+              .slice(3)
+              .map(({ id }) => id)
+              .join(","),
+          "Page overlap was not appended by ID to Recent",
+        )
+        assert(sentinels().length === 1, "Append duplicated the sentinel")
+      },
+    ],
+    [
+      "HOME_ONE_CURSOR",
+      async () => {
+        await mountPagination(20, {
+          pages: [paginationEntries(20, 18), paginationEntries(20, 36)],
+        })
+        await loadNextPage(20)
+        await loadNextPage(38)
+        const queries = listRequests().map(
+          (url) => new URL(url, "https://fixture.invalid").searchParams,
+        )
+        assert(queries.length === 3, "Home created a second query/pagination chain")
+        assert(
+          queries.every(
+            (query) =>
+              query.get("status") === "unread" &&
+              query.get("limit") === "20" &&
+              query.get("order") === "published_at" &&
+              query.get("direction") === "desc",
+          ),
+          "Pagination did not reuse canonical Home query policy",
+        )
+        const cursor = (index) =>
+          String(Date.parse(paginationEntries(index + 1)[index].published_at) / 1000)
+        assert(
+          !queries[0].has("published_before") &&
+            queries[1].get("published_before") === cursor(18) &&
+            queries[2].get("published_before") === cursor(36),
+          "Home cursor sequence did not advance once per page",
+        )
+      },
+    ],
+    [
+      "HOME_EMPTY_RECENT_SENTINEL",
+      async () => {
+        for (const count of [1, 2, 3]) {
+          await mountPagination(count, { pages: [paginationEntries(count, count)] })
+          assert(
+            recentIds().length === 0 && !homeRoot().querySelector(".home-recent"),
+            "Recent should be absent",
+          )
+          assert(
+            sentinels().length === 1 && contentState.get().loadMoreVisible,
+            "Empty Recent lost pagination",
+          )
+          const initialIds = ids().join(",")
+          await loadNextPage(count)
+          assert(ids().join(",") === initialIds, "Pagination filled or reordered Highlight slots")
+          assert(recentIds().length === count, "Empty Recent did not receive appended records")
+        }
+      },
+    ],
+    [
+      "HOME_NO_EXTRA_HIGHLIGHT_FETCH",
+      async () => {
+        await mountPagination(20)
+        await settle()
+        assert(
+          listRequests().length === 1 && requests.length === 1,
+          "Highlights issued an extra fetch",
+        )
+        assert(
+          contentState.get().entries.length === 20 && recentIds().length === 17,
+          "Highlights exceeded the page budget",
+        )
+      },
+    ],
+    [
+      "HOME_LARGE_PAGE_APPEND",
+      async () => {
+        await mountPagination(250, { pages: [paginationEntries(250, 248)] })
+        await loadNextPage(250)
+        assert(contentState.get().entries.length === 498, "Large page append lost ID deduplication")
+        assert(ids().join(",") === "10000,10001,10002", "Large append reordered Highlights")
+        assert(
+          recentIds().join(",") ===
+            paginationEntries(498)
+              .slice(3)
+              .map(({ id }) => id)
+              .join(","),
+          "Large page Recent order/append is incomplete",
+        )
+        assert(
+          sentinels().length === 1 && listRequests().length === 2,
+          "Large append created extra pagination owners",
+        )
+      },
+    ],
+  ]
+  const listSentinelScenarios = [
+    [
+      "LIST_VIRTUALIZED_SHARED_SENTINEL_APPEND",
+      async () => {
+        await mount("/all", {
+          entries: paginationEntries(250),
+          total: 1000,
+          pageSize: 250,
+          layout: "card",
+          orderBy: "published_at",
+          orderDirection: "desc",
+          pages: [paginationEntries(250, 248)],
+        })
+        await waitFor(
+          () => document.querySelector(".article-card-grid-row"),
+          "Virtualized Grid missing",
+        )
+        const root = document.querySelector(
+          ".entry-list .simplebar-content-wrapper, .entry-list.adaptive-scroll-area-native",
+        )
+        const sentinel = document.querySelector(".entry-list .load-more-container")
+        assert(
+          root && sentinel && document.querySelectorAll(".load-more-container").length === 1,
+          "Ordinary ArticleList lost the shared sentinel",
+        )
+        assert(
+          document.querySelectorAll(".entry-list .article-entry").length < 250,
+          "Ordinary Grid no longer virtualizes loaded records",
+        )
+        root.scrollTop = root.scrollHeight
+        sentinel.scrollIntoView({ block: "end" })
+        deferredPagination?.resolve()
+        deferredPagination = null
+        root.dispatchEvent(new Event("scroll"))
+        await waitFor(
+          () => contentState.get().entries.length === 498,
+          "Virtualized sentinel failed to append",
+        )
+        assert(listRequests().length === 2, "Ordinary list started extra requests")
+        assert(
+          document.querySelectorAll(".load-more-container").length === 1,
+          "Virtualized append duplicated the sentinel",
+        )
+        assert(
+          document.querySelector(
+            ".entry-list .simplebar-content-wrapper, .entry-list.adaptive-scroll-area-native",
+          ) === root,
+          "Virtualized append replaced the scroll root",
+        )
+      },
+    ],
+  ]
   const run = async (selectedScenarios = scenarios) => {
     setRunning(true)
     setResults([])
@@ -965,6 +1254,12 @@ const Harness = () => {
         </button>
         <button disabled={running} onClick={() => void run(highlightScenarios)}>
           Run Highlights scenario
+        </button>
+        <button disabled={running} onClick={() => void run(recentScenarios)}>
+          Run Recent pagination scenario
+        </button>
+        <button disabled={running} onClick={() => void run(listSentinelScenarios)}>
+          Run shared list sentinel regression
         </button>
         <p data-testid="suite-summary">
           {running

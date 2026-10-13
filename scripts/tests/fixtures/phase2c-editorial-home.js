@@ -58,3 +58,19 @@ export const highlightFixtures = {
   one: [primary],
   shared: [highlightEntry(101, "12"), highlightEntry(202, "11"), highlightEntry(303, "10")],
 }
+
+// Unique timestamps make the existing overlap cursor deterministic across large pages.
+export const paginationEntries = (count, offset = 0) =>
+  Array.from({ length: count }, (_, index) => {
+    const position = offset + index
+    const id = 10_000 + position
+    return {
+      ...routeEntries[0],
+      id,
+      title: "Shared editorial title",
+      hash: "shared-pagination-hash",
+      url: "https://example.invalid/shared-pagination-url",
+      published_at: new Date(Date.UTC(2026, 9, 12, 12) - position * 60_000).toISOString(),
+      content: `<p>Local pagination article ${id}.</p>`,
+    }
+  })

@@ -1,8 +1,7 @@
-import { Button, Divider, Spin, Typography } from "@arco-design/web-react"
+import { Button, Divider, Typography } from "@arco-design/web-react"
 import { IconEmpty, IconExclamationCircle } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { forwardRef, useCallback, useEffect, useRef, useState } from "react"
-import { useInView } from "react-intersection-observer"
+import { forwardRef } from "react"
 import { Virtualizer } from "virtua"
 
 import ArticleCard from "./ArticleCard"
@@ -10,13 +9,13 @@ import ArticleEntry from "./ArticleEntry"
 import ArticleGridCard from "./ArticleGridCard"
 import ArticleListItem from "./ArticleListItem"
 import LoadingCards from "./LoadingCards"
+import LoadMoreSentinel from "./LoadMoreSentinel"
 
 import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import FadeTransition from "@/components/ui/FadeTransition"
 import useArticleCardActivation from "@/hooks/useArticleCardActivation"
 import useArticleListLayout from "@/hooks/useArticleListLayout"
 import { polyglotState } from "@/hooks/useLanguage"
-import useLoadMore from "@/hooks/useLoadMore"
 import useReadOnScroll from "@/hooks/useReadOnScroll"
 import articleListEmptyState from "@/store/articleListEmptyState"
 import { contentState, filteredEntriesState } from "@/store/contentState"
@@ -59,89 +58,6 @@ const getEmptyStateSummary = ({ date, query, status }, polyglot) => {
   }
 
   return summaryParts.join(" · ")
-}
-
-const isElementVisibleInRoot = (element, root) => {
-  if (!element || !root) {
-    return false
-  }
-
-  const elementRect = element.getBoundingClientRect()
-  const rootRect = root.getBoundingClientRect()
-  return elementRect.bottom >= rootRect.top && elementRect.top <= rootRect.bottom
-}
-
-const LoadMoreComponent = ({ getEntries, scrollRootRef }) => {
-  const { isArticleListReady, loadMoreVisible } = useStore(contentState, {
-    keys: ["isArticleListReady", "loadMoreVisible"],
-  })
-  const { handleLoadMore, loadMoreError, loadingMore } = useLoadMore()
-  const { polyglot } = useStore(polyglotState)
-  const { ref: inViewRef, inView } = useInView()
-  const autoLoadArmedRef = useRef(true)
-  const loadMoreElementRef = useRef(null)
-  const [autoLoadRevision, setAutoLoadRevision] = useState(0)
-  const setLoadMoreRef = useCallback(
-    (element) => {
-      loadMoreElementRef.current = element
-      inViewRef(element)
-    },
-    [inViewRef],
-  )
-  const requestLoadMore = useCallback(() => {
-    autoLoadArmedRef.current = false
-    return handleLoadMore(getEntries).finally(() => {
-      requestAnimationFrame(() => {
-        if (isElementVisibleInRoot(loadMoreElementRef.current, scrollRootRef.current)) {
-          autoLoadArmedRef.current = true
-          setAutoLoadRevision((revision) => revision + 1)
-        }
-      })
-    })
-  }, [getEntries, handleLoadMore, scrollRootRef])
-
-  useEffect(() => {
-    if (!inView) {
-      autoLoadArmedRef.current = true
-      return
-    }
-
-    if (
-      autoLoadArmedRef.current &&
-      loadMoreVisible &&
-      isArticleListReady &&
-      !loadMoreError &&
-      !loadingMore
-    ) {
-      void requestLoadMore()
-    }
-  }, [
-    autoLoadRevision,
-    inView,
-    isArticleListReady,
-    loadMoreError,
-    loadingMore,
-    loadMoreVisible,
-    requestLoadMore,
-  ])
-
-  return (
-    isArticleListReady &&
-    loadMoreVisible && (
-      <div ref={setLoadMoreRef} className="load-more-container">
-        {loadMoreError ? (
-          <Button size="small" onClick={() => void requestLoadMore()}>
-            {polyglot.t("actions.retry")}
-          </Button>
-        ) : (
-          <>
-            <Spin loading={loadingMore} style={{ paddingRight: "10px" }} />
-            {polyglot.t("article_list.loading_more")}
-          </>
-        )}
-      </div>
-    )
-  )
 }
 
 const ArticleList = forwardRef(
@@ -262,7 +178,7 @@ const ArticleList = forwardRef(
             </Virtualizer>
           </FadeTransition>
         )}
-        <LoadMoreComponent getEntries={getEntries} scrollRootRef={cardsRef} />
+        <LoadMoreSentinel getEntries={getEntries} scrollRootRef={cardsRef} />
       </AdaptiveScrollArea>
     )
   },

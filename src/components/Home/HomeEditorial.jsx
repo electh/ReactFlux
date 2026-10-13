@@ -2,7 +2,9 @@ import { useStore } from "@nanostores/react"
 import { useEffect, useState } from "react"
 
 import HomeHighlights from "./HomeHighlights"
+import HomeRecent from "./HomeRecent"
 
+import LoadMoreSentinel from "@/components/Article/LoadMoreSentinel"
 import AdaptiveScrollArea from "@/components/ui/AdaptiveScrollArea"
 import useArticleCardActivation from "@/hooks/useArticleCardActivation"
 import useReadOnScroll from "@/hooks/useReadOnScroll"
@@ -29,7 +31,7 @@ const currentHomeSessionKey = () => {
   })
 }
 
-const HomeEditorial = ({ cardsRef, entryListRef, handleEntryClick }) => {
+const HomeEditorial = ({ cardsRef, entryListRef, getEntries, handleEntryClick }) => {
   const { entries } = useStore(contentState, { keys: ["entries"] })
   const articleActivation = useArticleCardActivation(handleEntryClick)
   const observeRead = useReadOnScroll(cardsRef)
@@ -113,12 +115,23 @@ const HomeEditorial = ({ cardsRef, entryListRef, handleEntryClick }) => {
         style={{ height: "100%" }}
       >
         {projection && (
-          <HomeHighlights
-            articleActivation={articleActivation}
-            entries={entries}
-            highlightIds={projection.highlightIds}
-            observeRead={observeRead}
-          />
+          <>
+            <HomeHighlights
+              articleActivation={articleActivation}
+              entries={entries}
+              highlightIds={projection.highlightIds}
+              observeRead={observeRead}
+            />
+            <HomeRecent
+              articleActivation={articleActivation}
+              entries={entries}
+              highlightIds={projection.highlightIds}
+              observeRead={observeRead}
+              recentIds={projection.recentIds}
+              scrollRootRef={cardsRef}
+            />
+            <LoadMoreSentinel getEntries={getEntries} scrollRootRef={cardsRef} />
+          </>
         )}
       </AdaptiveScrollArea>
     </div>
