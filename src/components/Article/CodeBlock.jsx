@@ -29,9 +29,8 @@ const cacheLanguage = (code, language) => {
   languageCache.set(code, language)
 }
 
-const CodeBlock = ({ children }) => {
+const CodeBlock = ({ children: code }) => {
   const { polyglot } = useStore(polyglotState)
-  const code = children.trim()
   const [language, setLanguage] = useState(() => languageCache.get(code) ?? "plaintext")
 
   const copyToClipboard = useCallback(() => {

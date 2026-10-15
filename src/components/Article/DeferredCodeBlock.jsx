@@ -25,8 +25,7 @@ const PlainCodeBlock = ({ code, enableLabel, isWaiting, onEnable }) => (
   </div>
 )
 
-const DeferredCodeBlock = ({ children }) => {
-  const code = children.trim()
+const DeferredCodeBlock = ({ children: code }) => {
   const { polyglot } = useStore(polyglotState)
   const { ref, inView } = useInView({ rootMargin: "400px 0px", triggerOnce: true })
   const [largeBlockHighlightEnabled, setLargeBlockHighlightEnabled] = useState(false)

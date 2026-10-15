@@ -32,6 +32,7 @@ import useScreenWidth, { prefersReducedMotionState } from "@/hooks/useScreenWidt
 import { activeContentState } from "@/store/contentState"
 import { articleDetailSettingsState } from "@/store/settingsState"
 import returnToArticleImage from "@/utils/article-image-return"
+import extractCodeContent from "@/utils/code-content"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
 import buildArticleImageModel from "@/utils/images"
 import { getSafeExternalUrl } from "@/utils/url"
@@ -115,32 +116,6 @@ const handleImage = (node, getImageIndex, togglePhotoSlider) => {
   return <ImageOverlayButton index={index} node={node} togglePhotoSlider={togglePhotoSlider} />
 }
 
-const htmlEntities = {
-  "&#39;": "'",
-  "&quot;": '"',
-  "&lt;": "<",
-  "&gt;": ">",
-  "&amp;": "&",
-}
-
-const decodeAndParseCodeContent = (preElement) => {
-  return preElement.children
-    .map((child) => {
-      if (child.type === "tag" && child.name === "p") {
-        return `${child.children[0]?.data ?? ""}\n`
-      }
-      if (child.type === "tag" && child.name === "strong") {
-        return child.children[0]?.data ?? ""
-      }
-      return child.data ?? (child.name === "br" ? "\n" : "")
-    })
-    .join("")
-    .replaceAll(
-      new RegExp(Object.keys(htmlEntities).join("|"), "g"),
-      (match) => htmlEntities[match],
-    )
-}
-
 const handleTableBasedCode = (node) => {
   const tbody = node.children.find((child) => child.name === "tbody")
   if (!tbody) {
@@ -168,10 +143,10 @@ const handleTableBasedCode = (node) => {
   // Check if there's a <code> element inside the pre
   const codeElement = codePre.children?.find((child) => child.name === "code")
   if (codeElement) {
-    return decodeAndParseCodeContent(codeElement)
+    return extractCodeContent(codeElement)
   }
 
-  return decodeAndParseCodeContent(codePre)
+  return extractCodeContent(codePre)
 }
 
 // Preserve presentational tables; normalize and wrap data tables for horizontal scrolling.
@@ -230,7 +205,7 @@ const handleFigure = (node, getImageIndex, togglePhotoSlider, options) => {
 
   // Handle code blocks wrapped in figure
   if (firstChild?.name === "pre") {
-    const codeContent = decodeAndParseCodeContent(firstChild)
+    const codeContent = extractCodeContent(firstChild)
     return codeContent ? renderCodeBlock(codeContent) : null
   }
 
@@ -286,8 +261,8 @@ const handleCodeBlock = (node) => {
   // Extract code content
   const codeContent =
     node.children[0]?.name === "code"
-      ? decodeAndParseCodeContent(node.children[0])
-      : decodeAndParseCodeContent(node)
+      ? extractCodeContent(node.children[0])
+      : extractCodeContent(node)
 
   return renderCodeBlock(codeContent)
 }
