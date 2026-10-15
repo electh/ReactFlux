@@ -18,7 +18,7 @@ Key features include:
   - Font family and size settings
   - Article width adjustment
   - Title alignment options
-  - Image viewer with zoom and slideshow
+  - Image viewer with zoom, fullscreen, and image navigation
   - Article attachments with image previews and audio/video playback
   - Footnotes enhancement
   - Code syntax highlighting

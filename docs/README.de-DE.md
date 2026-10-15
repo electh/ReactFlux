@@ -18,7 +18,7 @@ Die wichtigsten Merkmale sind:
   - Einstellungen für Schriftfamilie und -größe
   - Anpassung der Artikelbreite
   - Optionen für Titelausrichtung
-  - Bildbetrachter mit Zoom und Diashow
+  - Bildbetrachter mit Zoom, Vollbildmodus und Bildnavigation
   - Artikelanhänge mit Bildvorschau sowie Audio- und Videowiedergabe
   - Fußnoten-Verbesserung
   - Quelltext-Syntax-Hervorhebung

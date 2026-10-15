@@ -18,7 +18,7 @@ Les fonctionnalités principales incluent :
   - Paramètres de police et de taille
   - Ajustement de la largeur des articles
   - Options d'alignement des titres
-  - Visionneuse d'images avec zoom et diaporama
+  - Visionneuse d'images avec zoom, mode plein écran et navigation entre les images
   - Pièces jointes aux articles avec aperçu des images et lecture audio/vidéo
   - Amélioration des notes de bas de page
   - Coloration syntaxique du code

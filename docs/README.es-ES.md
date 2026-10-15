@@ -18,7 +18,7 @@ Las funcionalidades clave incluyen:
   - Configuración de familia y tamaño de fuente
   - Ajuste del ancho del artículo
   - Opciones de alineación del título
-  - Visor de imágenes con zoom y presentación
+  - Visor de imágenes con zoom, pantalla completa y navegación entre imágenes
   - Adjuntos de artículos con vista previa de imágenes y reproducción de audio y vídeo
   - Mejora de notas al pie
   - Resaltado de sintaxis para código
