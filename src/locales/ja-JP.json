@@ -108,6 +108,7 @@
     "enable_syntax_highlighting": "シンタックスハイライトを有効化",
     "disable_syntax_highlighting": "シンタックスハイライトを無効化",
     "code_line_numbers": "行番号",
+    "code_word_wrap": "コードの自動折り返し",
     "code_language_auto": "自動検出",
     "code_language_unknown": "コードの言語を検出できませんでした。手動で選択してください。",
     "copied": "コピーしました！",

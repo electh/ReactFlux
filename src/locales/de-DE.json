@@ -108,6 +108,7 @@
     "enable_syntax_highlighting": "Syntaxhervorhebung aktivieren",
     "disable_syntax_highlighting": "Syntaxhervorhebung deaktivieren",
     "code_line_numbers": "Zeilennummern",
+    "code_word_wrap": "Automatischer Code-Zeilenumbruch",
     "code_language_auto": "Automatisch erkennen",
     "code_language_unknown": "Die Codesprache konnte nicht erkannt werden. Bitte manuell auswählen.",
     "copied": "Kopiert!",

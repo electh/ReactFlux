@@ -108,6 +108,7 @@
     "enable_syntax_highlighting": "启用语法高亮",
     "disable_syntax_highlighting": "关闭语法高亮",
     "code_line_numbers": "行号",
+    "code_word_wrap": "代码块自动换行",
     "code_language_auto": "自动识别",
     "code_language_unknown": "未能识别代码语言，请手动选择。",
     "copied": "已复制！",

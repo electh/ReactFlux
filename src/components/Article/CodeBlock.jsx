@@ -1,6 +1,7 @@
 import { Button, Message, Select } from "@arco-design/web-react"
 import { IconCode, IconCopy, IconOrderedList } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
+import classNames from "classnames"
 import { lazy, Suspense, useCallback, useEffect, useId, useMemo, useState } from "react"
 
 import CustomTooltip from "@/components/ui/CustomTooltip"
@@ -25,23 +26,36 @@ const cacheLanguage = (code, language) => {
   languageCache.set(code, language)
 }
 
-const PlainCodeBlock = ({ code, showLineNumbers, isWaiting }) => {
+const PlainCodeBlock = ({ code, showLineNumbers, isWaiting, wrapLongLines }) => {
   const lineNumbers = useMemo(
     () =>
-      showLineNumbers
+      showLineNumbers && !wrapLongLines
         ? Array.from({ length: getCodeLineCount(code) }, (_, index) => index + 1).join("\n")
         : null,
-    [code, showLineNumbers],
+    [code, showLineNumbers, wrapLongLines],
+  )
+  const wrappedLines = useMemo(
+    () => (showLineNumbers && wrapLongLines ? (code.match(/[^\n]*\n|[^\n]+$/g) ?? []) : null),
+    [code, showLineNumbers, wrapLongLines],
   )
 
   return (
     <pre aria-busy={isWaiting || undefined} className="hljs code-block-plain">
-      {showLineNumbers && (
+      {lineNumbers !== null && (
         <span aria-hidden="true" className="code-block-line-numbers">
           {lineNumbers}
         </span>
       )}
-      <code>{code}</code>
+      <code>
+        {wrappedLines?.map((line, index) => (
+          <span key={index} className="code-block-line code-block-line-numbered">
+            <span aria-hidden="true" className="code-block-line-number">
+              {index + 1}
+            </span>
+            {line}
+          </span>
+        )) ?? code}
+      </code>
     </pre>
   )
 }
@@ -56,7 +70,12 @@ const CodeBlock = ({ children: code, languageHint, inView = true }) => {
   const [detectedLanguage, setDetectedLanguage] = useState(() => languageCache.get(code) ?? null)
   const [highlightingEnabled, setHighlightingEnabled] = useState(sourceLanguage !== "plaintext")
   const [showLineNumbers, setShowLineNumbers] = useState(true)
+  const [wrapLongLines, setWrapLongLines] = useState(false)
   const [isHighlightReady, setIsHighlightReady] = useState(false)
+  const lineNumberWidth = useMemo(
+    () => `${Math.max(2, String(getCodeLineCount(code)).length)}ch`,
+    [code],
+  )
   const noticeId = useId()
   const language =
     selectedLanguage === "auto" ? (detectedLanguage ?? "plaintext") : selectedLanguage
@@ -143,11 +162,19 @@ const CodeBlock = ({ children: code, languageHint, inView = true }) => {
   )
 
   const plainCode = (
-    <PlainCodeBlock code={code} isWaiting={isWaiting} showLineNumbers={showLineNumbers} />
+    <PlainCodeBlock
+      code={code}
+      isWaiting={isWaiting}
+      showLineNumbers={showLineNumbers}
+      wrapLongLines={wrapLongLines}
+    />
   )
 
   return (
-    <div className="code-block-container">
+    <div
+      className={classNames("code-block-container", { "code-block-wrap": wrapLongLines })}
+      style={{ "--code-line-number-width": lineNumberWidth }}
+    >
       <div className="code-block-header">
         <LanguageSelector
           canAutoDetect={canAutoDetect}
@@ -180,6 +207,30 @@ const CodeBlock = ({ children: code, languageHint, inView = true }) => {
               onClick={() => setShowLineNumbers((shown) => !shown)}
             />
           </CustomTooltip>
+          <CustomTooltip mini content={polyglot.t("actions.code_word_wrap")}>
+            <Button
+              aria-label={polyglot.t("actions.code_word_wrap")}
+              aria-pressed={wrapLongLines}
+              className="word-wrap-toggle"
+              htmlType="button"
+              icon={
+                <svg
+                  aria-hidden="true"
+                  className="arco-icon"
+                  fill="none"
+                  focusable="false"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="4"
+                  viewBox="0 0 48 48"
+                >
+                  <path d="M6 10h36M6 22h28a8 8 0 0 1 0 16H22m6-6-6 6 6 6M6 38h8" />
+                </svg>
+              }
+              onClick={() => setWrapLongLines((wrapped) => !wrapped)}
+            />
+          </CustomTooltip>
           <CustomTooltip mini content={polyglot.t("actions.copy_to_clipboard_tooltip")}>
             <Button
               aria-label={polyglot.t("actions.copy_to_clipboard_tooltip")}
@@ -198,9 +249,20 @@ const CodeBlock = ({ children: code, languageHint, inView = true }) => {
       )}
       {shouldHighlight && isHighlightReady ? (
         <Suspense
-          fallback={<PlainCodeBlock isWaiting code={code} showLineNumbers={showLineNumbers} />}
+          fallback={
+            <PlainCodeBlock
+              isWaiting
+              code={code}
+              showLineNumbers={showLineNumbers}
+              wrapLongLines={wrapLongLines}
+            />
+          }
         >
-          <HighlightedCode language={language} showLineNumbers={showLineNumbers}>
+          <HighlightedCode
+            language={language}
+            showLineNumbers={showLineNumbers}
+            wrapLongLines={wrapLongLines}
+          >
             {code}
           </HighlightedCode>
         </Suspense>

@@ -106,6 +106,32 @@ body[arco-theme="dark"] .code-block-container {
   color: var(--code-block-text);
 }
 
+.code-block-wrap > pre.hljs {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.code-block-wrap .code-block-line {
+  display: block;
+  position: relative;
+}
+
+.code-block-wrap .code-block-line-numbered {
+  padding-inline-start: calc(var(--code-line-number-width) + 1em);
+}
+
+.code-block-wrap :is(.code-block-line-number, .react-syntax-highlighter-line-number) {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  min-width: var(--code-line-number-width);
+  color: var(--code-block-muted-text);
+  text-align: end;
+  white-space: pre;
+  user-select: none;
+}
+
 .code-block-actions .arco-btn {
   max-width: 100%;
   border-color: var(--code-block-border);

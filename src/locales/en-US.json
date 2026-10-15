@@ -108,6 +108,7 @@
     "enable_syntax_highlighting": "Enable syntax highlighting",
     "disable_syntax_highlighting": "Disable syntax highlighting",
     "code_line_numbers": "Line numbers",
+    "code_word_wrap": "Code word wrap",
     "code_language_auto": "Auto-detect",
     "code_language_unknown": "The code language could not be detected. Please select it manually.",
     "copied": "Copied!",

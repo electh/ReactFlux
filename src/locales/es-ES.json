@@ -108,6 +108,7 @@
     "enable_syntax_highlighting": "Activar resaltado de sintaxis",
     "disable_syntax_highlighting": "Desactivar resaltado de sintaxis",
     "code_line_numbers": "Números de línea",
+    "code_word_wrap": "Ajuste de línea del código",
     "code_language_auto": "Detectar automáticamente",
     "code_language_unknown": "No se pudo detectar el lenguaje del código. Selecciónalo manualmente.",
     "copied": "Copiado!",

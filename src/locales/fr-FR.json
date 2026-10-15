@@ -108,6 +108,7 @@
     "enable_syntax_highlighting": "Activer la coloration syntaxique",
     "disable_syntax_highlighting": "Désactiver la coloration syntaxique",
     "code_line_numbers": "Numéros de ligne",
+    "code_word_wrap": "Retour automatique à la ligne du code",
     "code_language_auto": "Détection automatique",
     "code_language_unknown": "Le langage du code n’a pas pu être détecté. Veuillez le sélectionner manuellement.",
     "copied": "Copié !",
