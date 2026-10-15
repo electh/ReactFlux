@@ -66,40 +66,4 @@ export const registerLanguages = () => {
   }
 }
 
-// https://highlightjs.org/download
-export const LANGUAGE_DISPLAY_NAMES = {
-  bash: "Bash",
-  c: "C",
-  cpp: "C++",
-  csharp: "C#",
-  css: "CSS",
-  diff: "Diff",
-  dockerfile: "Dockerfile",
-  go: "Go",
-  html: "HTML",
-  ini: "INI",
-  java: "Java",
-  javascript: "JavaScript",
-  json: "JSON",
-  kotlin: "Kotlin",
-  lua: "Lua",
-  markdown: "Markdown",
-  php: "PHP",
-  "php-template": "PHP Template",
-  plaintext: "Plaintext",
-  powershell: "PowerShell",
-  python: "Python",
-  ruby: "Ruby",
-  rust: "Rust",
-  shell: "Shell",
-  sql: "SQL",
-  swift: "Swift",
-  typescript: "TypeScript",
-  xml: "XML",
-  yaml: "YAML",
-}
-
-export const SUPPORTED_LANGUAGES = Object.keys(LANGUAGE_DISPLAY_NAMES)
-
-export { default as detectCodeLanguage } from "./code-language-detection"
 export { Light as SyntaxHighlighter } from "react-syntax-highlighter"

@@ -33,6 +33,7 @@ import { activeContentState } from "@/store/contentState"
 import { articleDetailSettingsState } from "@/store/settingsState"
 import returnToArticleImage from "@/utils/article-image-return"
 import extractCodeContent from "@/utils/code-content"
+import { getCodeLanguage } from "@/utils/code-languages"
 import { generateReadableDate, generateReadingTime } from "@/utils/date"
 import buildArticleImageModel from "@/utils/images"
 import { getSafeExternalUrl } from "@/utils/url"
@@ -42,7 +43,14 @@ import "./littlefoot.css"
 const ArticleLightbox = lazy(() => import("./ArticleLightbox"))
 const EMPTY_ATTACHMENTS = { items: [], primaryMedia: null }
 
-const renderCodeBlock = (codeContent) => <DeferredCodeBlock>{codeContent}</DeferredCodeBlock>
+const renderCodeBlock = (preElement) => {
+  const codeElement = preElement.children.find((child) => child.name === "code") ?? preElement
+  return (
+    <DeferredCodeBlock languageHint={getCodeLanguage(preElement)}>
+      {extractCodeContent(codeElement)}
+    </DeferredCodeBlock>
+  )
+}
 
 const handleLinkWithImage = (node, getImageIndex, togglePhotoSlider) => {
   const imgNodes = node.children.filter((child) => child.type === "tag" && child.name === "img")
@@ -116,7 +124,7 @@ const handleImage = (node, getImageIndex, togglePhotoSlider) => {
   return <ImageOverlayButton index={index} node={node} togglePhotoSlider={togglePhotoSlider} />
 }
 
-const handleTableBasedCode = (node) => {
+const findTableCodeBlock = (node) => {
   const tbody = node.children.find((child) => child.name === "tbody")
   if (!tbody) {
     return null
@@ -134,19 +142,7 @@ const handleTableBasedCode = (node) => {
   }
 
   const [, codeTd] = tdElements
-  const codePre = codeTd.children.find((child) => child.name === "pre")
-
-  if (!codePre) {
-    return null
-  }
-
-  // Check if there's a <code> element inside the pre
-  const codeElement = codePre.children?.find((child) => child.name === "code")
-  if (codeElement) {
-    return extractCodeContent(codeElement)
-  }
-
-  return extractCodeContent(codePre)
+  return codeTd.children.find((child) => child.name === "pre") ?? null
 }
 
 // Preserve presentational tables; normalize and wrap data tables for horizontal scrolling.
@@ -205,14 +201,13 @@ const handleFigure = (node, getImageIndex, togglePhotoSlider, options) => {
 
   // Handle code blocks wrapped in figure
   if (firstChild?.name === "pre") {
-    const codeContent = extractCodeContent(firstChild)
-    return codeContent ? renderCodeBlock(codeContent) : null
+    return renderCodeBlock(firstChild)
   }
 
   // Handle table-based code blocks with line numbers
   if (firstChild?.name === "table") {
-    const codeContent = handleTableBasedCode(firstChild)
-    return codeContent ? renderCodeBlock(codeContent) : null
+    const codePre = findTableCodeBlock(firstChild)
+    return codePre ? renderCodeBlock(codePre) : null
   }
 
   // Handle multiple images in figure with figcaption support
@@ -258,13 +253,7 @@ const handleCodeBlock = (node) => {
     currentNode = nextNode
   }
 
-  // Extract code content
-  const codeContent =
-    node.children[0]?.name === "code"
-      ? extractCodeContent(node.children[0])
-      : extractCodeContent(node)
-
-  return renderCodeBlock(codeContent)
+  return renderCodeBlock(node)
 }
 
 const handleVideo = (node) => {

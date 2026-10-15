@@ -53,6 +53,7 @@ body[arco-theme="dark"] .code-block-container {
 
 .code-block-header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   align-items: center;
   gap: 8px;
@@ -61,8 +62,38 @@ body[arco-theme="dark"] .code-block-container {
   padding: 8px 10px;
 }
 
-.language-selector {
+.code-block-header .language-selector {
   width: auto;
+  min-width: 110px;
+  max-width: 100%;
+  margin-inline-end: auto;
+}
+
+.code-block-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.code-block-container .code-block-notice {
+  margin: 0;
+  border-bottom: 1px solid var(--code-block-border);
+  background: var(--code-block-header-background);
+  padding: 8px 10px;
+  color: var(--code-block-muted-text);
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+.code-block-line-numbers {
+  float: inline-start;
+  min-width: 2ch;
+  margin-inline-end: 1em;
+  color: var(--code-block-muted-text);
+  text-align: end;
+  user-select: none;
 }
 
 .code-block-container > pre.hljs {
@@ -75,16 +106,25 @@ body[arco-theme="dark"] .code-block-container {
   color: var(--code-block-text);
 }
 
-.code-block-container .copy-button {
+.code-block-actions .arco-btn {
+  max-width: 100%;
   border-color: var(--code-block-border);
   background: var(--code-block-control-background);
   color: var(--code-block-text);
 }
 
-.code-block-container .copy-button:hover {
-  border-color: var(--code-block-border);
+.code-block-actions .arco-btn:hover:not(:disabled) {
   background: var(--code-block-control-hover-background);
-  color: var(--code-block-text);
+}
+
+.code-block-actions .arco-btn:focus-visible {
+  outline: 2px solid rgb(var(--primary-6));
+  outline-offset: 2px;
+}
+
+.code-block-actions .arco-btn[aria-pressed="true"] {
+  border-color: rgb(var(--primary-6));
+  color: rgb(var(--primary-6));
 }
 
 .code-block-container .react-syntax-highlighter-line-number {
@@ -180,8 +220,12 @@ body[arco-theme="dark"] .code-block-container {
     padding: 6px 8px;
   }
 
+  .code-block-actions {
+    gap: 6px;
+  }
+
   .code-block-header .language-selector {
-    max-width: calc(100% - var(--mobile-utility-control-size) - 6px);
+    flex: 1 1 110px;
   }
 
   .code-block-header
@@ -202,18 +246,18 @@ body[arco-theme="dark"] .code-block-container {
     font-size: var(--mobile-form-icon-size);
   }
 
-  .code-block-header .copy-button {
+  .code-block-actions .arco-btn {
     box-sizing: border-box;
-    min-width: var(--mobile-utility-control-size);
-    height: var(--mobile-utility-control-size);
+    min-width: var(--mobile-utility-control-size, 36px);
+    height: var(--mobile-utility-control-size, 36px);
     padding: 0;
-    font-size: var(--mobile-form-icon-size);
+    font-size: var(--mobile-form-icon-size, 18px);
     line-height: 0;
   }
 
-  .code-block-header .copy-button .arco-icon {
-    width: var(--mobile-form-icon-size);
-    height: var(--mobile-form-icon-size);
+  .code-block-actions .arco-btn .arco-icon {
+    width: var(--mobile-form-icon-size, 18px);
+    height: var(--mobile-form-icon-size, 18px);
   }
 
   .code-language-select-popup {
