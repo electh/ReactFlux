@@ -12,8 +12,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@arco-design/web-react':
-        specifier: ^2.66.16
-        version: 2.66.16(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^2.66.18
+        version: 2.66.18(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@nanostores/persistent':
         specifier: ^1.3.5
         version: 1.3.5(nanostores@1.5.5)
@@ -95,7 +95,7 @@ importers:
         version: 9.39.5
       '@rolldown/plugin-babel':
         specifier: ^0.2.4
-        version: 0.2.4(@babel/core@8.0.7)(@babel/runtime@7.29.7)(rolldown@1.2.12)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1))
+        version: 0.2.4(@babel/core@8.0.7)(@babel/runtime@7.29.10)(rolldown@1.2.12)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1))
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.5
@@ -107,7 +107,7 @@ importers:
         version: 19.3.0(@types/react@19.3.0)
       '@vitejs/plugin-react':
         specifier: ^6.1.2
-        version: 6.1.2(@rolldown/plugin-babel@0.2.4(@babel/core@8.0.7)(@babel/runtime@7.29.7)(rolldown@1.2.12)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1)))(babel-plugin-react-compiler@1.0.0)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1))
+        version: 6.1.2(@rolldown/plugin-babel@0.2.4(@babel/core@8.0.7)(@babel/runtime@7.29.10)(rolldown@1.2.12)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1)))(babel-plugin-react-compiler@1.0.0)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1))
       babel-plugin-react-compiler:
         specifier: 1.0.0
         version: 1.0.0
@@ -180,8 +180,8 @@ packages:
   '@arco-design/color@0.4.0':
     resolution: {integrity: sha512-s7p9MSwJgHeL8DwcATaXvWT3m2SigKpxx4JA1BGPHL4gfvaQsmQfrLBDpjOJFJuJ2jG2dMt3R3P8Pm9E65q18g==}
 
-  '@arco-design/web-react@2.66.16':
-    resolution: {integrity: sha512-Ke6Do2GWPqWfbB7eounEdIjxocCSxxZT/TplQPtEZeeuavFWjdPDNyvHeBX6OGb7ZgZPl7NlcJbrTyTlhl56qQ==}
+  '@arco-design/web-react@2.66.18':
+    resolution: {integrity: sha512-DfJ6jeqOE3IzoO3pIdBQFGNVl1ISGz1S1jmMKBkefmpMg7nAAHESq/70zkjvzJThiFFDL41NHNZzefj4DEMvzA==}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
@@ -767,10 +767,6 @@ packages:
 
   '@babel/runtime@7.29.10':
     resolution: {integrity: sha512-NpugTzbKgGrNe45Ui32cN8vCFFMxVtP/9rtfwv0nP5FRDAjvYBxJcLVpYA9mr1jxP6cnIT7x9LUzuDTbWYYNRA==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/runtime@7.29.7':
-    resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/template@7.29.7':
@@ -4076,10 +4072,10 @@ snapshots:
     dependencies:
       color: 3.2.1
 
-  '@arco-design/web-react@2.66.16(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@arco-design/web-react@2.66.18(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@arco-design/color': 0.4.0
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       b-tween: 0.3.3
       b-validate: 1.5.3
       compute-scroll-into-view: 1.0.20
@@ -4859,8 +4855,6 @@ snapshots:
 
   '@babel/runtime@7.29.10': {}
 
-  '@babel/runtime@7.29.7': {}
-
   '@babel/template@7.29.7':
     dependencies:
       '@babel/code-frame': 7.29.7
@@ -5305,13 +5299,13 @@ snapshots:
   '@rolldown/binding-win32-x64-msvc@1.2.12':
     optional: true
 
-  '@rolldown/plugin-babel@0.2.4(@babel/core@8.0.7)(@babel/runtime@7.29.7)(rolldown@1.2.12)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1))':
+  '@rolldown/plugin-babel@0.2.4(@babel/core@8.0.7)(@babel/runtime@7.29.10)(rolldown@1.2.12)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1))':
     dependencies:
       '@babel/core': 8.0.7
       picomatch: 4.0.7
       rolldown: 1.2.12
     optionalDependencies:
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       vite: 8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1)
 
   '@rolldown/pluginutils@1.0.1': {}
@@ -5587,12 +5581,12 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.12.2':
     optional: true
 
-  '@vitejs/plugin-react@6.1.2(@rolldown/plugin-babel@0.2.4(@babel/core@8.0.7)(@babel/runtime@7.29.7)(rolldown@1.2.12)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1)))(babel-plugin-react-compiler@1.0.0)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1))':
+  '@vitejs/plugin-react@6.1.2(@rolldown/plugin-babel@0.2.4(@babel/core@8.0.7)(@babel/runtime@7.29.10)(rolldown@1.2.12)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1)))(babel-plugin-react-compiler@1.0.0)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
       vite: 8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1)
     optionalDependencies:
-      '@rolldown/plugin-babel': 0.2.4(@babel/core@8.0.7)(@babel/runtime@7.29.7)(rolldown@1.2.12)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1))
+      '@rolldown/plugin-babel': 0.2.4(@babel/core@8.0.7)(@babel/runtime@7.29.10)(rolldown@1.2.12)(vite@8.3.1(@types/node@26.6.5)(esbuild@0.27.2)(jiti@2.7.0)(less@4.2.0)(terser@5.48.0)(yaml@2.9.1))
       babel-plugin-react-compiler: 1.0.0
 
   acorn-jsx@5.3.2(acorn@8.16.0):
@@ -5960,7 +5954,7 @@ snapshots:
 
   dom-helpers@5.2.1:
     dependencies:
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       csstype: 3.2.3
 
   dom-serializer@3.1.1:
@@ -7253,7 +7247,7 @@ snapshots:
 
   react-clientside-effect@1.2.8(react@19.3.0):
     dependencies:
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       react: 19.3.0
 
   react-dom@19.3.0(react@19.3.0):
@@ -7263,7 +7257,7 @@ snapshots:
 
   react-focus-lock@2.13.7(@types/react@19.3.0)(react@19.3.0):
     dependencies:
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       focus-lock: 1.3.6
       prop-types: 15.8.1
       react: 19.3.0
@@ -7314,7 +7308,7 @@ snapshots:
 
   react-transition-group@4.4.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
     dependencies:
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
