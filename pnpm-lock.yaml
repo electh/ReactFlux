@@ -51,8 +51,8 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1
       plyr:
-        specifier: ^3.8.4
-        version: 3.8.4
+        specifier: ^3.8.5
+        version: 3.8.5
       react:
         specifier: ^19.3.0
         version: 19.3.0
@@ -2097,9 +2097,6 @@ packages:
   core-js-compat@3.49.0:
     resolution: {integrity: sha512-VQXt1jr9cBz03b331DFDCCP90b3fanciLkgiOoy8SBHy06gNf+vQ1A3WFLqG7I8TipYIKeYK9wxd0tUrvHcOZA==}
 
-  core-js@3.47.0:
-    resolution: {integrity: sha512-c3Q2VVkGAUyupsjRnaNX6u8Dq2vAdzm9iuPj5FW0fRxzlxgq9Q39MDq10IvmQSpLgHQNyQzQmOo6bgGHmH3NNg==}
-
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -3289,8 +3286,9 @@ packages:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
 
-  plyr@3.8.4:
-    resolution: {integrity: sha512-DrzLbK9Wol3zeiuZCleD9aUOl0KAaBHR9H6WVVVYPZ4Ya+LYxUFTgSF1jooHcMQCv96Ws96wCaZzIoP3bES8pQ==}
+  plyr@3.8.5:
+    resolution: {integrity: sha512-SqGU1s76fq4lI8ABYhi1uxwrcLGYqmyiMazFAUIOQKKwt6S7FfflEMljLaM3SV8HUUb1KdZ04FY/SNFRpPZHUw==}
+    engines: {node: ^22.18.0 || >=24.11.0}
     deprecated: 'Plyr is deprecated and receives security updates only. Use Video.js 10 for new projects. Migration guide: https://videojs.org/docs/framework/html/guides/migrate-from-plyr'
 
   possible-typed-array-names@1.1.0:
@@ -5872,8 +5870,6 @@ snapshots:
     dependencies:
       browserslist: 4.28.2
 
-  core-js@3.47.0: {}
-
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -7211,9 +7207,8 @@ snapshots:
 
   pluralize@8.0.0: {}
 
-  plyr@3.8.4:
+  plyr@3.8.5:
     dependencies:
-      core-js: 3.47.0
       custom-event-polyfill: 1.0.7
       loadjs: 4.3.0
       rangetouch: 2.0.1
