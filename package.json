@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@arco-design/color": "^0.4.0",
-    "@arco-design/web-react": "^2.66.16",
+    "@arco-design/web-react": "^2.66.18",
     "@nanostores/persistent": "^1.3.5",
     "@nanostores/react": "^2.0.1",
     "classnames": "^2.5.1",
