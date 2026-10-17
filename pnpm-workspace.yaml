@@ -5,4 +5,5 @@ allowBuilds:
   core-js: false
   esbuild: true
   lefthook: true
+  plyr: false
   unrs-resolver: true
