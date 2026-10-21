@@ -185,6 +185,10 @@ const processFigcaptionContent = (children) => {
         return null
       }
 
+      if (!child.children?.length) {
+        return <Tag key={index} {...props} />
+      }
+
       return (
         <Tag key={index} {...props}>
           {child.children ? processFigcaptionContent(child.children) : null}
