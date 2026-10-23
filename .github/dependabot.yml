@@ -9,6 +9,12 @@ updates:
       timezone: Asia/Shanghai
     cooldown:
       default-days: 1
+    groups:
+      patch-updates:
+        patterns:
+          - "*"
+        update-types:
+          - patch
 
   - package-ecosystem: github-actions
     directory: /
