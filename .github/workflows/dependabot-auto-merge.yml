@@ -38,7 +38,7 @@ jobs:
       - name: Validate pnpm-lock.yaml
         run: |
           echo "Validating pnpm-lock.yaml file..."
-          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm install --frozen-lockfile
           echo "✅ pnpm-lock.yaml validation passed"
 
       - name: Run ESLint check
