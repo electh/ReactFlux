@@ -230,5 +230,5 @@ jobs:
           PR_NUMBER: ${{ needs.authorize.outputs.pr_number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh api --method POST "repos/$GH_REPO/issues/$PR_NUMBER/comments" \
+          gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" \
             -f body="❌ Automatic font validation or merge failed. Inspect: $RUN_URL" >/dev/null
