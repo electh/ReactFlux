@@ -42,7 +42,7 @@
     "node-polyglot": "^2.6.0",
     "ofetch": "^1.5.1",
     "plyr": "^3.8.5",
-    "react": "^19.3.0",
+    "react": "^19.3.1",
     "react-dom": "^19.3.0",
     "react-hotkeys-hook": "^5.3.3",
     "react-intersection-observer": "^11.0.1",
