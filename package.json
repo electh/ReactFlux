@@ -74,7 +74,7 @@
     "eslint-plugin-unicorn": "^65.0.1",
     "fontkit": "2.0.4",
     "globals": "^17.13.0",
-    "knip": "^6.39.0",
+    "knip": "^6.42.1",
     "lefthook": "^2.2.2",
     "postcss": "8.5.30",
     "prettier": "^3.9.10",
