@@ -78,8 +78,8 @@
     "lefthook": "^2.2.2",
     "postcss": "8.5.32",
     "prettier": "^3.9.10",
-    "rollup-plugin-visualizer": "^7.1.1",
-    "vite": "^8.3.5",
+    "rollup-plugin-visualizer": "^7.1.2",
+    "vite": "^8.3.6",
     "vite-plugin-pwa": "^2.0.0",
     "workbox-window": "^7.4.1"
   }
