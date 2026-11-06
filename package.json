@@ -52,7 +52,7 @@
     "simplebar-react": "^3.3.2",
     "validator": "^13.15.35",
     "virtua": "^0.53.6",
-    "yet-another-react-lightbox": "^3.32.2"
+    "yet-another-react-lightbox": "^3.33.0"
   },
   "devDependencies": {
     "@babel/core": "^8.1.0",
