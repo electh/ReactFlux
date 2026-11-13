@@ -55,7 +55,7 @@
     "yet-another-react-lightbox": "^3.32.2"
   },
   "devDependencies": {
-    "@babel/core": "^8.1.0",
+    "@babel/core": "^8.1.2",
     "@eslint/js": "^9.39.5",
     "@rolldown/plugin-babel": "^0.2.4",
     "@types/node": "^26.6.6",
@@ -78,8 +78,8 @@
     "lefthook": "^2.2.2",
     "postcss": "8.5.32",
     "prettier": "^3.9.10",
-    "rollup-plugin-visualizer": "^7.1.2",
-    "vite": "^8.3.6",
+    "rollup-plugin-visualizer": "^7.1.3",
+    "vite": "^8.3.8",
     "vite-plugin-pwa": "^2.0.0",
     "workbox-window": "^7.4.1"
   }
